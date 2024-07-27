@@ -3,7 +3,10 @@
   "scripts": {
     "dev": "next dev",
     "build": "next build",
-    "start": "next start"
+    "start": "next start",
+    "format": "prettier \"**/*.{js,jsx,ts,tsx}\" --write",
+    "lint": "next lint",
+    "lint:fix": "next lint --fix"
   },
   "dependencies": {
     "@supabase/ssr": "latest",
@@ -23,9 +26,11 @@
     "@types/node": "20.11.5",
     "@types/react": "18.2.48",
     "@types/react-dom": "18.2.18",
+    "@typescript-eslint/parser": "^7.17.0",
     "encoding": "^0.1.13",
     "eslint": "^9.8.0",
     "eslint-config-next": "^14.2.5",
+    "eslint-plugin-simple-import-sort": "^12.1.1",
     "postcss": "8.4.33",
     "tailwindcss": "3.4.1",
     "typescript": "5.3.3"
