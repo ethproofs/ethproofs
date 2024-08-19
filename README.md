@@ -39,3 +39,5 @@ After a change in the database schema, run the following command to regenerate t
 ```bash
 pnpm gen-db-types
 ```
+
+More info: https://supabase.com/docs/reference/javascript/typescript-support
