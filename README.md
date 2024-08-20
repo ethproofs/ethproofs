@@ -9,7 +9,7 @@ pnpm dev
 
 ## Supabase local development
 
-Install docker.
+Install the [supabase CLI](https://supabase.com/docs/guides/cli/getting-started) & [docker](https://docs.docker.com/get-started/get-docker/).
 
 ```bash
 supabase login
