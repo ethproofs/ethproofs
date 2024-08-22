@@ -1,18 +1,23 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { Reducer, useEffect, useReducer } from "react"
 
 import { createClient } from "@/utils/supabase/client"
 import ProofsTable from "@/components/ProofsTable"
 
-import type { BlockWithProofs, Proof } from "@/lib/types"
+import type { Block, Proof } from "@/lib/types"
+import { Actions, State, createInitialState, reducer } from "./reducer"
 
 type Props = {
-  blocks: BlockWithProofs[]
+  blocks: (Block & { proofs: { id: number }[] })[]
+  proofs: Proof[]
 }
 
-const ProofsPage = ({ blocks }: Props) => {
-  const [data, setData] = useState(blocks)
+const ProofsPage = ({ blocks, proofs }: Props) => {
+  const [state, dispatch] = useReducer<
+    Reducer<State, Actions>,
+    { blocks: (Block & { proofs: { id: number }[] })[]; proofs: Proof[] }
+  >(reducer, { blocks, proofs }, createInitialState)
 
   const supabase = createClient()
 
@@ -23,7 +28,7 @@ const ProofsPage = ({ blocks }: Props) => {
         "postgres_changes",
         { event: "INSERT", schema: "public", table: "blocks" },
         (payload) => {
-          setData([payload.new as BlockWithProofs, ...data])
+          dispatch({ type: "add_block", payload: payload.new as Block })
         }
       )
       .subscribe()
@@ -34,24 +39,7 @@ const ProofsPage = ({ blocks }: Props) => {
         "postgres_changes",
         { event: "INSERT", schema: "public", table: "proofs" },
         (payload) => {
-          const proof = payload.new as Proof
-          const blockIndex = data.findIndex(
-            (block) => block.block_number === proof.block_number
-          )
-
-          if (blockIndex < 0) {
-            console.error(`Block ${proof.block_number} not found`)
-            return
-          }
-
-          const block = data[blockIndex]
-          const newBlock = { ...block, proofs: [...block.proofs, proof] }
-
-          setData([
-            ...data.slice(0, blockIndex),
-            newBlock,
-            ...data.slice(blockIndex + 1),
-          ])
+          dispatch({ type: "add_proof", payload: payload.new as Proof })
         }
       )
       .subscribe()
@@ -60,9 +48,21 @@ const ProofsPage = ({ blocks }: Props) => {
       supabase.removeChannel(blocksChannel)
       supabase.removeChannel(proofsChannel)
     }
-  }, [data, setData])
+  }, [state])
 
-  return <ProofsTable className="mx-auto my-8 max-w-screen-lg" blocks={data} />
+  const blocksWithProofs = state.blocks.allIds
+    .map((id) => state.blocks.byId[id])
+    .map((block) => ({
+      ...block,
+      proofs: block.proofs.map((id) => state.proofs.byId[id]),
+    }))
+
+  return (
+    <ProofsTable
+      className="mx-auto my-8 max-w-screen-lg"
+      blocks={blocksWithProofs}
+    />
+  )
 }
 
 export default ProofsPage
