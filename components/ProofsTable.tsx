@@ -39,7 +39,7 @@ const ProofsTable = ({ blocks, ...props }: Props) => {
             <TableCell>
               <ul>
                 {block.proofs.map((proof) => (
-                  <li key={proof.proof_id}>{proof.team_id}</li>
+                  <li key={proof.proof_id}>{proof.proof_id}</li>
                 ))}
               </ul>
             </TableCell>
