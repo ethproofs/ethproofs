@@ -39,7 +39,7 @@ export default async function Proofs() {
             <TableCell>{proof.proof}</TableCell>
             <TableCell>{proof.proof_status}</TableCell>
             <TableCell>{proof.prover_machine_id}</TableCell>
-            <TableCell>{proof.prover_duration}</TableCell>
+            <TableCell>{proof.prover_duration as string}</TableCell>
             <TableCell>{proof.proving_cost}</TableCell>
             <TableCell>{proof.proving_cycles}</TableCell>
             <TableCell>{proof.submission_time}</TableCell>
