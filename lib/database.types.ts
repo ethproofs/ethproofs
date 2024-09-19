@@ -34,6 +34,38 @@ export type Database = {
   }
   public: {
     Tables: {
+      api_auth_tokens: {
+        Row: {
+          created_at: string
+          id: string
+          mode: Database["public"]["Enums"]["key_mode"]
+          token: string
+          user_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          mode?: Database["public"]["Enums"]["key_mode"]
+          token?: string
+          user_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          mode?: Database["public"]["Enums"]["key_mode"]
+          token?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "api_auth_tokens_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       blocks: {
         Row: {
           block_number: number
@@ -57,8 +89,8 @@ export type Database = {
       }
       proofs: {
         Row: {
-          block_number: number | null
-          proof: string | null
+          block_number: number
+          proof: string
           proof_id: number
           proof_status: string
           prover_duration: unknown | null
@@ -66,11 +98,11 @@ export type Database = {
           proving_cost: number | null
           proving_cycles: number | null
           submission_time: string | null
-          team_id: number | null
+          user_id: string
         }
         Insert: {
-          block_number?: number | null
-          proof?: string | null
+          block_number: number
+          proof: string
           proof_id?: number
           proof_status: string
           prover_duration?: unknown | null
@@ -78,11 +110,11 @@ export type Database = {
           proving_cost?: number | null
           proving_cycles?: number | null
           submission_time?: string | null
-          team_id?: number | null
+          user_id: string
         }
         Update: {
-          block_number?: number | null
-          proof?: string | null
+          block_number?: number
+          proof?: string
           proof_id?: number
           proof_status?: string
           prover_duration?: unknown | null
@@ -90,16 +122,9 @@ export type Database = {
           proving_cost?: number | null
           proving_cycles?: number | null
           submission_time?: string | null
-          team_id?: number | null
+          user_id?: string
         }
         Relationships: [
-          {
-            foreignKeyName: "proofs_block_number_fkey"
-            columns: ["block_number"]
-            isOneToOne: false
-            referencedRelation: "block_proof_stats"
-            referencedColumns: ["block_number"]
-          },
           {
             foreignKeyName: "proofs_block_number_fkey"
             columns: ["block_number"]
@@ -115,11 +140,11 @@ export type Database = {
             referencedColumns: ["machine_id"]
           },
           {
-            foreignKeyName: "proofs_team_id_fkey"
-            columns: ["team_id"]
+            foreignKeyName: "proofs_user_id_fkey"
+            columns: ["user_id"]
             isOneToOne: false
-            referencedRelation: "teams"
-            referencedColumns: ["team_id"]
+            referencedRelation: "users"
+            referencedColumns: ["id"]
           },
         ]
       }
@@ -127,25 +152,25 @@ export type Database = {
         Row: {
           machine_id: number
           machine_name: string
-          team_id: number | null
+          user_id: string | null
         }
         Insert: {
           machine_id?: number
           machine_name: string
-          team_id?: number | null
+          user_id?: string | null
         }
         Update: {
           machine_id?: number
           machine_name?: string
-          team_id?: number | null
+          user_id?: string | null
         }
         Relationships: [
           {
-            foreignKeyName: "prover_machines_team_id_fkey"
-            columns: ["team_id"]
+            foreignKeyName: "prover_machines_user_id_fkey"
+            columns: ["user_id"]
             isOneToOne: false
-            referencedRelation: "teams"
-            referencedColumns: ["team_id"]
+            referencedRelation: "users"
+            referencedColumns: ["id"]
           },
         ]
       }
@@ -155,33 +180,26 @@ export type Database = {
           root_proof: string
           root_proof_id: number
           root_proof_size: number
-          team_id: number | null
           total_proof_size: number
+          user_id: string | null
         }
         Insert: {
           block_number?: number | null
           root_proof: string
           root_proof_id?: number
           root_proof_size: number
-          team_id?: number | null
           total_proof_size: number
+          user_id?: string | null
         }
         Update: {
           block_number?: number | null
           root_proof?: string
           root_proof_id?: number
           root_proof_size?: number
-          team_id?: number | null
           total_proof_size?: number
+          user_id?: string | null
         }
         Relationships: [
-          {
-            foreignKeyName: "recursive_root_proofs_block_number_fkey"
-            columns: ["block_number"]
-            isOneToOne: false
-            referencedRelation: "block_proof_stats"
-            referencedColumns: ["block_number"]
-          },
           {
             foreignKeyName: "recursive_root_proofs_block_number_fkey"
             columns: ["block_number"]
@@ -190,11 +208,11 @@ export type Database = {
             referencedColumns: ["block_number"]
           },
           {
-            foreignKeyName: "recursive_root_proofs_team_id_fkey"
-            columns: ["team_id"]
+            foreignKeyName: "recursive_root_proofs_user_id_fkey"
+            columns: ["user_id"]
             isOneToOne: false
-            referencedRelation: "teams"
-            referencedColumns: ["team_id"]
+            referencedRelation: "users"
+            referencedColumns: ["id"]
           },
         ]
       }
@@ -202,73 +220,43 @@ export type Database = {
         Row: {
           team_id: number
           team_name: string
+          user_id: string | null
         }
         Insert: {
           team_id?: number
           team_name: string
+          user_id?: string | null
         }
         Update: {
           team_id?: number
           team_name?: string
+          user_id?: string | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "teams_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
       }
     }
     Views: {
-      block_proof_stats: {
-        Row: {
-          block_number: number | null
-          gas_used: number | null
-          machine_name: string | null
-          prover_duration: unknown | null
-          proving_cost: number | null
-          proving_cycles: number | null
-          team_name: string | null
-        }
-        Relationships: []
-      }
-      proof_summary_stats: {
-        Row: {
-          avg_proof_time: unknown | null
-          team_id: number | null
-          total_cycles: number | null
-          total_proofs: number | null
-          total_proving_cost: number | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "proofs_team_id_fkey"
-            columns: ["team_id"]
-            isOneToOne: false
-            referencedRelation: "teams"
-            referencedColumns: ["team_id"]
-          },
-        ]
-      }
-      recursive_proof_stats: {
-        Row: {
-          compression_ratio: number | null
-          root_proof_size: number | null
-          team_id: number | null
-          team_name: string | null
-          total_proof_size: number | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "recursive_root_proofs_team_id_fkey"
-            columns: ["team_id"]
-            isOneToOne: false
-            referencedRelation: "teams"
-            referencedColumns: ["team_id"]
-          },
-        ]
-      }
+      [_ in never]: never
     }
     Functions: {
-      [_ in never]: never
+      is_allowed_apikey: {
+        Args: {
+          apikey: string
+          keymode: Database["public"]["Enums"]["key_mode"][]
+        }
+        Returns: boolean
+      }
     }
     Enums: {
-      [_ in never]: never
+      key_mode: "read" | "write" | "all" | "upload"
     }
     CompositeTypes: {
       [_ in never]: never
