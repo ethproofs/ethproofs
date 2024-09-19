@@ -4,3 +4,4 @@ pnpm-lock.yaml
 package-lock.json
 public
 build
+lib/database.types.ts
