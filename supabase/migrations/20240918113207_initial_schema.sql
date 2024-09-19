@@ -171,9 +171,9 @@ ALTER TABLE ONLY "public"."recursive_root_proofs"
 ALTER TABLE ONLY "public"."teams"
     ADD CONSTRAINT "teams_user_id_fkey" FOREIGN KEY ("user_id") REFERENCES "auth"."users"("id") ON DELETE SET NULL;
     
-CREATE POLICY "Allow users to see API token entries they own" ON "public"."api_auth_tokens" FOR SELECT TO "anon" USING ("public"."is_allowed_apikey"((("current_setting"('request.headers'::"text", true))::"json" ->> 'apikey'::"text"), '{all,read}'::"public"."key_mode"[]));
+CREATE POLICY "Allow users to see API token entries they own" ON "public"."api_auth_tokens" FOR SELECT TO "anon" USING ("public"."is_allowed_apikey"((("current_setting"('request.headers'::"text", true))::"json" ->> 'ethkey'::"text"), '{all,read}'::"public"."key_mode"[]));
 CREATE POLICY "Enable insert for authenticated users only" ON "public"."blocks" FOR INSERT TO "authenticated" WITH CHECK (true);
-CREATE POLICY "Enable insert for users with an api key" ON "public"."proofs" FOR INSERT WITH CHECK ("public"."is_allowed_apikey"((("current_setting"('request.headers'::"text", true))::"json" ->> 'apikey'::"text"), '{all,write}'::"public"."key_mode"[]));
+CREATE POLICY "Enable insert for users with an api key" ON "public"."proofs" FOR INSERT WITH CHECK ("public"."is_allowed_apikey"((("current_setting"('request.headers'::"text", true))::"json" ->> 'ethkey'::"text"), '{all,write}'::"public"."key_mode"[]));
 CREATE POLICY "Enable read access for all users" ON "public"."blocks" FOR SELECT USING (true);
 CREATE POLICY "Enable read access for all users" ON "public"."proofs" FOR SELECT USING (true);
 CREATE POLICY "Enable read access for all users" ON "public"."prover_machines" FOR SELECT USING (true);

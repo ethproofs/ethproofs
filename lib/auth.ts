@@ -18,7 +18,7 @@ export const withAuth = (
     const client = createClient({
       global: {
         headers: {
-          apikey: authHeader ? authHeader.split(" ")[1] : "",
+          ethkey: authHeader ? authHeader.split(" ")[1] : "",
         },
       },
     })
