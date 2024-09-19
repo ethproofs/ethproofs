@@ -12,7 +12,6 @@ export const withAuth = (
   return async (request: Request) => {
     const headerStore = headers()
     const authHeader = headerStore.get("authorization")
-    console.log({ authHeader })
 
     // Get the user from the session
     const client = createClient({
@@ -26,15 +25,12 @@ export const withAuth = (
     // If there is an auth header, validate api key
     if (authHeader) {
       const apiKey = authHeader.split(" ")[1]
-      console.log({ apiKey })
 
       const { data, error } = await client
         .from("api_auth_tokens")
         .select("mode, user_id")
         .eq("token", apiKey)
         .single()
-
-      console.log({ data, error })
 
       // api key is invalid
       if (error) {
