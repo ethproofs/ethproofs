@@ -2,7 +2,12 @@
 
 import { Line, LineChart } from "recharts"
 
-import { ChartConfig, ChartContainer, ChartTooltip, ChartTooltipContent } from "@/components/ui/chart"
+import {
+  ChartConfig,
+  ChartContainer,
+  ChartTooltip,
+  ChartTooltipContent,
+} from "@/components/ui/chart"
 import { cn } from "@/lib/utils"
 import { HTMLAttributes } from "react"
 
@@ -17,12 +22,26 @@ type BasicLineProps = HTMLAttributes<HTMLDivElement> & {
   chartConfig?: ChartConfig
 }
 
-const BasicLine = ({ className, chartData, chartConfig = defaultChartConfig }: BasicLineProps) => (
-  <ChartContainer config={chartConfig} className={cn("min-h-[100px] w-full", className)}>
+const BasicLine = ({
+  className,
+  chartData,
+  chartConfig = defaultChartConfig,
+}: BasicLineProps) => (
+  <ChartContainer
+    config={chartConfig}
+    className={cn("min-h-[100px] w-full", className)}
+  >
     <LineChart accessibilityLayer data={chartData}>
-      <Line dataKey="value" stroke="var(--color-value)" radius={4} dot={false} strokeWidth={2} type="natural" />
+      <Line
+        dataKey="value"
+        stroke="var(--color-value)"
+        radius={4}
+        dot={false}
+        strokeWidth={2}
+        type="natural"
+      />
       <ChartTooltip content={<ChartTooltipContent />} />
-      </LineChart>
+    </LineChart>
   </ChartContainer>
 )
 
