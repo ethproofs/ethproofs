@@ -1,0 +1,26 @@
+@tailwind base;
+
+/* SEMANTIC TOKEN DECLARATIONS: Abstracted from color palettes for theming */
+
+@layer base {
+  /* Light mode (default) token declarations */
+  :root {
+    --background: var(--green-100);
+    --background-highlight: var(--green-200);
+    --primary: var(--green-700);
+    --primary-dark: var(--green-800);
+    --body: var(--gray-700);
+    --body-secondary: var(--gray-400);
+
+    --border: var(--gray-200), 0.2;
+  }
+
+  /* Dark mode token declarations */
+  .dark {
+    --background: var(--blue-900);
+    --background-highlight: var(--blue-800);
+    --primary: var(--green-500);
+    --primary-dark: var(--green-700);
+    --body: var(--gray-200);
+  }
+}

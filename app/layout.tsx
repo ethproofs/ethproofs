@@ -1,6 +1,7 @@
-import "./globals.css"
 import { cn } from "@/lib/utils"
 import { ibmPlexMono, ibmPlexSans } from "./fonts"
+
+import "@/styles/globals.css"
 
 const defaultUrl = process.env.VERCEL_URL
   ? `https://${process.env.VERCEL_URL}`
