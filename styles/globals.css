@@ -13,4 +13,44 @@
   body {
     @apply font-body text-body bg-background;
   }
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    @apply font-bold;
+  }
+
+  h1 {
+    @apply text-5xl lg:text-6xl;
+  }
+
+  h2 {
+    @apply text-4xl lg:text-5xl;
+  }
+
+  h3 {
+    @apply text-3xl lg:text-4xl;
+  }
+
+  h4 {
+    @apply text-2xl lg:text-3xl;
+  }
+
+  h5 {
+    @apply text-xl lg:text-2xl;
+  }
+
+  h6 {
+    @apply text-base lg:text-lg lg:leading-6;
+  }
+
+  pre,
+  code,
+  kbd,
+  samp {
+    @apply font-monospace leading-base text-base;
+  }
 }

@@ -23,6 +23,19 @@ const config = {
         body: "var(--font-ibm-plex-sans)",
         monospace: "var(--font-ibm-plex-mono)",
       },
+      fontSize: {
+        // Ex: "name": ["font-size", "line-height"]
+        "6xl": ["4rem", "4.5rem"],
+        "5xl": ["3.25rem", "4rem"],
+        "4xl": ["2.75rem", "3.25rem"],
+        "3xl": ["2rem", "2.375rem"],
+        "2xl": ["1.5rem", "1.75rem"],
+        xl: ["1.25rem", "1.75rem"],
+        lg: ["1.125rem", "1.75rem"],
+        base: ["1rem", "1.5rem"],
+        sm: ["0.875rem", "1.375rem"],
+        xs: ["0.75rem", "1.125rem"],
+      },
       colors: {
         background: {
           DEFAULT: "hsla(var(--background))",
