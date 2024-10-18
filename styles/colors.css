@@ -1,3 +1,5 @@
+@tailwind base;
+
 @layer base {
   :root {
     --white: 0, 0%, 100%; /* #ffffff */

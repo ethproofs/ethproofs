@@ -51,6 +51,6 @@
   code,
   kbd,
   samp {
-    @apply font-monospace leading-base text-base;
+    @apply font-monospace leading-relaxed text-base;
   }
 }
