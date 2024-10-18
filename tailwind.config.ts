@@ -18,6 +18,11 @@ const config = {
       },
     },
     extend: {
+      fontFamily: {
+        heading: "var(--font-ibm-plex-sans)",
+        body: "var(--font-ibm-plex-sans)",
+        monospace: "var(--font-ibm-plex-mono)",
+      },
       colors: {
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",
