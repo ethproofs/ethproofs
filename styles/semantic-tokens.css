@@ -7,8 +7,12 @@
   :root {
     --background: var(--green-100);
     --background-highlight: var(--green-200);
+
     --primary: var(--green-700);
+    --primary-light: var(--green-600); /* TODO: Confirm */
     --primary-dark: var(--green-800);
+    --primary-border: var(--green-800);
+
     --body: var(--gray-700);
     --body-secondary: var(--gray-400);
 
@@ -19,8 +23,12 @@
   .dark {
     --background: var(--blue-900);
     --background-highlight: var(--blue-800);
+
     --primary: var(--green-500);
+    --primary-light: var(--green-400);
     --primary-dark: var(--green-700);
+    --primary-border: var(--green-800); /* Used for button bg, consider name change */
+
     --body: var(--gray-200);
   }
 }
