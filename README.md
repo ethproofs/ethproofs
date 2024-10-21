@@ -13,7 +13,7 @@ Install the [supabase CLI](https://supabase.com/docs/guides/cli/getting-started)
 
 ```bash
 supabase login
-supabase link --project-ref <project-id>
+supabase link --project-ref ibkqxhjnroghhtfyualc
 supabase start
 ```
 
@@ -41,3 +41,20 @@ pnpm gen-db-types
 ```
 
 More info: https://supabase.com/docs/reference/javascript/typescript-support
+
+### Seed
+
+Generate the seed file by running the script and then reset the database.
+
+First ensure all `seed.ts` dependencies are installed by simply running, and answer `y` to install the missing dependencies:
+
+```bash
+npx tsx seed.ts
+```
+
+Run script again piping results into `supabase/seed.sql`, and reset the database:
+
+```bash
+npx tsx seed.ts > supabase/seed.sql
+npx supabase db reset
+```

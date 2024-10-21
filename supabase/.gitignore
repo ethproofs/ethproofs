@@ -2,3 +2,4 @@
 .branches
 .temp
 .env
+seed.sql
