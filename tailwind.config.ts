@@ -18,40 +18,41 @@ const config = {
       },
     },
     extend: {
+      fontFamily: {
+        heading: "var(--font-ibm-plex-sans)",
+        body: "var(--font-ibm-plex-sans)",
+        mono: "var(--font-ibm-plex-mono)",
+      },
+      fontSize: {
+        // Ex: "name": ["font-size", "line-height"]
+        "6xl": ["4rem", "4.5rem"],
+        "5xl": ["3.25rem", "4rem"],
+        "4xl": ["2.75rem", "3.25rem"],
+        "3xl": ["2rem", "2.375rem"],
+        "2xl": ["1.5rem", "1.75rem"],
+        xl: ["1.25rem", "1.75rem"],
+        lg: ["1.125rem", "1.75rem"],
+        base: ["1rem", "1.5rem"],
+        sm: ["0.875rem", "1.375rem"],
+        xs: ["0.75rem", "1.125rem"],
+      },
       colors: {
-        border: "hsl(var(--border))",
-        input: "hsl(var(--input))",
-        ring: "hsl(var(--ring))",
-        background: "hsl(var(--background))",
-        foreground: "hsl(var(--foreground))",
+        background: {
+          DEFAULT: "hsla(var(--background))",
+          highlight: "hsla(var(--background-highlight))",
+        },
         primary: {
-          DEFAULT: "hsl(var(--primary))",
-          foreground: "hsl(var(--primary-foreground))",
+          DEFAULT: "hsla(var(--primary))",
+          light: "hsla(var(--primary-light))",
+          dark: "hsla(var(--primary-dark))",
+          border: "hsla(var(--primary-border))",
         },
-        secondary: {
-          DEFAULT: "hsl(var(--secondary))",
-          foreground: "hsl(var(--secondary-foreground))",
+        body: {
+          DEFAULT: "hsla(var(--body))",
+          secondary: "hsla(var(--body-secondary))",
         },
-        destructive: {
-          DEFAULT: "hsl(var(--destructive))",
-          foreground: "hsl(var(--destructive-foreground))",
-        },
-        muted: {
-          DEFAULT: "hsl(var(--muted))",
-          foreground: "hsl(var(--muted-foreground))",
-        },
-        accent: {
-          DEFAULT: "hsl(var(--accent))",
-          foreground: "hsl(var(--accent-foreground))",
-        },
-        popover: {
-          DEFAULT: "hsl(var(--popover))",
-          foreground: "hsl(var(--popover-foreground))",
-        },
-        card: {
-          DEFAULT: "hsl(var(--card))",
-          foreground: "hsl(var(--card-foreground))",
-        },
+
+        border: "hsla(var(--border))",
       },
       borderRadius: {
         lg: "var(--radius)",

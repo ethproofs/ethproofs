@@ -14,6 +14,7 @@
     "gen-db-types": "supabase gen types typescript --local > lib/database.types.ts"
   },
   "dependencies": {
+    "@radix-ui/react-slot": "^1.1.0",
     "@supabase/ssr": "latest",
     "@supabase/supabase-js": "latest",
     "autoprefixer": "10.4.17",
@@ -30,6 +31,7 @@
     "zod": "^3.23.8"
   },
   "devDependencies": {
+    "@svgr/webpack": "^8.1.0",
     "@snaplet/copycat": "^5.0.0",
     "@snaplet/seed": "^0.98.0",
     "@types/node": "20.11.5",
