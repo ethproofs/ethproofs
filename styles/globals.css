@@ -47,10 +47,11 @@
     @apply text-base lg:text-lg lg:leading-6;
   }
 
+  a,
   pre,
   code,
   kbd,
   samp {
-    @apply font-monospace leading-relaxed text-base;
+    @apply font-mono leading-relaxed text-base;
   }
 }

@@ -21,7 +21,7 @@ const config = {
       fontFamily: {
         heading: "var(--font-ibm-plex-sans)",
         body: "var(--font-ibm-plex-sans)",
-        monospace: "var(--font-ibm-plex-mono)",
+        mono: "var(--font-ibm-plex-mono)",
       },
       fontSize: {
         // Ex: "name": ["font-size", "line-height"]
