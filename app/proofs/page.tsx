@@ -1,5 +1,5 @@
 import { createClient } from "@/utils/supabase/server"
-import ProofsPage from "./proofs-page"
+import ProofsTable from "./proofs-table"
 
 export default async function Proofs() {
   const supabase = createClient()
@@ -11,5 +11,5 @@ export default async function Proofs() {
     `)
   const { data: proofs } = await supabase.from("proofs").select()
 
-  return <ProofsPage blocks={blocks || []} proofs={proofs || []} />
+  return <ProofsTable blocks={blocks || []} proofs={proofs || []} />
 }
