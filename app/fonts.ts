@@ -11,7 +11,7 @@ export const ibmPlexSans = IBM_Plex_Sans({
 export const ibmPlexMono = IBM_Plex_Mono({
   subsets: ["latin"],
   display: "swap",
-  weight: ["400", "700"],
+  weight: ["400", "600", "700"],
   style: ["normal", "italic"],
   variable: "--font-ibm-plex-mono",
 })
