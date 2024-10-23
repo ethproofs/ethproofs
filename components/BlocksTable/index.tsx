@@ -3,17 +3,19 @@
 import { Reducer, useEffect, useReducer } from "react"
 
 import { createClient } from "@/utils/supabase/client"
-import ProofsTable from "@/components/ProofsTable"
+import DataTable from "@/components/ui/data-table"
 
 import type { Block, Proof } from "@/lib/types"
 import { Actions, State, createInitialState, reducer } from "./reducer"
+import { columns } from "./columns"
 
 type Props = {
   blocks: (Block & { proofs: { id: number }[] })[]
   proofs: Proof[]
+  className?: string
 }
 
-const ProofsPage = ({ blocks, proofs }: Props) => {
+const BlocksTable = ({ blocks, proofs, className }: Props) => {
   const [state, dispatch] = useReducer<
     Reducer<State, Actions>,
     { blocks: (Block & { proofs: { id: number }[] })[]; proofs: Proof[] }
@@ -58,11 +60,12 @@ const ProofsPage = ({ blocks, proofs }: Props) => {
     }))
 
   return (
-    <ProofsTable
-      className="mx-auto my-8 max-w-screen-lg"
-      blocks={blocksWithProofs}
+    <DataTable
+      className={className}
+      columns={columns}
+      data={blocksWithProofs}
     />
   )
 }
 
-export default ProofsPage
+export default BlocksTable

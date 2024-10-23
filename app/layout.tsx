@@ -48,7 +48,7 @@ export default function RootLayout({
             {/* Tablet */}
             <Input
               type="text"
-              className="relative max-w-56 hidden md:max-lg:flex"
+              className="relative hidden max-w-56 md:max-lg:flex"
               placeholder="Search"
               // TODO: Add magnifier icon; implement search
             />
@@ -60,7 +60,7 @@ export default function RootLayout({
               // TODO: Add magnifier icon; implement search
             />
             <nav className="flex gap-6 max-md:hidden">
-              <Link href="/proofs" className="hover:text-primary-light">
+              <Link href="/" className="hover:text-primary-light">
                 Proofs
               </Link>
               <Link href="/#" className="hover:text-primary-light">
