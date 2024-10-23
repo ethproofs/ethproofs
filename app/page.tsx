@@ -1,13 +1,25 @@
 import Image from "next/image"
 
-import Block from "@/components/svgs/box.svg"
-import DollarSign from "@/components/svgs/dollar-sign.svg"
-import Clock from "@/components/svgs/clock.svg"
-
 import HeroDark from "@/assets/hero-background-dark.png"
 import HeroLight from "@/assets/hero-background-light.png"
 
+import Block from "@/components/svgs/box.svg"
+import DollarSign from "@/components/svgs/dollar-sign.svg"
+import Clock from "@/components/svgs/clock.svg"
+import BlocksTable from "@/components/BlocksTable"
+
+import { createClient } from "@/utils/supabase/server"
+
 export default async function Index() {
+  const supabase = createClient()
+  const { data: blocks } = await supabase.from("blocks").select(`
+      *,
+      proofs:proofs(
+        id:proof_id
+      )
+    `)
+  const { data: proofs } = await supabase.from("proofs").select()
+
   return (
     <div className="flex w-full flex-1 flex-col items-center gap-20">
       <Image
@@ -87,6 +99,8 @@ export default async function Index() {
           </div>
         </div>
       </div>
+
+      <BlocksTable blocks={blocks || []} proofs={proofs || []} />
     </div>
   )
 }

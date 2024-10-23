@@ -39,7 +39,7 @@ importers:
         specifier: ^0.416.0
         version: 0.416.0(react@18.2.0)
       next:
-        specifier: latest
+        specifier: ^14
         version: 14.2.5(@babel/core@7.25.8)(react-dom@18.2.0(react@18.2.0))(react@18.2.0)
       next-themes:
         specifier: ^0.3.0
@@ -7457,7 +7457,7 @@ snapshots:
       '@next/env': 14.2.5
       '@swc/helpers': 0.5.5
       busboy: 1.6.0
-      caniuse-lite: 1.0.30001651
+      caniuse-lite: 1.0.30001669
       graceful-fs: 4.2.11
       postcss: 8.4.31
       react: 18.2.0
