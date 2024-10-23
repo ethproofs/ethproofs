@@ -12,15 +12,15 @@ export default async function Index() {
     <div className="flex w-full flex-1 flex-col items-center gap-20">
       <Image
         src={HeroDark}
-        className="absolute inset-0 -z-10 hidden dark:block min-h-96 object-cover"
+        className="absolute inset-0 -z-10 hidden min-h-96 object-cover dark:block"
         alt=""
       />
       <Image
         src={HeroLight}
-        className="absolute inset-0 -z-10 dark:hidden min-h-96 object-cover"
+        className="absolute inset-0 -z-10 min-h-96 object-cover dark:hidden"
         alt=""
       />
-      <div className="sm:mt-24 md: mt-36 lg:mt-48 flex w-full flex-col items-center justify-between gap-4 p-3">
+      <div className="mt-60 flex w-full flex-col items-center justify-between gap-4 p-3 md:mt-48 xl:mt-72">
         <h1 className="w-full text-center font-mono font-semibold">
           Building fully SNARKed <span className="text-primary">Ethereum</span>
         </h1>
