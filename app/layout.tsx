@@ -40,7 +40,7 @@ export default function RootLayout({
       {/* TODO: <head> */}
       <body className="pb-80">
         <ThemeProvider attribute="class">
-          <div className="p- mx-auto flex max-w-screen-2xl flex-col gap-16 px-16">
+          <div className="mx-auto flex max-w-screen-2xl flex-col gap-16 px-4 sm:px-4 md:px-8 xl:px-16">
             <header className="flex justify-between pt-4">
               <Link href="/#">
                 <EthProofsLogo className="" />
