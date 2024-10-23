@@ -1,4 +1,5 @@
 import Image from "next/image"
+import { createClient } from "@/utils/supabase/server"
 
 import Block from "@/components/svgs/box.svg"
 import DollarSign from "@/components/svgs/dollar-sign.svg"
@@ -7,7 +8,17 @@ import Clock from "@/components/svgs/clock.svg"
 import HeroDark from "@/assets/hero-background-dark.png"
 import HeroLight from "@/assets/hero-background-light.png"
 
+import { type Proof, columns } from "./proofs/columns"
+import { DataTable } from "@/components/ui/data-table"
+
+async function getProofs(): Promise<Proof[]> {
+  const supabase = createClient()
+  const { data } = await supabase.from("proofs").select()
+  return data || []
+}
+
 export default async function Index() {
+  const proofs = await getProofs()
   return (
     <div className="flex w-full flex-1 flex-col items-center gap-20">
       <Image
@@ -87,6 +98,7 @@ export default async function Index() {
           </div>
         </div>
       </div>
+      <DataTable columns={columns} data={proofs} />
     </div>
   )
 }
