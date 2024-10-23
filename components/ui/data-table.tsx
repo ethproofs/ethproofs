@@ -93,8 +93,9 @@ const DataTable = <TData, TValue>({
           isSecondary
           onClick={() => table.previousPage()}
           disabled={!table.getCanPreviousPage()}
+          className="lowercase"
         >
-          previous
+          Previous
         </Button>
         <span className="flex items-center gap-1 font-mono uppercase text-body-secondary">
           <div>
@@ -107,8 +108,9 @@ const DataTable = <TData, TValue>({
           isSecondary
           onClick={() => table.nextPage()}
           disabled={!table.getCanNextPage()}
+          className="lowercase"
         >
-          next
+          Next
         </Button>
       </div>
     </div>
