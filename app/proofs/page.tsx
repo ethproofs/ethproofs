@@ -11,5 +11,7 @@ export default async function Proofs() {
     `)
   const { data: proofs } = await supabase.from("proofs").select()
 
-  return <ProofsTable blocks={blocks || []} proofs={proofs || []} />
+  return (
+    <ProofsTable className="my-8" blocks={blocks || []} proofs={proofs || []} />
+  )
 }

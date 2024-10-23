@@ -12,9 +12,10 @@ import { columns } from "./columns"
 type Props = {
   blocks: (Block & { proofs: { id: number }[] })[]
   proofs: Proof[]
+  className?: string
 }
 
-const ProofsTable = ({ blocks, proofs }: Props) => {
+const ProofsTable = ({ blocks, proofs, className }: Props) => {
   const [state, dispatch] = useReducer<
     Reducer<State, Actions>,
     { blocks: (Block & { proofs: { id: number }[] })[]; proofs: Proof[] }
@@ -60,7 +61,7 @@ const ProofsTable = ({ blocks, proofs }: Props) => {
 
   return (
     <DataTable
-      className="mx-auto my-8 max-w-screen-lg"
+      className={className}
       columns={columns}
       data={blocksWithProofs}
     />

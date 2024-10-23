@@ -9,7 +9,7 @@ import Link from "next/link"
 export const columns: ColumnDef<BlockWithProofs>[] = [
   {
     accessorKey: "block_number",
-    header: () => <div className="w-[100px]">block</div>,
+    header: () => <div>block</div>,
     cell: ({ row, cell }) => {
       const blockNumber = cell.getValue() as number
       const formatted = new Intl.NumberFormat("en-US", {
@@ -22,7 +22,9 @@ export const columns: ColumnDef<BlockWithProofs>[] = [
       return (
         <div className="w-[100px]">
           {formatted}
-          <div className="text-xs text-gray-500">{formattedTimestamp}</div>
+          <div className="text-body-secondary text-xs">
+            {formattedTimestamp}
+          </div>
         </div>
       )
     },
@@ -40,7 +42,7 @@ export const columns: ColumnDef<BlockWithProofs>[] = [
       const formatted = new Intl.NumberFormat("en-US", {
         style: "decimal",
       }).format(transactionCount)
-      return <div className="w-[100px]">{formatted}</div>
+      return <div>{formatted}</div>
     },
   },
   {
@@ -98,13 +100,15 @@ export const columns: ColumnDef<BlockWithProofs>[] = [
                 key={proof.proof_id}
                 className={cn(
                   "h-2 w-2 rounded-full",
-                  proof.proof_status === "proved" ? "bg-black" : "bg-gray-400"
+                  proof.proof_status === "proved"
+                    ? "bg-primary"
+                    : "bg-body-secondary"
                 )}
               />
             ))}
           </div>
           {latency > 0 && (
-            <div className="text-xs text-gray-500">
+            <div className="text-body-secondary text-xs">
               latency {latency.toFixed(0)}s
             </div>
           )}
