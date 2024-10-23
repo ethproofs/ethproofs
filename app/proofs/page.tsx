@@ -1,15 +1,15 @@
 import { createClient } from "@/utils/supabase/server"
-import ProofsPage from "./proofs-page"
 
-export default async function Proofs() {
+import { DataTable } from "@/components/ui/data-table"
+import { type Proof, columns } from "./columns"
+
+async function getData(): Promise<Proof[]> {
   const supabase = createClient()
-  const { data: blocks } = await supabase.from("blocks").select(`
-      *,
-      proofs:proofs(
-        id:proof_id
-      )
-    `)
-  const { data: proofs } = await supabase.from("proofs").select()
+  const { data } = await supabase.from("proofs").select()
+  return data || []
+}
 
-  return <ProofsPage blocks={blocks || []} proofs={proofs || []} />
+export default async function ProofsPage() {
+  const data = await getData()
+  return <DataTable columns={columns} data={data} />
 }
