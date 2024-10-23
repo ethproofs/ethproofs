@@ -23,7 +23,7 @@ const ThemeSwitch = () => {
   return (
     <Select value={theme} onValueChange={setTheme}>
       <SelectTrigger className="box-content h-3.5 w-fit items-center gap-2 px-2 py-1.5">
-        <ThemeIcon />
+        <ThemeIcon className="!text-body" />
       </SelectTrigger>
       <SelectContent>
         <SelectItem value="light">
