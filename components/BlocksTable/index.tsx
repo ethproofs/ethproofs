@@ -15,7 +15,7 @@ type Props = {
   className?: string
 }
 
-const ProofsTable = ({ blocks, proofs, className }: Props) => {
+const BlocksTable = ({ blocks, proofs, className }: Props) => {
   const [state, dispatch] = useReducer<
     Reducer<State, Actions>,
     { blocks: (Block & { proofs: { id: number }[] })[]; proofs: Proof[] }
@@ -68,4 +68,4 @@ const ProofsTable = ({ blocks, proofs, className }: Props) => {
   )
 }
 
-export default ProofsTable
+export default BlocksTable

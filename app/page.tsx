@@ -1,8 +1,21 @@
 import Image from "next/image"
+
+import { createClient } from "@/utils/supabase/server"
+import BlocksTable from "@/components/BlocksTable"
+
 import HeroDark from "@/assets/hero-background-dark.png"
 import HeroLight from "@/assets/hero-background-light.png"
 
 export default async function Index() {
+  const supabase = createClient()
+  const { data: blocks } = await supabase.from("blocks").select(`
+      *,
+      proofs:proofs(
+        id:proof_id
+      )
+    `)
+  const { data: proofs } = await supabase.from("proofs").select()
+
   return (
     <div className="flex w-full flex-1 flex-col items-center gap-20">
       <Image
@@ -24,6 +37,12 @@ export default async function Index() {
           it will enable full ZK light clients on any smartphone.
         </p>
       </div>
+
+      <BlocksTable
+        className="my-8"
+        blocks={blocks || []}
+        proofs={proofs || []}
+      />
     </div>
   )
 }
