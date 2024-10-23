@@ -38,11 +38,7 @@ export default async function Index() {
         </p>
       </div>
 
-      <BlocksTable
-        className="my-8"
-        blocks={blocks || []}
-        proofs={proofs || []}
-      />
+      <BlocksTable blocks={blocks || []} proofs={proofs || []} />
     </div>
   )
 }

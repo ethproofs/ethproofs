@@ -27,7 +27,7 @@ type Props<TData, TValue> = {
 const DataTable = <TData, TValue>({
   data,
   columns,
-  ...props
+  className,
 }: Props<TData, TValue>) => {
   const table = useReactTable({
     data,
@@ -42,8 +42,8 @@ const DataTable = <TData, TValue>({
   })
 
   return (
-    <>
-      <Table {...props}>
+    <div className={cn("flex w-full flex-col gap-8", className)}>
+      <Table>
         <TableHeader>
           {table.getHeaderGroups().map((headerGroup) => (
             <TableRow key={headerGroup.id}>
@@ -111,7 +111,7 @@ const DataTable = <TData, TValue>({
           next
         </Button>
       </div>
-    </>
+    </div>
   )
 }
 
