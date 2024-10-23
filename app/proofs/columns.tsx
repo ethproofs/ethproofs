@@ -113,7 +113,7 @@ export const columns: ColumnDef<BlockWithProofs>[] = [
               ))}
             </div>
             {latency > 0 && (
-              <div className="font-sans text-xs text-body-secondary">
+              <div className="whitespace-nowrap font-sans text-xs text-body-secondary">
                 latency {latency.toFixed(0)}s
               </div>
             )}
@@ -128,7 +128,11 @@ export const columns: ColumnDef<BlockWithProofs>[] = [
       const blockNumber = row.original.block_number
       return (
         <div className="text-right">
-          <ButtonLink href={`/blocks/${blockNumber}`} variant="outline">
+          <ButtonLink
+            href={`/blocks/${blockNumber}`}
+            variant="outline"
+            className="whitespace-nowrap"
+          >
             + details
           </ButtonLink>
         </div>
