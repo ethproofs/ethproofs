@@ -14,15 +14,18 @@
     "gen-db-types": "supabase gen types typescript --local > lib/database.types.ts"
   },
   "dependencies": {
+    "@radix-ui/react-select": "^2.1.2",
     "@radix-ui/react-slot": "^1.1.0",
     "@supabase/ssr": "latest",
     "@supabase/supabase-js": "latest",
+    "@tanstack/react-table": "^8.20.5",
     "autoprefixer": "10.4.17",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
     "geist": "^1.2.1",
     "lucide-react": "^0.416.0",
     "next": "latest",
+    "next-themes": "^0.3.0",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "recharts": "^2.12.7",
@@ -31,9 +34,9 @@
     "zod": "^3.23.8"
   },
   "devDependencies": {
-    "@svgr/webpack": "^8.1.0",
     "@snaplet/copycat": "^5.0.0",
     "@snaplet/seed": "^0.98.0",
+    "@svgr/webpack": "^8.1.0",
     "@types/node": "20.11.5",
     "@types/pg": "^8.11.10",
     "@types/react": "18.2.48",
