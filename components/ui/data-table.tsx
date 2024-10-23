@@ -16,6 +16,7 @@ import {
 } from "@/components/ui/table"
 
 import { Button } from "./button"
+import { cn } from "@/lib/utils"
 
 type Props<TData, TValue> = {
   className?: string
@@ -45,7 +46,7 @@ const DataTable = <TData, TValue>({
       <Table {...props}>
         <TableHeader>
           {table.getHeaderGroups().map((headerGroup) => (
-            <TableRow key={headerGroup.id} className="text-body-secondary">
+            <TableRow key={headerGroup.id}>
               {headerGroup.headers.map((header) => {
                 return (
                   <TableHead key={header.id}>
@@ -62,7 +63,7 @@ const DataTable = <TData, TValue>({
           ))}
         </TableHeader>
 
-        <TableBody>
+        <TableBody className="font-mono">
           {table.getRowModel().rows?.length ? (
             table.getRowModel().rows.map((row) => (
               <TableRow
@@ -70,7 +71,7 @@ const DataTable = <TData, TValue>({
                 data-state={row.getIsSelected() && "selected"}
               >
                 {row.getVisibleCells().map((cell) => (
-                  <TableCell key={cell.id}>
+                  <TableCell key={cell.id} className={cn("p-4 align-top")}>
                     {flexRender(cell.column.columnDef.cell, cell.getContext())}
                   </TableCell>
                 ))}

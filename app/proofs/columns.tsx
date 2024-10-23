@@ -1,16 +1,16 @@
 "use client"
 
 import { ColumnDef } from "@tanstack/react-table"
+
+import { ButtonLink } from "@/components/ui/button"
 import { formatTimeAgo, intervalToSeconds } from "@/lib/date"
 import { BlockWithProofs, Proof } from "@/lib/types"
 import { cn } from "@/lib/utils"
-import Link from "next/link"
-import { ButtonLink } from "@/components/ui/button"
 
 export const columns: ColumnDef<BlockWithProofs>[] = [
   {
     accessorKey: "block_number",
-    header: () => <div>block</div>,
+    header: () => <div className="text-left">block</div>,
     cell: ({ row, cell }) => {
       const blockNumber = cell.getValue() as number
       const formatted = new Intl.NumberFormat("en-US", {
@@ -21,9 +21,9 @@ export const columns: ColumnDef<BlockWithProofs>[] = [
       const formattedTimestamp = formatTimeAgo(new Date(timestamp))
 
       return (
-        <div className="w-[100px]">
+        <div className="text-left text-base">
           {formatted}
-          <div className="text-xs text-body-secondary">
+          <div className="font-sans text-xs text-body-secondary">
             {formattedTimestamp}
           </div>
         </div>
@@ -43,7 +43,8 @@ export const columns: ColumnDef<BlockWithProofs>[] = [
       const formatted = new Intl.NumberFormat("en-US", {
         style: "decimal",
       }).format(transactionCount)
-      return <div>{formatted}</div>
+
+      return formatted
     },
   },
   {
@@ -60,7 +61,8 @@ export const columns: ColumnDef<BlockWithProofs>[] = [
         currency: "USD",
         maximumFractionDigits: 0,
       }).format(totalFees)
-      return <div>{formatted}</div>
+
+      return formatted
     },
   },
   {
@@ -78,7 +80,8 @@ export const columns: ColumnDef<BlockWithProofs>[] = [
         currency: "USD",
         maximumFractionDigits: 0,
       }).format(gasUsed)
-      return <div>{formatted}</div>
+
+      return formatted
     },
   },
   {
@@ -94,25 +97,27 @@ export const columns: ColumnDef<BlockWithProofs>[] = [
         ) / proofs.length
 
       return (
-        <div className="flex flex-col gap-2">
-          <div className="flex flex-wrap gap-2">
-            {proofs.map((proof) => (
-              <div
-                key={proof.proof_id}
-                className={cn(
-                  "h-2 w-2 rounded-full",
-                  proof.proof_status === "proved"
-                    ? "bg-primary"
-                    : "bg-body-secondary"
-                )}
-              />
-            ))}
-          </div>
-          {latency > 0 && (
-            <div className="text-xs text-body-secondary">
-              latency {latency.toFixed(0)}s
+        <div className="flex justify-center">
+          <div className="flex flex-col gap-2">
+            <div className="flex flex-wrap gap-2">
+              {proofs.map((proof) => (
+                <div
+                  key={proof.proof_id}
+                  className={cn(
+                    "h-2 w-2 rounded-full",
+                    proof.proof_status === "proved"
+                      ? "bg-primary"
+                      : "bg-body-secondary"
+                  )}
+                />
+              ))}
             </div>
-          )}
+            {latency > 0 && (
+              <div className="font-sans text-xs text-body-secondary">
+                latency {latency.toFixed(0)}s
+              </div>
+            )}
+          </div>
         </div>
       )
     },
