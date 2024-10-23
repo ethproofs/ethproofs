@@ -5,6 +5,7 @@ import { formatTimeAgo, intervalToSeconds } from "@/lib/date"
 import { BlockWithProofs, Proof } from "@/lib/types"
 import { cn } from "@/lib/utils"
 import Link from "next/link"
+import { ButtonLink } from "@/components/ui/button"
 
 export const columns: ColumnDef<BlockWithProofs>[] = [
   {
@@ -22,7 +23,7 @@ export const columns: ColumnDef<BlockWithProofs>[] = [
       return (
         <div className="w-[100px]">
           {formatted}
-          <div className="text-body-secondary text-xs">
+          <div className="text-xs text-body-secondary">
             {formattedTimestamp}
           </div>
         </div>
@@ -108,7 +109,7 @@ export const columns: ColumnDef<BlockWithProofs>[] = [
             ))}
           </div>
           {latency > 0 && (
-            <div className="text-body-secondary text-xs">
+            <div className="text-xs text-body-secondary">
               latency {latency.toFixed(0)}s
             </div>
           )}
@@ -122,9 +123,9 @@ export const columns: ColumnDef<BlockWithProofs>[] = [
       const blockNumber = row.original.block_number
       return (
         <div>
-          <Link href={`/blocks/${blockNumber}`} className="text-blue-500">
+          <ButtonLink href={`/blocks/${blockNumber}`} variant="outline">
             + details
-          </Link>
+          </ButtonLink>
         </div>
       )
     },
