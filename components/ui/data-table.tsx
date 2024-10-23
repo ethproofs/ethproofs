@@ -1,4 +1,12 @@
 import {
+  ColumnDef,
+  flexRender,
+  getCoreRowModel,
+  getPaginationRowModel,
+  useReactTable,
+} from "@tanstack/react-table"
+
+import {
   Table,
   TableBody,
   TableCell,
@@ -7,15 +15,7 @@ import {
   TableRow,
 } from "@/components/ui/table"
 
-import {
-  ColumnDef,
-  flexRender,
-  getCoreRowModel,
-  getPaginationRowModel,
-  PaginationState,
-  useReactTable,
-} from "@tanstack/react-table"
-import { useState } from "react"
+import { Button } from "./button"
 
 type Props<TData, TValue> = {
   className?: string
@@ -28,20 +28,16 @@ const DataTable = <TData, TValue>({
   columns,
   ...props
 }: Props<TData, TValue>) => {
-  const [pagination, setPagination] = useState<PaginationState>({
-    pageIndex: 0,
-    pageSize: 10,
-  })
-
   const table = useReactTable({
     data,
     columns,
     getCoreRowModel: getCoreRowModel(),
     getPaginationRowModel: getPaginationRowModel(),
-    // state: {
-    //   pagination,
-    // },
-    // onPaginationChange: setPagination,
+    initialState: {
+      pagination: {
+        pageSize: 15,
+      },
+    },
   })
 
   return (
@@ -90,28 +86,29 @@ const DataTable = <TData, TValue>({
         </TableBody>
       </Table>
 
-      <div className="flex items-center gap-2">
-        <button
-          className="rounded border p-1"
+      <div className="flex items-center justify-center gap-6">
+        <Button
+          variant="outline"
+          isSecondary
           onClick={() => table.previousPage()}
           disabled={!table.getCanPreviousPage()}
         >
-          {"<"}
-        </button>
-        <span className="flex items-center gap-1">
-          <div>Page</div>
-          <strong>
-            {table.getState().pagination.pageIndex + 1} of{" "}
+          previous
+        </Button>
+        <span className="flex items-center gap-1 font-mono uppercase text-body-secondary">
+          <div>
+            Page {table.getState().pagination.pageIndex + 1} of{" "}
             {table.getPageCount().toLocaleString()}
-          </strong>
+          </div>
         </span>
-        <button
-          className="rounded border p-1"
+        <Button
+          variant="outline"
+          isSecondary
           onClick={() => table.nextPage()}
           disabled={!table.getCanNextPage()}
         >
-          {">"}
-        </button>
+          next
+        </Button>
       </div>
     </>
   )

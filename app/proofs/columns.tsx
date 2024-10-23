@@ -122,7 +122,7 @@ export const columns: ColumnDef<BlockWithProofs>[] = [
     cell: ({ row }) => {
       const blockNumber = row.original.block_number
       return (
-        <div>
+        <div className="text-right">
           <ButtonLink href={`/blocks/${blockNumber}`} variant="outline">
             + details
           </ButtonLink>
