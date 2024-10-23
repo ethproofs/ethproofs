@@ -34,7 +34,7 @@ export default function RootLayout({
   return (
     <html
       lang="en"
-      className={cn("dark", ibmPlexMono.variable, ibmPlexSans.variable)}
+      className={cn(ibmPlexMono.variable, ibmPlexSans.variable)}
       suppressHydrationWarning
     >
       {/* TODO: <head> */}
