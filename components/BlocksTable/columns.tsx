@@ -129,7 +129,7 @@ export const columns: ColumnDef<BlockWithProofs>[] = [
       return (
         <div className="text-right">
           <ButtonLink
-            href={`/blocks/${blockNumber}`}
+            href={`/block/${blockNumber}`}
             variant="outline"
             className="whitespace-nowrap"
           >
