@@ -1,3 +1,4 @@
+import ArrowDown from "@/components/svgs/arrow-down.svg"
 import BlockLarge from "@/components/svgs/block-large.svg"
 import BookOpen from "@/components/svgs/book-open.svg"
 import Clock from "@/components/svgs/clock.svg"
@@ -7,6 +8,9 @@ import DollarSign from "@/components/svgs/dollar-sign.svg"
 import Hash from "@/components/svgs/hash.svg"
 import InfoCircle from "@/components/svgs/info-circle.svg"
 import Layers from "@/components/svgs/layers.svg"
+import ProofCircle from "@/components/svgs/proof-circle.svg"
+import RiscZeroLogo from "@/components/svgs/risc-zero-logo.svg"
+import SuccinctLogo from "@/components/svgs/succinct-logo.svg"
 import TrendingUp from "@/components/svgs/trending-up.svg"
 
 import { Button } from "@/components/ui/button"
@@ -35,9 +39,11 @@ export default async function BlockDetailsPage({
   const hash =
     "0xdead1d25076fd31b221cff08ae4f5e3e1acf8e616bcdc5cf7b36f2b60983dead"
   const dummyNumber = 60420
-  const totalProofs = 4
+  const totalProofs = 2
   const avgLatency = "42s"
   const gasUsed = "1 gwei"
+  const provingCost = 0.07
+  const zkVmCycles = 2_391_801_856
 
   return (
     <div className="PAGE space-y-8">
@@ -274,6 +280,98 @@ export default async function BlockDetailsPage({
             </div>
             <div className="text-2xl font-semibold">
               {new Intl.NumberFormat("en-US").format(dummyNumber)}
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div className="PROOFS">
+        <div className="flex items-center gap-2 text-lg text-primary">
+          <ProofCircle /> Proofs
+        </div>
+
+        <div className="DETAILS space-y-4 border-b py-4">
+          <div className="flex items-center">
+            <div className="px-4 py-2">
+              <SuccinctLogo />
+            </div>
+            <Button
+              variant="outline"
+              size="icon"
+              className="ms-auto text-2xl text-primary size-8"
+            >
+              <ArrowDown />
+            </Button>
+          </div>
+          <div className="grid grid-cols-2 gap-x-2 gap-y-6">
+            <div>
+              <div className="text-body-secondary">Time to proof</div>
+              <div className="text-2xl">2m 36s</div>
+            </div>
+            <div>
+              <div className="text-body-secondary">Latency</div>
+              <div className="text-2xl">211s</div>
+            </div>
+            <div>
+              <div className="text-body-secondary">zkVM cycles</div>
+              <div className="text-2xl">
+                {new Intl.NumberFormat("en-US", {
+                  // notation: "compact",
+                  // compactDisplay: "short",
+                }).format(zkVmCycles)}
+              </div>
+            </div>
+            <div>
+              <div className="text-body-secondary">Proving cost</div>
+              <div className="text-2xl">
+                {new Intl.NumberFormat("en-US", {
+                  style: "currency",
+                  currency: "USD",
+                }).format(provingCost)}
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <div className="DETAILS space-y-4 border-b py-4">
+          <div className="flex items-center">
+            <div className="px-4 py-2">
+              <RiscZeroLogo />
+            </div>
+            <Button
+              variant="outline"
+              size="icon"
+              className="ms-auto text-2xl text-primary size-8"
+            >
+              <ArrowDown />
+            </Button>
+          </div>
+          <div className="grid grid-cols-2 gap-x-2 gap-y-6">
+            <div>
+              <div className="text-body-secondary">Time to proof</div>
+              <div className="text-2xl">2m 36s</div>
+            </div>
+            <div>
+              <div className="text-body-secondary">Latency</div>
+              <div className="text-2xl">211s</div>
+            </div>
+            <div>
+              <div className="text-body-secondary">zkVM cycles</div>
+              <div className="text-2xl">
+                {new Intl.NumberFormat("en-US", {
+                  // notation: "compact",
+                  // compactDisplay: "short",
+                }).format(zkVmCycles)}
+              </div>
+            </div>
+            <div>
+              <div className="text-body-secondary">Proving cost</div>
+              <div className="text-2xl">
+                {new Intl.NumberFormat("en-US", {
+                  style: "currency",
+                  currency: "USD",
+                }).format(provingCost)}
+              </div>
             </div>
           </div>
         </div>
