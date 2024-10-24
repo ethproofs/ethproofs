@@ -21,6 +21,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip"
 import { formatTimeAgo } from "@/lib/date"
+import Link from "next/link"
 
 type BlockDetailsPageProps = {
   params: Promise<{ block: number }>
@@ -298,7 +299,7 @@ export default async function BlockDetailsPage({
             <Button
               variant="outline"
               size="icon"
-              className="ms-auto text-2xl text-primary size-8"
+              className="ms-auto size-8 text-2xl text-primary"
             >
               <ArrowDown />
             </Button>
@@ -341,7 +342,7 @@ export default async function BlockDetailsPage({
             <Button
               variant="outline"
               size="icon"
-              className="ms-auto text-2xl text-primary size-8"
+              className="ms-auto size-8 text-2xl text-primary"
             >
               <ArrowDown />
             </Button>
@@ -374,6 +375,31 @@ export default async function BlockDetailsPage({
               </div>
             </div>
           </div>
+        </div>
+      </div>
+
+      <div className="LEARN">
+        <h2 className="text-5xl">Learn</h2>
+        <div className="UNDERLINE h-px w-full bg-gradient-to-r from-primary" />
+      </div>
+      <div className="my-16 flex flex-wrap gap-12">
+        <div className="LEARN_CARD rounded-4xl flex w-full max-w-prose flex-col gap-8 border-2 border-body/20 px-4 py-12">
+          {/* TODO: Add card backgrounds */}
+          <h3 className="max-w-72 text-3xl md:max-w-96">
+            Why do we need to verify each block?
+          </h3>
+          <Link href="/TODO-ADD-LINK" className="font-body">
+            Learn more
+          </Link>
+        </div>
+        <div className="LEARN_CARD rounded-4xl flex w-full max-w-prose flex-col gap-8 border-2 border-body/20 px-4 py-12">
+          {/* TODO: Add card backgrounds */}
+          <h3 className="max-w-72 text-3xl md:max-w-96">
+            How do the proofs work?
+          </h3>
+          <Link href="/TODO-ADD-LINK" className="font-body">
+            Learn more
+          </Link>
         </div>
       </div>
     </div>
