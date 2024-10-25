@@ -1,3 +1,6 @@
+import type { Metadata } from "next"
+import Link from "next/link"
+
 import ArrowDown from "@/components/svgs/arrow-down.svg"
 import BlockLarge from "@/components/svgs/block-large.svg"
 import BookOpen from "@/components/svgs/book-open.svg"
@@ -20,12 +23,25 @@ import {
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip"
+
 import { formatTimeAgo } from "@/lib/date"
-import Link from "next/link"
 
 type BlockDetailsPageProps = {
   params: Promise<{ block: number }>
   searchParams: Promise<Record<string, string | string[] | undefined>>
+}
+
+import { SITE_NAME } from "@/lib/constants"
+
+type Props = {
+  params: Promise<{ block: number }>
+}
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { block } = await params
+  return {
+    title: `Block ${block} - ${SITE_NAME}`,
+  }
 }
 
 export default async function BlockDetailsPage({
@@ -48,7 +64,7 @@ export default async function BlockDetailsPage({
 
   return (
     <div className="space-y-8">
-      <div className="rounded-4xl border bg-gradient-to-b from-primary/[0.02] to-primary/[0.06] px-2 py-6 dark:from-white/[0.01] dark:to-white/[0.04] md:p-8">
+      <section className="rounded-4xl border bg-gradient-to-b from-primary/[0.02] to-primary/[0.06] px-2 py-6 dark:from-white/[0.01] dark:to-white/[0.04] md:p-8">
         <div className="flex gap-2">
           <BlockLarge className="text-6xl text-primary" />
           <h1 className="font-mono">
@@ -112,12 +128,12 @@ export default async function BlockDetailsPage({
             </div>
           </div>
         </div>
-      </div>
+      </section>
 
-      <div>
-        <div className="flex items-center gap-2 text-lg text-primary">
+      <section>
+        <h2 className="flex items-center gap-2 text-lg font-normal text-primary">
           <TrendingUp /> Zero-knowledge proofs
-        </div>
+        </h2>
         <div className="flex flex-wrap gap-x-8">
           <div className="space-y-0.5 px-2 py-3">
             <div className="flex items-center gap-2 text-sm text-body-secondary">
@@ -186,12 +202,12 @@ export default async function BlockDetailsPage({
             </div>
           </div>
         </div>
-      </div>
+      </section>
 
-      <div>
-        <div className="flex items-center gap-2 text-lg text-primary">
+      <section>
+        <h2 className="flex items-center gap-2 text-lg font-normal text-primary">
           <DollarSign /> Block fees
-        </div>
+        </h2>
         <div className="flex flex-wrap gap-x-8">
           <div className="space-y-0.5 px-2 py-3">
             <div className="flex items-center gap-2 text-sm text-body-secondary">
@@ -284,12 +300,12 @@ export default async function BlockDetailsPage({
             </div>
           </div>
         </div>
-      </div>
+      </section>
 
-      <div>
-        <div className="flex items-center gap-2 text-lg text-primary">
+      <section>
+        <h2 className="flex items-center gap-2 text-lg font-normal text-primary">
           <ProofCircle /> Proofs
-        </div>
+        </h2>
 
         <div className="space-y-4 border-b py-4">
           <div className="flex items-center">
@@ -380,25 +396,23 @@ export default async function BlockDetailsPage({
             </div>
           </div>
         </div>
-      </div>
+      </section>
 
-      <div>
+      <section>
         <h2 className="mt-32 text-5xl">Learn</h2>
         <div className="h-px w-full bg-gradient-to-r from-primary" />
-      </div>
-      <div className="my-16 grid grid-cols-1 gap-12 lg:grid-cols-2">
-        <div className="rounded-4xl flex w-full flex-col gap-8 border-2 border-body/20 px-4 py-12">
-          {/* TODO: Add card backgrounds */}
-          <h3 className="max-w-72 text-3xl md:max-w-96">
-            Why do we need to verify each block?
-          </h3>
-          <Link href="/TODO-ADD-LINK" className="font-body">
-            Learn more
-          </Link>
-        </div>
+        <div className="my-16 grid grid-cols-1 gap-12 lg:grid-cols-2">
+          <div className="rounded-4xl flex w-full flex-col gap-8 border-2 border-body/20 px-4 py-12">
+            {/* TODO: Add card backgrounds */}
+            <h3 className="max-w-72 text-3xl md:max-w-96">
+              Why do we need to verify each block?
+            </h3>
+            <Link href="/TODO-ADD-LINK" className="font-body">
+              Learn more
+            </Link>
+          </div>
 
-        <div className="WRAPPER rounded-4xl bg-gradient-to-b from-primary to-black">
-          <div className="flex w-full flex-col gap-8 rounded-[calc(2rem-2px)] border-2 border-body/20 bg-background px-4 py-12">
+          <div className="rounded-4xl flex w-full flex-col gap-8 border-2 border-body/20 bg-background px-4 py-12">
             {/* TODO: Add card backgrounds */}
             <h3 className="max-w-72 text-3xl md:max-w-96">
               How do the proofs work?
@@ -408,7 +422,7 @@ export default async function BlockDetailsPage({
             </Link>
           </div>
         </div>
-      </div>
+      </section>
     </div>
   )
 }
