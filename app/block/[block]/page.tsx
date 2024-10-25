@@ -118,7 +118,7 @@ export default async function BlockDetailsPage({
         <div className="flex items-center gap-2 text-lg text-primary">
           <TrendingUp /> Zero-knowledge proofs
         </div>
-        <div className="grid grid-cols-2 gap-x-8 md:grid-cols-4 lg:grid-cols-5">
+        <div className="flex flex-wrap gap-x-8">
           <div className="space-y-0.5 px-2 py-3">
             <div className="flex items-center gap-2 text-sm text-body-secondary">
               Total proofs
@@ -192,7 +192,7 @@ export default async function BlockDetailsPage({
         <div className="flex items-center gap-2 text-lg text-primary">
           <DollarSign /> Block fees
         </div>
-        <div className="grid grid-cols-2 gap-x-8 md:grid-cols-4 lg:grid-cols-5">
+        <div className="flex flex-wrap gap-x-8">
           <div className="space-y-0.5 px-2 py-3">
             <div className="flex items-center gap-2 text-sm text-body-secondary">
               Total fees
@@ -383,7 +383,7 @@ export default async function BlockDetailsPage({
       </div>
 
       <div>
-        <h2 className="text-5xl">Learn</h2>
+        <h2 className="mt-32 text-5xl">Learn</h2>
         <div className="h-px w-full bg-gradient-to-r from-primary" />
       </div>
       <div className="my-16 grid grid-cols-1 gap-12 lg:grid-cols-2">
