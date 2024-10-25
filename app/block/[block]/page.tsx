@@ -8,6 +8,7 @@ import Clock from "@/components/svgs/clock.svg"
 import Copy from "@/components/svgs/copy.svg"
 import Cpu from "@/components/svgs/cpu.svg"
 import DollarSign from "@/components/svgs/dollar-sign.svg"
+import EthProofsLogo from "@/components/svgs/eth-proofs-logo.svg"
 import Hash from "@/components/svgs/hash.svg"
 import InfoCircle from "@/components/svgs/info-circle.svg"
 import Layers from "@/components/svgs/layers.svg"
@@ -24,14 +25,27 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip"
 
-import { formatTimeAgo } from "@/lib/date"
+import { createClient } from "@/utils/supabase/client"
 
+const getProverLogo = (proverMachineId: number | null) => {
+  // TODO: Create proper mapping from machine IDs to prover profiles
+  switch (proverMachineId) {
+    case 8:
+      return <SuccinctLogo />
+    case 2:
+      return <RiscZeroLogo />
+    default:
+      return <EthProofsLogo />
+  }
+}
 type BlockDetailsPageProps = {
   params: Promise<{ block: number }>
   searchParams: Promise<Record<string, string | string[] | undefined>>
 }
 
 import { SITE_NAME } from "@/lib/constants"
+import { get } from "http"
+import { intervalToSeconds } from "@/lib/date"
 
 type Props = {
   params: Promise<{ block: number }>
@@ -49,18 +63,55 @@ export default async function BlockDetailsPage({
 }: BlockDetailsPageProps) {
   const { block } = await params
 
-  // Dummy data
-  const timestamp = Date.now()
+  const supabase = createClient()
+
+  const { data: blockData } = await supabase
+    .from("blocks")
+    .select(
+      `
+      *,
+      proofs:proofs(
+        id:proof_id
+      )
+    `
+    )
+    .eq("block_number", block)
+
+  const { data: proofs } = await supabase
+    .from("proofs")
+    .select()
+    .eq("block_number", block)
+
+  if (!blockData?.length || !proofs?.length) {
+    return (
+      <section className="rounded-4xl space-y-4 border bg-gradient-to-b from-primary/[0.02] to-primary/[0.06] px-2 py-6 dark:from-white/[0.01] dark:to-white/[0.04] md:p-8">
+        <h1 className="flex flex-col items-center gap-4 font-mono md:flex-row">
+          404 <BlockLarge className="inline text-6xl text-primary" /> {block}
+        </h1>
+        <p className="text-center md:text-start">Proof not found</p>
+      </section>
+    )
+  }
+
+  // TODO: Get merkle root hash, slot (epoch), and size block data
+  // Dummy data:
   const size = 32735
   const slot = 9859329
   const hash =
     "0xdead1d25076fd31b221cff08ae4f5e3e1acf8e616bcdc5cf7b36f2b60983dead"
   const dummyNumber = 60420
-  const totalProofs = 2
-  const avgLatency = "42s"
-  const gasUsed = "1 gwei"
-  const provingCost = 0.07
-  const zkVmCycles = 2_391_801_856
+
+  const avgLatency =
+    proofs.reduce(
+      (acc, proof) => acc + intervalToSeconds(proof.prover_duration as string),
+      0
+    ) / proofs.length
+
+  // TODO: Confirm logic
+  const totalCostPerMegaGas =
+    proofs.reduce((acc, proof) => acc + (proof.proving_cost || 0), 0) /
+    blockData[0].gas_used /
+    1e6
 
   return (
     <div className="space-y-8">
@@ -87,7 +138,7 @@ export default async function BlockDetailsPage({
               dateStyle: "short",
               timeStyle: "long",
               timeZone: "UTC",
-            }).format(new Date(timestamp))}
+            }).format(new Date(blockData[0].timestamp))}
           </div>
 
           <div className="grid grid-cols-3 gap-6">
@@ -149,7 +200,7 @@ export default async function BlockDetailsPage({
                 </Tooltip>
               </TooltipProvider>
             </div>
-            <div className="text-2xl font-semibold">{totalProofs}</div>
+            <div className="text-2xl font-semibold">{proofs.length}</div>
           </div>
           <div className="space-y-0.5 px-2 py-3">
             <div className="flex items-center gap-2 text-sm text-body-secondary">
@@ -165,7 +216,14 @@ export default async function BlockDetailsPage({
                 </Tooltip>
               </TooltipProvider>
             </div>
-            <div className="text-2xl font-semibold">{avgLatency}</div>
+            <div className="text-2xl font-semibold">
+              {" "}
+              {new Intl.NumberFormat("en-US", {
+                style: "unit",
+                unit: "second",
+                unitDisplay: "narrow",
+              }).format(avgLatency)}
+            </div>
           </div>
           <div className="space-y-0.5 px-2 py-3">
             <div className="flex items-center gap-2 text-sm text-body-secondary">
@@ -181,7 +239,9 @@ export default async function BlockDetailsPage({
                 </Tooltip>
               </TooltipProvider>
             </div>
-            <div className="text-2xl font-semibold">{gasUsed}</div>
+            <div className="text-2xl font-semibold">
+              {new Intl.NumberFormat("en-US").format(blockData[0].gas_used)}
+            </div>
           </div>
           <div className="space-y-0.5 px-2 py-3">
             <div className="flex items-center gap-2 text-sm text-body-secondary">
@@ -260,7 +320,10 @@ export default async function BlockDetailsPage({
               </TooltipProvider>
             </div>
             <div className="text-2xl font-semibold">
-              {new Intl.NumberFormat("en-US").format(dummyNumber)}
+              {new Intl.NumberFormat("en-US", {
+                style: "currency",
+                currency: "USD",
+              }).format(totalCostPerMegaGas)}
             </div>
           </div>
           <div className="space-y-0.5 px-2 py-3">
@@ -307,7 +370,74 @@ export default async function BlockDetailsPage({
           <ProofCircle /> Proofs
         </h2>
 
-        <div className="space-y-4 border-b py-4">
+        {proofs.map(
+          ({
+            proof,
+            proof_id,
+            proof_status,
+            prover_duration,
+            prover_machine_id,
+            proving_cost,
+            proving_cycles,
+            submission_time,
+            user_id,
+          }) => (
+            <div className="space-y-4 border-b py-4">
+              <div className="flex items-center">
+                <div className="py-2">{getProverLogo(prover_machine_id)}</div>
+                <Button
+                  variant="outline"
+                  className="ms-auto h-8 w-8 gap-2 text-2xl text-primary md:w-fit"
+                >
+                  <ArrowDown />
+                  <span className="text-xs font-bold max-md:hidden">
+                    Download proof
+                  </span>
+                </Button>
+              </div>
+              <div className="grid grid-cols-2 gap-x-2 gap-y-6 md:grid-cols-4 lg:grid-cols-5">
+                <div>
+                  <div className="text-body-secondary">Time to proof</div>
+                  <div className="text-2xl">{prover_duration as string}</div>
+                </div>
+                <div>
+                  <div className="text-body-secondary">Latency</div>
+                  <div className="text-2xl">
+                    {new Intl.NumberFormat("en-US", {
+                      style: "unit",
+                      unit: "second",
+                      unitDisplay: "narrow",
+                    }).format(intervalToSeconds(prover_duration as string))}
+                  </div>
+                </div>
+                <div>
+                  <div className="text-body-secondary">zkVM cycles</div>
+                  <div className="text-2xl">
+                    {proving_cycles
+                      ? new Intl.NumberFormat("en-US", {
+                          // notation: "compact",
+                          // compactDisplay: "short",
+                        }).format(proving_cycles)
+                      : ""}
+                  </div>
+                </div>
+                <div>
+                  <div className="text-body-secondary">Proving cost</div>
+                  <div className="text-2xl">
+                    {/* TODO: Confirm cost unit */}
+                    {proving_cost
+                      ? new Intl.NumberFormat("en-US", {
+                          style: "currency",
+                          currency: "USD",
+                        }).format(proving_cost)
+                      : ""}
+                  </div>
+                </div>
+              </div>
+            </div>
+          )
+        )}
+        {/* <div className="space-y-4 border-b py-4">
           <div className="flex items-center">
             <div className="px-4 py-2">
               <SuccinctLogo />
@@ -346,7 +476,7 @@ export default async function BlockDetailsPage({
                 {new Intl.NumberFormat("en-US", {
                   style: "currency",
                   currency: "USD",
-                }).format(provingCost)}
+                }).format(proofsData[0].proving_cost)}
               </div>
             </div>
           </div>
@@ -395,7 +525,7 @@ export default async function BlockDetailsPage({
               </div>
             </div>
           </div>
-        </div>
+        </div> */}
       </section>
 
       <section>
