@@ -47,12 +47,12 @@ export default async function BlockDetailsPage({
   const zkVmCycles = 2_391_801_856
 
   return (
-    <div className="PAGE space-y-8">
-      <div className="SUMMARY rounded-4xl border bg-gradient-to-b from-primary/[0.02] to-primary/[0.06] px-2 py-6 dark:from-white/[0.01] dark:to-white/[0.04] md:p-8">
-        <div className="HEADER flex gap-2">
+    <div className="space-y-8">
+      <div className="rounded-4xl border bg-gradient-to-b from-primary/[0.02] to-primary/[0.06] px-2 py-6 dark:from-white/[0.01] dark:to-white/[0.04] md:p-8">
+        <div className="flex gap-2">
           <BlockLarge className="text-6xl text-primary" />
           <h1 className="font-mono">
-            <p className="text-sm font-normal">Block Height</p>
+            <p className="text-sm font-normal md:text-lg">Block Height</p>
             <p className="text-3xl font-semibold">
               {/* {new Intl.NumberFormat("en-US").format()} */}
               {block}
@@ -60,10 +60,10 @@ export default async function BlockDetailsPage({
           </h1>
         </div>
 
-        <div className="DIVIDER my-4 h-px w-full bg-gradient-to-r from-primary" />
+        <div className="my-8 h-px w-full bg-gradient-to-r from-primary" />
 
-        <div className="DETAILS flex flex-wrap gap-x-6 gap-y-4">
-          <div className="DETAILS-1 space-y-0.5">
+        <div className="flex flex-wrap gap-x-6 gap-y-4">
+          <div className="space-y-0.5">
             <div className="flex items-center gap-1 text-body-secondary">
               <Clock /> Time Stamp
             </div>
@@ -74,15 +74,15 @@ export default async function BlockDetailsPage({
             }).format(new Date(timestamp))}
           </div>
 
-          <div className="DETAILS-2 grid grid-cols-3 gap-6">
-            <div className="SIZE space-y-0.5">
+          <div className="grid grid-cols-3 gap-6">
+            <div className="space-y-0.5">
               <div className="flex items-center gap-1 text-body-secondary">
                 <Cpu /> Size
               </div>
               {new Intl.NumberFormat("en-US").format(size)} bytes
             </div>
 
-            <div className="SLOT space-y-0.5">
+            <div className="space-y-0.5">
               <div className="flex items-center gap-1 text-body-secondary">
                 <Layers /> Slot
               </div>
@@ -90,7 +90,7 @@ export default async function BlockDetailsPage({
               {slot}
             </div>
 
-            <div className="EPOCH space-y-0.5">
+            <div className="space-y-0.5">
               <div className="flex items-center gap-1 text-body-secondary">
                 <BookOpen /> Epoch
               </div>
@@ -99,12 +99,12 @@ export default async function BlockDetailsPage({
             </div>
           </div>
 
-          <div className="DETAILS-3 space-y-0.5">
-            <div className="HASH flex items-center gap-1 text-body-secondary">
+          <div className="space-y-0.5">
+            <div className="flex items-center gap-1 text-body-secondary">
               <Hash /> Hash
             </div>
             <div className="flex gap-2">
-              <div className="max-w-80 truncate">{hash}</div>
+              <div className="max-w-[min(theme.80 truncate">{hash}</div>
               {/* TODO: Implement useClipboard */}
               <Button size="icon" variant="ghost" className="text-primary-dark">
                 <Copy />
@@ -114,7 +114,7 @@ export default async function BlockDetailsPage({
         </div>
       </div>
 
-      <div className="ZKPs">
+      <div>
         <div className="flex items-center gap-2 text-lg text-primary">
           <TrendingUp /> Zero-knowledge proofs
         </div>
@@ -188,7 +188,7 @@ export default async function BlockDetailsPage({
         </div>
       </div>
 
-      <div className="BLOCK_FEES">
+      <div>
         <div className="flex items-center gap-2 text-lg text-primary">
           <DollarSign /> Block fees
         </div>
@@ -286,12 +286,12 @@ export default async function BlockDetailsPage({
         </div>
       </div>
 
-      <div className="PROOFS">
+      <div>
         <div className="flex items-center gap-2 text-lg text-primary">
           <ProofCircle /> Proofs
         </div>
 
-        <div className="DETAILS space-y-4 border-b py-4">
+        <div className="space-y-4 border-b py-4">
           <div className="flex items-center">
             <div className="px-4 py-2">
               <SuccinctLogo />
@@ -336,7 +336,7 @@ export default async function BlockDetailsPage({
           </div>
         </div>
 
-        <div className="DETAILS space-y-4 border-b py-4">
+        <div className="space-y-4 border-b py-4">
           <div className="flex items-center">
             <div className="px-4 py-2">
               <RiscZeroLogo />
@@ -382,12 +382,12 @@ export default async function BlockDetailsPage({
         </div>
       </div>
 
-      <div className="LEARN">
+      <div>
         <h2 className="text-5xl">Learn</h2>
-        <div className="UNDERLINE h-px w-full bg-gradient-to-r from-primary" />
+        <div className="h-px w-full bg-gradient-to-r from-primary" />
       </div>
       <div className="my-16 grid grid-cols-1 gap-12 lg:grid-cols-2">
-        <div className="LEARN_CARD rounded-4xl flex w-full flex-col gap-8 border-2 border-body/20 px-4 py-12">
+        <div className="rounded-4xl flex w-full flex-col gap-8 border-2 border-body/20 px-4 py-12">
           {/* TODO: Add card backgrounds */}
           <h3 className="max-w-72 text-3xl md:max-w-96">
             Why do we need to verify each block?
@@ -397,14 +397,16 @@ export default async function BlockDetailsPage({
           </Link>
         </div>
 
-        <div className="LEARN_CARD rounded-4xl flex w-full flex-col gap-8 border-2 border-body/20 px-4 py-12">
-          {/* TODO: Add card backgrounds */}
-          <h3 className="max-w-72 text-3xl md:max-w-96">
-            How do the proofs work?
-          </h3>
-          <Link href="/TODO-ADD-LINK" className="font-body">
-            Learn more
-          </Link>
+        <div className="WRAPPER rounded-4xl bg-gradient-to-b from-primary to-black">
+          <div className="flex w-full flex-col gap-8 rounded-[calc(2rem-2px)] border-2 border-body/20 bg-background px-4 py-12">
+            {/* TODO: Add card backgrounds */}
+            <h3 className="max-w-72 text-3xl md:max-w-96">
+              How do the proofs work?
+            </h3>
+            <Link href="/TODO-ADD-LINK" className="font-body">
+              Learn more
+            </Link>
+          </div>
         </div>
       </div>
     </div>
