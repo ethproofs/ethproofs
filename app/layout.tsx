@@ -42,7 +42,7 @@ export default function RootLayout({
         <ThemeProvider attribute="class">
           <div className="p- mx-auto flex max-w-screen-2xl flex-col gap-16 px-16">
             <header className="flex justify-between pt-4">
-              <Link href="/#">
+              <Link href="/">
                 <EthProofsLogo className="" />
               </Link>
 
@@ -62,13 +62,13 @@ export default function RootLayout({
               />
               <nav className="flex gap-6 max-md:hidden">
                 <Link
-                  href="/proofs"
+                  href="/"
                   className="h-fit outline-offset-4 hover:text-primary-light"
                 >
                   Proofs
                 </Link>
                 <Link
-                  href="/#"
+                  href="/about"
                   className="h-fit outline-offset-4 hover:text-primary-light"
                 >
                   About
