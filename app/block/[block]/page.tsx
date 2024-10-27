@@ -25,10 +25,13 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip"
 
+import { SITE_NAME } from "@/lib/constants"
+import { intervalToSeconds } from "@/lib/date"
+
 import { createClient } from "@/utils/supabase/client"
 
 const getProverLogo = (proverMachineId: number | null) => {
-  // TODO: Create proper mapping from machine IDs to prover profiles
+  // TODO: Get prover profiles
   switch (proverMachineId) {
     case 8:
       return <SuccinctLogo />
@@ -40,12 +43,8 @@ const getProverLogo = (proverMachineId: number | null) => {
 }
 type BlockDetailsPageProps = {
   params: Promise<{ block: number }>
-  searchParams: Promise<Record<string, string | string[] | undefined>>
+  searchParams?: Promise<Record<string, string | string[] | undefined>>
 }
-
-import { SITE_NAME } from "@/lib/constants"
-import { get } from "http"
-import { intervalToSeconds } from "@/lib/date"
 
 type Props = {
   params: Promise<{ block: number }>
@@ -65,26 +64,15 @@ export default async function BlockDetailsPage({
 
   const supabase = createClient()
 
-  const { data: blockData } = await supabase
+  const { data, error } = await supabase
     .from("blocks")
-    .select(
-      `
-      *,
-      proofs:proofs(
-        id:proof_id
-      )
-    `
-    )
+    .select("*, proofs(*)")
     .eq("block_number", block)
+    .single()
 
-  const { data: proofs } = await supabase
-    .from("proofs")
-    .select()
-    .eq("block_number", block)
-
-  if (!blockData?.length || !proofs?.length) {
+  if (!data || error) {
     return (
-      <section className="rounded-4xl space-y-4 border bg-gradient-to-b from-primary/[0.02] to-primary/[0.06] px-2 py-6 dark:from-white/[0.01] dark:to-white/[0.04] md:p-8">
+      <section className="space-y-4 rounded-4xl border bg-gradient-to-b from-primary/[0.02] to-primary/[0.06] px-2 py-6 dark:from-white/[0.01] dark:to-white/[0.04] md:p-8">
         <h1 className="flex flex-col items-center gap-4 font-mono md:flex-row">
           404 <BlockLarge className="inline text-6xl text-primary" /> {block}
         </h1>
@@ -92,6 +80,7 @@ export default async function BlockDetailsPage({
       </section>
     )
   }
+  const { timestamp, gas_used, transaction_count, proofs } = data
 
   // TODO: Get merkle root hash, slot (epoch), and size block data
   // Dummy data:
@@ -110,7 +99,7 @@ export default async function BlockDetailsPage({
   // TODO: Confirm logic
   const totalCostPerMegaGas =
     proofs.reduce((acc, proof) => acc + (proof.proving_cost || 0), 0) /
-    blockData[0].gas_used /
+    gas_used /
     1e6
 
   return (
@@ -122,6 +111,7 @@ export default async function BlockDetailsPage({
             <p className="text-sm font-normal md:text-lg">Block Height</p>
             <p className="text-3xl font-semibold">
               {/* {new Intl.NumberFormat("en-US").format()} */}
+              {/* TODO: Confirm number formatting for block height, slot, epoch, etc */}
               {block}
             </p>
           </h1>
@@ -138,7 +128,7 @@ export default async function BlockDetailsPage({
               dateStyle: "short",
               timeStyle: "long",
               timeZone: "UTC",
-            }).format(new Date(blockData[0].timestamp))}
+            }).format(new Date(timestamp))}
           </div>
 
           <div className="grid grid-cols-3 gap-6">
@@ -217,7 +207,6 @@ export default async function BlockDetailsPage({
               </TooltipProvider>
             </div>
             <div className="text-2xl font-semibold">
-              {" "}
               {new Intl.NumberFormat("en-US", {
                 style: "unit",
                 unit: "second",
@@ -240,7 +229,7 @@ export default async function BlockDetailsPage({
               </TooltipProvider>
             </div>
             <div className="text-2xl font-semibold">
-              {new Intl.NumberFormat("en-US").format(blockData[0].gas_used)}
+              {new Intl.NumberFormat("en-US").format(gas_used)}
             </div>
           </div>
           <div className="space-y-0.5 px-2 py-3">
@@ -258,7 +247,7 @@ export default async function BlockDetailsPage({
               </TooltipProvider>
             </div>
             <div className="text-2xl font-semibold">
-              {new Intl.NumberFormat("en-US").format(dummyNumber)}
+              {new Intl.NumberFormat("en-US").format(transaction_count)}
             </div>
           </div>
         </div>
@@ -532,7 +521,7 @@ export default async function BlockDetailsPage({
         <h2 className="mt-32 text-5xl">Learn</h2>
         <div className="h-px w-full bg-gradient-to-r from-primary" />
         <div className="my-16 grid grid-cols-1 gap-12 lg:grid-cols-2">
-          <div className="rounded-4xl flex w-full flex-col gap-8 border-2 border-body/20 px-4 py-12">
+          <div className="flex w-full flex-col gap-8 rounded-4xl border-2 border-body/20 px-4 py-12">
             {/* TODO: Add card backgrounds */}
             <h3 className="max-w-72 text-3xl md:max-w-96">
               Why do we need to verify each block?
@@ -542,7 +531,7 @@ export default async function BlockDetailsPage({
             </Link>
           </div>
 
-          <div className="rounded-4xl flex w-full flex-col gap-8 border-2 border-body/20 bg-background px-4 py-12">
+          <div className="flex w-full flex-col gap-8 rounded-4xl border-2 border-body/20 bg-background px-4 py-12">
             {/* TODO: Add card backgrounds */}
             <h3 className="max-w-72 text-3xl md:max-w-96">
               How do the proofs work?
