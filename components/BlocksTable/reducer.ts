@@ -26,36 +26,46 @@ export const reducer = (state: State, action: Actions) => {
         blocks: {
           byId: {
             ...state.blocks.byId,
-            [payload.block_number]: { ...payload, proofs: [] },
+            [payload.block_number]: {
+              ...payload,
+              proofs: [],
+            },
           },
           allIds: [...state.blocks.allIds, payload.block_number],
         },
       }
     }
     case "add_proof": {
-      const blockNumber = payload.block_number!
-
-      return {
+      const newState = {
         ...state,
-        // update the block with the new proof
-        blocks: {
-          ...state.blocks,
-          byId: {
-            ...state.blocks.byId,
-            [blockNumber]: {
-              ...state.blocks.byId[blockNumber],
-              proofs: [
-                ...state.blocks.byId[blockNumber].proofs,
-                payload.proof_id,
-              ],
-            },
-          },
-        },
         proofs: {
           byId: { ...state.proofs.byId, [payload.proof_id]: payload },
           allIds: [...state.proofs.allIds, payload.proof_id],
         },
       }
+
+      const blockNumber = payload.block_number!
+      // update the block with the new proof
+      if (newState.blocks.byId[blockNumber]) {
+        return {
+          ...newState,
+          blocks: {
+            ...newState.blocks,
+            byId: {
+              ...newState.blocks.byId,
+              [blockNumber]: {
+                ...newState.blocks.byId[blockNumber],
+                proofs: [
+                  ...newState.blocks.byId[blockNumber].proofs,
+                  payload.proof_id,
+                ],
+              },
+            },
+          },
+        }
+      }
+
+      return newState
     }
   }
 }
