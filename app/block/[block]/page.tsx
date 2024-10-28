@@ -191,7 +191,9 @@ export default async function BlockDetailsPage({
                 </Tooltip>
               </TooltipProvider>
             </div>
-            <div className="text-2xl font-semibold">{proofs.length}</div>
+            <div className="font-mono text-2xl font-semibold">
+              {proofs.length}
+            </div>
           </div>
           <div className="space-y-0.5 px-2 py-3">
             <div className="flex items-center gap-2 text-sm text-body-secondary">
@@ -207,7 +209,7 @@ export default async function BlockDetailsPage({
                 </Tooltip>
               </TooltipProvider>
             </div>
-            <div className="text-2xl font-semibold">
+            <div className="font-mono text-2xl font-semibold">
               {new Intl.NumberFormat("en-US", {
                 style: "unit",
                 unit: "second",
@@ -229,7 +231,7 @@ export default async function BlockDetailsPage({
                 </Tooltip>
               </TooltipProvider>
             </div>
-            <div className="text-2xl font-semibold">
+            <div className="font-mono text-2xl font-semibold">
               {new Intl.NumberFormat("en-US").format(gas_used)}
             </div>
           </div>
@@ -247,7 +249,7 @@ export default async function BlockDetailsPage({
                 </Tooltip>
               </TooltipProvider>
             </div>
-            <div className="text-2xl font-semibold">
+            <div className="font-mono text-2xl font-semibold">
               {new Intl.NumberFormat("en-US").format(transaction_count)}
             </div>
           </div>
@@ -273,7 +275,7 @@ export default async function BlockDetailsPage({
                 </Tooltip>
               </TooltipProvider>
             </div>
-            <div className="text-2xl font-semibold">
+            <div className="font-mono text-2xl font-semibold">
               {new Intl.NumberFormat("en-US").format(dummyNumber)}
             </div>
           </div>
@@ -291,7 +293,7 @@ export default async function BlockDetailsPage({
                 </Tooltip>
               </TooltipProvider>
             </div>
-            <div className="text-2xl font-semibold">
+            <div className="font-mono text-2xl font-semibold">
               {new Intl.NumberFormat("en-US").format(dummyNumber)}
             </div>
           </div>
@@ -309,7 +311,7 @@ export default async function BlockDetailsPage({
                 </Tooltip>
               </TooltipProvider>
             </div>
-            <div className="text-2xl font-semibold">
+            <div className="font-mono text-2xl font-semibold">
               {new Intl.NumberFormat("en-US", {
                 style: "currency",
                 currency: "USD",
@@ -330,7 +332,7 @@ export default async function BlockDetailsPage({
                 </Tooltip>
               </TooltipProvider>
             </div>
-            <div className="text-2xl font-semibold">
+            <div className="font-mono text-2xl font-semibold">
               {new Intl.NumberFormat("en-US").format(dummyNumber)}
             </div>
           </div>
@@ -348,7 +350,7 @@ export default async function BlockDetailsPage({
                 </Tooltip>
               </TooltipProvider>
             </div>
-            <div className="text-2xl font-semibold">
+            <div className="font-mono text-2xl font-semibold">
               {new Intl.NumberFormat("en-US").format(dummyNumber)}
             </div>
           </div>
