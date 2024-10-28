@@ -19,17 +19,6 @@ import TrendingUp from "@/components/svgs/trending-up.svg"
 
 import { Button } from "@/components/ui/button"
 import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip"
-
-import { SITE_NAME } from "@/lib/constants"
-import { intervalToSeconds } from "@/lib/date"
-
-import { createClient } from "@/utils/supabase/client"
-import {
   HeroBody,
   HeroDivider,
   HeroItem,
@@ -37,6 +26,19 @@ import {
   HeroSection,
   HeroTitle,
 } from "@/components/ui/hero"
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip"
+
+import LearnMore from "@/components/LearnMore"
+
+import { SITE_NAME } from "@/lib/constants"
+import { intervalToSeconds } from "@/lib/date"
+
+import { createClient } from "@/utils/supabase/client"
 
 const getProverLogo = (proverMachineId: number | null) => {
   // TODO: Get prover profiles
@@ -432,122 +434,9 @@ export default async function BlockDetailsPage({
             </div>
           )
         )}
-        {/* <div className="space-y-4 border-b py-4">
-          <div className="flex items-center">
-            <div className="px-4 py-2">
-              <SuccinctLogo />
-            </div>
-            <Button
-              variant="outline"
-              className="ms-auto h-8 w-8 gap-2 text-2xl text-primary md:w-fit"
-            >
-              <ArrowDown />
-              <span className="text-xs font-bold max-md:hidden">
-                Download proof
-              </span>
-            </Button>
-          </div>
-          <div className="grid grid-cols-2 gap-x-2 gap-y-6 md:grid-cols-4 lg:grid-cols-5">
-            <div>
-              <div className="text-body-secondary">Time to proof</div>
-              <div className="text-2xl">2m 36s</div>
-            </div>
-            <div>
-              <div className="text-body-secondary">Latency</div>
-              <div className="text-2xl">211s</div>
-            </div>
-            <div>
-              <div className="text-body-secondary">zkVM cycles</div>
-              <div className="text-2xl">
-                {new Intl.NumberFormat("en-US", {
-                  // notation: "compact",
-                  // compactDisplay: "short",
-                }).format(zkVmCycles)}
-              </div>
-            </div>
-            <div>
-              <div className="text-body-secondary">Proving cost</div>
-              <div className="text-2xl">
-                {new Intl.NumberFormat("en-US", {
-                  style: "currency",
-                  currency: "USD",
-                }).format(proofsData[0].proving_cost)}
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div className="space-y-4 border-b py-4">
-          <div className="flex items-center">
-            <div className="px-4 py-2">
-              <RiscZeroLogo />
-            </div>
-            <Button
-              variant="outline"
-              className="ms-auto h-8 w-8 gap-2 text-2xl text-primary md:w-fit"
-            >
-              <ArrowDown />
-              <span className="text-xs font-bold max-md:hidden">
-                Download proof
-              </span>
-            </Button>
-          </div>
-          <div className="grid grid-cols-2 gap-x-2 gap-y-6 md:grid-cols-4 lg:grid-cols-5">
-            <div>
-              <div className="text-body-secondary">Time to proof</div>
-              <div className="text-2xl">2m 36s</div>
-            </div>
-            <div>
-              <div className="text-body-secondary">Latency</div>
-              <div className="text-2xl">211s</div>
-            </div>
-            <div>
-              <div className="text-body-secondary">zkVM cycles</div>
-              <div className="text-2xl">
-                {new Intl.NumberFormat("en-US", {
-                  // notation: "compact",
-                  // compactDisplay: "short",
-                }).format(zkVmCycles)}
-              </div>
-            </div>
-            <div>
-              <div className="text-body-secondary">Proving cost</div>
-              <div className="text-2xl">
-                {new Intl.NumberFormat("en-US", {
-                  style: "currency",
-                  currency: "USD",
-                }).format(provingCost)}
-              </div>
-            </div>
-          </div>
-        </div> */}
       </section>
 
-      <section>
-        <h2 className="mt-32 text-5xl">Learn</h2>
-        <div className="h-px w-full bg-gradient-to-r from-primary" />
-        <div className="my-16 grid grid-cols-1 gap-12 lg:grid-cols-2">
-          <div className="flex w-full flex-col gap-8 rounded-4xl border-2 border-body/20 px-4 py-12">
-            {/* TODO: Add card backgrounds */}
-            <h3 className="max-w-72 text-3xl md:max-w-96">
-              Why do we need to verify each block?
-            </h3>
-            <Link href="/TODO-ADD-LINK" className="font-body">
-              Learn more
-            </Link>
-          </div>
-
-          <div className="flex w-full flex-col gap-8 rounded-4xl border-2 border-body/20 bg-background px-4 py-12">
-            {/* TODO: Add card backgrounds */}
-            <h3 className="max-w-72 text-3xl md:max-w-96">
-              How do the proofs work?
-            </h3>
-            <Link href="/TODO-ADD-LINK" className="font-body">
-              Learn more
-            </Link>
-          </div>
-        </div>
-      </section>
+      <LearnMore />
     </div>
   )
 }
