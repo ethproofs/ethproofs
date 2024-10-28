@@ -11,7 +11,7 @@
   }
 
   body {
-    @apply font-body text-body bg-background;
+    @apply bg-background font-body text-body;
   }
 
   h1,
@@ -52,6 +52,19 @@
   code,
   kbd,
   samp {
-    @apply font-mono leading-relaxed text-base;
+    @apply font-mono text-base leading-relaxed;
+  }
+
+  ol {
+    @apply list-decimal;
+  }
+
+  ul {
+    @apply list-disc;
+  }
+
+  ol,
+  ul {
+    @apply list-inside;
   }
 }

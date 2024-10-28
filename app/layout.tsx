@@ -43,7 +43,7 @@ export default function RootLayout({
           <div className="mx-auto flex max-w-screen-2xl flex-col gap-16 px-4 sm:px-4 md:px-8 xl:px-16">
             <header className="grid grid-cols-3 pt-4">
               {/* Header left */}
-              <Link href="/#">
+              <Link href="/">
                 <EthProofsLogo className="" />
               </Link>
 
@@ -69,13 +69,13 @@ export default function RootLayout({
               <div className="flex justify-end">
                 <nav className="flex gap-6 max-md:hidden">
                   <Link
-                    href="/proofs"
+                    href="/"
                     className="h-fit outline-offset-4 hover:text-primary-light"
                   >
                     Proofs
                   </Link>
                   <Link
-                    href="/#"
+                    href="/about"
                     className="h-fit outline-offset-4 hover:text-primary-light"
                   >
                     About
