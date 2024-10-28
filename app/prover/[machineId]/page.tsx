@@ -30,6 +30,9 @@ import LearnMore from "@/components/LearnMore"
 import Link from "next/link"
 import { formatNumber } from "@/lib/number"
 
+import { columns } from "./columns"
+import DataTable from "@/components/ui/data-table"
+
 type ProverPageProps = {
   params: Promise<{ machineId: number }>
 }
@@ -71,17 +74,6 @@ export default async function ProverPage({ params }: ProverPageProps) {
     .select("*")
     .eq("prover_machine_id", machineId)
 
-  // TODO: Dummy profile—Get prover profile info
-  const profile = {
-    proverName: machine?.machine_name, // ✅
-    logo: () => <SuccinctLogo />, // TODO: Get prover logo from DB
-    contact: {
-      url: "https://succinct.xyz",
-      twitter: "succinctLabs",
-      github: "succinctlabs",
-    },
-  }
-
   if (!machine || machineError || !proofs?.length || proofError) {
     return (
       <HeroSection className="space-y-4">
@@ -92,6 +84,17 @@ export default async function ProverPage({ params }: ProverPageProps) {
         <p className="text-center md:text-start">Prover not found</p>
       </HeroSection>
     )
+  }
+
+  // TODO: Dummy profile—Get prover profile info
+  const profile = {
+    proverName: machine?.machine_name, // ✅
+    logo: () => <SuccinctLogo />, // TODO: Get prover logo from DB
+    contact: {
+      url: "https://succinct.xyz",
+      twitter: "succinctLabs",
+      github: "succinctlabs",
+    },
   }
 
   const totalProofs = proofs.length
@@ -226,6 +229,11 @@ export default async function ProverPage({ params }: ProverPageProps) {
           <ProofCircle /> Proofs
         </h2>
         {/* TODO: Data table of proofs for prover */}
+        <DataTable
+          // className="" // TODO: Style data table
+          columns={columns}
+          data={proofs}
+        />
       </section>
 
       <LearnMore />
