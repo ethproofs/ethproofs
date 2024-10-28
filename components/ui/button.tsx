@@ -8,7 +8,7 @@ import Link, { LinkProps } from "next/link"
 const buttonVariants = cva(
   cn(
     // Sizing and positioning classes:
-    "inline-flex gap-4 items-center justify-center rounded-full border border-solid transition [&>svg]:flex-shrink-0",
+    "inline-flex gap-4 items-center justify-center rounded-full border border-solid transition [&>svg]:shrink-0",
     // Base default styling is "outline" pattern, primary color for text, border matches, no bg
     "text-primary border-current",
     // Hover: Default hover adds box-shadow, text (border) to --primary-hover
