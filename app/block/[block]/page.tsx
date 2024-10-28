@@ -1,5 +1,6 @@
 import type { Metadata } from "next"
 import Link from "next/link"
+import { notFound } from "next/navigation"
 
 import ArrowDown from "@/components/svgs/arrow-down.svg"
 import BlockLarge from "@/components/svgs/block-large.svg"
@@ -78,16 +79,8 @@ export default async function BlockDetailsPage({
     .eq("block_number", block)
     .single()
 
-  if (!data || error) {
-    return (
-      <HeroSection className="space-y-4">
-        <h1 className="flex flex-col items-center gap-4 font-mono md:flex-row">
-          404 <BlockLarge className="inline text-6xl text-primary" /> {block}
-        </h1>
-        <p className="text-center md:text-start">Proof not found</p>
-      </HeroSection>
-    )
-  }
+  if (!data || error) notFound()
+
   const { timestamp, gas_used, transaction_count, proofs } = data
 
   // TODO: Get merkle root hash, slot (epoch), and size block data
