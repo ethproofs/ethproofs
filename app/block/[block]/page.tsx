@@ -29,6 +29,14 @@ import { SITE_NAME } from "@/lib/constants"
 import { intervalToSeconds } from "@/lib/date"
 
 import { createClient } from "@/utils/supabase/client"
+import {
+  HeroBody,
+  HeroDivider,
+  HeroItem,
+  HeroItemLabel,
+  HeroSection,
+  HeroTitle,
+} from "@/components/ui/hero"
 
 const getProverLogo = (proverMachineId: number | null) => {
   // TODO: Get prover profiles
@@ -41,16 +49,14 @@ const getProverLogo = (proverMachineId: number | null) => {
       return <EthProofsLogo />
   }
 }
+
 type BlockDetailsPageProps = {
   params: Promise<{ block: number }>
-  searchParams?: Promise<Record<string, string | string[] | undefined>>
 }
 
-type Props = {
-  params: Promise<{ block: number }>
-}
-
-export async function generateMetadata({ params }: Props): Promise<Metadata> {
+export async function generateMetadata({
+  params,
+}: BlockDetailsPageProps): Promise<Metadata> {
   const { block } = await params
   return {
     title: `Block ${block} - ${SITE_NAME}`,
@@ -72,12 +78,12 @@ export default async function BlockDetailsPage({
 
   if (!data || error) {
     return (
-      <section className="space-y-4 rounded-4xl border bg-gradient-to-b from-primary/[0.02] to-primary/[0.06] px-2 py-6 dark:from-white/[0.01] dark:to-white/[0.04] md:p-8">
+      <HeroSection className="space-y-4">
         <h1 className="flex flex-col items-center gap-4 font-mono md:flex-row">
           404 <BlockLarge className="inline text-6xl text-primary" /> {block}
         </h1>
         <p className="text-center md:text-start">Proof not found</p>
-      </section>
+      </HeroSection>
     )
   }
   const { timestamp, gas_used, transaction_count, proofs } = data
@@ -104,8 +110,8 @@ export default async function BlockDetailsPage({
 
   return (
     <div className="space-y-8">
-      <section className="rounded-4xl border bg-gradient-to-b from-primary/[0.02] to-primary/[0.06] px-2 py-6 dark:from-white/[0.01] dark:to-white/[0.04] md:p-8">
-        <div className="flex gap-2">
+      <HeroSection>
+        <HeroTitle>
           <BlockLarge className="text-6xl text-primary" />
           <h1 className="font-mono">
             <p className="text-sm font-normal md:text-lg">Block Height</p>
@@ -115,51 +121,51 @@ export default async function BlockDetailsPage({
               {block}
             </p>
           </h1>
-        </div>
+        </HeroTitle>
 
-        <div className="my-8 h-px w-full bg-gradient-to-r from-primary" />
+        <HeroDivider />
 
-        <div className="flex flex-wrap gap-x-6 gap-y-4">
-          <div className="space-y-0.5">
-            <div className="flex items-center gap-1 text-body-secondary">
+        <HeroBody>
+          <HeroItem>
+            <HeroItemLabel>
               <Clock /> Time Stamp
-            </div>
+            </HeroItemLabel>
             {new Intl.DateTimeFormat("en-US", {
               dateStyle: "short",
               timeStyle: "long",
               timeZone: "UTC",
             }).format(new Date(timestamp))}
-          </div>
+          </HeroItem>
 
           <div className="grid grid-cols-3 gap-6">
-            <div className="space-y-0.5">
-              <div className="flex items-center gap-1 text-body-secondary">
+            <HeroItem>
+              <HeroItemLabel>
                 <Cpu /> Size
-              </div>
+              </HeroItemLabel>
               {new Intl.NumberFormat("en-US").format(size)} bytes
-            </div>
+            </HeroItem>
 
-            <div className="space-y-0.5">
-              <div className="flex items-center gap-1 text-body-secondary">
+            <HeroItem>
+              <HeroItemLabel>
                 <Layers /> Slot
-              </div>
+              </HeroItemLabel>
               {/* {new Intl.NumberFormat("en-US").format(slot)} */}
               {slot}
-            </div>
+            </HeroItem>
 
-            <div className="space-y-0.5">
-              <div className="flex items-center gap-1 text-body-secondary">
+            <HeroItem>
+              <HeroItemLabel>
                 <BookOpen /> Epoch
-              </div>
+              </HeroItemLabel>
               {/* {new Intl.NumberFormat("en-US").format(slot)} */}
               {slot}
-            </div>
+            </HeroItem>
           </div>
 
-          <div className="space-y-0.5">
-            <div className="flex items-center gap-1 text-body-secondary">
+          <HeroItem>
+            <HeroItemLabel>
               <Hash /> Hash
-            </div>
+            </HeroItemLabel>
             <div className="flex gap-2">
               <div className="max-w-[min(theme.80 truncate">{hash}</div>
               {/* TODO: Implement useClipboard */}
@@ -167,9 +173,9 @@ export default async function BlockDetailsPage({
                 <Copy />
               </Button>
             </div>
-          </div>
-        </div>
-      </section>
+          </HeroItem>
+        </HeroBody>
+      </HeroSection>
 
       <section>
         <h2 className="flex items-center gap-2 text-lg font-normal text-primary">
