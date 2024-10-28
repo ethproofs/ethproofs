@@ -1,5 +1,5 @@
 import type { Metadata } from "next"
-import Link from "next/link"
+import { notFound } from "next/navigation"
 
 import ArrowDown from "@/components/svgs/arrow-down.svg"
 import BlockLarge from "@/components/svgs/block-large.svg"
@@ -39,6 +39,7 @@ import { SITE_NAME } from "@/lib/constants"
 import { intervalToSeconds } from "@/lib/date"
 
 import { createClient } from "@/utils/supabase/client"
+import { proofsAvgLatency, proofsTotalCostPerMegaGas } from "@/lib/proofs"
 
 const getProverLogo = (proverMachineId: number | null) => {
   // TODO: Get prover profiles
@@ -78,16 +79,8 @@ export default async function BlockDetailsPage({
     .eq("block_number", block)
     .single()
 
-  if (!data || error) {
-    return (
-      <HeroSection className="space-y-4">
-        <h1 className="flex flex-col items-center gap-4 font-mono md:flex-row">
-          404 <BlockLarge className="inline text-6xl text-primary" /> {block}
-        </h1>
-        <p className="text-center md:text-start">Proof not found</p>
-      </HeroSection>
-    )
-  }
+  if (!data || error) notFound()
+
   const { timestamp, gas_used, transaction_count, proofs } = data
 
   // TODO: Get merkle root hash, slot (epoch), and size block data
@@ -98,17 +91,7 @@ export default async function BlockDetailsPage({
     "0xdead1d25076fd31b221cff08ae4f5e3e1acf8e616bcdc5cf7b36f2b60983dead"
   const dummyNumber = 60420
 
-  const avgLatency =
-    proofs.reduce(
-      (acc, proof) => acc + intervalToSeconds(proof.prover_duration as string),
-      0
-    ) / proofs.length
-
-  // TODO: Confirm logic
-  const totalCostPerMegaGas =
-    proofs.reduce((acc, proof) => acc + (proof.proving_cost || 0), 0) /
-    gas_used /
-    1e6
+  const totalCostPerMegaGas = proofsTotalCostPerMegaGas(proofs, gas_used)
 
   return (
     <div className="space-y-8">
@@ -198,7 +181,9 @@ export default async function BlockDetailsPage({
                 </Tooltip>
               </TooltipProvider>
             </div>
-            <div className="text-2xl font-semibold">{proofs.length}</div>
+            <div className="font-mono text-2xl font-semibold">
+              {proofs.length}
+            </div>
           </div>
           <div className="space-y-0.5 px-2 py-3">
             <div className="flex items-center gap-2 text-sm text-body-secondary">
@@ -214,12 +199,12 @@ export default async function BlockDetailsPage({
                 </Tooltip>
               </TooltipProvider>
             </div>
-            <div className="text-2xl font-semibold">
+            <div className="font-mono text-2xl font-semibold">
               {new Intl.NumberFormat("en-US", {
                 style: "unit",
                 unit: "second",
                 unitDisplay: "narrow",
-              }).format(avgLatency)}
+              }).format(proofsAvgLatency(proofs))}
             </div>
           </div>
           <div className="space-y-0.5 px-2 py-3">
@@ -236,7 +221,7 @@ export default async function BlockDetailsPage({
                 </Tooltip>
               </TooltipProvider>
             </div>
-            <div className="text-2xl font-semibold">
+            <div className="font-mono text-2xl font-semibold">
               {new Intl.NumberFormat("en-US").format(gas_used)}
             </div>
           </div>
@@ -254,7 +239,7 @@ export default async function BlockDetailsPage({
                 </Tooltip>
               </TooltipProvider>
             </div>
-            <div className="text-2xl font-semibold">
+            <div className="font-mono text-2xl font-semibold">
               {new Intl.NumberFormat("en-US").format(transaction_count)}
             </div>
           </div>
@@ -280,7 +265,7 @@ export default async function BlockDetailsPage({
                 </Tooltip>
               </TooltipProvider>
             </div>
-            <div className="text-2xl font-semibold">
+            <div className="font-mono text-2xl font-semibold">
               {new Intl.NumberFormat("en-US").format(dummyNumber)}
             </div>
           </div>
@@ -298,7 +283,7 @@ export default async function BlockDetailsPage({
                 </Tooltip>
               </TooltipProvider>
             </div>
-            <div className="text-2xl font-semibold">
+            <div className="font-mono text-2xl font-semibold">
               {new Intl.NumberFormat("en-US").format(dummyNumber)}
             </div>
           </div>
@@ -316,7 +301,7 @@ export default async function BlockDetailsPage({
                 </Tooltip>
               </TooltipProvider>
             </div>
-            <div className="text-2xl font-semibold">
+            <div className="font-mono text-2xl font-semibold">
               {new Intl.NumberFormat("en-US", {
                 style: "currency",
                 currency: "USD",
@@ -337,7 +322,7 @@ export default async function BlockDetailsPage({
                 </Tooltip>
               </TooltipProvider>
             </div>
-            <div className="text-2xl font-semibold">
+            <div className="font-mono text-2xl font-semibold">
               {new Intl.NumberFormat("en-US").format(dummyNumber)}
             </div>
           </div>
@@ -355,7 +340,7 @@ export default async function BlockDetailsPage({
                 </Tooltip>
               </TooltipProvider>
             </div>
-            <div className="text-2xl font-semibold">
+            <div className="font-mono text-2xl font-semibold">
               {new Intl.NumberFormat("en-US").format(dummyNumber)}
             </div>
           </div>
