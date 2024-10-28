@@ -32,6 +32,7 @@ import { formatNumber } from "@/lib/number"
 
 import { columns } from "./columns"
 import DataTable from "@/components/ui/data-table"
+import { notFound } from "next/navigation"
 
 type ProverPageProps = {
   params: Promise<{ machineId: number }>
@@ -74,17 +75,8 @@ export default async function ProverPage({ params }: ProverPageProps) {
     .select("*")
     .eq("prover_machine_id", machineId)
 
-  if (!machine || machineError || !proofs?.length || proofError) {
-    return (
-      <HeroSection className="space-y-4">
-        <h1 className="flex flex-col items-center gap-4 font-mono md:flex-row">
-          404 <ProofCircle className="text-//6xl inline text-primary" />{" "}
-          {machineId}
-        </h1>
-        <p className="text-center md:text-start">Prover not found</p>
-      </HeroSection>
-    )
-  }
+  if (!machine || machineError || !proofs?.length || proofError)
+    return notFound()
 
   // TODO: Dummy profile—Get prover profile info
   const profile = {
