@@ -8,15 +8,22 @@ import Sun from "@/components/svgs/sun.svg"
 import System from "@/components/svgs/monitor-cog.svg"
 import { Select, SelectContent, SelectItem, SelectTrigger } from "./ui/select"
 import ThemeIcon from "./ui/theme-icon"
+import useThemingKeyboardShortcuts from "@/hooks/useThemingKeyboardShortcuts"
 
 const ThemeSwitch = () => {
   const [mounted, setMounted] = useState(false)
 
-  const { theme, setTheme } = useTheme()
+  const { theme, resolvedTheme, setTheme } = useTheme()
 
   useEffect(() => {
     setMounted(true)
   }, [])
+
+  const toggleColorMode = () => {
+    setTheme(resolvedTheme === "light" ? "dark" : "light")
+  }
+
+  useThemingKeyboardShortcuts(toggleColorMode)
 
   if (!mounted) return null
 
