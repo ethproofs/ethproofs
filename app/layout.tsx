@@ -9,6 +9,7 @@ import Magnifier from "@/components/svgs/magnifier.svg"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 
+import ActiveLinkDecorator from "@/components/ActiveLinkDecorator"
 import ThemeSwitch from "@/components/ThemeSwitch"
 
 import { cn } from "@/lib/utils"
@@ -63,15 +64,17 @@ export default function RootLayout({
                 <nav className="flex gap-6 max-md:hidden">
                   <Link
                     href="/"
-                    className="h-fit outline-offset-4 hover:text-primary-light"
+                    className="relative h-fit outline-offset-4 hover:text-primary-light"
                   >
                     Proofs
+                    <ActiveLinkDecorator match="/" />
                   </Link>
                   <Link
                     href="/about"
-                    className="h-fit outline-offset-4 hover:text-primary-light"
+                    className="relative h-fit outline-offset-4 hover:text-primary-light"
                   >
                     About
+                    <ActiveLinkDecorator match="/about" />
                   </Link>
                   <ThemeSwitch />
                 </nav>
