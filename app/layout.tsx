@@ -33,10 +33,12 @@ export default function RootLayout({
         <ThemeProvider attribute="class">
           <div className="mx-auto flex max-w-screen-2xl flex-col gap-16 px-4 sm:px-4 md:px-8 xl:px-16">
             <header className="grid grid-cols-3 pt-4">
-              {/* Header left */}
-              <Link href="/">
-                <EthProofsLogo className="" />
-              </Link>
+              {/* Header start */}
+              <div className="flex">
+                <Link href="/">
+                  <EthProofsLogo />
+                </Link>
+              </div>
 
               {/* Header center */}
               <div className="flex justify-center">
@@ -56,7 +58,7 @@ export default function RootLayout({
                 />
               </div>
 
-              {/* Header right */}
+              {/* Header end */}
               <div className="flex justify-end">
                 <nav className="flex gap-6 max-md:hidden">
                   <Link
@@ -91,10 +93,7 @@ export default function RootLayout({
 
             <footer className="mx-auto mt-16 flex max-w-prose flex-col items-center">
               <Button asChild size="lg">
-                <Link
-                  href="https://github.com/ethproofs/ethproofs"
-                  className="mb-12"
-                >
+                <Link href={SITE_REPO_URL} className="mb-12">
                   <GitHub className="size-6" />
                   <span>Contribute to ETH Proofs</span>
                 </Link>
@@ -109,7 +108,7 @@ export default function RootLayout({
               </p>
 
               <Link
-                href="https://github.com/ethproofs/ethproofs/issues/new/"
+                href={new URL("/issues/new/", SITE_REPO_URL).toString()}
                 className="mt-8 text-center text-body-secondary"
               >
                 Spot a bug? Report it here

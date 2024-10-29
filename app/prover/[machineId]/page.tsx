@@ -1,5 +1,18 @@
 import { type Metadata } from "next"
+import Link from "next/link"
+import { notFound } from "next/navigation"
 
+import LearnMore from "@/components/LearnMore"
+
+import GitHub from "@/components/svgs/github.svg"
+import Globe from "@/components/svgs/globe.svg"
+import InfoCircle from "@/components/svgs/info-circle.svg"
+import ProofCircle from "@/components/svgs/proof-circle.svg"
+import SuccinctLogo from "@/components/svgs/succinct-logo.svg"
+import TrendingUp from "@/components/svgs/trending-up.svg"
+import XLogo from "@/components/svgs/x-logo.svg"
+
+import DataTable from "@/components/ui/data-table"
 import {
   HeroSection,
   HeroTitle,
@@ -15,25 +28,14 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip"
 
-import Globe from "@/components/svgs/globe.svg"
-import GitHub from "@/components/svgs/github.svg"
-import InfoCircle from "@/components/svgs/info-circle.svg"
-import ProofCircle from "@/components/svgs/proof-circle.svg"
-import SuccinctLogo from "@/components/svgs/succinct-logo.svg"
-import TrendingUp from "@/components/svgs/trending-up.svg"
-import XLogo from "@/components/svgs/x-logo.svg"
-
 import { SITE_NAME } from "@/lib/constants"
-import { createClient } from "@/utils/supabase/client"
-import { getHost } from "@/lib/url"
-import LearnMore from "@/components/LearnMore"
-import Link from "next/link"
 import { getMetadata } from "@/lib/metadata"
 import { formatNumber } from "@/lib/number"
+import { getHost } from "@/lib/url"
+
+import { createClient } from "@/utils/supabase/client"
 
 import { columns } from "./columns"
-import DataTable from "@/components/ui/data-table"
-import { notFound } from "next/navigation"
 
 type ProverPageProps = {
   params: Promise<{ machineId: number }>
