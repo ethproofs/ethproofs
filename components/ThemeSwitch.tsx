@@ -5,7 +5,7 @@ import { useTheme } from "next-themes"
 
 import Moon from "@/components/svgs/moon.svg"
 import Sun from "@/components/svgs/sun.svg"
-import System from "@/components/svgs/monitor-cog.svg"
+import System from "@/components/svgs/monitor.svg"
 import { Select, SelectContent, SelectItem, SelectTrigger } from "./ui/select"
 import ThemeIcon from "./ui/theme-icon"
 import useThemingKeyboardShortcuts from "@/hooks/useThemingKeyboardShortcuts"
