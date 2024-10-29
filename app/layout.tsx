@@ -15,16 +15,7 @@ import { cn } from "@/lib/utils"
 
 import { ibmPlexMono, ibmPlexSans } from "./fonts"
 import "../styles/globals.css"
-
-const defaultUrl = process.env.VERCEL_URL
-  ? `https://${process.env.VERCEL_URL}`
-  : "http://localhost:3000"
-
-export const metadata = {
-  metadataBase: new URL(defaultUrl),
-  title: "ETH Proofs",
-  description: "",
-}
+import { SITE_REPO_URL } from "@/lib/constants"
 
 export default function RootLayout({
   children,

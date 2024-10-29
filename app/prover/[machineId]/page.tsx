@@ -28,6 +28,7 @@ import { createClient } from "@/utils/supabase/client"
 import { getHost } from "@/lib/url"
 import LearnMore from "@/components/LearnMore"
 import Link from "next/link"
+import { getMetadata } from "@/lib/metadata"
 import { formatNumber } from "@/lib/number"
 
 import { columns } from "./columns"
@@ -54,9 +55,7 @@ export async function generateMetadata({
   if (machineError || !machine)
     return { title: `Prover not found - ${SITE_NAME}` }
 
-  return {
-    title: `${machine.machine_name} - ${SITE_NAME}`,
-  }
+  return getMetadata(`${machine.machine_name}`)
 }
 
 export default async function ProverPage({ params }: ProverPageProps) {

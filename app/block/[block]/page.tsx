@@ -40,6 +40,7 @@ import { intervalToSeconds } from "@/lib/date"
 
 import { createClient } from "@/utils/supabase/client"
 import { proofsAvgLatency, proofsTotalCostPerMegaGas } from "@/lib/proofs"
+import { getMetadata } from "@/lib/metadata"
 
 const getProverLogo = (proverMachineId: number | null) => {
   // TODO: Get prover profiles
@@ -61,9 +62,7 @@ export async function generateMetadata({
   params,
 }: BlockDetailsPageProps): Promise<Metadata> {
   const { block } = await params
-  return {
-    title: `Block ${block} - ${SITE_NAME}`,
-  }
+  return getMetadata(`Block ${block}`) // TODO: Confirm number formatting
 }
 
 export default async function BlockDetailsPage({
