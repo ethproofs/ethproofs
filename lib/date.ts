@@ -46,3 +46,13 @@ export function intervalToSeconds(interval: string): number {
 
   return hours * 3600 + minutes * 60 + seconds
 }
+
+export function intervalToReadable(interval: string): string {
+  const [hours, minutes, seconds] = interval.split(":").map(Number)
+
+  if (isNaN(hours) || isNaN(minutes) || isNaN(seconds)) {
+    throw new Error('Invalid interval format. Expected "HH:MM:SS"')
+  }
+
+  return `${hours}h ${minutes}m ${seconds}s`
+}
