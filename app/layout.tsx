@@ -33,7 +33,7 @@ export default function RootLayout({
       <body className="pb-80">
         <ThemeProvider attribute="class">
           <div className="mx-auto flex max-w-screen-2xl flex-col gap-16 px-4 sm:px-4 md:px-8 xl:px-16">
-            <header className="grid grid-cols-3 pt-4">
+            <header className="sticky top-0 z-10 grid grid-cols-3 bg-background/30 py-4 backdrop-blur-md backdrop-filter">
               {/* Header start */}
               <div className="flex">
                 <Link href="/">
