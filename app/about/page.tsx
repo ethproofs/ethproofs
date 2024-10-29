@@ -1,6 +1,6 @@
 import { getMetadata } from "@/lib/metadata"
 
-export const metadata = getMetadata("About")
+export const metadata = getMetadata({ title: "About" })
 
 export default function AboutPage() {
   return (

@@ -62,7 +62,7 @@ export async function generateMetadata({
   params,
 }: BlockDetailsPageProps): Promise<Metadata> {
   const { block } = await params
-  return getMetadata(`Block ${block}`) // TODO: Confirm number formatting
+  return getMetadata({ title: `Block ${block}` }) // TODO: Confirm number formatting
 }
 
 export default async function BlockDetailsPage({

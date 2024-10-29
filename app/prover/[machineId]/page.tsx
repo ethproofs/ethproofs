@@ -57,7 +57,7 @@ export async function generateMetadata({
   if (machineError || !machine)
     return { title: `Prover not found - ${SITE_NAME}` }
 
-  return getMetadata(`${machine.machine_name}`)
+  return getMetadata({ title: `${machine.machine_name}` })
 }
 
 export default async function ProverPage({ params }: ProverPageProps) {
