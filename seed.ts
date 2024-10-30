@@ -14,9 +14,9 @@ const main = async () => {
   )
 
   const { blocks } = await seed.blocks((x) =>
-    x(5000, {
+    x(5000, () => ({
       hash: () => "0x" + faker.git.commitSha(),
-    })
+    }))
   )
 
   const { prover_machines } = await seed.prover_machines(
