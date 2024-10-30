@@ -7,20 +7,6 @@ const client = createPublicClient({
   transport: http(),
 })
 
-export const fetchBlockData = async (block_number: number) => {
-  const block = await client.getBlock({
-    blockNumber: BigInt(block_number),
-    includeTransactions: true,
-  })
-
-  return {
-    feeTotal: calculateTotalFees(block),
-    gasUsed: block.gasUsed,
-    txsCount: block.transactions.length,
-    timestamp: block.timestamp,
-  }
-}
-
 function calculateTotalFees(block: Block<bigint, true>): bigint {
   let totalFees = BigInt(0)
 
@@ -45,4 +31,18 @@ function calculateTotalFees(block: Block<bigint, true>): bigint {
   }
 
   return totalFees
+}
+
+export const fetchBlockData = async (block_number: number) => {
+  const block = await client.getBlock({
+    blockNumber: BigInt(block_number),
+    includeTransactions: true,
+  })
+
+  return {
+    feeTotal: calculateTotalFees(block),
+    gasUsed: block.gasUsed,
+    txsCount: block.transactions.length,
+    timestamp: block.timestamp,
+  }
 }
