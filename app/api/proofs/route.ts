@@ -70,6 +70,7 @@ export const POST = withAuth(async ({ request, client, user }) => {
       gas_used: Number(blockData.gasUsed),
       transaction_count: blockData.txsCount,
       timestamp: new Date(Number(blockData.timestamp) * 1000).toISOString(),
+      hash: blockData.hash,
     })
 
     if (error) {

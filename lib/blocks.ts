@@ -44,5 +44,6 @@ export const fetchBlockData = async (block_number: number) => {
     gasUsed: block.gasUsed,
     txsCount: block.transactions.length,
     timestamp: block.timestamp,
+    hash: block.hash,
   }
 }
