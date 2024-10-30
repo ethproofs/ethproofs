@@ -6,7 +6,7 @@ export const withAuth = (
   handler: (auth: {
     request: Request
     client: ReturnType<typeof createClient>
-    user: unknown | null
+    user: { id: string } | null
     apiKey?: { mode: string; user_id: string } | null
   }) => void
 ) => {
