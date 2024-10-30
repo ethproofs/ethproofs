@@ -70,6 +70,7 @@ export const POST = withAuth(async ({ request, client, user }) => {
       gas_used: Number(blockData.gasUsed),
       transaction_count: blockData.txsCount,
       timestamp: new Date(Number(blockData.timestamp) * 1000).toISOString(),
+      hash: blockData.hash,
     })
 
     if (error) {
@@ -81,7 +82,7 @@ export const POST = withAuth(async ({ request, client, user }) => {
   // TODO validate prover_machine exists and fetch prover_machine_id
 
   // add proof
-  const proofReponse = await client.from("proofs").insert({
+  const proofResponse = await client.from("proofs").insert({
     block_number,
     proof,
     prover_machine_id: 1, // TODO: fetch prover_machine_id
@@ -92,8 +93,8 @@ export const POST = withAuth(async ({ request, client, user }) => {
     user_id: user.id,
   })
 
-  if (proofReponse.error) {
-    console.error("error", proofReponse.error)
+  if (proofResponse.error) {
+    console.error("error", proofResponse.error)
     return new Response("Internal server error", { status: 500 })
   }
 
