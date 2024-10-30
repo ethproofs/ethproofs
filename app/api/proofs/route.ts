@@ -54,8 +54,6 @@ export const POST = withAuth(async ({ request, client, user }) => {
     let blockData
     try {
       blockData = await fetchBlockData(block_number)
-
-      console.log("blockData", blockData)
     } catch (error) {
       console.error("error", error)
       return new Response("Block not found", {
