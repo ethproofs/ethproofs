@@ -1,3 +1,7 @@
+import { getMetadata } from "@/lib/metadata"
+
+export const metadata = getMetadata({ title: "About" })
+
 export default function AboutPage() {
   return (
     <div className="space-y-16">

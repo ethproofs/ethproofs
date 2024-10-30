@@ -12,7 +12,7 @@ const buttonVariants = cva(
     // Base default styling is "outline" pattern, primary color for text, border matches, no bg
     "text-primary border-current",
     // Hover: Default hover adds box-shadow, text (border) to --primary-hover
-    "hover:bg-primary-border",
+    "hover:bg-background-highlight dark:hover:bg-primary-border",
     // isSecondary: Switch text (border) to --body instead of --primary
     "[&[data-secondary='true']]:text-body"
   ),
@@ -20,8 +20,8 @@ const buttonVariants = cva(
     variants: {
       variant: {
         solid: cn(
-          "text-primary-border bg-primary !border-transparent",
-          "hover:!text-primary-dark hover:!bg-primary-light" // Hover
+          "text-background bg-primary !border-transparent",
+          "hover:bg-primary-light dark:hover:bg-green-300"
         ),
         outline: "",
         ghost: "border-transparent hover:shadow-none",
