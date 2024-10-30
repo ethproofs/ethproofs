@@ -35,7 +35,6 @@ export const POST = withAuth(async ({ request, client, user }) => {
   const {
     proof,
     block_number,
-    prover_machine,
     prover_duration,
     proof_status,
     proving_cost,

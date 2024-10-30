@@ -113,7 +113,6 @@ const ButtonLink = React.forwardRef<HTMLAnchorElement, ButtonLinkProps>(
       variant,
       isSecondary,
       buttonProps,
-      onClick,
       children,
       className,
       ...linkProps

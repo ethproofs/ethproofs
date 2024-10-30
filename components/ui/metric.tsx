@@ -41,7 +41,7 @@ MetricLabel.displayName = "MetricLabel"
 const MetricInfo = React.forwardRef<
   HTMLParagraphElement,
   React.HTMLAttributes<HTMLParagraphElement>
->(({ className, children, ...props }, ref) => (
+>(({ children, ...props }, ref) => (
   <TooltipProvider>
     <Tooltip>
       <TooltipTrigger>

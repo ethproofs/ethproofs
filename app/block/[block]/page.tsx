@@ -318,15 +318,11 @@ export default async function BlockDetailsPage({
 
         {proofs.map(
           ({
-            proof,
             proof_id,
-            proof_status,
             prover_duration,
             prover_machine_id,
             proving_cost,
             proving_cycles,
-            submission_time,
-            user_id,
           }) => (
             <div className="space-y-4 border-b py-4" key={proof_id}>
               <div className="flex items-center">
