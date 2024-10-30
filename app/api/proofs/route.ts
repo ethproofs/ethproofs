@@ -1,5 +1,5 @@
-import { z } from "zod"
 import { formatGwei } from "viem"
+import { z } from "zod"
 
 import { withAuth } from "@/lib/auth"
 import { fetchBlockData } from "@/lib/blocks"

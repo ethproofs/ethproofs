@@ -1,6 +1,9 @@
 import type { Metadata } from "next"
 import { notFound } from "next/navigation"
 
+import type { Metric } from "@/lib/types"
+
+import LearnMore from "@/components/LearnMore"
 import ArrowDown from "@/components/svgs/arrow-down.svg"
 import BlockLarge from "@/components/svgs/block-large.svg"
 import BookOpen from "@/components/svgs/book-open.svg"
@@ -16,7 +19,6 @@ import ProofCircle from "@/components/svgs/proof-circle.svg"
 import RiscZeroLogo from "@/components/svgs/risc-zero-logo.svg"
 import SuccinctLogo from "@/components/svgs/succinct-logo.svg"
 import TrendingUp from "@/components/svgs/trending-up.svg"
-
 import { Button } from "@/components/ui/button"
 import {
   HeroBody,
@@ -27,28 +29,23 @@ import {
   HeroTitle,
 } from "@/components/ui/hero"
 import {
+  MetricBox,
+  MetricInfo,
+  MetricLabel,
+  MetricValue,
+} from "@/components/ui/metric"
+import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
 } from "@/components/ui/tooltip"
 
-import LearnMore from "@/components/LearnMore"
-
 import { intervalToSeconds } from "@/lib/date"
-
-import { createClient } from "@/utils/supabase/client"
-import { proofsAvgLatency, proofsTotalCostPerMegaGas } from "@/lib/proofs"
 import { getMetadata } from "@/lib/metadata"
-import {
-  MetricBox,
-  MetricInfo,
-  MetricLabel,
-  MetricValue,
-} from "@/components/ui/metric"
-
-import type { Metric } from "@/lib/types"
 import { formatNumber } from "@/lib/number"
+import { proofsAvgLatency, proofsTotalCostPerMegaGas } from "@/lib/proofs"
+import { createClient } from "@/utils/supabase/client"
 
 const getProverLogo = (proverMachineId: number | null) => {
   // TODO: Get prover profiles
@@ -331,7 +328,7 @@ export default async function BlockDetailsPage({
             submission_time,
             user_id,
           }) => (
-            <div className="space-y-4 border-b py-4">
+            <div className="space-y-4 border-b py-4" key={proof_id}>
               <div className="flex items-center">
                 <div className="py-2">{getProverLogo(prover_machine_id)}</div>
                 <Button

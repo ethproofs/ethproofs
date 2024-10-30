@@ -6,12 +6,9 @@
     "prettier",
   ],
   "env": {
-    "es6": true
+    "es6": true,
   },
-  "plugins": [
-    "simple-import-sort",
-    "@typescript-eslint",
-  ],
+  "plugins": ["simple-import-sort", "@typescript-eslint", "unused-imports"],
   "parser": "@typescript-eslint/parser",
   "rules": {
     "simple-import-sort/imports": [
@@ -20,55 +17,31 @@
         "groups": [
           // Node.js builtins.
           [
-            "^(assert|buffer|child_process|cluster|console|constants|crypto|dgram|dns|domain|events|fs|http|https|module|net|os|path|punycode|querystring|readline|repl|stream|string_decoder|sys|timers|tls|tty|url|util|vm|zlib|freelist|v8|process|async_hooks|http2|perf_hooks)(/.*|$)"
+            "^(assert|buffer|child_process|cluster|console|constants|crypto|dgram|dns|domain|events|fs|http|https|module|net|os|path|punycode|querystring|readline|repl|stream|string_decoder|sys|timers|tls|tty|url|util|vm|zlib|freelist|v8|process|async_hooks|http2|perf_hooks)(/.*|$)",
           ],
           // Packages. `react` related packages come first.
           // Also, put `react-icons` in sorting order not with `react`
-          [
-            "^react(?!-.)$",
-            "^\\w",
-            "^@\\w"
-          ],
+          ["^react(?!-.)$", "^\\w", "^@\\w"],
           // From the `types` directory.
-          [
-            "^@/lib/types",
-            "^@/lib/interfaces"
-          ],
+          ["^@/lib/types", "^@/lib/interfaces"],
           // From the `components` directory.
-          [
-            "^@/components"
-          ],
+          ["^@/components"],
           // From the `utils` directory.
-          [
-            "^@/lib/utils"
-          ],
+          ["^@/lib/utils"],
           // From the `data` directory.
-          [
-            "^@/data"
-          ],
+          ["^@/data"],
           // From the `constants` directory.
           ["^@/lib/constants"],
           // Parent imports. Put `..` last.
-          [
-            "^\\.\\.(?!/?$)",
-            "^\\.\\./?$"
-          ],
+          ["^\\.\\.(?!/?$)", "^\\.\\./?$"],
           // Other relative imports. Put same-folder imports and `.` last.
-          [
-            "^\\./(?=.*/)(?!/?$)",
-            "^\\.(?!/?$)",
-            "^\\./?$"
-          ],
+          ["^\\./(?=.*/)(?!/?$)", "^\\.(?!/?$)", "^\\./?$"],
           // Style imports.
-          [
-            "^.+\\.s?css$"
-          ],
+          ["^.+\\.s?css$"],
           // Side effect imports.
-          [
-            "^\\u0000"
-          ]
-        ]
-      }
+          ["^\\u0000"],
+        ],
+      },
     ],
     "simple-import-sort/exports": "warn",
     "no-unused-vars": "off",
@@ -76,18 +49,16 @@
     "@typescript-eslint/no-explicit-any": [
       "error",
       {
-        "fixToUnknown": true
-      }
+        "fixToUnknown": true,
+      },
     ],
     "unused-imports/no-unused-vars": [
       "warn",
-        {
+      {
         "args": "all",
         "argsIgnorePattern": "^_$",
-        "varsIgnorePattern": "^_$"
-      }
+        "varsIgnorePattern": "^_$",
+      },
     ],
-    "unused-imports/no-unused-imports-ts": "warn"
-  }
+  },
 }
-

@@ -2,10 +2,13 @@
 
 import { ColumnDef } from "@tanstack/react-table"
 
-import { ButtonLink } from "@/components/ui/button"
-import { formatTimeAgo, intervalToSeconds } from "@/lib/date"
 import { BlockWithProofs, Proof } from "@/lib/types"
+
+import { ButtonLink } from "@/components/ui/button"
+
 import { cn } from "@/lib/utils"
+
+import { formatTimeAgo, intervalToSeconds } from "@/lib/date"
 
 export const columns: ColumnDef<BlockWithProofs>[] = [
   {

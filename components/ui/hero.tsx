@@ -70,10 +70,10 @@ const HeroItemLabel = React.forwardRef<
 HeroItemLabel.displayName = "HeroItemLabel"
 
 export {
-  HeroSection,
-  HeroTitle,
-  HeroDivider,
   HeroBody,
+  HeroDivider,
   HeroItem,
   HeroItemLabel,
+  HeroSection,
+  HeroTitle,
 }

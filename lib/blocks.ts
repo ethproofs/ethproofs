@@ -1,4 +1,4 @@
-import { createPublicClient, http, type Block } from "viem"
+import { type Block,createPublicClient, http } from "viem"
 import { mainnet } from "viem/chains"
 
 const client = createPublicClient({

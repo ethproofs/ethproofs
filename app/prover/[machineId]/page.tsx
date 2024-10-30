@@ -2,8 +2,9 @@ import { type Metadata } from "next"
 import Link from "next/link"
 import { notFound } from "next/navigation"
 
-import LearnMore from "@/components/LearnMore"
+import { Metric } from "@/lib/types"
 
+import LearnMore from "@/components/LearnMore"
 import GitHub from "@/components/svgs/github.svg"
 import Globe from "@/components/svgs/globe.svg"
 import InfoCircle from "@/components/svgs/info-circle.svg"
@@ -11,16 +12,21 @@ import ProofCircle from "@/components/svgs/proof-circle.svg"
 import SuccinctLogo from "@/components/svgs/succinct-logo.svg"
 import TrendingUp from "@/components/svgs/trending-up.svg"
 import XLogo from "@/components/svgs/x-logo.svg"
-
 import DataTable from "@/components/ui/data-table"
 import {
-  HeroSection,
-  HeroTitle,
-  HeroDivider,
   HeroBody,
+  HeroDivider,
   HeroItem,
   HeroItemLabel,
+  HeroSection,
+  HeroTitle,
 } from "@/components/ui/hero"
+import {
+  MetricBox,
+  MetricInfo,
+  MetricLabel,
+  MetricValue,
+} from "@/components/ui/metric"
 import {
   Tooltip,
   TooltipContent,
@@ -29,20 +35,13 @@ import {
 } from "@/components/ui/tooltip"
 
 import { SITE_NAME } from "@/lib/constants"
+
+import { columns } from "./columns"
+
 import { getMetadata } from "@/lib/metadata"
 import { formatNumber } from "@/lib/number"
 import { getHost } from "@/lib/url"
-
 import { createClient } from "@/utils/supabase/client"
-
-import { columns } from "./columns"
-import { Metric } from "@/lib/types"
-import {
-  MetricBox,
-  MetricInfo,
-  MetricLabel,
-  MetricValue,
-} from "@/components/ui/metric"
 
 type ProverPageProps = {
   params: Promise<{ machineId: number }>
