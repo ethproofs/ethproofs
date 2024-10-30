@@ -53,11 +53,9 @@ const ThemeSwitch = () => {
   ]
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger asChild>
-        <div className="box-content flex h-3.5 w-fit items-center gap-2 rounded-full border border-primary px-2 py-1.5 text-primary">
-          <ThemeIcon className="!text-body" />
-          <ArrowDropdown />
-        </div>
+      <DropdownMenuTrigger className="box-content flex h-3.5 w-fit items-center gap-2 rounded-full border border-primary px-2 py-1.5 text-primary">
+        <ThemeIcon className="!text-body" />
+        <ArrowDropdown />
       </DropdownMenuTrigger>
 
       <DropdownMenuContent>
