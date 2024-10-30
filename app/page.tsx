@@ -1,3 +1,4 @@
+import type { Metadata } from "next"
 import Image from "next/image"
 
 import HeroDark from "@/assets/hero-background-dark.png"
@@ -9,6 +10,9 @@ import Clock from "@/components/svgs/clock.svg"
 import BlocksTable from "@/components/BlocksTable"
 
 import { createClient } from "@/utils/supabase/server"
+import { getMetadata } from "@/lib/metadata"
+
+export const metadata: Metadata = getMetadata()
 
 export default async function Index() {
   const supabase = createClient()

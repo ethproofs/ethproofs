@@ -22,7 +22,7 @@
   /* Dark mode token declarations */
   .dark {
     --background: var(--blue-900);
-    --background-highlight: var(--blue-800);
+    --background-highlight: var(--green-900);
 
     --primary: var(--green-500);
     --primary-light: var(--green-400);
