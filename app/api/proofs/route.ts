@@ -1,11 +1,13 @@
 import { z } from "zod"
+import { formatGwei } from "viem"
 
 import { withAuth } from "@/lib/auth"
+import { fetchBlockData } from "@/lib/blocks"
 
 const proofSchema = z.object({
-  team: z.string(),
-  proof: z.string(),
   block_number: z.number(),
+  proof: z.string(),
+  proof_status: z.enum(["proved", "proving", "queued"]),
   prover_machine: z.number(),
   prover_duration: z.number(),
   proving_cost: z.number(),
@@ -31,33 +33,66 @@ export const POST = withAuth(async ({ request, client, user }) => {
   }
 
   const {
-    team,
     proof,
     block_number,
     prover_machine,
     prover_duration,
+    proof_status,
     proving_cost,
     proving_cycles,
   } = proofPayload
 
-  // TODO validate block_number exists
+  // validate block_number exists
+  const block = await client
+    .from("blocks")
+    .select("block_number")
+    .eq("block_number", block_number)
+    .single()
+
+  // if block is new (not in db), fetch block data from block explorer and create block record
+  if (block.error) {
+    let blockData
+    try {
+      blockData = await fetchBlockData(block_number)
+    } catch (error) {
+      console.error("error", error)
+      return new Response("Block not found", {
+        status: 500,
+      })
+    }
+
+    // create block
+    const { error } = await client.from("blocks").insert({
+      block_number,
+      total_fees: parseInt(formatGwei(blockData.feeTotal)),
+      gas_used: Number(blockData.gasUsed),
+      transaction_count: blockData.txsCount,
+      timestamp: new Date(Number(blockData.timestamp) * 1000).toISOString(),
+      hash: blockData.hash,
+    })
+
+    if (error) {
+      console.error("error", error)
+      return new Response("Internal server error", { status: 500 })
+    }
+  }
+
   // TODO validate prover_machine exists and fetch prover_machine_id
 
   // add proof
-  // TODO: modify once we define the proof schema, should `proof_status` be sent by the prover?
-  const proofReponse = await client.from("proofs").insert({
+  const proofResponse = await client.from("proofs").insert({
     block_number,
     proof,
     prover_machine_id: 1, // TODO: fetch prover_machine_id
     prover_duration,
     proving_cost,
     proving_cycles,
-    proof_status: "proved", // TODO: change once we define the proof schema
+    proof_status,
     user_id: user.id,
   })
 
-  if (proofReponse.error) {
-    console.error("error", proofReponse.error)
+  if (proofResponse.error) {
+    console.error("error", proofResponse.error)
     return new Response("Internal server error", { status: 500 })
   }
 

@@ -58,3 +58,9 @@ Run script again piping results into `supabase/seed.sql`, and reset the database
 npx tsx seed.ts > supabase/seed.sql
 npx supabase db reset
 ```
+
+Sync the database schema with the seed file.
+
+```bash
+npx @snaplet/seed sync
+```

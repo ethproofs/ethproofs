@@ -4,9 +4,9 @@ import { headers } from "next/headers"
 export const withAuth = (
   handler: (auth: {
     request: Request
-    client: any
+    client: ReturnType<typeof createClient>
     user: any | null
-    apiKey?: any
+    apiKey?: { mode: string; user_id: string } | null
   }) => void
 ) => {
   return async (request: Request) => {

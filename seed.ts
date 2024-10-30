@@ -1,5 +1,5 @@
 import { createSeedClient } from "@snaplet/seed"
-import { copycat } from "@snaplet/copycat"
+import { copycat, faker } from "@snaplet/copycat"
 
 const main = async () => {
   const seed = await createSeedClient({ dryRun: true })
@@ -13,7 +13,11 @@ const main = async () => {
     }))
   )
 
-  const { blocks } = await seed.blocks((x) => x(5000))
+  const { blocks } = await seed.blocks((x) =>
+    x(5000, () => ({
+      hash: () => "0x" + faker.git.commitSha(),
+    }))
+  )
 
   const { prover_machines } = await seed.prover_machines(
     (x) =>
