@@ -393,6 +393,20 @@
           "maxLength": null
         },
         {
+          "id": "public.blocks.hash",
+          "name": "hash",
+          "columnName": "hash",
+          "type": "text",
+          "isRequired": true,
+          "kind": "scalar",
+          "isList": false,
+          "isGenerated": false,
+          "sequence": false,
+          "hasDefaultValue": false,
+          "isId": false,
+          "maxLength": null
+        },
+        {
           "name": "proofs",
           "type": "proofs",
           "isRequired": false,

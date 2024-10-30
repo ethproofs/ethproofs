@@ -70,19 +70,25 @@ export type Database = {
         Row: {
           block_number: number
           gas_used: number
+          hash: string
           timestamp: string
+          total_fees: number
           transaction_count: number
         }
         Insert: {
           block_number: number
           gas_used: number
+          hash: string
           timestamp: string
+          total_fees: number
           transaction_count: number
         }
         Update: {
           block_number?: number
           gas_used?: number
+          hash?: string
           timestamp?: string
+          total_fees?: number
           transaction_count?: number
         }
         Relationships: []
