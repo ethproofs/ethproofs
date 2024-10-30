@@ -4,6 +4,9 @@ alter table "public"."blocks" alter column "transaction_count" set data type sma
 
 alter table "public"."blocks" alter column "timestamp" set data type timestamp with time zone using "timestamp"::timestamp with time zone;
 
+-- Add hash column to blocks table
+alter table "public"."blocks" add column "hash" text not null;
+
 -- remove old policy
 drop policy "Enable insert for authenticated users only" on "public"."blocks";
 
