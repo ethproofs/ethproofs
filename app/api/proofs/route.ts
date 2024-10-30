@@ -26,7 +26,7 @@ export const POST = withAuth(async ({ request, client, user }) => {
   // validate payload schema
   try {
     proofSchema.parse(proofPayload)
-  } catch (error) {
+  } catch (_error) {
     return new Response("Invalid payload", {
       status: 400,
     })
