@@ -8,7 +8,6 @@ import { Metric } from "@/lib/types"
 import LearnMore from "@/components/LearnMore"
 import GitHub from "@/components/svgs/github.svg"
 import Globe from "@/components/svgs/globe.svg"
-import InfoCircle from "@/components/svgs/info-circle.svg"
 import ProofCircle from "@/components/svgs/proof-circle.svg"
 import TrendingUp from "@/components/svgs/trending-up.svg"
 import XLogo from "@/components/svgs/x-logo.svg"
@@ -27,12 +26,6 @@ import {
   MetricLabel,
   MetricValue,
 } from "@/components/ui/metric"
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip"
 
 import { SITE_NAME } from "@/lib/constants"
 
