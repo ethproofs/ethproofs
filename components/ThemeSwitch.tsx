@@ -1,21 +1,24 @@
 "use client"
 
-import { useState, useEffect } from "react"
+import { useEffect,useState } from "react"
 import { useTheme } from "next-themes"
 
 import ArrowDropdown from "@/components/svgs/arrow-dropdown.svg"
+import System from "@/components/svgs/monitor.svg"
 import Moon from "@/components/svgs/moon.svg"
 import Sun from "@/components/svgs/sun.svg"
-import System from "@/components/svgs/monitor.svg"
-import ThemeIcon from "./ui/theme-icon"
-import useThemingKeyboardShortcuts from "@/hooks/useThemingKeyboardShortcuts"
+
+import { cn } from "@/lib/utils"
+
 import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
 } from "./ui/dropdown-menu"
-import { cn } from "@/lib/utils"
+import ThemeIcon from "./ui/theme-icon"
+
+import useThemingKeyboardShortcuts from "@/hooks/useThemingKeyboardShortcuts"
 
 const ThemeSwitch = () => {
   const [mounted, setMounted] = useState(false)

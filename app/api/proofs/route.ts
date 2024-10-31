@@ -1,5 +1,5 @@
-import { z } from "zod"
 import { formatGwei } from "viem"
+import { z } from "zod"
 
 import { withAuth } from "@/lib/auth"
 import { fetchBlockData } from "@/lib/blocks"
@@ -26,7 +26,7 @@ export const POST = withAuth(async ({ request, client, user }) => {
   // validate payload schema
   try {
     proofSchema.parse(proofPayload)
-  } catch (error) {
+  } catch (_error) {
     return new Response("Invalid payload", {
       status: 400,
     })
@@ -35,7 +35,6 @@ export const POST = withAuth(async ({ request, client, user }) => {
   const {
     proof,
     block_number,
-    prover_machine,
     prover_duration,
     proof_status,
     proving_cost,

@@ -2,12 +2,14 @@
 
 import { Reducer, useEffect, useReducer } from "react"
 
-import { createClient } from "@/utils/supabase/client"
+import type { Block, Proof } from "@/lib/types"
+
 import DataTable from "@/components/ui/data-table"
 
-import type { Block, Proof } from "@/lib/types"
-import { Actions, State, createInitialState, reducer } from "./reducer"
 import { columns } from "./columns"
+import { Actions, createInitialState, reducer, State } from "./reducer"
+
+import { createClient } from "@/utils/supabase/client"
 
 type Props = {
   blocks: (Block & { proofs: { id: number }[] })[]
@@ -50,7 +52,7 @@ const BlocksTable = ({ blocks, proofs, className }: Props) => {
       supabase.removeChannel(blocksChannel)
       supabase.removeChannel(proofsChannel)
     }
-  }, [state])
+  }, [state, supabase])
 
   const blocksWithProofs = state.blocks.allIds
     .map((id) => state.blocks.byId[id])

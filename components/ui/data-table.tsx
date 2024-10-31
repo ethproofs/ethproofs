@@ -17,8 +17,9 @@ import {
   TableRow,
 } from "@/components/ui/table"
 
-import { Button } from "./button"
 import { cn } from "@/lib/utils"
+
+import { Button } from "./button"
 
 type Props<TData, TValue> = {
   className?: string

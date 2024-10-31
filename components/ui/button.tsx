@@ -1,9 +1,9 @@
 import * as React from "react"
-import { Slot } from "@radix-ui/react-slot"
 import { cva, type VariantProps } from "class-variance-authority"
+import Link, { LinkProps } from "next/link"
+import { Slot } from "@radix-ui/react-slot"
 
 import { cn } from "@/lib/utils"
-import Link, { LinkProps } from "next/link"
 
 const buttonVariants = cva(
   cn(
@@ -113,7 +113,6 @@ const ButtonLink = React.forwardRef<HTMLAnchorElement, ButtonLinkProps>(
       variant,
       isSecondary,
       buttonProps,
-      onClick,
       children,
       className,
       ...linkProps

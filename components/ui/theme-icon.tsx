@@ -1,6 +1,5 @@
-import { useTheme } from "next-themes"
-
 import * as React from "react"
+import { useTheme } from "next-themes"
 
 import Moon from "@/components/svgs/moon.svg"
 import Sun from "@/components/svgs/sun.svg"

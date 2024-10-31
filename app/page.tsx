@@ -1,18 +1,17 @@
 import type { Metadata } from "next"
 import Image from "next/image"
 
+import BlocksTable from "@/components/BlocksTable"
+import Block from "@/components/svgs/box.svg"
+import Clock from "@/components/svgs/clock.svg"
+import DollarSign from "@/components/svgs/dollar-sign.svg"
+
 import HeroDark from "@/assets/hero-background-dark.png"
 import HeroLight from "@/assets/hero-background-light.png"
-
-import Block from "@/components/svgs/box.svg"
-import DollarSign from "@/components/svgs/dollar-sign.svg"
-import Clock from "@/components/svgs/clock.svg"
-import BlocksTable from "@/components/BlocksTable"
-
-import { createClient } from "@/utils/supabase/server"
 import { getMetadata } from "@/lib/metadata"
 import { formatNumber } from "@/lib/number"
 import { proofsAvgLatency } from "@/lib/proofs"
+import { createClient } from "@/utils/supabase/server"
 
 export const metadata: Metadata = getMetadata()
 

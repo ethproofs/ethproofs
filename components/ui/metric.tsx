@@ -2,13 +2,14 @@ import React from "react"
 
 import InfoCircle from "@/components/svgs/info-circle.svg"
 
+import { cn } from "@/lib/utils"
+
 import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
 } from "./tooltip"
-import { cn } from "@/lib/utils"
 
 const MetricBox = React.forwardRef<
   HTMLDivElement,
@@ -40,7 +41,7 @@ MetricLabel.displayName = "MetricLabel"
 const MetricInfo = React.forwardRef<
   HTMLParagraphElement,
   React.HTMLAttributes<HTMLParagraphElement>
->(({ className, children, ...props }, ref) => (
+>(({ children, ...props }, ref) => (
   <TooltipProvider>
     <Tooltip>
       <TooltipTrigger>
@@ -68,4 +69,4 @@ const MetricValue = React.forwardRef<
 ))
 MetricValue.displayName = "MetricValue"
 
-export { MetricBox, MetricLabel, MetricInfo, MetricValue }
+export { MetricBox, MetricInfo, MetricLabel, MetricValue }
