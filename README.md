@@ -46,16 +46,10 @@ More info: https://supabase.com/docs/reference/javascript/typescript-support
 
 Generate the seed file by running the script and then reset the database.
 
-First ensure all `seed.ts` dependencies are installed by simply running, and answer `y` to install the missing dependencies:
+The script will automatically install dependencies and pipe the results into `supabase/seed.sql`.
 
 ```bash
-npx tsx seed.ts
-```
-
-Run script again piping results into `supabase/seed.sql`, and reset the database:
-
-```bash
-npx tsx seed.ts > supabase/seed.sql
+npx -y tsx seed.ts > supabase/seed.sql
 npx supabase db reset
 ```
 
