@@ -2,6 +2,7 @@ import Link from "next/link"
 import { ThemeProvider } from "next-themes"
 
 import ActiveLinkDecorator from "@/components/ActiveLinkDecorator"
+import HeaderScrollEffects from "@/components/HeaderBackdrop"
 import EthProofsLogo from "@/components/svgs/eth-proofs-logo.svg"
 import GitHub from "@/components/svgs/github.svg"
 import Hamburger from "@/components/svgs/hamburger.svg"
@@ -33,7 +34,9 @@ export default function RootLayout({
       <body className="pb-80">
         <ThemeProvider attribute="class">
           <div className="mx-auto flex max-w-screen-2xl flex-col gap-16 px-4 sm:px-4 md:px-8 xl:px-16">
-            <header className="sticky top-0 z-10 grid grid-cols-3 bg-background/30 py-4 backdrop-blur-md backdrop-filter">
+            <header className="relative sticky top-0 z-10 grid grid-cols-3 py-4">
+              <HeaderScrollEffects />
+
               {/* Header start */}
               <div className="flex">
                 <Link href="/">
