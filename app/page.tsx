@@ -17,12 +17,13 @@ export const metadata: Metadata = getMetadata()
 
 export default async function Index() {
   const supabase = createClient()
-  const { data: blocks } = await supabase.from("blocks").select(`
+  const blocksResponse = await supabase.from("blocks").select(`
       *,
       proofs:proofs(
         id:proof_id
       )
     `)
+  const blocks = blocksResponse.data || []
 
   const proofsResponse = await supabase.from("proofs").select()
   const proofs = proofsResponse.data || []
@@ -34,7 +35,7 @@ export default async function Index() {
     proofs.reduce((acc, { proving_cost }) => acc + (proving_cost || 0), 0) /
     proofs.length
 
-  const avgLatency = formatNumber(proofsAvgLatency(proofs), {
+  const avgLatencyPerProof = formatNumber(proofsAvgLatency(proofs), {
     style: "unit",
     unit: "second",
     unitDisplay: "narrow",
@@ -104,7 +105,7 @@ export default async function Index() {
                 <Clock />
               </p>
               <p className="font-mono text-2xl text-primary md:text-3xl lg:text-4xl">
-                {avgLatency}
+                {avgLatencyPerProof}
               </p>
             </div>
             <div>
@@ -119,7 +120,7 @@ export default async function Index() {
         </div>
       </div>
 
-      <BlocksTable blocks={blocks || []} proofs={proofs || []} />
+      <BlocksTable blocks={blocks || []} proofs={proofs} />
     </div>
   )
 }
