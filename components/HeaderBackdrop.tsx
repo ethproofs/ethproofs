@@ -24,7 +24,7 @@ const HeaderScrollEffects = () => {
         }}
       />
       <div
-        className="absolute top-full z-[10000] h-px w-full bg-primary"
+        className="absolute top-full h-px w-full bg-primary"
         style={{ opacity }}
       />
     </>
