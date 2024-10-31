@@ -11,6 +11,8 @@ import BlocksTable from "@/components/BlocksTable"
 
 import { createClient } from "@/utils/supabase/server"
 import { getMetadata } from "@/lib/metadata"
+import { formatNumber } from "@/lib/number"
+import { proofsAvgLatency } from "@/lib/proofs"
 
 export const metadata: Metadata = getMetadata()
 
@@ -22,7 +24,23 @@ export default async function Index() {
         id:proof_id
       )
     `)
-  const { data: proofs } = await supabase.from("proofs").select()
+
+  const proofsResponse = await supabase.from("proofs").select()
+  const proofs = proofsResponse.data || []
+
+  const totalProvenBlocks =
+    blocks?.filter(({ proofs }) => !!proofs.length).length || 0
+
+  const avgCostPerProof =
+    proofs.reduce((acc, { proving_cost }) => acc + (proving_cost || 0), 0) /
+    proofs.length
+
+  const avgLatency = formatNumber(proofsAvgLatency(proofs), {
+    style: "unit",
+    unit: "second",
+    unitDisplay: "narrow",
+    maximumFractionDigits: 0,
+  })
 
   return (
     <div className="flex w-full flex-1 flex-col items-center gap-20">
@@ -51,7 +69,7 @@ export default async function Index() {
                 <Block />
               </p>
               <p className="font-mono text-2xl text-primary md:text-3xl lg:text-4xl">
-                {new Intl.NumberFormat("en").format(2160)}
+                {formatNumber(totalProvenBlocks)}
               </p>
             </div>
             <div>
@@ -69,9 +87,7 @@ export default async function Index() {
                 <DollarSign />
               </p>
               <p className="font-mono text-2xl text-primary md:text-3xl lg:text-4xl">
-                {new Intl.NumberFormat("en", {
-                  maximumFractionDigits: 2,
-                }).format(0.69)}
+                {formatNumber(avgCostPerProof, { maximumFractionDigits: 2 })}
               </p>
             </div>
             <div>
@@ -89,7 +105,7 @@ export default async function Index() {
                 <Clock />
               </p>
               <p className="font-mono text-2xl text-primary md:text-3xl lg:text-4xl">
-                42s
+                {avgLatency}
               </p>
             </div>
             <div>
