@@ -1,6 +1,6 @@
 import type { Metadata } from "next"
 
-import { SITE_DESCRIPTION,SITE_NAME, SITE_URL } from "./constants"
+import { SITE_DESCRIPTION, SITE_NAME, SITE_URL } from "./constants"
 
 export type CustomMetadata = {
   title?: string
