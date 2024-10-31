@@ -1,4 +1,5 @@
 import { type Metadata } from "next"
+import Image from "next/image"
 import Link from "next/link"
 import { notFound } from "next/navigation"
 
@@ -9,7 +10,6 @@ import GitHub from "@/components/svgs/github.svg"
 import Globe from "@/components/svgs/globe.svg"
 import InfoCircle from "@/components/svgs/info-circle.svg"
 import ProofCircle from "@/components/svgs/proof-circle.svg"
-import SuccinctLogo from "@/components/svgs/succinct-logo.svg"
 import TrendingUp from "@/components/svgs/trending-up.svg"
 import XLogo from "@/components/svgs/x-logo.svg"
 import DataTable from "@/components/ui/data-table"
@@ -87,8 +87,6 @@ export default async function ProverPage({ params }: ProverPageProps) {
 
   // TODO: Dummy profile—Get prover profile info
   const profile = {
-    proverName: machine?.machine_name, // ✅
-    logo: () => <SuccinctLogo />, // TODO: Get prover logo from DB
     contact: {
       url: "https://succinct.xyz",
       twitter: "succinctLabs",
@@ -142,8 +140,15 @@ export default async function ProverPage({ params }: ProverPageProps) {
   return (
     <div className="space-y-8">
       <HeroSection>
-        <HeroTitle className="items-center py-6">
-          <profile.logo />
+        <HeroTitle className="h-20 items-center gap-6">
+          {machine.logo_url && (
+            <Image
+              src={machine.logo_url}
+              alt={`${machine.machine_name} logo`}
+              width={128}
+              height={80}
+            />
+          )}
           <h1 className="font-mono text-3xl font-semibold">
             {machine.machine_name}
           </h1>
