@@ -17,6 +17,16 @@ const nextConfig = {
 
     return config
   },
+  images: {
+    remotePatterns: [
+      {
+        protocol: "https",
+        hostname: "ibkqxhjnroghhtfyualc.supabase.co",
+        port: "",
+        pathname: "/storage/v1/object/public/public-assets/**",
+      },
+    ],
+  },
 }
 
 module.exports = nextConfig
