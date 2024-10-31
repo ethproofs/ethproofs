@@ -1,22 +1,22 @@
-import { ThemeProvider } from "next-themes"
 import Link from "next/link"
+import { ThemeProvider } from "next-themes"
 
+import ActiveLinkDecorator from "@/components/ActiveLinkDecorator"
 import EthProofsLogo from "@/components/svgs/eth-proofs-logo.svg"
 import GitHub from "@/components/svgs/github.svg"
 import Hamburger from "@/components/svgs/hamburger.svg"
 import Magnifier from "@/components/svgs/magnifier.svg"
-
+import ThemeSwitch from "@/components/ThemeSwitch"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 
-import ActiveLinkDecorator from "@/components/ActiveLinkDecorator"
-import ThemeSwitch from "@/components/ThemeSwitch"
-
 import { cn } from "@/lib/utils"
 
-import { ibmPlexMono, ibmPlexSans } from "./fonts"
-import "../styles/globals.css"
 import { SITE_REPO_URL } from "@/lib/constants"
+
+import { ibmPlexMono, ibmPlexSans } from "./fonts"
+
+import "../styles/globals.css"
 
 export default function RootLayout({
   children,

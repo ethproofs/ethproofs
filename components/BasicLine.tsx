@@ -1,5 +1,6 @@
 "use client"
 
+import { HTMLAttributes } from "react"
 import { Line, LineChart } from "recharts"
 
 import {
@@ -8,8 +9,8 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart"
+
 import { cn } from "@/lib/utils"
-import { HTMLAttributes } from "react"
 
 const defaultChartConfig = {
   value: {

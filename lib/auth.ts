@@ -1,11 +1,12 @@
-import { createClient } from "@/utils/supabase/server"
 import { headers } from "next/headers"
+
+import { createClient } from "@/utils/supabase/server"
 
 export const withAuth = (
   handler: (auth: {
     request: Request
     client: ReturnType<typeof createClient>
-    user: any | null
+    user: { id: string } | null
     apiKey?: { mode: string; user_id: string } | null
   }) => void
 ) => {
