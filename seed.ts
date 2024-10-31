@@ -1,5 +1,5 @@
-import { createSeedClient } from "@snaplet/seed"
 import { copycat, faker } from "@snaplet/copycat"
+import { createSeedClient } from "@snaplet/seed"
 
 const main = async () => {
   const seed = await createSeedClient({ dryRun: true })
