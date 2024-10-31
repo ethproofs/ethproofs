@@ -34,7 +34,13 @@ export default function RootLayout({
       <body className="pb-80">
         <ThemeProvider attribute="class">
           <div className="mx-auto flex max-w-screen-2xl flex-col gap-16 px-4 sm:px-4 md:px-8 xl:px-16">
-            <header className="relative sticky top-0 z-10 grid grid-cols-3 py-4">
+            <header
+              className={cn(
+                "relative sticky top-0 z-10 grid grid-cols-3 items-center py-4",
+                "-mx-4 sm:-mx-4 md:-mx-8 xl:-mx-16",
+                "px-4 sm:px-4 md:px-8 xl:px-16"
+              )}
+            >
               <HeaderScrollEffects />
 
               {/* Header start */}
