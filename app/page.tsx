@@ -28,19 +28,27 @@ export default async function Index() {
   const proofsResponse = await supabase.from("proofs").select()
   const proofs = proofsResponse.data || []
 
-  const totalProvenBlocks =
-    blocks?.filter(({ proofs }) => !!proofs.length).length || 0
+  const blocksWithProofs = blocks.filter(({ proofs }) => !!proofs.length).length
+  const totalProvenBlocks = blocksWithProofs
+    ? formatNumber(blocksWithProofs)
+    : "-"
 
-  const avgCostPerProof =
-    proofs.reduce((acc, { proving_cost }) => acc + (proving_cost || 0), 0) /
-    proofs.length
+  const avgCostPerProof = proofs.length
+    ? formatNumber(
+        proofs.reduce((acc, { proving_cost }) => acc + (proving_cost || 0), 0) /
+          proofs.length,
+        { maximumFractionDigits: 2 }
+      )
+    : "-"
 
-  const avgLatencyPerProof = formatNumber(proofsAvgLatency(proofs), {
-    style: "unit",
-    unit: "second",
-    unitDisplay: "narrow",
-    maximumFractionDigits: 0,
-  })
+  const avgLatencyPerProof = proofs.length
+    ? formatNumber(proofsAvgLatency(proofs), {
+        style: "unit",
+        unit: "second",
+        unitDisplay: "narrow",
+        maximumFractionDigits: 0,
+      })
+    : "-"
 
   return (
     <div className="flex w-full flex-1 flex-col items-center gap-20">
@@ -69,7 +77,7 @@ export default async function Index() {
                 <Block />
               </p>
               <p className="font-mono text-2xl text-primary md:text-3xl lg:text-4xl">
-                {formatNumber(totalProvenBlocks)}
+                {totalProvenBlocks}
               </p>
             </div>
             <div>
@@ -87,7 +95,7 @@ export default async function Index() {
                 <DollarSign />
               </p>
               <p className="font-mono text-2xl text-primary md:text-3xl lg:text-4xl">
-                {formatNumber(avgCostPerProof, { maximumFractionDigits: 2 })}
+                {avgCostPerProof}
               </p>
             </div>
             <div>
