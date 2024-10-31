@@ -19,11 +19,16 @@ const main = async () => {
     }))
   )
 
+  const logoUrls = [
+    "https://ibkqxhjnroghhtfyualc.supabase.co/storage/v1/object/public/public-assets/succinct-logo.svg",
+    "https://ibkqxhjnroghhtfyualc.supabase.co/storage/v1/object/public/public-assets/risc-zero-logo.svg",
+  ]
   const { prover_machines } = await seed.prover_machines(
     (x) =>
       x(10, {
         machine_id: ({ seed }) => copycat.int(seed, { min: 1, max: 10 }),
         machine_name: ({ seed }) => `Machine ${copycat.firstName(seed)}`,
+        logo_url: ({ seed }) => copycat.oneOf(seed, logoUrls),
       }),
     {
       connect: { users },
