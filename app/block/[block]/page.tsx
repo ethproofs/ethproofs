@@ -121,7 +121,7 @@ export default async function BlockDetailsPage({
     },
   ]
   return (
-    <div className="space-y-8">
+    <div className="space-y-20">
       <HeroSection>
         <HeroTitle>
           <BlockLarge className="text-6xl text-primary" />
@@ -189,123 +189,125 @@ export default async function BlockDetailsPage({
         </HeroBody>
       </HeroSection>
 
-      <section>
-        <h2 className="flex items-center gap-2 text-lg font-normal text-primary">
-          <TrendingUp /> Zero-knowledge proofs
-        </h2>
-        <div className="flex flex-wrap gap-x-8">
-          {performanceItems.map(({ label, description, value }) => (
-            <MetricBox key={label}>
-              <MetricLabel>
-                {label}
-                <MetricInfo>{description}</MetricInfo>
-              </MetricLabel>
-              <MetricValue>{value}</MetricValue>
-            </MetricBox>
-          ))}
-        </div>
-      </section>
+      <div className="space-y-8">
+        <section>
+          <h2 className="flex items-center gap-2 text-lg font-normal text-primary">
+            <TrendingUp /> Zero-knowledge proofs
+          </h2>
+          <div className="flex flex-wrap gap-x-8">
+            {performanceItems.map(({ label, description, value }) => (
+              <MetricBox key={label}>
+                <MetricLabel>
+                  {label}
+                  <MetricInfo>{description}</MetricInfo>
+                </MetricLabel>
+                <MetricValue>{value}</MetricValue>
+              </MetricBox>
+            ))}
+          </div>
+        </section>
 
-      <section>
-        <h2 className="flex items-center gap-2 text-lg font-normal text-primary">
-          <DollarSign /> Block fees
-        </h2>
-        <div className="flex flex-wrap gap-x-8">
-          <div className="space-y-0.5 px-2 py-3">
-            <div className="flex items-center gap-2 text-sm text-body-secondary">
-              Total fees
-              <TooltipProvider>
-                <Tooltip>
-                  <TooltipTrigger>
-                    <InfoCircle />
-                  </TooltipTrigger>
-                  <TooltipContent>
-                    <p>TODO: Add tooltip info</p>
-                  </TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
+        <section>
+          <h2 className="flex items-center gap-2 text-lg font-normal text-primary">
+            <DollarSign /> Block fees
+          </h2>
+          <div className="flex flex-wrap gap-x-8">
+            <div className="space-y-0.5 px-2 py-3">
+              <div className="flex items-center gap-2 text-sm text-body-secondary">
+                Total fees
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger>
+                      <InfoCircle />
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>TODO: Add tooltip info</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+              </div>
+              <div className="font-mono text-2xl font-semibold">
+                {new Intl.NumberFormat("en-US").format(dummyNumber)}
+              </div>
             </div>
-            <div className="font-mono text-2xl font-semibold">
-              {new Intl.NumberFormat("en-US").format(dummyNumber)}
+            <div className="space-y-0.5 px-2 py-3">
+              <div className="flex items-center gap-2 text-sm text-body-secondary">
+                Avg cost / Proof
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger>
+                      <InfoCircle />
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>TODO: Add tooltip info</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+              </div>
+              <div className="font-mono text-2xl font-semibold">
+                {new Intl.NumberFormat("en-US").format(dummyNumber)}
+              </div>
+            </div>
+            <div className="space-y-0.5 px-2 py-3">
+              <div className="flex items-center gap-2 text-sm text-body-secondary">
+                Cost / Mega gas
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger>
+                      <InfoCircle />
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>TODO: Add tooltip info</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+              </div>
+              <div className="font-mono text-2xl font-semibold">
+                {new Intl.NumberFormat("en-US", {
+                  style: "currency",
+                  currency: "USD",
+                }).format(totalCostPerMegaGas)}
+              </div>
+            </div>
+            <div className="space-y-0.5 px-2 py-3">
+              <div className="flex items-center gap-2 text-sm text-body-secondary">
+                Cost / Mcycl
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger>
+                      <InfoCircle />
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>TODO: Add tooltip info</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+              </div>
+              <div className="font-mono text-2xl font-semibold">
+                {new Intl.NumberFormat("en-US").format(dummyNumber)}
+              </div>
+            </div>
+            <div className="space-y-0.5 px-2 py-3">
+              <div className="flex items-center gap-2 text-sm text-body-secondary">
+                Cost / Transaction
+                <TooltipProvider>
+                  <Tooltip>
+                    <TooltipTrigger>
+                      <InfoCircle />
+                    </TooltipTrigger>
+                    <TooltipContent>
+                      <p>TODO: Add tooltip info</p>
+                    </TooltipContent>
+                  </Tooltip>
+                </TooltipProvider>
+              </div>
+              <div className="font-mono text-2xl font-semibold">
+                {new Intl.NumberFormat("en-US").format(dummyNumber)}
+              </div>
             </div>
           </div>
-          <div className="space-y-0.5 px-2 py-3">
-            <div className="flex items-center gap-2 text-sm text-body-secondary">
-              Avg cost / Proof
-              <TooltipProvider>
-                <Tooltip>
-                  <TooltipTrigger>
-                    <InfoCircle />
-                  </TooltipTrigger>
-                  <TooltipContent>
-                    <p>TODO: Add tooltip info</p>
-                  </TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
-            </div>
-            <div className="font-mono text-2xl font-semibold">
-              {new Intl.NumberFormat("en-US").format(dummyNumber)}
-            </div>
-          </div>
-          <div className="space-y-0.5 px-2 py-3">
-            <div className="flex items-center gap-2 text-sm text-body-secondary">
-              Cost / Mega gas
-              <TooltipProvider>
-                <Tooltip>
-                  <TooltipTrigger>
-                    <InfoCircle />
-                  </TooltipTrigger>
-                  <TooltipContent>
-                    <p>TODO: Add tooltip info</p>
-                  </TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
-            </div>
-            <div className="font-mono text-2xl font-semibold">
-              {new Intl.NumberFormat("en-US", {
-                style: "currency",
-                currency: "USD",
-              }).format(totalCostPerMegaGas)}
-            </div>
-          </div>
-          <div className="space-y-0.5 px-2 py-3">
-            <div className="flex items-center gap-2 text-sm text-body-secondary">
-              Cost / Mcycl
-              <TooltipProvider>
-                <Tooltip>
-                  <TooltipTrigger>
-                    <InfoCircle />
-                  </TooltipTrigger>
-                  <TooltipContent>
-                    <p>TODO: Add tooltip info</p>
-                  </TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
-            </div>
-            <div className="font-mono text-2xl font-semibold">
-              {new Intl.NumberFormat("en-US").format(dummyNumber)}
-            </div>
-          </div>
-          <div className="space-y-0.5 px-2 py-3">
-            <div className="flex items-center gap-2 text-sm text-body-secondary">
-              Cost / Transaction
-              <TooltipProvider>
-                <Tooltip>
-                  <TooltipTrigger>
-                    <InfoCircle />
-                  </TooltipTrigger>
-                  <TooltipContent>
-                    <p>TODO: Add tooltip info</p>
-                  </TooltipContent>
-                </Tooltip>
-              </TooltipProvider>
-            </div>
-            <div className="font-mono text-2xl font-semibold">
-              {new Intl.NumberFormat("en-US").format(dummyNumber)}
-            </div>
-          </div>
-        </div>
-      </section>
+        </section>
+      </div>
 
       <section>
         <h2 className="flex items-center gap-2 text-lg font-normal text-primary">

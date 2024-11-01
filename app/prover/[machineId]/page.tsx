@@ -131,7 +131,7 @@ export default async function ProverPage({ params }: ProverPageProps) {
   ]
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-20">
       <HeroSection>
         <HeroTitle className="h-20 items-center gap-6">
           {machine.logo_url && (
