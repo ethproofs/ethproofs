@@ -8,15 +8,9 @@ import DollarSign from "@/components/svgs/dollar-sign.svg"
 
 import HeroDark from "@/assets/hero-background-dark.png"
 import HeroLight from "@/assets/hero-background-light.png"
-import { blockIsProven, blockIsRecent } from "@/lib/blocks"
-import { timestampWithinDays } from "@/lib/date"
+import { totalBlocksProvenRecent } from "@/lib/blocks"
 import { getMetadata } from "@/lib/metadata"
-import { formatNumber } from "@/lib/number"
-import {
-  filterRecentProven,
-  getProofsAvgCost,
-  getProofsAvgLatency,
-} from "@/lib/proofs"
+import { avgCostPerProofRecent, avgLatencyPerProofRecent } from "@/lib/proofs"
 import { createClient } from "@/utils/supabase/server"
 
 export const metadata: Metadata = getMetadata()
@@ -33,28 +27,6 @@ export default async function Index() {
 
   const proofsResponse = await supabase.from("proofs").select()
   const proofs = proofsResponse.data || []
-
-  const provenBlocksRecent = blocks
-    .filter((block) => blockIsProven(block, proofs))
-    .filter(blockIsRecent)
-
-  const totalBlocksProvenRecent = provenBlocksRecent.length
-
-  const proofsRecent = filterRecentProven(proofs)
-
-  const avgCostPerProofRecent = formatNumber(getProofsAvgCost(proofsRecent), {
-    maximumFractionDigits: 2,
-  })
-
-  const avgLatencyPerProofRecent = formatNumber(
-    getProofsAvgLatency(proofsRecent),
-    {
-      style: "unit",
-      unit: "second",
-      unitDisplay: "narrow",
-      maximumFractionDigits: 0,
-    }
-  )
 
   return (
     <div className="flex w-full flex-1 flex-col items-center gap-20">
@@ -83,7 +55,7 @@ export default async function Index() {
                 <Block />
               </p>
               <p className="font-mono text-2xl text-primary md:text-3xl lg:text-4xl">
-                {totalBlocksProvenRecent}
+                {totalBlocksProvenRecent(blocks, proofs)}
               </p>
             </div>
             <div>
@@ -101,7 +73,7 @@ export default async function Index() {
                 <DollarSign />
               </p>
               <p className="font-mono text-2xl text-primary md:text-3xl lg:text-4xl">
-                {avgCostPerProofRecent}
+                {avgCostPerProofRecent(proofs)}
               </p>
             </div>
             <div>
@@ -119,7 +91,7 @@ export default async function Index() {
                 <Clock />
               </p>
               <p className="font-mono text-2xl text-primary md:text-3xl lg:text-4xl">
-                {avgLatencyPerProofRecent}
+                {avgLatencyPerProofRecent(proofs)}
               </p>
             </div>
             <div>
