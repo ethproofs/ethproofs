@@ -10,7 +10,7 @@ export default function AboutPage() {
           <h1 className="text-4xl md:text-5xl">About</h1>
           <div className="h-px w-full bg-gradient-to-r from-primary"></div>
         </div>
-        <div className="mx-auto max-w-screen-lg">
+        <div className="max-w-screen-lg">
           <p>
             This is proof of concept that should improve over time, eventually
             proving all Ethereum blocks with reasonable costs and latency.
@@ -26,7 +26,7 @@ export default function AboutPage() {
         </div>
       </section>
 
-      <section className="mx-auto max-w-screen-lg space-y-6">
+      <section className="max-w-screen-lg space-y-6">
         <h2 className="text-2xl md:text-3xl">
           Potential benefits and use cases
         </h2>
@@ -66,7 +66,7 @@ export default function AboutPage() {
           </li>
         </ol>
       </section>
-      <section className="mx-auto max-w-screen-lg space-y-6">
+      <section className="max-w-screen-lg space-y-6">
         <h2 className="text-2xl md:text-3xl">SNARKs</h2>
         <p>
           SNARK stands for{" "}

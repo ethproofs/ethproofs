@@ -15,8 +15,6 @@ import { cn } from "@/lib/utils"
 
 import { SITE_REPO_URL } from "@/lib/constants"
 
-import { ibmPlexMono, ibmPlexSans } from "./fonts"
-
 import "../styles/globals.css"
 
 export default function RootLayout({
@@ -25,12 +23,16 @@ export default function RootLayout({
   children: React.ReactNode
 }) {
   return (
-    <html
-      lang="en"
-      className={cn(ibmPlexMono.variable, ibmPlexSans.variable)}
-      suppressHydrationWarning
-    >
-      {/* TODO: <head> */}
+    <html lang="en" suppressHydrationWarning>
+      <head>
+        <link
+          rel="preload"
+          href="/fonts/ibm-plex-mono/IBMPlexMono-Regular.woff2"
+          as="font"
+          type="font/woff2"
+          crossOrigin="anonymous"
+        />
+      </head>
       <body className="pb-80">
         <ThemeProvider attribute="class">
           <div className="mx-auto flex max-w-screen-2xl flex-col gap-16 px-4 sm:px-4 md:px-8 xl:px-16">
