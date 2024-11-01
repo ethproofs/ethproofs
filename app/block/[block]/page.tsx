@@ -44,7 +44,7 @@ import {
 import { intervalToSeconds } from "@/lib/date"
 import { getMetadata } from "@/lib/metadata"
 import { formatNumber } from "@/lib/number"
-import { proofsAvgLatency, proofsTotalCostPerMegaGas } from "@/lib/proofs"
+import { getProofsAvgLatency, proofsTotalCostPerMegaGas } from "@/lib/proofs"
 import { createClient } from "@/utils/supabase/client"
 
 const getProverLogo = (proverMachineId: number | null) => {
@@ -106,7 +106,7 @@ export default async function BlockDetailsPage({
     {
       label: "Avg latency",
       description: "The average time it takes to generate a proof.",
-      value: formatNumber(proofsAvgLatency(proofs), {
+      value: formatNumber(getProofsAvgLatency(proofs), {
         style: "unit",
         unit: "second",
         unitDisplay: "narrow",
