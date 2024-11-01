@@ -31,20 +31,26 @@ export const getProofsAvgCost = (proofs: Proof[]): number =>
   proofs.length
 
 /**
- * Calculates the total proving cost per mega gas used.
+ * Calculates the total proving cost per mega gas used and formats it as a currency string.
  *
  * @param {Proof[]} proofs - An array of proof objects.
  * @param {number} gasUsed - The total gas used.
- * @returns {number} - The total proving cost per mega gas.
+ * @returns {string} - The total proving cost per mega gas, formatted as a currency string in USD.
  */
 // TODO: Confirm logic
 export const proofsTotalCostPerMegaGas = (
   proofs: Proof[],
   gasUsed: number
-): number =>
-  proofs.reduce((acc, proof) => acc + (proof.proving_cost || 0), 0) /
-  gasUsed /
-  1e6
+): string => {
+  const value =
+    proofs.reduce((acc, proof) => acc + (proof.proving_cost || 0), 0) /
+    gasUsed /
+    1e6
+  return formatNumber(value, {
+    style: "currency",
+    currency: "USD",
+  })
+}
 
 /**
  * Checks if the proof submission time is within a certain number of days.
@@ -92,6 +98,20 @@ export const avgCostPerProofRecent = (proofs: Proof[]): string =>
  */
 export const avgLatencyPerProofRecent = (proofs: Proof[]): string =>
   formatNumber(getProofsAvgLatency(proofsFinalizedRecent(proofs)), {
+    style: "unit",
+    unit: "second",
+    unitDisplay: "narrow",
+    maximumFractionDigits: 0,
+  })
+
+/**
+ * Calculates the average latency per proof for list of proofs and formats it as a string.
+ *
+ * @param proofs - An array of Proof objects.
+ * @returns The formatted average latency per proof in seconds.
+ */
+export const avgLatencyPerProof = (proofs: Proof[]): string =>
+  formatNumber(getProofsAvgLatency(proofs.filter(proofIsProven)), {
     style: "unit",
     unit: "second",
     unitDisplay: "narrow",
