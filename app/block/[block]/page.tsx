@@ -1,4 +1,5 @@
 import type { Metadata } from "next"
+import Image from "next/image"
 import { notFound } from "next/navigation"
 
 import type { Metric } from "@/lib/types"
@@ -47,18 +48,6 @@ import { formatNumber } from "@/lib/number"
 import { getProofsAvgLatency, proofsTotalCostPerMegaGas } from "@/lib/proofs"
 import { createClient } from "@/utils/supabase/client"
 
-const getProverLogo = (proverMachineId: number | null) => {
-  // TODO: Get prover profiles
-  switch (proverMachineId) {
-    case 8:
-      return <SuccinctLogo />
-    case 2:
-      return <RiscZeroLogo />
-    default:
-      return <EthProofsLogo />
-  }
-}
-
 type BlockDetailsPageProps = {
   params: Promise<{ block: number }>
 }
@@ -83,10 +72,17 @@ export default async function BlockDetailsPage({
     .eq("block_number", block)
     .single()
 
-  if (!data || error) notFound()
+  const { data: machines } = await supabase.from("prover_machines").select("*")
+
+  if (!data || error || !machines) notFound()
 
   const { timestamp, gas_used, transaction_count, proofs } = data
 
+  const getProverLogoSrc = (machine_id: number) => {
+    const machine = machines.find((m) => m.machine_id === machine_id)
+    if (!machine?.logo_url) return ""
+    return machine.logo_url
+  }
   // TODO: Get merkle root hash, slot (epoch), and size block data
   // Dummy data:
   const size = 32735
@@ -328,7 +324,16 @@ export default async function BlockDetailsPage({
           }) => (
             <div className="space-y-4 border-b py-4" key={proof_id}>
               <div className="flex items-center">
-                <div className="py-2">{getProverLogo(prover_machine_id)}</div>
+                <div className="grid max-h-20 place-items-center">
+                  {prover_machine_id && (
+                    <Image
+                      src={getProverLogoSrc(prover_machine_id)}
+                      width={128} // TODO: Fix dynamic aspect ratio
+                      height={80}
+                      alt="Prover logo"
+                    />
+                  )}
+                </div>
                 <Button
                   variant="outline"
                   className="ms-auto h-8 w-8 gap-2 text-2xl text-primary md:w-fit"
