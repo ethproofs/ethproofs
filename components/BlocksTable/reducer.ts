@@ -1,4 +1,9 @@
-import { Block, BlockWithProofsIds, Proof } from "@/lib/types"
+import {
+  Block,
+  BlockWithProofsId,
+  BlockWithProofsIds,
+  Proof,
+} from "@/lib/types"
 
 export type State = {
   blocks: {
@@ -74,7 +79,7 @@ export const createInitialState = ({
   blocks,
   proofs,
 }: {
-  blocks: (Block & { proofs: { id: number }[] })[]
+  blocks: BlockWithProofsId[]
   proofs: Proof[]
 }): State => ({
   blocks: {

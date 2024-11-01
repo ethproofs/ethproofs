@@ -3,6 +3,7 @@
 @tailwind utilities;
 
 @import "@/styles/colors.css";
+@import "@/styles/fonts.css";
 @import "@/styles/semantic-tokens.css";
 
 @layer base {
