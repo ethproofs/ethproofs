@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect,useState } from "react"
+import { useEffect, useState } from "react"
 import { useTheme } from "next-themes"
 
 import ArrowDropdown from "@/components/svgs/arrow-dropdown.svg"
@@ -56,9 +56,9 @@ const ThemeSwitch = () => {
   ]
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger className="box-content flex h-3.5 w-fit items-center gap-2 rounded-full border border-primary px-2 py-1.5 text-primary">
+      <DropdownMenuTrigger className="group box-content flex h-3.5 w-fit items-center gap-2 rounded-full border border-primary px-2 py-1.5 text-primary [&[data-state=open]]:bg-background-highlight">
         <ThemeIcon className="!text-body" />
-        <ArrowDropdown />
+        <ArrowDropdown className="transition-transform duration-100 group-[&[data-state=open]]:-scale-y-100" />
       </DropdownMenuTrigger>
 
       <DropdownMenuContent>

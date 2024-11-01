@@ -140,7 +140,7 @@ export default async function ProverPage({ params }: ProverPageProps) {
   ]
 
   return (
-    <div className="space-y-8">
+    <div className="space-y-20">
       <HeroSection>
         <HeroTitle className="items-center py-6">
           <profile.logo />

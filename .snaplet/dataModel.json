@@ -2955,6 +2955,20 @@
           "maxLength": null
         },
         {
+          "id": "public.prover_machines.logo_url",
+          "name": "logo_url",
+          "columnName": "logo_url",
+          "type": "text",
+          "isRequired": false,
+          "kind": "scalar",
+          "isList": false,
+          "isGenerated": false,
+          "sequence": false,
+          "hasDefaultValue": false,
+          "isId": false,
+          "maxLength": null
+        },
+        {
           "name": "users",
           "type": "users",
           "isRequired": false,
