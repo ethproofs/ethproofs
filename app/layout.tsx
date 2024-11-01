@@ -2,7 +2,7 @@ import Link from "next/link"
 import { ThemeProvider } from "next-themes"
 
 import ActiveLinkDecorator from "@/components/ActiveLinkDecorator"
-import HeaderScrollEffects from "@/components/HeaderBackdrop"
+import HeaderScrollEffects from "@/components/HeaderScrollEffects"
 import EthProofsLogo from "@/components/svgs/eth-proofs-logo.svg"
 import GitHub from "@/components/svgs/github.svg"
 import Hamburger from "@/components/svgs/hamburger.svg"
