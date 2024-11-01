@@ -156,16 +156,19 @@ export type Database = {
       }
       prover_machines: {
         Row: {
+          logo_url: string | null
           machine_id: number
           machine_name: string
           user_id: string | null
         }
         Insert: {
+          logo_url?: string | null
           machine_id?: number
           machine_name: string
           user_id?: string | null
         }
         Update: {
+          logo_url?: string | null
           machine_id?: number
           machine_name?: string
           user_id?: string | null
