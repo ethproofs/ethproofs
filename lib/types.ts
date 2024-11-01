@@ -11,3 +11,5 @@ export type Metric = {
   description: string
   value: string
 }
+
+export type BlockWithProofsId = Block & { proofs: { id: number }[] }

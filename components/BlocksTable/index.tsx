@@ -2,7 +2,7 @@
 
 import { Reducer, useEffect, useReducer } from "react"
 
-import type { Block, Proof } from "@/lib/types"
+import type { Block, BlockWithProofsId, Proof } from "@/lib/types"
 
 import DataTable from "@/components/ui/data-table"
 
@@ -12,7 +12,7 @@ import { Actions, createInitialState, reducer, State } from "./reducer"
 import { createClient } from "@/utils/supabase/client"
 
 type Props = {
-  blocks: (Block & { proofs: { id: number }[] })[]
+  blocks: BlockWithProofsId[]
   proofs: Proof[]
   className?: string
 }
@@ -20,7 +20,7 @@ type Props = {
 const BlocksTable = ({ blocks, proofs, className }: Props) => {
   const [state, dispatch] = useReducer<
     Reducer<State, Actions>,
-    { blocks: (Block & { proofs: { id: number }[] })[]; proofs: Proof[] }
+    { blocks: BlockWithProofsId[]; proofs: Proof[] }
   >(reducer, { blocks, proofs }, createInitialState)
 
   const supabase = createClient()
