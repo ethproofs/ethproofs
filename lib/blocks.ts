@@ -1,5 +1,9 @@
-import { type Block,createPublicClient, http } from "viem"
+import { type Block as ViemBlock, createPublicClient, http } from "viem"
 import { mainnet } from "viem/chains"
+
+import type { Block, BlockWithProofsId, Proof } from "@/lib/types"
+
+import { timestampWithinDays } from "./date"
 
 const client = createPublicClient({
   chain: mainnet,
@@ -7,7 +11,7 @@ const client = createPublicClient({
   transport: http(),
 })
 
-function calculateTotalFees(block: Block<bigint, true>): bigint {
+function calculateTotalFees(block: ViemBlock<bigint, true>): bigint {
   let totalFees = BigInt(0)
 
   for (const tx of block.transactions) {
@@ -47,3 +51,9 @@ export const fetchBlockData = async (block_number: number) => {
     hash: block.hash,
   }
 }
+
+export const blockIsRecent = ({ timestamp }: Block): boolean =>
+  timestampWithinDays(timestamp)
+
+export const blockIsProven = (block: BlockWithProofsId, allProofs: Proof[]) =>
+  block.proofs.some(({ id }) => allProofs.find((p) => p.proof_id === id))
