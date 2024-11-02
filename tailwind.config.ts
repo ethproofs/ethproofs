@@ -36,6 +36,9 @@ const config = {
         sm: ["0.875rem", "1.375rem"],
         xs: ["0.75rem", "1.125rem"],
       },
+      gridTemplateColumns: {
+        "6-auto": "repeat(5, 1fr) auto",
+      },
       colors: {
         background: {
           DEFAULT: "hsla(var(--background))",

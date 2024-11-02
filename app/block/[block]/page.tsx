@@ -334,7 +334,7 @@ export default async function BlockDetailsPage({
                 className={cn(
                   "grid grid-flow-dense grid-cols-4 grid-rows-3",
                   "sm:grid-rows-2",
-                  "md:grid-cols-6 md:grid-rows-1"
+                  "md:grid-cols-6-auto md:grid-rows-1"
                 )}
                 key={proof_id}
               >
@@ -366,7 +366,7 @@ export default async function BlockDetailsPage({
                   )}
                 >
                   <ArrowDown />
-                  <span className="hidden text-xs font-bold sm:block md:hidden lg:block">
+                  <span className="hidden text-nowrap text-xs font-bold sm:block md:hidden lg:block">
                     Download proof
                   </span>
                 </Button>
@@ -418,10 +418,10 @@ export default async function BlockDetailsPage({
                     "col-span-2 col-start-3 row-span-1 row-start-3",
                     "sm:col-span-1 sm:col-start-4 sm:row-span-1 sm:row-start-2",
                     "md:col-span-1 md:col-start-5 md:row-span-1 md:row-start-1",
-                    "sm:text-end"
+                    "sm:max-md:text-end"
                   )}
                 >
-                  <MetricLabel className="sm:justify-end">
+                  <MetricLabel className="sm:max-md:justify-end">
                     Proving cost
                   </MetricLabel>
                   <MetricValue>
