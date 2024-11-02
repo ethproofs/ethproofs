@@ -328,7 +328,7 @@ export default async function BlockDetailsPage({
             proving_cost,
             proving_cycles,
           }) => {
-            const props = getProverLogoImgProps(prover_machine_id)
+            const imgProps = getProverLogoImgProps(prover_machine_id)
             return (
               <div
                 className={cn(
@@ -346,10 +346,10 @@ export default async function BlockDetailsPage({
                     "md:col-span-1 md:col-start-1 md:row-span-1 md:row-start-1"
                   )}
                 >
-                  {props && (
+                  {imgProps && (
                     <Image
-                      src={props.src}
-                      alt={props.alt}
+                      src={imgProps.src}
+                      alt={imgProps.alt}
                       fill
                       sizes="100vw"
                       className="object-contain object-left"
