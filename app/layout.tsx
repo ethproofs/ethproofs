@@ -1,5 +1,5 @@
-import Link from "next/link"
 import { ThemeProvider } from "next-themes"
+import Link from "next/link"
 
 import ActiveLinkDecorator from "@/components/ActiveLinkDecorator"
 import HeaderScrollEffects from "@/components/HeaderScrollEffects"
@@ -9,14 +9,13 @@ import Hamburger from "@/components/svgs/hamburger.svg"
 import Magnifier from "@/components/svgs/magnifier.svg"
 import ThemeSwitch from "@/components/ThemeSwitch"
 import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
 
 import { cn } from "@/lib/utils"
 
 import { SITE_REPO_URL } from "@/lib/constants"
 
-import "../styles/globals.css"
 import DesktopSearch from "@/components/DesktopSearch"
+import "../styles/globals.css"
 
 export default function RootLayout({
   children,
