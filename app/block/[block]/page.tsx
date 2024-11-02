@@ -1,5 +1,5 @@
 import type { Metadata } from "next"
-import Image from "next/image"
+import Image, { type ImageProps } from "next/image"
 import { notFound } from "next/navigation"
 
 import type { Metric } from "@/lib/types"
@@ -78,10 +78,18 @@ export default async function BlockDetailsPage({
 
   const { timestamp, gas_used, transaction_count, proofs } = data
 
-  const getProverLogoSrc = (machine_id: number) => {
+  const getProverLogoImgProps = (
+    machine_id: number | null
+  ): Pick<ImageProps, "src" | "alt"> | null => {
+    if (!machine_id) return null
+
     const machine = machines.find((m) => m.machine_id === machine_id)
-    if (!machine?.logo_url) return ""
-    return machine.logo_url
+
+    if (!machine?.logo_url) return null
+    return {
+      src: machine.logo_url,
+      alt: `${machine.machine_name} logo`,
+    }
   }
   // TODO: Get merkle root hash, slot (epoch), and size block data
   // Dummy data:
@@ -321,70 +329,74 @@ export default async function BlockDetailsPage({
             prover_machine_id,
             proving_cost,
             proving_cycles,
-          }) => (
-            <div className="space-y-4 border-b py-4" key={proof_id}>
-              <div className="flex items-center">
-                <div className="grid max-h-20 place-items-center">
-                  {prover_machine_id && (
-                    <Image
-                      src={getProverLogoSrc(prover_machine_id)}
-                      width={128} // TODO: Fix dynamic aspect ratio
-                      height={80}
-                      alt="Prover logo"
-                    />
-                  )}
+          }) => {
+            const props = getProverLogoImgProps(prover_machine_id)
+            return (
+              <div className="space-y-4 border-b py-4" key={proof_id}>
+                <div className="flex items-center">
+                  <div className="relative flex h-20 w-52 items-center">
+                    {props && (
+                      <Image
+                        src={props.src}
+                        alt={props.alt}
+                        fill
+                        sizes="100vw"
+                        style={{ objectFit: "contain" }}
+                      />
+                    )}
+                  </div>
+                  <Button
+                    variant="outline"
+                    className="ms-auto h-8 w-8 gap-2 text-2xl text-primary md:w-fit"
+                  >
+                    <ArrowDown />
+                    <span className="text-xs font-bold max-md:hidden">
+                      Download proof
+                    </span>
+                  </Button>
                 </div>
-                <Button
-                  variant="outline"
-                  className="ms-auto h-8 w-8 gap-2 text-2xl text-primary md:w-fit"
-                >
-                  <ArrowDown />
-                  <span className="text-xs font-bold max-md:hidden">
-                    Download proof
-                  </span>
-                </Button>
+                <div className="grid grid-cols-2 gap-x-2 gap-y-6 md:grid-cols-4 lg:grid-cols-5">
+                  <div>
+                    <div className="text-body-secondary">Time to proof</div>
+                    <div className="text-2xl">{prover_duration as string}</div>
+                  </div>
+                  <div>
+                    <div className="text-body-secondary">Latency</div>
+                    <div className="text-2xl">
+                      {new Intl.NumberFormat("en-US", {
+                        style: "unit",
+                        unit: "second",
+                        unitDisplay: "narrow",
+                      }).format(intervalToSeconds(prover_duration as string))}
+                    </div>
+                  </div>
+                  <div>
+                    <div className="text-body-secondary">zkVM cycles</div>
+                    <div className="text-2xl">
+                      {proving_cycles
+                        ? new Intl.NumberFormat("en-US", {
+                            // notation: "compact",
+                            // compactDisplay: "short",
+                          }).format(proving_cycles)
+                        : ""}
+                    </div>
+                  </div>
+                  <div>
+                    <div className="text-body-secondary">Proving cost</div>
+                    <div className="text-2xl">
+                      {/* TODO: Confirm cost unit */}
+                      {proving_cost
+                        ? new Intl.NumberFormat("en-US", {
+                            style: "currency",
+                            currency: "USD",
+                          }).format(proving_cost)
+                        : ""}
+                    </div>
+                  </div>
+                </div>
               </div>
-              <div className="grid grid-cols-2 gap-x-2 gap-y-6 md:grid-cols-4 lg:grid-cols-5">
-                <div>
-                  <div className="text-body-secondary">Time to proof</div>
-                  <div className="text-2xl">{prover_duration as string}</div>
-                </div>
-                <div>
-                  <div className="text-body-secondary">Latency</div>
-                  <div className="text-2xl">
-                    {new Intl.NumberFormat("en-US", {
-                      style: "unit",
-                      unit: "second",
-                      unitDisplay: "narrow",
-                    }).format(intervalToSeconds(prover_duration as string))}
-                  </div>
-                </div>
-                <div>
-                  <div className="text-body-secondary">zkVM cycles</div>
-                  <div className="text-2xl">
-                    {proving_cycles
-                      ? new Intl.NumberFormat("en-US", {
-                          // notation: "compact",
-                          // compactDisplay: "short",
-                        }).format(proving_cycles)
-                      : ""}
-                  </div>
-                </div>
-                <div>
-                  <div className="text-body-secondary">Proving cost</div>
-                  <div className="text-2xl">
-                    {/* TODO: Confirm cost unit */}
-                    {proving_cost
-                      ? new Intl.NumberFormat("en-US", {
-                          style: "currency",
-                          currency: "USD",
-                        }).format(proving_cost)
-                      : ""}
-                  </div>
-                </div>
-              </div>
-            </div>
-          )
+            )
+          }
         )}
       </section>
 
