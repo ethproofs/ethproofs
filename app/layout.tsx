@@ -1,3 +1,5 @@
+/* eslint-disable simple-import-sort/imports */
+
 import { ThemeProvider } from "next-themes"
 import Link from "next/link"
 

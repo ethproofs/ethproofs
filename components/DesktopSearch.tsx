@@ -1,3 +1,5 @@
+/* eslint-disable simple-import-sort/imports */
+
 "use client"
 
 import { useEffect, useRef, useState } from "react"
