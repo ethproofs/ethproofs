@@ -134,14 +134,17 @@ export default async function ProverPage({ params }: ProverPageProps) {
     <div className="space-y-20">
       <HeroSection>
         <HeroTitle className="h-20 items-center gap-6">
-          {machine.logo_url && (
-            <Image
-              src={machine.logo_url}
-              alt={`${machine.machine_name} logo`}
-              width={128}
-              height={80}
-            />
-          )}
+          <div className="relative h-20 w-56">
+            {machine.logo_url && (
+              <Image
+                src={machine.logo_url}
+                alt={`${machine.machine_name} logo`}
+                fill
+                sizes="100vw"
+                className="object-contain object-left"
+              />
+            )}
+          </div>
           <h1 className="font-mono text-3xl font-semibold">
             {machine.machine_name}
           </h1>
