@@ -334,14 +334,14 @@ export default async function BlockDetailsPage({
             return (
               <div className="space-y-4 border-b py-4" key={proof_id}>
                 <div className="flex items-center">
-                  <div className="relative flex h-20 w-52 items-center">
+                  <div className="relative flex h-14 w-40 items-center">
                     {props && (
                       <Image
                         src={props.src}
                         alt={props.alt}
                         fill
                         sizes="100vw"
-                        style={{ objectFit: "contain" }}
+                        className="object-contain object-left"
                       />
                     )}
                   </div>
