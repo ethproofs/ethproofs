@@ -40,6 +40,7 @@ const config = {
         background: {
           DEFAULT: "hsla(var(--background))",
           highlight: "hsla(var(--background-highlight))",
+          active: "hsla(var(--background-active))",
         },
         primary: {
           DEFAULT: "hsla(var(--primary))",

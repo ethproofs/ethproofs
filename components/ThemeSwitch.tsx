@@ -66,9 +66,7 @@ const ThemeSwitch = () => {
           <DropdownMenuItem
             key={item.id}
             onClick={() => setTheme(item.id)}
-            className={cn(
-              theme === item.id && "bg-green-300 dark:bg-primary-border"
-            )}
+            className={cn(theme === item.id && "bg-background-active")}
           >
             <div className="flex items-center gap-2 p-2.5">
               <item.icon />
