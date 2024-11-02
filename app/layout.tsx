@@ -16,6 +16,7 @@ import { cn } from "@/lib/utils"
 import { SITE_REPO_URL } from "@/lib/constants"
 
 import "../styles/globals.css"
+import DesktopSearch from "@/components/DesktopSearch"
 
 export default function RootLayout({
   children,
@@ -54,20 +55,7 @@ export default function RootLayout({
 
               {/* Header center */}
               <div className="flex justify-center">
-                {/* Tablet */}
-                <Input
-                  type="text"
-                  className="relative hidden max-w-56 md:max-lg:flex"
-                  placeholder="Search"
-                  // TODO: Add magnifier icon; implement search
-                />
-                {/* Desktop */}
-                <Input
-                  type="text"
-                  className="relative max-w-96 max-lg:hidden"
-                  placeholder="Search by slot number / block hash / block number / prover"
-                  // TODO: Add magnifier icon; implement search
-                />
+                <DesktopSearch />
               </div>
 
               {/* Header end */}
