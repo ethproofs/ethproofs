@@ -9,7 +9,6 @@ import DollarSign from "@/components/svgs/dollar-sign.svg"
 import HeroDark from "@/assets/hero-background-dark.png"
 import HeroLight from "@/assets/hero-background-light.png"
 import { blockIsProven, blockIsRecent } from "@/lib/blocks"
-import { timestampWithinDays } from "@/lib/date"
 import { getMetadata } from "@/lib/metadata"
 import { formatNumber } from "@/lib/number"
 import {
@@ -34,9 +33,8 @@ export default async function Index() {
   const proofsResponse = await supabase.from("proofs").select()
   const proofs = proofsResponse.data || []
 
-  const provenBlocksRecent = blocks
-    .filter((block) => blockIsProven(block, proofs))
-    .filter(blockIsRecent)
+  const provenBlocks = blocks.filter((block) => blockIsProven(block, proofs))
+  const provenBlocksRecent = provenBlocks.filter(blockIsRecent) // For summary
 
   const totalBlocksProvenRecent = provenBlocksRecent.length
 
@@ -134,7 +132,7 @@ export default async function Index() {
         </div>
       </div>
 
-      <BlocksTable blocks={blocks || []} proofs={proofs} />
+      <BlocksTable blocks={provenBlocks || []} proofs={proofs} />
     </div>
   )
 }
