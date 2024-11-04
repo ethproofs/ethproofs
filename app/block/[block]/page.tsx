@@ -1,7 +1,7 @@
+/* eslint-disable simple-import-sort/imports */
 import type { Metadata } from "next"
+import Image, { type ImageProps } from "next/image"
 import { notFound } from "next/navigation"
-
-import type { Metric } from "@/lib/types"
 
 import LearnMore from "@/components/LearnMore"
 import ArrowDown from "@/components/svgs/arrow-down.svg"
@@ -11,13 +11,10 @@ import Clock from "@/components/svgs/clock.svg"
 import Copy from "@/components/svgs/copy.svg"
 import Cpu from "@/components/svgs/cpu.svg"
 import DollarSign from "@/components/svgs/dollar-sign.svg"
-import EthProofsLogo from "@/components/svgs/eth-proofs-logo.svg"
 import Hash from "@/components/svgs/hash.svg"
 import InfoCircle from "@/components/svgs/info-circle.svg"
 import Layers from "@/components/svgs/layers.svg"
 import ProofCircle from "@/components/svgs/proof-circle.svg"
-import RiscZeroLogo from "@/components/svgs/risc-zero-logo.svg"
-import SuccinctLogo from "@/components/svgs/succinct-logo.svg"
 import TrendingUp from "@/components/svgs/trending-up.svg"
 import { Button } from "@/components/ui/button"
 import {
@@ -45,19 +42,9 @@ import { intervalToSeconds } from "@/lib/date"
 import { getMetadata } from "@/lib/metadata"
 import { formatNumber } from "@/lib/number"
 import { getProofsAvgLatency, proofsTotalCostPerMegaGas } from "@/lib/proofs"
+import type { Metric } from "@/lib/types"
+import { cn } from "@/lib/utils"
 import { createClient } from "@/utils/supabase/client"
-
-const getProverLogo = (proverMachineId: number | null) => {
-  // TODO: Get prover profiles
-  switch (proverMachineId) {
-    case 8:
-      return <SuccinctLogo />
-    case 2:
-      return <RiscZeroLogo />
-    default:
-      return <EthProofsLogo />
-  }
-}
 
 type BlockDetailsPageProps = {
   params: Promise<{ block: number }>
@@ -83,10 +70,25 @@ export default async function BlockDetailsPage({
     .eq("block_number", block)
     .single()
 
-  if (!data || error) notFound()
+  const { data: machines } = await supabase.from("prover_machines").select("*")
+
+  if (!data || error || !machines) notFound()
 
   const { timestamp, gas_used, transaction_count, proofs } = data
 
+  const getProverLogoImgProps = (
+    machine_id: number | null
+  ): Pick<ImageProps, "src" | "alt"> | null => {
+    if (!machine_id) return null
+
+    const machine = machines.find((m) => m.machine_id === machine_id)
+
+    if (!machine?.logo_url) return null
+    return {
+      src: machine.logo_url,
+      alt: `${machine.machine_name} logo`,
+    }
+  }
   // TODO: Get merkle root hash, slot (epoch), and size block data
   // Dummy data:
   const size = 32735
@@ -198,7 +200,7 @@ export default async function BlockDetailsPage({
           <h2 className="flex items-center gap-2 text-lg font-normal text-primary">
             <TrendingUp /> Zero-knowledge proofs
           </h2>
-          <div className="flex flex-wrap gap-x-8">
+          <div className="grid grid-cols-2 gap-x-8 sm:flex sm:flex-wrap">
             {performanceItems.map(({ label, description, value }) => (
               <MetricBox key={label}>
                 <MetricLabel>
@@ -215,7 +217,7 @@ export default async function BlockDetailsPage({
           <h2 className="flex items-center gap-2 text-lg font-normal text-primary">
             <DollarSign /> Block fees
           </h2>
-          <div className="flex flex-wrap gap-x-8">
+          <div className="grid grid-cols-2 gap-x-8 sm:flex sm:flex-wrap">
             <div className="space-y-0.5 px-2 py-3">
               <div className="flex items-center gap-2 text-sm text-body-secondary">
                 Total fees
@@ -325,61 +327,115 @@ export default async function BlockDetailsPage({
             prover_machine_id,
             proving_cost,
             proving_cycles,
-          }) => (
-            <div className="space-y-4 border-b py-4" key={proof_id}>
-              <div className="flex items-center">
-                <div className="py-2">{getProverLogo(prover_machine_id)}</div>
+          }) => {
+            const imgProps = getProverLogoImgProps(prover_machine_id)
+            return (
+              <div
+                className={cn(
+                  "grid grid-flow-dense grid-cols-4 grid-rows-3",
+                  "sm:grid-rows-2",
+                  "md:grid-cols-6-auto md:grid-rows-1"
+                )}
+                key={proof_id}
+              >
+                <div
+                  className={cn(
+                    "relative flex h-14 w-40 self-center",
+                    "col-span-3 col-start-1 row-span-1 row-start-1",
+                    "sm:col-span-2 sm:col-start-1 sm:row-span-1 sm:row-start-1",
+                    "md:col-span-1 md:col-start-1 md:row-span-1 md:row-start-1"
+                  )}
+                >
+                  {imgProps && (
+                    <Image
+                      src={imgProps.src}
+                      alt={imgProps.alt}
+                      fill
+                      sizes="100vw"
+                      className="object-contain object-left"
+                    />
+                  )}
+                </div>
                 <Button
                   variant="outline"
-                  className="ms-auto h-8 w-8 gap-2 text-2xl text-primary md:w-fit"
+                  className={cn(
+                    "ms-auto h-8 w-8 min-w-fit gap-2 self-center text-2xl text-primary",
+                    "col-span-1 col-start-4 row-span-1 row-start-1",
+                    "sm:col-span-2 sm:col-start-3 sm:row-span-1 sm:row-start-1",
+                    "md:col-span-1 md:col-start-6 md:row-span-1 md:row-start-1"
+                  )}
                 >
                   <ArrowDown />
-                  <span className="text-xs font-bold max-md:hidden">
+                  <span className="hidden text-nowrap text-xs font-bold sm:block md:hidden lg:block">
                     Download proof
                   </span>
                 </Button>
-              </div>
-              <div className="grid grid-cols-2 gap-x-2 gap-y-6 md:grid-cols-4 lg:grid-cols-5">
-                <div>
-                  <div className="text-body-secondary">Time to proof</div>
-                  <div className="text-2xl">{prover_duration as string}</div>
-                </div>
-                <div>
-                  <div className="text-body-secondary">Latency</div>
-                  <div className="text-2xl">
+                <MetricBox
+                  className={cn(
+                    "col-span-2 col-start-1 row-span-1 row-start-2",
+                    "sm:col-span-1 sm:col-start-1 sm:row-span-1 sm:row-start-2",
+                    "md:col-span-1 md:col-start-2 md:row-span-1 md:row-start-1"
+                  )}
+                >
+                  <MetricLabel>Time to proof</MetricLabel>
+                  <MetricValue>{prover_duration as string}</MetricValue>
+                </MetricBox>
+                <MetricBox
+                  className={cn(
+                    "col-span-2 col-start-3 row-span-1 row-start-2",
+                    "sm:col-span-1 sm:col-start-2 sm:row-span-1 sm:row-start-2",
+                    "md:col-span-1 md:col-start-3 md:row-span-1 md:row-start-1"
+                  )}
+                >
+                  <MetricLabel>Latency</MetricLabel>
+                  <MetricValue>
                     {new Intl.NumberFormat("en-US", {
                       style: "unit",
                       unit: "second",
                       unitDisplay: "narrow",
                     }).format(intervalToSeconds(prover_duration as string))}
-                  </div>
-                </div>
-                <div>
-                  <div className="text-body-secondary">zkVM cycles</div>
-                  <div className="text-2xl">
+                  </MetricValue>
+                </MetricBox>
+                <MetricBox
+                  className={cn(
+                    "col-span-2 col-start-1 row-span-1 row-start-3",
+                    "sm:col-span-1 sm:col-start-3 sm:row-span-1 sm:row-start-2",
+                    "md:col-span-1 md:col-start-4 md:row-span-1 md:row-start-1"
+                  )}
+                >
+                  <MetricLabel>zkVM cycles</MetricLabel>
+                  <MetricValue>
                     {proving_cycles
                       ? new Intl.NumberFormat("en-US", {
                           // notation: "compact",
                           // compactDisplay: "short",
                         }).format(proving_cycles)
                       : ""}
-                  </div>
-                </div>
-                <div>
-                  <div className="text-body-secondary">Proving cost</div>
-                  <div className="text-2xl">
-                    {/* TODO: Confirm cost unit */}
+                  </MetricValue>
+                </MetricBox>
+                <MetricBox
+                  className={cn(
+                    "col-span-2 col-start-3 row-span-1 row-start-3",
+                    "sm:col-span-1 sm:col-start-4 sm:row-span-1 sm:row-start-2",
+                    "md:col-span-1 md:col-start-5 md:row-span-1 md:row-start-1",
+                    "sm:max-md:text-end"
+                  )}
+                >
+                  <MetricLabel className="sm:max-md:justify-end">
+                    Proving cost
+                  </MetricLabel>
+                  <MetricValue>
                     {proving_cost
                       ? new Intl.NumberFormat("en-US", {
                           style: "currency",
                           currency: "USD",
                         }).format(proving_cost)
                       : ""}
-                  </div>
-                </div>
+                  </MetricValue>
+                </MetricBox>
               </div>
-            </div>
-          )
+            )
+          }
         )}
       </section>
 
