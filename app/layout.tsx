@@ -1,5 +1,7 @@
-import Link from "next/link"
+/* eslint-disable simple-import-sort/imports */
+
 import { ThemeProvider } from "next-themes"
+import Link from "next/link"
 
 import ActiveLinkDecorator from "@/components/ActiveLinkDecorator"
 import HeaderScrollEffects from "@/components/HeaderScrollEffects"
@@ -9,12 +11,22 @@ import Hamburger from "@/components/svgs/hamburger.svg"
 import Magnifier from "@/components/svgs/magnifier.svg"
 import ThemeSwitch from "@/components/ThemeSwitch"
 import { Button } from "@/components/ui/button"
-import { Input } from "@/components/ui/input"
+import {
+  Drawer,
+  DrawerClose,
+  DrawerContent,
+  DrawerDescription,
+  DrawerFooter,
+  DrawerHeader,
+  DrawerTitle,
+  DrawerTrigger,
+} from "@/components/ui/drawer"
 
 import { cn } from "@/lib/utils"
 
 import { SITE_REPO_URL } from "@/lib/constants"
 
+import DesktopSearch from "@/components/DesktopSearch"
 import "../styles/globals.css"
 
 export default function RootLayout({
@@ -54,20 +66,7 @@ export default function RootLayout({
 
               {/* Header center */}
               <div className="flex justify-center">
-                {/* Tablet */}
-                <Input
-                  type="text"
-                  className="relative hidden max-w-56 md:max-lg:flex"
-                  placeholder="Search"
-                  // TODO: Add magnifier icon; implement search
-                />
-                {/* Desktop */}
-                <Input
-                  type="text"
-                  className="relative max-w-96 max-lg:hidden"
-                  placeholder="Search by slot number / block hash / block number / prover"
-                  // TODO: Add magnifier icon; implement search
-                />
+                <DesktopSearch />
               </div>
 
               {/* Header end */}
@@ -96,9 +95,50 @@ export default function RootLayout({
                     {/* TODO: Implement search */}
                     <Magnifier />
                   </Button>
-                  <Button variant="solid" className="size-[2rem] p-2">
-                    <Hamburger />
-                  </Button>
+                  <Drawer>
+                    <DrawerTrigger asChild>
+                      <Button variant="solid" className="size-[2rem] p-2">
+                        <Hamburger />
+                      </Button>
+                    </DrawerTrigger>
+                    <DrawerContent>
+                      <DrawerHeader className="space-y-16">
+                        <DrawerTitle className="mb-4 flex items-center justify-between gap-4">
+                          <Link href="/" className="ms-4">
+                            <EthProofsLogo />
+                          </Link>
+                          <DrawerClose asChild>
+                            <Button variant="ghost">Close</Button>
+                          </DrawerClose>
+                        </DrawerTitle>
+                        <DrawerDescription className="">
+                          <nav>
+                            <ul className="space-y-12 text-center">
+                              <li className="list-none">
+                                <Button variant="ghost" size="lg" asChild>
+                                  <Link href="/">Proofs</Link>
+                                </Button>
+                              </li>
+                              <li className="list-none">
+                                <Button variant="ghost" size="lg" asChild>
+                                  <Link href="/about">About</Link>
+                                </Button>
+                              </li>
+                            </ul>
+                          </nav>
+                        </DrawerDescription>
+                      </DrawerHeader>
+                      <DrawerFooter>
+                        <nav className="flex justify-center">
+                          <Button variant="ghost" size="lg" asChild>
+                            <Link href={SITE_REPO_URL}>
+                              <GitHub /> GitHub
+                            </Link>
+                          </Button>
+                        </nav>
+                      </DrawerFooter>
+                    </DrawerContent>
+                  </Drawer>
                 </div>
               </div>
             </header>
