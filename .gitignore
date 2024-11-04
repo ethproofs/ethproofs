@@ -40,3 +40,5 @@ sitemap*.xml
 
 # Robots.txt
 robots.txt
+
+.trigger

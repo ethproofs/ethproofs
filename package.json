@@ -23,6 +23,7 @@
     "@supabase/ssr": "latest",
     "@supabase/supabase-js": "latest",
     "@tanstack/react-table": "^8.20.5",
+    "@trigger.dev/sdk": "^3.1.1",
     "autoprefixer": "10.4.17",
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.1",
@@ -45,6 +46,7 @@
     "@snaplet/copycat": "^5.0.0",
     "@snaplet/seed": "^0.98.0",
     "@svgr/webpack": "^8.1.0",
+    "@trigger.dev/build": "^3.1.1",
     "@types/node": "20.11.5",
     "@types/pg": "^8.11.10",
     "@types/react": "18.2.48",
@@ -64,5 +66,6 @@
     "tailwindcss": "3.4.1",
     "typescript": "5.3.3",
     "viem": "^2.21.37"
-  }
+  },
+  "packageManager": "pnpm@9.12.3+sha512.cce0f9de9c5a7c95bef944169cc5dfe8741abfb145078c0d508b868056848a87c81e626246cb60967cbd7fd29a6c062ef73ff840d96b3c86c40ac92cf4a813ee"
 }
