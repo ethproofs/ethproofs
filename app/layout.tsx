@@ -122,7 +122,7 @@ export default function RootLayout({
                             <Button variant="ghost">Close</Button>
                           </DrawerClose>
                         </DrawerTitle>
-                        <DrawerDescription className="">
+                        <DrawerDescription className="space-y-12">
                           <nav>
                             <ul className="space-y-12 text-center">
                               <li className="list-none">
@@ -137,6 +137,9 @@ export default function RootLayout({
                               </li>
                             </ul>
                           </nav>
+                          <div className="flex justify-center">
+                            <ThemeSwitch />
+                          </div>
                         </DrawerDescription>
                       </DrawerHeader>
                       <DrawerFooter>
