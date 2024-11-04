@@ -53,7 +53,7 @@ const HeroItem = React.forwardRef<
   HTMLDivElement,
   React.HTMLAttributes<HTMLDivElement>
 >(({ className, ...props }, ref) => (
-  <div ref={ref} className={cn("space-y-0.5", className)} {...props} />
+  <div ref={ref} className={cn("space-y-0.5 max-w-full", className)} {...props} />
 ))
 HeroItem.displayName = "HeroItem"
 
