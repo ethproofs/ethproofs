@@ -11,8 +11,8 @@ const buttonVariants = cva(
     "inline-flex gap-4 items-center justify-center rounded-full border border-solid transition [&>svg]:shrink-0",
     // Base default styling is "outline" pattern, primary color for text, border matches, no bg
     "text-primary border-current",
-    // Hover: Default hover adds box-shadow, text (border) to --primary-hover
-    "hover:bg-background-highlight dark:hover:bg-primary-border",
+    // Hover: Default hover changes bg to --background-active
+    "hover:bg-background-active",
     // isSecondary: Switch text (border) to --body instead of --primary
     "[&[data-secondary='true']]:text-body"
   ),
