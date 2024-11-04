@@ -99,6 +99,14 @@ export const columns: ColumnDef<BlockWithProofs>[] = [
           0
         ) / proofs.length
 
+      const getStatusColorClass = (status: string) => {
+        if (status === "proved") return "bg-primary"
+        if (status === "queued")
+          return "bg-transparent outline outline-1 -outline-offset-1 outline-body-secondary"
+        if (status === "proving") return "bg-body-secondary"
+        return "bg-red-500" // TODO: Confirm / tokenize
+      }
+
       return (
         <div className="flex justify-center">
           <div className="flex flex-col gap-2">
@@ -108,9 +116,7 @@ export const columns: ColumnDef<BlockWithProofs>[] = [
                   key={proof.proof_id}
                   className={cn(
                     "h-2 w-2 rounded-full",
-                    proof.proof_status === "proved"
-                      ? "bg-primary"
-                      : "bg-body-secondary"
+                    getStatusColorClass(proof.proof_status)
                   )}
                 />
               ))}
