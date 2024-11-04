@@ -19,16 +19,32 @@ const main = async () => {
     }))
   )
 
-  const logoUrls = [
-    "https://ibkqxhjnroghhtfyualc.supabase.co/storage/v1/object/public/public-assets/succinct-logo.svg",
-    "https://ibkqxhjnroghhtfyualc.supabase.co/storage/v1/object/public/public-assets/risc-zero-logo.svg",
+  const proverProfiles = [
+    {
+      logo_url:
+        "https://ibkqxhjnroghhtfyualc.supabase.co/storage/v1/object/public/public-assets/succinct-logo.svg",
+      website_url: "https://succinct.xyz",
+      twitter_handle: "succinctlabs",
+      github_org: "Succinct",
+    },
+    {
+      logo_url:
+        "https://ibkqxhjnroghhtfyualc.supabase.co/storage/v1/object/public/public-assets/risc-zero-logo.svg",
+      website_url: "https://risczero.com",
+      twitter_handle: "RiscZero",
+      github_org: "risc0",
+    },
   ]
+
   const { prover_machines } = await seed.prover_machines(
     (x) =>
-      x(10, {
-        machine_id: ({ seed }) => copycat.int(seed, { min: 1, max: 10 }),
-        machine_name: ({ seed }) => `Machine ${copycat.firstName(seed)}`,
-        logo_url: ({ seed }) => copycat.oneOf(seed, logoUrls),
+      x(10, ({ seed, index }) => {
+        const profile = copycat.oneOf(seed, proverProfiles)
+        return {
+          machine_id: index + 1,
+          machine_name: `Machine ${copycat.firstName(index)}`,
+          ...profile,
+        }
       }),
     {
       connect: { users },
