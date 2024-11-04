@@ -183,7 +183,7 @@ export default async function BlockDetailsPage({
               <Hash /> Hash
             </HeroItemLabel>
             <div className="flex gap-2">
-              <div className="max-w-[min(theme.80 truncate">{hash}</div>
+              <div className="truncate">{hash}</div>
               {/* TODO: Implement useClipboard */}
               <Button size="icon" variant="ghost" className="text-primary-dark">
                 <Copy />
