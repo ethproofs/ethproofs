@@ -1,4 +1,5 @@
 import type { Metadata } from "next"
+import Link from "next/link"
 import { notFound } from "next/navigation"
 
 import type { Metric } from "@/lib/types"
@@ -328,7 +329,11 @@ export default async function BlockDetailsPage({
           }) => (
             <div className="space-y-4 border-b py-4" key={proof_id}>
               <div className="flex items-center">
-                <div className="py-2">{getProverLogo(prover_machine_id)}</div>
+                <div className="py-2">
+                  <Link href={"/prover/" + prover_machine_id}>
+                    {getProverLogo(prover_machine_id)}
+                  </Link>
+                </div>
                 <Button
                   variant="outline"
                   className="ms-auto h-8 w-8 gap-2 text-2xl text-primary md:w-fit"
