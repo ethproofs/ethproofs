@@ -1,5 +1,7 @@
-import Link from "next/link"
+/* eslint-disable simple-import-sort/imports */
+
 import { ThemeProvider } from "next-themes"
+import Link from "next/link"
 
 import ActiveLinkDecorator from "@/components/ActiveLinkDecorator"
 import HeaderScrollEffects from "@/components/HeaderScrollEffects"
@@ -19,12 +21,12 @@ import {
   DrawerTitle,
   DrawerTrigger,
 } from "@/components/ui/drawer"
-import { Input } from "@/components/ui/input"
 
 import { cn } from "@/lib/utils"
 
 import { SITE_REPO_URL } from "@/lib/constants"
 
+import DesktopSearch from "@/components/DesktopSearch"
 import "../styles/globals.css"
 
 export default function RootLayout({
@@ -64,20 +66,7 @@ export default function RootLayout({
 
               {/* Header center */}
               <div className="flex justify-center">
-                {/* Tablet */}
-                <Input
-                  type="text"
-                  className="relative hidden max-w-56 md:max-lg:flex"
-                  placeholder="Search"
-                  // TODO: Add magnifier icon; implement search
-                />
-                {/* Desktop */}
-                <Input
-                  type="text"
-                  className="relative max-w-96 max-lg:hidden"
-                  placeholder="Search by slot number / block hash / block number / prover"
-                  // TODO: Add magnifier icon; implement search
-                />
+                <DesktopSearch />
               </div>
 
               {/* Header end */}
