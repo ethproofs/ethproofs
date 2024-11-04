@@ -26,7 +26,8 @@ export const POST = withAuth(async ({ request, client, user }) => {
   // validate payload schema
   try {
     proofSchema.parse(proofPayload)
-  } catch (_error) {
+  } catch (error) {
+    console.error("proof payload invalid", error)
     return new Response("Invalid payload", {
       status: 400,
     })
@@ -42,6 +43,7 @@ export const POST = withAuth(async ({ request, client, user }) => {
   } = proofPayload
 
   // validate block_number exists
+  console.log("validating block_number", block_number)
   const block = await client
     .from("blocks")
     .select("block_number")
@@ -50,17 +52,19 @@ export const POST = withAuth(async ({ request, client, user }) => {
 
   // if block is new (not in db), fetch block data from block explorer and create block record
   if (block.error) {
+    console.log("block not found, fetching block data", block_number)
     let blockData
     try {
       blockData = await fetchBlockData(block_number)
     } catch (error) {
-      console.error("error", error)
+      console.error("error fetching block data", error)
       return new Response("Block not found", {
         status: 500,
       })
     }
 
     // create block
+    console.log("creating block", block_number)
     const { error } = await client.from("blocks").insert({
       block_number,
       total_fees: parseInt(formatGwei(blockData.feeTotal)),
@@ -71,7 +75,7 @@ export const POST = withAuth(async ({ request, client, user }) => {
     })
 
     if (error) {
-      console.error("error", error)
+      console.error("error creating block", error)
       return new Response("Internal server error", { status: 500 })
     }
   }
@@ -79,6 +83,7 @@ export const POST = withAuth(async ({ request, client, user }) => {
   // TODO validate prover_machine exists and fetch prover_machine_id
 
   // add proof
+  console.log("adding proof", proofPayload)
   const proofResponse = await client.from("proofs").insert({
     block_number,
     proof,
@@ -91,7 +96,7 @@ export const POST = withAuth(async ({ request, client, user }) => {
   })
 
   if (proofResponse.error) {
-    console.error("error", proofResponse.error)
+    console.error("error adding proof", proofResponse.error)
     return new Response("Internal server error", { status: 500 })
   }
 
