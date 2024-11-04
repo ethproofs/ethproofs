@@ -108,7 +108,7 @@ export const columns: ColumnDef<BlockWithProofs>[] = [
       }
 
       return (
-        <div className="flex justify-center">
+        <div className="flex w-20 mx-auto">
           <div className="flex flex-col gap-2">
             <div className="flex flex-wrap gap-2">
               {proofs.map((proof) => (
