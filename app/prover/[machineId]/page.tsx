@@ -33,7 +33,7 @@ import { columns } from "./columns"
 
 import { getMetadata } from "@/lib/metadata"
 import { formatNumber } from "@/lib/number"
-import { getHost } from "@/lib/url"
+import { getHost, getTwitterHandle } from "@/lib/url"
 import { createClient } from "@/utils/supabase/client"
 
 type ProverPageProps = {
@@ -77,15 +77,6 @@ export default async function ProverPage({ params }: ProverPageProps) {
 
   if (!machine || machineError || !proofs?.length || proofError)
     return notFound()
-
-  // TODO: Dummy profile—Get prover profile info
-  const profile = {
-    contact: {
-      url: "https://succinct.xyz",
-      twitter: "succinctLabs",
-      github: "succinctlabs",
-    },
-  }
 
   const totalProofs = proofs.length
   const avgZkVMCyclesPerProof = proofs.reduce(
@@ -153,48 +144,54 @@ export default async function ProverPage({ params }: ProverPageProps) {
         <HeroDivider />
 
         <HeroBody>
-          <HeroItem className="hover:underline">
-            <Link
-              target="_blank"
-              rel="noopener noreferrer"
-              href={profile.contact.url}
-            >
-              <HeroItemLabel className="text-body">
-                <Globe className="text-body-secondary" />
-                {getHost(profile.contact.url)}
-              </HeroItemLabel>
-            </Link>
-          </HeroItem>
-          <HeroItem className="hover:underline">
-            <Link
-              target="_blank"
-              rel="noopener noreferrer"
-              href={new URL(
-                profile.contact.twitter,
-                "https://x.com/"
-              ).toString()}
-            >
-              <HeroItemLabel className="text-body">
-                <XLogo className="text-body-secondary" /> @
-                {profile.contact.twitter}
-              </HeroItemLabel>
-            </Link>
-          </HeroItem>
-          <HeroItem className="hover:underline">
-            <Link
-              target="_blank"
-              rel="noopener noreferrer"
-              href={new URL(
-                profile.contact.github,
-                "https://github.com"
-              ).toString()}
-            >
-              <HeroItemLabel className="text-body">
-                <GitHub className="text-body-secondary" />
-                {profile.contact.github}
-              </HeroItemLabel>
-            </Link>
-          </HeroItem>
+          {machine.website_url && (
+            <HeroItem className="hover:underline">
+              <Link
+                target="_blank"
+                rel="noopener noreferrer"
+                href={machine.website_url}
+              >
+                <HeroItemLabel className="text-body">
+                  <Globe className="text-body-secondary" />
+                  {getHost(machine.website_url)}
+                </HeroItemLabel>
+              </Link>
+            </HeroItem>
+          )}
+          {machine.twitter_handle && (
+            <HeroItem className="hover:underline">
+              <Link
+                target="_blank"
+                rel="noopener noreferrer"
+                href={new URL(
+                  machine.twitter_handle,
+                  "https://x.com/"
+                ).toString()}
+              >
+                <HeroItemLabel className="text-body">
+                  <XLogo className="text-body-secondary" />
+                  {getTwitterHandle(machine.twitter_handle)}
+                </HeroItemLabel>
+              </Link>
+            </HeroItem>
+          )}
+          {machine.github_org && (
+            <HeroItem className="hover:underline">
+              <Link
+                target="_blank"
+                rel="noopener noreferrer"
+                href={new URL(
+                  machine.github_org,
+                  "https://github.com"
+                ).toString()}
+              >
+                <HeroItemLabel className="text-body">
+                  <GitHub className="text-body-secondary" />
+                  {machine.github_org}
+                </HeroItemLabel>
+              </Link>
+            </HeroItem>
+          )}
         </HeroBody>
       </HeroSection>
 
