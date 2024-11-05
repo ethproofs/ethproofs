@@ -22,7 +22,16 @@ import { createClient } from "@/utils/supabase/server"
 export const metadata: Metadata = getMetadata()
 
 export default async function Index() {
-  const supabase = createClient()
+  const supabase = createClient({
+    global: {
+      fetch: (input, init) =>
+        fetch(input, {
+          ...init,
+          cache: "force-cache",
+          next: { tags: ["blocks", "proofs"] },
+        }),
+    },
+  })
   const blocksResponse = await supabase.from("blocks").select(`
       *,
       proofs:proofs(
