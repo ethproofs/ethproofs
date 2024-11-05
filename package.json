@@ -12,7 +12,12 @@
     "lint": "next lint",
     "lint:fix": "next lint --fix",
     "type-check": "tsc --noEmit",
-    "gen-db-types": "supabase gen types typescript --local > lib/database.types.ts"
+    "db:start": "supabase start",
+    "db:stop": "supabase stop",
+    "db:reset": "supabase db reset",
+    "db:types": "supabase gen types typescript --local > lib/database.types.ts",
+    "seed:sync": "snaplet-seed sync",
+    "seed:generate": "tsx seed.ts > supabase/seed.sql"
   },
   "dependencies": {
     "@radix-ui/react-dialog": "^1.1.2",
@@ -62,6 +67,7 @@
     "prettier-plugin-tailwindcss": "^0.6.6",
     "supabase": "^1.204.3",
     "tailwindcss": "3.4.1",
+    "tsx": "^4.19.2",
     "typescript": "5.3.3",
     "viem": "^2.21.37"
   }
