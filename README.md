@@ -37,7 +37,7 @@ See https://supabase.com/docs/guides/cli/local-development#database-seeds
 After a change in the database schema, run the following command to regenerate the typescript types.
 
 ```bash
-pnpm gen-db-types
+pnpm db:types
 ```
 
 More info: https://supabase.com/docs/reference/javascript/typescript-support
@@ -49,12 +49,12 @@ Generate the seed file by running the script and then reset the database.
 The script will automatically install dependencies and pipe the results into `supabase/seed.sql`.
 
 ```bash
-npx -y tsx seed.ts > supabase/seed.sql
-npx supabase db reset
+pnpm db:seed
+pnpm db:reset
 ```
 
 Sync the database schema with the seed file.
 
 ```bash
-npx @snaplet/seed sync
+pnpm seed:sync
 ```
