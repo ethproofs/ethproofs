@@ -27,7 +27,7 @@ import {
   MetricValue,
 } from "@/components/ui/metric"
 
-import { SITE_NAME } from "@/lib/constants"
+import { FALLBACK_PROVER_LOGO_SRC, SITE_NAME } from "@/lib/constants"
 
 import { columns } from "./columns"
 
@@ -135,15 +135,13 @@ export default async function ProverPage({ params }: ProverPageProps) {
       <HeroSection>
         <HeroTitle className="h-20 items-center gap-6">
           <div className="relative h-20 w-56">
-            {machine.logo_url && (
-              <Image
-                src={machine.logo_url}
-                alt={`${machine.machine_name} logo`}
-                fill
-                sizes="100vw"
-                className="object-contain object-left"
-              />
-            )}
+            <Image
+              src={machine.logo_url || FALLBACK_PROVER_LOGO_SRC}
+              alt={`${machine.machine_name || "Prover"} logo`}
+              fill
+              sizes="100vw"
+              className="object-contain object-left"
+            />
           </div>
           <h1 className="font-mono text-3xl font-semibold">
             {machine.machine_name}
