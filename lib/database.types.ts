@@ -253,7 +253,14 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      recent_summary: {
+        Row: {
+          avg_cost_per_proof: number | null
+          avg_proof_latency: number | null
+          total_proven_blocks: number | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
       is_allowed_apikey: {
