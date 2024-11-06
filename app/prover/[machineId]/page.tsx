@@ -27,13 +27,13 @@ import {
   MetricValue,
 } from "@/components/ui/metric"
 
-import { SITE_NAME } from "@/lib/constants"
+import { FALLBACK_PROVER_LOGO_SRC, SITE_NAME } from "@/lib/constants"
 
 import { columns } from "./columns"
 
 import { getMetadata } from "@/lib/metadata"
 import { formatNumber } from "@/lib/number"
-import { getHost } from "@/lib/url"
+import { getHost, getTwitterHandle } from "@/lib/url"
 import { createClient } from "@/utils/supabase/client"
 
 type ProverPageProps = {
@@ -77,15 +77,6 @@ export default async function ProverPage({ params }: ProverPageProps) {
 
   if (!machine || machineError || !proofs?.length || proofError)
     return notFound()
-
-  // TODO: Dummy profile—Get prover profile info
-  const profile = {
-    contact: {
-      url: "https://succinct.xyz",
-      twitter: "succinctLabs",
-      github: "succinctlabs",
-    },
-  }
 
   const totalProofs = proofs.length
   const avgZkVMCyclesPerProof = proofs.reduce(
@@ -135,15 +126,13 @@ export default async function ProverPage({ params }: ProverPageProps) {
       <HeroSection>
         <HeroTitle className="h-20 items-center gap-6">
           <div className="relative h-20 w-56">
-            {machine.logo_url && (
-              <Image
-                src={machine.logo_url}
-                alt={`${machine.machine_name} logo`}
-                fill
-                sizes="100vw"
-                className="object-contain object-left"
-              />
-            )}
+            <Image
+              src={machine.logo_url || FALLBACK_PROVER_LOGO_SRC}
+              alt={`${machine.machine_name || "Prover"} logo`}
+              fill
+              sizes="100vw"
+              className="object-contain object-left"
+            />
           </div>
           <h1 className="font-mono text-3xl font-semibold">
             {machine.machine_name}
@@ -153,48 +142,54 @@ export default async function ProverPage({ params }: ProverPageProps) {
         <HeroDivider />
 
         <HeroBody>
-          <HeroItem className="hover:underline">
-            <Link
-              target="_blank"
-              rel="noopener noreferrer"
-              href={profile.contact.url}
-            >
-              <HeroItemLabel className="text-body">
-                <Globe className="text-body-secondary" />
-                {getHost(profile.contact.url)}
-              </HeroItemLabel>
-            </Link>
-          </HeroItem>
-          <HeroItem className="hover:underline">
-            <Link
-              target="_blank"
-              rel="noopener noreferrer"
-              href={new URL(
-                profile.contact.twitter,
-                "https://x.com/"
-              ).toString()}
-            >
-              <HeroItemLabel className="text-body">
-                <XLogo className="text-body-secondary" /> @
-                {profile.contact.twitter}
-              </HeroItemLabel>
-            </Link>
-          </HeroItem>
-          <HeroItem className="hover:underline">
-            <Link
-              target="_blank"
-              rel="noopener noreferrer"
-              href={new URL(
-                profile.contact.github,
-                "https://github.com"
-              ).toString()}
-            >
-              <HeroItemLabel className="text-body">
-                <GitHub className="text-body-secondary" />
-                {profile.contact.github}
-              </HeroItemLabel>
-            </Link>
-          </HeroItem>
+          {machine.website_url && (
+            <HeroItem className="hover:underline">
+              <Link
+                target="_blank"
+                rel="noopener noreferrer"
+                href={machine.website_url}
+              >
+                <HeroItemLabel className="text-body">
+                  <Globe className="text-body-secondary" />
+                  {getHost(machine.website_url)}
+                </HeroItemLabel>
+              </Link>
+            </HeroItem>
+          )}
+          {machine.twitter_handle && (
+            <HeroItem className="hover:underline">
+              <Link
+                target="_blank"
+                rel="noopener noreferrer"
+                href={new URL(
+                  machine.twitter_handle,
+                  "https://x.com/"
+                ).toString()}
+              >
+                <HeroItemLabel className="text-body">
+                  <XLogo className="text-body-secondary" />
+                  {getTwitterHandle(machine.twitter_handle)}
+                </HeroItemLabel>
+              </Link>
+            </HeroItem>
+          )}
+          {machine.github_org && (
+            <HeroItem className="hover:underline">
+              <Link
+                target="_blank"
+                rel="noopener noreferrer"
+                href={new URL(
+                  machine.github_org,
+                  "https://github.com"
+                ).toString()}
+              >
+                <HeroItemLabel className="text-body">
+                  <GitHub className="text-body-secondary" />
+                  {machine.github_org}
+                </HeroItemLabel>
+              </Link>
+            </HeroItem>
+          )}
         </HeroBody>
       </HeroSection>
 

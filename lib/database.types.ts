@@ -156,22 +156,31 @@ export type Database = {
       }
       prover_machines: {
         Row: {
+          github_org: string | null
           logo_url: string | null
           machine_id: number
           machine_name: string
+          twitter_handle: string | null
           user_id: string | null
+          website_url: string | null
         }
         Insert: {
+          github_org?: string | null
           logo_url?: string | null
           machine_id?: number
           machine_name: string
+          twitter_handle?: string | null
           user_id?: string | null
+          website_url?: string | null
         }
         Update: {
+          github_org?: string | null
           logo_url?: string | null
           machine_id?: number
           machine_name?: string
+          twitter_handle?: string | null
           user_id?: string | null
+          website_url?: string | null
         }
         Relationships: [
           {
@@ -253,7 +262,14 @@ export type Database = {
       }
     }
     Views: {
-      [_ in never]: never
+      recent_summary: {
+        Row: {
+          avg_cost_per_proof: number | null
+          avg_proof_latency: number | null
+          total_proven_blocks: number | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
       is_allowed_apikey: {
