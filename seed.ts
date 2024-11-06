@@ -71,7 +71,7 @@ const main = async () => {
 
     await seed.proofs(
       (x) =>
-        x(1000, () => ({
+        x(500, () => ({
           proof_id: ({ seed }) => copycat.int(seed, { min: 1, max: 1000000 }),
           proof: Buffer.from("{}"),
           prover_duration: ({ seed }) => copycat.dateString(seed).slice(11, 19),

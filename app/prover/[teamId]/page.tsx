@@ -37,46 +37,46 @@ import { getHost, getTwitterHandle } from "@/lib/url"
 import { createClient } from "@/utils/supabase/client"
 
 type ProverPageProps = {
-  params: Promise<{ machineId: number }>
+  params: Promise<{ teamId: number }>
 }
 
 export async function generateMetadata({
   params,
 }: ProverPageProps): Promise<Metadata> {
-  const { machineId } = await params
+  const { teamId } = await params
 
   const supabase = createClient()
 
-  const { data: machine, error: machineError } = await supabase
-    .from("prover_machines")
+  const { data: team, error: teamError } = await supabase
+    .from("teams")
     .select("*")
-    .eq("machine_id", machineId)
+    .eq("team_id", teamId)
     .single()
 
-  if (machineError || !machine)
-    return { title: `Prover not found - ${SITE_NAME}` }
+  if (teamError || !team) return { title: `Prover not found - ${SITE_NAME}` }
 
-  return getMetadata({ title: `${machine.machine_name}` })
+  return getMetadata({ title: `${team.team_name}` })
 }
 
 export default async function ProverPage({ params }: ProverPageProps) {
-  const { machineId } = await params
+  const { teamId } = await params
 
   const supabase = createClient()
 
-  const { data: machine, error: machineError } = await supabase
-    .from("prover_machines")
+  const { data: team, error: teamError } = await supabase
+    .from("teams")
     .select("*")
-    .eq("machine_id", machineId)
+    .eq("team_id", teamId)
     .single()
+
+  if (!team || !team.user_id || teamError) return notFound()
 
   const { data: proofs, error: proofError } = await supabase
     .from("proofs")
-    .select("*")
-    .eq("prover_machine_id", machineId)
+    .select("*, prover_machines(machine_name)")
+    .eq("user_id", team.user_id)
 
-  if (!machine || machineError || !proofs?.length || proofError)
-    return notFound()
+  if (!team || teamError || !proofs?.length || proofError) return notFound()
 
   const totalProofs = proofs.length
   const avgZkVMCyclesPerProof = proofs.reduce(
@@ -127,65 +127,57 @@ export default async function ProverPage({ params }: ProverPageProps) {
         <HeroTitle className="h-20 items-center gap-6">
           <div className="relative h-20 w-56">
             <Image
-              src={machine.logo_url || FALLBACK_PROVER_LOGO_SRC}
-              alt={`${machine.machine_name || "Prover"} logo`}
+              src={team.logo_url || FALLBACK_PROVER_LOGO_SRC}
+              alt={`${team.team_name || "Prover"} logo`}
               fill
               sizes="100vw"
               className="object-contain object-left"
             />
           </div>
-          <h1 className="font-mono text-3xl font-semibold">
-            {machine.machine_name}
-          </h1>
+          <h1 className="font-mono text-3xl font-semibold">{team.team_name}</h1>
         </HeroTitle>
 
         <HeroDivider />
 
         <HeroBody>
-          {machine.website_url && (
+          {team.website_url && (
             <HeroItem className="hover:underline">
               <Link
                 target="_blank"
                 rel="noopener noreferrer"
-                href={machine.website_url}
+                href={team.website_url}
               >
                 <HeroItemLabel className="text-body">
                   <Globe className="text-body-secondary" />
-                  {getHost(machine.website_url)}
+                  {getHost(team.website_url)}
                 </HeroItemLabel>
               </Link>
             </HeroItem>
           )}
-          {machine.twitter_handle && (
+          {team.twitter_handle && (
             <HeroItem className="hover:underline">
               <Link
                 target="_blank"
                 rel="noopener noreferrer"
-                href={new URL(
-                  machine.twitter_handle,
-                  "https://x.com/"
-                ).toString()}
+                href={new URL(team.twitter_handle, "https://x.com/").toString()}
               >
                 <HeroItemLabel className="text-body">
                   <XLogo className="text-body-secondary" />
-                  {getTwitterHandle(machine.twitter_handle)}
+                  {getTwitterHandle(team.twitter_handle)}
                 </HeroItemLabel>
               </Link>
             </HeroItem>
           )}
-          {machine.github_org && (
+          {team.github_org && (
             <HeroItem className="hover:underline">
               <Link
                 target="_blank"
                 rel="noopener noreferrer"
-                href={new URL(
-                  machine.github_org,
-                  "https://github.com"
-                ).toString()}
+                href={new URL(team.github_org, "https://github.com").toString()}
               >
                 <HeroItemLabel className="text-body">
                   <GitHub className="text-body-secondary" />
-                  {machine.github_org}
+                  {team.github_org}
                 </HeroItemLabel>
               </Link>
             </HeroItem>

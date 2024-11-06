@@ -21,15 +21,20 @@ export const columns: ColumnDef<Proof>[] = [
       return <div className="text-start text-base">{formatted}</div>
     },
   },
-  // Instance (cloud | local)
+  // Instance / Machine
   {
-    accessorKey: "proof_status", // TODO: Fix "instance" in DB
+    accessorKey: "prover_machines.machine_name",
     header: "instance",
     cell: ({ cell }) => {
       const instance = cell.getValue() as string
 
       return instance
     },
+  },
+  // Proof status
+  {
+    accessorKey: "proof_status",
+    header: "status",
   },
   // Time to proof (duration)
   // ? Difference between latency and time to proof?
