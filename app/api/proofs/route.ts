@@ -1,3 +1,4 @@
+import { revalidateTag } from "next/cache"
 import { formatGwei } from "viem"
 import { z } from "zod"
 
@@ -78,6 +79,9 @@ export const POST = withAuth(async ({ request, client, user }) => {
       console.error("error creating block", error)
       return new Response("Internal server error", { status: 500 })
     }
+
+    // invalidate blocks cache
+    revalidateTag("blocks")
   }
 
   // TODO validate prover_machine exists and fetch prover_machine_id
@@ -99,6 +103,9 @@ export const POST = withAuth(async ({ request, client, user }) => {
     console.error("error adding proof", proofResponse.error)
     return new Response("Internal server error", { status: 500 })
   }
+
+  // invalidate proofs cache
+  revalidateTag("proofs")
 
   return new Response("Proof submitted", { status: 200 })
 })
