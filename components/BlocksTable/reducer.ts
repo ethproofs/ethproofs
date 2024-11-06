@@ -8,9 +8,11 @@ export type State = {
 }
 
 type AddBlock = { type: "add_block"; payload: Block }
+type UpdateBlock = { type: "update_block"; payload: Block }
 type AddProof = { type: "add_proof"; payload: Proof }
+type UpdateProof = { type: "update_proof"; payload: Proof }
 
-export type Actions = AddBlock | AddProof
+export type Actions = AddBlock | UpdateBlock | AddProof | UpdateProof
 
 export const reducer = (state: State, action: Actions) => {
   const { type, payload } = action
@@ -31,6 +33,18 @@ export const reducer = (state: State, action: Actions) => {
         },
       } as State
     }
+    case "update_block": {
+      return {
+        ...state,
+        blocks: {
+          ...state.blocks,
+          byId: {
+            ...state.blocks.byId,
+            [payload.block_number]: payload,
+          },
+        },
+      } as State
+    }
     case "add_proof": {
       return {
         ...state,
@@ -46,6 +60,24 @@ export const reducer = (state: State, action: Actions) => {
                 ...(state.blocks.byId[payload.block_number]?.proofs || []),
                 payload,
               ],
+            },
+          },
+        },
+      } as State
+    }
+    case "update_proof": {
+      return {
+        ...state,
+        blocks: {
+          ...state.blocks,
+          byId: {
+            ...state.blocks.byId,
+            [payload.block_number]: {
+              ...state.blocks.byId[payload.block_number],
+              proofs: state.blocks.byId[payload.block_number].proofs.map(
+                (proof) =>
+                  proof.proof_id === payload.proof_id ? payload : proof
+              ),
             },
           },
         },

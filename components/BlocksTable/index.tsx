@@ -34,6 +34,13 @@ const BlocksTable = ({ blocks, className }: Props) => {
           dispatch({ type: "add_block", payload: payload.new as Block })
         }
       )
+      .on(
+        "postgres_changes",
+        { event: "UPDATE", schema: "public", table: "blocks" },
+        (payload) => {
+          dispatch({ type: "update_block", payload: payload.new as Block })
+        }
+      )
       .subscribe()
 
     const proofsChannel = supabase
@@ -43,6 +50,13 @@ const BlocksTable = ({ blocks, className }: Props) => {
         { event: "INSERT", schema: "public", table: "proofs" },
         (payload) => {
           dispatch({ type: "add_proof", payload: payload.new as Proof })
+        }
+      )
+      .on(
+        "postgres_changes",
+        { event: "UPDATE", schema: "public", table: "proofs" },
+        (payload) => {
+          dispatch({ type: "update_proof", payload: payload.new as Proof })
         }
       )
       .subscribe()
