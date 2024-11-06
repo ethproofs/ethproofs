@@ -1,8 +1,8 @@
-import { createServerClient } from "@supabase/ssr"
 import { cookies } from "next/headers"
+import { createServerClient } from "@supabase/ssr"
+import { SupabaseClientOptions } from "@supabase/supabase-js"
 
 import type { Database } from "@/lib/database.types"
-import { SupabaseClientOptions } from "@supabase/supabase-js"
 
 export const createClient = (
   clientOptions?: SupabaseClientOptions<"public">
