@@ -20,7 +20,7 @@ const CopyButton = ({ message, className }: CopyButtonProps) => {
       size="icon"
       variant="ghost"
       className={cn("text-primary-dark", className)}
-      onClick={() => onCopy(message)}
+      onClick={onCopy(message)}
     >
       {hasCopied ? <Check /> : <Copy />}
     </Button>
