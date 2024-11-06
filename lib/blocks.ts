@@ -1,7 +1,7 @@
 import { type Block as ViemBlock, createPublicClient, http } from "viem"
 import { mainnet } from "viem/chains"
 
-import type { Block, BlockWithProofsId, Proof } from "@/lib/types"
+import type { Block } from "@/lib/types"
 
 import { timestampWithinDays } from "./date"
 
@@ -54,6 +54,3 @@ export const fetchBlockData = async (block_number: number) => {
 
 export const blockIsRecent = ({ timestamp }: Block): boolean =>
   timestampWithinDays(timestamp)
-
-export const blockIsProven = (block: BlockWithProofsId, allProofs: Proof[]) =>
-  block.proofs.some(({ id }) => allProofs.find((p) => p.proof_id === id))

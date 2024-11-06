@@ -8,7 +8,7 @@ import DollarSign from "@/components/svgs/dollar-sign.svg"
 
 import HeroDark from "@/assets/hero-background-dark.png"
 import HeroLight from "@/assets/hero-background-light.png"
-import { blockIsProven, blockIsRecent } from "@/lib/blocks"
+import { blockIsRecent } from "@/lib/blocks"
 import { getMetadata } from "@/lib/metadata"
 import { formatNumber } from "@/lib/number"
 import {
@@ -22,21 +22,18 @@ export const metadata: Metadata = getMetadata()
 
 export default async function Index() {
   const supabase = createClient()
-  const blocksResponse = await supabase.from("blocks").select(`
-      *,
-      proofs:proofs(
-        id:proof_id
-      )
-    `)
-  const blocks = blocksResponse.data || []
 
-  const proofsResponse = await supabase.from("proofs").select()
-  const proofs = proofsResponse.data || []
+  const blocksResponse = await supabase
+    .from("blocks")
+    .select(`*,proofs!inner(id:proof_id, *)`)
+    .eq("proofs.proof_status", "proved")
 
-  const provenBlocks = blocks.filter((block) => blockIsProven(block, proofs))
+  const provenBlocks = blocksResponse.data || []
+
   const provenBlocksRecent = provenBlocks.filter(blockIsRecent) // For summary
-
   const totalBlocksProvenRecent = provenBlocksRecent.length
+
+  const proofs = provenBlocks.flatMap(({ proofs }) => proofs)
 
   const proofsRecent = filterRecentProven(proofs)
 
@@ -132,7 +129,7 @@ export default async function Index() {
         </div>
       </div>
 
-      <BlocksTable blocks={provenBlocks || []} proofs={proofs} />
+      <BlocksTable blocks={provenBlocks} />
     </div>
   )
 }

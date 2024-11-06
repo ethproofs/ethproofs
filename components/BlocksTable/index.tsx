@@ -2,7 +2,7 @@
 
 import { Reducer, useEffect, useReducer } from "react"
 
-import type { Block, BlockWithProofsId, Proof } from "@/lib/types"
+import type { Block, BlockWithProofs, Proof } from "@/lib/types"
 
 import DataTable from "@/components/ui/data-table"
 
@@ -12,16 +12,15 @@ import { Actions, createInitialState, reducer, State } from "./reducer"
 import { createClient } from "@/utils/supabase/client"
 
 type Props = {
-  blocks: BlockWithProofsId[]
-  proofs: Proof[]
+  blocks: BlockWithProofs[]
   className?: string
 }
 
-const BlocksTable = ({ blocks, proofs, className }: Props) => {
+const BlocksTable = ({ blocks, className }: Props) => {
   const [state, dispatch] = useReducer<
     Reducer<State, Actions>,
-    { blocks: BlockWithProofsId[]; proofs: Proof[] }
-  >(reducer, { blocks, proofs }, createInitialState)
+    { blocks: BlockWithProofs[] }
+  >(reducer, { blocks }, createInitialState)
 
   const supabase = createClient()
 
@@ -54,20 +53,7 @@ const BlocksTable = ({ blocks, proofs, className }: Props) => {
     }
   }, [state, supabase])
 
-  const blocksWithProofs = state.blocks.allIds
-    .map((id) => state.blocks.byId[id])
-    .map((block) => ({
-      ...block,
-      proofs: block.proofs.map((id) => state.proofs.byId[id]),
-    }))
-
-  return (
-    <DataTable
-      className={className}
-      columns={columns}
-      data={blocksWithProofs}
-    />
-  )
+  return <DataTable className={className} columns={columns} data={blocks} />
 }
 
 export default BlocksTable
