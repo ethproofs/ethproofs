@@ -9,7 +9,6 @@ import ArrowDown from "@/components/svgs/arrow-down.svg"
 import BlockLarge from "@/components/svgs/block-large.svg"
 import BookOpen from "@/components/svgs/book-open.svg"
 import Clock from "@/components/svgs/clock.svg"
-import Copy from "@/components/svgs/copy.svg"
 import Cpu from "@/components/svgs/cpu.svg"
 import DollarSign from "@/components/svgs/dollar-sign.svg"
 import Hash from "@/components/svgs/hash.svg"
@@ -39,6 +38,7 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip"
 
+import CopyButton from "@/components/CopyButton"
 import { intervalToSeconds } from "@/lib/date"
 import { getMetadata } from "@/lib/metadata"
 import { formatNumber } from "@/lib/number"
@@ -187,10 +187,7 @@ export default async function BlockDetailsPage({
             </HeroItemLabel>
             <div className="flex gap-2">
               <div className="truncate">{hash}</div>
-              {/* TODO: Implement useClipboard */}
-              <Button size="icon" variant="ghost" className="text-primary-dark">
-                <Copy />
-              </Button>
+              <CopyButton message={hash} />
             </div>
           </HeroItem>
         </HeroBody>
