@@ -7,7 +7,7 @@ FROM
   blocks b
   JOIN proofs p ON b.block_number = p.block_number
 WHERE
-  b.timestamp >= NOW() - INTERVAL '5 years'; -- TODO: Use '30 days' for prod
+  b.timestamp >= NOW() - INTERVAL '30 days';
 
 SELECT
   *
