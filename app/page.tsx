@@ -17,7 +17,17 @@ import { createClient } from "@/utils/supabase/server"
 export const metadata: Metadata = getMetadata()
 
 export default async function Index() {
-  const supabase = createClient()
+  const supabase = createClient({
+    global: {
+      fetch: (input, init) =>
+        fetch(input, {
+          ...init,
+          cache: "force-cache",
+          next: { tags: ["blocks", "proofs"] },
+        }),
+    },
+  })
+
   const summary = await supabase.from("recent_summary").select().single()
 
   const blocksResponse = await supabase
@@ -31,6 +41,7 @@ export default async function Index() {
     `
     )
     .eq("proofs.proof_status", "proved")
+    .order("block_number", { ascending: false })
 
   const provenBlocks = blocksResponse.data || []
 
