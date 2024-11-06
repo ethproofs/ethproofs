@@ -2969,6 +2969,48 @@
           "maxLength": null
         },
         {
+          "id": "public.prover_machines.website_url",
+          "name": "website_url",
+          "columnName": "website_url",
+          "type": "text",
+          "isRequired": false,
+          "kind": "scalar",
+          "isList": false,
+          "isGenerated": false,
+          "sequence": false,
+          "hasDefaultValue": false,
+          "isId": false,
+          "maxLength": null
+        },
+        {
+          "id": "public.prover_machines.twitter_handle",
+          "name": "twitter_handle",
+          "columnName": "twitter_handle",
+          "type": "text",
+          "isRequired": false,
+          "kind": "scalar",
+          "isList": false,
+          "isGenerated": false,
+          "sequence": false,
+          "hasDefaultValue": false,
+          "isId": false,
+          "maxLength": null
+        },
+        {
+          "id": "public.prover_machines.github_org",
+          "name": "github_org",
+          "columnName": "github_org",
+          "type": "text",
+          "isRequired": false,
+          "kind": "scalar",
+          "isList": false,
+          "isGenerated": false,
+          "sequence": false,
+          "hasDefaultValue": false,
+          "isId": false,
+          "maxLength": null
+        },
+        {
           "name": "users",
           "type": "users",
           "isRequired": false,

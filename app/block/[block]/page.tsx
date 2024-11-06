@@ -1,6 +1,7 @@
 /* eslint-disable simple-import-sort/imports */
 import type { Metadata } from "next"
 import Image, { type ImageProps } from "next/image"
+import Link from "next/link"
 import { notFound } from "next/navigation"
 
 import LearnMore from "@/components/LearnMore"
@@ -276,13 +277,15 @@ export default async function BlockDetailsPage({
                   )}
                 >
                   {imgProps && (
-                    <Image
-                      src={imgProps.src}
-                      alt={imgProps.alt}
-                      fill
-                      sizes="100vw"
-                      className="object-contain object-left"
-                    />
+                    <Link href={"/prover/" + prover_machine_id}>
+                      <Image
+                        src={imgProps.src}
+                        alt={imgProps.alt}
+                        fill
+                        sizes="100vw"
+                        className="object-contain object-left"
+                      />
+                    </Link>
                   )}
                 </div>
                 <Button
