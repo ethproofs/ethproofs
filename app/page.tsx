@@ -18,14 +18,21 @@ export const metadata: Metadata = getMetadata()
 
 export default async function Index() {
   const supabase = createClient()
+
   const summary = await supabase.from("recent_summary").select().single()
 
-  const blocksResponse = await supabase.from("blocks").select(`
+  const blocksResponse = await supabase
+    .from("blocks")
+    .select(
+      `
       *,
       proofs:proofs(
         id:proof_id
       )
-    `)
+    `
+    )
+    .order("block_number", { ascending: false })
+
   const blocks = blocksResponse.data || []
 
   const proofsResponse = await supabase.from("proofs").select()
