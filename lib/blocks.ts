@@ -54,6 +54,3 @@ export const fetchBlockData = async (block_number: number) => {
 
 export const blockIsRecent = ({ timestamp }: Block): boolean =>
   timestampWithinDays(timestamp)
-
-export const blockIsProven = (block: BlockWithProofsId, allProofs: Proof[]) =>
-  block.proofs.some(({ id }) => allProofs.find((p) => p.proof_id === id))
