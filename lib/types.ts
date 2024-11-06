@@ -4,8 +4,9 @@ import type { Tables } from "./database.types"
 
 export type Proof = Tables<"proofs">
 export type Block = Tables<"blocks">
+export type EmptyBlock = Partial<Block> & Pick<Block, "block_number">
 
-export type BlockWithProofs = Block & { proofs: Proof[] }
+export type BlockWithProofs = (EmptyBlock | Block) & { proofs: Proof[] }
 
 export type Metric = {
   label: string

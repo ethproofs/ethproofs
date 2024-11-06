@@ -21,7 +21,7 @@ export const columns: ColumnDef<BlockWithProofs>[] = [
       }).format(blockNumber)
 
       const timestamp = row.original.timestamp
-      const formattedTimestamp = formatTimeAgo(new Date(timestamp))
+      const formattedTimestamp = timestamp ? formatTimeAgo(new Date(timestamp)) : "pending"
 
       return (
         <div className="text-left text-base">
@@ -108,7 +108,7 @@ export const columns: ColumnDef<BlockWithProofs>[] = [
       }
 
       return (
-        <div className="flex w-20 mx-auto">
+        <div className="mx-auto flex w-20">
           <div className="flex flex-col gap-2">
             <div className="flex flex-wrap gap-2">
               {proofs.map((proof) => (

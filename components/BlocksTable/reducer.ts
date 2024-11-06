@@ -1,4 +1,4 @@
-import type { Block, BlockWithProofs, Proof } from "@/lib/types"
+import type { Block, BlockWithProofs, EmptyBlock, Proof } from "@/lib/types"
 
 export type State = {
   blocks: {
@@ -29,29 +29,30 @@ export const reducer = (state: State, action: Actions) => {
           },
           allIds: [...state.blocks.allIds, payload.block_number],
         },
-      }
+      } as State
     }
     case "add_proof": {
-      const blockNumber = payload.block_number!
-      const existingBlock = state.blocks.byId[blockNumber]
-
-      if (existingBlock) {
-        return {
-          ...state,
-          blocks: {
-            ...state.blocks,
-            byId: {
-              ...state.blocks.byId,
-              [blockNumber]: {
-                ...existingBlock,
-                proofs: [...existingBlock.proofs, payload],
-              },
+      return {
+        ...state,
+        blocks: {
+          ...state.blocks,
+          byId: {
+            ...state.blocks.byId,
+            [payload.block_number]: {
+              ...(state.blocks.byId[payload.block_number] || {
+                block_number: payload.block_number,
+              }),
+              proofs: [
+                ...(state.blocks.byId[payload.block_number]?.proofs || []),
+                payload,
+              ],
             },
           },
-        }
-      }
-
-      return state
+        },
+      } as State
+    }
+    default: {
+      return state as State
     }
   }
 }
