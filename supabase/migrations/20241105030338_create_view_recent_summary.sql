@@ -8,7 +8,3 @@ FROM
   JOIN proofs p ON b.block_number = p.block_number
 WHERE
   b.timestamp >= NOW() - INTERVAL '30 days';
-
-SELECT
-  *
-FROM recent_summary
