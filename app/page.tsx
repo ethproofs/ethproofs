@@ -1,6 +1,8 @@
 import type { Metadata } from "next"
 import Image from "next/image"
 
+import type { SummaryItem } from "@/lib/types"
+
 import BlocksTable from "@/components/BlocksTable"
 import Block from "@/components/svgs/box.svg"
 import Clock from "@/components/svgs/clock.svg"
@@ -8,21 +10,16 @@ import DollarSign from "@/components/svgs/dollar-sign.svg"
 
 import HeroDark from "@/assets/hero-background-dark.png"
 import HeroLight from "@/assets/hero-background-light.png"
-import { blockIsProven, blockIsRecent } from "@/lib/blocks"
-import { timestampWithinDays } from "@/lib/date"
 import { getMetadata } from "@/lib/metadata"
 import { formatNumber } from "@/lib/number"
-import {
-  filterRecentProven,
-  getProofsAvgCost,
-  getProofsAvgLatency,
-} from "@/lib/proofs"
 import { createClient } from "@/utils/supabase/server"
 
 export const metadata: Metadata = getMetadata()
 
 export default async function Index() {
   const supabase = createClient()
+  const summary = await supabase.from("recent_summary").select().single()
+
   const blocksResponse = await supabase.from("blocks").select(`
       *,
       proofs:proofs(
@@ -34,27 +31,32 @@ export default async function Index() {
   const proofsResponse = await supabase.from("proofs").select()
   const proofs = proofsResponse.data || []
 
-  const provenBlocksRecent = blocks
-    .filter((block) => blockIsProven(block, proofs))
-    .filter(blockIsRecent)
-
-  const totalBlocksProvenRecent = provenBlocksRecent.length
-
-  const proofsRecent = filterRecentProven(proofs)
-
-  const avgCostPerProofRecent = formatNumber(getProofsAvgCost(proofsRecent), {
-    maximumFractionDigits: 2,
-  })
-
-  const avgLatencyPerProofRecent = formatNumber(
-    getProofsAvgLatency(proofsRecent),
-    {
-      style: "unit",
-      unit: "second",
-      unitDisplay: "narrow",
-      maximumFractionDigits: 0,
-    }
-  )
+  const summaryItems: SummaryItem[] = summary.data
+    ? [
+        {
+          label: "Proven blocks",
+          icon: <Block />,
+          value: formatNumber(summary.data?.total_proven_blocks || 0),
+        },
+        {
+          label: "Avg cost per proof",
+          icon: <DollarSign />,
+          value: formatNumber(summary.data?.avg_cost_per_proof || 0, {
+            maximumFractionDigits: 2,
+          }),
+        },
+        {
+          label: "Avg proof latency",
+          icon: <Clock />,
+          value: formatNumber(summary.data?.avg_proof_latency || 0, {
+            style: "unit",
+            unit: "second",
+            unitDisplay: "narrow",
+            maximumFractionDigits: 0,
+          }),
+        },
+      ]
+    : []
 
   return (
     <div className="flex w-full flex-1 flex-col items-center gap-20">
@@ -77,60 +79,26 @@ export default async function Index() {
           it will enable full ZK light clients on any smartphone.
         </p>
         <div className="flex w-full max-w-2xl justify-around">
-          <div className="flex flex-col gap-1 p-2">
-            <div className="flex flex-col items-center justify-center gap-x-2 md:flex-row">
-              <p className="font-mono text-2xl text-primary md:text-3xl lg:text-4xl">
-                <Block />
-              </p>
-              <p className="font-mono text-2xl text-primary md:text-3xl lg:text-4xl">
-                {totalBlocksProvenRecent}
-              </p>
-            </div>
-            <div>
-              <p className="text-center text-xs uppercase md:text-sm">
-                Proven blocks
-              </p>
-            </div>
-            <p className="text-center text-xs font-bold uppercase text-body-secondary">
-              Last 30 days
-            </p>
-          </div>
-          <div className="flex flex-col gap-1 p-2">
-            <div className="flex flex-col items-center justify-center gap-x-2 md:flex-row">
-              <p className="font-mono text-2xl text-primary md:text-3xl lg:text-4xl">
-                <DollarSign />
-              </p>
-              <p className="font-mono text-2xl text-primary md:text-3xl lg:text-4xl">
-                {avgCostPerProofRecent}
+          {summaryItems.map(({ label, icon, value }) => (
+            <div key={label} className="flex flex-col gap-1 p-2">
+              <div className="flex flex-col items-center justify-center gap-x-2 md:flex-row">
+                <p className="font-mono text-2xl text-primary md:text-3xl lg:text-4xl">
+                  {icon}
+                </p>
+                <p className="font-mono text-2xl text-primary md:text-3xl lg:text-4xl">
+                  {value}
+                </p>
+              </div>
+              <div>
+                <p className="text-center text-xs uppercase md:text-sm">
+                  {label}
+                </p>
+              </div>
+              <p className="text-center text-xs font-bold uppercase text-body-secondary">
+                Last 30 days
               </p>
             </div>
-            <div>
-              <p className="text-center text-xs uppercase md:text-sm">
-                Avg cost per proof
-              </p>
-            </div>
-            <p className="text-center text-xs font-bold uppercase text-body-secondary">
-              Last 30 days
-            </p>
-          </div>
-          <div className="flex flex-col gap-1 p-2">
-            <div className="flex flex-col items-center justify-center gap-x-2 md:flex-row">
-              <p className="font-mono text-2xl text-primary md:text-3xl lg:text-4xl">
-                <Clock />
-              </p>
-              <p className="font-mono text-2xl text-primary md:text-3xl lg:text-4xl">
-                {avgLatencyPerProofRecent}
-              </p>
-            </div>
-            <div>
-              <p className="text-center text-xs uppercase md:text-sm">
-                Avg proof latency
-              </p>
-            </div>
-            <p className="text-center text-xs font-bold uppercase text-body-secondary">
-              Last 30 days
-            </p>
-          </div>
+          ))}
         </div>
       </div>
 
