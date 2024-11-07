@@ -10,9 +10,9 @@ import DollarSign from "@/components/svgs/dollar-sign.svg"
 
 import { cn } from "@/lib/utils"
 
-import HeroDark from "@/assets/hero-background.png"
 import { getMetadata } from "@/lib/metadata"
 import { formatNumber } from "@/lib/number"
+import HeroDark from "@/public/images/hero-background.png"
 import { createClient } from "@/utils/supabase/server"
 
 export const metadata: Metadata = getMetadata()
