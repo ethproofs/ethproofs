@@ -78,7 +78,7 @@ export default async function Index() {
   return (
     <div className="flex w-full flex-1 flex-col items-center gap-20">
       <div
-        className="absolute inset-0 -z-10 h-[28rem] md:max-xl:h-[22rem]"
+        className="absolute inset-0 -z-10 h-[28rem] md:max-xl:h-96"
         style={{ mask: "linear-gradient(180deg, white 80%, transparent)" }}
       >
         <Image
@@ -95,7 +95,7 @@ export default async function Index() {
           alt=""
         />
       </div>
-      <div className="mt-60 flex w-full flex-col items-center justify-between gap-4 p-3 md:mt-48 xl:mt-72">
+      <div className="mt-56 flex w-full flex-col items-center justify-between gap-4 p-3 md:mt-44 xl:mt-64">
         <h1 className="w-full text-center font-mono font-semibold">
           Building fully SNARKed <span className="text-primary">Ethereum</span>
         </h1>
