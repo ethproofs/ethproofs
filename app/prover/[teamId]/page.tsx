@@ -27,7 +27,7 @@ import {
   MetricValue,
 } from "@/components/ui/metric"
 
-import { FALLBACK_PROVER_LOGO_SRC, SITE_NAME } from "@/lib/constants"
+import { FALLBACK_TEAM_LOGO_SRC, SITE_NAME } from "@/lib/constants"
 
 import { columns } from "./columns"
 
@@ -127,7 +127,7 @@ export default async function ProverPage({ params }: ProverPageProps) {
         <HeroTitle className="h-20 items-center gap-6">
           <div className="relative h-20 w-56">
             <Image
-              src={team.logo_url || FALLBACK_PROVER_LOGO_SRC}
+              src={team.logo_url || FALLBACK_TEAM_LOGO_SRC}
               alt={`${team.team_name || "Prover"} logo`}
               fill
               sizes="100vw"
