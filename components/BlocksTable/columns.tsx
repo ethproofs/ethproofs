@@ -74,7 +74,7 @@ export const columns: ColumnDef<BlockWithProofs>[] = [
     header: "avg. cost/proof",
     cell: ({ cell }) => {
       const proofs = cell.getValue() as Proof[]
-      if (!proofs.length) return "-"
+      if (!proofs.length) return null
 
       const avgCostPerProof = getProofsAvgCost(proofs)
 
