@@ -156,31 +156,19 @@ export type Database = {
       }
       prover_machines: {
         Row: {
-          github_org: string | null
-          logo_url: string | null
           machine_id: number
           machine_name: string
-          twitter_handle: string | null
           user_id: string | null
-          website_url: string | null
         }
         Insert: {
-          github_org?: string | null
-          logo_url?: string | null
           machine_id?: number
           machine_name: string
-          twitter_handle?: string | null
           user_id?: string | null
-          website_url?: string | null
         }
         Update: {
-          github_org?: string | null
-          logo_url?: string | null
           machine_id?: number
           machine_name?: string
-          twitter_handle?: string | null
           user_id?: string | null
-          website_url?: string | null
         }
         Relationships: [
           {
@@ -236,19 +224,31 @@ export type Database = {
       }
       teams: {
         Row: {
+          github_org: string | null
+          logo_url: string | null
           team_id: number
           team_name: string
+          twitter_handle: string | null
           user_id: string | null
+          website_url: string | null
         }
         Insert: {
+          github_org?: string | null
+          logo_url?: string | null
           team_id?: number
           team_name: string
+          twitter_handle?: string | null
           user_id?: string | null
+          website_url?: string | null
         }
         Update: {
+          github_org?: string | null
+          logo_url?: string | null
           team_id?: number
           team_name?: string
+          twitter_handle?: string | null
           user_id?: string | null
+          website_url?: string | null
         }
         Relationships: [
           {

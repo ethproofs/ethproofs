@@ -46,6 +46,7 @@ import { getProofsAvgLatency, proofsTotalCostPerMegaGas } from "@/lib/proofs"
 import type { Metric } from "@/lib/types"
 import { cn } from "@/lib/utils"
 import { createClient } from "@/utils/supabase/client"
+import { Tables } from "@/lib/database.types"
 
 type BlockDetailsPageProps = {
   params: Promise<{ block: number }>
@@ -71,23 +72,19 @@ export default async function BlockDetailsPage({
     .eq("block_number", block)
     .single()
 
-  const { data: machines } = await supabase.from("prover_machines").select("*")
+  const { data: teams } = await supabase.from("teams").select("*")
 
-  if (!data || error || !machines) notFound()
+  if (!data || error || !teams) notFound()
 
   const { timestamp, gas_used, transaction_count, proofs } = data
 
   const getProverLogoImgProps = (
-    machine_id: number | null
+    team: Tables<"teams"> | undefined
   ): Pick<ImageProps, "src" | "alt"> | null => {
-    if (!machine_id) return null
-
-    const machine = machines.find((m) => m.machine_id === machine_id)
-
-    if (!machine?.logo_url) return null
+    if (!team?.logo_url) return null
     return {
-      src: machine.logo_url,
-      alt: `${machine.machine_name} logo`,
+      src: team.logo_url,
+      alt: `${team.team_name} logo`,
     }
   }
   // TODO: Get merkle root hash, slot (epoch), and size block data
@@ -322,11 +319,12 @@ export default async function BlockDetailsPage({
           ({
             proof_id,
             prover_duration,
-            prover_machine_id,
             proving_cost,
             proving_cycles,
+            user_id,
           }) => {
-            const imgProps = getProverLogoImgProps(prover_machine_id)
+            const team = teams.find((t) => t.user_id === user_id)
+            const imgProps = getProverLogoImgProps(team)
             return (
               <div
                 className={cn(
@@ -345,7 +343,7 @@ export default async function BlockDetailsPage({
                   )}
                 >
                   {imgProps && (
-                    <Link href={"/prover/" + prover_machine_id}>
+                    <Link href={"/prover/" + team?.team_id}>
                       <Image
                         src={imgProps.src}
                         alt={imgProps.alt}
