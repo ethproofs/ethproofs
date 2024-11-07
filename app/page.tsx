@@ -78,20 +78,19 @@ export default async function Index() {
   return (
     <div className="flex w-full flex-1 flex-col items-center gap-20">
       <div
-        className="absolute inset-0 -z-10 h-[32rem] md:h-96 xl:h-[32rem]"
-        style={{
-          mask: "linear-gradient(180deg, white 80%, transparent)",
-        }}
+        className="absolute inset-0 -z-10 h-[28rem] md:max-xl:h-[22rem]"
+        style={{ mask: "linear-gradient(180deg, white 80%, transparent)" }}
       >
         <Image
           src={HeroDark}
           style={{
-            mask: "radial-gradient(circle,white 30%, transparent 60%)",
+            mask: "radial-gradient(circle, white 60%, transparent 90%)",
+            objectPosition: "50% 30%", // Position around checkmark in image
           }}
           className={cn(
-            "h-full object-cover",
-            "opacity-80 contrast-[110%] hue-rotate-180 invert",
-            "dark:opacity-100 dark:contrast-100 dark:hue-rotate-0 dark:invert-0"
+            "mx-auto h-full w-full max-w-screen-2xl object-cover",
+            "opacity-80 contrast-[110%] hue-rotate-180 invert", // Light mode filters
+            "dark:opacity-100 dark:contrast-100 dark:hue-rotate-0 dark:invert-0" // Dark mode filter resets
           )}
           alt=""
         />
