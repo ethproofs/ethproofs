@@ -8,8 +8,9 @@ import Block from "@/components/svgs/box.svg"
 import Clock from "@/components/svgs/clock.svg"
 import DollarSign from "@/components/svgs/dollar-sign.svg"
 
-import HeroDark from "@/assets/hero-background-dark.png"
-import HeroLight from "@/assets/hero-background-light.png"
+import { cn } from "@/lib/utils"
+
+import HeroDark from "@/assets/hero-background.png"
 import { getMetadata } from "@/lib/metadata"
 import { formatNumber } from "@/lib/number"
 import { createClient } from "@/utils/supabase/server"
@@ -76,16 +77,25 @@ export default async function Index() {
 
   return (
     <div className="flex w-full flex-1 flex-col items-center gap-20">
-      <Image
-        src={HeroDark}
-        className="absolute inset-0 -z-10 hidden min-h-96 object-cover dark:block"
-        alt=""
-      />
-      <Image
-        src={HeroLight}
-        className="absolute inset-0 -z-10 min-h-96 object-cover dark:hidden"
-        alt=""
-      />
+      <div
+        className="absolute inset-0 -z-10 h-[32rem] md:h-96 xl:h-[32rem]"
+        style={{
+          mask: "linear-gradient(180deg, white 80%, transparent)",
+        }}
+      >
+        <Image
+          src={HeroDark}
+          style={{
+            mask: "radial-gradient(circle,white 30%, transparent 60%)",
+          }}
+          className={cn(
+            "h-full object-cover",
+            "opacity-80 contrast-[110%] hue-rotate-180 invert",
+            "dark:opacity-100 dark:contrast-100 dark:hue-rotate-0 dark:invert-0"
+          )}
+          alt=""
+        />
+      </div>
       <div className="mt-60 flex w-full flex-col items-center justify-between gap-4 p-3 md:mt-48 xl:mt-72">
         <h1 className="w-full text-center font-mono font-semibold">
           Building fully SNARKed <span className="text-primary">Ethereum</span>
