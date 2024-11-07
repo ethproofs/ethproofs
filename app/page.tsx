@@ -32,15 +32,7 @@ export default async function Index() {
 
   const blocksResponse = await supabase
     .from("blocks")
-    .select(
-      `
-      *,
-      proofs!inner(
-        id:proof_id
-      )
-    `
-    )
-    .eq("proofs.proof_status", "proved")
+    .select(`*,proofs!inner(id:proof_id)`)
     .order("block_number", { ascending: false })
 
   const provenBlocks = blocksResponse.data || []
