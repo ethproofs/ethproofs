@@ -9,6 +9,7 @@ import { ButtonLink } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
 
 import { formatTimeAgo, intervalToSeconds } from "@/lib/date"
+import { getProofsAvgCost } from "@/lib/proofs"
 
 export const columns: ColumnDef<BlockWithProofs>[] = [
   {
@@ -69,20 +70,19 @@ export const columns: ColumnDef<BlockWithProofs>[] = [
     },
   },
   {
-    accessorKey: "gas_used",
+    accessorKey: "proofs",
     header: "avg. cost/proof",
     cell: ({ cell }) => {
-      const gasUsed = cell.getValue() as number
+      const proofs = cell.getValue() as Proof[]
+      if (!proofs.length) return "-"
 
-      if (!gasUsed) {
-        return null
-      }
+      const avgCostPerProof = getProofsAvgCost(proofs)
 
       const formatted = new Intl.NumberFormat("en-US", {
         style: "currency",
         currency: "USD",
         maximumFractionDigits: 0,
-      }).format(gasUsed)
+      }).format(avgCostPerProof)
 
       return formatted
     },
