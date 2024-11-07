@@ -35,6 +35,7 @@ const main = async () => {
   const { blocks } = await seed.blocks((x) =>
     x(2000, () => ({
       hash: () => "0x" + faker.git.commitSha(),
+      timestamp: () => faker.date.recent().toISOString(),
     }))
   )
 
