@@ -13,7 +13,7 @@ import useSearchKeyboardShortcuts from "@/hooks/useSearchKeyboardShortcuts"
 const PLACEHOLDER = "Search by slot number / hash / number / prover block"
 const k = 6.5
 
-const SearchInput = () => {
+const SearchInput = ({ className }: React.HTMLAttributes<HTMLInputElement>) => {
   const [query, setQuery] = useState("")
 
   const { inputRef } = useSearchKeyboardShortcuts()
@@ -23,7 +23,7 @@ const SearchInput = () => {
   const placeholder = isLarge ? PLACEHOLDER : PLACEHOLDER.split(" ")[0]
 
   return (
-    <div ref={containerRef} className="relative w-full max-md:hidden">
+    <div ref={containerRef} className={cn("relative w-full", className)}>
       <Input
         ref={inputRef}
         type="search"

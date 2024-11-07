@@ -66,7 +66,7 @@ export default function RootLayout({
 
               {/* Header center */}
               <div className="flex justify-center">
-                <SearchInput />
+                <SearchInput className="max-md:hidden" />
               </div>
 
               {/* Header end */}
