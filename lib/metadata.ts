@@ -22,7 +22,6 @@ export const defaults = (custom: CustomMetadata): Metadata => {
   ]
 
   return {
-    metadataBase: new URL(SITE_URL),
     title,
     description,
     openGraph: {
