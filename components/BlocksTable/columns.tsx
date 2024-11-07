@@ -9,6 +9,7 @@ import { ButtonLink } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
 
 import { formatTimeAgo, intervalToSeconds } from "@/lib/date"
+import { getProofsAvgCost, getProofsAvgLatency } from "@/lib/proofs"
 
 export const columns: ColumnDef<BlockWithProofs>[] = [
   {
@@ -69,20 +70,19 @@ export const columns: ColumnDef<BlockWithProofs>[] = [
     },
   },
   {
-    accessorKey: "gas_used",
+    accessorKey: "proofs",
     header: "avg. cost/proof",
     cell: ({ cell }) => {
-      const gasUsed = cell.getValue() as number
+      const proofs = cell.getValue() as Proof[]
+      if (!proofs.length) return null
 
-      if (!gasUsed) {
-        return null
-      }
+      const avgCostPerProof = getProofsAvgCost(proofs)
 
       const formatted = new Intl.NumberFormat("en-US", {
         style: "currency",
         currency: "USD",
         maximumFractionDigits: 0,
-      }).format(gasUsed)
+      }).format(avgCostPerProof)
 
       return formatted
     },
@@ -92,12 +92,8 @@ export const columns: ColumnDef<BlockWithProofs>[] = [
     header: "prover status",
     cell: ({ cell }) => {
       const proofs = cell.getValue() as Proof[]
-      const latency =
-        proofs.reduce(
-          (acc, proof) =>
-            acc + intervalToSeconds(proof.prover_duration as string),
-          0
-        ) / proofs.length
+
+      const latency = getProofsAvgLatency(proofs)
 
       return (
         <div className="flex justify-center">
