@@ -35,7 +35,7 @@ export default async function Index() {
     .select(`*,proofs!inner(id:proof_id)`)
     .order("block_number", { ascending: false })
 
-  const provenBlocks = blocksResponse.data || []
+  const blocks = blocksResponse.data || []
 
   const proofsResponse = await supabase.from("proofs").select()
   const proofs = proofsResponse.data || []
@@ -111,7 +111,7 @@ export default async function Index() {
         </div>
       </div>
 
-      <BlocksTable blocks={provenBlocks || []} proofs={proofs} />
+      <BlocksTable blocks={blocks || []} proofs={proofs} />
     </div>
   )
 }
