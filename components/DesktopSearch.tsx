@@ -27,7 +27,7 @@ const DesktopSearch = () => {
   }, [])
 
   return (
-    <div className="relative w-full">
+    <div className="relative w-full max-md:hidden">
       <Input
         ref={ref}
         type="search"
