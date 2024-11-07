@@ -26,7 +26,7 @@ import { cn } from "@/lib/utils"
 
 import { SITE_REPO_URL } from "@/lib/constants"
 
-import DesktopSearch from "@/components/DesktopSearch"
+import SearchInput from "@/components/header/SearchInput"
 import "../styles/globals.css"
 
 export default function RootLayout({
@@ -66,7 +66,7 @@ export default function RootLayout({
 
               {/* Header center */}
               <div className="flex justify-center">
-                <DesktopSearch />
+                <SearchInput />
               </div>
 
               {/* Header end */}
