@@ -15,8 +15,8 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from "./ui/dropdown-menu"
-import ThemeIcon from "./ui/theme-icon"
+} from "../ui/dropdown-menu"
+import ThemeIcon from "../ui/theme-icon"
 
 import useThemingKeyboardShortcuts from "@/hooks/useThemingKeyboardShortcuts"
 
