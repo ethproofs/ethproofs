@@ -16,8 +16,8 @@ export const defaults = (custom: CustomMetadata): Metadata => {
   const description = custom.description || SITE_DESCRIPTION
   const images = custom.images || [
     {
-      url: "hero-background.png", // TODO: Update for production
-      alt: "Hero background image", // TODO: Update for production
+      url: "images/hero-background.png",
+      alt: "Artistic hero image of blocks beings checked off",
     },
   ]
 
