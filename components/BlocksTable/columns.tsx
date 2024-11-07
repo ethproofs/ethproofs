@@ -95,8 +95,16 @@ export const columns: ColumnDef<BlockWithProofs>[] = [
 
       const latency = getProofsAvgLatency(proofs)
 
+      const getStatusColorClass = (status: string) => {
+        if (status === "proved") return "bg-primary"
+        if (status === "queued")
+          return "bg-transparent outline outline-1 -outline-offset-1 outline-body-secondary"
+        if (status === "proving") return "bg-body-secondary"
+        return "bg-red-500" // TODO: Confirm / tokenize
+      }
+
       return (
-        <div className="flex justify-center">
+        <div className="flex w-20 mx-auto">
           <div className="flex flex-col gap-2">
             <div className="flex flex-wrap gap-2">
               {proofs.map((proof) => (
@@ -104,9 +112,7 @@ export const columns: ColumnDef<BlockWithProofs>[] = [
                   key={proof.proof_id}
                   className={cn(
                     "h-2 w-2 rounded-full",
-                    proof.proof_status === "proved"
-                      ? "bg-primary"
-                      : "bg-body-secondary"
+                    getStatusColorClass(proof.proof_status)
                   )}
                 />
               ))}
