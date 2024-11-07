@@ -4,12 +4,12 @@ import { ThemeProvider } from "next-themes"
 import Link from "next/link"
 
 import ActiveLinkDecorator from "@/components/ActiveLinkDecorator"
-import HeaderScrollEffects from "@/components/HeaderScrollEffects"
+import HeaderScrollEffects from "@/components/header/HeaderScrollEffects"
+import ThemeSwitch from "@/components/header/ThemeSwitch"
 import EthProofsLogo from "@/components/svgs/eth-proofs-logo.svg"
 import GitHub from "@/components/svgs/github.svg"
 import Hamburger from "@/components/svgs/hamburger.svg"
 import Magnifier from "@/components/svgs/magnifier.svg"
-import ThemeSwitch from "@/components/ThemeSwitch"
 import { Button } from "@/components/ui/button"
 import {
   Drawer,
@@ -50,7 +50,7 @@ export default function RootLayout({
           <div className="mx-auto flex max-w-screen-2xl flex-col gap-16 px-4 sm:px-4 md:px-8 xl:px-16">
             <header
               className={cn(
-                "relative sticky top-0 z-10 grid grid-cols-3 items-center py-4",
+                "sticky top-0 z-10 grid grid-cols-3 items-center py-4",
                 "-mx-4 sm:-mx-4 md:-mx-8 xl:-mx-16",
                 "px-4 sm:px-4 md:px-8 xl:px-16"
               )}
