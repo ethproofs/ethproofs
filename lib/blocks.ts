@@ -1,10 +1,6 @@
 import { type Block as ViemBlock, createPublicClient, http } from "viem"
 import { mainnet } from "viem/chains"
 
-import type { Block, BlockWithProofsId, Proof } from "@/lib/types"
-
-import { timestampWithinDays } from "./date"
-
 const rpcUrl = process.env.RPC_URL
 
 const client = createPublicClient({
@@ -52,6 +48,3 @@ export const fetchBlockData = async (block_number: number) => {
     hash: block.hash,
   }
 }
-
-export const blockIsRecent = ({ timestamp }: Block): boolean =>
-  timestampWithinDays(timestamp)
