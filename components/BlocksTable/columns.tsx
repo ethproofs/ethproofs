@@ -10,6 +10,7 @@ import { cn } from "@/lib/utils"
 
 import { formatTimeAgo, intervalToSeconds } from "@/lib/date"
 import { getProofsAvgCost, getProofsAvgLatency } from "@/lib/proofs"
+import { formatNumber } from "@/lib/number"
 
 export const columns: ColumnDef<BlockWithProofs>[] = [
   {
@@ -78,11 +79,10 @@ export const columns: ColumnDef<BlockWithProofs>[] = [
 
       const avgCostPerProof = getProofsAvgCost(proofs)
 
-      const formatted = new Intl.NumberFormat("en-US", {
+      const formatted = formatNumber(avgCostPerProof, {
         style: "currency",
         currency: "USD",
-        maximumFractionDigits: 0,
-      }).format(avgCostPerProof)
+      })
 
       return formatted
     },
