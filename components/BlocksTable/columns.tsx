@@ -49,14 +49,14 @@ export const columns: ColumnDef<BlockWithProofs>[] = [
     },
   },
   {
-    header: "total fees",
+    header: "total fees (gwei)",
     accessorKey: "total_fees",
     cell: ({ cell }) => {
-      const totalFees = cell.getValue() as number
+      const totalFeesGwei = cell.getValue() as number
 
-      if (!totalFees) return <Null />
+      if (!totalFeesGwei) return <Null />
 
-      const formatted = formatNumber(totalFees)
+      const formatted = formatNumber(totalFeesGwei)
 
       return formatted
     },
@@ -97,7 +97,7 @@ export const columns: ColumnDef<BlockWithProofs>[] = [
       }
 
       return (
-        <div className="flex w-20 mx-auto">
+        <div className="mx-auto flex w-20">
           <div className="flex flex-col gap-2">
             <div className="flex flex-wrap gap-2">
               {proofs.map((proof) => (
