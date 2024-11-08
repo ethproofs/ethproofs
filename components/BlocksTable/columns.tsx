@@ -4,8 +4,8 @@ import { ColumnDef } from "@tanstack/react-table"
 
 import { BlockWithProofs, Proof } from "@/lib/types"
 
-import { ButtonLink } from "@/components/ui/button"
 import Clipboard from "@/components/Clipboard"
+import { ButtonLink } from "@/components/ui/button"
 
 import { cn } from "@/lib/utils"
 

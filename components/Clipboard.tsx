@@ -1,8 +1,8 @@
 "use client"
 
-import { cn } from "@/lib/utils"
-import { useClipboard } from "@/hooks/useClipboard"
 import { Button } from "@/components/ui/button"
+import { useClipboard } from "@/hooks/useClipboard"
+import { cn } from "@/lib/utils"
 
 type ClipboardProps = React.HTMLAttributes<HTMLButtonElement> & {
   message?: string
