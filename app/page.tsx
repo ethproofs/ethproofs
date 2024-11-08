@@ -99,7 +99,7 @@ export default async function Index() {
         <div className="flex w-full max-w-2xl justify-around">
           {summaryItems.map(({ label, icon, value }) => (
             <div key={label} className="flex flex-col gap-1 p-2">
-              <div className="flex flex-col items-center justify-center gap-x-2 md:flex-row">
+              <div className="flex flex-col items-center justify-center gap-2 md:flex-row">
                 <p className="font-mono text-2xl text-primary md:text-3xl lg:text-4xl">
                   {icon}
                 </p>
