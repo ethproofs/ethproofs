@@ -5,16 +5,17 @@ import { useClipboard } from "@/hooks/useClipboard"
 import { Button } from "@/components/ui/button"
 
 type ClipboardProps = React.HTMLAttributes<HTMLButtonElement> & {
-  message: string
+  message?: string
 }
 
 const Clipboard = ({ message, children, className }: ClipboardProps) => {
   const { onCopy, hasCopied } = useClipboard()
+  const copyMessage = message || String(children)
   return (
     <div className="relative text-lg">
       <Button
         className={cn(className, hasCopied ? "scale-y-0" : "scale-y-100")}
-        onClick={onCopy(message)}
+        onClick={onCopy(copyMessage)}
         variant="text"
         size="text"
         disabled={hasCopied}
