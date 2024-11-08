@@ -27,7 +27,9 @@ export const columns: ColumnDef<BlockWithProofs>[] = [
 
       return (
         <div className="text-start">
-          <Clipboard className="text-base" message={blockNumber.toString()}>{formatted}</Clipboard>
+          <Clipboard className="text-base" message={blockNumber.toString()}>
+            {formatted}
+          </Clipboard>
           <div className="font-sans text-xs text-body-secondary">
             {formattedTimestamp}
           </div>
