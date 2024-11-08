@@ -12,6 +12,8 @@ import { formatTimeAgo } from "@/lib/date"
 import { formatNumber } from "@/lib/number"
 import { getProofsAvgCost, getProofsAvgLatency } from "@/lib/proofs"
 
+const Null = () => <span className="text-body-secondary">{"-"}</span>
+
 export const columns: ColumnDef<BlockWithProofs>[] = [
   {
     accessorKey: "block_number",
@@ -39,9 +41,7 @@ export const columns: ColumnDef<BlockWithProofs>[] = [
     cell: ({ cell }) => {
       const transactionCount = cell.getValue() as number
 
-      if (!transactionCount) {
-        return null
-      }
+      if (!transactionCount) return <Null />
 
       const formatted = formatNumber(transactionCount)
 
@@ -54,9 +54,7 @@ export const columns: ColumnDef<BlockWithProofs>[] = [
     cell: ({ cell }) => {
       const totalFees = cell.getValue() as number
 
-      if (!totalFees) {
-        return null
-      }
+      if (!totalFees) return <Null />
 
       const formatted = formatNumber(totalFees)
 
@@ -68,9 +66,11 @@ export const columns: ColumnDef<BlockWithProofs>[] = [
     header: "avg. cost/proof",
     cell: ({ cell }) => {
       const proofs = cell.getValue() as Proof[]
-      if (!proofs.length) return null
+      if (!proofs.length) return <Null />
 
       const avgCostPerProof = getProofsAvgCost(proofs)
+
+      if (isNaN(avgCostPerProof)) return <Null />
 
       const formatted = formatNumber(avgCostPerProof, {
         style: "currency",
