@@ -1,13 +1,11 @@
-/* eslint-disable simple-import-sort/imports */
-
 "use client"
 
 import ClipboardCheck from "@/components/svgs/clipboard-check.svg"
-
 import { Button } from "@/components/ui/button"
 
-import { useClipboard } from "@/hooks/useClipboard"
 import { cn } from "@/lib/utils"
+
+import { useClipboard } from "@/hooks/useClipboard"
 
 type ClipboardProps = React.HTMLAttributes<HTMLButtonElement> & {
   message?: string
