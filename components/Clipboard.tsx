@@ -1,3 +1,5 @@
+/* eslint-disable simple-import-sort/imports */
+
 "use client"
 
 import { Button } from "@/components/ui/button"
