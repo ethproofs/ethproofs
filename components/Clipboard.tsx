@@ -2,7 +2,10 @@
 
 "use client"
 
+import ClipboardCheck from "@/components/svgs/clipboard-check.svg"
+
 import { Button } from "@/components/ui/button"
+
 import { useClipboard } from "@/hooks/useClipboard"
 import { cn } from "@/lib/utils"
 
@@ -27,11 +30,11 @@ const Clipboard = ({ message, children, className }: ClipboardProps) => {
       <div
         className={cn(
           className,
-          "absolute inset-0",
+          "absolute inset-0 grid place-items-center",
           hasCopied ? "scale-y-100" : "scale-y-0"
         )}
       >
-        Copied!
+        <ClipboardCheck />
       </div>
     </div>
   )
