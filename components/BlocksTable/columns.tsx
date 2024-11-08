@@ -8,7 +8,8 @@ import { ButtonLink } from "@/components/ui/button"
 
 import { cn } from "@/lib/utils"
 
-import { formatTimeAgo, intervalToSeconds } from "@/lib/date"
+import { formatTimeAgo } from "@/lib/date"
+import { formatNumber } from "@/lib/number"
 import { getProofsAvgCost, getProofsAvgLatency } from "@/lib/proofs"
 
 export const columns: ColumnDef<BlockWithProofs>[] = [
@@ -17,9 +18,7 @@ export const columns: ColumnDef<BlockWithProofs>[] = [
     header: () => <div className="text-left">block</div>,
     cell: ({ row, cell }) => {
       const blockNumber = cell.getValue() as number
-      const formatted = new Intl.NumberFormat("en-US", {
-        style: "decimal",
-      }).format(blockNumber)
+      const formatted = formatNumber(blockNumber)
 
       const timestamp = row.original.timestamp
       const formattedTimestamp = formatTimeAgo(new Date(timestamp))
@@ -44,9 +43,7 @@ export const columns: ColumnDef<BlockWithProofs>[] = [
         return null
       }
 
-      const formatted = new Intl.NumberFormat("en-US", {
-        style: "decimal",
-      }).format(transactionCount)
+      const formatted = formatNumber(transactionCount)
 
       return formatted
     },
@@ -60,11 +57,7 @@ export const columns: ColumnDef<BlockWithProofs>[] = [
         return null
       }
 
-      const formatted = new Intl.NumberFormat("en-US", {
-        style: "currency",
-        currency: "USD",
-        maximumFractionDigits: 0,
-      }).format(totalFees)
+      const formatted = formatNumber(totalFees)
 
       return formatted
     },
@@ -78,11 +71,10 @@ export const columns: ColumnDef<BlockWithProofs>[] = [
 
       const avgCostPerProof = getProofsAvgCost(proofs)
 
-      const formatted = new Intl.NumberFormat("en-US", {
+      const formatted = formatNumber(avgCostPerProof, {
         style: "currency",
         currency: "USD",
-        maximumFractionDigits: 0,
-      }).format(avgCostPerProof)
+      })
 
       return formatted
     },
