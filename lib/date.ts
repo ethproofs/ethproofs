@@ -71,3 +71,22 @@ export function timestampWithinDays(
   if (!timestamp) return false
   return Date.now() - new Date(timestamp).getTime() < days * 24 * 60 * 60 * 1000
 }
+
+/**
+ * Formats a given date into a localized string based on the provided options and locale.
+ *
+ * @param date - The date to format. Can be a number (timestamp), Date object, or string.
+ * @param options - Optional. An object with configuration options for the date formatting.
+ * @param locale - Optional. A string with a BCP 47 language tag. Defaults to "en-US".
+ * @returns A string representing the formatted date and time.
+ */
+export const formatDate = (
+  date: number | Date | string,
+  options?: Intl.DateTimeFormatOptions,
+  locale = "en-US"
+) =>
+  new Intl.DateTimeFormat(locale, {
+    dateStyle: "short",
+    timeStyle: "long",
+    ...options,
+  }).format(typeof date === "string" ? new Date(date) : date)
