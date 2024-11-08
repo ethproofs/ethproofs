@@ -1,10 +1,11 @@
 import { type Block as ViemBlock, createPublicClient, http } from "viem"
 import { mainnet } from "viem/chains"
 
+const rpcUrl = process.env.RPC_URL
+
 const client = createPublicClient({
   chain: mainnet,
-  // TODO use custom rpc endpoint
-  transport: http(),
+  transport: http(rpcUrl),
 })
 
 function calculateTotalFees(block: ViemBlock<bigint, true>): bigint {

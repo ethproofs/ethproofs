@@ -10,5 +10,5 @@ export const MS_PER_SLOT = 12_000
 export const SLOTS_PER_EPOCH = 32 // 2^5
 
 // Prover machine constants
-export const FALLBACK_PROVER_LOGO_SRC =
-  "https://ibkqxhjnroghhtfyualc.supabase.co/storage/v1/object/public/public-assets/fallback-prover-logo.svg"
+export const FALLBACK_TEAM_LOGO_SRC =
+  "https://ibkqxhjnroghhtfyualc.supabase.co/storage/v1/object/public/public-assets/fallback-team-logo.svg"
