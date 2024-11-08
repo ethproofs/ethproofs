@@ -5,6 +5,7 @@ import { ColumnDef } from "@tanstack/react-table"
 import { BlockWithProofs, Proof } from "@/lib/types"
 
 import { ButtonLink } from "@/components/ui/button"
+import Clipboard from "@/components/Clipboard"
 
 import { cn } from "@/lib/utils"
 
@@ -25,8 +26,8 @@ export const columns: ColumnDef<BlockWithProofs>[] = [
       const formattedTimestamp = formatTimeAgo(new Date(timestamp))
 
       return (
-        <div className="text-left text-base">
-          {formatted}
+        <div className="text-start">
+          <Clipboard className="text-base" message={blockNumber.toString()}>{formatted}</Clipboard>
           <div className="font-sans text-xs text-body-secondary">
             {formattedTimestamp}
           </div>
@@ -104,7 +105,7 @@ export const columns: ColumnDef<BlockWithProofs>[] = [
       }
 
       return (
-        <div className="flex w-20 mx-auto">
+        <div className="mx-auto flex w-20">
           <div className="flex flex-col gap-2">
             <div className="flex flex-wrap gap-2">
               {proofs.map((proof) => (
