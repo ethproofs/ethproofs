@@ -11,10 +11,16 @@ import { cn } from "@/lib/utils"
 
 type ClipboardProps = React.HTMLAttributes<HTMLButtonElement> & {
   message?: string
+  timeout?: number
 }
 
-const Clipboard = ({ message, children, className }: ClipboardProps) => {
-  const { onCopy, hasCopied } = useClipboard()
+const Clipboard = ({
+  message,
+  children,
+  className,
+  timeout = 500,
+}: ClipboardProps) => {
+  const { onCopy, hasCopied } = useClipboard({ timeout })
   const copyMessage = message || String(children)
   return (
     <div className="relative inline-block">
