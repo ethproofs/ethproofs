@@ -10,6 +10,7 @@ import { cn } from "@/lib/utils"
 
 import { formatTimeAgo, intervalToSeconds } from "@/lib/date"
 import { getProofsAvgCost, getProofsAvgLatency } from "@/lib/proofs"
+import { formatNumber } from "@/lib/number"
 
 export const columns: ColumnDef<BlockWithProofs>[] = [
   {
@@ -52,20 +53,16 @@ export const columns: ColumnDef<BlockWithProofs>[] = [
     },
   },
   {
-    header: "total fees",
+    header: "total fees (gwei)",
     accessorKey: "total_fees",
     cell: ({ cell }) => {
-      const totalFees = cell.getValue() as number
+      const totalFeesGwei = cell.getValue() as number
 
-      if (!totalFees) {
+      if (!totalFeesGwei) {
         return null
       }
 
-      const formatted = new Intl.NumberFormat("en-US", {
-        style: "currency",
-        currency: "USD",
-        maximumFractionDigits: 0,
-      }).format(totalFees)
+      const formatted = formatNumber(totalFeesGwei)
 
       return formatted
     },
@@ -105,7 +102,7 @@ export const columns: ColumnDef<BlockWithProofs>[] = [
       }
 
       return (
-        <div className="flex w-20 mx-auto">
+        <div className="mx-auto flex w-20">
           <div className="flex flex-col gap-2">
             <div className="flex flex-wrap gap-2">
               {proofs.map((proof) => (
