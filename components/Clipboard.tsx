@@ -14,7 +14,7 @@ const Clipboard = ({ message, children, className }: ClipboardProps) => {
   const { onCopy, hasCopied } = useClipboard()
   const copyMessage = message || String(children)
   return (
-    <div className="relative text-lg">
+    <div className="relative inline-block">
       <Button
         className={cn(className, hasCopied ? "scale-y-0" : "scale-y-100")}
         onClick={onCopy(copyMessage)}

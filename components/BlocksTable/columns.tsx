@@ -9,7 +9,7 @@ import { ButtonLink } from "@/components/ui/button"
 
 import { cn } from "@/lib/utils"
 
-import { formatTimeAgo, intervalToSeconds } from "@/lib/date"
+import { formatTimeAgo } from "@/lib/date"
 import { getProofsAvgCost, getProofsAvgLatency } from "@/lib/proofs"
 
 export const columns: ColumnDef<BlockWithProofs>[] = [
@@ -27,9 +27,7 @@ export const columns: ColumnDef<BlockWithProofs>[] = [
 
       return (
         <div className="text-start">
-          <Clipboard className="text-base" message={blockNumber.toString()}>
-            {formatted}
-          </Clipboard>
+          <Clipboard message={blockNumber.toString()}>{formatted}</Clipboard>
           <div className="font-sans text-xs text-body-secondary">
             {formattedTimestamp}
           </div>

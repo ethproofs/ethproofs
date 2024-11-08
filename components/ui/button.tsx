@@ -26,14 +26,14 @@ const buttonVariants = cva(
         outline: "",
         ghost: "border-transparent hover:shadow-none",
         link: "border-transparent hover:shadow-none underline py-0 px-1 active:text-primary",
-        text: "border-transparent hover:shadow-none text-auto hover:bg-transparent",
+        text: "border-transparent hover:shadow-none text-body hover:bg-transparent",
       },
       size: {
         lg: "py-2 px-[1.375rem]",
         md: "text-sm py-1 px-[1.125rem]",
         sm: "px-3 py-1 text-xs",
         icon: "p-0.5 h-6 w-6",
-        text: "p-0",
+        text: "p-0 text-start",
       },
     },
     defaultVariants: {
