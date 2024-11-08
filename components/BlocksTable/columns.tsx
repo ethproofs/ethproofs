@@ -9,8 +9,8 @@ import { ButtonLink } from "@/components/ui/button"
 import { cn } from "@/lib/utils"
 
 import { formatTimeAgo, intervalToSeconds } from "@/lib/date"
-import { getProofsAvgCost, getProofsAvgLatency } from "@/lib/proofs"
 import { formatNumber } from "@/lib/number"
+import { getProofsAvgCost, getProofsAvgLatency } from "@/lib/proofs"
 
 export const columns: ColumnDef<BlockWithProofs>[] = [
   {
