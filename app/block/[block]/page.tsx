@@ -1,4 +1,5 @@
 /* eslint-disable simple-import-sort/imports */
+import prettyBytes from "pretty-bytes"
 import type { Metadata } from "next"
 import Image, { type ImageProps } from "next/image"
 import Link from "next/link"
@@ -39,7 +40,7 @@ import {
 } from "@/components/ui/tooltip"
 
 import CopyButton from "@/components/CopyButton"
-import { intervalToSeconds } from "@/lib/date"
+import { formatDate, intervalToSeconds } from "@/lib/date"
 import { getMetadata } from "@/lib/metadata"
 import { formatNumber } from "@/lib/number"
 import { getProofsAvgLatency, proofsTotalCostPerMegaGas } from "@/lib/proofs"
@@ -56,7 +57,7 @@ export async function generateMetadata({
   params,
 }: BlockDetailsPageProps): Promise<Metadata> {
   const { block } = await params
-  return getMetadata({ title: `Block ${block}` }) // TODO: Confirm number formatting
+  return getMetadata({ title: `Block ${block}` })
 }
 
 export default async function BlockDetailsPage({
@@ -131,26 +132,18 @@ export default async function BlockDetailsPage({
           <BlockLarge className="text-6xl text-primary" />
           <h1 className="font-mono">
             <p className="text-sm font-normal md:text-lg">Block Height</p>
-            <p className="text-3xl font-semibold">
-              {/* {new Intl.NumberFormat("en-US").format()} */}
-              {/* TODO: Confirm number formatting for block height, slot, epoch, etc */}
-              {block}
-            </p>
+            <p className="text-3xl font-semibold">{block}</p>
           </h1>
         </HeroTitle>
 
         <HeroDivider />
 
         <HeroBody>
-          <HeroItem>
+          <HeroItem title={formatDate(timestamp, { timeZone: "UTC" })}>
             <HeroItemLabel>
               <Clock /> Time Stamp
             </HeroItemLabel>
-            {new Intl.DateTimeFormat("en-US", {
-              dateStyle: "short",
-              timeStyle: "long",
-              timeZone: "UTC",
-            }).format(new Date(timestamp))}
+            {formatDate(timestamp)}
           </HeroItem>
 
           <div className="grid grid-cols-3 gap-6">
@@ -158,7 +151,7 @@ export default async function BlockDetailsPage({
               <HeroItemLabel>
                 <Cpu /> Size
               </HeroItemLabel>
-              {new Intl.NumberFormat("en-US").format(size)} bytes
+              {prettyBytes(size)}
             </HeroItem>
 
             <HeroItem>

@@ -16,9 +16,8 @@ export const columns: ColumnDef<Proof>[] = [
     header: () => <div className="text-left">block</div>,
     cell: ({ cell }) => {
       const blockNumber = cell.getValue() as number
-      const formatted = formatNumber(blockNumber)
 
-      return <div className="text-start text-base">{formatted}</div>
+      return <div className="text-start text-base">{blockNumber}</div>
     },
   },
   // Instance / Machine
