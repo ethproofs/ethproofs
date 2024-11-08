@@ -8,9 +8,11 @@ import { ButtonLink } from "@/components/ui/button"
 
 import { cn } from "@/lib/utils"
 
-import { formatTimeAgo, intervalToSeconds } from "@/lib/date"
+import { formatTimeAgo } from "@/lib/date"
 import { formatNumber } from "@/lib/number"
 import { getProofsAvgCost, getProofsAvgLatency } from "@/lib/proofs"
+
+const Null = () => <span className="text-body-secondary">{"-"}</span>
 
 export const columns: ColumnDef<BlockWithProofs>[] = [
   {
@@ -18,9 +20,7 @@ export const columns: ColumnDef<BlockWithProofs>[] = [
     header: () => <div className="text-left">block</div>,
     cell: ({ row, cell }) => {
       const blockNumber = cell.getValue() as number
-      const formatted = new Intl.NumberFormat("en-US", {
-        style: "decimal",
-      }).format(blockNumber)
+      const formatted = formatNumber(blockNumber)
 
       const timestamp = row.original.timestamp
       const formattedTimestamp = formatTimeAgo(new Date(timestamp))
@@ -41,13 +41,9 @@ export const columns: ColumnDef<BlockWithProofs>[] = [
     cell: ({ cell }) => {
       const transactionCount = cell.getValue() as number
 
-      if (!transactionCount) {
-        return null
-      }
+      if (!transactionCount) return <Null />
 
-      const formatted = new Intl.NumberFormat("en-US", {
-        style: "decimal",
-      }).format(transactionCount)
+      const formatted = formatNumber(transactionCount)
 
       return formatted
     },
@@ -58,9 +54,7 @@ export const columns: ColumnDef<BlockWithProofs>[] = [
     cell: ({ cell }) => {
       const totalFeesGwei = cell.getValue() as number
 
-      if (!totalFeesGwei) {
-        return null
-      }
+      if (!totalFeesGwei) return <Null />
 
       const formatted = formatNumber(totalFeesGwei)
 
@@ -72,15 +66,16 @@ export const columns: ColumnDef<BlockWithProofs>[] = [
     header: "avg. cost/proof",
     cell: ({ cell }) => {
       const proofs = cell.getValue() as Proof[]
-      if (!proofs.length) return null
+      if (!proofs.length) return <Null />
 
       const avgCostPerProof = getProofsAvgCost(proofs)
 
-      const formatted = new Intl.NumberFormat("en-US", {
+      if (isNaN(avgCostPerProof)) return <Null />
+
+      const formatted = formatNumber(avgCostPerProof, {
         style: "currency",
         currency: "USD",
-        maximumFractionDigits: 0,
-      }).format(avgCostPerProof)
+      })
 
       return formatted
     },
