@@ -8,10 +8,11 @@ import Block from "@/components/svgs/box.svg"
 import Clock from "@/components/svgs/clock.svg"
 import DollarSign from "@/components/svgs/dollar-sign.svg"
 
-import HeroDark from "@/assets/hero-background-dark.png"
-import HeroLight from "@/assets/hero-background-light.png"
+import { cn } from "@/lib/utils"
+
 import { getMetadata } from "@/lib/metadata"
 import { formatNumber } from "@/lib/number"
+import HeroDark from "@/public/images/hero-background.png"
 import { createClient } from "@/utils/supabase/server"
 
 export const metadata: Metadata = getMetadata()
@@ -35,7 +36,7 @@ export default async function Index() {
     .select(`*,proofs!inner(id:proof_id, *)`)
     .order("block_number", { ascending: false })
 
-  const provenBlocks = blocksResponse.data || []
+  const blocks = blocksResponse.data || []
 
   const summaryItems: SummaryItem[] = summary.data
     ? [
@@ -66,17 +67,25 @@ export default async function Index() {
 
   return (
     <div className="flex w-full flex-1 flex-col items-center gap-20">
-      <Image
-        src={HeroDark}
-        className="absolute inset-0 -z-10 hidden min-h-96 object-cover dark:block"
-        alt=""
-      />
-      <Image
-        src={HeroLight}
-        className="absolute inset-0 -z-10 min-h-96 object-cover dark:hidden"
-        alt=""
-      />
-      <div className="mt-60 flex w-full flex-col items-center justify-between gap-4 p-3 md:mt-48 xl:mt-72">
+      <div
+        className="absolute inset-0 -z-10 h-[28rem] md:max-xl:h-96"
+        style={{ mask: "linear-gradient(180deg, white 80%, transparent)" }}
+      >
+        <Image
+          src={HeroDark}
+          style={{
+            mask: "radial-gradient(circle, white 60%, transparent 90%)",
+            objectPosition: "50% 30%", // Position around checkmark in image
+          }}
+          className={cn(
+            "mx-auto h-full w-full max-w-screen-2xl object-cover",
+            "opacity-80 contrast-[110%] hue-rotate-180 invert", // Light mode filters
+            "dark:opacity-100 dark:contrast-100 dark:hue-rotate-0 dark:invert-0" // Dark mode filter resets
+          )}
+          alt=""
+        />
+      </div>
+      <div className="mt-56 flex w-full flex-col items-center justify-between gap-4 p-3 md:mt-44 xl:mt-64">
         <h1 className="w-full text-center font-mono font-semibold">
           Building fully SNARKed <span className="text-primary">Ethereum</span>
         </h1>
@@ -108,7 +117,7 @@ export default async function Index() {
         </div>
       </div>
 
-      <BlocksTable blocks={provenBlocks} />
+      <BlocksTable blocks={blocks} />
     </div>
   )
 }
