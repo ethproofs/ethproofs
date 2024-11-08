@@ -50,6 +50,7 @@ export const columns: ColumnDef<BlockWithProofs>[] = [
   },
   {
     header: "total fees",
+    accessorKey: "total_fees",
     cell: ({ cell }) => {
       const totalFees = cell.getValue() as number
 
