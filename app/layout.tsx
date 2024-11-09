@@ -9,6 +9,7 @@ import ThemeSwitch from "@/components/header/ThemeSwitch"
 import EthProofsLogo from "@/components/svgs/eth-proofs-logo.svg"
 import GitHub from "@/components/svgs/github.svg"
 import Hamburger from "@/components/svgs/hamburger.svg"
+import Heart from "@/components/svgs/heart.svg"
 import Magnifier from "@/components/svgs/magnifier.svg"
 import { Button } from "@/components/ui/button"
 import {
@@ -156,9 +157,19 @@ export default function RootLayout({
                 </Link>
               </Button>
 
-              <p className="text-center">
-                Lorem ipsum dolor sit, amet consectetur adipisicing elit.
-                Similique facere temporibus minima quibusdam ratione.
+              <p className="mb-4 text-center">
+                Built with{" "}
+                <Heart className="animate-heart-beat inline text-xl text-primary" />{" "}
+                by the{" "}
+                <Link
+                  href="https://ethereum.org"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hover:text-primary-light"
+                >
+                  ethereum.org
+                </Link>{" "}
+                team
               </p>
               <p className="text-center text-lg text-primary-light">
                 Public goods are good
