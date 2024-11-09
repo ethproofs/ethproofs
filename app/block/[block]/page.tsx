@@ -140,7 +140,10 @@ export default async function BlockDetailsPage({
     {
       label: "cost / mega gas",
       description: "The cost of generating a proof per million gas.",
-      value: formatNumber(getAvgCostPerMegaGas(avgCostPerProof, gas_used)),
+      value: formatNumber(getAvgCostPerMegaGas(avgCostPerProof, gas_used), {
+        style: "currency",
+        currency: "USD",
+      }),
     },
     {
       label: "cost / mega cycle",
