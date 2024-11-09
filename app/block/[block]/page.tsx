@@ -36,7 +36,13 @@ import { timestampToEpoch, timestampToSlot } from "@/lib/beaconchain"
 import { intervalToSeconds, renderTimestamp } from "@/lib/date"
 import { getMetadata } from "@/lib/metadata"
 import { formatNumber } from "@/lib/number"
-import { getProofsAvgLatency, proofsTotalCostPerMegaGas } from "@/lib/proofs"
+import {
+  getAvgCostPerMegaCycle,
+  getAvgCostPerMegaGas,
+  getAvgCostPerTx,
+  getProofsAvgCost,
+  getProofsAvgLatency,
+} from "@/lib/proofs"
 import type { Metric } from "@/lib/types"
 import { cn } from "@/lib/utils"
 import { createClient } from "@/utils/supabase/client"
@@ -80,11 +86,11 @@ export default async function BlockDetailsPage({
     }
   }
 
-  const { timestamp, gas_used, transaction_count, proofs, hash } = data
+  const { timestamp, gas_used, total_fees, transaction_count, proofs, hash } =
+    data
 
   // TODO: Dummy data, get block size data
   const size = 32735
-  const dummyNumber = 60420
 
   // TODO: Add proper descriptions
   const performanceItems: Metric[] = [
@@ -115,31 +121,42 @@ export default async function BlockDetailsPage({
     },
   ]
 
+  const avgCostPerProof = getProofsAvgCost(proofs)
+
   const blockFeeMetrics: Metric[] = [
     {
-      label: "total fees",
+      label: "total fees (gwei)",
       description: "The total fees collected in this block.",
-      value: formatNumber(dummyNumber),
+      value: formatNumber(total_fees),
     },
     {
       label: "avg cost / proof",
       description: "The average cost of generating a proof.",
-      value: formatNumber(dummyNumber),
+      value: formatNumber(avgCostPerProof, {
+        style: "currency",
+        currency: "USD",
+      }),
     },
     {
       label: "cost / mega gas",
       description: "The cost of generating a proof per million gas.",
-      value: proofsTotalCostPerMegaGas(proofs, gas_used),
+      value: formatNumber(getAvgCostPerMegaGas(avgCostPerProof, gas_used)),
     },
     {
       label: "cost / mega cycle",
       description: "The cost of generating a proof per million cycles.",
-      value: formatNumber(dummyNumber),
+      value: formatNumber(getAvgCostPerMegaCycle(proofs), {
+        style: "currency",
+        currency: "USD",
+      }),
     },
     {
       label: "cost / transaction",
       description: "The cost of generating a proof per transaction.",
-      value: formatNumber(dummyNumber),
+      value: formatNumber(getAvgCostPerTx(avgCostPerProof, transaction_count), {
+        style: "currency",
+        currency: "USD",
+      }),
     },
   ]
 
