@@ -159,7 +159,7 @@ export default function RootLayout({
 
               <p className="mb-4 text-center">
                 Built with{" "}
-                <Heart className="animate-heart-beat inline text-xl text-primary" />{" "}
+                <Heart className="animate-heart-beat mb-0.5 inline text-xl text-primary" />{" "}
                 by the{" "}
                 <Link
                   href="https://ethereum.org"
