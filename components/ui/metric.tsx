@@ -29,10 +29,7 @@ const MetricLabel = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <div
     ref={ref}
-    className={cn(
-      "text-pretty text-sm lowercase text-body-secondary",
-      className
-    )}
+    className={cn("text-sm lowercase text-body-secondary", className)}
     {...props}
   />
 ))
