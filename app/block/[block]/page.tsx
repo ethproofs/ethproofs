@@ -214,7 +214,7 @@ export default async function BlockDetailsPage({
           </h2>
           <div className="grid grid-cols-2 gap-x-8 sm:flex sm:flex-wrap">
             {performanceItems.map(({ label, description, value }) => (
-              <MetricBox key={label}>
+              <MetricBox key={description}>
                 <MetricLabel>
                   {label}
                   <MetricInfo>{description}</MetricInfo>
@@ -231,7 +231,7 @@ export default async function BlockDetailsPage({
           </h2>
           <div className="grid grid-cols-2 gap-x-8 sm:flex sm:flex-wrap">
             {blockFeeMetrics.map(({ label, description, value }) => (
-              <MetricBox key={label}>
+              <MetricBox key={description}>
                 <MetricLabel>
                   {label}
                   <MetricInfo>{description}</MetricInfo>

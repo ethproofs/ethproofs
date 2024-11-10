@@ -9,7 +9,7 @@ export type BlockWithProofsIds = Block & { proofs: number[] }
 export type BlockWithProofs = Block & { proofs: Proof[] }
 
 export type Metric = {
-  label: React.ReactNode
+  label: ReactNode
   description: string
   value: string
 }

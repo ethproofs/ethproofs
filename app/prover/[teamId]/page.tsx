@@ -195,7 +195,7 @@ export default async function ProverPage({ params }: ProverPageProps) {
         </h2>
         <div className="flex flex-wrap gap-x-8">
           {performanceItems.map(({ label, description, value }) => (
-            <MetricBox key={label}>
+            <MetricBox key={description}>
               <MetricLabel>
                 {label}
                 <MetricInfo>{description}</MetricInfo>
