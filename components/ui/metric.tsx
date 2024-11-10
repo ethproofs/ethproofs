@@ -47,7 +47,7 @@ const MetricInfo = React.forwardRef<
       <TooltipTrigger>
         <InfoCircle />
       </TooltipTrigger>
-      <TooltipContent>
+      <TooltipContent className="max-w-80 sm:max-w-96">
         <p ref={ref} {...props}>
           {children}
         </p>
