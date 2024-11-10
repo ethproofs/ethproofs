@@ -358,7 +358,7 @@ export default async function BlockDetailsPage({
                   )}
                 >
                   <MetricLabel>
-                    zkVM cycles
+                    zk<span className="uppercase">VM</span> cycles
                     <MetricInfo>
                       The number of cycles used by the prover to generate the
                       proof.

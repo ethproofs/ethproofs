@@ -96,7 +96,11 @@ export default async function ProverPage({ params }: ProverPageProps) {
       value: formatNumber(totalProofs),
     },
     {
-      label: "Avg zkVM cycles per proof",
+      label: (
+        <>
+          Avg zk<span className="uppercase">VM</span> cycles per proof
+        </>
+      ),
       description:
         "The average number of zkVM cycles required to generate a proof.", // TODO: Add proper descriptions
       value: formatNumber(avgZkVMCyclesPerProof),
