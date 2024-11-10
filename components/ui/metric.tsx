@@ -30,7 +30,7 @@ const MetricLabel = React.forwardRef<
   <div
     ref={ref}
     className={cn(
-      "flex items-center gap-2 text-sm text-body-secondary",
+      "text-pretty text-sm lowercase text-body-secondary",
       className
     )}
     {...props}
@@ -44,8 +44,8 @@ const MetricInfo = React.forwardRef<
 >(({ children, ...props }, ref) => (
   <TooltipProvider>
     <Tooltip>
-      <TooltipTrigger>
-        <InfoCircle />
+      <TooltipTrigger className="ms-2">
+        <InfoCircle className="-mb-0.5" />
       </TooltipTrigger>
       <TooltipContent className="max-w-80 sm:max-w-96">
         <p ref={ref} {...props}>
