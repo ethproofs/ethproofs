@@ -19,6 +19,7 @@ export default function RootLayout({
           type="font/woff2"
           crossOrigin="anonymous"
         />
+        <link rel="icon" href="/icon.svg" type="image/svg" sizes="any" />
       </head>
       <body className="pb-80">
         <ThemeProvider attribute="class">
