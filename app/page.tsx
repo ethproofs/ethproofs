@@ -36,7 +36,7 @@ export default async function Index() {
           SNARKifying <span className="text-primary">Ethereum</span>
         </h1>
         <span className="my-2 text-xl">
-          <span className="font-mono font-bold">soon™️</span> with
+          <span className="font-mono font-bold text-primary">soon™️</span> with
         </span>
         <div className="max-w-40 md:max-w-60 lg:max-w-80">
           <EthProofsLogo
