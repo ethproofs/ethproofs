@@ -96,7 +96,11 @@ export default async function ProverPage({ params }: ProverPageProps) {
       value: formatNumber(totalProofs),
     },
     {
-      label: "Avg zkVM cycles per proof",
+      label: (
+        <>
+          Avg zk<span className="uppercase">VM</span> cycles per proof
+        </>
+      ),
       description:
         "The average number of zkVM cycles required to generate a proof.", // TODO: Add proper descriptions
       value: formatNumber(avgZkVMCyclesPerProof),
@@ -191,7 +195,7 @@ export default async function ProverPage({ params }: ProverPageProps) {
         </h2>
         <div className="flex flex-wrap gap-x-8">
           {performanceItems.map(({ label, description, value }) => (
-            <MetricBox key={label}>
+            <MetricBox key={description}>
               <MetricLabel>
                 {label}
                 <MetricInfo>{description}</MetricInfo>
