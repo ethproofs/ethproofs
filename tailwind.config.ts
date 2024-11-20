@@ -71,10 +71,21 @@ const config = {
           from: { height: "var(--radix-accordion-content-height)" },
           to: { height: "0" },
         },
+        "heart-beat": {
+          "0%, 25%": {
+            transform: "scale(1.1)",
+            animationTiming: "ease",
+          },
+          "24%, 49%": {
+            transform: "scale(1)",
+            animationTiming: "ease",
+          },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
+        "heart-beat": "heart-beat 1s infinite",
       },
     },
   },
