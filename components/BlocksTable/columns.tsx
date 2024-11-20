@@ -4,13 +4,16 @@ import { ColumnDef } from "@tanstack/react-table"
 
 import { BlockWithProofs, Proof } from "@/lib/types"
 
+import Clipboard from "@/components/Clipboard"
 import { ButtonLink } from "@/components/ui/button"
 
 import { cn } from "@/lib/utils"
 
-import { formatTimeAgo, intervalToSeconds } from "@/lib/date"
-import { getProofsAvgCost, getProofsAvgLatency } from "@/lib/proofs"
+import { formatTimeAgo } from "@/lib/date"
 import { formatNumber } from "@/lib/number"
+import { getProofsAvgCost, getProofsAvgLatency } from "@/lib/proofs"
+
+const Null = () => <span className="text-body-secondary">{"-"}</span>
 
 export const columns: ColumnDef<BlockWithProofs>[] = [
   {
@@ -18,16 +21,16 @@ export const columns: ColumnDef<BlockWithProofs>[] = [
     header: () => <div className="text-left">block</div>,
     cell: ({ row, cell }) => {
       const blockNumber = cell.getValue() as number
-      const formatted = new Intl.NumberFormat("en-US", {
-        style: "decimal",
-      }).format(blockNumber)
+      const formatted = formatNumber(blockNumber)
 
       const timestamp = row.original.timestamp
-      const formattedTimestamp = timestamp ? formatTimeAgo(new Date(timestamp)) : "pending"
+      const formattedTimestamp = timestamp
+        ? formatTimeAgo(new Date(timestamp))
+        : "pending"
 
       return (
-        <div className="text-left text-base">
-          {formatted}
+        <div className="text-start">
+          <Clipboard message={blockNumber.toString()}>{formatted}</Clipboard>
           <div className="font-sans text-xs text-body-secondary">
             {formattedTimestamp}
           </div>
@@ -41,31 +44,22 @@ export const columns: ColumnDef<BlockWithProofs>[] = [
     cell: ({ cell }) => {
       const transactionCount = cell.getValue() as number
 
-      if (!transactionCount) {
-        return null
-      }
+      if (!transactionCount) return <Null />
 
-      const formatted = new Intl.NumberFormat("en-US", {
-        style: "decimal",
-      }).format(transactionCount)
+      const formatted = formatNumber(transactionCount)
 
       return formatted
     },
   },
   {
-    header: "total fees",
+    header: "total fees (gwei)",
+    accessorKey: "total_fees",
     cell: ({ cell }) => {
-      const totalFees = cell.getValue() as number
+      const totalFeesGwei = cell.getValue() as number
 
-      if (!totalFees) {
-        return null
-      }
+      if (!totalFeesGwei) return <Null />
 
-      const formatted = new Intl.NumberFormat("en-US", {
-        style: "currency",
-        currency: "USD",
-        maximumFractionDigits: 0,
-      }).format(totalFees)
+      const formatted = formatNumber(totalFeesGwei)
 
       return formatted
     },
@@ -75,9 +69,11 @@ export const columns: ColumnDef<BlockWithProofs>[] = [
     header: "avg. cost/proof",
     cell: ({ cell }) => {
       const proofs = cell.getValue() as Proof[]
-      if (!proofs.length) return null
+      if (!proofs.length) return <Null />
 
       const avgCostPerProof = getProofsAvgCost(proofs)
+
+      if (isNaN(avgCostPerProof)) return <Null />
 
       const formatted = formatNumber(avgCostPerProof, {
         style: "currency",

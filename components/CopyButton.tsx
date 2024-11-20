@@ -1,6 +1,6 @@
 "use client"
 
-import Check from "@/components/svgs/check.svg"
+import ClipboardCheck from "@/components/svgs/clipboard-check.svg"
 import Copy from "@/components/svgs/copy.svg"
 
 import { cn } from "@/lib/utils"
@@ -22,7 +22,7 @@ const CopyButton = ({ message, className }: CopyButtonProps) => {
       className={cn("text-primary-dark", className)}
       onClick={onCopy(message)}
     >
-      {hasCopied ? <Check /> : <Copy />}
+      {hasCopied ? <ClipboardCheck /> : <Copy />}
     </Button>
   )
 }
