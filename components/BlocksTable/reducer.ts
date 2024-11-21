@@ -1,7 +1,12 @@
-import type { Block, BlockWithProofs, Proof } from "@/lib/types"
+import type {
+  Block,
+  BlockWithProofs,
+  BlockWithProofsById,
+  Proof,
+} from "@/lib/types"
 
 export type State = {
-  byId: Record<number, BlockWithProofs>
+  byId: BlockWithProofsById
   allIds: number[]
 }
 
@@ -26,16 +31,19 @@ export const reducer = (state: State, action: Actions) => {
           },
         },
         allIds: [...state.allIds, payload.block_number],
-      } as State
+      }
     }
     case "update_block": {
       return {
         ...state,
         byId: {
           ...state.byId,
-          [payload.block_number]: payload,
+          [payload.block_number]: {
+            ...state.byId[payload.block_number],
+            ...payload,
+          },
         },
-      } as State
+      }
     }
     case "add_proof": {
       return {
@@ -52,7 +60,7 @@ export const reducer = (state: State, action: Actions) => {
             ],
           },
         },
-      } as State
+      }
     }
     case "update_proof": {
       return {
@@ -66,10 +74,10 @@ export const reducer = (state: State, action: Actions) => {
             ),
           },
         },
-      } as State
+      }
     }
     default: {
-      return state as State
+      return state
     }
   }
 }
@@ -79,12 +87,9 @@ export const createInitialState = ({
 }: {
   blocks: BlockWithProofs[]
 }): State => ({
-  byId: blocks.reduce(
-    (acc, block) => {
-      acc[block.block_number] = block
-      return acc
-    },
-    {} as Record<number, BlockWithProofs>
-  ),
+  byId: blocks.reduce((acc, block) => {
+    acc[block.block_number] = block
+    return acc
+  }, {} as BlockWithProofsById),
   allIds: blocks.map((block) => block.block_number),
 })

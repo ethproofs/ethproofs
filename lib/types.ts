@@ -7,6 +7,7 @@ export type Block = Tables<"blocks">
 export type EmptyBlock = Partial<Block> & Pick<Block, "block_number">
 
 export type BlockWithProofs = (EmptyBlock | Block) & { proofs: Proof[] }
+export type BlockWithProofsById = Record<number, BlockWithProofs>
 
 export type Metric = {
   label: string
