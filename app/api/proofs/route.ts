@@ -1,19 +1,11 @@
 import { revalidateTag } from "next/cache"
 import { formatGwei } from "viem"
-import { z } from "zod"
+import { ZodError } from "zod"
+
+import { proofSchema } from "./proofSchema"
 
 import { withAuth } from "@/lib/auth"
 import { fetchBlockData } from "@/lib/blocks"
-
-const proofSchema = z.object({
-  block_number: z.number(),
-  proof: z.string(),
-  proof_status: z.enum(["proved", "proving", "queued"]),
-  prover_machine: z.number(),
-  prover_duration: z.number(),
-  proving_cost: z.number(),
-  proving_cycles: z.number(),
-})
 
 export const POST = withAuth(async ({ request, client, user }) => {
   const proofPayload = await request.json()
@@ -29,6 +21,12 @@ export const POST = withAuth(async ({ request, client, user }) => {
     proofSchema.parse(proofPayload)
   } catch (error) {
     console.error("proof payload invalid", error)
+    if (error instanceof ZodError) {
+      return new Response(`Invalid payload: ${error.message}`, {
+        status: 400,
+      })
+    }
+
     return new Response("Invalid payload", {
       status: 400,
     })
@@ -86,9 +84,19 @@ export const POST = withAuth(async ({ request, client, user }) => {
 
   // TODO validate prover_machine exists and fetch prover_machine_id
 
+  // get proof to update or create
+  const { data: existingProofData } = await client
+    .from("proofs")
+    .select("proof_id")
+    .eq("block_number", block_number)
+    // .eq("prover_machine_id", prover_machine_id)
+    .eq("user_id", user.id)
+    .single()
+
   // add proof
   console.log("adding proof", proofPayload)
-  const proofResponse = await client.from("proofs").insert({
+  const proofResponse = await client.from("proofs").upsert({
+    proof_id: existingProofData?.proof_id,
     block_number,
     proof,
     prover_machine_id: 1, // TODO: fetch prover_machine_id
