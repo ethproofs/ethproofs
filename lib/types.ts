@@ -10,7 +10,7 @@ export type BlockWithProofs = (EmptyBlock | Block) & { proofs: Proof[] }
 export type BlockWithProofsById = Record<number, BlockWithProofs>
 
 export type Metric = {
-  label: string
+  label: ReactNode
   description: string
   value: string
 }

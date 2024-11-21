@@ -9,6 +9,7 @@ import ThemeSwitch from "@/components/header/ThemeSwitch"
 import EthProofsLogo from "@/components/svgs/eth-proofs-logo.svg"
 import GitHub from "@/components/svgs/github.svg"
 import Hamburger from "@/components/svgs/hamburger.svg"
+import Heart from "@/components/svgs/heart.svg"
 import Magnifier from "@/components/svgs/magnifier.svg"
 import { Button } from "@/components/ui/button"
 import {
@@ -43,6 +44,15 @@ export default function RootLayout({
           as="font"
           type="font/woff2"
           crossOrigin="anonymous"
+        />
+        {/* https://nextjs.org/docs/app/api-reference/file-conventions/metadata/app-icons */}
+        <link rel="icon" href="/favicon.ico" sizes="any" />
+        <link rel="icon" href="/icon.svg" type="image/svg+xml" sizes="any" />
+        <link
+          rel="apple-touch-icon"
+          href="/apple-icon.png"
+          type="image/png"
+          sizes="180x180"
         />
       </head>
       <body className="pb-80">
@@ -156,9 +166,19 @@ export default function RootLayout({
                 </Link>
               </Button>
 
-              <p className="text-center">
-                Lorem ipsum dolor sit, amet consectetur adipisicing elit.
-                Similique facere temporibus minima quibusdam ratione.
+              <p className="mb-4 text-center">
+                Built with{" "}
+                <Heart className="animate-heart-beat mb-0.5 inline text-xl text-primary" />{" "}
+                by the{" "}
+                <Link
+                  href="https://ethereum.org"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="hover:text-primary-light"
+                >
+                  ethereum.org
+                </Link>{" "}
+                team
               </p>
               <p className="text-center text-lg text-primary-light">
                 Public goods are good
