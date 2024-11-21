@@ -1,25 +1,21 @@
-import {
+import type {
   Block,
-  BlockWithProofsId,
-  BlockWithProofsIds,
+  BlockWithProofs,
+  BlockWithProofsById,
   Proof,
 } from "@/lib/types"
 
 export type State = {
-  blocks: {
-    byId: Record<number, BlockWithProofsIds>
-    allIds: number[]
-  }
-  proofs: {
-    byId: Record<number, Proof>
-    allIds: number[]
-  }
+  byId: BlockWithProofsById
+  allIds: number[]
 }
 
 type AddBlock = { type: "add_block"; payload: Block }
+type UpdateBlock = { type: "update_block"; payload: Block }
 type AddProof = { type: "add_proof"; payload: Proof }
+type UpdateProof = { type: "update_proof"; payload: Proof }
 
-export type Actions = AddBlock | AddProof
+export type Actions = AddBlock | UpdateBlock | AddProof | UpdateProof
 
 export const reducer = (state: State, action: Actions) => {
   const { type, payload } = action
@@ -27,82 +23,73 @@ export const reducer = (state: State, action: Actions) => {
   switch (type) {
     case "add_block": {
       return {
-        ...state,
-        blocks: {
-          byId: {
-            ...state.blocks.byId,
-            [payload.block_number]: {
-              ...payload,
-              proofs: [],
-            },
+        byId: {
+          ...state.byId,
+          [payload.block_number]: {
+            ...payload,
+            proofs: [],
           },
-          allIds: [...state.blocks.allIds, payload.block_number],
+        },
+        allIds: [...state.allIds, payload.block_number],
+      }
+    }
+    case "update_block": {
+      return {
+        ...state,
+        byId: {
+          ...state.byId,
+          [payload.block_number]: {
+            ...state.byId[payload.block_number],
+            ...payload,
+          },
         },
       }
     }
     case "add_proof": {
-      const newState = {
+      return {
         ...state,
-        proofs: {
-          byId: { ...state.proofs.byId, [payload.proof_id]: payload },
-          allIds: [...state.proofs.allIds, payload.proof_id],
+        byId: {
+          ...state.byId,
+          [payload.block_number]: {
+            ...(state.byId[payload.block_number] || {
+              block_number: payload.block_number,
+            }),
+            proofs: [
+              ...(state.byId[payload.block_number]?.proofs || []),
+              payload,
+            ],
+          },
         },
       }
-
-      const blockNumber = payload.block_number!
-      // update the block with the new proof
-      if (newState.blocks.byId[blockNumber]) {
-        return {
-          ...newState,
-          blocks: {
-            ...newState.blocks,
-            byId: {
-              ...newState.blocks.byId,
-              [blockNumber]: {
-                ...newState.blocks.byId[blockNumber],
-                proofs: [
-                  ...newState.blocks.byId[blockNumber].proofs,
-                  payload.proof_id,
-                ],
-              },
-            },
+    }
+    case "update_proof": {
+      return {
+        ...state,
+        byId: {
+          ...state.byId,
+          [payload.block_number]: {
+            ...state.byId[payload.block_number],
+            proofs: state.byId[payload.block_number].proofs.map((proof) =>
+              proof.proof_id === payload.proof_id ? payload : proof
+            ),
           },
-        }
+        },
       }
-
-      return newState
+    }
+    default: {
+      return state
     }
   }
 }
 
 export const createInitialState = ({
   blocks,
-  proofs,
 }: {
-  blocks: BlockWithProofsId[]
-  proofs: Proof[]
+  blocks: BlockWithProofs[]
 }): State => ({
-  blocks: {
-    byId: blocks.reduce(
-      (acc, block) => {
-        acc[block.block_number] = {
-          ...block,
-          proofs: block.proofs.map(({ id }) => id),
-        }
-        return acc
-      },
-      {} as Record<number, BlockWithProofsIds>
-    ),
-    allIds: blocks.map((block) => block.block_number),
-  },
-  proofs: {
-    byId: proofs.reduce(
-      (acc, proof) => {
-        acc[proof.proof_id] = proof
-        return acc
-      },
-      {} as Record<number, Proof>
-    ),
-    allIds: proofs.map((proof) => proof.proof_id),
-  },
+  byId: blocks.reduce((acc, block) => {
+    acc[block.block_number] = block
+    return acc
+  }, {} as BlockWithProofsById),
+  allIds: blocks.map((block) => block.block_number),
 })
