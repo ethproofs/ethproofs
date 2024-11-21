@@ -29,11 +29,11 @@ export default async function Index() {
     },
   })
 
-  const summary = await supabase.from("recent_summary").select().single()
+  const recentSummary = await supabase.from("recent_summary").select().single()
 
   const blocksResponse = await supabase
     .from("blocks")
-    .select(`*,proofs!inner(id:proof_id)`)
+    .select("*,proofs!inner(id:proof_id)")
     .order("block_number", { ascending: false })
 
   const blocks = blocksResponse.data || []
@@ -41,24 +41,24 @@ export default async function Index() {
   const proofsResponse = await supabase.from("proofs").select()
   const proofs = proofsResponse.data || []
 
-  const summaryItems: SummaryItem[] = summary.data
+  const summaryItems: SummaryItem[] = recentSummary.data
     ? [
         {
           label: "Proven blocks",
           icon: <Block />,
-          value: formatNumber(summary.data?.total_proven_blocks || 0),
+          value: formatNumber(recentSummary.data?.total_proven_blocks || 0),
         },
         {
           label: "Avg cost per proof",
           icon: <DollarSign />,
-          value: formatNumber(summary.data?.avg_cost_per_proof || 0, {
+          value: formatNumber(recentSummary.data?.avg_cost_per_proof || 0, {
             maximumFractionDigits: 2,
           }),
         },
         {
           label: "Avg proof latency",
           icon: <Clock />,
-          value: formatNumber(summary.data?.avg_proof_latency || 0, {
+          value: formatNumber(recentSummary.data?.avg_proof_latency || 0, {
             style: "unit",
             unit: "second",
             unitDisplay: "narrow",
