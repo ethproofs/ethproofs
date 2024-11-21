@@ -67,7 +67,9 @@ const BlocksTable = ({ blocks, className }: Props) => {
     }
   }, [state, supabase])
 
-  return <DataTable className={className} columns={columns} data={blocks} />
+  const blockData = state.blocks.allIds.map((id) => state.blocks.byId[id])
+
+  return <DataTable className={className} columns={columns} data={blockData} />
 }
 
 export default BlocksTable
