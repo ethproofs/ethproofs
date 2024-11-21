@@ -83,7 +83,7 @@ export default function RootLayout({
               <div className="flex justify-end">
                 <nav className="flex gap-6 max-md:hidden">
                   <Link
-                    href="/"
+                    href="/#blocks"
                     className="relative h-fit outline-offset-4 hover:text-primary-light"
                   >
                     Proofs
