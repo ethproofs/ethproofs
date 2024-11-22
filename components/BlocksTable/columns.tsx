@@ -348,7 +348,7 @@ export const columns: ColumnDef<BlockWithProofs>[] = [
 
       return (
         <div className="mx-auto flex w-20">
-          <div className="flex flex-col items-start gap-2">
+          <div className="flex flex-col gap-2">
             <div className="flex flex-wrap gap-2">
               {proofs.map((proof) => (
                 <div
@@ -360,10 +360,8 @@ export const columns: ColumnDef<BlockWithProofs>[] = [
             </div>
             {averageLatency > 0 && (
               <>
-                <div className="whitespace-nowrap font-sans text-xs text-body-secondary">
-                  latency {fastestLatency.toFixed(0)}s
-                </div>
-                <div className="whitespace-nowrap font-sans text-xs text-body-secondary">
+                <div className="whitespace-nowrap font-sans text-xs text-body-secondary text-start">
+                  latency {fastestLatency.toFixed(0)}s<br />
                   avg. {averageLatency.toFixed(0)}s
                 </div>
               </>
