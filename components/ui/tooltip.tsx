@@ -30,7 +30,11 @@ const TooltipContentFooter = React.forwardRef<
   HTMLDivElement,
   React.HTMLAttributes<HTMLDivElement>
 >(({ className, ...props }, ref) => (
-  <div ref={ref} className={cn("!mt-4 border-t pt-2", className)} {...props} />
+  <div
+    ref={ref}
+    className={cn("!mt-4 border-t border-body-secondary pt-2", className)}
+    {...props}
+  />
 ))
 TooltipContentFooter.displayName = "TooltipContentFooter"
 
