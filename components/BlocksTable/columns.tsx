@@ -76,7 +76,7 @@ export const columns: ColumnDef<BlockWithProofs>[] = [
     header: () => (
       <div className="whitespace-nowrap">
         gas usage
-        <MetricInfo>
+        <MetricInfo className="whitespace-normal">
           <TooltipContentHeader>
             Total gas units executed within block (in millions)
           </TooltipContentHeader>
@@ -108,7 +108,7 @@ export const columns: ColumnDef<BlockWithProofs>[] = [
     header: () => (
       <div className="whitespace-nowrap">
         cost per gas
-        <MetricInfo>
+        <MetricInfo className="whitespace-normal">
           <TooltipContentHeader>
             Proving costs in USD per million gas units proven
           </TooltipContentHeader>
@@ -172,7 +172,7 @@ export const columns: ColumnDef<BlockWithProofs>[] = [
     header: () => (
       <div className="whitespace-nowrap">
         cost per proof
-        <MetricInfo>
+        <MetricInfo className="whitespace-normal">
           <TooltipContentHeader>
             Proving costs in USD for entire proof of block
           </TooltipContentHeader>
@@ -221,7 +221,7 @@ export const columns: ColumnDef<BlockWithProofs>[] = [
     header: () => (
       <div className="whitespace-nowrap">
         time to proof
-        <MetricInfo>
+        <MetricInfo className="whitespace-normal">
           <TooltipContentHeader>Total time to proof</TooltipContentHeader>
           <p className="font-mono text-primary">
             Time between slot timestamp and when proof published
@@ -277,7 +277,7 @@ export const columns: ColumnDef<BlockWithProofs>[] = [
     header: () => (
       <div className="whitespace-nowrap">
         proof status
-        <MetricInfo>
+        <MetricInfo className="whitespace-normal">
           <TooltipContentHeader>
             Current status of proofs for this block
           </TooltipContentHeader>
