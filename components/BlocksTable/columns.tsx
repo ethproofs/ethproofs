@@ -16,6 +16,8 @@ import { getProofsAvgCost, getProofsAvgLatency } from "@/lib/proofs"
 
 const Null = () => <span className="text-body-secondary">{"-"}</span>
 
+const getTime = (d: string): number => new Date(d).getTime()
+
 const getStatusClasses = (status: Proof["proof_status"]) => {
   const baseClasses = "inline-block size-2 rounded-full" // me-2
   if (status === "proved") return cn(baseClasses, "bg-primary")
@@ -58,7 +60,7 @@ export const columns: ColumnDef<BlockWithProofs>[] = [
         <div className="text-start">
           <Link
             href={`/block/${blockNumber}`}
-            className="hover:text-primary-light hover:underline"
+            className="text-lg tracking-wide hover:text-primary-light hover:underline"
           >
             {blockNumber}
           </Link>
@@ -70,17 +72,19 @@ export const columns: ColumnDef<BlockWithProofs>[] = [
     },
   },
   {
-    accessorKey: "transaction_count",
+    accessorKey: "gas_used",
     header: () => (
       <div>
         gas usage
         <MetricInfo>
           <TooltipContentHeader>
-            Total gas units executed within block
+            Total gas units executed within block (in millions)
           </TooltipContentHeader>
           <p className="text-body">
             <span className="font-mono text-primary">gas_used</span> value from
-            execution block
+            execution block, expressed in millions (
+            <span className="font-mono text-primary">gas_used</span> / 10
+            <sup>6</sup>)
           </p>
           <p className="text-body-secondary">
             Proportional to the amount of computational effort a block outputs.
@@ -90,11 +94,11 @@ export const columns: ColumnDef<BlockWithProofs>[] = [
       </div>
     ),
     cell: ({ cell }) => {
-      const transactionCount = cell.getValue() as number
+      const gasUsed = cell.getValue() as number
 
-      if (!transactionCount) return <Null />
+      if (!gasUsed) return <Null />
 
-      const formatted = formatNumber(transactionCount)
+      const formatted = formatNumber(gasUsed)
 
       return formatted
     },
@@ -105,10 +109,12 @@ export const columns: ColumnDef<BlockWithProofs>[] = [
         cost per gas
         <MetricInfo>
           <TooltipContentHeader>
-            Proving costs in USD, on a per-gas-unit basis
+            Proving costs in USD per million gas units proven
           </TooltipContentHeader>
-          <p className="font-mono text-primary">
-            Total USD cost to produce proof / Total gas units proven
+          <p className="">
+            <span className="font-mono text-primary">proving costs (USD)</span>{" "}
+            / <span className="font-mono text-primary">gas_used</span> / 10
+            <sup>6</sup>
           </p>
           <p className="text-body-secondary">
             Normalized USD cost per gas unit to allow comparison amongst proofs
@@ -121,15 +127,38 @@ export const columns: ColumnDef<BlockWithProofs>[] = [
         </MetricInfo>
       </div>
     ),
-    accessorKey: "total_fees",
-    cell: ({ cell }) => {
-      const totalFeesGwei = cell.getValue() as number
+    accessorKey: "proofs",
+    cell: ({ cell, row }) => {
+      const proofs = cell.getValue() as Proof[]
+      const gasUsed = row.original.gas_used
 
-      if (!totalFeesGwei) return <Null />
+      if (!gasUsed || !proofs.length) return <Null />
 
-      const formatted = formatNumber(totalFeesGwei)
+      const mgasUsed = gasUsed / 1e6
 
-      return formatted
+      const averageCost = getProofsAvgCost(proofs)
+      if (isNaN(averageCost)) return <Null />
+
+      const cheapestProof = proofs
+        .filter((p) => p.proving_cost)
+        .reduce((acc, p) => {
+          if (p.proving_cost! < acc.proving_cost!) return p
+          return acc
+        }, proofs[0])
+      const cheapestCost = cheapestProof.proving_cost as number
+
+      const formatted = (numerator: number) =>
+        formatNumber(numerator / mgasUsed, {
+          style: "currency",
+          currency: "USD",
+        })
+
+      return (
+        <>
+          {formatted(averageCost)}
+          <br />({cheapestProof.prover_machine_id} {formatted(cheapestCost)})
+        </>
+      )
     },
   },
   {
@@ -141,9 +170,7 @@ export const columns: ColumnDef<BlockWithProofs>[] = [
           <TooltipContentHeader>
             Proving costs in USD for entire proof of block
           </TooltipContentHeader>
-          <p className="font-mono text-primary">
-            Total USD cost to produce proof
-          </p>
+          <p className="font-mono text-primary">proving costs (USD)</p>
           <TooltipContentFooter>Average cost (lower cost)</TooltipContentFooter>
         </MetricInfo>
       </div>
@@ -152,20 +179,34 @@ export const columns: ColumnDef<BlockWithProofs>[] = [
       const proofs = cell.getValue() as Proof[]
       if (!proofs.length) return <Null />
 
-      const avgCostPerProof = getProofsAvgCost(proofs)
+      const averageCost = getProofsAvgCost(proofs)
+      const cheapestProof = proofs
+        .filter((p) => p.proving_cost)
+        .reduce((acc, p) => {
+          if (p.proving_cost! < acc.proving_cost!) return p
+          return acc
+        }, proofs[0])
+      if (isNaN(averageCost)) return <Null />
 
-      if (isNaN(avgCostPerProof)) return <Null />
+      const cheapestCost = cheapestProof.proving_cost as number
 
-      const formatted = formatNumber(avgCostPerProof, {
-        style: "currency",
-        currency: "USD",
-      })
+      const formatted = (value: number) =>
+        formatNumber(value, {
+          style: "currency",
+          currency: "USD",
+        })
 
-      return formatted
+      return (
+        <>
+          {formatted(averageCost)}
+          <br />({cheapestProof.prover_machine_id} {formatted(cheapestCost)})
+        </>
+      )
     },
   },
   {
     id: "ttp",
+    accessorKey: "proofs",
     header: () => (
       <div>
         time to proof
@@ -180,7 +221,40 @@ export const columns: ColumnDef<BlockWithProofs>[] = [
         </MetricInfo>
       </div>
     ),
-    cell: "69s",
+    cell: ({ cell, row }) => {
+      const proofs = cell.getValue() as Proof[]
+      const timestamp = row.original.timestamp
+
+      if (!timestamp || !proofs.length) return <Null />
+
+      const submittedProofs = proofs.filter((p) => p.submission_time)
+
+      const averageSubmissionTime =
+        submittedProofs.reduce(
+          (acc, p) => acc + getTime(p.submission_time!),
+          0
+        ) / submittedProofs.length
+
+      const fastestProof = submittedProofs.reduce((acc, p) => {
+        const oldTime = getTime(acc.submission_time!)
+        const newTime = getTime(p.submission_time!)
+        if (newTime < oldTime) return p
+        return acc
+      }, submittedProofs[0])
+
+      const formatted = (submissionTime: number) =>
+        formatNumber((submissionTime - getTime(timestamp)) / 1e3 / 60, {
+          maximumFractionDigits: 0,
+        })
+
+      return (
+        <>
+          {formatted(averageSubmissionTime)} min
+          <br />({fastestProof.prover_machine_id}{" "}
+          {formatted(getTime(fastestProof.submission_time!))} min)
+        </>
+      )
+    },
   },
   {
     accessorKey: "proofs",
