@@ -104,6 +104,7 @@ export const columns: ColumnDef<BlockWithProofs>[] = [
     },
   },
   {
+    accessorKey: "proofs",
     header: () => (
       <div>
         cost per gas
@@ -127,7 +128,6 @@ export const columns: ColumnDef<BlockWithProofs>[] = [
         </MetricInfo>
       </div>
     ),
-    accessorKey: "proofs",
     cell: ({ cell, row }) => {
       const proofs = cell.getValue() as Proof[]
       const gasUsed = row.original.gas_used
@@ -155,8 +155,14 @@ export const columns: ColumnDef<BlockWithProofs>[] = [
 
       return (
         <>
-          {formatted(averageCost)}
-          <br />({cheapestProof.prover_machine_id} {formatted(cheapestCost)})
+          <span className="block">
+            {formatted(cheapestCost)}
+            {/* TODO: Use team and machine information */}
+            <MetricInfo>Team {cheapestProof.prover_machine_id}</MetricInfo>
+          </span>
+          <span className="block text-sm text-body-secondary">
+            Avg. {formatted(averageCost)}
+          </span>
         </>
       )
     },
@@ -198,14 +204,19 @@ export const columns: ColumnDef<BlockWithProofs>[] = [
 
       return (
         <>
-          {formatted(averageCost)}
-          <br />({cheapestProof.prover_machine_id} {formatted(cheapestCost)})
+          <span className="block">
+            {formatted(cheapestCost)}
+            {/* TODO: Use team and machine information */}
+            <MetricInfo>Team {cheapestProof.prover_machine_id}</MetricInfo>
+          </span>
+          <span className="block text-sm text-body-secondary">
+            Avg. {formatted(averageCost)}
+          </span>
         </>
       )
     },
   },
   {
-    id: "ttp",
     accessorKey: "proofs",
     header: () => (
       <div>
@@ -249,9 +260,14 @@ export const columns: ColumnDef<BlockWithProofs>[] = [
 
       return (
         <>
-          {formatted(averageSubmissionTime)} min
-          <br />({fastestProof.prover_machine_id}{" "}
-          {formatted(getTime(fastestProof.submission_time!))} min)
+          <span className="block">
+            {formatted(getTime(fastestProof.submission_time!))} min
+            {/* TODO: Use team and machine information */}
+            <MetricInfo>Team {fastestProof.prover_machine_id}</MetricInfo>
+          </span>
+          <span className="block text-sm text-body-secondary">
+            Avg. {formatted(averageSubmissionTime)}
+          </span>
         </>
       )
     },
