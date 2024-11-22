@@ -95,17 +95,20 @@ export const POST = withAuth(async ({ request, client, user }) => {
 
   // add proof
   console.log("adding proof", proofPayload)
-  const proofResponse = await client.from("proofs").upsert({
-    proof_id: existingProofData?.proof_id,
-    block_number,
-    proof,
-    prover_machine_id: 1, // TODO: fetch prover_machine_id
-    prover_duration,
-    proving_cost,
-    proving_cycles,
-    proof_status,
-    user_id: user.id,
-  })
+  const proofResponse = await client
+    .from("proofs")
+    .upsert({
+      proof_id: existingProofData?.proof_id,
+      block_number,
+      proof,
+      prover_machine_id: 1, // TODO: fetch prover_machine_id
+      prover_duration,
+      proving_cost,
+      proving_cycles,
+      proof_status,
+      user_id: user.id,
+    })
+    .select("proof_id")
 
   if (proofResponse.error) {
     console.error("error adding proof", proofResponse.error)
@@ -115,5 +118,6 @@ export const POST = withAuth(async ({ request, client, user }) => {
   // invalidate proofs cache
   revalidateTag("proofs")
 
-  return new Response("Proof submitted", { status: 200 })
+  // return the generated proof_id
+  return new Response(JSON.stringify(proofResponse.data), { status: 200 })
 })
