@@ -8,7 +8,7 @@ import { withAuth } from "@/lib/auth"
 import { fetchBlockData } from "@/lib/blocks"
 
 export const POST = withAuth(async ({ request, client, user }) => {
-  const proofPayload = await request.json()
+  const payload = await request.json()
 
   if (!user) {
     return new Response("Invalid API key", {
@@ -17,8 +17,9 @@ export const POST = withAuth(async ({ request, client, user }) => {
   }
 
   // validate payload schema
+  let proofPayload
   try {
-    proofSchema.parse(proofPayload)
+    proofPayload = proofSchema.parse(payload)
   } catch (error) {
     console.error("proof payload invalid", error)
     if (error instanceof ZodError) {
@@ -32,14 +33,7 @@ export const POST = withAuth(async ({ request, client, user }) => {
     })
   }
 
-  const {
-    proof,
-    block_number,
-    prover_duration,
-    proof_status,
-    proving_cost,
-    proving_cycles,
-  } = proofPayload
+  const { block_number, proof_status } = proofPayload
 
   // validate block_number exists
   console.log("validating block_number", block_number)
@@ -84,27 +78,29 @@ export const POST = withAuth(async ({ request, client, user }) => {
 
   // TODO validate prover_machine exists and fetch prover_machine_id
 
-  // get proof to update or create
-  const { data: existingProofData } = await client
-    .from("proofs")
-    .select("proof_id")
-    .eq("block_number", block_number)
-    // .eq("prover_machine_id", prover_machine_id)
-    .eq("user_id", user.id)
-    .single()
+  // get proof_id to update or create an existing proof
+  let proofId
+  if (proof_status !== "queued" && !proofPayload.proof_id) {
+    const { data: existingProofData } = await client
+      .from("proofs")
+      .select("proof_id")
+      .eq("block_number", block_number)
+      // .eq("prover_machine_id", prover_machine_id)
+      .eq("user_id", user.id)
+      .single()
+
+    proofId = existingProofData?.proof_id
+  }
 
   // add proof
   console.log("adding proof", proofPayload)
   const proofResponse = await client
     .from("proofs")
     .upsert({
-      proof_id: existingProofData?.proof_id,
+      ...proofPayload,
+      proof_id: proofId,
       block_number,
-      proof,
       prover_machine_id: 1, // TODO: fetch prover_machine_id
-      prover_duration,
-      proving_cost,
-      proving_cycles,
       proof_status,
       user_id: user.id,
     })

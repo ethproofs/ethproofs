@@ -10,10 +10,14 @@ const queuedProofSchema = baseProofSchema.extend({
 })
 
 const provingProofSchema = baseProofSchema.extend({
+  // If not provided, the proof is going to be searched by block_number and prover_machine_id
+  proof_id: z.number().optional(),
   proof_status: z.literal("proving"),
 })
 
 const provedProofSchema = baseProofSchema.extend({
+  // If not provided, the proof is going to be searched by block_number and prover_machine_id
+  proof_id: z.number().optional(),
   proof_status: z.literal("proved"),
   proving_cost: z.number().positive("proving_cost must be a positive number"),
   prover_duration: z
