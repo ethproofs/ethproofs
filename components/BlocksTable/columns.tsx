@@ -12,14 +12,18 @@ import { TooltipContentFooter, TooltipContentHeader } from "../ui/tooltip"
 
 import { formatTimeAgo } from "@/lib/date"
 import { formatNumber } from "@/lib/number"
-import { getProofsAvgCost, getProofsAvgLatency } from "@/lib/proofs"
+import {
+  getProofLatency,
+  getProofsAvgCost,
+  getProofsAvgLatency,
+} from "@/lib/proofs"
 
 const Null = () => <span className="text-body-secondary">{"-"}</span>
 
 const getTime = (d: string): number => new Date(d).getTime()
 
 const getStatusClasses = (status: Proof["proof_status"]) => {
-  const baseClasses = "inline-block size-2 rounded-full" // me-2
+  const baseClasses = "inline-block size-2 rounded-full"
   if (status === "proved") return cn(baseClasses, "bg-primary")
   if (status === "queued")
     return cn(
@@ -143,10 +147,17 @@ export const columns: ColumnDef<BlockWithProofs>[] = [
           <span className="block whitespace-nowrap">
             {formatted(cheapestCost)}
             {/* TODO: Use team and machine information */}
-            <MetricInfo>Team {cheapestProof.prover_machine_id}</MetricInfo>
+            <MetricInfo>
+              <Link href="#" className="text-primary underline">
+                Team {cheapestProof.prover_machine_id}
+              </Link>
+              <span className="block">
+                Machine {cheapestProof.prover_machine_id}
+              </span>
+            </MetricInfo>
           </span>
           <span className="block whitespace-nowrap text-sm text-body-secondary">
-            Avg. {formatted(averageCost)}
+            avg. {formatted(averageCost)}
           </span>
         </>
       )
@@ -207,10 +218,17 @@ export const columns: ColumnDef<BlockWithProofs>[] = [
           <span className="block whitespace-nowrap">
             {formatted(cheapestCost)}
             {/* TODO: Use team and machine information */}
-            <MetricInfo>Team {cheapestProof.prover_machine_id}</MetricInfo>
+            <MetricInfo>
+              <Link href="#" className="text-primary underline">
+                Team {cheapestProof.prover_machine_id}
+              </Link>
+              <span className="block">
+                Machine {cheapestProof.prover_machine_id}
+              </span>
+            </MetricInfo>
           </span>
           <span className="block whitespace-nowrap text-sm text-body-secondary">
-            Avg. {formatted(averageCost)}
+            avg. {formatted(averageCost)}
           </span>
         </>
       )
@@ -263,10 +281,17 @@ export const columns: ColumnDef<BlockWithProofs>[] = [
           <span className="block whitespace-nowrap">
             {formatted(getTime(fastestProof.submission_time!))}s
             {/* TODO: Use team and machine information */}
-            <MetricInfo>Team {fastestProof.prover_machine_id}</MetricInfo>
+            <MetricInfo>
+              <Link href="#" className="text-primary underline">
+                Team {fastestProof.prover_machine_id}
+              </Link>
+              <span className="block">
+                Machine {fastestProof.prover_machine_id}
+              </span>
+            </MetricInfo>
           </span>
           <span className="block whitespace-nowrap text-sm text-body-secondary">
-            Avg. {formatted(averageSubmissionTime)}s
+            avg. {formatted(averageSubmissionTime)}s
           </span>
         </>
       )
@@ -310,23 +335,38 @@ export const columns: ColumnDef<BlockWithProofs>[] = [
     cell: ({ cell }) => {
       const proofs = cell.getValue() as Proof[]
 
-      const latency = getProofsAvgLatency(proofs)
+      const proofsWithDurations = proofs.filter((p) => p.prover_duration)
+      const fastestProof = proofsWithDurations.reduce((acc, p) => {
+        const oldLatency = getProofLatency(acc)
+        const newLatency = getProofLatency(p)
+        if (newLatency < oldLatency) return p
+        return acc
+      }, proofsWithDurations[0])
+
+      const averageLatency = getProofsAvgLatency(proofs)
+      const fastestLatency = getProofLatency(fastestProof)
 
       return (
         <div className="mx-auto flex w-20">
-          <div className="flex flex-col gap-2">
+          <div className="flex flex-col items-start gap-2">
             <div className="flex flex-wrap gap-2">
               {proofs.map((proof) => (
                 <div
                   key={proof.proof_id}
                   className={getStatusClasses(proof.proof_status)}
+                  title={proof.proof_status}
                 />
               ))}
             </div>
-            {latency > 0 && (
-              <div className="whitespace-nowrap font-sans text-xs text-body-secondary">
-                latency {latency.toFixed(0)}s
-              </div>
+            {averageLatency > 0 && (
+              <>
+                <div className="whitespace-nowrap font-sans text-xs text-body-secondary">
+                  latency {fastestLatency.toFixed(0)}s
+                </div>
+                <div className="whitespace-nowrap font-sans text-xs text-body-secondary">
+                  avg. {averageLatency.toFixed(0)}s
+                </div>
+              </>
             )}
           </div>
         </div>
