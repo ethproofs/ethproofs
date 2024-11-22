@@ -74,7 +74,7 @@ export const columns: ColumnDef<BlockWithProofs>[] = [
   {
     accessorKey: "gas_used",
     header: () => (
-      <div>
+      <div className="whitespace-nowrap">
         gas usage
         <MetricInfo>
           <TooltipContentHeader>
@@ -106,7 +106,7 @@ export const columns: ColumnDef<BlockWithProofs>[] = [
   {
     accessorKey: "proofs",
     header: () => (
-      <div>
+      <div className="whitespace-nowrap">
         cost per gas
         <MetricInfo>
           <TooltipContentHeader>
@@ -155,12 +155,12 @@ export const columns: ColumnDef<BlockWithProofs>[] = [
 
       return (
         <>
-          <span className="block">
+          <span className="block whitespace-nowrap">
             {formatted(cheapestCost)}
             {/* TODO: Use team and machine information */}
             <MetricInfo>Team {cheapestProof.prover_machine_id}</MetricInfo>
           </span>
-          <span className="block text-sm text-body-secondary">
+          <span className="block whitespace-nowrap text-sm text-body-secondary">
             Avg. {formatted(averageCost)}
           </span>
         </>
@@ -170,7 +170,7 @@ export const columns: ColumnDef<BlockWithProofs>[] = [
   {
     accessorKey: "proofs",
     header: () => (
-      <div>
+      <div className="whitespace-nowrap">
         cost per proof
         <MetricInfo>
           <TooltipContentHeader>
@@ -204,12 +204,12 @@ export const columns: ColumnDef<BlockWithProofs>[] = [
 
       return (
         <>
-          <span className="block">
+          <span className="block whitespace-nowrap">
             {formatted(cheapestCost)}
             {/* TODO: Use team and machine information */}
             <MetricInfo>Team {cheapestProof.prover_machine_id}</MetricInfo>
           </span>
-          <span className="block text-sm text-body-secondary">
+          <span className="block whitespace-nowrap text-sm text-body-secondary">
             Avg. {formatted(averageCost)}
           </span>
         </>
@@ -219,7 +219,7 @@ export const columns: ColumnDef<BlockWithProofs>[] = [
   {
     accessorKey: "proofs",
     header: () => (
-      <div>
+      <div className="whitespace-nowrap">
         time to proof
         <MetricInfo>
           <TooltipContentHeader>Total time to proof</TooltipContentHeader>
@@ -260,12 +260,12 @@ export const columns: ColumnDef<BlockWithProofs>[] = [
 
       return (
         <>
-          <span className="block">
+          <span className="block whitespace-nowrap">
             {formatted(getTime(fastestProof.submission_time!))} min
             {/* TODO: Use team and machine information */}
             <MetricInfo>Team {fastestProof.prover_machine_id}</MetricInfo>
           </span>
-          <span className="block text-sm text-body-secondary">
+          <span className="block whitespace-nowrap text-sm text-body-secondary">
             Avg. {formatted(averageSubmissionTime)}
           </span>
         </>
@@ -275,7 +275,7 @@ export const columns: ColumnDef<BlockWithProofs>[] = [
   {
     accessorKey: "proofs",
     header: () => (
-      <div>
+      <div className="whitespace-nowrap">
         proof status
         <MetricInfo>
           <TooltipContentHeader>
