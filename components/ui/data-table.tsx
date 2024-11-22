@@ -71,6 +71,7 @@ const DataTable = <TData, TValue>({
             table.getRowModel().rows.map((row) => (
               <TableRow
                 key={row.id}
+                className="hover:bg-primary/5 dark:hover:bg-primary/10"
                 data-state={row.getIsSelected() && "selected"}
               >
                 {row.getVisibleCells().map((cell) => (
