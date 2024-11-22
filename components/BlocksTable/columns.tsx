@@ -126,12 +126,14 @@ export const columns: ColumnDef<BlockWithProofs>[] = [
       if (!proofs.length) return <Null />
 
       const averageCost = getProofsAvgCost(proofs)
-      const cheapestProof = proofs
-        .filter((p) => p.proving_cost)
-        .reduce((acc, p) => {
-          if (p.proving_cost! < acc.proving_cost!) return p
-          return acc
-        }, proofs[0])
+
+      const completedProofs = proofs.filter((p) => p.proof_status === "proved")
+      if (!completedProofs.length) return <Null />
+
+      const cheapestProof = completedProofs.reduce((acc, p) => {
+        if (p.proving_cost! < acc.proving_cost!) return p
+        return acc
+      }, completedProofs[0])
       if (isNaN(averageCost)) return <Null />
 
       const cheapestCost = cheapestProof.proving_cost as number
@@ -191,7 +193,6 @@ export const columns: ColumnDef<BlockWithProofs>[] = [
     cell: ({ cell, row }) => {
       const proofs = cell.getValue() as Proof[]
       const gasUsed = row.original.gas_used
-
       if (!gasUsed || !proofs.length) return <Null />
 
       const mgasUsed = gasUsed / 1e6
@@ -199,12 +200,13 @@ export const columns: ColumnDef<BlockWithProofs>[] = [
       const averageCost = getProofsAvgCost(proofs)
       if (isNaN(averageCost)) return <Null />
 
-      const cheapestProof = proofs
-        .filter((p) => p.proving_cost)
-        .reduce((acc, p) => {
-          if (p.proving_cost! < acc.proving_cost!) return p
-          return acc
-        }, proofs[0])
+      const completedProofs = proofs.filter((p) => p.proof_status === "proved")
+      if (!completedProofs.length) return <Null />
+
+      const cheapestProof = completedProofs.reduce((acc, p) => {
+        if (p.proving_cost! < acc.proving_cost!) return p
+        return acc
+      }, completedProofs[0])
       const cheapestCost = cheapestProof.proving_cost as number
 
       const formatted = (numerator: number) =>
@@ -256,20 +258,21 @@ export const columns: ColumnDef<BlockWithProofs>[] = [
 
       if (!timestamp || !proofs.length) return <Null />
 
-      const submittedProofs = proofs.filter((p) => p.submission_time)
+      const completedProofs = proofs.filter((p) => p.proof_status === "proved")
+      if (!completedProofs.length) return <Null />
 
       const averageSubmissionTime =
-        submittedProofs.reduce(
+        completedProofs.reduce(
           (acc, p) => acc + getTime(p.submission_time!),
           0
-        ) / submittedProofs.length
+        ) / completedProofs.length
 
-      const fastestProof = submittedProofs.reduce((acc, p) => {
+      const fastestProof = completedProofs.reduce((acc, p) => {
         const oldTime = getTime(acc.submission_time!)
         const newTime = getTime(p.submission_time!)
         if (newTime < oldTime) return p
         return acc
-      }, submittedProofs[0])
+      }, completedProofs[0])
 
       const formatted = (submissionTime: number) =>
         formatNumber((submissionTime - getTime(timestamp)) / 1e3, {
@@ -335,16 +338,27 @@ export const columns: ColumnDef<BlockWithProofs>[] = [
     cell: ({ cell }) => {
       const proofs = cell.getValue() as Proof[]
 
-      const proofsWithDurations = proofs.filter((p) => p.prover_duration)
-      const fastestProof = proofsWithDurations.reduce((acc, p) => {
-        const oldLatency = getProofLatency(acc)
-        const newLatency = getProofLatency(p)
-        if (newLatency < oldLatency) return p
-        return acc
-      }, proofsWithDurations[0])
+      if (!proofs.length) return <Null />
 
-      const averageLatency = getProofsAvgLatency(proofs)
-      const fastestLatency = getProofLatency(fastestProof)
+      const completedProofs = proofs.filter((p) => p.proof_status === "proved")
+
+      const getBestLatency = () => {
+        if (!completedProofs.length) return "-"
+
+        const fastestProof = completedProofs.reduce((acc, p) => {
+          const oldLatency = getProofLatency(acc)
+          const newLatency = getProofLatency(p)
+          if (newLatency < oldLatency) return p
+          return acc
+        }, completedProofs[0])
+
+        return getProofLatency(fastestProof).toFixed(0) + "s"
+      }
+
+      const getAverageLatency = () => {
+        if (!completedProofs.length) return "-"
+        return getProofsAvgLatency(completedProofs).toFixed(0) + "s"
+      }
 
       return (
         <div className="mx-auto flex w-20">
@@ -358,14 +372,12 @@ export const columns: ColumnDef<BlockWithProofs>[] = [
                 />
               ))}
             </div>
-            {averageLatency > 0 && (
-              <>
-                <div className="whitespace-nowrap font-sans text-xs text-body-secondary text-start">
-                  latency {fastestLatency.toFixed(0)}s<br />
-                  avg. {averageLatency.toFixed(0)}s
-                </div>
-              </>
-            )}
+
+            <div className="whitespace-nowrap text-start font-sans text-xs text-body-secondary">
+              latency {getBestLatency()}
+              <br />
+              avg. {getAverageLatency()}
+            </div>
           </div>
         </div>
       )
