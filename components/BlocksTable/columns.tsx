@@ -107,6 +107,55 @@ export const columns: ColumnDef<BlockWithProofs>[] = [
     accessorKey: "proofs",
     header: () => (
       <div className="whitespace-nowrap">
+        cost per proof
+        <MetricInfo className="whitespace-normal">
+          <TooltipContentHeader>
+            Proving costs in USD for entire proof of block
+          </TooltipContentHeader>
+          <p className="font-mono text-primary">proving costs (USD)</p>
+          <TooltipContentFooter>Average cost (lower cost)</TooltipContentFooter>
+        </MetricInfo>
+      </div>
+    ),
+    cell: ({ cell }) => {
+      const proofs = cell.getValue() as Proof[]
+      if (!proofs.length) return <Null />
+
+      const averageCost = getProofsAvgCost(proofs)
+      const cheapestProof = proofs
+        .filter((p) => p.proving_cost)
+        .reduce((acc, p) => {
+          if (p.proving_cost! < acc.proving_cost!) return p
+          return acc
+        }, proofs[0])
+      if (isNaN(averageCost)) return <Null />
+
+      const cheapestCost = cheapestProof.proving_cost as number
+
+      const formatted = (value: number) =>
+        formatNumber(value, {
+          style: "currency",
+          currency: "USD",
+        })
+
+      return (
+        <>
+          <span className="block whitespace-nowrap">
+            {formatted(cheapestCost)}
+            {/* TODO: Use team and machine information */}
+            <MetricInfo>Team {cheapestProof.prover_machine_id}</MetricInfo>
+          </span>
+          <span className="block whitespace-nowrap text-sm text-body-secondary">
+            Avg. {formatted(averageCost)}
+          </span>
+        </>
+      )
+    },
+  },
+  {
+    accessorKey: "proofs",
+    header: () => (
+      <div className="whitespace-nowrap">
         cost per gas
         <MetricInfo className="whitespace-normal">
           <TooltipContentHeader>
@@ -171,55 +220,6 @@ export const columns: ColumnDef<BlockWithProofs>[] = [
     accessorKey: "proofs",
     header: () => (
       <div className="whitespace-nowrap">
-        cost per proof
-        <MetricInfo className="whitespace-normal">
-          <TooltipContentHeader>
-            Proving costs in USD for entire proof of block
-          </TooltipContentHeader>
-          <p className="font-mono text-primary">proving costs (USD)</p>
-          <TooltipContentFooter>Average cost (lower cost)</TooltipContentFooter>
-        </MetricInfo>
-      </div>
-    ),
-    cell: ({ cell }) => {
-      const proofs = cell.getValue() as Proof[]
-      if (!proofs.length) return <Null />
-
-      const averageCost = getProofsAvgCost(proofs)
-      const cheapestProof = proofs
-        .filter((p) => p.proving_cost)
-        .reduce((acc, p) => {
-          if (p.proving_cost! < acc.proving_cost!) return p
-          return acc
-        }, proofs[0])
-      if (isNaN(averageCost)) return <Null />
-
-      const cheapestCost = cheapestProof.proving_cost as number
-
-      const formatted = (value: number) =>
-        formatNumber(value, {
-          style: "currency",
-          currency: "USD",
-        })
-
-      return (
-        <>
-          <span className="block whitespace-nowrap">
-            {formatted(cheapestCost)}
-            {/* TODO: Use team and machine information */}
-            <MetricInfo>Team {cheapestProof.prover_machine_id}</MetricInfo>
-          </span>
-          <span className="block whitespace-nowrap text-sm text-body-secondary">
-            Avg. {formatted(averageCost)}
-          </span>
-        </>
-      )
-    },
-  },
-  {
-    accessorKey: "proofs",
-    header: () => (
-      <div className="whitespace-nowrap">
         time to proof
         <MetricInfo className="whitespace-normal">
           <TooltipContentHeader>Total time to proof</TooltipContentHeader>
@@ -254,19 +254,19 @@ export const columns: ColumnDef<BlockWithProofs>[] = [
       }, submittedProofs[0])
 
       const formatted = (submissionTime: number) =>
-        formatNumber((submissionTime - getTime(timestamp)) / 1e3 / 60, {
+        formatNumber((submissionTime - getTime(timestamp)) / 1e3, {
           maximumFractionDigits: 0,
         })
 
       return (
         <>
           <span className="block whitespace-nowrap">
-            {formatted(getTime(fastestProof.submission_time!))} min
+            {formatted(getTime(fastestProof.submission_time!))}s
             {/* TODO: Use team and machine information */}
             <MetricInfo>Team {fastestProof.prover_machine_id}</MetricInfo>
           </span>
           <span className="block whitespace-nowrap text-sm text-body-secondary">
-            Avg. {formatted(averageSubmissionTime)}
+            Avg. {formatted(averageSubmissionTime)}s
           </span>
         </>
       )
