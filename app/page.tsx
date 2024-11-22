@@ -120,9 +120,9 @@ export default async function Index() {
         </div>
       </div>
 
-      <div id="blocks" className="w-full scroll-m-20">
+      <section id="blocks" className="w-full scroll-m-20">
         <BlocksTable blocks={blocks || []} proofs={proofs} />
-      </div>
+      </section>
     </div>
   )
 }
