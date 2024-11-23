@@ -10,6 +10,7 @@ import { cn } from "@/lib/utils"
 import { useContainerQuery } from "@/hooks/useContainerQuery"
 import useSearchKeyboardShortcuts from "@/hooks/useSearchKeyboardShortcuts"
 import { createClient } from "@/utils/supabase/client"
+import { Block } from "@/lib/types"
 
 const PLACEHOLDER = "Search by slot number / hash / number / prover block"
 const k = 6.5
@@ -17,36 +18,28 @@ const supabase = createClient()
 
 const SearchInput = ({ className }: React.HTMLAttributes<HTMLInputElement>) => {
   const [query, setQuery] = useState("")
-  const [match, setMatch] = useState<string | null>(null)
+  const [blockMatch, setBlockMatch] = useState<Block | null>(null)
 
   useEffect(() => {
     const handler = setTimeout(async () => {
       if (!query) {
-        setMatch(null)
+        setBlockMatch(null)
         return
       }
 
-      const { data: blockMatch } = await supabase
+      const hashRegExp = /^0x[0-9a-fA-F]{64}$/
+
+      const { data: match, error } = await supabase
         .from("blocks")
-        .select("*,block_number::text")
-        .eq("block_number", query)
+        .select("*")
+        .eq(hashRegExp.test(query) ? "hash" : "block_number", query)
         .single()
-      if (blockMatch?.block_number) {
-        setMatch(blockMatch?.block_number)
+      if (!error && match) {
+        setBlockMatch(match)
         return
       }
 
-      const { data: hashMatch } = await supabase
-        .from("blocks")
-        .select("*,hash::text")
-        .eq("hash", query)
-        .single()
-      if (hashMatch?.hash) {
-        setMatch(hashMatch?.hash)
-        return
-      }
-
-      setMatch("No results found")
+      setBlockMatch(null)
     }, 750) // 750 ms debounce
 
     return () => {
@@ -77,9 +70,14 @@ const SearchInput = ({ className }: React.HTMLAttributes<HTMLInputElement>) => {
       >
         <Magnifier className="text-primary" />
       </div>
-      {match && (
-        <div className="absolute inset-y-0 start-0 top-[150%] flex items-center ps-4 lg:m-0">
-          <span className="text-sm text-primary">{match}</span>
+      {blockMatch && (
+        <div className="absolute inset-x-0 top-0 -z-10 flex h-fit flex-col rounded-b-2xl rounded-t-3xl border border-body-secondary bg-background bg-gradient-to-b from-white/[0.06] to-white/[0.12] ps-4 pt-12 lg:m-0">
+          <span className="block text-sm text-primary">
+            Block: {blockMatch.block_number}
+          </span>
+          <span className="block text-sm text-primary">
+            Hash: <span className="block truncate">{blockMatch.hash}</span>
+          </span>
         </div>
       )}
     </div>
