@@ -24,7 +24,9 @@ export const columns: ColumnDef<BlockWithProofs>[] = [
       const formatted = formatNumber(blockNumber)
 
       const timestamp = row.original.timestamp
-      const formattedTimestamp = formatTimeAgo(new Date(timestamp))
+      const formattedTimestamp = timestamp
+        ? formatTimeAgo(new Date(timestamp))
+        : "pending"
 
       return (
         <div className="text-start">

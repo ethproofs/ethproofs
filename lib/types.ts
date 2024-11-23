@@ -4,12 +4,13 @@ import type { Tables } from "./database.types"
 
 export type Proof = Tables<"proofs">
 export type Block = Tables<"blocks">
+export type EmptyBlock = Partial<Block> & Pick<Block, "block_number">
 
-export type BlockWithProofsIds = Block & { proofs: number[] }
-export type BlockWithProofs = Block & { proofs: Proof[] }
+export type BlockWithProofs = (EmptyBlock | Block) & { proofs: Proof[] }
+export type BlockWithProofsById = Record<number, BlockWithProofs>
 
 export type Metric = {
-  label: string
+  label: ReactNode
   description: string
   value: string
 }
@@ -19,5 +20,3 @@ export type SummaryItem = {
   icon: ReactNode
   value: string
 }
-
-export type BlockWithProofsId = Block & { proofs: { id: number }[] }
