@@ -96,7 +96,7 @@ export type Database = {
       proofs: {
         Row: {
           block_number: number
-          proof: string
+          proof: string | null
           proof_id: number
           proof_status: string
           prover_duration: unknown | null
@@ -108,7 +108,7 @@ export type Database = {
         }
         Insert: {
           block_number: number
-          proof: string
+          proof?: string | null
           proof_id?: number
           proof_status: string
           prover_duration?: unknown | null
@@ -120,7 +120,7 @@ export type Database = {
         }
         Update: {
           block_number?: number
-          proof?: string
+          proof?: string | null
           proof_id?: number
           proof_status?: string
           prover_duration?: unknown | null
