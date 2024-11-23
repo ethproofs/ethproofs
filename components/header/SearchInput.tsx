@@ -12,7 +12,7 @@ import useSearchKeyboardShortcuts from "@/hooks/useSearchKeyboardShortcuts"
 import { createClient } from "@/utils/supabase/client"
 import { Block } from "@/lib/types"
 
-const PLACEHOLDER = "Search by slot number / hash / number / prover block"
+const PLACEHOLDER = "Search by block number or hash"
 const k = 6.5
 const supabase = createClient()
 
@@ -21,12 +21,11 @@ const SearchInput = ({ className }: React.HTMLAttributes<HTMLInputElement>) => {
   const [blockMatch, setBlockMatch] = useState<Block | null>(null)
 
   useEffect(() => {
+    if (!query) {
+      setBlockMatch(null)
+      return
+    }
     const handler = setTimeout(async () => {
-      if (!query) {
-        setBlockMatch(null)
-        return
-      }
-
       const hashRegExp = /^0x[0-9a-fA-F]{64}$/
 
       const { data: match, error } = await supabase
@@ -40,7 +39,7 @@ const SearchInput = ({ className }: React.HTMLAttributes<HTMLInputElement>) => {
       }
 
       setBlockMatch(null)
-    }, 750) // 750 ms debounce
+    }, 250) // 250 ms debounce
 
     return () => {
       clearTimeout(handler)
