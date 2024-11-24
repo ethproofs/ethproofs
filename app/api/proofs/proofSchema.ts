@@ -19,10 +19,8 @@ const provedProofSchema = baseProofSchema.extend({
   // If not provided, the proof is going to be searched by block_number and prover_machine_id
   proof_id: z.number().optional(),
   proof_status: z.literal("proved"),
+  proof_latency: z.number().positive("proof_latency must be a positive number"),
   proving_cost: z.number().positive("proving_cost must be a positive number"),
-  prover_duration: z
-    .number()
-    .positive("prover_duration must be a positive number"),
   proving_cycles: z
     .number()
     .int()
