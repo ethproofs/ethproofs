@@ -24,7 +24,9 @@ export const columns: ColumnDef<BlockWithProofs>[] = [
       const formatted = formatNumber(blockNumber)
 
       const timestamp = row.original.timestamp
-      const formattedTimestamp = formatTimeAgo(new Date(timestamp))
+      const formattedTimestamp = timestamp
+        ? formatTimeAgo(new Date(timestamp))
+        : "pending"
 
       return (
         <div className="text-start">
@@ -86,8 +88,11 @@ export const columns: ColumnDef<BlockWithProofs>[] = [
     header: "prover status",
     cell: ({ cell }) => {
       const proofs = cell.getValue() as Proof[]
+      const provenProofs = proofs.filter(
+        (proof) => proof.proof_status === "proved"
+      )
 
-      const latency = getProofsAvgLatency(proofs)
+      const latency = getProofsAvgLatency(provenProofs)
 
       const getStatusColorClass = (status: string) => {
         if (status === "proved") return "bg-primary"
