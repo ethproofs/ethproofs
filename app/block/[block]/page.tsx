@@ -296,11 +296,9 @@ export default async function BlockDetailsPage({
                     "md:col-span-1 md:col-start-1 md:row-span-1 md:row-start-1"
                   )}
                 >
-                  {imgProps && (
-                    <Link href={"/prover/" + team?.team_id}>
-                      <TeamLogo src={imgProps.src} alt={imgProps.alt} />
-                    </Link>
-                  )}
+                  <Link href={"/prover/" + team?.team_id}>
+                    <TeamLogo src={imgProps?.src} alt={imgProps?.alt} />
+                  </Link>
                 </div>
                 <Button
                   variant="outline"
