@@ -10,6 +10,9 @@ import { fetchBlockData } from "@/lib/blocks"
 export const POST = withAuth(async ({ request, client, user }) => {
   const payload = await request.json()
 
+  // immediately set the timestamp for the proof
+  const timestamp = new Date().toISOString()
+
   if (!user) {
     return new Response("Invalid API key", {
       status: 401,
@@ -109,7 +112,7 @@ export const POST = withAuth(async ({ request, client, user }) => {
       prover_machine_id: 1, // TODO: fetch prover_machine_id
       proof_status,
       user_id: user.id,
-      [timestampField]: new Date().toISOString(),
+      [timestampField]: timestamp,
     })
     .select("proof_id")
 
