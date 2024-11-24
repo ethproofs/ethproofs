@@ -15,6 +15,7 @@ import Hash from "@/components/svgs/hash.svg"
 import Layers from "@/components/svgs/layers.svg"
 import ProofCircle from "@/components/svgs/proof-circle.svg"
 import TrendingUp from "@/components/svgs/trending-up.svg"
+import TeamLogo from "@/components/TeamLogo"
 import { Button } from "@/components/ui/button"
 import {
   HeroBody,
@@ -297,13 +298,7 @@ export default async function BlockDetailsPage({
                 >
                   {imgProps && (
                     <Link href={"/prover/" + team?.team_id}>
-                      <Image
-                        src={imgProps.src}
-                        alt={imgProps.alt}
-                        fill
-                        sizes="100vw"
-                        className="object-contain object-left"
-                      />
+                      <TeamLogo src={imgProps.src} alt={imgProps.alt} />
                     </Link>
                   )}
                 </div>
