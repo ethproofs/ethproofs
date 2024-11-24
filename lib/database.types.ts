@@ -107,7 +107,6 @@ export type Database = {
           proving_cycles: number | null
           proving_timestamp: string | null
           queued_timestamp: string | null
-          submission_time: string | null
           user_id: string
         }
         Insert: {
@@ -123,7 +122,6 @@ export type Database = {
           proving_cycles?: number | null
           proving_timestamp?: string | null
           queued_timestamp?: string | null
-          submission_time?: string | null
           user_id: string
         }
         Update: {
@@ -139,7 +137,6 @@ export type Database = {
           proving_cycles?: number | null
           proving_timestamp?: string | null
           queued_timestamp?: string | null
-          submission_time?: string | null
           user_id?: string
         }
         Relationships: [
