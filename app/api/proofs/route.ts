@@ -94,6 +94,12 @@ export const POST = withAuth(async ({ request, client, user }) => {
 
   // add proof
   console.log("adding proof", proofPayload)
+  const timestampField = {
+    queued: "queued_timestamp",
+    proving: "proving_timestamp",
+    proved: "proved_timestamp",
+  }[proof_status]
+
   const proofResponse = await client
     .from("proofs")
     .upsert({
@@ -103,6 +109,7 @@ export const POST = withAuth(async ({ request, client, user }) => {
       prover_machine_id: 1, // TODO: fetch prover_machine_id
       proof_status,
       user_id: user.id,
+      [timestampField]: new Date().toISOString(),
     })
     .select("proof_id")
 
