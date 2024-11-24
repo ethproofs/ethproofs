@@ -27,7 +27,6 @@ const SearchInput = ({ className }: React.HTMLAttributes<HTMLInputElement>) => {
       <Input
         ref={inputRef}
         type="search"
-        tabIndex={1}
         onChange={(e) => setQuery(e.target.value)}
         placeholder={placeholder}
       />
