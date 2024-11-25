@@ -2956,6 +2956,14 @@
             "proof_id"
           ],
           "nullNotDistinct": false
+        },
+        {
+          "name": "unique_block_machine",
+          "fields": [
+            "block_number",
+            "machine_id"
+          ],
+          "nullNotDistinct": false
         }
       ]
     },
