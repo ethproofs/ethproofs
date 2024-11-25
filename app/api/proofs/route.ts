@@ -83,7 +83,7 @@ export const POST = withAuth(async ({ request, client, user }) => {
 
   // get proof_id to update or create an existing proof
   let proofId
-  if (proof_status !== "queued" && !proofPayload.proof_id) {
+  if (!proofPayload.proof_id) {
     const { data: existingProofData } = await client
       .from("proofs")
       .select("proof_id")
