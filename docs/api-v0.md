@@ -39,7 +39,7 @@ For `proof_status: "queued"`:
 ```json
 {
   "block_number": number,
-  "prover_machine_id": number,
+  "machine_id": number,
   "proof_status": "queued",
   "proof_id": number (optional)
 }
@@ -50,7 +50,7 @@ For `proof_status: "proving"`:
 ```json
 {
   "block_number": number,
-  "prover_machine_id": number,
+  "machine_id": number,
   "proof_status": "proving",
   "proof_id": number (optional)
 }
@@ -61,7 +61,7 @@ For `proof_status: "proved"`:
 ```json
 {
   "block_number": number,
-  "prover_machine_id": number,
+  "machine_id": number,
   "proof_status": "proved",
   "proof_id": number (optional),
   "proof": string,
@@ -84,11 +84,12 @@ For `proof_status: "proved"`:
 - Error Responses:
   - 400: Invalid payload
   - 401: Invalid API key
+  - 404: Machine not found
   - 500: Internal server error or block not found
 
 #### Notes
 
-- If no `proof_id` is provided, the system will attempt to find an existing proof for the `block_number` and `prover_machine_id`
+- If no `proof_id` is provided, the system will attempt to find an existing proof for the `block_number` and `machine_id`
 - Timestamps are automatically set based on the proof status
 - Block data is automatically fetched and stored if the block doesn't exist in the database
 
@@ -108,7 +109,8 @@ Retrieve all prover machines associated with the authenticated user.
 [
   {
     "machine_id": number,
-    "machine_name": string
+    "machine_name": string,
+    "machine_description": string (optional)
   }
 ]
 ```
@@ -127,7 +129,8 @@ Register a new prover machine.
 
 ```json
 {
-  "machine_name": string
+  "machine_name": string,
+  "machine_description": string (optional)
 }
 ```
 

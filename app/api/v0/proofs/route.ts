@@ -33,7 +33,7 @@ export const POST = withAuth(async ({ request, client, user, timestamp }) => {
     })
   }
 
-  const { block_number, proof_status } = proofPayload
+  const { block_number, proof_status, machine_id } = proofPayload
 
   // validate block_number exists
   console.log("validating block_number", block_number)
@@ -76,7 +76,22 @@ export const POST = withAuth(async ({ request, client, user, timestamp }) => {
     revalidateTag("blocks")
   }
 
-  // TODO validate prover_machine exists and fetch prover_machine_id
+  // get machine uuid from machine_id
+  const { data: proverMachineData, error: proverMachineError } = await client
+    .from("prover_machines")
+    .select("id")
+    .eq("machine_id", machine_id)
+    .eq("user_id", user.id)
+    .single()
+
+  if (proverMachineError) {
+    console.error("error getting prover machine", proverMachineError)
+    return new Response("Internal server error", { status: 500 })
+  }
+
+  if (!proverMachineData) {
+    return new Response("Machine not found", { status: 404 })
+  }
 
   // get proof_id to update or create an existing proof
   let proofId
@@ -85,7 +100,7 @@ export const POST = withAuth(async ({ request, client, user, timestamp }) => {
       .from("proofs")
       .select("proof_id")
       .eq("block_number", block_number)
-      // .eq("prover_machine_id", prover_machine_id)
+      .eq("prover_machine_id", proverMachineData.id)
       .eq("user_id", user.id)
       .single()
 
@@ -106,7 +121,7 @@ export const POST = withAuth(async ({ request, client, user, timestamp }) => {
       ...proofPayload,
       proof_id: proofId,
       block_number,
-      prover_machine_id: 1, // TODO: fetch prover_machine_id
+      prover_machine_id: proverMachineData.id,
       proof_status,
       user_id: user.id,
       [timestampField]: timestamp,

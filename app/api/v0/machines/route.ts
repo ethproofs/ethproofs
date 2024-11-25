@@ -11,7 +11,7 @@ export const GET = withAuth(async ({ client, user }) => {
 
   const { data, error } = await client
     .from("prover_machines")
-    .select("machine_id, machine_name")
+    .select("machine_id, machine_name, machine_description")
     .eq("user_id", user.id)
 
   if (error) {
@@ -41,12 +41,13 @@ export const POST = withAuth(async ({ request, client, user }) => {
     })
   }
 
-  const { machine_name } = requestBody
+  const { machine_name, machine_description } = requestBody
 
   const { data, error } = await client
     .from("prover_machines")
     .insert({
       machine_name,
+      machine_description,
       user_id: user.id,
     })
     .select("machine_id, machine_name")

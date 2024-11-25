@@ -103,7 +103,7 @@ export type Database = {
           proof_status: string
           proved_timestamp: string | null
           prover_duration: unknown | null
-          prover_machine_id: number | null
+          prover_machine_id: string
           proving_cost: number | null
           proving_cycles: number | null
           proving_timestamp: string | null
@@ -119,7 +119,7 @@ export type Database = {
           proof_status: string
           proved_timestamp?: string | null
           prover_duration?: unknown | null
-          prover_machine_id?: number | null
+          prover_machine_id: string
           proving_cost?: number | null
           proving_cycles?: number | null
           proving_timestamp?: string | null
@@ -135,7 +135,7 @@ export type Database = {
           proof_status?: string
           proved_timestamp?: string | null
           prover_duration?: unknown | null
-          prover_machine_id?: number | null
+          prover_machine_id?: string
           proving_cost?: number | null
           proving_cycles?: number | null
           proving_timestamp?: string | null
@@ -155,7 +155,7 @@ export type Database = {
             columns: ["prover_machine_id"]
             isOneToOne: false
             referencedRelation: "prover_machines"
-            referencedColumns: ["machine_id"]
+            referencedColumns: ["id"]
           },
           {
             foreignKeyName: "proofs_user_id_fkey"
@@ -168,19 +168,25 @@ export type Database = {
       }
       prover_machines: {
         Row: {
-          machine_id: number
+          id: string
+          machine_description: string | null
+          machine_id: number | null
           machine_name: string
-          user_id: string | null
+          user_id: string
         }
         Insert: {
-          machine_id?: number
+          id?: string
+          machine_description?: string | null
+          machine_id?: number | null
           machine_name: string
-          user_id?: string | null
+          user_id: string
         }
         Update: {
-          machine_id?: number
+          id?: string
+          machine_description?: string | null
+          machine_id?: number | null
           machine_name?: string
-          user_id?: string | null
+          user_id?: string
         }
         Relationships: [
           {
