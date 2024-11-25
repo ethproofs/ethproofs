@@ -2731,7 +2731,7 @@
           "name": "proof",
           "columnName": "proof",
           "type": "bytea",
-          "isRequired": true,
+          "isRequired": false,
           "kind": "scalar",
           "isList": false,
           "isGenerated": false,
@@ -2811,9 +2811,23 @@
           "maxLength": null
         },
         {
-          "id": "public.proofs.submission_time",
-          "name": "submission_time",
-          "columnName": "submission_time",
+          "id": "public.proofs.user_id",
+          "name": "user_id",
+          "columnName": "user_id",
+          "type": "uuid",
+          "isRequired": true,
+          "kind": "scalar",
+          "isList": false,
+          "isGenerated": false,
+          "sequence": false,
+          "hasDefaultValue": false,
+          "isId": false,
+          "maxLength": null
+        },
+        {
+          "id": "public.proofs.created_at",
+          "name": "created_at",
+          "columnName": "created_at",
           "type": "timestamptz",
           "isRequired": false,
           "kind": "scalar",
@@ -2825,11 +2839,53 @@
           "maxLength": null
         },
         {
-          "id": "public.proofs.user_id",
-          "name": "user_id",
-          "columnName": "user_id",
-          "type": "uuid",
-          "isRequired": true,
+          "id": "public.proofs.proved_timestamp",
+          "name": "proved_timestamp",
+          "columnName": "proved_timestamp",
+          "type": "timestamptz",
+          "isRequired": false,
+          "kind": "scalar",
+          "isList": false,
+          "isGenerated": false,
+          "sequence": false,
+          "hasDefaultValue": false,
+          "isId": false,
+          "maxLength": null
+        },
+        {
+          "id": "public.proofs.proving_timestamp",
+          "name": "proving_timestamp",
+          "columnName": "proving_timestamp",
+          "type": "timestamptz",
+          "isRequired": false,
+          "kind": "scalar",
+          "isList": false,
+          "isGenerated": false,
+          "sequence": false,
+          "hasDefaultValue": false,
+          "isId": false,
+          "maxLength": null
+        },
+        {
+          "id": "public.proofs.queued_timestamp",
+          "name": "queued_timestamp",
+          "columnName": "queued_timestamp",
+          "type": "timestamptz",
+          "isRequired": false,
+          "kind": "scalar",
+          "isList": false,
+          "isGenerated": false,
+          "sequence": false,
+          "hasDefaultValue": false,
+          "isId": false,
+          "maxLength": null
+        },
+        {
+          "id": "public.proofs.proof_latency",
+          "name": "proof_latency",
+          "columnName": "proof_latency",
+          "type": "int4",
+          "isRequired": false,
           "kind": "scalar",
           "isList": false,
           "isGenerated": false,
@@ -4311,50 +4367,6 @@
         }
       ]
     },
-    "seed_files": {
-      "id": "supabase_migrations.seed_files",
-      "schemaName": "supabase_migrations",
-      "tableName": "seed_files",
-      "fields": [
-        {
-          "id": "supabase_migrations.seed_files.path",
-          "name": "path",
-          "columnName": "path",
-          "type": "text",
-          "isRequired": true,
-          "kind": "scalar",
-          "isList": false,
-          "isGenerated": false,
-          "sequence": false,
-          "hasDefaultValue": false,
-          "isId": true,
-          "maxLength": null
-        },
-        {
-          "id": "supabase_migrations.seed_files.hash",
-          "name": "hash",
-          "columnName": "hash",
-          "type": "text",
-          "isRequired": true,
-          "kind": "scalar",
-          "isList": false,
-          "isGenerated": false,
-          "sequence": false,
-          "hasDefaultValue": false,
-          "isId": false,
-          "maxLength": null
-        }
-      ],
-      "uniqueConstraints": [
-        {
-          "name": "seed_files_pkey",
-          "fields": [
-            "path"
-          ],
-          "nullNotDistinct": false
-        }
-      ]
-    },
     "sessions": {
       "id": "auth.sessions",
       "schemaName": "auth",
@@ -4961,9 +4973,9 @@
           "maxLength": null
         },
         {
-          "id": "public.teams.logo_url",
-          "name": "logo_url",
-          "columnName": "logo_url",
+          "id": "public.teams.github_org",
+          "name": "github_org",
+          "columnName": "github_org",
           "type": "text",
           "isRequired": false,
           "kind": "scalar",
@@ -4975,9 +4987,9 @@
           "maxLength": null
         },
         {
-          "id": "public.teams.website_url",
-          "name": "website_url",
-          "columnName": "website_url",
+          "id": "public.teams.logo_url",
+          "name": "logo_url",
+          "columnName": "logo_url",
           "type": "text",
           "isRequired": false,
           "kind": "scalar",
@@ -5003,9 +5015,9 @@
           "maxLength": null
         },
         {
-          "id": "public.teams.github_org",
-          "name": "github_org",
-          "columnName": "github_org",
+          "id": "public.teams.website_url",
+          "name": "website_url",
+          "columnName": "website_url",
           "type": "text",
           "isRequired": false,
           "kind": "scalar",
