@@ -36,6 +36,7 @@ import {
 import { cn } from "@/lib/utils"
 
 import { timestampToEpoch, timestampToSlot } from "@/lib/beaconchain"
+import { getBlockValueType } from "@/lib/blocks"
 import { Tables } from "@/lib/database.types"
 import {
   intervalToReadable,
@@ -53,6 +54,8 @@ import {
 } from "@/lib/proofs"
 import { createClient } from "@/utils/supabase/client"
 
+const supabase = createClient()
+
 type BlockDetailsPageProps = {
   params: Promise<{ block: number }>
 }
@@ -61,7 +64,16 @@ export async function generateMetadata({
   params,
 }: BlockDetailsPageProps): Promise<Metadata> {
   const { block } = await params
-  return getMetadata({ title: `Block ${block}` }) // TODO: Confirm number formatting
+
+  const { data, error } = await supabase
+    .from("blocks")
+    .select("*, proofs(*)")
+    .eq(getBlockValueType(block), block)
+    .single()
+
+  return getMetadata({
+    title: `Block ${error ? block : data.block_number}`,
+  })
 }
 
 export default async function BlockDetailsPage({
@@ -69,12 +81,10 @@ export default async function BlockDetailsPage({
 }: BlockDetailsPageProps) {
   const { block } = await params
 
-  const supabase = createClient()
-
   const { data, error } = await supabase
     .from("blocks")
     .select("*, proofs(*)")
-    .eq("block_number", block)
+    .eq(getBlockValueType(block), block)
     .single()
 
   const { data: teams } = await supabase.from("teams").select("*")
@@ -91,8 +101,15 @@ export default async function BlockDetailsPage({
     }
   }
 
-  const { timestamp, gas_used, total_fees, transaction_count, proofs, hash } =
-    data
+  const {
+    timestamp,
+    block_number,
+    gas_used,
+    total_fees,
+    transaction_count,
+    proofs,
+    hash,
+  } = data
 
   // TODO: Dummy data, get block size data
   const size = 32735
@@ -175,10 +192,8 @@ export default async function BlockDetailsPage({
           <BlockLarge className="text-6xl text-primary" />
           <h1 className="font-mono">
             <p className="text-sm font-normal md:text-lg">Block Height</p>
-            <p className="text-3xl font-semibold">
-              {/* {formatNumber(block)} */}
-              {/* TODO: Confirm number formatting for block height, slot, epoch, etc */}
-              {block}
+            <p className="text-3xl font-semibold tracking-wide">
+              {block_number}
             </p>
           </h1>
         </HeroTitle>
