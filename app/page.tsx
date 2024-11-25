@@ -117,7 +117,9 @@ export default async function Index() {
         </div>
       </div>
 
-      <BlocksTable blocks={blocks} />
+      <section id="blocks" className="w-full scroll-m-20">
+        <BlocksTable blocks={blocks} />
+      </section>
     </div>
   )
 }

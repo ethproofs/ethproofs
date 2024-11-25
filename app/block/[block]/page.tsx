@@ -1,9 +1,11 @@
-/* eslint-disable simple-import-sort/imports */
 import type { Metadata } from "next"
 import Image, { type ImageProps } from "next/image"
 import Link from "next/link"
 import { notFound } from "next/navigation"
 
+import type { Metric } from "@/lib/types"
+
+import CopyButton from "@/components/CopyButton"
 import LearnMore from "@/components/LearnMore"
 import ArrowDown from "@/components/svgs/arrow-down.svg"
 import BlockLarge from "@/components/svgs/block-large.svg"
@@ -31,7 +33,8 @@ import {
   MetricValue,
 } from "@/components/ui/metric"
 
-import CopyButton from "@/components/CopyButton"
+import { cn } from "@/lib/utils"
+
 import { timestampToEpoch, timestampToSlot } from "@/lib/beaconchain"
 import { getBlockValueType } from "@/lib/blocks"
 import { Tables } from "@/lib/database.types"
@@ -49,8 +52,6 @@ import {
   getProofsAvgCost,
   getProofsAvgLatency,
 } from "@/lib/proofs"
-import type { Metric } from "@/lib/types"
-import { cn } from "@/lib/utils"
 import { createClient } from "@/utils/supabase/client"
 
 const supabase = createClient()
