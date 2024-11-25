@@ -86,10 +86,6 @@ export const POST = withAuth(async ({ request, client, user, timestamp }) => {
 
   if (proverMachineError) {
     console.error("error getting prover machine", proverMachineError)
-    return new Response("Internal server error", { status: 500 })
-  }
-
-  if (!proverMachineData) {
     return new Response("Machine not found", { status: 404 })
   }
 
@@ -121,7 +117,7 @@ export const POST = withAuth(async ({ request, client, user, timestamp }) => {
       ...proofPayload,
       proof_id: proofId,
       block_number,
-      prover_machine_id: proverMachineData.id,
+      machine_id: proverMachineData.id,
       proof_status,
       user_id: user.id,
       [timestampField]: timestamp,

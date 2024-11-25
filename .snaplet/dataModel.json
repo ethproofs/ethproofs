@@ -2881,9 +2881,9 @@
           "maxLength": null
         },
         {
-          "id": "public.proofs.prover_machine_id",
-          "name": "prover_machine_id",
-          "columnName": "prover_machine_id",
+          "id": "public.proofs.machine_id",
+          "name": "machine_id",
+          "columnName": "machine_id",
           "type": "uuid",
           "isRequired": true,
           "kind": "scalar",
@@ -2937,7 +2937,7 @@
           "kind": "object",
           "relationName": "proofsToprover_machines",
           "relationFromFields": [
-            "prover_machine_id"
+            "machine_id"
           ],
           "relationToFields": [
             "id"

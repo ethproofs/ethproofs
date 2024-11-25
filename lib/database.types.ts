@@ -97,13 +97,13 @@ export type Database = {
         Row: {
           block_number: number
           created_at: string | null
+          machine_id: string
           proof: string | null
           proof_id: number
           proof_latency: number | null
           proof_status: string
           proved_timestamp: string | null
           prover_duration: unknown | null
-          prover_machine_id: string
           proving_cost: number | null
           proving_cycles: number | null
           proving_timestamp: string | null
@@ -113,13 +113,13 @@ export type Database = {
         Insert: {
           block_number: number
           created_at?: string | null
+          machine_id: string
           proof?: string | null
           proof_id?: number
           proof_latency?: number | null
           proof_status: string
           proved_timestamp?: string | null
           prover_duration?: unknown | null
-          prover_machine_id: string
           proving_cost?: number | null
           proving_cycles?: number | null
           proving_timestamp?: string | null
@@ -129,13 +129,13 @@ export type Database = {
         Update: {
           block_number?: number
           created_at?: string | null
+          machine_id?: string
           proof?: string | null
           proof_id?: number
           proof_latency?: number | null
           proof_status?: string
           proved_timestamp?: string | null
           prover_duration?: unknown | null
-          prover_machine_id?: string
           proving_cost?: number | null
           proving_cycles?: number | null
           proving_timestamp?: string | null
@@ -151,8 +151,8 @@ export type Database = {
             referencedColumns: ["block_number"]
           },
           {
-            foreignKeyName: "proofs_prover_machine_id_fkey"
-            columns: ["prover_machine_id"]
+            foreignKeyName: "proofs_machine_id_fkey"
+            columns: ["machine_id"]
             isOneToOne: false
             referencedRelation: "prover_machines"
             referencedColumns: ["id"]

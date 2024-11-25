@@ -6,7 +6,7 @@ drop index if exists "public"."prover_machines_pkey";
 
 alter table "public"."proofs" drop column "prover_machine_id";
 
-alter table "public"."proofs" add column "prover_machine_id" uuid not null;
+alter table "public"."proofs" add column "machine_id" uuid not null;
 
 alter table "public"."prover_machines" add column "id" uuid not null default gen_random_uuid();
 
@@ -24,9 +24,9 @@ CREATE UNIQUE INDEX prover_machines_pkey ON public.prover_machines USING btree (
 
 alter table "public"."prover_machines" add constraint "prover_machines_pkey" PRIMARY KEY using index "prover_machines_pkey";
 
-alter table "public"."proofs" add constraint "proofs_prover_machine_id_fkey" FOREIGN KEY (prover_machine_id) REFERENCES prover_machines(id) not valid;
+alter table "public"."proofs" add constraint "proofs_machine_id_fkey" FOREIGN KEY (machine_id) REFERENCES prover_machines(id) not valid;
 
-alter table "public"."proofs" validate constraint "proofs_prover_machine_id_fkey";
+alter table "public"."proofs" validate constraint "proofs_machine_id_fkey";
 
 set check_function_bodies = off;
 
