@@ -7,11 +7,8 @@ import { proofSchema } from "./proofSchema"
 import { withAuth } from "@/lib/auth"
 import { fetchBlockData } from "@/lib/blocks"
 
-export const POST = withAuth(async ({ request, client, user }) => {
+export const POST = withAuth(async ({ request, client, user, timestamp }) => {
   const payload = await request.json()
-
-  // immediately set the timestamp for the proof
-  const timestamp = new Date().toISOString()
 
   if (!user) {
     return new Response("Invalid API key", {
