@@ -123,6 +123,7 @@ export const POST = withAuth(async ({ request, client, user, timestamp }) => {
       [timestampField]: timestamp,
     })
     .select("proof_id")
+    .single()
 
   if (proofResponse.error) {
     console.error("error adding proof", proofResponse.error)
