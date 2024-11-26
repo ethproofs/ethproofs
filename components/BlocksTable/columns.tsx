@@ -1,6 +1,7 @@
 "use client"
 
 import Link from "next/link"
+import prettyMilliseconds from "pretty-ms"
 import { ColumnDef } from "@tanstack/react-table"
 
 import type { BlockWithProofs, Proof } from "@/lib/types"
@@ -272,25 +273,32 @@ export const columns: ColumnDef<BlockWithProofs>[] = [
         return acc
       }, completedProofs[0])
 
-      const formatted = (submissionTime: number) =>
-        formatNumber((submissionTime - getTime(timestamp)) / 1e3, {
-          maximumFractionDigits: 0,
-        })
+      const msDelay = (submissionTime: number) =>
+        submissionTime - getTime(timestamp)
+
+      const bestSubmissionTime = getTime(fastestProof.proved_timestamp!)
+
+      const formatted = (ms: number) => {
+        if (ms < 0) return "-"
+        prettyMilliseconds(ms)
+      }
 
       return (
         <>
           <span className="block whitespace-nowrap">
-            {formatted(getTime(fastestProof.proved_timestamp!))}s
+            {formatted(msDelay(bestSubmissionTime))}
             {/* TODO: Use team and machine information */}
-            <MetricInfo>
-              <Link href="#" className="text-primary underline">
-                Team {fastestProof.machine_id}
-              </Link>
-              <span className="block">Machine {fastestProof.machine_id}</span>
-            </MetricInfo>
+            {msDelay(bestSubmissionTime) > 0 && (
+              <MetricInfo>
+                <Link href="#" className="text-primary underline">
+                  Team {fastestProof.machine_id}
+                </Link>
+                <span className="block">Machine {fastestProof.machine_id}</span>
+              </MetricInfo>
+            )}
           </span>
           <span className="block whitespace-nowrap text-sm text-body-secondary">
-            avg. {formatted(averageSubmissionTime)}s
+            avg. {formatted(msDelay(averageSubmissionTime))}
           </span>
         </>
       )
@@ -348,12 +356,12 @@ export const columns: ColumnDef<BlockWithProofs>[] = [
           return acc
         }, completedProofs[0])
 
-        return fastestProof.proof_latency!.toFixed(0) + "s"
+        return prettyMilliseconds(fastestProof.proof_latency! * 1e3)
       }
 
       const getAverageLatency = () => {
         if (!completedProofs.length) return "-"
-        return getProofsAvgLatency(completedProofs).toFixed(0) + "s"
+        return prettyMilliseconds(getProofsAvgLatency(completedProofs) * 1e3)
       }
 
       return (
