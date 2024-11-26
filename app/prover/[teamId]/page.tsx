@@ -1,5 +1,4 @@
 import { type Metadata } from "next"
-import Image from "next/image"
 import Link from "next/link"
 import { notFound } from "next/navigation"
 
@@ -11,6 +10,7 @@ import Globe from "@/components/svgs/globe.svg"
 import ProofCircle from "@/components/svgs/proof-circle.svg"
 import TrendingUp from "@/components/svgs/trending-up.svg"
 import XLogo from "@/components/svgs/x-logo.svg"
+import TeamLogo from "@/components/TeamLogo"
 import DataTable from "@/components/ui/data-table"
 import {
   HeroBody,
@@ -27,7 +27,7 @@ import {
   MetricValue,
 } from "@/components/ui/metric"
 
-import { FALLBACK_TEAM_LOGO_SRC, SITE_NAME } from "@/lib/constants"
+import { SITE_NAME } from "@/lib/constants"
 
 import { columns } from "./columns"
 
@@ -130,12 +130,9 @@ export default async function ProverPage({ params }: ProverPageProps) {
       <HeroSection>
         <HeroTitle className="h-20 items-center gap-6">
           <div className="relative h-20 w-56">
-            <Image
-              src={team.logo_url || FALLBACK_TEAM_LOGO_SRC}
+            <TeamLogo
+              src={team.logo_url}
               alt={`${team.team_name || "Prover"} logo`}
-              fill
-              sizes="100vw"
-              className="object-contain object-left"
             />
           </div>
           <h1 className="font-mono text-3xl font-semibold">{team.team_name}</h1>
