@@ -65,8 +65,8 @@ For `proof_status: "proved"`:
   "proof_status": "proved",
   "proof_id": number (optional),
   "proof": string,
-  "proof_latency": number,
-  "proving_cost": number,
+  "proof_latency": number, // in seconds
+  "proving_cost": number, // in USD
   "proving_cycles": number
 }
 ```
