@@ -99,10 +99,10 @@ export default function RootLayout({
 
                 {/* Mobile */}
                 <div className="flex gap-4 md:hidden">
-                  <Button variant="solid" className="size-[2rem] p-2">
-                    {/* TODO: Implement search */}
+                  {/* TODO: Implement search */}
+                  {/* <Button variant="solid" className="size-[2rem] p-2">
                     <Magnifier />
-                  </Button>
+                  </Button> */}
                   <Drawer>
                     <DrawerTrigger asChild>
                       <Button variant="solid" className="size-[2rem] p-2">
