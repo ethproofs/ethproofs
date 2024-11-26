@@ -21,6 +21,19 @@ import {
 
 const Null = () => <span className="text-body-secondary">{"-"}</span>
 
+const TeamPlaceholderIcon = ({
+  className,
+  ...props
+}: React.HTMLAttributes<HTMLDivElement>) => (
+  <div
+    className={cn(
+      "flex aspect-square size-4 shrink-0 items-center justify-center rounded-full border border-body text-xs",
+      className
+    )}
+    {...props}
+  />
+)
+
 const getTime = (d: string): number => new Date(d).getTime()
 
 const getStatusClasses = (status: Proof["proof_status"]) => {
@@ -148,12 +161,18 @@ export const columns: ColumnDef<BlockWithProofs>[] = [
 
       return (
         <>
-          <span className="block whitespace-nowrap">
+          <span className="align-center flex justify-center whitespace-nowrap">
             {formatted(cheapestCost)}
             {/* TODO: Use team and machine information */}
-            <MetricInfo>
+            <MetricInfo
+              trigger={
+                <TeamPlaceholderIcon>
+                  {cheapestProof.user_id[0]}
+                </TeamPlaceholderIcon>
+              }
+            >
               <Link href="#" className="text-primary underline">
-                Team {cheapestProof.machine_id}
+                Team {cheapestProof.user_id}
               </Link>
               <span className="block">Machine {cheapestProof.machine_id}</span>
             </MetricInfo>
@@ -217,12 +236,18 @@ export const columns: ColumnDef<BlockWithProofs>[] = [
 
       return (
         <>
-          <span className="block whitespace-nowrap">
+          <span className="align-center flex justify-center whitespace-nowrap">
             {formatted(cheapestCost)}
             {/* TODO: Use team and machine information */}
-            <MetricInfo>
+            <MetricInfo
+              trigger={
+                <TeamPlaceholderIcon>
+                  {cheapestProof.user_id[0]}
+                </TeamPlaceholderIcon>
+              }
+            >
               <Link href="#" className="text-primary underline">
-                Team {cheapestProof.machine_id}
+                Team {cheapestProof.user_id}
               </Link>
               <span className="block">Machine {cheapestProof.machine_id}</span>
             </MetricInfo>
@@ -285,13 +310,19 @@ export const columns: ColumnDef<BlockWithProofs>[] = [
 
       return (
         <>
-          <span className="block whitespace-nowrap">
+          <span className="align-center flex justify-center whitespace-nowrap">
             {formatted(msDelay(bestSubmissionTime))}
             {/* TODO: Use team and machine information */}
             {msDelay(bestSubmissionTime) > 0 && (
-              <MetricInfo>
+              <MetricInfo
+                trigger={
+                  <TeamPlaceholderIcon>
+                    {fastestProof.user_id[0]}
+                  </TeamPlaceholderIcon>
+                }
+              >
                 <Link href="#" className="text-primary underline">
-                  Team {fastestProof.machine_id}
+                  Team {fastestProof.user_id}
                 </Link>
                 <span className="block">Machine {fastestProof.machine_id}</span>
               </MetricInfo>
