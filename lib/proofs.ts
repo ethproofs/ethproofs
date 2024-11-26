@@ -1,15 +1,4 @@
-import { intervalToSeconds, timestampWithinDays } from "./date"
-import { formatNumber } from "./number"
 import type { Proof } from "./types"
-
-/**
- * Calculates the latency of a given proof in seconds.
- *
- * @param proof - The proof object containing the prover duration.
- * @returns The latency of the proof in seconds.
- */
-export const getProofLatency = (proof: Proof): number =>
-  intervalToSeconds(proof.prover_duration as string)
 
 /**
  * Calculates the average latency of an array of proofs.
@@ -18,7 +7,8 @@ export const getProofLatency = (proof: Proof): number =>
  * @returns {number} - The average latency of the proofs.
  */
 export const getProofsAvgLatency = (proofs: Proof[]): number =>
-  proofs.reduce((acc, proof) => acc + getProofLatency(proof), 0) / proofs.length
+  proofs.reduce((acc, proof) => acc + (proof.proof_latency || 0), 0) /
+  proofs.length
 
 /**
  * Calculates the average proving cost of an array of proofs.
