@@ -1,10 +1,10 @@
 import { z } from "zod"
 
 const baseProofSchema = z.object({
-  // If not provided, the proof is going to be searched by block_number and prover_machine_id
+  // If not provided, the proof is going to be searched by block_number and machine_id
   proof_id: z.number().optional(),
   block_number: z.number().min(0, "block_number must be a positive number"),
-  prover_machine_id: z.number(),
+  machine_id: z.number(),
 })
 
 const queuedProofSchema = baseProofSchema.extend({

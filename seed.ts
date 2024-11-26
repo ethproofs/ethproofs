@@ -34,7 +34,7 @@ const main = async () => {
 
   const { blocks } = await seed.blocks((x) =>
     x(2000, () => ({
-      hash: () => "0x" + faker.git.commitSha(),
+      hash: () => "0x" + faker.git.commitSha({ length: 64 }),
       timestamp: () => faker.date.recent().toISOString(),
     }))
   )
@@ -60,8 +60,8 @@ const main = async () => {
       (x) =>
         x(2, ({ index }) => {
           return {
-            machine_id: userIndex * 2 + index + 1,
             machine_name: `Machine ${copycat.firstName(index)}`,
+            machine_description: faker.lorem.sentence(),
             ...profile,
           }
         }),
@@ -76,6 +76,8 @@ const main = async () => {
           proof_id: ({ seed }) => copycat.int(seed, { min: 1, max: 1000000 }),
           proof: Buffer.from("{}"),
           prover_duration: ({ seed }) => copycat.dateString(seed).slice(11, 19),
+          proof_latency: ({ seed }) =>
+            copycat.int(seed, { min: 1000, max: 10000 }),
           proof_status: ({ seed }) =>
             copycat.oneOfString(seed, ["proved", "proving", "queued"]),
         })),
