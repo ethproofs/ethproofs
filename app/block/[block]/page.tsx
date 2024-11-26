@@ -7,6 +7,7 @@ import type { Metric } from "@/lib/types"
 
 import CopyButton from "@/components/CopyButton"
 import LearnMore from "@/components/LearnMore"
+import Null from "@/components/Null"
 import ArrowDown from "@/components/svgs/arrow-down.svg"
 import BlockLarge from "@/components/svgs/block-large.svg"
 import BookOpen from "@/components/svgs/book-open.svg"
@@ -349,7 +350,7 @@ export default async function BlockDetailsPage({
                   <MetricValue
                     title={prover_duration ? intervalToReadable(prover_duration as string) : ""}
                   >
-                    {prover_duration as string || ""}
+                    {prover_duration as string || <Null />}
                   </MetricValue>
                 </MetricBox>
                 <MetricBox
@@ -369,14 +370,13 @@ export default async function BlockDetailsPage({
                     </MetricInfo>
                   </MetricLabel>
                   <MetricValue>
-                    {formatNumber(
-                      proof_latency || 0,
-                      {
-                        style: "unit",
+                    {proof_latency
+                      ? formatNumber(proof_latency, {
+                          style: "unit",
                         unit: "second",
-                        unitDisplay: "narrow",
-                      }
-                    )}
+                          unitDisplay: "narrow",
+                        })
+                      : <Null />}
                   </MetricValue>
                 </MetricBox>
                 <MetricBox
@@ -402,7 +402,7 @@ export default async function BlockDetailsPage({
                           compactDisplay: "short",
                           maximumSignificantDigits: 4,
                         })
-                      : ""}
+                      : <Null />}
                   </MetricValue>
                 </MetricBox>
                 <MetricBox
@@ -427,7 +427,7 @@ export default async function BlockDetailsPage({
                           style: "currency",
                           currency: "USD",
                         })
-                      : ""}
+                      : <Null />}
                   </MetricValue>
                 </MetricBox>
               </div>

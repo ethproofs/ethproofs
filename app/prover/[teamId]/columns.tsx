@@ -4,6 +4,7 @@ import { ColumnDef } from "@tanstack/react-table"
 
 import type { Proof } from "@/lib/types"
 
+import Null from "@/components/Null"
 import { ButtonLink } from "@/components/ui/button"
 
 import { intervalToReadable } from "@/lib/date"
@@ -44,7 +45,7 @@ export const columns: ColumnDef<Proof>[] = [
     cell: ({ cell }) => {
       const interval = cell.getValue() as string
 
-      if (!interval) return ""
+      if (!interval) return <Null />
 
       const formatted = intervalToReadable(interval)
 
@@ -59,7 +60,7 @@ export const columns: ColumnDef<Proof>[] = [
     cell: ({ cell }) => {
       const latency = cell.getValue() as number
 
-      if (!latency) return ""
+      if (!latency) return <Null />
 
       return `${latency}s`
     },
