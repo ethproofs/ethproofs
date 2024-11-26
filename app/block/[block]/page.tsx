@@ -41,7 +41,6 @@ import { getBlockValueType } from "@/lib/blocks"
 import { Tables } from "@/lib/database.types"
 import {
   intervalToReadable,
-  intervalToSeconds,
   renderTimestamp,
 } from "@/lib/date"
 import { getMetadata } from "@/lib/metadata"
@@ -289,6 +288,7 @@ export default async function BlockDetailsPage({
           ({
             proof_id,
             prover_duration,
+            proof_latency,
             proving_cost,
             proving_cycles,
             user_id,
@@ -347,9 +347,9 @@ export default async function BlockDetailsPage({
                     </MetricInfo>
                   </MetricLabel>
                   <MetricValue
-                    title={intervalToReadable(prover_duration as string)}
+                    title={prover_duration ? intervalToReadable(prover_duration as string) : ""}
                   >
-                    {prover_duration as string}
+                    {prover_duration as string || ""}
                   </MetricValue>
                 </MetricBox>
                 <MetricBox
@@ -370,7 +370,7 @@ export default async function BlockDetailsPage({
                   </MetricLabel>
                   <MetricValue>
                     {formatNumber(
-                      intervalToSeconds(prover_duration as string),
+                      proof_latency || 0,
                       {
                         style: "unit",
                         unit: "second",
