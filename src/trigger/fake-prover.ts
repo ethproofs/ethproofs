@@ -17,9 +17,9 @@ const generateFakeProof = (blockNumber: bigint) => {
     block_number: Number(blockNumber),
     proof: "binary_proof_data",
     proof_status: faker.helpers.arrayElement(["proved", "proving", "queued"]),
-    prover_machine: faker.number.int({ min: 1, max: 10 }),
-    prover_duration: faker.number.int({ min: 1, max: 1000 }),
-    proving_cost: faker.number.float({ min: 0.01, max: 0.1 }),
+    machine_id: 1,
+    proof_latency: faker.number.int({ min: 1, max: 1000 }),
+    proving_cost: faker.number.float({ min: 1, max: 10 }),
     proving_cycles: faker.number.int({ min: 1000000, max: 10000000 }),
   }
 }
@@ -34,7 +34,7 @@ export const fakeProverTask = schedules.task({
     const blockNumber = block.number
 
     logger.info(`Generating proofs for block ${blockNumber}`, {
-      url: `${SITE_URL}/api/proofs`,
+      url: `${SITE_URL}/api/v0/proofs`,
     })
 
     for (const apiKey of API_KEYS) {
@@ -45,7 +45,7 @@ export const fakeProverTask = schedules.task({
       )
 
       try {
-        const response = await fetch(`${SITE_URL}/api/proofs`, {
+        const response = await fetch(`${SITE_URL}/api/v0/proofs`, {
           method: "POST",
           body: JSON.stringify(proof),
           headers: {
