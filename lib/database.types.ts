@@ -96,38 +96,50 @@ export type Database = {
       proofs: {
         Row: {
           block_number: number
-          proof: string
+          created_at: string | null
+          machine_id: string
+          proof: string | null
           proof_id: number
+          proof_latency: number | null
           proof_status: string
+          proved_timestamp: string | null
           prover_duration: unknown | null
-          prover_machine_id: number | null
           proving_cost: number | null
           proving_cycles: number | null
-          submission_time: string | null
+          proving_timestamp: string | null
+          queued_timestamp: string | null
           user_id: string
         }
         Insert: {
           block_number: number
-          proof: string
+          created_at?: string | null
+          machine_id: string
+          proof?: string | null
           proof_id?: number
+          proof_latency?: number | null
           proof_status: string
+          proved_timestamp?: string | null
           prover_duration?: unknown | null
-          prover_machine_id?: number | null
           proving_cost?: number | null
           proving_cycles?: number | null
-          submission_time?: string | null
+          proving_timestamp?: string | null
+          queued_timestamp?: string | null
           user_id: string
         }
         Update: {
           block_number?: number
-          proof?: string
+          created_at?: string | null
+          machine_id?: string
+          proof?: string | null
           proof_id?: number
+          proof_latency?: number | null
           proof_status?: string
+          proved_timestamp?: string | null
           prover_duration?: unknown | null
-          prover_machine_id?: number | null
           proving_cost?: number | null
           proving_cycles?: number | null
-          submission_time?: string | null
+          proving_timestamp?: string | null
+          queued_timestamp?: string | null
           user_id?: string
         }
         Relationships: [
@@ -139,11 +151,11 @@ export type Database = {
             referencedColumns: ["block_number"]
           },
           {
-            foreignKeyName: "proofs_prover_machine_id_fkey"
-            columns: ["prover_machine_id"]
+            foreignKeyName: "proofs_machine_id_fkey"
+            columns: ["machine_id"]
             isOneToOne: false
             referencedRelation: "prover_machines"
-            referencedColumns: ["machine_id"]
+            referencedColumns: ["id"]
           },
           {
             foreignKeyName: "proofs_user_id_fkey"
@@ -156,19 +168,25 @@ export type Database = {
       }
       prover_machines: {
         Row: {
-          machine_id: number
+          id: string
+          machine_description: string | null
+          machine_id: number | null
           machine_name: string
-          user_id: string | null
+          user_id: string
         }
         Insert: {
-          machine_id?: number
+          id?: string
+          machine_description?: string | null
+          machine_id?: number | null
           machine_name: string
-          user_id?: string | null
+          user_id: string
         }
         Update: {
-          machine_id?: number
+          id?: string
+          machine_description?: string | null
+          machine_id?: number | null
           machine_name?: string
-          user_id?: string | null
+          user_id?: string
         }
         Relationships: [
           {

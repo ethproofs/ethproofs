@@ -1,10 +1,9 @@
-/* eslint-disable simple-import-sort/imports */
-
-import { ThemeProvider } from "next-themes"
 import Link from "next/link"
+import { ThemeProvider } from "next-themes"
 
 import ActiveLinkDecorator from "@/components/ActiveLinkDecorator"
 import HeaderScrollEffects from "@/components/header/HeaderScrollEffects"
+import SearchInput from "@/components/header/SearchInput"
 import ThemeSwitch from "@/components/header/ThemeSwitch"
 import EthProofsLogo from "@/components/svgs/eth-proofs-logo.svg"
 import GitHub from "@/components/svgs/github.svg"
@@ -27,7 +26,6 @@ import { cn } from "@/lib/utils"
 
 import { SITE_REPO_URL } from "@/lib/constants"
 
-import SearchInput from "@/components/header/SearchInput"
 import "../styles/globals.css"
 
 export default function RootLayout({
@@ -83,7 +81,7 @@ export default function RootLayout({
               <div className="flex justify-end">
                 <nav className="flex gap-6 max-md:hidden">
                   <Link
-                    href="/"
+                    href="/#blocks"
                     className="relative h-fit outline-offset-4 hover:text-primary-light"
                   >
                     Proofs
@@ -168,7 +166,7 @@ export default function RootLayout({
 
               <p className="mb-4 text-center">
                 Built with{" "}
-                <Heart className="animate-heart-beat mb-0.5 inline text-xl text-primary" />{" "}
+                <Heart className="mb-0.5 inline animate-heart-beat text-xl text-primary" />{" "}
                 by the{" "}
                 <Link
                   href="https://ethereum.org"

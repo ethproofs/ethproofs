@@ -8,9 +8,12 @@ export const withAuth = (
     client: ReturnType<typeof createClient>
     user: { id: string } | null
     apiKey?: { mode: string; user_id: string } | null
+    timestamp: string
   }) => void
 ) => {
   return async (request: Request) => {
+    const timestamp = new Date().toISOString()
+
     const headerStore = headers()
     const authHeader = headerStore.get("authorization")
 
@@ -22,6 +25,12 @@ export const withAuth = (
         },
       },
     })
+
+    const commonProps = {
+      timestamp,
+      request,
+      client,
+    }
 
     // If there is an auth header, validate api key
     if (authHeader) {
@@ -35,14 +44,13 @@ export const withAuth = (
 
       // api key is invalid
       if (error) {
-        return handler({ request, client, user: null })
+        return handler({ ...commonProps, user: null })
       }
 
       // fetch the user
       if (data) {
         return handler({
-          request,
-          client,
+          ...commonProps,
           user: { id: data.user_id },
           apiKey: data,
         })
@@ -52,6 +60,6 @@ export const withAuth = (
     // TODO: If there is no auth header, then the user is likely logged in
     // const user = await client.auth.getUser()
 
-    return handler({ request, client, user: null, apiKey: null })
+    return handler({ ...commonProps, user: null, apiKey: null })
   }
 }

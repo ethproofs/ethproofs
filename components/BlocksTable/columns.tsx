@@ -12,11 +12,7 @@ import { TooltipContentFooter, TooltipContentHeader } from "../ui/tooltip"
 
 import { formatTimeAgo } from "@/lib/date"
 import { formatNumber } from "@/lib/number"
-import {
-  getProofLatency,
-  getProofsAvgCost,
-  getProofsAvgLatency,
-} from "@/lib/proofs"
+import { getProofsAvgCost, getProofsAvgLatency } from "@/lib/proofs"
 
 const Null = () => <span className="text-body-secondary">{"-"}</span>
 
@@ -151,11 +147,9 @@ export const columns: ColumnDef<BlockWithProofs>[] = [
             {/* TODO: Use team and machine information */}
             <MetricInfo>
               <Link href="#" className="text-primary underline">
-                Team {cheapestProof.prover_machine_id}
+                Team {cheapestProof.machine_id}
               </Link>
-              <span className="block">
-                Machine {cheapestProof.prover_machine_id}
-              </span>
+              <span className="block">Machine {cheapestProof.machine_id}</span>
             </MetricInfo>
           </span>
           <span className="block whitespace-nowrap text-sm text-body-secondary">
@@ -222,11 +216,9 @@ export const columns: ColumnDef<BlockWithProofs>[] = [
             {/* TODO: Use team and machine information */}
             <MetricInfo>
               <Link href="#" className="text-primary underline">
-                Team {cheapestProof.prover_machine_id}
+                Team {cheapestProof.machine_id}
               </Link>
-              <span className="block">
-                Machine {cheapestProof.prover_machine_id}
-              </span>
+              <span className="block">Machine {cheapestProof.machine_id}</span>
             </MetricInfo>
           </span>
           <span className="block whitespace-nowrap text-sm text-body-secondary">
@@ -263,13 +255,13 @@ export const columns: ColumnDef<BlockWithProofs>[] = [
 
       const averageSubmissionTime =
         completedProofs.reduce(
-          (acc, p) => acc + getTime(p.submission_time!),
+          (acc, p) => acc + getTime(p.proved_timestamp!),
           0
         ) / completedProofs.length
 
       const fastestProof = completedProofs.reduce((acc, p) => {
-        const oldTime = getTime(acc.submission_time!)
-        const newTime = getTime(p.submission_time!)
+        const oldTime = getTime(acc.proved_timestamp!)
+        const newTime = getTime(p.proved_timestamp!)
         if (newTime < oldTime) return p
         return acc
       }, completedProofs[0])
@@ -282,15 +274,13 @@ export const columns: ColumnDef<BlockWithProofs>[] = [
       return (
         <>
           <span className="block whitespace-nowrap">
-            {formatted(getTime(fastestProof.submission_time!))}s
+            {formatted(getTime(fastestProof.proved_timestamp!))}s
             {/* TODO: Use team and machine information */}
             <MetricInfo>
               <Link href="#" className="text-primary underline">
-                Team {fastestProof.prover_machine_id}
+                Team {fastestProof.machine_id}
               </Link>
-              <span className="block">
-                Machine {fastestProof.prover_machine_id}
-              </span>
+              <span className="block">Machine {fastestProof.machine_id}</span>
             </MetricInfo>
           </span>
           <span className="block whitespace-nowrap text-sm text-body-secondary">
@@ -346,13 +336,13 @@ export const columns: ColumnDef<BlockWithProofs>[] = [
         if (!completedProofs.length) return "-"
 
         const fastestProof = completedProofs.reduce((acc, p) => {
-          const oldLatency = getProofLatency(acc)
-          const newLatency = getProofLatency(p)
+          const oldLatency = acc.proof_latency!
+          const newLatency = p.proof_latency!
           if (newLatency < oldLatency) return p
           return acc
         }, completedProofs[0])
 
-        return getProofLatency(fastestProof).toFixed(0) + "s"
+        return fastestProof.proof_latency!.toFixed(0) + "s"
       }
 
       const getAverageLatency = () => {
