@@ -12,7 +12,11 @@ import { TooltipContentFooter, TooltipContentHeader } from "../ui/tooltip"
 
 import { formatTimeAgo } from "@/lib/date"
 import { formatNumber } from "@/lib/number"
-import { getProofsAvgCost, getProofsAvgLatency } from "@/lib/proofs"
+import {
+  filterCompleted,
+  getProofsAvgCost,
+  getProofsAvgLatency,
+} from "@/lib/proofs"
 
 const Null = () => <span className="text-body-secondary">{"-"}</span>
 
@@ -123,7 +127,8 @@ export const columns: ColumnDef<BlockWithProofs>[] = [
 
       const averageCost = getProofsAvgCost(proofs)
 
-      const completedProofs = proofs.filter((p) => p.proof_status === "proved")
+      const { completedProofs } = filterCompleted(proofs)
+
       if (!completedProofs.length) return <Null />
 
       const cheapestProof = completedProofs.reduce((acc, p) => {
@@ -194,7 +199,7 @@ export const columns: ColumnDef<BlockWithProofs>[] = [
       const averageCost = getProofsAvgCost(proofs)
       if (isNaN(averageCost)) return <Null />
 
-      const completedProofs = proofs.filter((p) => p.proof_status === "proved")
+      const { completedProofs } = filterCompleted(proofs)
       if (!completedProofs.length) return <Null />
 
       const cheapestProof = completedProofs.reduce((acc, p) => {
@@ -250,7 +255,8 @@ export const columns: ColumnDef<BlockWithProofs>[] = [
 
       if (!timestamp || !proofs.length) return <Null />
 
-      const completedProofs = proofs.filter((p) => p.proof_status === "proved")
+      const { completedProofs } = filterCompleted(proofs)
+
       if (!completedProofs.length) return <Null />
 
       const averageSubmissionTime =
@@ -330,7 +336,7 @@ export const columns: ColumnDef<BlockWithProofs>[] = [
 
       if (!proofs.length) return <Null />
 
-      const completedProofs = proofs.filter((p) => p.proof_status === "proved")
+      const { completedProofs } = filterCompleted(proofs)
 
       const getBestLatency = () => {
         if (!completedProofs.length) return "-"

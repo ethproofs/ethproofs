@@ -42,3 +42,9 @@ export const getAvgCostPerTx = (
   avgProofCost: number,
   transactionCount: number
 ): number => avgProofCost / transactionCount
+
+export const isCompleted = (proof: Proof) => proof.proof_status === "proved"
+
+export const filterCompleted = (proofs: Proof[]) => ({
+  completedProofs: proofs.filter(isCompleted),
+})
