@@ -1,3 +1,7 @@
+<div align="center" style="margin-top: 1em; margin-bottom: 3em;">
+  <a href="https://ethproofs.org"><img alt="ethproofs hero and logo" src="./public/images/social-preview.png" alt="ethproofs.org"></a>
+</div>
+
 # ethproofs
 
 ## App local development
