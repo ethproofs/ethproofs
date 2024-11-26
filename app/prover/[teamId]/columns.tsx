@@ -59,7 +59,9 @@ export const columns: ColumnDef<Proof>[] = [
     cell: ({ cell }) => {
       const latency = cell.getValue() as number
 
-      return latency
+      if (!latency) return ""
+
+      return `${latency}s`
     },
   },
   // Cost (USD)
