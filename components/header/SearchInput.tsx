@@ -21,7 +21,10 @@ const PLACEHOLDER = "Search by block number or hash"
 const k = 6.5
 const supabase = createClient()
 
-const SearchInput = ({ className }: React.HTMLAttributes<HTMLInputElement>) => {
+const SearchInput = ({
+  className,
+  onSubmit,
+}: React.HTMLAttributes<HTMLInputElement> & { onSubmit?: () => void }) => {
   const router = useRouter()
   const [query, setQuery] = useState("")
   const [loading, setLoading] = useState(false)
@@ -29,10 +32,16 @@ const SearchInput = ({ className }: React.HTMLAttributes<HTMLInputElement>) => {
     (Block & { proofs: { proof_status: string }[] }) | null
   >(null)
 
+  const handleSubmit = () => {
+    setQuery("")
+    if (!onSubmit) return
+    onSubmit()
+  }
+
   useEventListener("keydown", (e) => {
     if (e.key !== "Enter" || !blockMatch) return
     const path = `/block/${blockMatch[isHash(query) ? "hash" : "block_number"]}`
-    setQuery("")
+    handleSubmit()
     router.push(path)
   })
 
@@ -97,7 +106,7 @@ const SearchInput = ({ className }: React.HTMLAttributes<HTMLInputElement>) => {
             <Link
               href={`/block/${blockMatch[isHash(query) ? "hash" : "block_number"]}`}
               className="rounded-lg border border-primary-light bg-background-active p-2"
-              onClick={() => setQuery("")}
+              onClick={handleSubmit}
             >
               <div className="flex justify-between">
                 <span className="block text-sm text-primary">
