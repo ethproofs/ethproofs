@@ -4,6 +4,7 @@ import { ColumnDef } from "@tanstack/react-table"
 
 import type { Proof } from "@/lib/types"
 
+import Null from "@/components/Null"
 import { ButtonLink } from "@/components/ui/button"
 
 import { intervalToReadable } from "@/lib/date"
@@ -44,6 +45,8 @@ export const columns: ColumnDef<Proof>[] = [
     cell: ({ cell }) => {
       const interval = cell.getValue() as string
 
+      if (!interval) return <Null />
+
       const formatted = intervalToReadable(interval)
 
       return formatted
@@ -52,14 +55,14 @@ export const columns: ColumnDef<Proof>[] = [
   // Latency (duration)
   // ? Difference between latency and time to proof?
   {
-    accessorKey: "prover_duration",
+    accessorKey: "proof_latency",
     header: "latency",
     cell: ({ cell }) => {
-      const interval = cell.getValue() as string
+      const latency = cell.getValue() as number
 
-      const formatted = intervalToReadable(interval)
+      if (!latency) return <Null />
 
-      return formatted
+      return `${latency}s`
     },
   },
   // Cost (USD)
