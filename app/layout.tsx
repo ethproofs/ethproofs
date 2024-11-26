@@ -3,6 +3,7 @@ import { ThemeProvider } from "next-themes"
 
 import ActiveLinkDecorator from "@/components/ActiveLinkDecorator"
 import HeaderScrollEffects from "@/components/header/HeaderScrollEffects"
+import MobileSearchInput from "@/components/header/MobileSearchInput"
 import SearchInput from "@/components/header/SearchInput"
 import ThemeSwitch from "@/components/header/ThemeSwitch"
 import EthProofsLogo from "@/components/svgs/eth-proofs-logo.svg"
@@ -99,10 +100,7 @@ export default function RootLayout({
 
                 {/* Mobile */}
                 <div className="flex gap-4 md:hidden">
-                  {/* TODO: Implement search */}
-                  {/* <Button variant="solid" className="size-[2rem] p-2">
-                    <Magnifier />
-                  </Button> */}
+                  <MobileSearchInput />
                   <Drawer>
                     <DrawerTrigger asChild>
                       <Button variant="solid" className="size-[2rem] p-2">
