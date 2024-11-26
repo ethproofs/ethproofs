@@ -88,8 +88,11 @@ export const columns: ColumnDef<BlockWithProofs>[] = [
     header: "prover status",
     cell: ({ cell }) => {
       const proofs = cell.getValue() as Proof[]
+      const provenProofs = proofs.filter(
+        (proof) => proof.proof_status === "proved"
+      )
 
-      const latency = getProofsAvgLatency(proofs)
+      const latency = getProofsAvgLatency(provenProofs)
 
       const getStatusColorClass = (status: string) => {
         if (status === "proved") return "bg-primary"

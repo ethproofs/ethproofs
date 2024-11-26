@@ -96,38 +96,50 @@ export type Database = {
       proofs: {
         Row: {
           block_number: number
-          proof: string
+          created_at: string | null
+          proof: string | null
           proof_id: number
+          proof_latency: number | null
           proof_status: string
+          proved_timestamp: string | null
           prover_duration: unknown | null
           prover_machine_id: number | null
           proving_cost: number | null
           proving_cycles: number | null
-          submission_time: string | null
+          proving_timestamp: string | null
+          queued_timestamp: string | null
           user_id: string
         }
         Insert: {
           block_number: number
-          proof: string
+          created_at?: string | null
+          proof?: string | null
           proof_id?: number
+          proof_latency?: number | null
           proof_status: string
+          proved_timestamp?: string | null
           prover_duration?: unknown | null
           prover_machine_id?: number | null
           proving_cost?: number | null
           proving_cycles?: number | null
-          submission_time?: string | null
+          proving_timestamp?: string | null
+          queued_timestamp?: string | null
           user_id: string
         }
         Update: {
           block_number?: number
-          proof?: string
+          created_at?: string | null
+          proof?: string | null
           proof_id?: number
+          proof_latency?: number | null
           proof_status?: string
+          proved_timestamp?: string | null
           prover_duration?: unknown | null
           prover_machine_id?: number | null
           proving_cost?: number | null
           proving_cycles?: number | null
-          submission_time?: string | null
+          proving_timestamp?: string | null
+          queued_timestamp?: string | null
           user_id?: string
         }
         Relationships: [

@@ -1,22 +1,14 @@
 import { revalidateTag } from "next/cache"
 import { formatGwei } from "viem"
-import { z } from "zod"
+import { ZodError } from "zod"
+
+import { proofSchema } from "./proofSchema"
 
 import { withAuth } from "@/lib/auth"
 import { fetchBlockData } from "@/lib/blocks"
 
-const proofSchema = z.object({
-  block_number: z.number(),
-  proof: z.string(),
-  proof_status: z.enum(["proved", "proving", "queued"]),
-  prover_machine: z.number(),
-  prover_duration: z.number(),
-  proving_cost: z.number(),
-  proving_cycles: z.number(),
-})
-
-export const POST = withAuth(async ({ request, client, user }) => {
-  const proofPayload = await request.json()
+export const POST = withAuth(async ({ request, client, user, timestamp }) => {
+  const payload = await request.json()
 
   if (!user) {
     return new Response("Invalid API key", {
@@ -25,23 +17,23 @@ export const POST = withAuth(async ({ request, client, user }) => {
   }
 
   // validate payload schema
+  let proofPayload
   try {
-    proofSchema.parse(proofPayload)
+    proofPayload = proofSchema.parse(payload)
   } catch (error) {
     console.error("proof payload invalid", error)
+    if (error instanceof ZodError) {
+      return new Response(`Invalid payload: ${error.message}`, {
+        status: 400,
+      })
+    }
+
     return new Response("Invalid payload", {
       status: 400,
     })
   }
 
-  const {
-    proof,
-    block_number,
-    prover_duration,
-    proof_status,
-    proving_cost,
-    proving_cycles,
-  } = proofPayload
+  const { block_number, proof_status } = proofPayload
 
   // validate block_number exists
   console.log("validating block_number", block_number)
@@ -86,18 +78,40 @@ export const POST = withAuth(async ({ request, client, user }) => {
 
   // TODO validate prover_machine exists and fetch prover_machine_id
 
+  // get proof_id to update or create an existing proof
+  let proofId
+  if (!proofPayload.proof_id) {
+    const { data: existingProofData } = await client
+      .from("proofs")
+      .select("proof_id")
+      .eq("block_number", block_number)
+      // .eq("prover_machine_id", prover_machine_id)
+      .eq("user_id", user.id)
+      .single()
+
+    proofId = existingProofData?.proof_id
+  }
+
   // add proof
   console.log("adding proof", proofPayload)
-  const proofResponse = await client.from("proofs").insert({
-    block_number,
-    proof,
-    prover_machine_id: 1, // TODO: fetch prover_machine_id
-    prover_duration,
-    proving_cost,
-    proving_cycles,
-    proof_status,
-    user_id: user.id,
-  })
+  const timestampField = {
+    queued: "queued_timestamp",
+    proving: "proving_timestamp",
+    proved: "proved_timestamp",
+  }[proof_status]
+
+  const proofResponse = await client
+    .from("proofs")
+    .upsert({
+      ...proofPayload,
+      proof_id: proofId,
+      block_number,
+      prover_machine_id: 1, // TODO: fetch prover_machine_id
+      proof_status,
+      user_id: user.id,
+      [timestampField]: timestamp,
+    })
+    .select("proof_id")
 
   if (proofResponse.error) {
     console.error("error adding proof", proofResponse.error)
@@ -107,5 +121,6 @@ export const POST = withAuth(async ({ request, client, user }) => {
   // invalidate proofs cache
   revalidateTag("proofs")
 
-  return new Response("Proof submitted", { status: 200 })
+  // return the generated proof_id
+  return new Response(JSON.stringify(proofResponse.data), { status: 200 })
 })
