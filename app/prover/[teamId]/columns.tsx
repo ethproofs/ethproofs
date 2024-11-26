@@ -44,6 +44,8 @@ export const columns: ColumnDef<Proof>[] = [
     cell: ({ cell }) => {
       const interval = cell.getValue() as string
 
+      if (!interval) return ""
+
       const formatted = intervalToReadable(interval)
 
       return formatted
@@ -52,14 +54,12 @@ export const columns: ColumnDef<Proof>[] = [
   // Latency (duration)
   // ? Difference between latency and time to proof?
   {
-    accessorKey: "prover_duration",
+    accessorKey: "proof_latency",
     header: "latency",
     cell: ({ cell }) => {
-      const interval = cell.getValue() as string
+      const latency = cell.getValue() as number
 
-      const formatted = intervalToReadable(interval)
-
-      return formatted
+      return latency
     },
   },
   // Cost (USD)
