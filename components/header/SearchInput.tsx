@@ -17,7 +17,7 @@ import { useContainerQuery } from "@/hooks/useContainerQuery"
 import useSearchKeyboardShortcuts from "@/hooks/useSearchKeyboardShortcuts"
 import { createClient } from "@/utils/supabase/client"
 
-const DEBOUNCE = 250 // ms delay before querying db
+const DEBOUNCE = 250 // ms delay before querying database
 const PLACEHOLDER = "Search by block number or hash"
 const k = 6.5
 const supabase = createClient()
