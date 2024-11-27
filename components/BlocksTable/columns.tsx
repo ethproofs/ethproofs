@@ -12,7 +12,11 @@ import { cn } from "@/lib/utils"
 
 import { formatTimeAgo } from "@/lib/date"
 import { formatNumber } from "@/lib/number"
-import { getProofsAvgCost, getProofsAvgLatency } from "@/lib/proofs"
+import {
+  getProofsAvgCost,
+  getProofsAvgLatency,
+  sortByStatus,
+} from "@/lib/proofs"
 
 export const columns: ColumnDef<BlockWithProofs>[] = [
   {
@@ -105,7 +109,7 @@ export const columns: ColumnDef<BlockWithProofs>[] = [
         <div className="mx-auto flex w-20">
           <div className="flex flex-col gap-2">
             <div className="flex flex-wrap gap-2">
-              {proofs.map((proof) => (
+              {proofs.sort(sortByStatus).map((proof) => (
                 <div
                   key={proof.proof_id}
                   className={cn(
