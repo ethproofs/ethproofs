@@ -8,6 +8,7 @@ import type { BlockWithProofs, Proof } from "@/lib/types"
 
 import Null from "@/components/Null"
 import ArrowRight from "@/components/svgs/arrow-right.svg"
+import Award from "@/components/svgs/award.svg"
 import { ButtonLink } from "@/components/ui/button"
 
 import { cn } from "@/lib/utils"
@@ -166,13 +167,7 @@ export const columns: ColumnDef<BlockWithProofs>[] = [
           <span className="align-center flex justify-center whitespace-nowrap">
             {formatted(cheapestCost)}
             {/* TODO: Use team and machine information */}
-            <MetricInfo
-              trigger={
-                <TeamPlaceholderIcon>
-                  {cheapestProof.user_id[0]}
-                </TeamPlaceholderIcon>
-              }
-            >
+            <MetricInfo trigger={<Award />}>
               <Link href="#" className="text-primary underline">
                 Team {cheapestProof.user_id}
               </Link>
@@ -241,13 +236,7 @@ export const columns: ColumnDef<BlockWithProofs>[] = [
           <span className="align-center flex justify-center whitespace-nowrap">
             {formatted(cheapestCost)}
             {/* TODO: Use team and machine information */}
-            <MetricInfo
-              trigger={
-                <TeamPlaceholderIcon>
-                  {cheapestProof.user_id[0]}
-                </TeamPlaceholderIcon>
-              }
-            >
+            <MetricInfo trigger={<Award />}>
               <Link href="#" className="text-primary underline">
                 Team {cheapestProof.user_id}
               </Link>
@@ -316,13 +305,7 @@ export const columns: ColumnDef<BlockWithProofs>[] = [
             {formatted(msDelay(bestSubmissionTime))}
             {/* TODO: Use team and machine information */}
             {msDelay(bestSubmissionTime) > 0 && (
-              <MetricInfo
-                trigger={
-                  <TeamPlaceholderIcon>
-                    {fastestProof.user_id[0]}
-                  </TeamPlaceholderIcon>
-                }
-              >
+              <MetricInfo trigger={<Award />}>
                 <Link href="#" className="text-primary underline">
                   Team {fastestProof.user_id}
                 </Link>
