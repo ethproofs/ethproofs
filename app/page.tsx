@@ -156,14 +156,12 @@ export default async function Index() {
             </div>
           )}
         </div>
-        <div className="flex flex-col gap-8 md:flex-row">
+        <div className="flex flex-wrap gap-8">
           {teamsResponse.data &&
-            teamsResponse.data.length > 1 &&
-            teamsResponse.data
-              .slice(0, 2)
-              .map(({ user_id, team_id, logo_url, team_name }) => (
+            teamsResponse.data.map(
+              ({ user_id, team_id, logo_url, team_name }) => (
                 <div
-                  className="flex flex-1 flex-col gap-4 rounded-4xl border bg-gradient-to-b from-body/[0.06] to-body/[0.03] p-8"
+                  className="flex min-w-96 flex-1 flex-col gap-4 rounded-4xl border bg-gradient-to-b from-body/[0.06] to-body/[0.03] p-8"
                   key={user_id}
                 >
                   <div className="relative mx-auto flex h-20 w-56 justify-center">
@@ -174,7 +172,7 @@ export default async function Index() {
                     />
                   </div>
 
-                  <div className="mx-auto flex max-w-64 flex-col gap-6">
+                  <div className="mx-auto flex flex-col gap-6">
                     <div className="flex w-full flex-nowrap">
                       <div className="flex flex-col items-center gap-2 px-4">
                         <div className="flex items-center gap-1 text-body-secondary">
@@ -194,7 +192,8 @@ export default async function Index() {
                     </ButtonLink>
                   </div>
                 </div>
-              ))}
+              )
+            )}
         </div>
       </section>
     </div>
