@@ -42,3 +42,12 @@ export const getAvgCostPerTx = (
   avgProofCost: number,
   transactionCount: number
 ): number => avgProofCost / transactionCount
+
+// Sort by "proved" first, then "proving", and lastly "queued"
+export const sortByStatus = (a: Proof, b: Proof) => {
+  if (a.proof_status === "proved") return -1
+  if (b.proof_status === "proved") return 1
+  if (a.proof_status === "proving") return -1
+  if (b.proof_status === "proving") return 1
+  return 0
+}
