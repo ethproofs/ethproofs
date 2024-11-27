@@ -372,9 +372,7 @@ export const columns: ColumnDef<BlockWithProofs>[] = [
         </MetricInfo>
       </div>
     ),
-    cell: ({ cell, row }) => {
-      const blockNumber = row.original.block_number
-
+    cell: ({ cell }) => {
       const proofs = cell.getValue() as Proof[]
 
       if (!proofs.length) return <Null />
@@ -400,7 +398,7 @@ export const columns: ColumnDef<BlockWithProofs>[] = [
       }
 
       return (
-        <div className="mx-auto flex w-40 items-center gap-x-4">
+        <div className="mx-auto flex w-20">
           <div className="flex flex-1 flex-col gap-2">
             <div className="flex flex-wrap gap-2">
               {proofs.map((proof) => (
@@ -418,6 +416,17 @@ export const columns: ColumnDef<BlockWithProofs>[] = [
               avg. {getAverageLatency()}
             </div>
           </div>
+        </div>
+      )
+    },
+  },
+  {
+    accessorKey: "block_number",
+    header: "",
+    cell: ({ cell }) => {
+      const blockNumber = cell.getValue() as number
+      return (
+        <div className="flex h-12 items-center">
           <ButtonLink
             href={`/block/${blockNumber}`}
             variant="outline"
