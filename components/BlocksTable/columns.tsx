@@ -13,8 +13,6 @@ import Box from "@/components/svgs/box.svg"
 import BoxDashed from "@/components/svgs/box-dashed.svg"
 import { ButtonLink } from "@/components/ui/button"
 
-import { cn } from "@/lib/utils"
-
 import { MetricInfo } from "../ui/metric"
 import { TooltipContentFooter, TooltipContentHeader } from "../ui/tooltip"
 
@@ -26,32 +24,7 @@ import {
   getProofsAvgLatency,
 } from "@/lib/proofs"
 
-const TeamPlaceholderIcon = ({
-  className,
-  ...props
-}: React.HTMLAttributes<HTMLDivElement>) => (
-  <div
-    className={cn(
-      "flex aspect-square size-4 shrink-0 items-center justify-center rounded-full border border-body text-xs",
-      className
-    )}
-    {...props}
-  />
-)
-
 const getTime = (d: string): number => new Date(d).getTime()
-
-const getStatusClasses = (status: Proof["proof_status"]) => {
-  const baseClasses = "inline-block size-2 rounded-full"
-  if (status === "proved") return cn(baseClasses, "bg-primary")
-  if (status === "queued")
-    return cn(
-      baseClasses,
-      "bg-transparent outline outline-1 -outline-offset-1 outline-body-secondary"
-    )
-  if (status === "proving") return cn(baseClasses, "bg-body-secondary")
-  return cn(baseClasses, "bg-red-500")
-}
 
 export const columns: ColumnDef<BlockWithProofs>[] = [
   {
@@ -61,13 +34,21 @@ export const columns: ColumnDef<BlockWithProofs>[] = [
         block
         <MetricInfo>
           <TooltipContentHeader>Block height number</TooltipContentHeader>
-          <p className="text-body">
+          <p>
             <span className="font-mono text-primary">block_number</span> value
             from execution block
           </p>
-          <p className="text-body-secondary">
-            Includes time since block published
-          </p>
+          <TooltipContentFooter>
+            <p>Time since block published</p>
+            <p>
+              <span className="font-mono text-primary-light">now</span> -{" "}
+              <span className="font-mono text-primary-light">timestamp</span>
+            </p>
+            <p>
+              <span className="font-mono text-primary-light">timestamp</span>{" "}
+              value from execution block
+            </p>
+          </TooltipContentFooter>
         </MetricInfo>
       </div>
     ),
@@ -103,11 +84,16 @@ export const columns: ColumnDef<BlockWithProofs>[] = [
           <TooltipContentHeader>
             Total gas units executed within block (in millions)
           </TooltipContentHeader>
-          <p className="text-body">
+          <p>
+            <span className="font-mono text-primary">gas_used</span> /{" "}
+            <span className="font-mono">
+              10
+              <sup>6</sup>
+            </span>
+          </p>
+          <p>
             <span className="font-mono text-primary">gas_used</span> value from
-            execution block, expressed in millions (
-            <span className="font-mono text-primary">gas_used</span> / 10
-            <sup>6</sup>)
+            execution block, expressed in millions
           </p>
           <p className="text-body-secondary">
             Proportional to the amount of computational effort a block outputs.
@@ -135,8 +121,10 @@ export const columns: ColumnDef<BlockWithProofs>[] = [
           <TooltipContentHeader>
             Proving costs in USD for entire proof of block
           </TooltipContentHeader>
-          <p className="font-mono text-primary">proving costs (USD)</p>
-          <TooltipContentFooter>Average cost (lower cost)</TooltipContentFooter>
+          <p>
+            <span className="italic">proving costs</span> - USD costs,
+            self-reported by proving teams
+          </p>
         </MetricInfo>
       </div>
     ),
@@ -196,19 +184,25 @@ export const columns: ColumnDef<BlockWithProofs>[] = [
           <TooltipContentHeader>
             Proving costs in USD per million gas units proven
           </TooltipContentHeader>
-          <p className="">
-            <span className="font-mono text-primary">proving costs (USD)</span>{" "}
-            / <span className="font-mono text-primary">gas_used</span> / 10
+          <p>
+            <span className="italic">proving costs</span> /{" "}
+            <span className="font-mono text-primary">gas_used</span> / 10
             <sup>6</sup>
+          </p>
+
+          <p className="">
+            <span className="italic">proving costs</span> - USD costs,
+            self-reported by proving teams
+          </p>
+          <p className="">
+            <span className="font-mono text-primary">gas_used</span> - value
+            from execution block, expressed in millions
           </p>
           <p className="text-body-secondary">
             Normalized USD cost per gas unit to allow comparison amongst proofs
             of different sized blocks. More gas consumption in a block means
             more computation to prove.
           </p>
-          <TooltipContentFooter>
-            Average cost (lowest cost)
-          </TooltipContentFooter>
         </MetricInfo>
       </div>
     ),
@@ -269,8 +263,13 @@ export const columns: ColumnDef<BlockWithProofs>[] = [
           <TooltipContentHeader>
             Time spent generating proof of execution
           </TooltipContentHeader>
-          <p className="font-mono text-primary">
-            Time between slot timestamp and when proof published
+          <p>
+            <span className="italic">proof latency</span> - duration of proof
+            generation process, self reported by proving teams
+          </p>
+          <p className="text-body-secondary">
+            Duration of time reported by the proving team to generate the proof
+            for this block.
           </p>
         </MetricInfo>
       </div>
@@ -349,11 +348,19 @@ export const columns: ColumnDef<BlockWithProofs>[] = [
             Number of provers who have indicated intent to prove this block.
           </div>
           <TooltipContentFooter>
-            <strong>Time to proof</strong>
-            <div>
+            <p className="font-bold">Time to proof (fastest proof shown)</p>
+            <div className="my-2">
               <span className="italic">proof submission time</span> -{" "}
               <span className="font-mono text-body">timestamp</span>
             </div>
+            <p>
+              <span className="italic">proof submission time</span> - timestamp
+              logged by EthProofs when completed proof submitted
+            </p>
+            <p>
+              <span className="font-mono text-primary-light">timestamp</span>{" "}
+              value from execution block
+            </p>
           </TooltipContentFooter>
         </MetricInfo>
       </div>
