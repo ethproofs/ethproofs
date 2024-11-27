@@ -212,6 +212,7 @@ export default async function ProverPage({ params }: ProverPageProps) {
           // className="" // TODO: Style data table
           columns={columns}
           data={proofs}
+          sorting={[{ id: "block_number", desc: true }]}
         />
       </section>
 

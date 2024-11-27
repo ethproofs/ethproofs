@@ -6,6 +6,8 @@ import { ColumnDef } from "@tanstack/react-table"
 
 import type { BlockWithProofs, Proof } from "@/lib/types"
 
+import Null from "@/components/Null"
+
 import { cn } from "@/lib/utils"
 
 import { MetricInfo } from "../ui/metric"
@@ -18,8 +20,6 @@ import {
   getProofsAvgCost,
   getProofsAvgLatency,
 } from "@/lib/proofs"
-
-const Null = () => <span className="text-body-secondary">{"-"}</span>
 
 const TeamPlaceholderIcon = ({
   className,

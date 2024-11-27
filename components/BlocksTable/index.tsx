@@ -69,7 +69,14 @@ const BlocksTable = ({ blocks, className }: Props) => {
 
   const blockData = state.allIds.map((id) => state.byId[id])
 
-  return <DataTable className={className} columns={columns} data={blockData} />
+  return (
+    <DataTable
+      className={className}
+      columns={columns}
+      data={blockData}
+      sorting={[{ id: "block_number", desc: true }]}
+    />
+  )
 }
 
 export default BlocksTable
