@@ -7,6 +7,8 @@ import BlocksTable from "@/components/BlocksTable"
 import Block from "@/components/svgs/box.svg"
 import Clock from "@/components/svgs/clock.svg"
 import DollarSign from "@/components/svgs/dollar-sign.svg"
+import ShieldCheck from "@/components/svgs/shield-check.svg"
+import { ButtonLink } from "@/components/ui/button"
 
 import { cn } from "@/lib/utils"
 
@@ -119,6 +121,41 @@ export default async function Index() {
 
       <section id="blocks" className="w-full scroll-m-20">
         <BlocksTable blocks={blocks} />
+      </section>
+
+      <section className="w-full scroll-m-20 space-y-8" id="provers">
+        <div>
+          <h2>Provers</h2>
+          <div className="h-0.5 w-full bg-gradient-to-r from-primary" />
+        </div>
+        <div className="flex flex-col-reverse gap-8 sm:flex-row">
+          <div className="flex-1">
+            <p className="mb-auto">
+              Provers demonstrate they know a secret or have completed a
+              computation correctly without revealing the actual secret or
+              computation details. The verifiers then can check this proof and
+              be confident that the prover is telling the truth without needing
+              to see the private data. In the context of this project, the
+              proofs are representing that a certain block has been valid.
+            </p>
+            <ButtonLink href="#" variant="outline" className="mt-8">
+              Know more about provers
+            </ButtonLink>
+          </div>
+          {teamsResponse.data && (
+            <div className="flex flex-1 flex-col items-center gap-2">
+              <div className="whitespace-nowrap text-sm font-bold uppercase text-body">
+                Prover diversity
+              </div>
+              <div className="flex items-center gap-2 whitespace-nowrap text-4xl text-primary">
+                <ShieldCheck /> {teamsResponse.data.length}
+              </div>
+              <div className="whitespace-nowrap text-xs font-bold uppercase text-body-secondary">
+                Prover vendors
+              </div>
+            </div>
+          )}
+        </div>
       </section>
     </div>
   )
