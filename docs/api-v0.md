@@ -110,7 +110,8 @@ Retrieve all prover machines associated with the authenticated user.
   {
     "machine_id": number,
     "machine_name": string,
-    "machine_description": string (optional)
+    "machine_description": string (optional),
+    "machine_hardware": string (optional)
   }
 ]
 ```
@@ -129,8 +130,9 @@ Register a new prover machine.
 
 ```json
 {
-  "machine_name": string,
-  "machine_description": string (optional)
+  "machine_name": string, // Human-readable name (e.g., "ZKnight-01", "SNARK-Sentinel")
+  "machine_description": string (optional), // Description of the machine (e.g., "Primary RISC-V prover")
+  "machine_hardware": string (optional) // Technical specifications (e.g., "RISC-V Prover", "STARK-to-SNARK Prover")
 }
 ```
 
@@ -140,8 +142,7 @@ Register a new prover machine.
 
 ```json
 {
-  "machine_id": number,
-  "machine_name": string
+  "machine_id": number
 }
 ```
 
