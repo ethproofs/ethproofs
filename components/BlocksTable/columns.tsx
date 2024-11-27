@@ -13,7 +13,12 @@ import Box from "@/components/svgs/box.svg"
 import BoxDashed from "@/components/svgs/box-dashed.svg"
 import { ButtonLink } from "@/components/ui/button"
 
+import { cn } from "@/lib/utils"
+
+import { BLOCK_GAS_LIMIT } from "@/lib/constants"
+
 import { MetricInfo } from "../ui/metric"
+import { Progress } from "../ui/progress"
 import { TooltipContentFooter, TooltipContentHeader } from "../ui/tooltip"
 
 import { formatTimeAgo } from "@/lib/date"
@@ -109,7 +114,19 @@ export const columns: ColumnDef<BlockWithProofs>[] = [
 
       const formatted = formatNumber(gasUsed)
 
-      return formatted
+      const percentGasUsage = (gasUsed / BLOCK_GAS_LIMIT) * 100
+      return (
+        <>
+          <span className="text-2xl">{formatted}</span>
+          <Progress
+            value={percentGasUsage}
+            className={cn(
+              percentGasUsage < 50 && "[&>div]:bg-primary-light",
+              "h-1 my-2 max-w-40 mx-auto"
+            )}
+          />
+        </>
+      )
     },
   },
   {
