@@ -5,6 +5,7 @@ import { ColumnDef } from "@tanstack/react-table"
 import { BlockWithProofs, Proof } from "@/lib/types"
 
 import Clipboard from "@/components/Clipboard"
+import Null from "@/components/Null"
 import { ButtonLink } from "@/components/ui/button"
 
 import { cn } from "@/lib/utils"
@@ -12,8 +13,6 @@ import { cn } from "@/lib/utils"
 import { formatTimeAgo } from "@/lib/date"
 import { formatNumber } from "@/lib/number"
 import { getProofsAvgCost, getProofsAvgLatency } from "@/lib/proofs"
-
-const Null = () => <span className="text-body-secondary">{"-"}</span>
 
 export const columns: ColumnDef<BlockWithProofs>[] = [
   {

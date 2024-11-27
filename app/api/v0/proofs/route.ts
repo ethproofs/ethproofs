@@ -10,6 +10,9 @@ import { fetchBlockData } from "@/lib/blocks"
 export const POST = withAuth(async ({ request, client, user, timestamp }) => {
   const payload = await request.json()
 
+  // TODO: remove when we go to production, this is a temporary log to debug the payload
+  console.log("payload", payload)
+
   if (!user) {
     return new Response("Invalid API key", {
       status: 401,
@@ -33,7 +36,7 @@ export const POST = withAuth(async ({ request, client, user, timestamp }) => {
     })
   }
 
-  const { block_number, proof_status } = proofPayload
+  const { block_number, proof_status, machine_id } = proofPayload
 
   // validate block_number exists
   console.log("validating block_number", block_number)
@@ -76,7 +79,18 @@ export const POST = withAuth(async ({ request, client, user, timestamp }) => {
     revalidateTag("blocks")
   }
 
-  // TODO validate prover_machine exists and fetch prover_machine_id
+  // get machine uuid from machine_id
+  const { data: proverMachineData, error: proverMachineError } = await client
+    .from("prover_machines")
+    .select("id")
+    .eq("machine_id", machine_id)
+    .eq("user_id", user.id)
+    .single()
+
+  if (proverMachineError) {
+    console.error("error getting prover machine", proverMachineError)
+    return new Response("Machine not found", { status: 404 })
+  }
 
   // get proof_id to update or create an existing proof
   let proofId
@@ -85,7 +99,7 @@ export const POST = withAuth(async ({ request, client, user, timestamp }) => {
       .from("proofs")
       .select("proof_id")
       .eq("block_number", block_number)
-      // .eq("prover_machine_id", prover_machine_id)
+      .eq("machine_id", proverMachineData.id)
       .eq("user_id", user.id)
       .single()
 
@@ -93,7 +107,10 @@ export const POST = withAuth(async ({ request, client, user, timestamp }) => {
   }
 
   // add proof
-  console.log("adding proof", proofPayload)
+  console.log("adding proof", {
+    proof_id: proofId,
+    ...proofPayload,
+  })
   const timestampField = {
     queued: "queued_timestamp",
     proving: "proving_timestamp",
@@ -102,16 +119,22 @@ export const POST = withAuth(async ({ request, client, user, timestamp }) => {
 
   const proofResponse = await client
     .from("proofs")
-    .upsert({
-      ...proofPayload,
-      proof_id: proofId,
-      block_number,
-      prover_machine_id: 1, // TODO: fetch prover_machine_id
-      proof_status,
-      user_id: user.id,
-      [timestampField]: timestamp,
-    })
+    .upsert(
+      {
+        ...proofPayload,
+        proof_id: proofId,
+        block_number,
+        machine_id: proverMachineData.id,
+        proof_status,
+        user_id: user.id,
+        [timestampField]: timestamp,
+      },
+      {
+        onConflict: "block_number,machine_id",
+      }
+    )
     .select("proof_id")
+    .single()
 
   if (proofResponse.error) {
     console.error("error adding proof", proofResponse.error)

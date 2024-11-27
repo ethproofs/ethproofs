@@ -1,3 +1,9 @@
+[![Netlify Status](https://api.netlify.com/api/v1/badges/6aef8d9a-757e-4588-9cde-8864c655dfd5/deploy-status?branch=main)](https://app.netlify.com/sites/ethproofs/deploys?branch=main)
+
+<div align="center" style="margin-top: 1em; margin-bottom: 3em;">
+  <a href="https://ethproofs.org"><img alt="ethproofs hero and logo" src="./public/images/social-preview.png" alt="ethproofs.org"></a>
+</div>
+
 # ethproofs
 
 ## App local development
