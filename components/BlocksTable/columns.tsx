@@ -311,21 +311,9 @@ export const columns: ColumnDef<BlockWithProofs>[] = [
         <>
           <span className="align-center flex justify-center whitespace-nowrap">
             {getBestLatency()}
-            {/* TODO: Use team and machine information */}
-            {/* {msDelay(bestSubmissionTime) > 0 && (
-              <MetricInfo trigger={<Award className="text-primary hover:text-primary-light" />}>
-                <Link href="#" className="text-primary underline">
-                  Team {fastestProof.user_id}
-                </Link>
-                <span className="block">Machine {fastestProof.machine_id}</span>
-              </MetricInfo>
-            )}
- */}
             <MetricInfo
               trigger={
-                <TeamPlaceholderIcon>
-                  {reduceFastest(completedProofs).user_id[0]}
-                </TeamPlaceholderIcon>
+                <Award className="text-primary hover:text-primary-light" />
               }
             >
               <Link href="#" className="text-primary underline">
