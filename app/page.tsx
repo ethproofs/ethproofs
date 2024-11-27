@@ -166,7 +166,13 @@ export default async function Index() {
                   className="flex flex-1 flex-col gap-4 rounded-4xl border bg-gradient-to-b from-body/[0.06] to-body/[0.03] p-8"
                   key={user_id}
                 >
-                  <TeamLogo src={logo_url} alt={team_name} className="h-20" />
+                  <div className="relative mx-auto flex h-20 w-56 justify-center">
+                    <TeamLogo
+                      src={logo_url}
+                      alt={team_name}
+                      className="object-center"
+                    />
+                  </div>
 
                   <div className="mx-auto flex max-w-64 flex-col gap-6">
                     <div className="flex w-full flex-nowrap">
