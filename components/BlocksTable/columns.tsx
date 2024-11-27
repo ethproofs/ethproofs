@@ -117,12 +117,12 @@ export const columns: ColumnDef<BlockWithProofs>[] = [
       const percentGasUsage = (gasUsed / BLOCK_GAS_LIMIT) * 100
       return (
         <>
-          <span className="text-2xl">{formatted}</span>
+          {formatted}
           <Progress
             value={percentGasUsage}
             className={cn(
               percentGasUsage < 50 && "[&>div]:bg-primary-light",
-              "mx-auto my-2 h-1 max-w-40"
+              "mx-auto my-2 h-1 max-w-32"
             )}
           />
         </>
