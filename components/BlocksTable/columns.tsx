@@ -9,6 +9,8 @@ import type { BlockWithProofs, Proof } from "@/lib/types"
 import Null from "@/components/Null"
 import ArrowRight from "@/components/svgs/arrow-right.svg"
 import Award from "@/components/svgs/award.svg"
+import Box from "@/components/svgs/box.svg"
+import BoxDashed from "@/components/svgs/box-dashed.svg"
 import { ButtonLink } from "@/components/ui/button"
 
 import { cn } from "@/lib/utils"
@@ -167,7 +169,11 @@ export const columns: ColumnDef<BlockWithProofs>[] = [
           <span className="align-center flex justify-center whitespace-nowrap">
             {formatted(cheapestCost)}
             {/* TODO: Use team and machine information */}
-            <MetricInfo trigger={<Award className="text-primary hover:text-primary-light" />}>
+            <MetricInfo
+              trigger={
+                <Award className="text-primary hover:text-primary-light" />
+              }
+            >
               <Link href="#" className="text-primary underline">
                 Team {cheapestProof.user_id}
               </Link>
@@ -236,7 +242,11 @@ export const columns: ColumnDef<BlockWithProofs>[] = [
           <span className="align-center flex justify-center whitespace-nowrap">
             {formatted(cheapestCost)}
             {/* TODO: Use team and machine information */}
-            <MetricInfo trigger={<Award className="text-primary hover:text-primary-light" />}>
+            <MetricInfo
+              trigger={
+                <Award className="text-primary hover:text-primary-light" />
+              }
+            >
               <Link href="#" className="text-primary underline">
                 Team {cheapestProof.user_id}
               </Link>
@@ -254,15 +264,14 @@ export const columns: ColumnDef<BlockWithProofs>[] = [
     accessorKey: "proofs",
     header: () => (
       <div className="whitespace-nowrap">
-        time to proof
+        proving time
         <MetricInfo className="whitespace-normal">
-          <TooltipContentHeader>Total time to proof</TooltipContentHeader>
+          <TooltipContentHeader>
+            Time spent generating proof of execution
+          </TooltipContentHeader>
           <p className="font-mono text-primary">
             Time between slot timestamp and when proof published
           </p>
-          <TooltipContentFooter>
-            Average time (fastest time)
-          </TooltipContentFooter>
         </MetricInfo>
       </div>
     ),
@@ -276,35 +285,34 @@ export const columns: ColumnDef<BlockWithProofs>[] = [
 
       if (!completedProofs.length) return <Null />
 
-      const averageSubmissionTime =
-        completedProofs.reduce(
-          (acc, p) => acc + getTime(p.proved_timestamp!),
-          0
-        ) / completedProofs.length
+      const reduceFastest = (completedProofs: Proof[]) =>
+        completedProofs.reduce((acc, p) => {
+          const oldTime = getTime(acc.proved_timestamp!)
+          const newTime = getTime(p.proved_timestamp!)
+          if (newTime < oldTime) return p
+          return acc
+        }, completedProofs[0])
 
-      const fastestProof = completedProofs.reduce((acc, p) => {
-        const oldTime = getTime(acc.proved_timestamp!)
-        const newTime = getTime(p.proved_timestamp!)
-        if (newTime < oldTime) return p
-        return acc
-      }, completedProofs[0])
+      const fastestProof = reduceFastest(completedProofs)
 
-      const msDelay = (submissionTime: number) =>
-        submissionTime - getTime(timestamp)
+      const getBestLatency = () => {
+        if (!completedProofs.length) return <Null />
 
-      const bestSubmissionTime = getTime(fastestProof.proved_timestamp!)
+        return prettyMilliseconds(fastestProof.proof_latency! * 1e3)
+      }
 
-      const formatted = (ms: number) => {
-        if (ms < 0) return "-"
-        prettyMilliseconds(ms)
+      const getAverageLatency = () => {
+        if (!completedProofs.length) return <Null />
+
+        return prettyMilliseconds(getProofsAvgLatency(completedProofs) * 1e3)
       }
 
       return (
         <>
           <span className="align-center flex justify-center whitespace-nowrap">
-            {formatted(msDelay(bestSubmissionTime))}
+            {getBestLatency()}
             {/* TODO: Use team and machine information */}
-            {msDelay(bestSubmissionTime) > 0 && (
+            {/* {msDelay(bestSubmissionTime) > 0 && (
               <MetricInfo trigger={<Award className="text-primary hover:text-primary-light" />}>
                 <Link href="#" className="text-primary underline">
                   Team {fastestProof.user_id}
@@ -312,9 +320,24 @@ export const columns: ColumnDef<BlockWithProofs>[] = [
                 <span className="block">Machine {fastestProof.machine_id}</span>
               </MetricInfo>
             )}
+ */}
+            <MetricInfo
+              trigger={
+                <TeamPlaceholderIcon>
+                  {reduceFastest(completedProofs).user_id[0]}
+                </TeamPlaceholderIcon>
+              }
+            >
+              <Link href="#" className="text-primary underline">
+                Team {reduceFastest(completedProofs).user_id}
+              </Link>
+              <span className="block">
+                Machine {reduceFastest(completedProofs).machine_id}
+              </span>
+            </MetricInfo>
           </span>
           <span className="block whitespace-nowrap text-sm text-body-secondary">
-            avg. {formatted(msDelay(averageSubmissionTime))}
+            avg. {getAverageLatency()}
           </span>
         </>
       )
@@ -352,51 +375,77 @@ export const columns: ColumnDef<BlockWithProofs>[] = [
               Proof completed and published
             </div>
           </div>
+          <TooltipContentFooter>
+            <strong>Total time to proof</strong>
+            <div>
+              <span className="italic">proof submission time</span> -{" "}
+              <span className="font-mono text-body">timestamp</span>
+            </div>
+          </TooltipContentFooter>
         </MetricInfo>
       </div>
     ),
-    cell: ({ cell }) => {
+    cell: ({ cell, row }) => {
       const proofs = cell.getValue() as Proof[]
+      const timestamp = row.original.timestamp
 
-      if (!proofs.length) return <Null />
+      if (!timestamp || !proofs.length) return <Null />
 
       const { completedProofs } = filterCompleted(proofs)
 
-      const getBestLatency = () => {
-        if (!completedProofs.length) return "-"
-
-        const fastestProof = completedProofs.reduce((acc, p) => {
-          const oldLatency = acc.proof_latency!
-          const newLatency = p.proof_latency!
-          if (newLatency < oldLatency) return p
+      const fastestProof =
+        completedProofs?.reduce((acc, p) => {
+          const oldTime = getTime(acc.proved_timestamp!)
+          const newTime = getTime(p.proved_timestamp!)
+          if (newTime < oldTime) return p
           return acc
-        }, completedProofs[0])
+        }, completedProofs[0]) || {}
 
-        return prettyMilliseconds(fastestProof.proof_latency! * 1e3)
-      }
+      const msAfterBlock = (submissionTime: number) =>
+        submissionTime - getTime(timestamp)
 
-      const getAverageLatency = () => {
-        if (!completedProofs.length) return "-"
-        return prettyMilliseconds(getProofsAvgLatency(completedProofs) * 1e3)
+      const earliestSubmissionTime = fastestProof?.proved_timestamp
+        ? getTime(fastestProof.proved_timestamp)
+        : null
+
+      const formatted = (ms: number) => {
+        if (ms < 0) return <Null />
+        prettyMilliseconds(ms)
       }
 
       return (
         <div className="mx-auto flex w-20">
           <div className="flex flex-1 flex-col gap-2">
             <div className="flex flex-wrap gap-2">
-              {proofs.map((proof) => (
-                <div
-                  key={proof.proof_id}
-                  className={getStatusClasses(proof.proof_status)}
-                  title={proof.proof_status}
-                />
-              ))}
-            </div>
-
-            <div className="whitespace-nowrap text-start font-sans text-xs text-body-secondary">
-              latency {getBestLatency()}
-              <br />
-              avg. {getAverageLatency()}
+              <div className="flex flex-col justify-center text-center">
+                <div className="flex items-center gap-3 font-mono">
+                  <div className="flex items-center gap-1">
+                    <Box className="text-primary" />
+                    <span className="block">{completedProofs.length}</span>
+                  </div>
+                  <div className="flex items-center gap-1">
+                    <BoxDashed className="text-primary" />
+                    <span className="block">
+                      {
+                        proofs.filter((p) => p.proof_status === "proving")
+                          .length
+                      }
+                    </span>
+                  </div>
+                  <div className="flex items-center gap-1">
+                    <Box className="text-body-secondary" />
+                    <span className="block">
+                      {proofs.filter((p) => p.proof_status === "queued").length}
+                    </span>
+                  </div>
+                </div>
+                <div className="whitespace-nowrap text-xs text-body-secondary">
+                  <span className="font-body">time to proof:</span>{" "}
+                  {earliestSubmissionTime
+                    ? formatted(msAfterBlock(earliestSubmissionTime))
+                    : "-"}
+                </div>
+              </div>
             </div>
           </div>
         </div>
