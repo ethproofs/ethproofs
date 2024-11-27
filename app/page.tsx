@@ -8,6 +8,7 @@ import Block from "@/components/svgs/box.svg"
 import Clock from "@/components/svgs/clock.svg"
 import DollarSign from "@/components/svgs/dollar-sign.svg"
 import ShieldCheck from "@/components/svgs/shield-check.svg"
+import TeamLogo from "@/components/TeamLogo"
 import { ButtonLink } from "@/components/ui/button"
 
 import { cn } from "@/lib/utils"
@@ -32,6 +33,8 @@ export default async function Index() {
   })
 
   const recentSummary = await supabase.from("recent_summary").select().single()
+
+  const teamsResponse = await supabase.from("teams").select("*")
 
   const blocksResponse = await supabase
     .from("blocks")
@@ -155,6 +158,40 @@ export default async function Index() {
               </div>
             </div>
           )}
+        </div>
+        <div className="flex flex-col gap-8 md:flex-row">
+          {teamsResponse.data &&
+            teamsResponse.data.length > 1 &&
+            teamsResponse.data
+              .slice(0, 2)
+              .map(({ user_id, team_id, logo_url, team_name }) => (
+                <div
+                  className="flex flex-1 flex-col gap-4 rounded-4xl border bg-gradient-to-b from-body/[0.06] to-body/[0.03] p-8"
+                  key={user_id}
+                >
+                  <TeamLogo src={logo_url} alt={team_name} className="h-20" />
+
+                  <div className="mx-auto flex max-w-64 flex-col gap-6">
+                    <div className="flex w-full flex-nowrap">
+                      <div className="flex flex-col items-center gap-2 px-4">
+                        <div className="flex items-center gap-1 text-body-secondary">
+                          avg latency
+                        </div>
+                        <div className="font-mono text-lg">00s</div>
+                      </div>
+                      <div className="flex flex-col items-center gap-2 px-4">
+                        <div className="flex items-center gap-1 text-body-secondary">
+                          avg cost
+                        </div>
+                        <div className="font-mono text-lg">$1.42</div>
+                      </div>
+                    </div>
+                    <ButtonLink href={`/prover/${team_id}`} variant="outline">
+                      + details for {team_name}
+                    </ButtonLink>
+                  </div>
+                </div>
+              ))}
         </div>
       </section>
     </div>
