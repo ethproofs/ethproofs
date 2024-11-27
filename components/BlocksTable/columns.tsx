@@ -7,6 +7,8 @@ import { ColumnDef } from "@tanstack/react-table"
 import type { BlockWithProofs, Proof } from "@/lib/types"
 
 import Null from "@/components/Null"
+import ArrowRight from "@/components/svgs/arrow-right.svg"
+import { ButtonLink } from "@/components/ui/button"
 
 import { cn } from "@/lib/utils"
 
@@ -370,7 +372,9 @@ export const columns: ColumnDef<BlockWithProofs>[] = [
         </MetricInfo>
       </div>
     ),
-    cell: ({ cell }) => {
+    cell: ({ cell, row }) => {
+      const blockNumber = row.original.block_number
+
       const proofs = cell.getValue() as Proof[]
 
       if (!proofs.length) return <Null />
@@ -396,8 +400,8 @@ export const columns: ColumnDef<BlockWithProofs>[] = [
       }
 
       return (
-        <div className="mx-auto flex w-20">
-          <div className="flex flex-col gap-2">
+        <div className="mx-auto flex w-40 items-center gap-x-4">
+          <div className="flex flex-1 flex-col gap-2">
             <div className="flex flex-wrap gap-2">
               {proofs.map((proof) => (
                 <div
@@ -414,6 +418,14 @@ export const columns: ColumnDef<BlockWithProofs>[] = [
               avg. {getAverageLatency()}
             </div>
           </div>
+          <ButtonLink
+            href={`/block/${blockNumber}`}
+            variant="outline"
+            size="icon"
+            className="ms-auto"
+          >
+            <ArrowRight />
+          </ButtonLink>
         </div>
       )
     },
