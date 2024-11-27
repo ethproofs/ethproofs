@@ -35,23 +35,29 @@ const MetricLabel = React.forwardRef<
 ))
 MetricLabel.displayName = "MetricLabel"
 
-const MetricInfo = React.forwardRef<
-  HTMLParagraphElement,
-  React.HTMLAttributes<HTMLParagraphElement>
->(({ children, ...props }, ref) => (
-  <TooltipProvider>
-    <Tooltip>
-      <TooltipTrigger className="ms-2">
-        <InfoCircle className="-mb-0.5" />
-      </TooltipTrigger>
-      <TooltipContent className="max-w-80 sm:max-w-96">
-        <p ref={ref} {...props}>
-          {children}
-        </p>
-      </TooltipContent>
-    </Tooltip>
-  </TooltipProvider>
-))
+type MetricInfoProps = React.HTMLAttributes<HTMLDivElement> & {
+  trigger?: React.ReactNode
+}
+const MetricInfo = React.forwardRef<HTMLDivElement, MetricInfoProps>(
+  ({ trigger, className, children, ...props }, ref) => (
+    <TooltipProvider>
+      <Tooltip>
+        <TooltipTrigger className="ms-2">
+          {trigger || <InfoCircle className="-mb-0.5" />}
+        </TooltipTrigger>
+        <TooltipContent className="max-w-80 sm:max-w-96">
+          <div
+            ref={ref}
+            className={cn("space-y-2 text-start", className)}
+            {...props}
+          >
+            {children}
+          </div>
+        </TooltipContent>
+      </Tooltip>
+    </TooltipProvider>
+  )
+)
 MetricInfo.displayName = "MetricInfo"
 
 const MetricValue = React.forwardRef<
