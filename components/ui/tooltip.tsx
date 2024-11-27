@@ -32,7 +32,10 @@ const TooltipContentFooter = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <div
     ref={ref}
-    className={cn("!mt-4 border-t border-body-secondary pt-2", className)}
+    className={cn(
+      "!mt-4 border-t border-body-secondary pt-2 text-body-secondary",
+      className
+    )}
     {...props}
   />
 ))
