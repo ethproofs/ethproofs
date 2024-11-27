@@ -122,7 +122,7 @@ export const columns: ColumnDef<BlockWithProofs>[] = [
             value={percentGasUsage}
             className={cn(
               percentGasUsage < 50 && "[&>div]:bg-primary-light",
-              "h-1 my-2 max-w-40 mx-auto"
+              "mx-auto my-2 h-1 max-w-40"
             )}
           />
         </>
