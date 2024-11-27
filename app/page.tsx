@@ -141,9 +141,6 @@ export default async function Index() {
               to see the private data. In the context of this project, the
               proofs are representing that a certain block has been valid.
             </p>
-            <ButtonLink href="#" variant="outline" className="mt-8">
-              Know more about provers
-            </ButtonLink>
           </div>
           {teamsResponse.data && (
             <div className="flex flex-1 flex-col items-center gap-2">
