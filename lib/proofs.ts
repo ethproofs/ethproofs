@@ -1,14 +1,18 @@
 import type { Proof } from "./types"
 
+export const isCompleted = (proof: Proof) => proof.proof_status === "proved"
+
 /**
  * Calculates the average latency of an array of proofs.
+ * Filters to completed proofs; other statuses do not yet have a latency
  *
  * @param {Proof[]} proofs - An array of proof objects.
  * @returns {number} - The average latency of the proofs.
  */
 export const getProofsAvgLatency = (proofs: Proof[]): number =>
-  proofs.reduce((acc, proof) => acc + (proof.proof_latency || 0), 0) /
-  proofs.length
+  proofs
+    .filter(isCompleted)
+    .reduce((acc, proof) => acc + (proof.proof_latency || 0), 0) / proofs.length
 
 /**
  * Calculates the average proving cost of an array of proofs.
@@ -42,8 +46,6 @@ export const getAvgCostPerTx = (
   avgProofCost: number,
   transactionCount: number
 ): number => avgProofCost / transactionCount
-
-export const isCompleted = (proof: Proof) => proof.proof_status === "proved"
 
 export const filterCompleted = (proofs: Proof[]) => ({
   completedProofs: proofs.filter(isCompleted),
