@@ -1,5 +1,6 @@
 "use client"
 
+import prettyMilliseconds from "pretty-ms"
 import { ColumnDef } from "@tanstack/react-table"
 
 import type { Proof } from "@/lib/types"
@@ -62,7 +63,7 @@ export const columns: ColumnDef<Proof>[] = [
 
       if (!latency) return <Null />
 
-      return `${latency}s`
+      return prettyMilliseconds(latency)
     },
   },
   // Cost (USD)

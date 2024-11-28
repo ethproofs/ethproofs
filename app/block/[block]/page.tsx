@@ -2,6 +2,7 @@ import type { Metadata } from "next"
 import Image, { type ImageProps } from "next/image"
 import Link from "next/link"
 import { notFound } from "next/navigation"
+import prettyMilliseconds from "pretty-ms"
 
 import type { Metric } from "@/lib/types"
 
@@ -370,13 +371,11 @@ export default async function BlockDetailsPage({
                     </MetricInfo>
                   </MetricLabel>
                   <MetricValue>
-                    {proof_latency
-                      ? formatNumber(proof_latency, {
-                          style: "unit",
-                        unit: "second",
-                          unitDisplay: "narrow",
-                        })
-                      : <Null />}
+                    {proof_latency ? (
+                      prettyMilliseconds(proof_latency)
+                    ) : (
+                      <Null />
+                    )}
                   </MetricValue>
                 </MetricBox>
                 <MetricBox
