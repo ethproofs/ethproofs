@@ -1,5 +1,6 @@
 import type { Metadata } from "next"
 import Image from "next/image"
+import prettyMilliseconds from "pretty-ms"
 
 import type { SummaryItem } from "@/lib/types"
 
@@ -34,7 +35,7 @@ export default async function Index() {
 
   const recentSummary = await supabase.from("recent_summary").select().single()
 
-  const teamsResponse = await supabase.from("teams").select("*")
+  const teamsSummary = await supabase.from("teams_summary").select("*")
 
   const blocksResponse = await supabase
     .from("blocks")
@@ -142,13 +143,13 @@ export default async function Index() {
               proofs are representing that a certain block has been valid.
             </p>
           </div>
-          {teamsResponse.data && (
+          {teamsSummary.data && (
             <div className="flex flex-1 flex-col items-center gap-2">
               <div className="whitespace-nowrap text-sm font-bold uppercase text-body">
                 Prover diversity
               </div>
               <div className="flex items-center gap-2 whitespace-nowrap text-4xl text-primary">
-                <ShieldCheck /> {teamsResponse.data.length}
+                <ShieldCheck /> {teamsSummary.data.length}
               </div>
               <div className="whitespace-nowrap text-xs font-bold uppercase text-body-secondary">
                 Prover vendors
@@ -157,17 +158,23 @@ export default async function Index() {
           )}
         </div>
         <div className="flex flex-wrap gap-8">
-          {teamsResponse.data &&
-            teamsResponse.data.map(
-              ({ user_id, team_id, logo_url, team_name }) => (
+          {teamsSummary.data &&
+            teamsSummary.data.map(
+              ({
+                team_id,
+                logo_url,
+                team_name,
+                average_proving_cost,
+                average_proof_latency,
+              }) => (
                 <div
                   className="flex min-w-96 flex-1 flex-col gap-4 rounded-4xl border bg-gradient-to-b from-body/[0.06] to-body/[0.03] p-8"
-                  key={user_id}
+                  key={team_id}
                 >
                   <div className="relative mx-auto flex h-20 w-56 justify-center">
                     <TeamLogo
                       src={logo_url}
-                      alt={team_name}
+                      alt={team_name || "Prover logo"}
                       className="object-center"
                     />
                   </div>
@@ -178,13 +185,20 @@ export default async function Index() {
                         <div className="flex items-center gap-1 text-body-secondary">
                           avg latency
                         </div>
-                        <div className="font-mono text-lg">00s</div>
+                        <div className="font-mono text-lg">
+                          {prettyMilliseconds(average_proof_latency || 0)}
+                        </div>
                       </div>
                       <div className="flex flex-col items-center gap-2 px-4">
                         <div className="flex items-center gap-1 text-body-secondary">
                           avg cost
                         </div>
-                        <div className="font-mono text-lg">$1.42</div>
+                        <div className="font-mono text-lg">
+                          {formatNumber(average_proving_cost || 0, {
+                            style: "currency",
+                            currency: "USD",
+                          })}
+                        </div>
                       </div>
                     </div>
                     <ButtonLink href={`/prover/${team_id}`} variant="outline">
