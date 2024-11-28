@@ -11,6 +11,36 @@ const Tooltip = TooltipPrimitive.Root
 
 const TooltipTrigger = TooltipPrimitive.Trigger
 
+const TooltipContentHeader = React.forwardRef<
+  HTMLDivElement,
+  React.HTMLAttributes<HTMLDivElement>
+>(({ className, ...props }, ref) => (
+  <div
+    ref={ref}
+    className={cn(
+      "border-b border-body-secondary pb-2 font-bold text-body",
+      className
+    )}
+    {...props}
+  />
+))
+TooltipContentHeader.displayName = "TooltipContentHeader"
+
+const TooltipContentFooter = React.forwardRef<
+  HTMLDivElement,
+  React.HTMLAttributes<HTMLDivElement>
+>(({ className, ...props }, ref) => (
+  <div
+    ref={ref}
+    className={cn(
+      "!mt-4 border-t border-body-secondary pt-2 text-body-secondary",
+      className
+    )}
+    {...props}
+  />
+))
+TooltipContentFooter.displayName = "TooltipContentFooter"
+
 const TooltipContent = React.forwardRef<
   React.ElementRef<typeof TooltipPrimitive.Content>,
   React.ComponentPropsWithoutRef<typeof TooltipPrimitive.Content>
@@ -27,4 +57,11 @@ const TooltipContent = React.forwardRef<
 ))
 TooltipContent.displayName = TooltipPrimitive.Content.displayName
 
-export { Tooltip, TooltipContent, TooltipProvider, TooltipTrigger }
+export {
+  Tooltip,
+  TooltipContent,
+  TooltipContentFooter,
+  TooltipContentHeader,
+  TooltipProvider,
+  TooltipTrigger,
+}
