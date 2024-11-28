@@ -61,12 +61,7 @@ export default async function Index() {
         {
           label: "Avg proof latency",
           icon: <Clock />,
-          value: formatNumber(recentSummary.data?.avg_proof_latency || 0, {
-            style: "unit",
-            unit: "second",
-            unitDisplay: "narrow",
-            maximumFractionDigits: 0,
-          }),
+          value: prettyMilliseconds(recentSummary.data?.avg_proof_latency || 0),
         },
       ]
     : []
