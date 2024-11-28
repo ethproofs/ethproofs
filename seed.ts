@@ -62,6 +62,7 @@ const main = async () => {
           return {
             machine_name: `Machine ${copycat.firstName(index)}`,
             machine_description: faker.lorem.sentence(),
+            machine_hardware: faker.lorem.sentence(),
           }
         }),
       {
