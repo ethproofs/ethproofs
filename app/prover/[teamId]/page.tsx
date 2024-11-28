@@ -215,8 +215,6 @@ export default async function ProverPage({ params }: ProverPageProps) {
           sorting={[{ id: "block_number", desc: true }]}
         />
       </section>
-
-      <LearnMore />
     </div>
   )
 }
