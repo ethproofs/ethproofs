@@ -434,8 +434,6 @@ export default async function BlockDetailsPage({
           }
         )}
       </section>
-
-      <LearnMore />
     </div>
   )
 }
