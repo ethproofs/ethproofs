@@ -18,7 +18,7 @@ const TooltipContentHeader = React.forwardRef<
   <div
     ref={ref}
     className={cn(
-      "border-b border-body-secondary pb-2 font-bold text-body",
+      "border-b border-body-secondary pb-2 font-bold text-body text-lg",
       className
     )}
     {...props}
