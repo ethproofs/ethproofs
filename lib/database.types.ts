@@ -288,6 +288,16 @@ export type Database = {
         }
         Relationships: []
       }
+      teams_summary: {
+        Row: {
+          average_proof_latency: number | null
+          average_proving_cost: number | null
+          logo_url: string | null
+          team_id: number | null
+          team_name: string | null
+        }
+        Relationships: []
+      }
     }
     Functions: {
       is_allowed_apikey: {
