@@ -44,7 +44,7 @@ export const columns: ColumnDef<BlockWithProofs>[] = [
           </div>
           <p>
             <span className="font-mono text-primary">block_number</span> value
-            from execution block
+            from execution block header
           </p>
           <TooltipContentFooter className="space-y-3">
             <p className="font-bold">Time since block published</p>
@@ -54,7 +54,7 @@ export const columns: ColumnDef<BlockWithProofs>[] = [
             </div>
             <p>
               <span className="font-mono text-primary-light">timestamp</span>{" "}
-              value from execution block
+              value from execution block header
             </p>
           </TooltipContentFooter>
         </MetricInfo>
@@ -97,7 +97,7 @@ export const columns: ColumnDef<BlockWithProofs>[] = [
           </div>
           <p>
             <span className="font-mono text-primary">gas_used</span> value from
-            execution block, expressed in millions
+            execution block header
           </p>
           <p className="text-body-secondary">
             Proportional to the amount of computational effort a block outputs.
