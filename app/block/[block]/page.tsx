@@ -386,7 +386,8 @@ export default async function BlockDetailsPage({
                   )}
                 >
                   <MetricLabel>
-                    zk<span className="uppercase">VM</span> cycles
+                    <span className="normal-case">{team?.team_name}</span> zk
+                    <span className="uppercase">VM</span> cycles
                     <MetricInfo>
                       The number of cycles used by the prover to generate the
                       proof.
