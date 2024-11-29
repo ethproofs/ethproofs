@@ -1,4 +1,4 @@
-import { z } from "zod"
+import z from ".."
 
 const baseProofSchema = z.object({
   // If not provided, the proof is going to be searched by block_number and machine_id
@@ -26,7 +26,7 @@ const provedProofSchema = baseProofSchema.extend({
   proof: z.string().min(1, "proof is required for 'proved' status"),
 })
 
-export const proofSchema = z.discriminatedUnion("proof_status", [
+export const createProofSchema = z.discriminatedUnion("proof_status", [
   queuedProofSchema,
   provingProofSchema,
   provedProofSchema,

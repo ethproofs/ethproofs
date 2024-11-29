@@ -1,0 +1,333 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Ethproofs API",
+    "description": "This document outlines the available API endpoints for ethproofs.\n\n**Authentication**\n\nAll endpoints require authentication using an API key in the request header:\n\n`Authorization: Bearer <api_key>`",
+    "version": "0.0.1"
+  },
+  "servers": [
+    {
+      "url": "https://main--ethproofs.netlify.app/api/v0",
+      "description": "Testing server"
+    },
+    {
+      "url": "http://localhost:3000/api/v0",
+      "description": "Local server"
+    }
+  ],
+  "tags": [
+    {
+      "name": "machines"
+    },
+    {
+      "name": "proofs"
+    }
+  ],
+  "paths": {
+    "/machines": {
+      "post": {
+        "tags": [
+          "machines"
+        ],
+        "summary": "Create a machine",
+        "security": [
+          {
+            "apikey": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "machine_name": {
+                    "type": "string",
+                    "maxLength": 50
+                  },
+                  "machine_description": {
+                    "type": "string",
+                    "maxLength": 200,
+                    "description": "Machine description"
+                  },
+                  "machine_hardware": {
+                    "type": "string",
+                    "maxLength": 200,
+                    "description": "Technical details of the machine"
+                  }
+                },
+                "required": [
+                  "machine_name"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Machine created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "machine_id": {
+                      "type": "number"
+                    }
+                  },
+                  "required": [
+                    "machine_id"
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request body"
+          },
+          "401": {
+            "description": "Invalid API key"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "machines"
+        ],
+        "summary": "List machines",
+        "security": [
+          {
+            "apikey": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Machines list",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "machine_id": {
+                        "type": "number"
+                      },
+                      "machine_name": {
+                        "type": "string"
+                      },
+                      "machine_description": {
+                        "type": "string"
+                      },
+                      "machine_hardware": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "machine_id",
+                      "machine_name"
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Invalid API key"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/proofs": {
+      "post": {
+        "tags": [
+          "proofs"
+        ],
+        "summary": "Submit a new proof or update an existing one",
+        "requestBody": {
+          "required": true,
+          "description": "The request body schema varies based on the `proof_status` field. If no `proof_id` is provided, the system will attempt to find an existing proof for the `block_number` and `machine_id`",
+          "content": {
+            "application/json": {
+              "schema": {
+                "oneOf": [
+                  {
+                    "type": "object",
+                    "properties": {
+                      "proof_id": {
+                        "type": "number"
+                      },
+                      "block_number": {
+                        "type": "number",
+                        "minimum": 0
+                      },
+                      "machine_id": {
+                        "type": "number"
+                      },
+                      "proof_status": {
+                        "type": "string",
+                        "const": "queued"
+                      }
+                    },
+                    "required": [
+                      "block_number",
+                      "machine_id",
+                      "proof_status"
+                    ]
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "proof_id": {
+                        "type": "number"
+                      },
+                      "block_number": {
+                        "type": "number",
+                        "minimum": 0
+                      },
+                      "machine_id": {
+                        "type": "number"
+                      },
+                      "proof_status": {
+                        "type": "string",
+                        "const": "proving"
+                      }
+                    },
+                    "required": [
+                      "block_number",
+                      "machine_id",
+                      "proof_status"
+                    ]
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "proof_id": {
+                        "type": "number"
+                      },
+                      "block_number": {
+                        "type": "number",
+                        "minimum": 0
+                      },
+                      "machine_id": {
+                        "type": "number"
+                      },
+                      "proof_status": {
+                        "type": "string",
+                        "const": "proved"
+                      },
+                      "proof_latency": {
+                        "type": "number",
+                        "exclusiveMinimum": 0
+                      },
+                      "proving_cost": {
+                        "type": "number",
+                        "exclusiveMinimum": 0
+                      },
+                      "proving_cycles": {
+                        "type": "integer",
+                        "exclusiveMinimum": 0
+                      },
+                      "proof": {
+                        "type": "string",
+                        "minLength": 1
+                      }
+                    },
+                    "required": [
+                      "block_number",
+                      "machine_id",
+                      "proof_status",
+                      "proof_latency",
+                      "proving_cost",
+                      "proving_cycles",
+                      "proof"
+                    ]
+                  }
+                ]
+              },
+              "examples": {
+                "queued": {
+                  "summary": "Queued proof",
+                  "value": {
+                    "block_number": 123456,
+                    "machine_id": 1,
+                    "proof_status": "queued"
+                  }
+                },
+                "proving": {
+                  "summary": "Proving proof",
+                  "value": {
+                    "block_number": 123456,
+                    "machine_id": 1,
+                    "proof_status": "proving"
+                  }
+                },
+                "proved": {
+                  "summary": "Proved proof",
+                  "value": {
+                    "block_number": 123456,
+                    "machine_id": 1,
+                    "proof_status": "proved",
+                    "proof_latency": 100,
+                    "proving_cost": 540,
+                    "proving_cycles": 10000,
+                    "proof": "..."
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Proof submitted",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "proof_id": {
+                      "type": "number"
+                    }
+                  },
+                  "required": [
+                    "proof_id"
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request body"
+          },
+          "401": {
+            "description": "Invalid API key"
+          },
+          "404": {
+            "description": "Machine not found"
+          },
+          "500": {
+            "description": "Internal server error or block not found"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "apikey": {
+        "type": "apiKey",
+        "description": "Enter the token with the Bearer prefix, e.g. \"Bearer <api_key>\"",
+        "name": "Authorization",
+        "in": "header"
+      }
+    }
+  }
+}

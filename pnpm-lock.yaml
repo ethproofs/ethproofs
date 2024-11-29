@@ -162,6 +162,9 @@ importers:
       viem:
         specifier: ^2.21.37
         version: 2.21.37(typescript@5.3.3)(zod@3.23.8)
+      zod-openapi:
+        specifier: ^4.1.0
+        version: 4.1.0(zod@3.23.8)
 
 packages:
 
@@ -4710,6 +4713,12 @@ packages:
   yoctocolors-cjs@2.1.2:
     resolution: {integrity: sha512-cYVsTjKl8b+FrnidjibDWskAv7UKOfcwaVZdp/it9n1s9fU3IkgDbhdIRKCW4JDsAlECJY0ytoVPT3sK6kideA==}
     engines: {node: '>=18'}
+
+  zod-openapi@4.1.0:
+    resolution: {integrity: sha512-bRCwRYhEO9CmFLyKgJX8h6j1dRtRiwOe+TLzMVPyV0pRW5vRIgb1rLgIGcuRZ5z3MmSVrZqbv3yva4IJrtZK4g==}
+    engines: {node: '>=18'}
+    peerDependencies:
+      zod: ^3.21.4
 
   zod-to-json-schema@3.23.3:
     resolution: {integrity: sha512-TYWChTxKQbRJp5ST22o/Irt9KC5nj7CdBKYB/AosCRdj/wxEMvv4NNaj9XVUHDOIp53ZxArGhnw5HMZziPFjog==}
@@ -9730,6 +9739,10 @@ snapshots:
   yocto-queue@1.1.1: {}
 
   yoctocolors-cjs@2.1.2: {}
+
+  zod-openapi@4.1.0(zod@3.23.8):
+    dependencies:
+      zod: 3.23.8
 
   zod-to-json-schema@3.23.3(zod@3.23.8):
     dependencies:
