@@ -98,7 +98,8 @@ export default async function ProverPage({ params }: ProverPageProps) {
     {
       label: (
         <>
-          Avg zk<span className="uppercase">VM</span> cycles per proof
+          <span className="normal-case">{team.team_name}</span> Avg zk
+          <span className="uppercase">VM</span> cycles per proof
         </>
       ),
       description:
