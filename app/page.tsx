@@ -175,6 +175,14 @@ export default async function Index() {
                       alt={team_name || "Prover logo"}
                       className="object-center"
                     />
+                    <span
+                      className={cn(
+                        "absolute inset-0 text-2xl",
+                        !logo_url && "sr-only"
+                      )}
+                    >
+                      {team_name}
+                    </span>
                   </div>
 
                   <div className="mx-auto flex flex-col gap-6">
