@@ -170,6 +170,7 @@ export type Database = {
         Row: {
           id: string
           machine_description: string | null
+          machine_hardware: string | null
           machine_id: number | null
           machine_name: string
           user_id: string
@@ -177,6 +178,7 @@ export type Database = {
         Insert: {
           id?: string
           machine_description?: string | null
+          machine_hardware?: string | null
           machine_id?: number | null
           machine_name: string
           user_id: string
@@ -184,6 +186,7 @@ export type Database = {
         Update: {
           id?: string
           machine_description?: string | null
+          machine_hardware?: string | null
           machine_id?: number | null
           machine_name?: string
           user_id?: string

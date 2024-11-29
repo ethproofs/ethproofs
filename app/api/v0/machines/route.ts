@@ -11,7 +11,7 @@ export const GET = withAuth(async ({ client, user }) => {
 
   const { data, error } = await client
     .from("prover_machines")
-    .select("machine_id, machine_name, machine_description")
+    .select("machine_id, machine_name, machine_description, machine_hardware")
     .eq("user_id", user.id)
 
   if (error) {
@@ -41,16 +41,17 @@ export const POST = withAuth(async ({ request, client, user }) => {
     })
   }
 
-  const { machine_name, machine_description } = requestBody
+  const { machine_name, machine_description, machine_hardware } = requestBody
 
   const { data, error } = await client
     .from("prover_machines")
     .insert({
       machine_name,
       machine_description,
+      machine_hardware,
       user_id: user.id,
     })
-    .select("machine_id, machine_name")
+    .select("machine_id")
     .single()
 
   if (error) {
@@ -58,6 +59,6 @@ export const POST = withAuth(async ({ request, client, user }) => {
     return new Response("Internal server error", { status: 500 })
   }
 
-  // return machine_id and machine_name
+  // return generated machine_id
   return new Response(JSON.stringify(data), { status: 200 })
 })

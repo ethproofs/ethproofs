@@ -89,11 +89,11 @@ export default function RootLayout({
                     <ActiveLinkDecorator match="/" />
                   </Link>
                   <Link
-                    href="/about"
+                    href="/learn"
                     className="relative h-fit outline-offset-4 hover:text-primary-light"
                   >
-                    About
-                    <ActiveLinkDecorator match="/about" />
+                    Learn
+                    <ActiveLinkDecorator match="/learn" />
                   </Link>
                   <ThemeSwitch />
                 </nav>
@@ -127,7 +127,7 @@ export default function RootLayout({
                               </li>
                               <li className="list-none">
                                 <Button variant="ghost" size="lg" asChild>
-                                  <Link href="/about">About</Link>
+                                  <Link href="/learn">Learn</Link>
                                 </Button>
                               </li>
                             </ul>
