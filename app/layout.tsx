@@ -10,7 +10,6 @@ import EthProofsLogo from "@/components/svgs/eth-proofs-logo.svg"
 import GitHub from "@/components/svgs/github.svg"
 import Hamburger from "@/components/svgs/hamburger.svg"
 import Heart from "@/components/svgs/heart.svg"
-import Magnifier from "@/components/svgs/magnifier.svg"
 import { Button } from "@/components/ui/button"
 import {
   Drawer,
@@ -25,7 +24,7 @@ import {
 
 import { cn } from "@/lib/utils"
 
-import { SITE_REPO_URL } from "@/lib/constants"
+import { SITE_REPO } from "@/lib/constants"
 
 import "../styles/globals.css"
 
@@ -140,7 +139,12 @@ export default function RootLayout({
                       <DrawerFooter>
                         <nav className="flex justify-center">
                           <Button variant="ghost" size="lg" asChild>
-                            <Link href={SITE_REPO_URL}>
+                            <Link
+                              href={new URL(
+                                SITE_REPO,
+                                "https://github.com"
+                              ).toString()}
+                            >
                               <GitHub /> GitHub
                             </Link>
                           </Button>
@@ -156,7 +160,10 @@ export default function RootLayout({
 
             <footer className="mx-auto mt-16 flex max-w-prose flex-col items-center">
               <Button asChild size="lg">
-                <Link href={SITE_REPO_URL} className="mb-12">
+                <Link
+                  href={new URL(SITE_REPO, "https://github.com").toString()}
+                  className="mb-12"
+                >
                   <GitHub className="size-6" />
                   <span>Contribute to ETH Proofs</span>
                 </Link>
@@ -181,8 +188,13 @@ export default function RootLayout({
               </p>
 
               <Link
-                href={new URL("/issues/new/", SITE_REPO_URL).toString()}
+                href={new URL(
+                  SITE_REPO + "/issues/new/choose/",
+                  "https://github.com"
+                ).toString()}
                 className="mt-8 text-center text-body-secondary"
+                target="_blanhttps://github.com/ethproofs/ethproofs/issues/new/choosek"
+                rel="noopener noreferrer"
               >
                 Spot a bug? Report it here
               </Link>
