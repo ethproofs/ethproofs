@@ -41,10 +41,7 @@ import { cn } from "@/lib/utils"
 import { timestampToEpoch, timestampToSlot } from "@/lib/beaconchain"
 import { getBlockValueType } from "@/lib/blocks"
 import { Tables } from "@/lib/database.types"
-import {
-  intervalToReadable,
-  renderTimestamp,
-} from "@/lib/date"
+import { intervalToReadable, renderTimestamp } from "@/lib/date"
 import { getMetadata } from "@/lib/metadata"
 import { formatNumber } from "@/lib/number"
 import {
@@ -349,9 +346,13 @@ export default async function BlockDetailsPage({
                     </MetricInfo>
                   </MetricLabel>
                   <MetricValue
-                    title={prover_duration ? intervalToReadable(prover_duration as string) : ""}
+                    title={
+                      prover_duration
+                        ? intervalToReadable(prover_duration as string)
+                        : ""
+                    }
                   >
-                    {prover_duration as string || <Null />}
+                    {(prover_duration as string) || <Null />}
                   </MetricValue>
                 </MetricBox>
                 <MetricBox
@@ -396,13 +397,15 @@ export default async function BlockDetailsPage({
                   <MetricValue
                     title={proving_cycles ? formatNumber(proving_cycles) : ""}
                   >
-                    {proving_cycles
-                      ? formatNumber(proving_cycles, {
-                          notation: "compact",
-                          compactDisplay: "short",
-                          maximumSignificantDigits: 4,
-                        })
-                      : <Null />}
+                    {proving_cycles ? (
+                      formatNumber(proving_cycles, {
+                        notation: "compact",
+                        compactDisplay: "short",
+                        maximumSignificantDigits: 4,
+                      })
+                    ) : (
+                      <Null />
+                    )}
                   </MetricValue>
                 </MetricBox>
                 <MetricBox
@@ -422,12 +425,14 @@ export default async function BlockDetailsPage({
                     </MetricInfo>
                   </MetricLabel>
                   <MetricValue>
-                    {proving_cost
-                      ? formatNumber(proving_cost, {
-                          style: "currency",
-                          currency: "USD",
-                        })
-                      : <Null />}
+                    {proving_cost ? (
+                      formatNumber(proving_cost, {
+                        style: "currency",
+                        currency: "USD",
+                      })
+                    ) : (
+                      <Null />
+                    )}
                   </MetricValue>
                 </MetricBox>
               </div>
