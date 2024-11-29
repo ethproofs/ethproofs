@@ -25,7 +25,7 @@ import {
 
 import { cn } from "@/lib/utils"
 
-import { SITE_REPO_URL } from "@/lib/constants"
+import { SITE_NAME, SITE_REPO_URL } from "@/lib/constants"
 
 import "../styles/globals.css"
 
@@ -158,7 +158,7 @@ export default function RootLayout({
               <Button asChild size="lg">
                 <Link href={SITE_REPO_URL} className="mb-12">
                   <GitHub className="size-6" />
-                  <span>Contribute to ETH Proofs</span>
+                  <span>Contribute to {SITE_NAME}</span>
                 </Link>
               </Button>
 
