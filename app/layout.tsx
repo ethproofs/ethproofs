@@ -193,7 +193,7 @@ export default function RootLayout({
                   "https://github.com"
                 ).toString()}
                 className="mt-8 text-center text-body-secondary"
-                target="_blanhttps://github.com/ethproofs/ethproofs/issues/new/choosek"
+                target="_blank"
                 rel="noopener noreferrer"
               >
                 Spot a bug? Report it here
