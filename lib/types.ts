@@ -2,7 +2,8 @@ import { type ReactNode } from "react"
 
 import type { Tables } from "./database.types"
 
-export type Proof = Tables<"proofs">
+export type Proof = Tables<"proofs"> & { team?: Tables<"teams"> }
+export type ProofWithTeam = Proof & { team?: Tables<"teams"> }
 export type Block = Tables<"blocks">
 export type EmptyBlock = Partial<Block> & Pick<Block, "block_number">
 

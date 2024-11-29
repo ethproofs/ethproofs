@@ -38,6 +38,18 @@ export default async function Index() {
     .order("block_number", { ascending: false })
 
   const blocks = blocksResponse.data || []
+  const teamsResponse = await supabase.from("teams").select()
+  const teams = teamsResponse.data || []
+
+  const blocksProofsTeams = blocks.map((block) => {
+    const { proofs } = block
+    const proofsWithTeams = proofs.map((proof) => ({
+      ...proof,
+      team: teams.find((team) => team.user_id === proof.user_id),
+    }))
+
+    return { ...block, proofs: proofsWithTeams }
+  })
 
   const summaryItems: SummaryItem[] = recentSummary.data
     ? [
@@ -114,7 +126,7 @@ export default async function Index() {
       </div>
 
       <section id="blocks" className="w-full scroll-m-20">
-        <BlocksTable blocks={blocks} />
+        <BlocksTable blocks={blocksProofsTeams} />
       </section>
     </div>
   )

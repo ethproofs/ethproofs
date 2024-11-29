@@ -205,16 +205,25 @@ export const columns: ColumnDef<BlockWithProofs>[] = [
         <>
           <span className="align-center flex justify-center whitespace-nowrap">
             {formatted(cheapestCost)}
-            {/* TODO: Use team and machine information */}
+            {/* TODO: Use machine name */}
             <MetricInfo
               trigger={
                 <Award className="text-primary hover:text-primary-light" />
               }
             >
-              <Link href="#" className="text-primary underline">
-                Team {cheapestProof.user_id}
-              </Link>
-              <span className="block">Machine {cheapestProof.machine_id}</span>
+              {cheapestProof.team ? (
+                <Link
+                  href={"/prover/" + cheapestProof.team.team_id}
+                  className="text-primary underline"
+                >
+                  {cheapestProof.team.team_name}
+                </Link>
+              ) : (
+                `Team ${cheapestProof.user_id.split("-")[0]}`
+              )}
+              <span className="block">
+                Machine {cheapestProof.machine_id.split("-")[0]}
+              </span>
             </MetricInfo>
           </span>
           <span className="block whitespace-nowrap text-sm text-body-secondary">
@@ -291,16 +300,25 @@ export const columns: ColumnDef<BlockWithProofs>[] = [
         <>
           <span className="align-center flex justify-center whitespace-nowrap">
             {formatted(cheapestCost)}
-            {/* TODO: Use team and machine information */}
+            {/* TODO: Use machine name */}
             <MetricInfo
               trigger={
                 <Award className="text-primary hover:text-primary-light" />
               }
             >
-              <Link href="#" className="text-primary underline">
-                Team {cheapestProof.user_id}
-              </Link>
-              <span className="block">Machine {cheapestProof.machine_id}</span>
+              {cheapestProof.team ? (
+                <Link
+                  href={"/prover/" + cheapestProof.team.team_id}
+                  className="text-primary underline"
+                >
+                  {cheapestProof.team.team_name}
+                </Link>
+              ) : (
+                `Team ${cheapestProof.user_id.split("-")[0]}`
+              )}
+              <span className="block">
+                Machine {cheapestProof.machine_id.split("-")[0]}
+              </span>
             </MetricInfo>
           </span>
           <span className="block whitespace-nowrap text-sm text-body-secondary">
@@ -369,16 +387,24 @@ export const columns: ColumnDef<BlockWithProofs>[] = [
         <>
           <span className="align-center flex justify-center whitespace-nowrap">
             {getBestLatency()}
+            {/* TODO: Use machine name */}
             <MetricInfo
               trigger={
                 <Award className="text-primary hover:text-primary-light" />
               }
             >
-              <Link href="#" className="text-primary underline">
-                Team {reduceFastest(completedProofs).user_id}
-              </Link>
+              {fastestProof.team ? (
+                <Link
+                  href={"/prover/" + fastestProof.team.team_id}
+                  className="text-primary underline"
+                >
+                  {fastestProof.team.team_name}
+                </Link>
+              ) : (
+                `Team ${fastestProof.user_id.split("-")[0]}`
+              )}
               <span className="block">
-                Machine {reduceFastest(completedProofs).machine_id}
+                Machine {fastestProof.machine_id.split("-")[0]}
               </span>
             </MetricInfo>
           </span>
