@@ -36,7 +36,7 @@ export default async function Index() {
   const recentSummary = await supabase.from("recent_summary").select().single()
 
   const teamsSummary = await supabase.from("teams_summary").select()
-  console.log({teamsSummary})
+  console.log({ teamsSummary })
 
   const blocksResponse = await supabase
     .from("blocks")
