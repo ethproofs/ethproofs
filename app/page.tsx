@@ -104,7 +104,7 @@ export default async function Index() {
                 <p className="font-mono text-2xl text-primary md:text-3xl lg:text-4xl">
                   {icon}
                 </p>
-                <p className="font-mono text-2xl text-primary md:text-3xl lg:text-4xl">
+                <p className="text-center font-mono text-2xl text-primary md:text-3xl lg:text-4xl">
                   {value}
                 </p>
               </div>
@@ -175,6 +175,14 @@ export default async function Index() {
                       alt={team_name || "Prover logo"}
                       className="object-center"
                     />
+                    <span
+                      className={cn(
+                        "absolute inset-0 text-2xl",
+                        !logo_url && "sr-only"
+                      )}
+                    >
+                      {team_name}
+                    </span>
                   </div>
 
                   <div className="mx-auto flex flex-col gap-6">
