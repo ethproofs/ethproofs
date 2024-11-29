@@ -39,7 +39,6 @@ export default async function Index() {
     .from("teams_summary")
     .select()
     .order("average_proof_latency", { ascending: true })
-  console.log({ teamsSummary })
 
   const blocksResponse = await supabase
     .from("blocks")
