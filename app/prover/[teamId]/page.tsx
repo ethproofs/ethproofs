@@ -27,6 +27,8 @@ import {
   MetricValue,
 } from "@/components/ui/metric"
 
+import { cn } from "@/lib/utils"
+
 import { SITE_NAME } from "@/lib/constants"
 
 import { columns } from "./columns"
@@ -136,7 +138,14 @@ export default async function ProverPage({ params }: ProverPageProps) {
               alt={`${team.team_name || "Prover"} logo`}
             />
           </div>
-          <h1 className="font-mono text-3xl font-semibold">{team.team_name}</h1>
+          <h1
+            className={cn(
+              "font-mono text-3xl font-semibold",
+              team.logo_url && "sr-only"
+            )}
+          >
+            {team.team_name}
+          </h1>
         </HeroTitle>
 
         <HeroDivider />

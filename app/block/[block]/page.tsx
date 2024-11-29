@@ -19,7 +19,6 @@ import Hash from "@/components/svgs/hash.svg"
 import Layers from "@/components/svgs/layers.svg"
 import ProofCircle from "@/components/svgs/proof-circle.svg"
 import TrendingUp from "@/components/svgs/trending-up.svg"
-import TeamLogo from "@/components/TeamLogo"
 import { Button } from "@/components/ui/button"
 import {
   HeroBody,
@@ -40,7 +39,6 @@ import { cn } from "@/lib/utils"
 
 import { timestampToEpoch, timestampToSlot } from "@/lib/beaconchain"
 import { getBlockValueType } from "@/lib/blocks"
-import { Tables } from "@/lib/database.types"
 import {
   intervalToReadable,
   renderTimestamp,
@@ -92,16 +90,6 @@ export default async function BlockDetailsPage({
   const { data: teams } = await supabase.from("teams").select("*")
 
   if (!data || error || !teams) notFound()
-
-  const getProverLogoImgProps = (
-    team: Tables<"teams"> | undefined
-  ): Pick<ImageProps, "src" | "alt"> | null => {
-    if (!team?.logo_url) return null
-    return {
-      src: team.logo_url,
-      alt: `${team.team_name} logo`,
-    }
-  }
 
   const {
     timestamp,
@@ -296,7 +284,6 @@ export default async function BlockDetailsPage({
             user_id,
           }) => {
             const team = teams.find((t) => t.user_id === user_id)
-            const imgProps = getProverLogoImgProps(team)
             return (
               <div
                 className={cn(
@@ -308,15 +295,20 @@ export default async function BlockDetailsPage({
               >
                 <div
                   className={cn(
-                    "relative flex h-14 w-40 self-center",
+                    "relative flex h-full items-center",
                     "col-span-3 col-start-1 row-span-1 row-start-1",
                     "sm:col-span-2 sm:col-start-1 sm:row-span-1 sm:row-start-1",
                     "md:col-span-1 md:col-start-1 md:row-span-1 md:row-start-1"
                   )}
                 >
-                  <Link href={"/prover/" + team?.team_id}>
-                    <TeamLogo src={imgProps?.src} alt={imgProps?.alt} />
-                  </Link>
+                  {team?.team_name && (
+                    <Link
+                      href={"/prover/" + team?.team_id}
+                      className="text-2xl"
+                    >
+                      {team?.team_name}
+                    </Link>
+                  )}
                 </div>
                 <Button
                   variant="outline"
