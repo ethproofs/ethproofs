@@ -35,7 +35,10 @@ export default async function Index() {
 
   const recentSummary = await supabase.from("recent_summary").select().single()
 
-  const teamsSummary = await supabase.from("teams_summary").select()
+  const teamsSummary = await supabase
+    .from("teams_summary")
+    .select()
+    .order("average_proof_latency", { ascending: true })
   console.log({ teamsSummary })
 
   const blocksResponse = await supabase
@@ -155,61 +158,55 @@ export default async function Index() {
         </div>
         <div className="flex flex-wrap gap-8">
           {teamsSummary.data &&
-            teamsSummary.data
-              .sort(
-                (a, b) =>
-                  (a.average_proof_latency || Infinity) -
-                  (b.average_proof_latency || Infinity)
-              )
-              .map(
-                ({
-                  team_id,
-                  logo_url,
-                  team_name,
-                  average_proving_cost,
-                  average_proof_latency,
-                }) => (
-                  <div
-                    className="flex min-w-96 flex-1 flex-col gap-4 rounded-4xl border bg-gradient-to-b from-body/[0.06] to-body/[0.03] p-8"
-                    key={team_id}
-                  >
-                    <div className="relative mx-auto flex h-20 w-56 justify-center">
-                      <TeamLogo
-                        src={logo_url}
-                        alt={team_name || "Prover logo"}
-                        className="object-center"
-                      />
-                    </div>
+            teamsSummary.data.map(
+              ({
+                team_id,
+                logo_url,
+                team_name,
+                average_proving_cost,
+                average_proof_latency,
+              }) => (
+                <div
+                  className="flex min-w-96 flex-1 flex-col gap-4 rounded-4xl border bg-gradient-to-b from-body/[0.06] to-body/[0.03] p-8"
+                  key={team_id}
+                >
+                  <div className="relative mx-auto flex h-20 w-56 justify-center">
+                    <TeamLogo
+                      src={logo_url}
+                      alt={team_name || "Prover logo"}
+                      className="object-center"
+                    />
+                  </div>
 
-                    <div className="mx-auto flex flex-col gap-6">
-                      <div className="flex w-full flex-nowrap">
-                        <div className="flex flex-col items-center gap-2 px-4">
-                          <div className="flex items-center gap-1 text-body-secondary">
-                            avg latency
-                          </div>
-                          <div className="font-mono text-lg">
-                            {prettyMilliseconds(average_proof_latency || 0)}
-                          </div>
+                  <div className="mx-auto flex flex-col gap-6">
+                    <div className="flex w-full flex-nowrap">
+                      <div className="flex flex-col items-center gap-2 px-4">
+                        <div className="flex items-center gap-1 text-body-secondary">
+                          avg latency
                         </div>
-                        <div className="flex flex-col items-center gap-2 px-4">
-                          <div className="flex items-center gap-1 text-body-secondary">
-                            avg cost
-                          </div>
-                          <div className="font-mono text-lg">
-                            {formatNumber(average_proving_cost || 0, {
-                              style: "currency",
-                              currency: "USD",
-                            })}
-                          </div>
+                        <div className="font-mono text-lg">
+                          {prettyMilliseconds(average_proof_latency || 0)}
                         </div>
                       </div>
-                      <ButtonLink href={`/prover/${team_id}`} variant="outline">
-                        + details for {team_name}
-                      </ButtonLink>
+                      <div className="flex flex-col items-center gap-2 px-4">
+                        <div className="flex items-center gap-1 text-body-secondary">
+                          avg cost
+                        </div>
+                        <div className="font-mono text-lg">
+                          {formatNumber(average_proving_cost || 0, {
+                            style: "currency",
+                            currency: "USD",
+                          })}
+                        </div>
+                      </div>
                     </div>
+                    <ButtonLink href={`/prover/${team_id}`} variant="outline">
+                      + details for {team_name}
+                    </ButtonLink>
                   </div>
-                )
-              )}
+                </div>
+              )
+            )}
         </div>
       </section>
     </div>
