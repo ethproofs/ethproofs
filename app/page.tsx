@@ -104,7 +104,7 @@ export default async function Index() {
                 <p className="font-mono text-2xl text-primary md:text-3xl lg:text-4xl">
                   {icon}
                 </p>
-                <p className="font-mono text-2xl text-primary md:text-3xl lg:text-4xl">
+                <p className="text-center font-mono text-2xl text-primary md:text-3xl lg:text-4xl">
                   {value}
                 </p>
               </div>
