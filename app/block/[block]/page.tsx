@@ -9,6 +9,7 @@ import type { Metric } from "@/lib/types"
 import CopyButton from "@/components/CopyButton"
 import LearnMore from "@/components/LearnMore"
 import Null from "@/components/Null"
+import { HidePunctuation } from "@/components/StylePunctuation"
 import ArrowDown from "@/components/svgs/arrow-down.svg"
 import BookOpen from "@/components/svgs/book-open.svg"
 import Box from "@/components/svgs/box.svg"
@@ -97,9 +98,6 @@ export default async function BlockDetailsPage({
     proofs,
     hash,
   } = data
-
-  // TODO: Dummy data, get block size data
-  const size = 32735
 
   // TODO: Add proper descriptions
   const performanceItems: Metric[] = [
@@ -198,23 +196,27 @@ export default async function BlockDetailsPage({
           <div className="grid grid-cols-3 gap-6">
             <HeroItem>
               <HeroItemLabel>
-                <Cpu /> Size
+                <Cpu /> Gas used
               </HeroItemLabel>
-              {formatNumber(size)} bytes
+              <HidePunctuation>{formatNumber(gas_used)}</HidePunctuation>
             </HeroItem>
 
             <HeroItem>
               <HeroItemLabel>
                 <Layers /> Slot
               </HeroItemLabel>
-              {formatNumber(timestampToSlot(timestamp))}
+              <HidePunctuation>
+                {formatNumber(timestampToSlot(timestamp))}
+              </HidePunctuation>
             </HeroItem>
 
             <HeroItem>
               <HeroItemLabel>
                 <BookOpen /> Epoch
               </HeroItemLabel>
-              {formatNumber(timestampToEpoch(timestamp))}
+              <HidePunctuation>
+                {formatNumber(timestampToEpoch(timestamp))}
+              </HidePunctuation>
             </HeroItem>
           </div>
 
