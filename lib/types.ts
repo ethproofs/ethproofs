@@ -11,7 +11,7 @@ export type BlockWithProofsById = Record<number, BlockWithProofs>
 
 export type Metric = {
   label: ReactNode
-  description: string
+  description: ReactNode
   value: string
 }
 

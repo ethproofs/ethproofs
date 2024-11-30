@@ -236,8 +236,8 @@ export default async function BlockDetailsPage({
             <TrendingUp /> Zero-knowledge proofs
           </h2>
           <div className="grid grid-cols-2 gap-x-8 sm:flex sm:flex-wrap">
-            {performanceItems.map(({ label, description, value }) => (
-              <MetricBox key={description}>
+            {performanceItems.map(({ label, description, value }, idx) => (
+              <MetricBox key={idx}>
                 <MetricLabel>
                   {label}
                   <MetricInfo>{description}</MetricInfo>
@@ -253,8 +253,8 @@ export default async function BlockDetailsPage({
             <DollarSign /> Block fees
           </h2>
           <div className="grid grid-cols-2 gap-x-8 sm:flex sm:flex-wrap">
-            {blockFeeMetrics.map(({ label, description, value }) => (
-              <MetricBox key={description}>
+            {blockFeeMetrics.map(({ label, description, value }, idx) => (
+              <MetricBox key={idx}>
                 <MetricLabel>
                   {label}
                   <MetricInfo>{description}</MetricInfo>
