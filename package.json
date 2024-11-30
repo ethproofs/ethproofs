@@ -5,7 +5,7 @@
   "private": true,
   "scripts": {
     "dev": "next dev",
-    "build": "next build",
+    "build": "pnpm seed:reset && next build",
     "postbuild": "next-sitemap",
     "start": "next start",
     "format": "prettier \"**/*.{js,jsx,ts,tsx}\" --write",
@@ -17,7 +17,8 @@
     "db:reset": "supabase db reset",
     "db:seed": "tsx seed.ts > supabase/seed.sql",
     "db:types": "supabase gen types typescript --local > lib/database.types.ts",
-    "seed:sync": "snaplet-seed sync"
+    "seed:sync": "snaplet-seed sync",
+    "seed:reset": "rm -rf ./.snaplet && pnpm seed:sync"
   },
   "dependencies": {
     "@radix-ui/react-dialog": "^1.1.2",
