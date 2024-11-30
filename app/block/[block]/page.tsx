@@ -10,8 +10,8 @@ import CopyButton from "@/components/CopyButton"
 import LearnMore from "@/components/LearnMore"
 import Null from "@/components/Null"
 import ArrowDown from "@/components/svgs/arrow-down.svg"
-import BlockLarge from "@/components/svgs/block-large.svg"
 import BookOpen from "@/components/svgs/book-open.svg"
+import Box from "@/components/svgs/box.svg"
 import Clock from "@/components/svgs/clock.svg"
 import Cpu from "@/components/svgs/cpu.svg"
 import DollarSign from "@/components/svgs/dollar-sign.svg"
@@ -176,7 +176,7 @@ export default async function BlockDetailsPage({
     <div className="space-y-20">
       <HeroSection>
         <HeroTitle>
-          <BlockLarge className="text-6xl text-primary" />
+          <Box strokeWidth="1" className="text-6xl text-primary" />
           <h1 className="font-mono">
             <p className="text-sm font-normal md:text-lg">Block Height</p>
             <p className="text-3xl font-semibold tracking-wide">
