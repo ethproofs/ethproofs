@@ -14,6 +14,15 @@ export const getProofsAvgLatency = (proofs: Proof[]): number =>
     .filter(isCompleted)
     .reduce((acc, proof) => acc + (proof.proof_latency || 0), 0) / proofs.length
 
+export const getProofBestLatency = (proofs: Proof[]): Proof => {
+  const completedProofs = proofs.filter(isCompleted)
+  return completedProofs.reduce((a, b) => {
+    if (!a.proof_latency) return b
+    if (!b.proof_latency) return a
+    return a.proof_latency < b.proof_latency ? a : b
+  }, completedProofs[0])
+}
+
 /**
  * Calculates the average proving cost of an array of proofs.
  *
