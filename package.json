@@ -18,7 +18,7 @@
     "db:seed": "tsx seed.ts > supabase/seed.sql",
     "db:types": "supabase gen types typescript --local > lib/database.types.ts",
     "seed:sync": "snaplet-seed sync",
-    "seed:reset": "rm -rf ./.snaplet && pnpm seed:sync"
+    "seed:reset": "pnpm seed:sync && pnpm db:types"
   },
   "dependencies": {
     "@radix-ui/react-dialog": "^1.1.2",
