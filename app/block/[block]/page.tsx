@@ -7,6 +7,7 @@ import type { Metric } from "@/lib/types"
 
 import CopyButton from "@/components/CopyButton"
 import Null from "@/components/Null"
+import ProofStatus, { ProofStatusInfo } from "@/components/ProofStatus"
 import { HidePunctuation } from "@/components/StylePunctuation"
 import ArrowDown from "@/components/svgs/arrow-down.svg"
 import BookOpen from "@/components/svgs/book-open.svg"
@@ -54,7 +55,6 @@ import {
   getProofsAvgTimeToProof,
 } from "@/lib/proofs"
 import { createClient } from "@/utils/supabase/client"
-import ProofStatus, { ProofStatusInfo } from "@/components/ProofStatus"
 
 const supabase = createClient()
 

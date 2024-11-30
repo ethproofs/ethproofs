@@ -6,9 +6,9 @@ import BoxDashed from "@/components/svgs/box-dashed.svg"
 import { cn } from "@/lib/utils"
 
 import { MetricInfo } from "./ui/metric"
+import { TooltipContentHeader } from "./ui/tooltip"
 
 import { isCompleted } from "@/lib/proofs"
-import { TooltipContentHeader } from "./ui/tooltip"
 
 export const ProofStatusInfo = () => (
   <>
