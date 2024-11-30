@@ -18,6 +18,7 @@ import Hash from "@/components/svgs/hash.svg"
 import Layers from "@/components/svgs/layers.svg"
 import ProofCircle from "@/components/svgs/proof-circle.svg"
 import Timer from "@/components/svgs/timer.svg"
+import Timestamp from "@/components/Timestamp"
 import { Button } from "@/components/ui/button"
 import {
   HeroBody,
@@ -280,7 +281,7 @@ export default async function BlockDetailsPage({
             <HeroItemLabel>
               <Clock /> Timestamp
             </HeroItemLabel>
-            {renderTimestamp(timestamp)}
+            <Timestamp>{timestamp}</Timestamp>
           </HeroItem>
 
           <div className="grid grid-cols-3 gap-6">
