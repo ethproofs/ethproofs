@@ -9,10 +9,15 @@ export const isCompleted = (proof: Proof) => proof.proof_status === "proved"
  * @param {Proof[]} proofs - An array of proof objects.
  * @returns {number} - The average latency of the proofs.
  */
-export const getProofsAvgLatency = (proofs: Proof[]): number =>
-  proofs
-    .filter(isCompleted)
-    .reduce((acc, proof) => acc + (proof.proof_latency || 0), 0) / proofs.length
+export const getProofsAvgLatency = (proofs: Proof[]): number => {
+  const completedProofs = proofs.filter(isCompleted)
+  return (
+    completedProofs.reduce(
+      (acc, proof) => acc + (proof.proof_latency || 0),
+      0
+    ) / completedProofs.length
+  )
+}
 
 export const getProofBestLatency = (proofs: Proof[]): Proof => {
   const completedProofs = proofs.filter(isCompleted)
