@@ -42,20 +42,19 @@ import { SITE_NAME } from "@/lib/constants"
 
 import { timestampToEpoch, timestampToSlot } from "@/lib/beaconchain"
 import { getBlockValueType } from "@/lib/blocks"
-import { intervalToReadable, renderTimestamp } from "@/lib/date"
+import { intervalToReadable } from "@/lib/date"
 import { getMetadata } from "@/lib/metadata"
 import { formatNumber } from "@/lib/number"
 import {
-  getAvgCostPerMegaCycle,
-  getAvgCostPerMegaGas,
-  getAvgCostPerTx,
   getProofBestLatency,
   getProofBestTimeToProof,
+  getProofCheapestProvingCost,
   getProofsAvgCost,
   getProofsAvgLatency,
   getProofsAvgTimeToProof,
 } from "@/lib/proofs"
 import { createClient } from "@/utils/supabase/client"
+import ProofStatus, { ProofStatusInfo } from "@/components/ProofStatus"
 
 const supabase = createClient()
 
@@ -94,12 +93,12 @@ export default async function BlockDetailsPage({
 
   if (!block || error || !teams) notFound()
 
-  const { timestamp, block_number, gas_used, total_fees, proofs, hash } = block
+  const { timestamp, block_number, gas_used, proofs, hash } = block
 
   // TODO: Add proper descriptions
 
   const bestLatencyProof = getProofBestLatency(proofs)
-  const avgProofLatency = getProofsAvgLatency(proofs)
+  const avgLatency = getProofsAvgLatency(proofs)
   const bestTimeToProofProof = getProofBestTimeToProof(proofs)
   const bestTimeToProof = bestTimeToProofProof?.proved_timestamp
     ? new Date(bestTimeToProofProof?.proved_timestamp).getTime() -
@@ -109,9 +108,9 @@ export default async function BlockDetailsPage({
 
   const availabilityMetrics: Metric[] = [
     {
-      label: "Total proofs",
-      description: "The total number of proofs generated for this block.",
-      value: formatNumber(proofs.length),
+      label: "Status of proofs",
+      description: <ProofStatusInfo />,
+      value: <ProofStatus proofs={proofs} />,
     },
     {
       label: "Fastest proving time",
@@ -142,12 +141,13 @@ export default async function BlockDetailsPage({
       ),
     },
     {
-      label: "Average proving time",
+      label: "avg proving time",
       description: (
         <>
           <TooltipContentHeader>average proving time</TooltipContentHeader>
           <div className="rounded border bg-background px-3 py-2">
-            <span className="italic">proof latency</span>
+            ∑(<span className="italic">proof latency</span>) / number of
+            completed proofs for block
           </div>
           <p>
             <span className="italic">proof latency</span> is duration of the
@@ -162,7 +162,7 @@ export default async function BlockDetailsPage({
           </p>
         </>
       ),
-      value: avgProofLatency ? prettyMilliseconds(avgProofLatency) : <Null />,
+      value: avgLatency ? prettyMilliseconds(avgLatency) : <Null />,
     },
     {
       label: "Fastest time to proof",
@@ -196,14 +196,14 @@ export default async function BlockDetailsPage({
         bestTimeToProof > 0 ? prettyMilliseconds(bestTimeToProof) : <Null />,
     },
     {
-      label: "Average time to proof",
+      label: "avg time to proof",
       description: (
         <>
           <TooltipContentHeader>average time to proof</TooltipContentHeader>
           <div className="rounded border bg-background px-3 py-2">
-            Sum(<span className="italic">proof submission time</span> -{" "}
+            ∑(<span className="italic">proof submission time</span> -{" "}
             <span className="font-mono text-primary-light">timestamp</span>) /
-            number of completed proofs
+            number of completed proofs for block
           </div>
           <p>
             <span className="italic">proof submission time</span> is the
@@ -227,37 +227,83 @@ export default async function BlockDetailsPage({
     },
   ]
 
+  const cheapestProof = getProofCheapestProvingCost(proofs)
   const avgCostPerProof = getProofsAvgCost(proofs)
+  const megaGas = block.gas_used / 1e6
 
   const blockFeeMetrics: Metric[] = [
+    // TODO: Add description
     {
-      label: "total fees (gwei)",
-      description: "The total fees collected in this block.",
-      value: formatNumber(total_fees),
+      label: "cheapest cost per proof",
+      description: (
+        <>
+          <TooltipContentHeader>cheapest cost per proof</TooltipContentHeader>
+          <div className="rounded border bg-background px-3 py-2">
+            <span className="italic">proving costs</span>
+          </div>
+          <p>
+            <span className="italic">proving costs</span> are in USD,
+            self-reported by proving teams
+          </p>
+          <p className="text-body-secondary">
+            Proving costs in USD to prove entire block
+          </p>
+        </>
+      ),
+      value: cheapestProof?.proving_cost ? (
+        formatNumber(cheapestProof.proving_cost, {
+          style: "currency",
+          currency: "USD",
+        })
+      ) : (
+        <Null />
+      ),
     },
     {
-      label: "avg cost / proof",
-      description: "The average cost of generating a proof.",
-      value: formatNumber(avgCostPerProof, {
-        style: "currency",
-        currency: "USD",
-      }),
+      label: "avg cost per proof",
+      description: <></>,
+      value: avgCostPerProof ? (
+        formatNumber(avgCostPerProof, {
+          style: "currency",
+          currency: "USD",
+        })
+      ) : (
+        <Null />
+      ),
     },
     {
-      label: "cost / mega gas",
-      description: "The cost of generating a proof per million gas.",
-      value: formatNumber(getAvgCostPerMegaGas(avgCostPerProof, gas_used), {
-        style: "currency",
-        currency: "USD",
-      }),
+      label: (
+        <>
+          cheapest cost per <span className="uppercase">M</span>gas
+        </>
+      ),
+      description: <></>,
+      value:
+        cheapestProof?.proving_cost && block.gas_used ? (
+          formatNumber(cheapestProof.proving_cost / megaGas, {
+            style: "currency",
+            currency: "USD",
+          })
+        ) : (
+          <Null />
+        ),
     },
     {
-      label: "cost / mega cycle",
-      description: "The cost of generating a proof per million cycles.",
-      value: formatNumber(getAvgCostPerMegaCycle(proofs), {
-        style: "currency",
-        currency: "USD",
-      }),
+      label: (
+        <>
+          avg cost per <span className="uppercase">M</span>gas
+        </>
+      ),
+      description: <></>,
+      value:
+        avgCostPerProof && block.gas_used ? (
+          formatNumber(avgCostPerProof / megaGas, {
+            style: "currency",
+            currency: "USD",
+          })
+        ) : (
+          <Null />
+        ),
     },
   ]
 
