@@ -315,7 +315,7 @@ export default async function BlockDetailsPage({
           <h1 className="font-mono">
             <p className="text-sm font-normal md:text-lg">Block Height</p>
             <p className="text-3xl font-semibold tracking-wide">
-              {block_number}
+              <HidePunctuation>{formatNumber(block_number)}</HidePunctuation>
             </p>
           </h1>
         </HeroTitle>
