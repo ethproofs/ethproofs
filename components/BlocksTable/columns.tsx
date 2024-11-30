@@ -17,6 +17,7 @@ import { cn } from "@/lib/utils"
 
 import { BLOCK_GAS_LIMIT } from "@/lib/constants"
 
+import ProofStatus, { ProofStatusInfo } from "../ProofStatus"
 import { HidePunctuation } from "../StylePunctuation"
 import { MetricInfo } from "../ui/metric"
 import { Progress } from "../ui/progress"
@@ -398,18 +399,7 @@ export const columns: ColumnDef<BlockWithProofs>[] = [
         <div className="whitespace-nowrap">
           {columnLabel}
           <MetricInfo className="whitespace-normal">
-            <TooltipContentHeader>{columnLabel}</TooltipContentHeader>
-            <div className="items-top grid grid-cols-[auto,1fr] gap-4">
-              <Box className="self-center text-2xl text-primary" />
-              Number of completed proofs that have been published for this block
-              <BoxDashed className="self-center text-2xl text-primary" />
-              Number of provers currently generating proofs for this block
-              <Box className="self-center text-2xl text-body-secondary" />
-              Number of provers who have indicated intent to prove this block
-            </div>
-            <p className="text-body-secondary">
-              Current status of proofs for this block
-            </p>
+            <ProofStatusInfo />
             <TooltipContentFooter className="space-y-3">
               <p className="font-bold">Time to proof (fastest proof shown)</p>
               <div className="rounded border bg-background px-3 py-2">
@@ -460,59 +450,7 @@ export const columns: ColumnDef<BlockWithProofs>[] = [
 
       return (
         <div className="flex flex-col justify-center text-center">
-          <div className="mx-auto flex items-center gap-3 font-mono">
-            <div className="flex items-center gap-1">
-              <MetricInfo
-                trigger={
-                  <div className="flex flex-nowrap items-center gap-1">
-                    <Box className="text-primary" />
-                    <span className="block">{completedProofs.length}</span>
-                  </div>
-                }
-              >
-                <span className="!font-body text-body">
-                  Number of completed proofs that have been published for this
-                </span>
-                block
-              </MetricInfo>
-            </div>
-            <div className="flex items-center gap-1">
-              <MetricInfo
-                trigger={
-                  <div className="flex flex-nowrap items-center gap-1">
-                    <BoxDashed className="text-primary" />
-                    <span className="block">
-                      {
-                        proofs.filter((p) => p.proof_status === "proving")
-                          .length
-                      }
-                    </span>
-                  </div>
-                }
-              >
-                <span className="!font-body text-body">
-                  Number of provers currently generating proofs for this block
-                </span>
-              </MetricInfo>
-            </div>
-            <div className="flex items-center gap-1">
-              <MetricInfo
-                trigger={
-                  <div className="flex flex-nowrap items-center gap-1">
-                    <Box className="text-body-secondary" />
-                    <span className="block">
-                      {proofs.filter((p) => p.proof_status === "queued").length}
-                    </span>
-                  </div>
-                }
-              >
-                <span className="!font-body text-body">
-                  Number of provers who have indicated intent to prove this
-                  block
-                </span>
-              </MetricInfo>
-            </div>
-          </div>
+          <ProofStatus className="mx-auto" proofs={proofs} />
           <div className="whitespace-nowrap text-xs text-body-secondary">
             <span className="font-body">time to proof:</span>{" "}
             {earliestSubmissionTime
