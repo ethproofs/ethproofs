@@ -1,5 +1,4 @@
 import type { Metadata } from "next"
-import Image, { type ImageProps } from "next/image"
 import Link from "next/link"
 import { notFound } from "next/navigation"
 import prettyMilliseconds from "pretty-ms"
@@ -7,7 +6,6 @@ import prettyMilliseconds from "pretty-ms"
 import type { Metric } from "@/lib/types"
 
 import CopyButton from "@/components/CopyButton"
-import LearnMore from "@/components/LearnMore"
 import Null from "@/components/Null"
 import { HidePunctuation } from "@/components/StylePunctuation"
 import ArrowDown from "@/components/svgs/arrow-down.svg"
