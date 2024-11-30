@@ -1,4 +1,4 @@
-import type { Block, BlockWithProofs, Proof } from "./types"
+import type { BlockWithProofs, Proof } from "./types"
 
 export const isCompleted = (proof: Proof) => proof.proof_status === "proved"
 
@@ -72,9 +72,15 @@ export const getProofBestTimeToProof = (proofs: Proof[]): Proof | null => {
  * @param {Proof[]} proofs - An array of proof objects.
  * @returns {number} - The average proving cost of the proofs.
  */
-export const getProofsAvgCost = (proofs: Proof[]): number =>
-  proofs.reduce((acc, { proving_cost }) => acc + (proving_cost || 0), 0) /
-  proofs.length
+export const getProofsAvgCost = (proofs: Proof[]): number => {
+  const completedProofs = proofs.filter(isCompleted)
+  return (
+    completedProofs.reduce(
+      (acc, { proving_cost }) => acc + (proving_cost || 0),
+      0
+    ) / completedProofs.length
+  )
+}
 
 export const getAvgCostPerMegaGas = (
   avgProofCost: number,
@@ -102,3 +108,15 @@ export const getAvgCostPerTx = (
 export const filterCompleted = (proofs: Proof[]) => ({
   completedProofs: proofs.filter(isCompleted),
 })
+
+export const getProofCheapestProvingCost = (proofs: Proof[]): Proof | null => {
+  const completedProofs = proofs
+    .filter(isCompleted)
+    .filter((p) => !!p.proving_cost)
+  if (!completedProofs.length) return null
+  return completedProofs.reduce((a, b) => {
+    if (!a.proving_cost) return b
+    if (!b.proving_cost) return a
+    return a.proving_cost < b.proving_cost ? a : b
+  }, completedProofs[0])
+}
