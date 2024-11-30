@@ -1,4 +1,4 @@
-import type { Proof } from "./types"
+import type { Block, BlockWithProofs, Proof } from "./types"
 
 export const isCompleted = (proof: Proof) => proof.proof_status === "proved"
 
@@ -9,8 +9,9 @@ export const isCompleted = (proof: Proof) => proof.proof_status === "proved"
  * @param {Proof[]} proofs - An array of proof objects.
  * @returns {number} - The average latency of the proofs.
  */
-export const getProofsAvgLatency = (proofs: Proof[]): number => {
+export const getProofsAvgLatency = (proofs: Proof[]): number | null => {
   const completedProofs = proofs.filter(isCompleted)
+  if (!completedProofs.length) return null
   return (
     completedProofs.reduce(
       (acc, proof) => acc + (proof.proof_latency || 0),
@@ -19,12 +20,49 @@ export const getProofsAvgLatency = (proofs: Proof[]): number => {
   )
 }
 
-export const getProofBestLatency = (proofs: Proof[]): Proof => {
+export const getProofsAvgTimeToProof = (
+  block: BlockWithProofs
+): number | null => {
+  if (!block.timestamp || !block.proofs) return null
+
+  const completedProofs = block.proofs
+    .filter(isCompleted)
+    .filter(
+      (p) =>
+        p.proved_timestamp &&
+        new Date(p.proved_timestamp).getTime() >
+          new Date(block.timestamp!).getTime()
+    )
+  if (!completedProofs.length) return null
+
+  const blockTimestamp = new Date(block.timestamp).getTime()
+
+  const averageProvedTime =
+    completedProofs.reduce((acc, proof) => {
+      const timestampTime = new Date(proof.proved_timestamp!).getTime()
+      return acc + timestampTime
+    }, 0) / completedProofs.length
+
+  return averageProvedTime - blockTimestamp // In milliseconds
+}
+
+export const getProofBestLatency = (proofs: Proof[]): Proof | null => {
   const completedProofs = proofs.filter(isCompleted)
+  if (!completedProofs.length) return null
   return completedProofs.reduce((a, b) => {
     if (!a.proof_latency) return b
     if (!b.proof_latency) return a
     return a.proof_latency < b.proof_latency ? a : b
+  }, completedProofs[0])
+}
+
+export const getProofBestTimeToProof = (proofs: Proof[]): Proof | null => {
+  const completedProofs = proofs.filter(isCompleted)
+  if (!completedProofs.length) return null
+  return completedProofs.reduce((a, b) => {
+    if (!a.proved_timestamp) return b
+    if (!b.proved_timestamp) return a
+    return a.proved_timestamp < b.proved_timestamp ? a : b
   }, completedProofs[0])
 }
 

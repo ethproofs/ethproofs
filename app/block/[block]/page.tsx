@@ -33,8 +33,11 @@ import {
   MetricLabel,
   MetricValue,
 } from "@/components/ui/metric"
+import { TooltipContentHeader } from "@/components/ui/tooltip"
 
 import { cn } from "@/lib/utils"
+
+import { SITE_NAME } from "@/lib/constants"
 
 import { timestampToEpoch, timestampToSlot } from "@/lib/beaconchain"
 import { getBlockValueType } from "@/lib/blocks"
@@ -45,8 +48,11 @@ import {
   getAvgCostPerMegaCycle,
   getAvgCostPerMegaGas,
   getAvgCostPerTx,
+  getProofBestLatency,
+  getProofBestTimeToProof,
   getProofsAvgCost,
   getProofsAvgLatency,
+  getProofsAvgTimeToProof,
 } from "@/lib/proofs"
 import { createClient } from "@/utils/supabase/client"
 
@@ -75,21 +81,31 @@ export async function generateMetadata({
 export default async function BlockDetailsPage({
   params,
 }: BlockDetailsPageProps) {
-  const { block } = await params
+  const blockNumber = (await params).block
 
-  const { data, error } = await supabase
+  const { data: block, error } = await supabase
     .from("blocks")
     .select("*, proofs(*)")
-    .eq(getBlockValueType(block), block)
+    .eq(getBlockValueType(blockNumber), blockNumber)
     .single()
 
   const { data: teams } = await supabase.from("teams").select("*")
 
-  if (!data || error || !teams) notFound()
+  if (!block || error || !teams) notFound()
 
-  const { timestamp, block_number, gas_used, total_fees, proofs, hash } = data
+  const { timestamp, block_number, gas_used, total_fees, proofs, hash } = block
 
   // TODO: Add proper descriptions
+
+  const bestLatencyProof = getProofBestLatency(proofs)
+  const avgProofLatency = getProofsAvgLatency(proofs)
+  const bestTimeToProofProof = getProofBestTimeToProof(proofs)
+  const bestTimeToProof = bestTimeToProofProof?.proved_timestamp
+    ? new Date(bestTimeToProofProof?.proved_timestamp).getTime() -
+      new Date(block.timestamp).getTime()
+    : 0
+  const avgTimeToProof = getProofsAvgTimeToProof(block)
+
   const availabilityMetrics: Metric[] = [
     {
       label: "Total proofs",
@@ -98,43 +114,115 @@ export default async function BlockDetailsPage({
     },
     {
       label: "Fastest proving time",
-      description: "The average time it takes to generate a proof.",
-      value: formatNumber(getProofsAvgLatency(proofs), {
-        style: "unit",
-        unit: "second",
-        unitDisplay: "narrow",
-        maximumFractionDigits: 0,
-      }),
+      // TODO: Include team information with fastest proving time
+      description: (
+        <>
+          <TooltipContentHeader>fastest proving time</TooltipContentHeader>
+          <div className="rounded border bg-background px-3 py-2">
+            <span className="italic">proof latency</span>
+          </div>
+          <p>
+            <span className="italic">proof latency</span> is duration of the
+            proof generation process, self reported by proving teams
+          </p>
+          <p className="text-body-secondary">
+            Time spent generating proof of execution
+          </p>
+          <p className="text-body-secondary">
+            Fastest reported proving time for any of the proofs submitted for
+            this block
+          </p>
+        </>
+      ),
+      value: bestLatencyProof?.proof_latency ? (
+        prettyMilliseconds(bestLatencyProof.proof_latency)
+      ) : (
+        <Null />
+      ),
     },
     {
       label: "Average proving time",
-      description: "The average time it takes to generate a proof.",
-      value: formatNumber(getProofsAvgLatency(proofs), {
-        style: "unit",
-        unit: "second",
-        unitDisplay: "narrow",
-        maximumFractionDigits: 0,
-      }),
+      description: (
+        <>
+          <TooltipContentHeader>average proving time</TooltipContentHeader>
+          <div className="rounded border bg-background px-3 py-2">
+            <span className="italic">proof latency</span>
+          </div>
+          <p>
+            <span className="italic">proof latency</span> is duration of the
+            proof generation process, self reported by proving teams
+          </p>
+          <p className="text-body-secondary">
+            Time spent generating proof of execution
+          </p>
+          <p className="text-body-secondary">
+            Average reported proving time for all completed proofs submitted for
+            this block
+          </p>
+        </>
+      ),
+      value: avgProofLatency ? prettyMilliseconds(avgProofLatency) : <Null />,
     },
     {
       label: "Fastest time to proof",
-      description: "The average time it takes to generate a proof.",
-      value: formatNumber(getProofsAvgLatency(proofs), {
-        style: "unit",
-        unit: "second",
-        unitDisplay: "narrow",
-        maximumFractionDigits: 0,
-      }),
+      // TODO: Include team information with fastest proving time
+      description: (
+        <>
+          <TooltipContentHeader>fastest time to proof</TooltipContentHeader>
+          <div className="rounded border bg-background px-3 py-2">
+            <span className="italic">proof submission time</span> -{" "}
+            <span className="font-mono text-primary-light">timestamp</span>
+          </div>
+          <p>
+            <span className="italic">proof submission time</span> is the
+            timestamp logged by {SITE_NAME} when a completed proof has been
+            submitted
+          </p>
+          <p>
+            <span className="font-mono text-primary-light">timestamp</span>{" "}
+            value from execution block header
+          </p>
+          <p className="text-body-secondary">
+            Total time delay between execution block timestamp and completion
+            and publishing of proof
+          </p>
+          <p className="text-body-secondary">
+            Fastest time to proof for any of the proofs submitted for this block
+          </p>
+        </>
+      ),
+      value:
+        bestTimeToProof > 0 ? prettyMilliseconds(bestTimeToProof) : <Null />,
     },
     {
       label: "Average time to proof",
-      description: "The average time it takes to generate a proof.",
-      value: formatNumber(getProofsAvgLatency(proofs), {
-        style: "unit",
-        unit: "second",
-        unitDisplay: "narrow",
-        maximumFractionDigits: 0,
-      }),
+      description: (
+        <>
+          <TooltipContentHeader>average time to proof</TooltipContentHeader>
+          <div className="rounded border bg-background px-3 py-2">
+            Sum(<span className="italic">proof submission time</span> -{" "}
+            <span className="font-mono text-primary-light">timestamp</span>) /
+            number of completed proofs
+          </div>
+          <p>
+            <span className="italic">proof submission time</span> is the
+            timestamp logged by {SITE_NAME} when a completed proof has been
+            submitted
+          </p>
+          <p>
+            <span className="font-mono text-primary-light">timestamp</span>{" "}
+            value from execution block header
+          </p>
+          <p className="text-body-secondary">
+            Total time delay between execution block timestamp and completion
+            and publishing of proof
+          </p>
+          <p className="text-body-secondary">
+            Average time to proof for all of the proofs submitted for this block
+          </p>
+        </>
+      ),
+      value: avgTimeToProof ? prettyMilliseconds(avgTimeToProof) : <Null />,
     },
   ]
 
@@ -190,7 +278,7 @@ export default async function BlockDetailsPage({
         <HeroBody>
           <HeroItem>
             <HeroItemLabel>
-              <Clock /> Time Stamp
+              <Clock /> Timestamp
             </HeroItemLabel>
             {renderTimestamp(timestamp)}
           </HeroItem>
