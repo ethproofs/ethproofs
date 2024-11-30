@@ -201,8 +201,8 @@ export default async function ProverPage({ params }: ProverPageProps) {
           <TrendingUp /> Prover performance
         </h2>
         <div className="flex flex-wrap gap-x-8">
-          {performanceItems.map(({ label, description, value }) => (
-            <MetricBox key={description}>
+          {performanceItems.map(({ label, description, value }, idx) => (
+            <MetricBox key={idx}>
               <MetricLabel>
                 {label}
                 <MetricInfo>{description}</MetricInfo>

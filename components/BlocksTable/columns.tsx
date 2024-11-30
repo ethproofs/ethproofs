@@ -362,9 +362,9 @@ export const columns: ColumnDef<BlockWithProofs>[] = [
       }
 
       const getAverageLatency = () => {
-        if (!completedProofs.length) return <Null />
-
-        return prettyMilliseconds(getProofsAvgLatency(completedProofs) * 1e3)
+        const avgLatency = getProofsAvgLatency(completedProofs)
+        if (!avgLatency) return <Null />
+        return prettyMilliseconds(avgLatency)
       }
 
       return (
