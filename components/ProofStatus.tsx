@@ -8,6 +8,24 @@ import { cn } from "@/lib/utils"
 import { MetricInfo } from "./ui/metric"
 
 import { isCompleted } from "@/lib/proofs"
+import { TooltipContentHeader } from "./ui/tooltip"
+
+export const ProofStatusInfo = () => (
+  <>
+    <TooltipContentHeader>proof status</TooltipContentHeader>
+    <div className="items-top grid grid-cols-[auto,1fr] gap-4">
+      <Box className="self-center text-2xl text-primary" />
+      Number of completed proofs that have been published for this block
+      <BoxDashed className="self-center text-2xl text-primary" />
+      Number of provers currently generating proofs for this block
+      <Box className="self-center text-2xl text-body-secondary" />
+      Number of provers who have indicated intent to prove this block
+    </div>
+    <p className="text-body-secondary">
+      Current status of proofs for this block
+    </p>
+  </>
+)
 
 type ProofStatusProps = React.HTMLAttributes<HTMLDivElement> & {
   proofs: Proof[]
