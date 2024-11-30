@@ -410,166 +410,172 @@ export default async function BlockDetailsPage({
           <ProofCircle /> Proofs
         </h2>
 
-        {proofs.map(
-          ({
-            proof_id,
-            prover_duration,
-            proof_latency,
-            proving_cost,
-            proving_cycles,
-            user_id,
-          }) => {
-            const team = teams.find((t) => t.user_id === user_id)
-            return (
-              <div
-                className={cn(
-                  "grid grid-flow-dense grid-cols-4 grid-rows-3",
-                  "sm:grid-rows-2",
-                  "md:grid-cols-6-auto md:grid-rows-1"
-                )}
-                key={proof_id}
-              >
+        {proofs
+          .sort((a, b) => {
+            if (!a.proof_latency) return 1
+            if (!b.proof_latency) return -1
+            return a.proof_latency - b.proof_latency
+          })
+          .map(
+            ({
+              proof_id,
+              prover_duration,
+              proof_latency,
+              proving_cost,
+              proving_cycles,
+              user_id,
+            }) => {
+              const team = teams.find((t) => t.user_id === user_id)
+              return (
                 <div
                   className={cn(
-                    "relative flex h-full items-center",
-                    "col-span-3 col-start-1 row-span-1 row-start-1",
-                    "sm:col-span-2 sm:col-start-1 sm:row-span-1 sm:row-start-1",
-                    "md:col-span-1 md:col-start-1 md:row-span-1 md:row-start-1"
+                    "grid grid-flow-dense grid-cols-4 grid-rows-3",
+                    "sm:grid-rows-2",
+                    "md:grid-cols-6-auto md:grid-rows-1"
                   )}
+                  key={proof_id}
                 >
-                  {team?.team_name && (
-                    <Link
-                      href={"/prover/" + team?.team_id}
-                      className="text-2xl"
+                  <div
+                    className={cn(
+                      "relative flex h-full items-center",
+                      "col-span-3 col-start-1 row-span-1 row-start-1",
+                      "sm:col-span-2 sm:col-start-1 sm:row-span-1 sm:row-start-1",
+                      "md:col-span-1 md:col-start-1 md:row-span-1 md:row-start-1"
+                    )}
+                  >
+                    {team?.team_name && (
+                      <Link
+                        href={"/prover/" + team?.team_id}
+                        className="text-2xl"
+                      >
+                        {team?.team_name}
+                      </Link>
+                    )}
+                  </div>
+                  <Button
+                    variant="outline"
+                    className={cn(
+                      "ms-auto h-8 w-8 min-w-fit gap-2 self-center text-2xl text-primary",
+                      "col-span-1 col-start-4 row-span-1 row-start-1",
+                      "sm:col-span-2 sm:col-start-3 sm:row-span-1 sm:row-start-1",
+                      "md:col-span-1 md:col-start-6 md:row-span-1 md:row-start-1"
+                    )}
+                  >
+                    <ArrowDown />
+                    <span className="hidden text-nowrap text-xs font-bold sm:block md:hidden lg:block">
+                      Download proof
+                    </span>
+                  </Button>
+                  <MetricBox
+                    className={cn(
+                      "col-span-2 col-start-1 row-span-1 row-start-2",
+                      "sm:col-span-1 sm:col-start-1 sm:row-span-1 sm:row-start-2",
+                      "md:col-span-1 md:col-start-2 md:row-span-1 md:row-start-1"
+                    )}
+                  >
+                    <MetricLabel>
+                      Time to proof
+                      <MetricInfo>
+                        The time it took to generate this proof, from when the
+                        proving began to when it was complete.
+                        <br />
+                        (hours : minutes : seconds)
+                      </MetricInfo>
+                    </MetricLabel>
+                    <MetricValue
+                      title={
+                        prover_duration
+                          ? intervalToReadable(prover_duration as string)
+                          : ""
+                      }
                     >
-                      {team?.team_name}
-                    </Link>
-                  )}
+                      {(prover_duration as string) || <Null />}
+                    </MetricValue>
+                  </MetricBox>
+                  <MetricBox
+                    className={cn(
+                      "col-span-2 col-start-3 row-span-1 row-start-2",
+                      "sm:col-span-1 sm:col-start-2 sm:row-span-1 sm:row-start-2",
+                      "md:col-span-1 md:col-start-3 md:row-span-1 md:row-start-1"
+                    )}
+                  >
+                    <MetricLabel>
+                      Latency
+                      <MetricInfo>
+                        Time delay from when a block is published, to when proof
+                        has been posted
+                        <br />
+                        (seconds)
+                      </MetricInfo>
+                    </MetricLabel>
+                    <MetricValue>
+                      {proof_latency ? (
+                        prettyMilliseconds(proof_latency)
+                      ) : (
+                        <Null />
+                      )}
+                    </MetricValue>
+                  </MetricBox>
+                  <MetricBox
+                    className={cn(
+                      "col-span-2 col-start-1 row-span-1 row-start-3",
+                      "sm:col-span-1 sm:col-start-3 sm:row-span-1 sm:row-start-2",
+                      "md:col-span-1 md:col-start-4 md:row-span-1 md:row-start-1"
+                    )}
+                  >
+                    <MetricLabel>
+                      <span className="normal-case">{team?.team_name}</span> zk
+                      <span className="uppercase">VM</span> cycles
+                      <MetricInfo>
+                        The number of cycles used by the prover to generate the
+                        proof.
+                      </MetricInfo>
+                    </MetricLabel>
+                    <MetricValue
+                      title={proving_cycles ? formatNumber(proving_cycles) : ""}
+                    >
+                      {proving_cycles ? (
+                        formatNumber(proving_cycles, {
+                          notation: "compact",
+                          compactDisplay: "short",
+                          maximumSignificantDigits: 4,
+                        })
+                      ) : (
+                        <Null />
+                      )}
+                    </MetricValue>
+                  </MetricBox>
+                  <MetricBox
+                    className={cn(
+                      "col-span-2 col-start-3 row-span-1 row-start-3",
+                      "sm:col-span-1 sm:col-start-4 sm:row-span-1 sm:row-start-2",
+                      "md:col-span-1 md:col-start-5 md:row-span-1 md:row-start-1",
+                      "sm:max-md:text-end"
+                    )}
+                  >
+                    <MetricLabel className="sm:max-md:justify-end">
+                      Proving cost
+                      <MetricInfo>
+                        The cost of generating this proof.
+                        <br />
+                        (USD)
+                      </MetricInfo>
+                    </MetricLabel>
+                    <MetricValue>
+                      {proving_cost ? (
+                        formatNumber(proving_cost, {
+                          style: "currency",
+                          currency: "USD",
+                        })
+                      ) : (
+                        <Null />
+                      )}
+                    </MetricValue>
+                  </MetricBox>
                 </div>
-                <Button
-                  variant="outline"
-                  className={cn(
-                    "ms-auto h-8 w-8 min-w-fit gap-2 self-center text-2xl text-primary",
-                    "col-span-1 col-start-4 row-span-1 row-start-1",
-                    "sm:col-span-2 sm:col-start-3 sm:row-span-1 sm:row-start-1",
-                    "md:col-span-1 md:col-start-6 md:row-span-1 md:row-start-1"
-                  )}
-                >
-                  <ArrowDown />
-                  <span className="hidden text-nowrap text-xs font-bold sm:block md:hidden lg:block">
-                    Download proof
-                  </span>
-                </Button>
-                <MetricBox
-                  className={cn(
-                    "col-span-2 col-start-1 row-span-1 row-start-2",
-                    "sm:col-span-1 sm:col-start-1 sm:row-span-1 sm:row-start-2",
-                    "md:col-span-1 md:col-start-2 md:row-span-1 md:row-start-1"
-                  )}
-                >
-                  <MetricLabel>
-                    Time to proof
-                    <MetricInfo>
-                      The time it took to generate this proof, from when the
-                      proving began to when it was complete.
-                      <br />
-                      (hours : minutes : seconds)
-                    </MetricInfo>
-                  </MetricLabel>
-                  <MetricValue
-                    title={
-                      prover_duration
-                        ? intervalToReadable(prover_duration as string)
-                        : ""
-                    }
-                  >
-                    {(prover_duration as string) || <Null />}
-                  </MetricValue>
-                </MetricBox>
-                <MetricBox
-                  className={cn(
-                    "col-span-2 col-start-3 row-span-1 row-start-2",
-                    "sm:col-span-1 sm:col-start-2 sm:row-span-1 sm:row-start-2",
-                    "md:col-span-1 md:col-start-3 md:row-span-1 md:row-start-1"
-                  )}
-                >
-                  <MetricLabel>
-                    Latency
-                    <MetricInfo>
-                      Time delay from when a block is published, to when proof
-                      has been posted
-                      <br />
-                      (seconds)
-                    </MetricInfo>
-                  </MetricLabel>
-                  <MetricValue>
-                    {proof_latency ? (
-                      prettyMilliseconds(proof_latency)
-                    ) : (
-                      <Null />
-                    )}
-                  </MetricValue>
-                </MetricBox>
-                <MetricBox
-                  className={cn(
-                    "col-span-2 col-start-1 row-span-1 row-start-3",
-                    "sm:col-span-1 sm:col-start-3 sm:row-span-1 sm:row-start-2",
-                    "md:col-span-1 md:col-start-4 md:row-span-1 md:row-start-1"
-                  )}
-                >
-                  <MetricLabel>
-                    <span className="normal-case">{team?.team_name}</span> zk
-                    <span className="uppercase">VM</span> cycles
-                    <MetricInfo>
-                      The number of cycles used by the prover to generate the
-                      proof.
-                    </MetricInfo>
-                  </MetricLabel>
-                  <MetricValue
-                    title={proving_cycles ? formatNumber(proving_cycles) : ""}
-                  >
-                    {proving_cycles ? (
-                      formatNumber(proving_cycles, {
-                        notation: "compact",
-                        compactDisplay: "short",
-                        maximumSignificantDigits: 4,
-                      })
-                    ) : (
-                      <Null />
-                    )}
-                  </MetricValue>
-                </MetricBox>
-                <MetricBox
-                  className={cn(
-                    "col-span-2 col-start-3 row-span-1 row-start-3",
-                    "sm:col-span-1 sm:col-start-4 sm:row-span-1 sm:row-start-2",
-                    "md:col-span-1 md:col-start-5 md:row-span-1 md:row-start-1",
-                    "sm:max-md:text-end"
-                  )}
-                >
-                  <MetricLabel className="sm:max-md:justify-end">
-                    Proving cost
-                    <MetricInfo>
-                      The cost of generating this proof.
-                      <br />
-                      (USD)
-                    </MetricInfo>
-                  </MetricLabel>
-                  <MetricValue>
-                    {proving_cost ? (
-                      formatNumber(proving_cost, {
-                        style: "currency",
-                        currency: "USD",
-                      })
-                    ) : (
-                      <Null />
-                    )}
-                  </MetricValue>
-                </MetricBox>
-              </div>
-            )
-          }
-        )}
+              )
+            }
+          )}
       </section>
     </div>
   )
