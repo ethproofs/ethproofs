@@ -1,8 +1,5 @@
 import type { Proof } from "@/lib/types"
 
-import Box from "@/components/svgs/box.svg"
-import BoxDashed from "@/components/svgs/box-dashed.svg"
-
 import { cn } from "@/lib/utils"
 
 import { MetricInfo } from "./ui/metric"
