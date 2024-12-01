@@ -55,6 +55,7 @@ import {
   getProofsAvgCost,
   getProofsAvgLatency,
   getProofsAvgTimeToProof,
+  sortProofsStatusAndTimes,
 } from "@/lib/proofs"
 import { createClient } from "@/utils/supabase/client"
 
@@ -413,11 +414,7 @@ export default async function BlockDetailsPage({
         </h2>
 
         {proofs
-          .sort((a, b) => {
-            if (!a.proof_latency) return 1
-            if (!b.proof_latency) return -1
-            return a.proof_latency - b.proof_latency
-          })
+          .sort(sortProofsStatusAndTimes)
           .map(
             ({
               proof_id,
