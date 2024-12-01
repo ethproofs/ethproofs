@@ -8,11 +8,11 @@ import type { Metric } from "@/lib/types"
 import CopyButton from "@/components/CopyButton"
 import Null from "@/components/Null"
 import ProofStatus, { ProofStatusInfo } from "@/components/ProofStatus"
+import StatusIcon from "@/components/StatusIcon"
 import { HidePunctuation } from "@/components/StylePunctuation"
 import ArrowDown from "@/components/svgs/arrow-down.svg"
 import BookOpen from "@/components/svgs/book-open.svg"
 import Box from "@/components/svgs/box.svg"
-import BoxDashed from "@/components/svgs/box-dashed.svg"
 import Clock from "@/components/svgs/clock.svg"
 import Cpu from "@/components/svgs/cpu.svg"
 import DollarSign from "@/components/svgs/dollar-sign.svg"
@@ -45,7 +45,6 @@ import { SITE_NAME } from "@/lib/constants"
 
 import { timestampToEpoch, timestampToSlot } from "@/lib/beaconchain"
 import { getBlockValueType } from "@/lib/blocks"
-import { intervalToReadable } from "@/lib/date"
 import { getMetadata } from "@/lib/metadata"
 import { formatNumber } from "@/lib/number"
 import {
@@ -497,7 +496,7 @@ export default async function BlockDetailsPage({
                             "flex items-center gap-2"
                           )}
                         >
-                          <BoxDashed className="text-primary-dark" />
+                          <StatusIcon status="proving" />
                           <span className="hidden text-nowrap text-xs font-bold text-body-secondary sm:block md:hidden lg:block">
                             Proving
                           </span>
@@ -516,10 +515,7 @@ export default async function BlockDetailsPage({
                             "flex items-center gap-2"
                           )}
                         >
-                          <Box
-                            strokeWidth="1"
-                            className="text-body-secondary"
-                          />
+                          <StatusIcon status="queued" />
                           <span className="hidden text-nowrap text-xs font-bold text-body-secondary sm:block md:hidden lg:block">
                             Queued
                           </span>

@@ -7,6 +7,7 @@ import { cn } from "@/lib/utils"
 
 import { MetricInfo } from "./ui/metric"
 import { TooltipContentHeader } from "./ui/tooltip"
+import StatusIcon from "./StatusIcon"
 
 import { isCompleted } from "@/lib/proofs"
 
@@ -14,14 +15,11 @@ export const ProofStatusInfo = () => (
   <>
     <TooltipContentHeader>proof status</TooltipContentHeader>
     <div className="items-top grid grid-cols-[auto,1fr] gap-4">
-      <Box strokeWidth="1" className="self-center text-2xl text-primary" />
+      <StatusIcon status="proved" />
       Number of completed proofs that have been published for this block
-      <BoxDashed className="self-center text-2xl text-primary" />
+      <StatusIcon status="proving" />
       Number of provers currently generating proofs for this block
-      <Box
-        strokeWidth="1"
-        className="self-center text-2xl text-body-secondary"
-      />
+      <StatusIcon status="queued" />
       Number of provers who have indicated intent to prove this block
     </div>
     <p className="text-body-secondary">
@@ -47,7 +45,7 @@ const ProofStatus = ({ proofs, className, ...props }: ProofStatusProps) => {
         <MetricInfo
           trigger={
             <div className="flex flex-nowrap items-center gap-1">
-              <Box strokeWidth="1" className="text-primary" />
+              <StatusIcon status="proved" />
               <span className="block">{completedProofs.length}</span>
             </div>
           }
@@ -61,7 +59,7 @@ const ProofStatus = ({ proofs, className, ...props }: ProofStatusProps) => {
         <MetricInfo
           trigger={
             <div className="flex flex-nowrap items-center gap-1">
-              <BoxDashed strokeWidth="1" className="text-primary" />
+              <StatusIcon status="proving" />
               <span className="block">{provingProofs.length}</span>
             </div>
           }
@@ -75,7 +73,7 @@ const ProofStatus = ({ proofs, className, ...props }: ProofStatusProps) => {
         <MetricInfo
           trigger={
             <div className="flex flex-nowrap items-center gap-1">
-              <Box strokeWidth="1" className="text-body-secondary" />
+              <StatusIcon status="queued" />
               <span className="block">{queuedProofs.length}</span>
             </div>
           }
