@@ -605,8 +605,32 @@ export default async function BlockDetailsPage({
                       <span className="normal-case">{team?.team_name}</span> zk
                       <span className="uppercase">VM</span> cycles
                       <MetricInfo>
-                        The number of cycles used by the prover to generate the
-                        proof.
+                        <TooltipContentHeader>
+                          <span className="normal-case">{team?.team_name}</span>{" "}
+                          zk<span className="uppercase">VM</span> cycles
+                        </TooltipContentHeader>
+                        <div className="rounded border bg-background px-3 py-2">
+                          <span className="italic">proving cycles</span>
+                        </div>
+                        <p>
+                          <span className="italic">proving cycles</span> is
+                          self-reported by{" "}
+                          {team?.team_name
+                            ? team.team_name
+                            : "the proving team"}
+                        </p>
+                        <p className="text-body-secondary">
+                          The number of cycles used by{" "}
+                          {team?.team_name
+                            ? team.team_name
+                            : "the proving team"}{" "}
+                          to generate the proof.
+                        </p>
+                        <p className="text-body-secondary">
+                          This number will vary depending on hardware and zkVMs
+                          being used by different provers and should not be
+                          directly compared to other provers.
+                        </p>
                       </MetricInfo>
                     </MetricLabel>
                     <MetricValue
