@@ -468,51 +468,63 @@ export default async function BlockDetailsPage({
                       "md:col-span-1 md:col-start-6 md:row-span-1 md:row-start-1"
                     )}
                   >
-                    <Button
-                      variant="outline"
-                      className={cn(
-                        "aspect-square h-8 w-auto min-w-fit gap-2 self-center text-2xl text-primary",
-                        "disabled:bg-body-secondary/10 sm:max-md:w-40 lg:aspect-auto lg:w-40"
-                      )}
-                      isSecondary={!isComplete}
-                      disabled={!isComplete}
-                    >
-                      {proof_status === "proved" && (
-                        <>
-                          <ArrowDown />
-                          <span className="hidden text-nowrap text-xs font-bold sm:block md:hidden lg:block">
-                            Download proof
+                    {proof_status === "proved" && (
+                      <Button
+                        variant="outline"
+                        className={cn(
+                          "aspect-square h-8 w-auto min-w-fit gap-2 self-center text-2xl text-primary",
+                          "disabled:bg-body-secondary/10 sm:max-md:w-40 lg:aspect-auto lg:w-40"
+                        )}
+                        isSecondary={!isComplete}
+                        disabled={!isComplete}
+                      >
+                        <ArrowDown />
+                        <span className="hidden text-nowrap text-xs font-bold sm:block md:hidden lg:block">
+                          Download proof
+                        </span>
+                      </Button>
+                    )}
+                    {proof_status === "proving" && (
+                      <Tooltip
+                        content={`${team?.team_name ? team.team_name : "Team"} currently generating proof for this block`}
+                      >
+                        <div
+                          className={cn(
+                            "inline-flex items-center justify-center gap-4 rounded-full border border-solid border-current text-primary [&>svg]:shrink-0",
+                            "aspect-square h-8 w-auto min-w-fit gap-2 self-center text-2xl text-primary",
+                            "bg-body-secondary/10 sm:max-md:w-40 lg:aspect-auto lg:w-40",
+                            "flex items-center gap-2"
+                          )}
+                        >
+                          <BoxDashed className="text-primary-dark" />
+                          <span className="hidden text-nowrap text-xs font-bold text-body-secondary sm:block md:hidden lg:block">
+                            Proving
                           </span>
-                        </>
-                      )}
-                      {proof_status === "proving" && (
-                        <Tooltip
-                          content={`${team?.team_name ? team.team_name : "Team"} currently generating proof for this block`}
+                        </div>
+                      </Tooltip>
+                    )}
+                    {proof_status === "queued" && (
+                      <Tooltip
+                        content={`${team?.team_name ? team.team_name : "Team"} has indicated intent to prove this block`}
+                      >
+                        <div
+                          className={cn(
+                            "inline-flex items-center justify-center gap-4 rounded-full border border-solid border-current text-primary [&>svg]:shrink-0",
+                            "aspect-square h-8 w-auto min-w-fit gap-2 self-center text-2xl text-primary",
+                            "bg-body-secondary/10 sm:max-md:w-40 lg:aspect-auto lg:w-40",
+                            "flex items-center gap-2"
+                          )}
                         >
-                          <div className="flex cursor-default items-center gap-2">
-                            <BoxDashed className="text-primary-dark" />
-                            <span className="hidden text-nowrap text-xs font-bold text-body-secondary sm:block md:hidden lg:block">
-                              Proving
-                            </span>
-                          </div>
-                        </Tooltip>
-                      )}
-                      {proof_status === "queued" && (
-                        <Tooltip
-                          content={`${team?.team_name ? team.team_name : "Team"} has indicated intent to prove this block`}
-                        >
-                          <div className="flex cursor-default items-center gap-2">
-                            <Box
-                              strokeWidth="1"
-                              className="text-body-secondary"
-                            />
-                            <span className="hidden text-nowrap text-xs font-bold text-body-secondary sm:block md:hidden lg:block">
-                              Queued
-                            </span>
-                          </div>
-                        </Tooltip>
-                      )}
-                    </Button>
+                          <Box
+                            strokeWidth="1"
+                            className="text-body-secondary"
+                          />
+                          <span className="hidden text-nowrap text-xs font-bold text-body-secondary sm:block md:hidden lg:block">
+                            Queued
+                          </span>
+                        </div>
+                      </Tooltip>
+                    )}
                   </div>
                   <MetricBox
                     className={cn(
