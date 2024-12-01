@@ -27,7 +27,7 @@ export const ProofStatusInfo = () => (
 
 type ProofStatusProps = React.HTMLAttributes<HTMLDivElement> & {
   proofs: Proof[]
-  hideEmpty: boolean
+  hideEmpty?: boolean
 }
 const ProofStatus = ({
   proofs,
