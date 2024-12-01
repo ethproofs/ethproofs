@@ -426,8 +426,7 @@ export default async function BlockDetailsPage({
               user_id,
             }) => {
               const team = teams.find((t) => t.user_id === user_id)
-              const downloadDisabled =
-                proof_status !== "proved" || !proved_timestamp
+              const isComplete = proof_status === "proved" && !!proved_timestamp
               const timeToProof = proved_timestamp
                 ? Math.max(
                     new Date(proved_timestamp).getTime() -
@@ -475,8 +474,8 @@ export default async function BlockDetailsPage({
                         "aspect-square h-8 w-auto min-w-fit gap-2 self-center text-2xl text-primary",
                         "disabled:bg-body-secondary/10 sm:max-md:w-40 lg:aspect-auto lg:w-40"
                       )}
-                      isSecondary={downloadDisabled}
-                      disabled={downloadDisabled}
+                      isSecondary={!isComplete}
+                      disabled={!isComplete}
                     >
                       {proof_status === "proved" && (
                         <>
@@ -553,7 +552,7 @@ export default async function BlockDetailsPage({
                       </MetricInfo>
                     </MetricLabel>
                     <MetricValue className="font-normal">
-                      {timeToProof > 0 ? (
+                      {isComplete && timeToProof > 0 ? (
                         prettyMilliseconds(timeToProof)
                       ) : (
                         <Null />
@@ -587,7 +586,7 @@ export default async function BlockDetailsPage({
                       </MetricInfo>
                     </MetricLabel>
                     <MetricValue className="font-normal">
-                      {proof_latency ? (
+                      {isComplete && proof_latency ? (
                         prettyMilliseconds(proof_latency)
                       ) : (
                         <Null />
@@ -637,7 +636,7 @@ export default async function BlockDetailsPage({
                       className="font-normal"
                       title={proving_cycles ? formatNumber(proving_cycles) : ""}
                     >
-                      {proving_cycles ? (
+                      {isComplete && proving_cycles ? (
                         formatNumber(proving_cycles, {
                           notation: "compact",
                           compactDisplay: "short",
@@ -678,7 +677,7 @@ export default async function BlockDetailsPage({
                       </MetricInfo>
                     </MetricLabel>
                     <MetricValue className="font-normal">
-                      {proving_cost ? (
+                      {isComplete && proving_cost ? (
                         formatNumber(proving_cost, {
                           style: "currency",
                           currency: "USD",
