@@ -452,7 +452,7 @@ export default async function BlockDetailsPage({
                     {team?.team_name && (
                       <Link
                         href={"/prover/" + team?.team_id}
-                        className="text-2xl"
+                        className="text-2xl hover:text-primary-light hover:underline"
                       >
                         {team.team_name}
                       </Link>
