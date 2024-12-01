@@ -657,11 +657,24 @@ export default async function BlockDetailsPage({
                     )}
                   >
                     <MetricLabel className="sm:max-md:justify-end">
-                      Proving cost
+                      proving costs
                       <MetricInfo>
-                        The cost of generating this proof.
-                        <br />
-                        (USD)
+                        <TooltipContentHeader>
+                          proving costs
+                        </TooltipContentHeader>
+                        <div className="rounded border bg-background px-3 py-2">
+                          <span className="italic">proving costs</span>
+                        </div>
+                        <p>
+                          <span className="italic">proving costs</span> are in
+                          USD, self-reported by{" "}
+                          {team?.team_name ? team.team_name : "proving team"}
+                        </p>
+                        <p className="text-body-secondary">
+                          Proving costs are in USD, and represent the
+                          self-reported expenditures included in proving this
+                          block
+                        </p>
                       </MetricInfo>
                     </MetricLabel>
                     <MetricValue className="font-normal">
