@@ -12,6 +12,7 @@ import { HidePunctuation } from "@/components/StylePunctuation"
 import ArrowDown from "@/components/svgs/arrow-down.svg"
 import BookOpen from "@/components/svgs/book-open.svg"
 import Box from "@/components/svgs/box.svg"
+import BoxDashed from "@/components/svgs/box-dashed.svg"
 import Clock from "@/components/svgs/clock.svg"
 import Cpu from "@/components/svgs/cpu.svg"
 import DollarSign from "@/components/svgs/dollar-sign.svg"
@@ -20,6 +21,7 @@ import Layers from "@/components/svgs/layers.svg"
 import ProofCircle from "@/components/svgs/proof-circle.svg"
 import Timer from "@/components/svgs/timer.svg"
 import Timestamp from "@/components/Timestamp"
+import Tooltip from "@/components/Tooltip"
 import { Button } from "@/components/ui/button"
 import {
   HeroBody,
@@ -419,13 +421,17 @@ export default async function BlockDetailsPage({
           .map(
             ({
               proof_id,
-              prover_duration,
               proof_latency,
+              proof_status,
+              proved_timestamp,
+              prover_duration,
               proving_cost,
               proving_cycles,
               user_id,
             }) => {
               const team = teams.find((t) => t.user_id === user_id)
+              const downloadDisabled =
+                proof_status !== "proved" || !proved_timestamp
               return (
                 <div
                   className={cn(
@@ -452,20 +458,60 @@ export default async function BlockDetailsPage({
                       </Link>
                     )}
                   </div>
-                  <Button
-                    variant="outline"
+                  <div
                     className={cn(
-                      "ms-auto h-8 w-8 min-w-fit gap-2 self-center text-2xl text-primary",
+                      "ms-auto self-center",
                       "col-span-1 col-start-4 row-span-1 row-start-1",
                       "sm:col-span-2 sm:col-start-3 sm:row-span-1 sm:row-start-1",
                       "md:col-span-1 md:col-start-6 md:row-span-1 md:row-start-1"
                     )}
                   >
-                    <ArrowDown />
-                    <span className="hidden text-nowrap text-xs font-bold sm:block md:hidden lg:block">
-                      Download proof
-                    </span>
-                  </Button>
+                    <Button
+                      variant="outline"
+                      className={cn(
+                        "aspect-square h-8 w-auto min-w-fit gap-2 self-center text-2xl text-primary",
+                        "disabled:bg-body-secondary/10 sm:max-md:w-40 lg:aspect-auto lg:w-40"
+                      )}
+                      isSecondary={downloadDisabled}
+                      disabled={downloadDisabled}
+                    >
+                      {proof_status === "proved" && (
+                        <>
+                          <ArrowDown />
+                          <span className="hidden text-nowrap text-xs font-bold sm:block md:hidden lg:block">
+                            Download proof
+                          </span>
+                        </>
+                      )}
+                      {proof_status === "proving" && (
+                        <Tooltip
+                          content={`${team?.team_name ? team.team_name : "Team"} currently generating proof for this block`}
+                        >
+                          <div className="flex cursor-default items-center gap-2">
+                            <BoxDashed className="text-primary-dark" />
+                            <span className="hidden text-nowrap text-xs font-bold text-body-secondary sm:block md:hidden lg:block">
+                              Proving
+                            </span>
+                          </div>
+                        </Tooltip>
+                      )}
+                      {proof_status === "queued" && (
+                        <Tooltip
+                          content={`${team?.team_name ? team.team_name : "Team"} has indicated intent to prove this block`}
+                        >
+                          <div className="flex cursor-default items-center gap-2">
+                            <Box
+                              strokeWidth="1"
+                              className="text-body-secondary"
+                            />
+                            <span className="hidden text-nowrap text-xs font-bold text-body-secondary sm:block md:hidden lg:block">
+                              Queued
+                            </span>
+                          </div>
+                        </Tooltip>
+                      )}
+                    </Button>
+                  </div>
                   <MetricBox
                     className={cn(
                       "col-span-2 col-start-1 row-span-1 row-start-2",
