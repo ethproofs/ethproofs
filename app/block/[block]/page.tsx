@@ -313,7 +313,7 @@ export default async function BlockDetailsPage({
     <div className="space-y-20">
       <HeroSection>
         <HeroTitle>
-          <Box strokeWidth="1" className="text-6xl text-primary shrink-0" />
+          <Box strokeWidth="1" className="shrink-0 text-6xl text-primary" />
           <h1 className="font-mono">
             <p className="text-sm font-normal md:text-lg">Block Height</p>
             <p className="text-3xl font-semibold tracking-wide">
