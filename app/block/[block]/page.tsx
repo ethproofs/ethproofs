@@ -421,7 +421,6 @@ export default async function BlockDetailsPage({
               proof_latency,
               proof_status,
               proved_timestamp,
-              prover_duration,
               proving_cost,
               proving_cycles,
               user_id,
@@ -429,6 +428,13 @@ export default async function BlockDetailsPage({
               const team = teams.find((t) => t.user_id === user_id)
               const downloadDisabled =
                 proof_status !== "proved" || !proved_timestamp
+              const timeToProof = proved_timestamp
+                ? Math.max(
+                    new Date(proved_timestamp).getTime() -
+                      new Date(block.timestamp).getTime(),
+                    0
+                  )
+                : 0
               return (
                 <div
                   className={cn(
@@ -517,23 +523,41 @@ export default async function BlockDetailsPage({
                     )}
                   >
                     <MetricLabel>
-                      Time to proof
+                      time to proof
                       <MetricInfo>
-                        The time it took to generate this proof, from when the
-                        proving began to when it was complete.
-                        <br />
-                        (hours : minutes : seconds)
+                        <TooltipContentHeader>
+                          time to proof
+                        </TooltipContentHeader>
+                        <div className="rounded border bg-background px-3 py-2">
+                          <span className="italic">proof submission time</span>{" "}
+                          -{" "}
+                          <span className="font-mono text-primary-light">
+                            timestamp
+                          </span>
+                        </div>
+                        <p>
+                          <span className="italic">proof submission time</span>{" "}
+                          is the timestamp logged by {SITE_NAME} when a
+                          completed proof has been submitted
+                        </p>
+                        <p>
+                          <span className="font-mono text-primary-light">
+                            timestamp
+                          </span>{" "}
+                          value from execution block header
+                        </p>
+                        <p className="text-body-secondary">
+                          Total time delay between execution block timestamp and
+                          completion and publishing of proof
+                        </p>
                       </MetricInfo>
                     </MetricLabel>
-                    <MetricValue
-                      className="font-normal"
-                      title={
-                        prover_duration
-                          ? intervalToReadable(prover_duration as string)
-                          : ""
-                      }
-                    >
-                      {(prover_duration as string) || <Null />}
+                    <MetricValue className="font-normal">
+                      {timeToProof > 0 ? (
+                        prettyMilliseconds(timeToProof)
+                      ) : (
+                        <Null />
+                      )}
                     </MetricValue>
                   </MetricBox>
                   <MetricBox
@@ -544,12 +568,22 @@ export default async function BlockDetailsPage({
                     )}
                   >
                     <MetricLabel>
-                      Latency
+                      proving time
                       <MetricInfo>
-                        Time delay from when a block is published, to when proof
-                        has been posted
-                        <br />
-                        (seconds)
+                        <TooltipContentHeader>
+                          proving time
+                        </TooltipContentHeader>
+                        <div className="rounded border bg-background px-3 py-2">
+                          <span className="italic">proof latency</span>
+                        </div>
+                        <p>
+                          <span className="italic">proof latency</span> is
+                          duration of the proof generation process, self
+                          reported by proving teams
+                        </p>
+                        <p className="text-body-secondary">
+                          Time spent generating proof of execution
+                        </p>
                       </MetricInfo>
                     </MetricLabel>
                     <MetricValue className="font-normal">
