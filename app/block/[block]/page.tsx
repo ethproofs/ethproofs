@@ -383,7 +383,7 @@ export default async function BlockDetailsPage({
                   {label}
                   <MetricInfo>{description}</MetricInfo>
                 </MetricLabel>
-                <MetricValue>{value}</MetricValue>
+                <MetricValue className="font-normal">{value}</MetricValue>
               </MetricBox>
             ))}
           </div>
@@ -400,7 +400,7 @@ export default async function BlockDetailsPage({
                   {label}
                   <MetricInfo>{description}</MetricInfo>
                 </MetricLabel>
-                <MetricValue>{value}</MetricValue>
+                <MetricValue className="font-normal">{value}</MetricValue>
               </MetricBox>
             ))}
           </div>
@@ -454,7 +454,7 @@ export default async function BlockDetailsPage({
                         href={"/prover/" + team?.team_id}
                         className="text-2xl"
                       >
-                        {team?.team_name}
+                        {team.team_name}
                       </Link>
                     )}
                   </div>
@@ -529,6 +529,7 @@ export default async function BlockDetailsPage({
                       </MetricInfo>
                     </MetricLabel>
                     <MetricValue
+                      className="font-normal"
                       title={
                         prover_duration
                           ? intervalToReadable(prover_duration as string)
@@ -554,7 +555,7 @@ export default async function BlockDetailsPage({
                         (seconds)
                       </MetricInfo>
                     </MetricLabel>
-                    <MetricValue>
+                    <MetricValue className="font-normal">
                       {proof_latency ? (
                         prettyMilliseconds(proof_latency)
                       ) : (
@@ -578,6 +579,7 @@ export default async function BlockDetailsPage({
                       </MetricInfo>
                     </MetricLabel>
                     <MetricValue
+                      className="font-normal"
                       title={proving_cycles ? formatNumber(proving_cycles) : ""}
                     >
                       {proving_cycles ? (
@@ -607,7 +609,7 @@ export default async function BlockDetailsPage({
                         (USD)
                       </MetricInfo>
                     </MetricLabel>
-                    <MetricValue>
+                    <MetricValue className="font-normal">
                       {proving_cost ? (
                         formatNumber(proving_cost, {
                           style: "currency",
