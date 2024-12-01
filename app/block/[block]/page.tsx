@@ -472,9 +472,10 @@ export default async function BlockDetailsPage({
                       <Button
                         variant="outline"
                         className={cn(
-                          "aspect-square h-8 w-auto min-w-fit gap-2 self-center text-2xl text-primary",
+                          "aspect-square h-8 w-auto gap-2 self-center text-2xl text-primary",
                           "disabled:bg-body-secondary/10 sm:max-md:w-40 lg:aspect-auto lg:w-40"
                         )}
+                        size="icon"
                         isSecondary={!isComplete}
                         disabled={!isComplete}
                       >
