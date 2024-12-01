@@ -163,6 +163,8 @@ export default function RootLayout({
                 <Link
                   href={new URL(SITE_REPO, "https://github.com").toString()}
                   className="mb-12"
+                  target="_blank"
+                  rel="noopener noreferrer"
                 >
                   <GitHub className="size-6" />
                   <span>Contribute to ETH Proofs</span>
