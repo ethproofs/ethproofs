@@ -2,7 +2,7 @@ import { type Metadata } from "next"
 import Link from "next/link"
 import { notFound } from "next/navigation"
 
-import { Metric, ProvingMachine } from "@/lib/types"
+import type { Metric, ProverMachine } from "@/lib/types"
 
 import Cpu from "@/components/svgs/cpu.svg"
 import GitHub from "@/components/svgs/github.svg"
@@ -89,7 +89,7 @@ export default async function ProverPage({ params }: ProverPageProps) {
         [curr.prover_machines?.id]: curr.prover_machines,
       }
     }, {})
-  ) as ProvingMachine[]
+  ) as ProverMachine[]
 
   const totalProofs = proofs.length
   const avgZkVMCyclesPerProof = proofs.reduce(
