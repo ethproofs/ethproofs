@@ -1,6 +1,5 @@
-import { machineSchema } from "./machineSchema"
-
 import { withAuth } from "@/lib/auth"
+import { createMachineSchema } from "@/lib/zod/schemas/machine"
 
 export const GET = withAuth(async ({ client, user }) => {
   if (!user) {
@@ -19,7 +18,7 @@ export const GET = withAuth(async ({ client, user }) => {
     return new Response("Internal server error", { status: 500 })
   }
 
-  return new Response(JSON.stringify(data), { status: 200 })
+  return Response.json(data)
 })
 
 export const POST = withAuth(async ({ request, client, user }) => {
@@ -33,7 +32,7 @@ export const POST = withAuth(async ({ request, client, user }) => {
 
   // validate payload schema
   try {
-    machineSchema.parse(requestBody)
+    createMachineSchema.parse(requestBody)
   } catch (error) {
     console.error("machine payload invalid", error)
     return new Response("Invalid payload", {
@@ -59,6 +58,5 @@ export const POST = withAuth(async ({ request, client, user }) => {
     return new Response("Internal server error", { status: 500 })
   }
 
-  // return generated machine_id
-  return new Response(JSON.stringify(data), { status: 200 })
+  return Response.json(data)
 })
