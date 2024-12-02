@@ -17,6 +17,7 @@ import { cn } from "@/lib/utils"
 
 import { BLOCK_GAS_LIMIT } from "@/lib/constants"
 
+import { HidePunctuation } from "../StylePunctuation"
 import { MetricInfo } from "../ui/metric"
 import { Progress } from "../ui/progress"
 import { TooltipContentFooter, TooltipContentHeader } from "../ui/tooltip"
@@ -81,7 +82,7 @@ export const columns: ColumnDef<BlockWithProofs>[] = [
             href={`/block/${blockNumber}`}
             className="text-lg tracking-wide hover:text-primary-light hover:underline"
           >
-            {blockNumber}
+            <HidePunctuation>{formatNumber(blockNumber)}</HidePunctuation>
           </Link>
           <div className="font-sans text-xs text-body-secondary">
             {formattedTimestamp}
@@ -144,7 +145,7 @@ export const columns: ColumnDef<BlockWithProofs>[] = [
       const percentGasUsage = (gasUsed / BLOCK_GAS_LIMIT) * 100
       return (
         <>
-          {formatted}
+          <HidePunctuation>{formatted}</HidePunctuation>
           <Progress
             value={percentGasUsage}
             className={cn(

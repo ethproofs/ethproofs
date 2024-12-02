@@ -8,6 +8,9 @@ import BlocksTable from "@/components/BlocksTable"
 import Block from "@/components/svgs/box.svg"
 import Clock from "@/components/svgs/clock.svg"
 import DollarSign from "@/components/svgs/dollar-sign.svg"
+import ShieldCheck from "@/components/svgs/shield-check.svg"
+import TeamLogo from "@/components/TeamLogo"
+import { ButtonLink } from "@/components/ui/button"
 
 import { cn } from "@/lib/utils"
 
@@ -31,6 +34,11 @@ export default async function Index() {
   })
 
   const recentSummary = await supabase.from("recent_summary").select().single()
+
+  const teamsSummary = await supabase
+    .from("teams_summary")
+    .select()
+    .order("average_proof_latency", { ascending: true })
 
   const blocksResponse = await supabase
     .from("blocks")
@@ -108,7 +116,7 @@ export default async function Index() {
                 <p className="font-mono text-2xl text-primary md:text-3xl lg:text-4xl">
                   {icon}
                 </p>
-                <p className="font-mono text-2xl text-primary md:text-3xl lg:text-4xl">
+                <p className="text-center font-mono text-2xl text-primary md:text-3xl lg:text-4xl">
                   {value}
                 </p>
               </div>
@@ -127,6 +135,98 @@ export default async function Index() {
 
       <section id="blocks" className="w-full scroll-m-20">
         <BlocksTable blocks={blocksProofsTeams} />
+      </section>
+
+      <section className="w-full scroll-m-20 space-y-8" id="provers">
+        <div>
+          <h2>Provers</h2>
+          <div className="h-0.5 w-full bg-gradient-to-r from-primary" />
+        </div>
+        <div className="flex flex-col-reverse gap-8 sm:flex-row">
+          <div className="flex-1">
+            <p className="mb-auto">
+              Provers demonstrate they know a secret or have completed a
+              computation correctly without revealing the actual secret or
+              computation details. The verifiers then can check this proof and
+              be confident that the prover is telling the truth without needing
+              to see the private data. In the context of this project, the
+              proofs are representing that a certain block has been valid.
+            </p>
+          </div>
+          {teamsSummary.data && (
+            <div className="flex flex-1 flex-col items-center gap-2">
+              <div className="whitespace-nowrap text-sm font-bold uppercase text-body">
+                Prover diversity
+              </div>
+              <div className="flex items-center gap-2 whitespace-nowrap text-4xl text-primary">
+                <ShieldCheck /> {teamsSummary.data.length}
+              </div>
+              <div className="whitespace-nowrap text-xs font-bold uppercase text-body-secondary">
+                Prover vendors
+              </div>
+            </div>
+          )}
+        </div>
+        <div className="flex flex-wrap gap-8">
+          {teamsSummary.data &&
+            teamsSummary.data.map(
+              ({
+                team_id,
+                logo_url,
+                team_name,
+                average_proving_cost,
+                average_proof_latency,
+              }) => (
+                <div
+                  className="flex min-w-96 flex-1 flex-col gap-4 rounded-4xl border bg-gradient-to-b from-body/[0.06] to-body/[0.03] p-8"
+                  key={team_id}
+                >
+                  <div className="relative mx-auto flex h-20 w-56 justify-center">
+                    <TeamLogo
+                      src={logo_url}
+                      alt={team_name || "Prover logo"}
+                      className="object-center"
+                    />
+                    <span
+                      className={cn(
+                        "absolute inset-0 text-2xl",
+                        !logo_url && "sr-only"
+                      )}
+                    >
+                      {team_name}
+                    </span>
+                  </div>
+
+                  <div className="mx-auto flex flex-col gap-6">
+                    <div className="flex w-full flex-nowrap">
+                      <div className="flex flex-col items-center gap-2 px-4">
+                        <div className="flex items-center gap-1 text-body-secondary">
+                          avg latency
+                        </div>
+                        <div className="font-mono text-lg">
+                          {prettyMilliseconds(average_proof_latency || 0)}
+                        </div>
+                      </div>
+                      <div className="flex flex-col items-center gap-2 px-4">
+                        <div className="flex items-center gap-1 text-body-secondary">
+                          avg cost
+                        </div>
+                        <div className="font-mono text-lg">
+                          {formatNumber(average_proving_cost || 0, {
+                            style: "currency",
+                            currency: "USD",
+                          })}
+                        </div>
+                      </div>
+                    </div>
+                    <ButtonLink href={`/prover/${team_id}`} variant="outline">
+                      + details for {team_name}
+                    </ButtonLink>
+                  </div>
+                </div>
+              )
+            )}
+        </div>
       </section>
     </div>
   )
