@@ -169,6 +169,7 @@ export type Database = {
       prover_machines: {
         Row: {
           id: string
+          machine_cycle_type: string | null
           machine_description: string | null
           machine_hardware: string | null
           machine_id: number | null
@@ -177,6 +178,7 @@ export type Database = {
         }
         Insert: {
           id?: string
+          machine_cycle_type?: string | null
           machine_description?: string | null
           machine_hardware?: string | null
           machine_id?: number | null
@@ -185,6 +187,7 @@ export type Database = {
         }
         Update: {
           id?: string
+          machine_cycle_type?: string | null
           machine_description?: string | null
           machine_hardware?: string | null
           machine_id?: number | null

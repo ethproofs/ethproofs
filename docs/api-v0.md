@@ -132,7 +132,8 @@ Register a new prover machine.
 {
   "machine_name": string, // Human-readable name (e.g., "ZKnight-01", "SNARK-Sentinel")
   "machine_description": string (optional), // Description of the machine (e.g., "Primary RISC-V prover")
-  "machine_hardware": string (optional) // Technical specifications (e.g., "RISC-V Prover", "STARK-to-SNARK Prover")
+  "machine_hardware": string (optional), // Technical specifications (e.g., "RISC-V Prover", "STARK-to-SNARK Prover")
+  "machine_cycle_type": string (optional) // Type of cycle (e.g., "SP1")
 }
 ```
 
