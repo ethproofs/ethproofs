@@ -5,7 +5,7 @@ import { createClient } from "@/utils/supabase/server"
 export const withAuth = (
   handler: (auth: {
     request: Request
-    client: ReturnType<typeof createClient>
+    client: Awaited<ReturnType<typeof createClient>>
     user: { id: string } | null
     apiKey?: { mode: string; user_id: string } | null
     timestamp: string
@@ -14,11 +14,11 @@ export const withAuth = (
   return async (request: Request) => {
     const timestamp = new Date().toISOString()
 
-    const headerStore = headers()
-    const authHeader = headerStore.get("authorization")
+    const headersList = await headers()
+    const authHeader = headersList.get("authorization")
 
     // Get the user from the session
-    const client = createClient({
+    const client = await createClient({
       global: {
         headers: {
           ethkey: authHeader ? authHeader.split(" ")[1] : "",

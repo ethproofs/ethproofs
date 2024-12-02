@@ -4,10 +4,10 @@ import { SupabaseClientOptions } from "@supabase/supabase-js"
 
 import type { Database } from "@/lib/database.types"
 
-export const createClient = (
+export const createClient = async (
   clientOptions?: SupabaseClientOptions<"public">
 ) => {
-  const cookieStore = cookies()
+  const cookieStore = await cookies()
 
   return createServerClient<Database>(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,

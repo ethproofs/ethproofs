@@ -22,7 +22,7 @@ import { createClient } from "@/utils/supabase/server"
 export const metadata: Metadata = getMetadata()
 
 export default async function Index() {
-  const supabase = createClient({
+  const supabase = await createClient({
     global: {
       fetch: (input, init) =>
         fetch(input, {
