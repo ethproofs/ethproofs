@@ -11,6 +11,7 @@ import DollarSign from "@/components/svgs/dollar-sign.svg"
 import ShieldCheck from "@/components/svgs/shield-check.svg"
 import TeamLogo from "@/components/TeamLogo"
 import { ButtonLink } from "@/components/ui/button"
+import { Card } from "@/components/ui/card"
 
 import { cn } from "@/lib/utils"
 
@@ -165,8 +166,8 @@ export default async function Index() {
                 average_proving_cost,
                 average_proof_latency,
               }) => (
-                <div
-                  className="flex min-w-96 flex-1 flex-col gap-4 rounded-4xl border bg-gradient-to-b from-body/[0.06] to-body/[0.03] p-8"
+                <Card
+                  className="flex min-w-96 flex-1 flex-col gap-4"
                   key={team_id}
                 >
                   <div className="relative mx-auto flex h-20 w-56 justify-center">
@@ -211,7 +212,7 @@ export default async function Index() {
                       + details for {team_name}
                     </ButtonLink>
                   </div>
-                </div>
+                </Card>
               )
             )}
         </div>
