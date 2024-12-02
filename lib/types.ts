@@ -2,7 +2,17 @@ import { type ReactNode } from "react"
 
 import type { Tables } from "./database.types"
 
-export type Proof = Tables<"proofs">
+export type Team = Tables<"teams">
+
+export type ProverMachine = Tables<"prover_machines">
+
+type BaseProof = Tables<"proofs">
+type ProofExtensions = {
+  team?: Team
+  prover_machines?: ProverMachine
+}
+export type Proof = BaseProof & ProofExtensions
+
 export type Block = Tables<"blocks">
 export type EmptyBlock = Partial<Block> & Pick<Block, "block_number">
 
@@ -11,8 +21,8 @@ export type BlockWithProofsById = Record<number, BlockWithProofs>
 
 export type Metric = {
   label: ReactNode
-  description: string
-  value: string
+  description: ReactNode
+  value: ReactNode
 }
 
 export type SummaryItem = {

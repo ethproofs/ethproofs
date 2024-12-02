@@ -1,8 +1,8 @@
-export const SITE_NAME = "EthProofs"
+export const SITE_NAME = "Ethproofs"
 export const SITE_DESCRIPTION = "Building a fully SNARKed Ethereum"
 export const SITE_URL = process.env.SITE_URL || "https://ethproofs.org"
 export const SITE_PREVIEW_URL = "http://ethproofs.netlify.app"
-export const SITE_REPO_URL = "https://github.com/ethproofs/ethproofs"
+export const SITE_REPO = "ethproofs/ethproofs"
 export const SITE_DEPLOY_URL = process.env.DEPLOY_URL
 
 // Beacon chain timing constants

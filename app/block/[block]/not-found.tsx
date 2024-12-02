@@ -1,6 +1,6 @@
 import { headers } from "next/headers"
 
-import BlockLarge from "@/components/svgs/block-large.svg"
+import Box from "@/components/svgs/box.svg"
 import { HeroSection } from "@/components/ui/hero"
 
 export default async function NotFound() {
@@ -11,7 +11,7 @@ export default async function NotFound() {
   return (
     <HeroSection className="space-y-4">
       <h1 className="flex flex-col items-center gap-4 font-mono md:flex-row">
-        404 <BlockLarge className="inline text-6xl text-primary" />{" "}
+        404 <Box strokeWidth="1" className="text-6xl text-primary" />{" "}
         {typeof block === "string" ? block : ""}
       </h1>
       <p className="text-center md:text-start">Proof not found</p>

@@ -1,13 +1,15 @@
 import { getMetadata } from "@/lib/metadata"
 
-export const metadata = getMetadata({ title: "About" })
+export const metadata = getMetadata({ title: "Learn" })
 
-export default function AboutPage() {
+export default function LearnPage() {
   return (
     <div className="space-y-16">
       <section className="space-y-16 md:mt-16 lg:mt-32 xl:mt-48">
         <div>
-          <h1 className="text-4xl md:text-5xl">About</h1>
+          <h1 className="text-4xl md:text-5xl">
+            Learn about SNARKifying Ethereum
+          </h1>
           <div className="h-px w-full bg-gradient-to-r from-primary"></div>
         </div>
         <div className="max-w-screen-lg">

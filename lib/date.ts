@@ -72,9 +72,9 @@ export function timestampWithinDays(
   return Date.now() - new Date(timestamp).getTime() < days * 24 * 60 * 60 * 1000
 }
 
-export const renderTimestamp = (timestamp: string): string =>
+export const renderTimestamp = (timestamp: string, timeZone?: string): string =>
   new Intl.DateTimeFormat("en-US", {
     dateStyle: "short",
     timeStyle: "long",
-    timeZone: "UTC",
+    timeZone,
   }).format(new Date(timestamp))
