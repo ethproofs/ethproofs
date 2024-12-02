@@ -2,15 +2,16 @@ import { type Metadata } from "next"
 import Link from "next/link"
 import { notFound } from "next/navigation"
 
-import { Metric } from "@/lib/types"
+import { Metric, ProvingMachine } from "@/lib/types"
 
-import LearnMore from "@/components/LearnMore"
+import Cpu from "@/components/svgs/cpu.svg"
 import GitHub from "@/components/svgs/github.svg"
 import Globe from "@/components/svgs/globe.svg"
 import ProofCircle from "@/components/svgs/proof-circle.svg"
 import TrendingUp from "@/components/svgs/trending-up.svg"
 import XLogo from "@/components/svgs/x-logo.svg"
 import TeamLogo from "@/components/TeamLogo"
+import { Card } from "@/components/ui/card"
 import DataTable from "@/components/ui/data-table"
 import {
   HeroBody,
@@ -75,10 +76,20 @@ export default async function ProverPage({ params }: ProverPageProps) {
 
   const { data: proofs, error: proofError } = await supabase
     .from("proofs")
-    .select("*, prover_machines(machine_name)")
+    .select("*, prover_machines(*)")
     .eq("user_id", team.user_id)
 
   if (!team || teamError || !proofs?.length || proofError) return notFound()
+
+  const provingMachines = Object.values(
+    proofs.reduce((acc, curr) => {
+      if (!curr.prover_machines) return acc
+      return {
+        ...acc,
+        [curr.prover_machines?.id]: curr.prover_machines,
+      }
+    }, {})
+  ) as ProvingMachine[]
 
   const totalProofs = proofs.length
   const avgZkVMCyclesPerProof = proofs.reduce(
@@ -217,13 +228,39 @@ export default async function ProverPage({ params }: ProverPageProps) {
         <h2 className="flex items-center gap-2 text-lg font-normal text-primary">
           <ProofCircle /> Proofs
         </h2>
-        {/* TODO: Data table of proofs for prover */}
         <DataTable
-          // className="" // TODO: Style data table
           columns={columns}
           data={proofs}
           sorting={[{ id: "block_number", desc: true }]}
         />
+      </section>
+
+      <section>
+        <h2 className="flex items-center gap-2 text-lg font-normal text-primary">
+          <Cpu /> Proving instances
+        </h2>
+        <div
+          className="mt-8 grid gap-8"
+          style={{
+            gridTemplateColumns: "repeat(auto-fill, minmax(24rem, 1fr))",
+          }}
+        >
+          {provingMachines.map(
+            ({ machine_name, machine_hardware, machine_description }) => (
+              <Card key={machine_name} className="space-y-4">
+                <h3 className="text-xl font-semibold">{machine_name}</h3>
+                {machine_hardware && (
+                  <p className="font-mono text-body">
+                    Hardware: {machine_hardware}
+                  </p>
+                )}
+                {machine_description && (
+                  <p className="text-body-secondary">{machine_description}</p>
+                )}
+              </Card>
+            )
+          )}
+        </div>
       </section>
     </div>
   )
