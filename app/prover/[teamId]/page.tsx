@@ -1,9 +1,11 @@
 import { type Metadata } from "next"
 import Link from "next/link"
 import { notFound } from "next/navigation"
+import prettyMilliseconds from "pretty-ms"
 
 import type { Metric, Proof, ProverMachine } from "@/lib/types"
 
+import Null from "@/components/Null"
 import ProofStatus, { ProofStatusInfo } from "@/components/ProofStatus"
 import Cpu from "@/components/svgs/cpu.svg"
 import GitHub from "@/components/svgs/github.svg"
@@ -37,7 +39,7 @@ import { columns } from "./columns"
 
 import { getMetadata } from "@/lib/metadata"
 import { formatNumber } from "@/lib/number"
-import { isCompleted } from "@/lib/proofs"
+import { getProofsAvgLatency, isCompleted } from "@/lib/proofs"
 import { getHost, getTwitterHandle } from "@/lib/url"
 import { createClient } from "@/utils/supabase/client"
 
@@ -105,17 +107,19 @@ export default async function ProverPage({ params }: ProverPageProps) {
     (acc, proof) => acc + (proof.blocks?.gas_used as number),
     0
   )
-  const avgZkVMCyclesPerGas = totalZkVMCycles / totalGasProven // ? Use Mgas?
+  const avgZkVMCyclesPerMgas = totalZkVMCycles / totalGasProven / 1e6
   const proverTotalFees = completedProofs.reduce(
     (acc, proof) => acc + (proof.proving_cost as number),
     0
   )
-  const avgCostPerProof = proverTotalFees / completedProofs.length
+  const avgCostPerProof = proverTotalFees / totalGasProven / 1e6
 
   const proofs = proofsWithBlockGas.map(
     // eslint-disable-next-line unused-imports/no-unused-vars
     ({ blocks, ...proof }) => proof as Proof
   )
+  const avgProofLatency = getProofsAvgLatency(proofs)
+
   const performanceMetrics: Metric[] = [
     {
       label: "Status of proofs",
@@ -130,26 +134,22 @@ export default async function ProverPage({ params }: ProverPageProps) {
         </>
       ),
       description:
-        "The average number of zkVM cycles required to generate a proof.", // TODO: Add proper descriptions
-      value: formatNumber(avgZkVMCyclesPerGas),
+        "The average number of zkVM cycles required to prove a million gas units",
+      value: formatNumber(avgZkVMCyclesPerMgas),
     },
     {
-      label: "Prover total fees",
-      description:
-        "The total fees accumulated by the prover for generating proofs.", // TODO: Add proper descriptions
-      value: formatNumber(proverTotalFees, {
-        style: "currency",
-        currency: "USD",
-        notation: "compact",
-      }),
-    },
-    {
-      label: "Avg cost per proof",
-      description: "The average cost incurred for generating a single proof.", // TODO: Add proper descriptions
+      label: "Avg cost per Mgas",
+      description: "The average cost incurred for proving a million gas units",
       value: formatNumber(avgCostPerProof, {
         style: "currency",
         currency: "USD",
       }),
+    },
+    {
+      label: "Avg proving time",
+      description:
+        "The average amount of time taken to generate a proof using any proving instance",
+      value: avgProofLatency ? prettyMilliseconds(avgProofLatency) : <Null />,
     },
   ]
 
