@@ -1,18 +1,14 @@
 {
   "openapi": "3.1.0",
   "info": {
-    "title": "EthProofs API",
-    "description": "This document outlines the available API endpoints for EthProofs.\n\n**Authentication**\n\nAll endpoints require authentication using an API key in the request header:\n\n`Authorization: Bearer <api_key>`",
+    "title": "Ethproofs API",
+    "description": "This document outlines the available API endpoints for Ethproofs.\n\n**Authentication**\n\nAll endpoints require authentication using an API key in the request header:\n\n`Authorization: Bearer <api_key>`",
     "version": "0.0.1"
   },
   "servers": [
     {
       "url": "https://ethproofs.org/api/v0",
-      "description": "Testing server"
-    },
-    {
-      "url": "http://localhost:3000/api/v0",
-      "description": "Local server"
+      "description": "Main server"
     }
   ],
   "tags": [

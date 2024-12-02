@@ -15,11 +15,7 @@ export const document = createDocument({
   servers: [
     {
       url: new URL("/api/v0", SITE_DEPLOY_URL || SITE_URL).toString(),
-      description: "Testing server",
-    },
-    {
-      url: "http://localhost:3000/api/v0",
-      description: "Local server",
+      description: "Main server",
     },
   ],
   tags: [
