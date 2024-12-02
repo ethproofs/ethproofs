@@ -11,7 +11,7 @@ export const proofsPaths: ZodOpenApiPathsObject = {
       requestBody: {
         required: true,
         description:
-          "The request body schema varies based on the `proof_status` field. If no `proof_id` is provided, the system will attempt to find an existing proof for the `block_number` and `machine_id`",
+          "The request body schema varies based on the `proof_status` field.",
         content: {
           "application/json": {
             schema: createProofSchema,

@@ -8,15 +8,20 @@ export const MachineSchema = z.object({
 })
 
 export const createMachineSchema = z.object({
-  machine_name: z.string().max(50),
+  machine_name: z
+    .string()
+    .max(50)
+    .describe('Human-readable name (e.g., "ZKnight-01", "SNARK-Sentinel")'),
   machine_description: z
     .string()
     .max(200)
     .optional()
-    .describe("Machine description"),
+    .describe('Description of the machine (e.g., "Primary RISC-V prover")'),
   machine_hardware: z
     .string()
     .max(200)
     .optional()
-    .describe("Technical details of the machine"),
+    .describe(
+      'Technical specifications (e.g., "RISC-V Prover", "STARK-to-SNARK Prover")'
+    ),
 })

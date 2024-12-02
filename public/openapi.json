@@ -44,17 +44,18 @@
                 "properties": {
                   "machine_name": {
                     "type": "string",
-                    "maxLength": 50
+                    "maxLength": 50,
+                    "description": "Human-readable name (e.g., \"ZKnight-01\", \"SNARK-Sentinel\")"
                   },
                   "machine_description": {
                     "type": "string",
                     "maxLength": 200,
-                    "description": "Machine description"
+                    "description": "Description of the machine (e.g., \"Primary RISC-V prover\")"
                   },
                   "machine_hardware": {
                     "type": "string",
                     "maxLength": 200,
-                    "description": "Technical details of the machine"
+                    "description": "Technical specifications (e.g., \"RISC-V Prover\", \"STARK-to-SNARK Prover\")"
                   }
                 },
                 "required": [
@@ -153,7 +154,7 @@
         "summary": "Submit a new proof or update an existing one",
         "requestBody": {
           "required": true,
-          "description": "The request body schema varies based on the `proof_status` field. If no `proof_id` is provided, the system will attempt to find an existing proof for the `block_number` and `machine_id`",
+          "description": "The request body schema varies based on the `proof_status` field.",
           "content": {
             "application/json": {
               "schema": {
@@ -162,7 +163,8 @@
                     "type": "object",
                     "properties": {
                       "proof_id": {
-                        "type": "number"
+                        "type": "number",
+                        "description": "Unique identifier for the proof. If no proof_id is provided, the system will attempt to find an existing proof for the block_number and machine_id"
                       },
                       "block_number": {
                         "type": "number",
@@ -186,7 +188,8 @@
                     "type": "object",
                     "properties": {
                       "proof_id": {
-                        "type": "number"
+                        "type": "number",
+                        "description": "Unique identifier for the proof. If no proof_id is provided, the system will attempt to find an existing proof for the block_number and machine_id"
                       },
                       "block_number": {
                         "type": "number",
@@ -210,7 +213,8 @@
                     "type": "object",
                     "properties": {
                       "proof_id": {
-                        "type": "number"
+                        "type": "number",
+                        "description": "Unique identifier for the proof. If no proof_id is provided, the system will attempt to find an existing proof for the block_number and machine_id"
                       },
                       "block_number": {
                         "type": "number",
@@ -225,11 +229,13 @@
                       },
                       "proof_latency": {
                         "type": "number",
-                        "exclusiveMinimum": 0
+                        "exclusiveMinimum": 0,
+                        "description": "Milliseconds taken to generate the proof"
                       },
                       "proving_cost": {
                         "type": "number",
-                        "exclusiveMinimum": 0
+                        "exclusiveMinimum": 0,
+                        "description": "Cost of generating the proof (in USD)"
                       },
                       "proving_cycles": {
                         "type": "integer",
