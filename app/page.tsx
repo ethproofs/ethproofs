@@ -180,14 +180,14 @@ export default async function Index() {
                       alt={team_name || "Prover logo"}
                       className={cn("object-center", !logo_url && "opacity-50")}
                     />
-                    <div
+                    <h3
                       className={cn(
-                        "absolute inset-0 grid place-items-center text-4xl",
+                        "absolute inset-0 grid place-items-center text-3xl",
                         logo_url && "sr-only"
                       )}
                     >
                       {team_name}
-                    </div>
+                    </h3>
                   </div>
 
                   <div className="mx-auto flex flex-col gap-6">
