@@ -15,7 +15,7 @@ import { ButtonLink } from "@/components/ui/button"
 
 import { cn } from "@/lib/utils"
 
-import { BLOCK_GAS_LIMIT } from "@/lib/constants"
+import { BLOCK_GAS_LIMIT, SITE_NAME } from "@/lib/constants"
 
 import { HidePunctuation } from "../StylePunctuation"
 import { MetricInfo } from "../ui/metric"
@@ -410,7 +410,7 @@ export const columns: ColumnDef<BlockWithProofs>[] = [
               </div>
               <p>
                 <span className="italic">proof submission time</span> is the
-                timestamp logged by EthProofs when a completed proof has been
+                timestamp logged by {SITE_NAME} when a completed proof has been
                 submitted
               </p>
               <p>
