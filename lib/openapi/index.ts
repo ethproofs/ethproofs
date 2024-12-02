@@ -1,18 +1,20 @@
 import { createDocument } from "zod-openapi"
 
+import { SITE_DEPLOY_URL, SITE_NAME, SITE_URL } from "../constants"
+
 import { machinesPaths } from "./machines"
 import { proofsPaths } from "./proofs"
 
 export const document = createDocument({
   openapi: "3.1.0",
   info: {
-    title: "Ethproofs API",
-    description: `This document outlines the available API endpoints for ethproofs.\n\n**Authentication**\n\nAll endpoints require authentication using an API key in the request header:\n\n\`Authorization: Bearer <api_key>\``,
+    title: `${SITE_NAME} API`,
+    description: `This document outlines the available API endpoints for ${SITE_NAME}.\n\n**Authentication**\n\nAll endpoints require authentication using an API key in the request header:\n\n\`Authorization: Bearer <api_key>\``,
     version: "0.0.1",
   },
   servers: [
     {
-      url: "https://main--ethproofs.netlify.app/api/v0",
+      url: new URL("/api/v0", SITE_DEPLOY_URL || SITE_URL).toString(),
       description: "Testing server",
     },
     {

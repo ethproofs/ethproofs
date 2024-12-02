@@ -1,13 +1,13 @@
 {
   "openapi": "3.1.0",
   "info": {
-    "title": "Ethproofs API",
-    "description": "This document outlines the available API endpoints for ethproofs.\n\n**Authentication**\n\nAll endpoints require authentication using an API key in the request header:\n\n`Authorization: Bearer <api_key>`",
+    "title": "EthProofs API",
+    "description": "This document outlines the available API endpoints for EthProofs.\n\n**Authentication**\n\nAll endpoints require authentication using an API key in the request header:\n\n`Authorization: Bearer <api_key>`",
     "version": "0.0.1"
   },
   "servers": [
     {
-      "url": "https://main--ethproofs.netlify.app/api/v0",
+      "url": "https://ethproofs.org/api/v0",
       "description": "Testing server"
     },
     {
