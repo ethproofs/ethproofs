@@ -1,6 +1,6 @@
 import { createDocument } from "zod-openapi"
 
-import { SITE_DEPLOY_URL, SITE_NAME, SITE_URL } from "../constants"
+import { SITE_NAME, SITE_PREVIEW_URL, SITE_URL } from "../constants"
 
 import { machinesPaths } from "./machines"
 import { proofsPaths } from "./proofs"
@@ -14,8 +14,12 @@ export const document = createDocument({
   },
   servers: [
     {
-      url: new URL("/api/v0", SITE_DEPLOY_URL || SITE_URL).toString(),
+      url: new URL("/api/v0", SITE_URL).toString(),
       description: "Main server",
+    },
+    {
+      url: new URL("/api/v0", SITE_PREVIEW_URL).toString(),
+      description: "Testing server",
     },
   ],
   tags: [

@@ -9,6 +9,10 @@
     {
       "url": "https://ethproofs.org/api/v0",
       "description": "Main server"
+    },
+    {
+      "url": "https://main--ethproofs.netlify.app/api/v0",
+      "description": "Testing server"
     }
   ],
   "tags": [
