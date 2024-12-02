@@ -41,7 +41,12 @@ export const POST = withAuth(async ({ request, client, user }) => {
     })
   }
 
-  const { machine_name, machine_description, machine_hardware } = requestBody
+  const {
+    machine_name,
+    machine_description,
+    machine_hardware,
+    machine_cycle_type,
+  } = requestBody
 
   const { data, error } = await client
     .from("prover_machines")
@@ -49,6 +54,7 @@ export const POST = withAuth(async ({ request, client, user }) => {
       machine_name,
       machine_description,
       machine_hardware,
+      machine_cycle_type,
       user_id: user.id,
     })
     .select("machine_id")
