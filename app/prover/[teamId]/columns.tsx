@@ -11,7 +11,7 @@ import { ButtonLink } from "@/components/ui/button"
 import { intervalToReadable } from "@/lib/date"
 import { formatNumber } from "@/lib/number"
 
-export const columns: ColumnDef<Proof>[] = [
+export const columns: ColumnDef<Omit<Proof, "team" | "prover_machines">>[] = [
   // Block (time since)
   {
     accessorKey: "block_number",

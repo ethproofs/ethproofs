@@ -24,7 +24,7 @@ import {
 
 import { cn } from "@/lib/utils"
 
-import { SITE_REPO } from "@/lib/constants"
+import { SITE_NAME, SITE_REPO } from "@/lib/constants"
 
 import "../styles/globals.css"
 
@@ -163,9 +163,11 @@ export default function RootLayout({
                 <Link
                   href={new URL(SITE_REPO, "https://github.com").toString()}
                   className="mb-12"
+                  target="_blank"
+                  rel="noopener noreferrer"
                 >
                   <GitHub className="size-6" />
-                  <span>Contribute to ETH Proofs</span>
+                  <span>Contribute to {SITE_NAME}</span>
                 </Link>
               </Button>
 
