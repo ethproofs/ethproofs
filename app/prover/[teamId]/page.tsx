@@ -244,7 +244,7 @@ export default async function ProverPage({ params }: ProverPageProps) {
         </h2>
         <DataTable
           columns={columns}
-          data={proofsWithBlockGas}
+          data={proofs}
           sorting={[{ id: "block_number", desc: true }]}
         />
       </section>
