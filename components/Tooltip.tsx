@@ -19,16 +19,33 @@ import { cn, isMobile } from "@/lib/utils"
 
 import { useDisclosure } from "@/hooks/useDisclosure"
 
+/**
+ * @typedef TooltipProps
+ * @property {string} [className] - Additional class names to style the tooltip.
+ * @property {() => void} [onBeforeOpen] - Callback function to be called before the tooltip opens.
+ * @property {HTMLElement | null} [container] - The container element for the tooltip.
+ *
+ * @property {ReactNode} [trigger] - The element that triggers the tooltip. Either `trigger` or `content` must be provided, but not both.
+ * @property {ReactNode} [content] - The content of the tooltip. Either `content` or `trigger` must be provided, but not both.
+ * @property {ReactNode} [children] - If trigger provided, children used as content of tooltip. If content provided, children used as the element that triggers the tooltip.
+ *
+ * Note: Either `trigger` OR `content` is required. `children` will be used for the other.
+ */
 export type TooltipProps = ComponentProps<typeof UIPopover> & {
-  trigger: ReactNode
   children?: ReactNode
   className?: string
   onBeforeOpen?: () => void
   container?: HTMLElement | null
-}
+} & (
+    | {
+        trigger: ReactNode
+      }
+    | {
+        content: ReactNode
+      }
+  )
 
 const Tooltip = ({
-  trigger,
   children,
   onBeforeOpen,
   container,
@@ -36,6 +53,10 @@ const Tooltip = ({
   ...props
 }: TooltipProps) => {
   const { isOpen, onOpen, onClose } = useDisclosure()
+
+  const trigger = "trigger" in props ? props.trigger : children
+  const content = "content" in props ? props.content : children
+
   // Close the popover when the user scrolls.
   // This is useful for mobile devices where the popover is open by clicking the
   // trigger, not hovering.
@@ -68,11 +89,7 @@ const Tooltip = ({
   }
 
   const handleOpenChange = (open: boolean) => {
-    if (open) {
-      handleOpen()
-    } else {
-      onClose()
-    }
+    ;(open ? handleOpen : onClose)()
   }
 
   // Use Popover on mobile devices since the user can't hover
@@ -99,7 +116,7 @@ const Tooltip = ({
             className={cn("max-w-80 px-5 text-sm", className)}
             data-testid="tooltip-popover"
           >
-            {children}
+            {content}
           </Content>
         </Portal>
       </Component>
