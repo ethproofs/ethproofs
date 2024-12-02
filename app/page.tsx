@@ -2,7 +2,7 @@ import type { Metadata } from "next"
 import Image from "next/image"
 import prettyMilliseconds from "pretty-ms"
 
-import type { SummaryItem } from "@/lib/types"
+import type { BlockWithProofs, SummaryItem } from "@/lib/types"
 
 import BlocksTable from "@/components/BlocksTable"
 import Block from "@/components/svgs/box.svg"
@@ -34,10 +34,10 @@ export default async function Index() {
 
   const blocksResponse = await supabase
     .from("blocks")
-    .select("*,proofs!inner(id:proof_id, *)")
+    .select("*,proofs!inner(id:proof_id,*,prover_machines(*))")
     .order("block_number", { ascending: false })
-
   const blocks = blocksResponse.data || []
+
   const teamsResponse = await supabase.from("teams").select()
   const teams = teamsResponse.data || []
 
@@ -48,7 +48,7 @@ export default async function Index() {
       team: teams.find((team) => team.user_id === proof.user_id),
     }))
 
-    return { ...block, proofs: proofsWithTeams }
+    return { ...block, proofs: proofsWithTeams } as BlockWithProofs
   })
 
   const summaryItems: SummaryItem[] = recentSummary.data
