@@ -182,7 +182,7 @@ export default async function Index() {
                     />
                     <div
                       className={cn(
-                        "absolute inset-0 grid place-items-center text-2xl",
+                        "absolute inset-0 grid place-items-center text-4xl",
                         logo_url && "sr-only"
                       )}
                     >
