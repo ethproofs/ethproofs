@@ -22,6 +22,9 @@ import { MetricInfo } from "../ui/metric"
 import { Progress } from "../ui/progress"
 import { TooltipContentFooter, TooltipContentHeader } from "../ui/tooltip"
 
+import MachineDetails from "./MachineDetails"
+import TeamName from "./TeamName"
+
 import { formatTimeAgo } from "@/lib/date"
 import { formatNumber } from "@/lib/number"
 import {
@@ -42,7 +45,6 @@ export const columns: ColumnDef<BlockWithProofs>[] = [
           {columnLabel}
           <MetricInfo className="space-y-3">
             <TooltipContentHeader>{columnLabel}</TooltipContentHeader>
-            {/* <TooltipContentHeader>Block height number</TooltipContentHeader> */}
             <div className="rounded border bg-background px-3 py-2">
               <span className="font-mono text-primary">block_number</span>
             </div>
@@ -206,16 +208,13 @@ export const columns: ColumnDef<BlockWithProofs>[] = [
         <>
           <span className="align-center flex justify-center whitespace-nowrap">
             {formatted(cheapestCost)}
-            {/* TODO: Use team and machine information */}
             <MetricInfo
               trigger={
                 <Award className="text-primary hover:text-primary-light" />
               }
             >
-              <Link href="#" className="text-primary underline">
-                Team {cheapestProof.user_id}
-              </Link>
-              <span className="block">Machine {cheapestProof.machine_id}</span>
+              <TeamName proof={cheapestProof} />
+              <MachineDetails proof={cheapestProof} />
             </MetricInfo>
           </span>
           <span className="block whitespace-nowrap text-sm text-body-secondary">
@@ -292,16 +291,13 @@ export const columns: ColumnDef<BlockWithProofs>[] = [
         <>
           <span className="align-center flex justify-center whitespace-nowrap">
             {formatted(cheapestCost)}
-            {/* TODO: Use team and machine information */}
             <MetricInfo
               trigger={
                 <Award className="text-primary hover:text-primary-light" />
               }
             >
-              <Link href="#" className="text-primary underline">
-                Team {cheapestProof.user_id}
-              </Link>
-              <span className="block">Machine {cheapestProof.machine_id}</span>
+              <TeamName proof={cheapestProof} />
+              <MachineDetails proof={cheapestProof} />
             </MetricInfo>
           </span>
           <span className="block whitespace-nowrap text-sm text-body-secondary">
@@ -375,12 +371,8 @@ export const columns: ColumnDef<BlockWithProofs>[] = [
                 <Award className="text-primary hover:text-primary-light" />
               }
             >
-              <Link href="#" className="text-primary underline">
-                Team {reduceFastest(completedProofs).user_id}
-              </Link>
-              <span className="block">
-                Machine {reduceFastest(completedProofs).machine_id}
-              </span>
+              <TeamName proof={fastestProof} />
+              <MachineDetails proof={fastestProof} />
             </MetricInfo>
           </span>
           <span className="block whitespace-nowrap text-sm text-body-secondary">
