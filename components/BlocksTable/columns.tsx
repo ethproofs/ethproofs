@@ -21,6 +21,9 @@ import { MetricInfo } from "../ui/metric"
 import { Progress } from "../ui/progress"
 import { TooltipContentFooter, TooltipContentHeader } from "../ui/tooltip"
 
+import MachineDetails from "./MachineDetails"
+import TeamName from "./TeamName"
+
 import { formatTimeAgo } from "@/lib/date"
 import { formatNumber } from "@/lib/number"
 import {
@@ -41,7 +44,6 @@ export const columns: ColumnDef<BlockWithProofs>[] = [
           {columnLabel}
           <MetricInfo className="space-y-3">
             <TooltipContentHeader>{columnLabel}</TooltipContentHeader>
-            {/* <TooltipContentHeader>Block height number</TooltipContentHeader> */}
             <div className="rounded border bg-background px-3 py-2">
               <span className="font-mono text-primary">block_number</span>
             </div>
@@ -205,25 +207,13 @@ export const columns: ColumnDef<BlockWithProofs>[] = [
         <>
           <span className="align-center flex justify-center whitespace-nowrap">
             {formatted(cheapestCost)}
-            {/* TODO: Use machine name */}
             <MetricInfo
               trigger={
                 <Award className="text-primary hover:text-primary-light" />
               }
             >
-              {cheapestProof.team ? (
-                <Link
-                  href={"/prover/" + cheapestProof.team.team_id}
-                  className="text-primary underline"
-                >
-                  {cheapestProof.team.team_name}
-                </Link>
-              ) : (
-                `Team ${cheapestProof.user_id.split("-")[0]}`
-              )}
-              <span className="block">
-                Machine {cheapestProof.machine_id.split("-")[0]}
-              </span>
+              <TeamName proof={cheapestProof} />
+              <MachineDetails proof={cheapestProof} />
             </MetricInfo>
           </span>
           <span className="block whitespace-nowrap text-sm text-body-secondary">
@@ -300,25 +290,13 @@ export const columns: ColumnDef<BlockWithProofs>[] = [
         <>
           <span className="align-center flex justify-center whitespace-nowrap">
             {formatted(cheapestCost)}
-            {/* TODO: Use machine name */}
             <MetricInfo
               trigger={
                 <Award className="text-primary hover:text-primary-light" />
               }
             >
-              {cheapestProof.team ? (
-                <Link
-                  href={"/prover/" + cheapestProof.team.team_id}
-                  className="text-primary underline"
-                >
-                  {cheapestProof.team.team_name}
-                </Link>
-              ) : (
-                `Team ${cheapestProof.user_id.split("-")[0]}`
-              )}
-              <span className="block">
-                Machine {cheapestProof.machine_id.split("-")[0]}
-              </span>
+              <TeamName proof={cheapestProof} />
+              <MachineDetails proof={cheapestProof} />
             </MetricInfo>
           </span>
           <span className="block whitespace-nowrap text-sm text-body-secondary">
@@ -387,25 +365,13 @@ export const columns: ColumnDef<BlockWithProofs>[] = [
         <>
           <span className="align-center flex justify-center whitespace-nowrap">
             {getBestLatency()}
-            {/* TODO: Use machine name */}
             <MetricInfo
               trigger={
                 <Award className="text-primary hover:text-primary-light" />
               }
             >
-              {fastestProof.team ? (
-                <Link
-                  href={"/prover/" + fastestProof.team.team_id}
-                  className="text-primary underline"
-                >
-                  {fastestProof.team.team_name}
-                </Link>
-              ) : (
-                `Team ${fastestProof.user_id.split("-")[0]}`
-              )}
-              <span className="block">
-                Machine {fastestProof.machine_id.split("-")[0]}
-              </span>
+              <TeamName proof={fastestProof} />
+              <MachineDetails proof={fastestProof} />
             </MetricInfo>
           </span>
           <span className="block whitespace-nowrap text-sm text-body-secondary">
