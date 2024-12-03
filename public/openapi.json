@@ -59,10 +59,32 @@
                     "type": "string",
                     "maxLength": 200,
                     "description": "Technical specifications (e.g., \"RISC-V Prover\", \"STARK-to-SNARK Prover\")"
+                  },
+                  "cluster_configuration": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "instance_type": {
+                          "type": "string",
+                          "description": "Instance type (e.g., 'c5.xlarge'). Check our aws instance pricing endpoint for available instance types."
+                        },
+                        "instance_count": {
+                          "type": "number",
+                          "description": "Number of instances of this type"
+                        }
+                      },
+                      "required": [
+                        "instance_type",
+                        "instance_count"
+                      ]
+                    },
+                    "description": "Cluster configuration"
                   }
                 },
                 "required": [
-                  "cluster_name"
+                  "cluster_name",
+                  "cluster_configuration"
                 ]
               }
             }
@@ -88,7 +110,7 @@
             }
           },
           "400": {
-            "description": "Invalid request body"
+            "description": "Invalid request body or cluster configuration"
           },
           "401": {
             "description": "Invalid API key"

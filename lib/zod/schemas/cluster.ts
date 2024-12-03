@@ -24,4 +24,16 @@ export const createClusterSchema = z.object({
     .describe(
       'Technical specifications (e.g., "RISC-V Prover", "STARK-to-SNARK Prover")'
     ),
+  cluster_configuration: z
+    .array(
+      z.object({
+        instance_type: z
+          .string()
+          .describe(
+            "Instance type (e.g., 'c5.xlarge'). Check our aws instance pricing endpoint for available instance types"
+          ),
+        instance_count: z.number().describe("Number of instances of this type"),
+      })
+    )
+    .describe("Cluster configuration"),
 })

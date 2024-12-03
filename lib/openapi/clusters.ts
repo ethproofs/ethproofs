@@ -26,7 +26,7 @@ export const clustersPaths: ZodOpenApiPathsObject = {
           },
         },
         "400": {
-          description: "Invalid request body",
+          description: "Invalid request body or cluster configuration",
         },
         "401": {
           description: "Invalid API key",
