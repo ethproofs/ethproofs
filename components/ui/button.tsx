@@ -13,6 +13,8 @@ const buttonVariants = cva(
     "text-primary border-current",
     // Hover: Default hover changes bg to --background-active
     "hover:bg-background-active",
+    // Disabled: Pointer events none, text (border) to --body-secondary, bg to --body-secondary/10
+    "disabled:pointer-events-none disabled:text-body-secondary disabled:bg-body-secondary/10",
     // isSecondary: Switch text (border) to --body instead of --primary
     "[&[data-secondary='true']]:text-body"
   ),
@@ -32,7 +34,7 @@ const buttonVariants = cva(
         lg: "py-2 px-[1.375rem]",
         md: "text-sm py-1 px-[1.125rem]",
         sm: "px-3 py-1 text-xs",
-        icon: "p-0.5 h-6 w-6",
+        icon: "p-0.5 h-6 w-auto aspect-square",
         text: "p-0 text-start",
       },
     },
