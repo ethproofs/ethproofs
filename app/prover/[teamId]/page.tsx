@@ -75,7 +75,7 @@ export default async function ProverPage({ params }: ProverPageProps) {
 
   const { data: proofs, error: proofError } = await supabase
     .from("proofs")
-    .select("*, prover_machines(machine_name)")
+    .select("*, clusters(cluster_name)")
     .eq("user_id", team.user_id)
 
   if (!team || teamError || !proofs?.length || proofError) return notFound()
