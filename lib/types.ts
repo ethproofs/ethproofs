@@ -10,6 +10,7 @@ type BaseProof = Tables<"proofs">
 type ProofExtensions = {
   team?: Team
   prover_machines?: ProverMachine
+  blocks?: Partial<Block>
 }
 export type Proof = BaseProof & ProofExtensions
 

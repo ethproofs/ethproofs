@@ -78,16 +78,16 @@ export default async function ProverPage({ params }: ProverPageProps) {
 
   if (!team || !team.user_id || teamError) return notFound()
 
-  const { data: proofsWithBlockGas, error: proofError } = await supabase
+  const { data: proofsExtended, error: proofError } = await supabase
     .from("proofs")
-    .select("*, prover_machines(*),blocks(gas_used)")
+    .select("*, prover_machines(*),blocks(gas_used,timestamp)")
     .eq("user_id", team.user_id)
 
-  if (!team || teamError || !proofsWithBlockGas?.length || proofError)
+  if (!team || teamError || !proofsExtended?.length || proofError)
     return notFound()
 
   const provingMachines = Object.values(
-    proofsWithBlockGas.reduce((acc, curr) => {
+    proofsExtended.reduce((acc, curr) => {
       if (!curr.prover_machines) return acc
       return {
         ...acc,
@@ -96,7 +96,7 @@ export default async function ProverPage({ params }: ProverPageProps) {
     }, {})
   ) as ProverMachine[]
 
-  const completedProofs = proofsWithBlockGas.filter(
+  const completedProofs = proofsExtended.filter(
     (p) => p.proof_status === "proved"
   )
   const totalZkVMCycles = completedProofs.reduce(
@@ -114,10 +114,11 @@ export default async function ProverPage({ params }: ProverPageProps) {
   )
   const avgCostPerMgas = proverTotalFees / totalGasProven / 1e6
 
-  const proofs = proofsWithBlockGas.map(
+  const proofs = proofsExtended.map(
     // eslint-disable-next-line unused-imports/no-unused-vars
     ({ blocks, ...proof }) => proof as Proof
   )
+
   const avgProofLatency = getProofsAvgLatency(proofs)
 
   const performanceMetrics: Metric[] = [
@@ -250,7 +251,7 @@ export default async function ProverPage({ params }: ProverPageProps) {
         </h2>
         <DataTable
           columns={columns}
-          data={proofs}
+          data={proofsExtended as Proof[]}
           sorting={[{ id: "block_number", desc: true }]}
         />
       </section>
