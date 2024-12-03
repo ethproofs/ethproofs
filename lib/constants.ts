@@ -12,6 +12,6 @@ export const SLOTS_PER_EPOCH = 32 // 2^5
 // Execution constants
 export const BLOCK_GAS_LIMIT = 30_000_000 // TODO: Fetch from execution block
 
-// Prover machine constants
+// Prover cluster constants
 export const FALLBACK_TEAM_LOGO_SRC =
   "https://ibkqxhjnroghhtfyualc.supabase.co/storage/v1/object/public/public-assets/fallback-team-logo.svg"
