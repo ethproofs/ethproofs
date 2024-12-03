@@ -168,7 +168,12 @@ export default async function Index() {
             </div>
           )}
         </div>
-        <div className="flex flex-wrap gap-8">
+        <div
+          className="grid gap-8"
+          style={{
+            gridTemplateColumns: "repeat(auto-fill, minmax(24rem, 1fr))",
+          }}
+        >
           {teamsSummary.data &&
             teamsSummary.data.map(
               ({
@@ -186,16 +191,16 @@ export default async function Index() {
                     <TeamLogo
                       src={logo_url}
                       alt={team_name || "Prover logo"}
-                      className="object-center"
+                      className={cn("object-center", !logo_url && "opacity-50")}
                     />
-                    <span
+                    <h3
                       className={cn(
-                        "absolute inset-0 text-2xl",
-                        !logo_url && "sr-only"
+                        "absolute inset-0 grid place-items-center text-3xl",
+                        logo_url && "sr-only"
                       )}
                     >
                       {team_name}
-                    </span>
+                    </h3>
                   </div>
 
                   <div className="mx-auto flex flex-col gap-6">
