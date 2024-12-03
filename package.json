@@ -20,7 +20,7 @@
     "db:types": "supabase gen types typescript --local > lib/database.types.ts",
     "seed:sync": "snaplet-seed sync --config supabase/seed/seed.config.ts",
     "seed:generate": "snaplet-seed generate --config supabase/seed/seed.config.ts",
-    "api:docs": "tsx scripts/generate-openapi.ts"
+    "api:docs": "tsx scripts/generate-openapi.ts & npx @redocly/cli build-docs public/openapi.json --output=public/api.html"
   },
   "dependencies": {
     "@radix-ui/react-dialog": "^1.1.2",
