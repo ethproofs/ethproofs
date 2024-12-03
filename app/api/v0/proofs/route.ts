@@ -2,10 +2,9 @@ import { revalidateTag } from "next/cache"
 import { formatGwei } from "viem"
 import { ZodError } from "zod"
 
-import { proofSchema } from "./proofSchema"
-
 import { withAuth } from "@/lib/auth"
 import { fetchBlockData } from "@/lib/blocks"
+import { createProofSchema } from "@/lib/zod/schemas/proof"
 
 export const POST = withAuth(async ({ request, client, user, timestamp }) => {
   const payload = await request.json()
@@ -22,7 +21,7 @@ export const POST = withAuth(async ({ request, client, user, timestamp }) => {
   // validate payload schema
   let proofPayload
   try {
-    proofPayload = proofSchema.parse(payload)
+    proofPayload = createProofSchema.parse(payload)
   } catch (error) {
     console.error("proof payload invalid", error)
     if (error instanceof ZodError) {
@@ -145,5 +144,5 @@ export const POST = withAuth(async ({ request, client, user, timestamp }) => {
   revalidateTag("proofs")
 
   // return the generated proof_id
-  return new Response(JSON.stringify(proofResponse.data), { status: 200 })
+  return Response.json(proofResponse.data)
 })

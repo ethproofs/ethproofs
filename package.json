@@ -19,7 +19,8 @@
     "db:seed": "tsx supabase/seed/seed.ts > supabase/seed.sql",
     "db:types": "supabase gen types typescript --local > lib/database.types.ts",
     "seed:sync": "snaplet-seed sync --config supabase/seed/seed.config.ts",
-    "seed:generate": "snaplet-seed generate --config supabase/seed/seed.config.ts"
+    "seed:generate": "snaplet-seed generate --config supabase/seed/seed.config.ts",
+    "api:docs": "tsx scripts/generate-openapi.ts"
   },
   "dependencies": {
     "@radix-ui/react-dialog": "^1.1.2",
@@ -76,6 +77,7 @@
     "tailwindcss": "3.4.1",
     "tsx": "^4.19.2",
     "typescript": "5.3.3",
-    "viem": "^2.21.37"
+    "viem": "^2.21.37",
+    "zod-openapi": "^4.1.0"
   }
 }
