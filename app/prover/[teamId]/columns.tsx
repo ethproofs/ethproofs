@@ -41,11 +41,6 @@ export const columns: ColumnDef<Proof>[] = [
       return instance
     },
   },
-  // Proof status
-  {
-    accessorKey: "proof_status",
-    header: "status",
-  },
   // Time to proof (time from block.timestamp to proof.proved_timestamp)
   {
     accessorKey: "proved_timestamp",
