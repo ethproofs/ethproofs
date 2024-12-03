@@ -4,6 +4,7 @@
   "license": "MIT",
   "private": true,
   "scripts": {
+    "postinstall": "pnpm seed:generate",
     "dev": "next dev",
     "build": "next build",
     "postbuild": "next-sitemap",
@@ -15,9 +16,10 @@
     "db:start": "supabase start",
     "db:stop": "supabase stop",
     "db:reset": "supabase db reset",
-    "db:seed": "tsx seed.ts > supabase/seed.sql",
+    "db:seed": "tsx supabase/seed/seed.ts > supabase/seed.sql",
     "db:types": "supabase gen types typescript --local > lib/database.types.ts",
-    "seed:sync": "snaplet-seed sync",
+    "seed:sync": "snaplet-seed sync --config supabase/seed/seed.config.ts",
+    "seed:generate": "snaplet-seed generate --config supabase/seed/seed.config.ts",
     "api:docs": "tsx scripts/generate-openapi.ts & npx @redocly/cli build-docs public/openapi.json --output=public/api.html"
   },
   "dependencies": {
