@@ -4,7 +4,7 @@
   <a href="https://ethproofs.org"><img alt="ethproofs hero and logo" src="./public/images/social-preview.png" alt="ethproofs.org"></a>
 </div>
 
-# ethproofs
+# Ethproofs
 
 ## App local development
 
