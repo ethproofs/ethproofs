@@ -4,6 +4,7 @@
   "license": "MIT",
   "private": true,
   "scripts": {
+    "postinstall": "pnpm db:seed:generate",
     "dev": "next dev",
     "build": "next build",
     "postbuild": "next-sitemap",
@@ -16,6 +17,7 @@
     "db:stop": "supabase stop",
     "db:reset": "supabase db reset",
     "db:seed": "tsx supabase/seed/seed.ts > supabase/seed.sql",
+    "db:seed:generate": "snaplet-seed generate --config supabase/seed/seed.config.ts",
     "db:types": "supabase gen types typescript --local > lib/database.types.ts",
     "seed:sync": "snaplet-seed sync --config supabase/seed/seed.config.ts"
   },
