@@ -112,7 +112,7 @@ export default async function ProverPage({ params }: ProverPageProps) {
     (acc, proof) => acc + (proof.proving_cost as number),
     0
   )
-  const avgCostPerProof = proverTotalFees / totalGasProven / 1e6
+  const avgCostPerMgas = proverTotalFees / totalGasProven / 1e6
 
   const proofs = proofsWithBlockGas.map(
     // eslint-disable-next-line unused-imports/no-unused-vars
@@ -122,15 +122,16 @@ export default async function ProverPage({ params }: ProverPageProps) {
 
   const performanceMetrics: Metric[] = [
     {
-      label: "Status of proofs",
-      description: <ProofStatusInfo />,
+      label: "Total proofs",
+      description: <ProofStatusInfo title="total proofs" />,
       value: <ProofStatus proofs={proofs} />,
     },
     {
       label: (
         <>
           <span className="normal-case">{team.team_name}</span> Avg zk
-          <span className="uppercase">VM</span> cycles per gas
+          <span className="uppercase">VM</span> cycles per{" "}
+          <span className="uppercase">M</span>gas
         </>
       ),
       description:
@@ -138,9 +139,14 @@ export default async function ProverPage({ params }: ProverPageProps) {
       value: formatNumber(avgZkVMCyclesPerMgas),
     },
     {
-      label: "Avg cost per Mgas",
+      label: (
+        <>
+          <span className="normal-case">{team.team_name}</span> Avg cost per{" "}
+          <span className="uppercase">M</span>gas
+        </>
+      ),
       description: "The average cost incurred for proving a million gas units",
-      value: formatNumber(avgCostPerProof, {
+      value: formatNumber(avgCostPerMgas, {
         style: "currency",
         currency: "USD",
       }),
