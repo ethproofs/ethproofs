@@ -98,6 +98,11 @@ export default async function BlockDetailsPage({
 
   const { timestamp, block_number, gas_used, proofs, hash } = block
 
+  const proofsWithTeams = proofs.map((proof) => {
+    const team = teams.find((t) => t.user_id === proof.user_id)
+    return { ...proof, team }
+  })
+
   // TODO: Add proper descriptions
 
   const bestLatencyProof = getProofBestLatency(proofs)
@@ -413,7 +418,7 @@ export default async function BlockDetailsPage({
           <ProofCircle /> Proofs
         </h2>
 
-        {proofs.sort(sortProofsStatusAndTimes).map((proof) => {
+        {proofsWithTeams.sort(sortProofsStatusAndTimes).map((proof) => {
           const {
             proof_id,
             proof_latency,
@@ -421,9 +426,8 @@ export default async function BlockDetailsPage({
             proved_timestamp,
             proving_cost,
             proving_cycles,
-            user_id,
+            team,
           } = proof
-          const team = teams.find((t) => t.user_id === user_id)
           const isComplete = proof_status === "proved" && !!proved_timestamp
           const timeToProof = proved_timestamp
             ? Math.max(
@@ -458,9 +462,16 @@ export default async function BlockDetailsPage({
                   </Link>
                 )}
               </div>
-
-              <DownloadButton proof={proof} team={team} />
-
+              <div
+                className={cn(
+                  "ms-auto self-center",
+                  "col-span-1 col-start-4 row-span-1 row-start-1",
+                  "sm:col-span-2 sm:col-start-3 sm:row-span-1 sm:row-start-1",
+                  "md:col-span-1 md:col-start-6 md:row-span-1 md:row-start-1"
+                )}
+              >
+                <DownloadButton proof={proof} />
+              </div>{" "}
               <MetricBox
                 className={cn(
                   "col-span-2 col-start-1 row-span-1 row-start-2",

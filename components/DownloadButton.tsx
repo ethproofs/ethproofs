@@ -10,15 +10,15 @@ import { Button } from "./ui/button"
 import StatusIcon from "./StatusIcon"
 import Tooltip from "./Tooltip"
 
+import { downloadProof } from "@/lib/proofs"
 
 type DownloadButtonProps = {
-  proof: Proof
-  team?: Team
+  proof: Proof & { team?: Team }
   className?: string
 }
 
-const DownloadButton = ({ className, proof, team }: DownloadButtonProps) => {
-  const { proof_status, proof: binary } = proof
+const DownloadButton = ({ className, proof }: DownloadButtonProps) => {
+  const { proof_status, proof: binary, team } = proof
   const teamName = team?.team_name ? team.team_name : "Team"
 
   const sizingClassName =
@@ -35,6 +35,7 @@ const DownloadButton = ({ className, proof, team }: DownloadButtonProps) => {
         className={cn(sizingClassName, className)}
         size="icon"
         disabled={!binary}
+        onClick={() => downloadProof(proof)}
       >
         <ArrowDown />
         <span className={labelClassName}>Download proof</span>
