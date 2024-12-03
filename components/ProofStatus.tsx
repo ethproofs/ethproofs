@@ -14,11 +14,14 @@ export const ProofStatusInfo = () => (
   <>
     <TooltipContentHeader>proof status</TooltipContentHeader>
     <div className="items-top grid grid-cols-[auto,1fr] gap-4">
-      <Box className="self-center text-2xl text-primary" />
+      <Box strokeWidth="1" className="self-center text-2xl text-primary" />
       Number of completed proofs that have been published for this block
       <BoxDashed className="self-center text-2xl text-primary" />
       Number of provers currently generating proofs for this block
-      <Box className="self-center text-2xl text-body-secondary" />
+      <Box
+        strokeWidth="1"
+        className="self-center text-2xl text-body-secondary"
+      />
       Number of provers who have indicated intent to prove this block
     </div>
     <p className="text-body-secondary">
@@ -44,7 +47,7 @@ const ProofStatus = ({ proofs, className, ...props }: ProofStatusProps) => {
         <MetricInfo
           trigger={
             <div className="flex flex-nowrap items-center gap-1">
-              <Box className="text-primary" />
+              <Box strokeWidth="1" className="text-primary" />
               <span className="block">{completedProofs.length}</span>
             </div>
           }
@@ -58,7 +61,7 @@ const ProofStatus = ({ proofs, className, ...props }: ProofStatusProps) => {
         <MetricInfo
           trigger={
             <div className="flex flex-nowrap items-center gap-1">
-              <BoxDashed className="text-primary" />
+              <BoxDashed strokeWidth="1" className="text-primary" />
               <span className="block">{provingProofs.length}</span>
             </div>
           }
@@ -72,7 +75,7 @@ const ProofStatus = ({ proofs, className, ...props }: ProofStatusProps) => {
         <MetricInfo
           trigger={
             <div className="flex flex-nowrap items-center gap-1">
-              <Box className="text-body-secondary" />
+              <Box strokeWidth="1" className="text-body-secondary" />
               <span className="block">{queuedProofs.length}</span>
             </div>
           }

@@ -120,3 +120,39 @@ export const getProofCheapestProvingCost = (proofs: Proof[]): Proof | null => {
     return a.proving_cost < b.proving_cost ? a : b
   }, completedProofs[0])
 }
+
+// Primary sort by proof_status: proved, proving, then queued
+// Secondary sorts (lower/earlier first)
+// Within `proved` use `proof_latency`
+// Within `proving` use `proving_timestamp`
+// Within `queued` use `queued_timestamp`
+export const sortProofsStatusAndTimes = (a: Proof, b: Proof) => {
+  if (a.proof_status === "proved" && b.proof_status !== "proved") return -1
+  if (a.proof_status !== "proved" && b.proof_status === "proved") return 1
+  if (a.proof_status === "proving" && b.proof_status !== "proving") return -1
+  if (a.proof_status !== "proving" && b.proof_status === "proving") return 1
+  if (a.proof_status === "queued" && b.proof_status !== "queued") return -1
+  if (a.proof_status !== "queued" && b.proof_status === "queued") return 1
+  if (a.proof_status === "proved") {
+    if (!a.proof_latency) return 1
+    if (!b.proof_latency) return -1
+    return a.proof_latency - b.proof_latency
+  }
+  if (a.proof_status === "proving") {
+    if (!a.proving_timestamp) return 1
+    if (!b.proving_timestamp) return -1
+    return (
+      new Date(a.proving_timestamp).getTime() -
+      new Date(b.proving_timestamp).getTime()
+    )
+  }
+  if (a.proof_status === "queued") {
+    if (!a.queued_timestamp) return 1
+    if (!b.queued_timestamp) return -1
+    return (
+      new Date(a.queued_timestamp).getTime() -
+      new Date(b.queued_timestamp).getTime()
+    )
+  }
+  return 0
+}
