@@ -1,6 +1,6 @@
 # API Documentation (v0)
 
-This document outlines the available API endpoints for ethproofs.
+This document outlines the available API endpoints for Ethproofs.
 
 ## Base URL
 

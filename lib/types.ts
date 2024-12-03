@@ -4,7 +4,15 @@ import type { Tables } from "./database.types"
 
 export type Team = Tables<"teams">
 
-export type Proof = Tables<"proofs">
+export type ProverMachine = Tables<"prover_machines">
+
+type BaseProof = Tables<"proofs">
+type ProofExtensions = {
+  team?: Team
+  prover_machines?: ProverMachine
+}
+export type Proof = BaseProof & ProofExtensions
+
 export type Block = Tables<"blocks">
 export type EmptyBlock = Partial<Block> & Pick<Block, "block_number">
 

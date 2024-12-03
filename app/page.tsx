@@ -2,7 +2,7 @@ import type { Metadata } from "next"
 import Image from "next/image"
 import prettyMilliseconds from "pretty-ms"
 
-import type { SummaryItem } from "@/lib/types"
+import type { BlockWithProofs, SummaryItem } from "@/lib/types"
 
 import BlocksTable from "@/components/BlocksTable"
 import Block from "@/components/svgs/box.svg"
@@ -42,10 +42,22 @@ export default async function Index() {
 
   const blocksResponse = await supabase
     .from("blocks")
-    .select("*,proofs!inner(id:proof_id, *)")
+    .select("*,proofs!inner(id:proof_id,*,prover_machines(*))")
     .order("block_number", { ascending: false })
-
   const blocks = blocksResponse.data || []
+
+  const teamsResponse = await supabase.from("teams").select()
+  const teams = teamsResponse.data || []
+
+  const blocksProofsTeams = blocks.map((block) => {
+    const { proofs } = block
+    const proofsWithTeams = proofs.map((proof) => ({
+      ...proof,
+      team: teams.find((team) => team.user_id === proof.user_id),
+    }))
+
+    return { ...block, proofs: proofsWithTeams } as BlockWithProofs
+  })
 
   const summaryItems: SummaryItem[] = recentSummary.data
     ? [
@@ -122,7 +134,7 @@ export default async function Index() {
       </div>
 
       <section id="blocks" className="w-full scroll-m-20">
-        <BlocksTable blocks={blocks} />
+        <BlocksTable blocks={blocksProofsTeams} />
       </section>
 
       <section className="w-full scroll-m-20 space-y-8" id="provers">
@@ -155,7 +167,12 @@ export default async function Index() {
             </div>
           )}
         </div>
-        <div className="flex flex-wrap gap-8">
+        <div
+          className="grid gap-8"
+          style={{
+            gridTemplateColumns: "repeat(auto-fill, minmax(24rem, 1fr))",
+          }}
+        >
           {teamsSummary.data &&
             teamsSummary.data.map(
               ({
@@ -166,23 +183,23 @@ export default async function Index() {
                 average_proof_latency,
               }) => (
                 <div
-                  className="flex min-w-96 flex-1 flex-col gap-4 rounded-4xl border bg-gradient-to-b from-body/[0.06] to-body/[0.03] p-8"
+                  className="flex flex-col gap-4 rounded-4xl border bg-gradient-to-b from-body/[0.06] to-body/[0.03] p-8"
                   key={team_id}
                 >
                   <div className="relative mx-auto flex h-20 w-56 justify-center">
                     <TeamLogo
                       src={logo_url}
                       alt={team_name || "Prover logo"}
-                      className="object-center"
+                      className={cn("object-center", !logo_url && "opacity-50")}
                     />
-                    <span
+                    <h3
                       className={cn(
-                        "absolute inset-0 text-2xl",
-                        !logo_url && "sr-only"
+                        "absolute inset-0 grid place-items-center text-3xl",
+                        logo_url && "sr-only"
                       )}
                     >
                       {team_name}
-                    </span>
+                    </h3>
                   </div>
 
                   <div className="mx-auto flex flex-col gap-6">
