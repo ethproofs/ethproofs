@@ -1,3 +1,5 @@
+"use client"
+
 import type { Proof, Team } from "@/lib/types"
 
 import ArrowDown from "@/components/svgs/arrow-down.svg"
@@ -8,76 +10,66 @@ import { Button } from "./ui/button"
 import StatusIcon from "./StatusIcon"
 import Tooltip from "./Tooltip"
 
-const DownloadButton = ({ proof, team }: { proof: Proof; team?: Team }) => {
-  const { proof_status, proved_timestamp } = proof
-  const isComplete = proof_status === "proved" && !!proved_timestamp
 
-  return (
-    <div
-      className={cn(
-        "ms-auto self-center",
-        "col-span-1 col-start-4 row-span-1 row-start-1",
-        "sm:col-span-2 sm:col-start-3 sm:row-span-1 sm:row-start-1",
-        "md:col-span-1 md:col-start-6 md:row-span-1 md:row-start-1"
-      )}
-    >
-      {proof_status === "proved" && (
-        <Button
-          variant="outline"
-          className={cn(
-            "aspect-square h-8 w-auto gap-2 self-center text-2xl text-primary",
-            "disabled:bg-body-secondary/10 sm:max-md:w-40 lg:aspect-auto lg:w-40"
-          )}
-          size="icon"
-          isSecondary={!isComplete}
-          disabled={!isComplete}
-        >
-          <ArrowDown />
-          <span className="hidden text-nowrap text-xs font-bold sm:block md:hidden lg:block">
-            Download proof
-          </span>
-        </Button>
-      )}
-      {proof_status === "proving" && (
-        <Tooltip
-          content={`${team?.team_name ? team.team_name : "Team"} currently generating proof for this block`}
-        >
-          <div
-            className={cn(
-              "inline-flex items-center justify-center gap-4 rounded-full border border-solid border-current text-primary [&>svg]:shrink-0",
-              "aspect-square h-8 w-auto min-w-fit gap-2 self-center text-2xl text-primary",
-              "bg-body-secondary/10 sm:max-md:w-40 lg:aspect-auto lg:w-40",
-              "flex items-center gap-2"
-            )}
-          >
-            <StatusIcon status="proving" />
-            <span className="hidden text-nowrap text-xs font-bold text-body-secondary sm:block md:hidden lg:block">
+type DownloadButtonProps = {
+  proof: Proof
+  team?: Team
+  className?: string
+}
+
+const DownloadButton = ({ className, proof, team }: DownloadButtonProps) => {
+  const { proof_status, proof: binary } = proof
+  const teamName = team?.team_name ? team.team_name : "Team"
+
+  const sizingClassName =
+    "h-8 gap-2 self-center text-2xl sm:max-md:w-40 lg:w-40"
+  const labelClassName =
+    "hidden text-nowrap text-xs font-bold sm:block md:hidden lg:block"
+  const fakeButtonClassName =
+    "bg-body-secondary/10 hover:bg-body-secondary/10 cursor-auto"
+
+  if (proof_status === "proved")
+    return (
+      <Button
+        variant="outline"
+        className={cn(sizingClassName, className)}
+        size="icon"
+        disabled={!binary}
+      >
+        <ArrowDown />
+        <span className={labelClassName}>Download proof</span>
+      </Button>
+    )
+
+  if (proof_status === "proving")
+    return (
+      <Tooltip
+        content={`${teamName} currently generating proof for this block`}
+      >
+        <Button size="icon" variant="outline" asChild>
+          <div className={cn(sizingClassName, fakeButtonClassName, className)}>
+            <StatusIcon status="proving" className="animate-pulse" />
+            <span className={cn(labelClassName, "text-body-secondary")}>
               Proving
             </span>
           </div>
-        </Tooltip>
-      )}
-      {proof_status === "queued" && (
-        <Tooltip
-          content={`${team?.team_name ? team.team_name : "Team"} has indicated intent to prove this block`}
-        >
-          <div
-            className={cn(
-              "inline-flex items-center justify-center gap-4 rounded-full border border-solid border-current text-primary [&>svg]:shrink-0",
-              "aspect-square h-8 w-auto min-w-fit gap-2 self-center text-2xl text-primary",
-              "bg-body-secondary/10 sm:max-md:w-40 lg:aspect-auto lg:w-40",
-              "flex items-center gap-2"
-            )}
-          >
+        </Button>
+      </Tooltip>
+    )
+
+  if (proof_status === "queued")
+    return (
+      <Tooltip content={`${teamName} has indicated intent to prove this block`}>
+        <Button size="icon" variant="outline" asChild>
+          <div className={cn(sizingClassName, fakeButtonClassName, className)}>
             <StatusIcon status="queued" />
-            <span className="hidden text-nowrap text-xs font-bold text-body-secondary sm:block md:hidden lg:block">
+            <span className={cn(labelClassName, "text-body-secondary")}>
               Queued
             </span>
           </div>
-        </Tooltip>
-      )}
-    </div>
-  )
+        </Button>
+      </Tooltip>
+    )
 }
 
 export default DownloadButton
