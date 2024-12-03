@@ -77,8 +77,7 @@ export const columns: ColumnDef<Proof>[] = [
     id: "actions",
     cell: ({ row }) => {
       const proof = row.original as Proof
-      const team = row.original.team
-      return <DownloadButton proof={proof} team={team} />
+      return <DownloadButton proof={proof} />
     },
   },
 ]
