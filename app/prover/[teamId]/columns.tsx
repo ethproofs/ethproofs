@@ -46,24 +46,26 @@ export const columns: ColumnDef<Proof>[] = [
     accessorKey: "proof_status",
     header: "status",
   },
-  // Time to proof (duration)
-  // ? Difference between latency and time to proof?
+  // Time to proof (time from block.timestamp to proof.proved_timestamp)
   {
     accessorKey: "proved_timestamp",
     header: "time to proof",
-    cell: ({ cell }) => {
+    cell: ({ cell, row }) => {
       const provedTimestamp = cell.getValue() as string
-      // const blockTimestamp = row.original.block
-      // TODO: Need block.timestamp here
-      if (!provedTimestamp) return <Null />
+      const blockTimestamp = row.original.blocks?.timestamp
 
-      return new Date(provedTimestamp).toLocaleString()
+      if (!provedTimestamp || !blockTimestamp) return <Null />
+
+      const diff =
+        new Date(provedTimestamp).getTime() - new Date(blockTimestamp).getTime()
+
+      return diff > 0 ? prettyMilliseconds(diff) : <Null />
     },
   },
-  // Latency (duration)
+  // Proving time (proof.proof_latency, duration spent generating proof)
   {
     accessorKey: "proof_latency",
-    header: "latency",
+    header: "proving time",
     cell: ({ cell }) => {
       const latency = cell.getValue() as number
 
