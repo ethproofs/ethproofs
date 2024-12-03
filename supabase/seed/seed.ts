@@ -56,13 +56,13 @@ const main = async () => {
     )
 
     // add 2 machines per team/user
-    const { prover_machines } = await seed.prover_machines(
+    const { clusters } = await seed.clusters(
       (x) =>
         x(2, ({ index }) => {
           return {
-            machine_name: `Machine ${copycat.firstName(index)}`,
-            machine_description: faker.lorem.sentence(),
-            machine_hardware: faker.lorem.sentence(),
+            cluster_name: `Cluster ${copycat.firstName(index)}`,
+            cluster_description: faker.lorem.sentence(),
+            cluster_hardware: faker.lorem.sentence(),
           }
         }),
       {
@@ -81,7 +81,7 @@ const main = async () => {
           proof_status: ({ seed }) =>
             copycat.oneOfString(seed, ["proved", "proving", "queued"]),
         })),
-      { connect: { users, blocks, prover_machines } }
+      { connect: { users, blocks, clusters } }
     )
   }
 

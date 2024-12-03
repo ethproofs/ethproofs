@@ -9,7 +9,7 @@ const baseProofSchema = z.object({
       "Unique identifier for the proof. If no proof_id is provided, the system will attempt to find an existing proof for the block_number and machine_id"
     ),
   block_number: z.number().min(0, "block_number must be a positive number"),
-  machine_id: z.number(),
+  cluster_id: z.number(),
 })
 
 const queuedProofSchema = baseProofSchema.extend({

@@ -1,26 +1,26 @@
 import { z } from "zod"
 import { ZodOpenApiPathsObject } from "zod-openapi"
 
-import { createMachineSchema, MachineSchema } from "../zod/schemas/machine"
+import { ClusterSchema, createClusterSchema } from "../zod/schemas/cluster"
 
-export const machinesPaths: ZodOpenApiPathsObject = {
-  "/machines": {
+export const clustersPaths: ZodOpenApiPathsObject = {
+  "/clusters": {
     post: {
-      tags: ["machines"],
-      summary: "Create a machine",
+      tags: ["clusters"],
+      summary: "Create a cluster",
       requestBody: {
         required: true,
         content: {
-          "application/json": { schema: createMachineSchema },
+          "application/json": { schema: createClusterSchema },
         },
       },
       responses: {
         "200": {
-          description: "Machine created",
+          description: "Cluster created",
           content: {
             "application/json": {
               schema: z.object({
-                machine_id: z.number(),
+                cluster_id: z.number(),
               }),
             },
           },
@@ -38,14 +38,14 @@ export const machinesPaths: ZodOpenApiPathsObject = {
       security: [{ apikey: [] }],
     },
     get: {
-      tags: ["machines"],
-      summary: "List machines",
+      tags: ["clusters"],
+      summary: "List clusters",
       responses: {
         "200": {
-          description: "Machines list",
+          description: "Clusters list",
           content: {
             "application/json": {
-              schema: z.array(MachineSchema),
+              schema: z.array(ClusterSchema),
             },
           },
         },

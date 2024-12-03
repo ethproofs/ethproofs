@@ -1,5 +1,5 @@
 import { withAuth } from "@/lib/auth"
-import { createMachineSchema } from "@/lib/zod/schemas/machine"
+import { createClusterSchema } from "@/lib/zod/schemas/cluster"
 
 export const GET = withAuth(async ({ client, user }) => {
   if (!user) {
@@ -9,12 +9,12 @@ export const GET = withAuth(async ({ client, user }) => {
   }
 
   const { data, error } = await client
-    .from("prover_machines")
-    .select("machine_id, machine_name, machine_description, machine_hardware")
+    .from("clusters")
+    .select("cluster_id, cluster_name, cluster_description, cluster_hardware")
     .eq("user_id", user.id)
 
   if (error) {
-    console.error("error fetching machines", error)
+    console.error("error fetching clusters", error)
     return new Response("Internal server error", { status: 500 })
   }
 
@@ -32,29 +32,29 @@ export const POST = withAuth(async ({ request, client, user }) => {
 
   // validate payload schema
   try {
-    createMachineSchema.parse(requestBody)
+    createClusterSchema.parse(requestBody)
   } catch (error) {
-    console.error("machine payload invalid", error)
+    console.error("cluster payload invalid", error)
     return new Response("Invalid payload", {
       status: 400,
     })
   }
 
-  const { machine_name, machine_description, machine_hardware } = requestBody
+  const { cluster_name, cluster_description, cluster_hardware } = requestBody
 
   const { data, error } = await client
-    .from("prover_machines")
+    .from("clusters")
     .insert({
-      machine_name,
-      machine_description,
-      machine_hardware,
+      cluster_name,
+      cluster_description,
+      cluster_hardware,
       user_id: user.id,
     })
-    .select("machine_id")
+    .select("cluster_id")
     .single()
 
   if (error) {
-    console.error("error creating machine", error)
+    console.error("error creating cluster", error)
     return new Response("Internal server error", { status: 500 })
   }
 

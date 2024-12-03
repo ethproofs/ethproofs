@@ -2,7 +2,7 @@ import { createDocument } from "zod-openapi"
 
 import { SITE_NAME, SITE_PREVIEW_URL, SITE_URL } from "../constants"
 
-import { machinesPaths } from "./machines"
+import { clustersPaths } from "./clusters"
 import { proofsPaths } from "./proofs"
 
 export const document = createDocument({
@@ -24,14 +24,14 @@ export const document = createDocument({
   ],
   tags: [
     {
-      name: "machines",
+      name: "clusters",
     },
     {
       name: "proofs",
     },
   ],
   paths: {
-    ...machinesPaths,
+    ...clustersPaths,
     ...proofsPaths,
   },
   components: {
