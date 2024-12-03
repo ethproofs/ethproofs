@@ -496,7 +496,10 @@ export default async function BlockDetailsPage({
                             "flex items-center gap-2"
                           )}
                         >
-                          <StatusIcon status="proving" />
+                          <StatusIcon
+                            status="proving"
+                            className="animate-pulse"
+                          />
                           <span className="hidden text-nowrap text-xs font-bold text-body-secondary sm:block md:hidden lg:block">
                             Proving
                           </span>
