@@ -1,3 +1,4 @@
+import { AwsInstancePricing } from "@/lib/zod/schemas/aws-instance-pricing"
 import { createClient } from "@/utils/supabase/server"
 
 export const GET = async () => {
@@ -12,5 +13,5 @@ export const GET = async () => {
     return new Response("Internal server error", { status: 500 })
   }
 
-  return Response.json(data)
+  return Response.json(data satisfies AwsInstancePricing[])
 }

@@ -17,19 +17,22 @@
   ],
   "tags": [
     {
-      "name": "machines"
+      "name": "Clusters"
     },
     {
-      "name": "proofs"
+      "name": "Proofs"
+    },
+    {
+      "name": "Aws pricing list"
     }
   ],
   "paths": {
-    "/machines": {
+    "/clusters": {
       "post": {
         "tags": [
-          "machines"
+          "Clusters"
         ],
-        "summary": "Create a machine",
+        "summary": "Create a cluster",
         "security": [
           {
             "apikey": []
@@ -42,24 +45,24 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "machine_name": {
+                  "cluster_name": {
                     "type": "string",
                     "maxLength": 50,
                     "description": "Human-readable name (e.g., \"ZKnight-01\", \"SNARK-Sentinel\")"
                   },
-                  "machine_description": {
+                  "cluster_description": {
                     "type": "string",
                     "maxLength": 200,
                     "description": "Description of the machine (e.g., \"Primary RISC-V prover\")"
                   },
-                  "machine_hardware": {
+                  "cluster_hardware": {
                     "type": "string",
                     "maxLength": 200,
                     "description": "Technical specifications (e.g., \"RISC-V Prover\", \"STARK-to-SNARK Prover\")"
                   }
                 },
                 "required": [
-                  "machine_name"
+                  "cluster_name"
                 ]
               }
             }
@@ -67,18 +70,18 @@
         },
         "responses": {
           "200": {
-            "description": "Machine created",
+            "description": "Cluster created",
             "content": {
               "application/json": {
                 "schema": {
                   "type": "object",
                   "properties": {
-                    "machine_id": {
+                    "cluster_id": {
                       "type": "number"
                     }
                   },
                   "required": [
-                    "machine_id"
+                    "cluster_id"
                   ]
                 }
               }
@@ -97,9 +100,9 @@
       },
       "get": {
         "tags": [
-          "machines"
+          "Clusters"
         ],
-        "summary": "List machines",
+        "summary": "List clusters",
         "security": [
           {
             "apikey": []
@@ -107,7 +110,7 @@
         ],
         "responses": {
           "200": {
-            "description": "Machines list",
+            "description": "Clusters list",
             "content": {
               "application/json": {
                 "schema": {
@@ -115,22 +118,22 @@
                   "items": {
                     "type": "object",
                     "properties": {
-                      "machine_id": {
+                      "cluster_id": {
                         "type": "number"
                       },
-                      "machine_name": {
+                      "cluster_name": {
                         "type": "string"
                       },
-                      "machine_description": {
+                      "cluster_description": {
                         "type": "string"
                       },
-                      "machine_hardware": {
+                      "cluster_hardware": {
                         "type": "string"
                       }
                     },
                     "required": [
-                      "machine_id",
-                      "machine_name"
+                      "cluster_id",
+                      "cluster_name"
                     ]
                   }
                 }
@@ -149,9 +152,14 @@
     "/proofs": {
       "post": {
         "tags": [
-          "proofs"
+          "Proofs"
         ],
         "summary": "Submit a new proof or update an existing one",
+        "security": [
+          {
+            "apikey": []
+          }
+        ],
         "requestBody": {
           "required": true,
           "description": "The request body schema varies based on the `proof_status` field.",
@@ -170,7 +178,7 @@
                         "type": "number",
                         "minimum": 0
                       },
-                      "machine_id": {
+                      "cluster_id": {
                         "type": "number"
                       },
                       "proof_status": {
@@ -180,7 +188,7 @@
                     },
                     "required": [
                       "block_number",
-                      "machine_id",
+                      "cluster_id",
                       "proof_status"
                     ]
                   },
@@ -195,7 +203,7 @@
                         "type": "number",
                         "minimum": 0
                       },
-                      "machine_id": {
+                      "cluster_id": {
                         "type": "number"
                       },
                       "proof_status": {
@@ -205,7 +213,7 @@
                     },
                     "required": [
                       "block_number",
-                      "machine_id",
+                      "cluster_id",
                       "proof_status"
                     ]
                   },
@@ -220,7 +228,7 @@
                         "type": "number",
                         "minimum": 0
                       },
-                      "machine_id": {
+                      "cluster_id": {
                         "type": "number"
                       },
                       "proof_status": {
@@ -248,7 +256,7 @@
                     },
                     "required": [
                       "block_number",
-                      "machine_id",
+                      "cluster_id",
                       "proof_status",
                       "proof_latency",
                       "proving_cost",
@@ -263,7 +271,7 @@
                   "summary": "Queued proof",
                   "value": {
                     "block_number": 123456,
-                    "machine_id": 1,
+                    "cluster_id": 1,
                     "proof_status": "queued"
                   }
                 },
@@ -271,7 +279,7 @@
                   "summary": "Proving proof",
                   "value": {
                     "block_number": 123456,
-                    "machine_id": 1,
+                    "cluster_id": 1,
                     "proof_status": "proving"
                   }
                 },
@@ -279,7 +287,7 @@
                   "summary": "Proved proof",
                   "value": {
                     "block_number": 123456,
-                    "machine_id": 1,
+                    "cluster_id": 1,
                     "proof_status": "proved",
                     "proof_latency": 100,
                     "proving_cost": 540,
@@ -321,6 +329,68 @@
           },
           "500": {
             "description": "Internal server error or block not found"
+          }
+        }
+      }
+    },
+    "/aws_pricing_list": {
+      "get": {
+        "tags": [
+          "Aws pricing list"
+        ],
+        "summary": "List aws pricing list",
+        "responses": {
+          "200": {
+            "description": "Aws pricing list",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "number"
+                      },
+                      "instance_type": {
+                        "type": "string"
+                      },
+                      "region": {
+                        "type": "string"
+                      },
+                      "hourly_price": {
+                        "type": "number"
+                      },
+                      "instance_memory": {
+                        "type": "number"
+                      },
+                      "vcpu": {
+                        "type": "number"
+                      },
+                      "instance_storage": {
+                        "type": "string"
+                      },
+                      "created_at": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "id",
+                      "instance_type",
+                      "region",
+                      "hourly_price",
+                      "instance_memory",
+                      "vcpu",
+                      "instance_storage",
+                      "created_at"
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error"
           }
         }
       }

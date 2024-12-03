@@ -6,7 +6,7 @@ import { ClusterSchema, createClusterSchema } from "../zod/schemas/cluster"
 export const clustersPaths: ZodOpenApiPathsObject = {
   "/clusters": {
     post: {
-      tags: ["clusters"],
+      tags: ["Clusters"],
       summary: "Create a cluster",
       requestBody: {
         required: true,
@@ -38,7 +38,7 @@ export const clustersPaths: ZodOpenApiPathsObject = {
       security: [{ apikey: [] }],
     },
     get: {
-      tags: ["clusters"],
+      tags: ["Clusters"],
       summary: "List clusters",
       responses: {
         "200": {
