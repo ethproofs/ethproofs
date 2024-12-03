@@ -383,20 +383,6 @@
           "maxLength": null
         },
         {
-          "id": "public.aws_instance_pricing.created_at",
-          "name": "created_at",
-          "columnName": "created_at",
-          "type": "timestamptz",
-          "isRequired": true,
-          "kind": "scalar",
-          "isList": false,
-          "isGenerated": false,
-          "sequence": false,
-          "hasDefaultValue": true,
-          "isId": false,
-          "maxLength": null
-        },
-        {
           "id": "public.aws_instance_pricing.instance_memory",
           "name": "instance_memory",
           "columnName": "instance_memory",
@@ -435,6 +421,20 @@
           "isGenerated": false,
           "sequence": false,
           "hasDefaultValue": false,
+          "isId": false,
+          "maxLength": null
+        },
+        {
+          "id": "public.aws_instance_pricing.created_at",
+          "name": "created_at",
+          "columnName": "created_at",
+          "type": "timestamptz",
+          "isRequired": true,
+          "kind": "scalar",
+          "isList": false,
+          "isGenerated": false,
+          "sequence": false,
+          "hasDefaultValue": true,
           "isId": false,
           "maxLength": null
         },
@@ -1046,7 +1046,7 @@
       ],
       "uniqueConstraints": [
         {
-          "name": "prover_machines_pkey",
+          "name": "clusters_pkey",
           "fields": [
             "id"
           ],
@@ -3362,7 +3362,7 @@
           "nullNotDistinct": false
         },
         {
-          "name": "unique_block_machine",
+          "name": "unique_block_cluster",
           "fields": [
             "block_number",
             "cluster_id"

@@ -55,7 +55,7 @@ const main = async () => {
       }
     )
 
-    // add 2 machines per team/user
+    // add 2 clusters per team/user
     const { clusters } = await seed.clusters(
       (x) =>
         x(2, ({ index }) => {

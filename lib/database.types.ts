@@ -189,7 +189,7 @@ export type Database = {
         }
         Relationships: [
           {
-            foreignKeyName: "prover_machines_user_id_fkey"
+            foreignKeyName: "clusters_user_id_fkey"
             columns: ["user_id"]
             isOneToOne: false
             referencedRelation: "users"
@@ -255,7 +255,7 @@ export type Database = {
             referencedColumns: ["block_number"]
           },
           {
-            foreignKeyName: "proofs_machine_id_fkey"
+            foreignKeyName: "proofs_cluster_id_fkey"
             columns: ["cluster_id"]
             isOneToOne: false
             referencedRelation: "clusters"
