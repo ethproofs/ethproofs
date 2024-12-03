@@ -36,9 +36,11 @@ const MetricInfo = React.forwardRef<HTMLDivElement, MetricInfoProps>(
   ({ trigger, className, children, ...props }, ref) => (
     <Tooltip
       trigger={
-        <div className="ms-2">
-          {trigger || <InfoCircle className="-mb-0.5" />}
-        </div>
+        trigger || (
+          <div className="ms-2">
+            <InfoCircle className="-mb-0.5" />
+          </div>
+        )
       }
       className="max-w-80 sm:max-w-96"
     >
