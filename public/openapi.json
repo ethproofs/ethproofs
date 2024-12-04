@@ -67,7 +67,7 @@
                       "properties": {
                         "instance_type": {
                           "type": "string",
-                          "description": "Instance type (e.g., 'c5.xlarge'). Check our aws instance pricing endpoint for available instance types."
+                          "description": "Instance type (e.g., 'c5.xlarge'). Check our aws instance pricing endpoint for available instance types"
                         },
                         "instance_count": {
                           "type": "number",
@@ -355,7 +355,7 @@
         }
       }
     },
-    "/aws_pricing_list": {
+    "/aws-pricing-list": {
       "get": {
         "tags": [
           "Aws pricing list"

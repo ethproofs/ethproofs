@@ -4,7 +4,7 @@ import { ZodOpenApiPathsObject } from "zod-openapi"
 import { AwsInstancePricingSchema } from "../zod/schemas/aws-instance-pricing"
 
 export const awsPricingListPaths: ZodOpenApiPathsObject = {
-  "/aws_pricing_list": {
+  "/aws-pricing-list": {
     get: {
       tags: ["Aws pricing list"],
       summary: "List aws pricing list",
