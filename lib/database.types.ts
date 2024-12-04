@@ -66,6 +66,39 @@ export type Database = {
           },
         ]
       }
+      aws_instance_pricing: {
+        Row: {
+          created_at: string
+          hourly_price: number
+          id: number
+          instance_memory: number
+          instance_storage: string
+          instance_type: string
+          region: string
+          vcpu: number
+        }
+        Insert: {
+          created_at?: string
+          hourly_price: number
+          id?: number
+          instance_memory: number
+          instance_storage: string
+          instance_type: string
+          region: string
+          vcpu: number
+        }
+        Update: {
+          created_at?: string
+          hourly_price?: number
+          id?: number
+          instance_memory?: number
+          instance_storage?: string
+          instance_type?: string
+          region?: string
+          vcpu?: number
+        }
+        Relationships: []
+      }
       blocks: {
         Row: {
           block_number: number
@@ -93,11 +126,82 @@ export type Database = {
         }
         Relationships: []
       }
+      cluster_configurations: {
+        Row: {
+          cluster_id: string
+          id: number
+          instance_count: number
+          instance_type_id: number
+        }
+        Insert: {
+          cluster_id: string
+          id?: number
+          instance_count: number
+          instance_type_id: number
+        }
+        Update: {
+          cluster_id?: string
+          id?: number
+          instance_count?: number
+          instance_type_id?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "cluster_configurations_cluster_id_fkey"
+            columns: ["cluster_id"]
+            isOneToOne: false
+            referencedRelation: "clusters"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "cluster_configurations_instance_type_id_fkey"
+            columns: ["instance_type_id"]
+            isOneToOne: false
+            referencedRelation: "aws_instance_pricing"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
+      clusters: {
+        Row: {
+          cluster_description: string | null
+          cluster_hardware: string | null
+          cluster_id: number | null
+          cluster_name: string
+          id: string
+          user_id: string
+        }
+        Insert: {
+          cluster_description?: string | null
+          cluster_hardware?: string | null
+          cluster_id?: number | null
+          cluster_name: string
+          id?: string
+          user_id: string
+        }
+        Update: {
+          cluster_description?: string | null
+          cluster_hardware?: string | null
+          cluster_id?: number | null
+          cluster_name?: string
+          id?: string
+          user_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "clusters_user_id_fkey"
+            columns: ["user_id"]
+            isOneToOne: false
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       proofs: {
         Row: {
           block_number: number
+          cluster_id: string
           created_at: string | null
-          machine_id: string
           proof: string | null
           proof_id: number
           proof_latency: number | null
@@ -112,8 +216,8 @@ export type Database = {
         }
         Insert: {
           block_number: number
+          cluster_id: string
           created_at?: string | null
-          machine_id: string
           proof?: string | null
           proof_id?: number
           proof_latency?: number | null
@@ -128,8 +232,8 @@ export type Database = {
         }
         Update: {
           block_number?: number
+          cluster_id?: string
           created_at?: string | null
-          machine_id?: string
           proof?: string | null
           proof_id?: number
           proof_latency?: number | null
@@ -151,52 +255,14 @@ export type Database = {
             referencedColumns: ["block_number"]
           },
           {
-            foreignKeyName: "proofs_machine_id_fkey"
-            columns: ["machine_id"]
+            foreignKeyName: "proofs_cluster_id_fkey"
+            columns: ["cluster_id"]
             isOneToOne: false
-            referencedRelation: "prover_machines"
+            referencedRelation: "clusters"
             referencedColumns: ["id"]
           },
           {
             foreignKeyName: "proofs_user_id_fkey"
-            columns: ["user_id"]
-            isOneToOne: false
-            referencedRelation: "users"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      prover_machines: {
-        Row: {
-          id: string
-          machine_cycle_type: string | null
-          machine_description: string | null
-          machine_hardware: string | null
-          machine_id: number | null
-          machine_name: string
-          user_id: string
-        }
-        Insert: {
-          id?: string
-          machine_cycle_type?: string | null
-          machine_description?: string | null
-          machine_hardware?: string | null
-          machine_id?: number | null
-          machine_name: string
-          user_id: string
-        }
-        Update: {
-          id?: string
-          machine_cycle_type?: string | null
-          machine_description?: string | null
-          machine_hardware?: string | null
-          machine_id?: number | null
-          machine_name?: string
-          user_id?: string
-        }
-        Relationships: [
-          {
-            foreignKeyName: "prover_machines_user_id_fkey"
             columns: ["user_id"]
             isOneToOne: false
             referencedRelation: "users"
@@ -404,4 +470,3 @@ export type Enums<
   : PublicEnumNameOrOptions extends keyof PublicSchema["Enums"]
     ? PublicSchema["Enums"][PublicEnumNameOrOptions]
     : never
-

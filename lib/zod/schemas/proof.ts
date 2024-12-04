@@ -1,10 +1,15 @@
-import { z } from "zod"
+import z from ".."
 
 const baseProofSchema = z.object({
   // If not provided, the proof is going to be searched by block_number and machine_id
-  proof_id: z.number().optional(),
+  proof_id: z
+    .number()
+    .optional()
+    .describe(
+      "Unique identifier for the proof. If no proof_id is provided, the system will attempt to find an existing proof for the block_number and machine_id"
+    ),
   block_number: z.number().min(0, "block_number must be a positive number"),
-  machine_id: z.number(),
+  cluster_id: z.number(),
 })
 
 const queuedProofSchema = baseProofSchema.extend({
@@ -17,8 +22,14 @@ const provingProofSchema = baseProofSchema.extend({
 
 const provedProofSchema = baseProofSchema.extend({
   proof_status: z.literal("proved"),
-  proof_latency: z.number().positive("proof_latency must be a positive number"),
-  proving_cost: z.number().positive("proving_cost must be a positive number"),
+  proof_latency: z
+    .number()
+    .positive("proof_latency must be a positive number")
+    .describe("Milliseconds taken to generate the proof"),
+  proving_cost: z
+    .number()
+    .positive("proving_cost must be a positive number")
+    .describe("Cost of generating the proof (in USD)"),
   proving_cycles: z
     .number()
     .int()
@@ -26,7 +37,7 @@ const provedProofSchema = baseProofSchema.extend({
   proof: z.string().min(1, "proof is required for 'proved' status"),
 })
 
-export const proofSchema = z.discriminatedUnion("proof_status", [
+export const createProofSchema = z.discriminatedUnion("proof_status", [
   queuedProofSchema,
   provingProofSchema,
   provedProofSchema,

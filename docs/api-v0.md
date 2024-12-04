@@ -151,3 +151,18 @@ Register a new prover machine.
   - 400: Invalid payload
   - 401: Invalid API key
   - 500: Internal server error
+
+
+## AWS Pricing List API
+
+### Get AWS Pricing List
+
+Data is fetched from https://aws.amazon.com/ec2/pricing/on-demand/
+
+`GET /api/v0/aws_pricing_list`
+
+Retrieve the list of AWS EC2 instance types and their pricing.
+
+#### Response
+
+- Success (200): Returns array of instance types and their pricing
