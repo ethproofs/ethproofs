@@ -3,7 +3,7 @@ import Link from "next/link"
 import { notFound } from "next/navigation"
 import prettyMilliseconds from "pretty-ms"
 
-import type { Metric, Proof, ProverCluster } from "@/lib/types"
+import type { Metric, Proof, ProofExtended, ProverCluster } from "@/lib/types"
 
 import Null from "@/components/Null"
 import ProofStatus, { ProofStatusInfo } from "@/components/ProofStatus"
@@ -81,7 +81,7 @@ export default async function ProverPage({ params }: ProverPageProps) {
 
   const { data: proofsExtended, error: proofError } = await supabase
     .from("proofs")
-    .select("*, clusters(*), blocks(gas_used,timestamp)")
+    .select("*, cluster:clusters(*), block:blocks(gas_used,timestamp)")
     .eq("user_id", team.user_id)
 
   if (!team || teamError || !proofsExtended?.length || proofError)
@@ -89,10 +89,10 @@ export default async function ProverPage({ params }: ProverPageProps) {
 
   const provingMachines = Object.values(
     proofsExtended.reduce((acc, curr) => {
-      if (!curr.clusters || !curr.clusters.cluster_id) return acc
+      if (!curr.cluster || !curr.cluster.cluster_id) return acc
       return {
         ...acc,
-        [curr.clusters.cluster_id]: curr.clusters,
+        [curr.cluster.cluster_id]: curr.cluster,
       }
     }, {})
   ) satisfies ProverCluster[]
@@ -101,32 +101,27 @@ export default async function ProverPage({ params }: ProverPageProps) {
     (p) => p.proof_status === "proved"
   )
   const totalZkVMCycles = completedProofs.reduce(
-    (acc, proof) => acc + (proof.proving_cycles as number),
+    (acc, proof) => acc + (proof.proving_cycles ?? 0),
     0
   )
   const totalGasProven = completedProofs.reduce(
-    (acc, proof) => acc + (proof.blocks?.gas_used as number),
+    (acc, proof) => acc + (proof.block?.gas_used ?? 0),
     0
   )
   const avgZkVMCyclesPerMgas = totalZkVMCycles / totalGasProven / 1e6
   const proverTotalFees = completedProofs.reduce(
-    (acc, proof) => acc + (proof.proving_cost as number),
+    (acc, proof) => acc + (proof.proving_cost ?? 0),
     0
   )
   const avgCostPerMgas = proverTotalFees / totalGasProven / 1e6
 
-  const proofs = proofsExtended.map(
-    // eslint-disable-next-line unused-imports/no-unused-vars
-    ({ blocks, ...proof }) => proof as Proof
-  )
-
-  const avgProofLatency = getProofsAvgLatency(proofs)
+  const avgProofLatency = getProofsAvgLatency(proofsExtended)
 
   const performanceMetrics: Metric[] = [
     {
       label: "Total proofs",
       description: <ProofStatusInfo title="total proofs" />,
-      value: <ProofStatus proofs={proofs} />,
+      value: <ProofStatus proofs={proofsExtended} />,
     },
     {
       label: (
@@ -252,7 +247,7 @@ export default async function ProverPage({ params }: ProverPageProps) {
         </h2>
         <DataTable
           columns={columns}
-          data={proofsExtended as Proof[]}
+          data={proofsExtended as ProofExtended[]}
           sorting={[{ id: "block_number", desc: true }]}
         />
       </section>

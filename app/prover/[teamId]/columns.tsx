@@ -1,9 +1,10 @@
 "use client"
+
 import Link from "next/link"
 import prettyMilliseconds from "pretty-ms"
 import { ColumnDef } from "@tanstack/react-table"
 
-import type { Proof } from "@/lib/types"
+import type { ProofExtended } from "@/lib/types"
 
 import DownloadButton from "@/components/DownloadButton"
 import * as Metrics from "@/components/Metrics"
@@ -14,7 +15,7 @@ import { ColumnHeader } from "./ColumnHeader"
 
 import { formatNumber } from "@/lib/number"
 
-export const columns: ColumnDef<Omit<Proof, "team" | "cluster">>[] = [
+export const columns: ColumnDef<ProofExtended>[] = [
   // Block (time since)
   {
     accessorKey: "block_number",
@@ -61,7 +62,7 @@ export const columns: ColumnDef<Omit<Proof, "team" | "cluster">>[] = [
     ),
     cell: ({ cell, row }) => {
       const provedTimestamp = cell.getValue() as string
-      const blockTimestamp = row.original.blocks?.timestamp
+      const blockTimestamp = row.original.block?.timestamp
 
       if (!provedTimestamp || !blockTimestamp) return <Null />
 
@@ -91,7 +92,7 @@ export const columns: ColumnDef<Omit<Proof, "team" | "cluster">>[] = [
   {
     id: "actions",
     cell: ({ row }) => {
-      const proof = row.original as Proof
+      const proof = row.original
       return <DownloadButton proof={proof} />
     },
   },
