@@ -2,6 +2,8 @@ import { Fragment } from "react"
 
 import type { Proof } from "@/lib/types"
 
+import * as Info from "@/components/ui/info"
+
 import { cn } from "@/lib/utils"
 
 import { MetricInfo } from "./ui/metric"
@@ -27,7 +29,7 @@ export const ProofStatusInfo = ({ title }: { title?: string }) => (
         </Fragment>
       ))}
     </div>
-    <p className="text-body-secondary">Current status of proofs</p>
+    <Info.Description>Current status of proofs</Info.Description>
   </>
 )
 

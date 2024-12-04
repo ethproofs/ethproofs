@@ -1,5 +1,4 @@
 "use client"
-
 import Link from "next/link"
 import prettyMilliseconds from "pretty-ms"
 import { ColumnDef } from "@tanstack/react-table"
@@ -7,8 +6,11 @@ import { ColumnDef } from "@tanstack/react-table"
 import type { Proof } from "@/lib/types"
 
 import DownloadButton from "@/components/DownloadButton"
+import * as Metrics from "@/components/Metrics"
 import Null from "@/components/Null"
 import { HidePunctuation } from "@/components/StylePunctuation"
+import * as Info from "@/components/ui/info"
+import { MetricInfo } from "@/components/ui/metric"
 
 import { formatNumber } from "@/lib/number"
 
@@ -16,7 +18,15 @@ export const columns: ColumnDef<Proof>[] = [
   // Block (time since)
   {
     accessorKey: "block_number",
-    header: () => <div className="text-left">block</div>,
+    header: () => (
+      <div className="text-left">
+        block
+        <MetricInfo className="space-y-3">
+          <Info.Label>{Metrics.BLOCK_NUMBER_LABEL}</Info.Label>
+          <Metrics.BlockNumberDetails />
+        </MetricInfo>
+      </div>
+    ),
     cell: ({ cell }) => {
       const blockNumber = cell.getValue() as number
       return (
@@ -44,7 +54,15 @@ export const columns: ColumnDef<Proof>[] = [
   // Time to proof (time from block.timestamp to proof.proved_timestamp)
   {
     accessorKey: "proved_timestamp",
-    header: "time to proof",
+    header: () => (
+      <div className="whitespace-nowrap">
+        {Metrics.TOTAL_TTP_LABEL}
+        <MetricInfo className="whitespace-normal">
+          <Info.Label>{Metrics.TOTAL_TTP_LABEL}</Info.Label>
+          <Metrics.TotalTTPDetails />
+        </MetricInfo>
+      </div>
+    ),
     cell: ({ cell, row }) => {
       const provedTimestamp = cell.getValue() as string
       const blockTimestamp = row.original.blocks?.timestamp
@@ -60,7 +78,15 @@ export const columns: ColumnDef<Proof>[] = [
   // Proving time (proof.proof_latency, duration spent generating proof)
   {
     accessorKey: "proof_latency",
-    header: "proving time",
+    header: () => (
+      <div className="whitespace-nowrap">
+        {Metrics.PROVING_TIME_LABEL}
+        <MetricInfo className="space-y-3 whitespace-normal">
+          <Info.Label>{Metrics.PROVING_TIME_LABEL}</Info.Label>
+          <Metrics.ProvingTimeDetails />
+        </MetricInfo>
+      </div>
+    ),
     cell: ({ cell }) => {
       const latency = cell.getValue() as number
 

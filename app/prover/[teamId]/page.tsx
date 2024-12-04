@@ -24,6 +24,7 @@ import {
   HeroSection,
   HeroTitle,
 } from "@/components/ui/hero"
+import * as Info from "@/components/ui/info"
 import {
   MetricBox,
   MetricInfo,
@@ -276,7 +277,7 @@ export default async function ProverPage({ params }: ProverPageProps) {
                   </p>
                 )}
                 {machine_description && (
-                  <p className="text-body-secondary">{machine_description}</p>
+                  <Info.Description>{machine_description}</Info.Description>
                 )}
               </Card>
             )
