@@ -9,8 +9,8 @@ import DownloadButton from "@/components/DownloadButton"
 import * as Metrics from "@/components/Metrics"
 import Null from "@/components/Null"
 import { HidePunctuation } from "@/components/StylePunctuation"
-import * as Info from "@/components/ui/info"
-import { MetricInfo } from "@/components/ui/metric"
+
+import { ColumnHeader } from "./ColumnHeader"
 
 import { formatNumber } from "@/lib/number"
 
@@ -19,18 +19,14 @@ export const columns: ColumnDef<Proof>[] = [
   {
     accessorKey: "block_number",
     header: () => (
-      <div className="text-left">
-        block
-        <MetricInfo className="space-y-3">
-          <Info.Label>{Metrics.BLOCK_NUMBER_LABEL}</Info.Label>
-          <Metrics.BlockNumberDetails />
-        </MetricInfo>
-      </div>
+      <ColumnHeader label={Metrics.BLOCK_NUMBER_LABEL} className="text-start">
+        <Metrics.BlockNumberDetails />
+      </ColumnHeader>
     ),
     cell: ({ cell }) => {
       const blockNumber = cell.getValue() as number
       return (
-        <div className="text-start text-base">
+        <div className="text-start">
           <Link
             href={`/block/${blockNumber}`}
             className="tracking-wide hover:text-primary-light hover:underline"
@@ -44,7 +40,11 @@ export const columns: ColumnDef<Proof>[] = [
   // Instance / Machine
   {
     accessorKey: "prover_machines.machine_name",
-    header: "instance",
+    header: () => (
+      <ColumnHeader label={Metrics.CLUSTER_LABEL}>
+        <Metrics.ClusterDetails />
+      </ColumnHeader>
+    ),
     cell: ({ cell }) => {
       const instance = cell.getValue() as string
 
@@ -55,13 +55,9 @@ export const columns: ColumnDef<Proof>[] = [
   {
     accessorKey: "proved_timestamp",
     header: () => (
-      <div className="whitespace-nowrap">
-        {Metrics.TOTAL_TTP_LABEL}
-        <MetricInfo className="whitespace-normal">
-          <Info.Label>{Metrics.TOTAL_TTP_LABEL}</Info.Label>
-          <Metrics.TotalTTPDetails />
-        </MetricInfo>
-      </div>
+      <ColumnHeader label={Metrics.TOTAL_TTP_LABEL}>
+        <Metrics.TotalTTPDetails />
+      </ColumnHeader>
     ),
     cell: ({ cell, row }) => {
       const provedTimestamp = cell.getValue() as string
@@ -79,13 +75,9 @@ export const columns: ColumnDef<Proof>[] = [
   {
     accessorKey: "proof_latency",
     header: () => (
-      <div className="whitespace-nowrap">
-        {Metrics.PROVING_TIME_LABEL}
-        <MetricInfo className="space-y-3 whitespace-normal">
-          <Info.Label>{Metrics.PROVING_TIME_LABEL}</Info.Label>
-          <Metrics.ProvingTimeDetails />
-        </MetricInfo>
-      </div>
+      <ColumnHeader label={Metrics.PROVING_TIME_LABEL}>
+        <Metrics.ProvingTimeDetails />
+      </ColumnHeader>
     ),
     cell: ({ cell }) => {
       const latency = cell.getValue() as number
