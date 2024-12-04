@@ -14,7 +14,7 @@ import { ColumnHeader } from "./ColumnHeader"
 
 import { formatNumber } from "@/lib/number"
 
-export const columns: ColumnDef<Proof>[] = [
+export const columns: ColumnDef<Omit<Proof, "team" | "cluster">>[] = [
   // Block (time since)
   {
     accessorKey: "block_number",
@@ -37,9 +37,9 @@ export const columns: ColumnDef<Proof>[] = [
       )
     },
   },
-  // Instance / Machine
+  // Instance
   {
-    accessorKey: "prover_machines.machine_name",
+    accessorKey: "cluster.cluster_name",
     header: () => (
       <ColumnHeader label={Metrics.CLUSTER_LABEL}>
         <Metrics.ClusterDetails />

@@ -1,0 +1,439 @@
+{
+  "openapi": "3.1.0",
+  "info": {
+    "title": "Ethproofs API",
+    "description": "This document outlines the available API endpoints for Ethproofs.\n\n**Authentication**\n\nAll endpoints require authentication using an API key in the request header:\n\n`Authorization: Bearer <api_key>`",
+    "version": "0.0.1"
+  },
+  "servers": [
+    {
+      "url": "https://ethproofs.org/api/v0",
+      "description": "Main server"
+    },
+    {
+      "url": "https://main--ethproofs.netlify.app/api/v0",
+      "description": "Testing server"
+    }
+  ],
+  "tags": [
+    {
+      "name": "Clusters"
+    },
+    {
+      "name": "Proofs"
+    },
+    {
+      "name": "Aws pricing list"
+    }
+  ],
+  "paths": {
+    "/clusters": {
+      "post": {
+        "tags": [
+          "Clusters"
+        ],
+        "summary": "Create a cluster",
+        "security": [
+          {
+            "apikey": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "cluster_name": {
+                    "type": "string",
+                    "maxLength": 50,
+                    "description": "Human-readable name (e.g., \"ZKnight-01\", \"SNARK-Sentinel\")"
+                  },
+                  "cluster_description": {
+                    "type": "string",
+                    "maxLength": 200,
+                    "description": "Description of the cluster (e.g., \"Primary RISC-V prover\")"
+                  },
+                  "cluster_hardware": {
+                    "type": "string",
+                    "maxLength": 200,
+                    "description": "Technical specifications (e.g., \"RISC-V Prover\", \"STARK-to-SNARK Prover\")"
+                  },
+                  "cluster_cycle_type": {
+                    "type": "string",
+                    "maxLength": 50,
+                    "description": "Type of cycle (e.g., \"SP1\")"
+                  },
+                  "cluster_configuration": {
+                    "type": "array",
+                    "items": {
+                      "type": "object",
+                      "properties": {
+                        "instance_type": {
+                          "type": "string",
+                          "description": "Instance type (e.g., 'c5.xlarge'). Check our aws instance pricing endpoint for available instance types"
+                        },
+                        "instance_count": {
+                          "type": "number",
+                          "description": "Number of instances of this type"
+                        }
+                      },
+                      "required": [
+                        "instance_type",
+                        "instance_count"
+                      ]
+                    },
+                    "description": "Cluster configuration"
+                  }
+                },
+                "required": [
+                  "cluster_name",
+                  "cluster_configuration"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Cluster created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "cluster_id": {
+                      "type": "number"
+                    }
+                  },
+                  "required": [
+                    "cluster_id"
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request body or cluster configuration"
+          },
+          "401": {
+            "description": "Invalid API key"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      },
+      "get": {
+        "tags": [
+          "Clusters"
+        ],
+        "summary": "List clusters",
+        "security": [
+          {
+            "apikey": []
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Clusters list",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "cluster_id": {
+                        "type": "number"
+                      },
+                      "cluster_name": {
+                        "type": "string"
+                      },
+                      "cluster_description": {
+                        "type": "string"
+                      },
+                      "cluster_hardware": {
+                        "type": "string"
+                      },
+                      "cluster_cycle_type": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "cluster_id",
+                      "cluster_name"
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          "401": {
+            "description": "Invalid API key"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/proofs": {
+      "post": {
+        "tags": [
+          "Proofs"
+        ],
+        "summary": "Submit a new proof or update an existing one",
+        "security": [
+          {
+            "apikey": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "description": "The request body schema varies based on the `proof_status` field.",
+          "content": {
+            "application/json": {
+              "schema": {
+                "oneOf": [
+                  {
+                    "type": "object",
+                    "properties": {
+                      "proof_id": {
+                        "type": "number",
+                        "description": "Unique identifier for the proof. If no proof_id is provided, the system will attempt to find an existing proof for the block_number and cluster_id"
+                      },
+                      "block_number": {
+                        "type": "number",
+                        "minimum": 0
+                      },
+                      "cluster_id": {
+                        "type": "number"
+                      },
+                      "proof_status": {
+                        "type": "string",
+                        "const": "queued"
+                      }
+                    },
+                    "required": [
+                      "block_number",
+                      "cluster_id",
+                      "proof_status"
+                    ]
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "proof_id": {
+                        "type": "number",
+                        "description": "Unique identifier for the proof. If no proof_id is provided, the system will attempt to find an existing proof for the block_number and cluster_id"
+                      },
+                      "block_number": {
+                        "type": "number",
+                        "minimum": 0
+                      },
+                      "cluster_id": {
+                        "type": "number"
+                      },
+                      "proof_status": {
+                        "type": "string",
+                        "const": "proving"
+                      }
+                    },
+                    "required": [
+                      "block_number",
+                      "cluster_id",
+                      "proof_status"
+                    ]
+                  },
+                  {
+                    "type": "object",
+                    "properties": {
+                      "proof_id": {
+                        "type": "number",
+                        "description": "Unique identifier for the proof. If no proof_id is provided, the system will attempt to find an existing proof for the block_number and cluster_id"
+                      },
+                      "block_number": {
+                        "type": "number",
+                        "minimum": 0
+                      },
+                      "cluster_id": {
+                        "type": "number"
+                      },
+                      "proof_status": {
+                        "type": "string",
+                        "const": "proved"
+                      },
+                      "proof_latency": {
+                        "type": "number",
+                        "exclusiveMinimum": 0,
+                        "description": "Milliseconds taken to generate the proof"
+                      },
+                      "proving_cost": {
+                        "type": "number",
+                        "exclusiveMinimum": 0,
+                        "description": "Cost of generating the proof (in USD)"
+                      },
+                      "proving_cycles": {
+                        "type": "integer",
+                        "exclusiveMinimum": 0
+                      },
+                      "proof": {
+                        "type": "string",
+                        "minLength": 1
+                      }
+                    },
+                    "required": [
+                      "block_number",
+                      "cluster_id",
+                      "proof_status",
+                      "proof_latency",
+                      "proving_cost",
+                      "proving_cycles",
+                      "proof"
+                    ]
+                  }
+                ]
+              },
+              "examples": {
+                "queued": {
+                  "summary": "Queued proof",
+                  "value": {
+                    "block_number": 123456,
+                    "cluster_id": 1,
+                    "proof_status": "queued"
+                  }
+                },
+                "proving": {
+                  "summary": "Proving proof",
+                  "value": {
+                    "block_number": 123456,
+                    "cluster_id": 1,
+                    "proof_status": "proving"
+                  }
+                },
+                "proved": {
+                  "summary": "Proved proof",
+                  "value": {
+                    "block_number": 123456,
+                    "cluster_id": 1,
+                    "proof_status": "proved",
+                    "proof_latency": 100,
+                    "proving_cost": 540,
+                    "proving_cycles": 10000,
+                    "proof": "..."
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Proof submitted",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "proof_id": {
+                      "type": "number"
+                    }
+                  },
+                  "required": [
+                    "proof_id"
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request body"
+          },
+          "401": {
+            "description": "Invalid API key"
+          },
+          "404": {
+            "description": "Cluster not found"
+          },
+          "500": {
+            "description": "Internal server error or block not found"
+          }
+        }
+      }
+    },
+    "/aws-pricing-list": {
+      "get": {
+        "tags": [
+          "Aws pricing list"
+        ],
+        "summary": "List aws pricing list",
+        "responses": {
+          "200": {
+            "description": "Aws pricing list",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "id": {
+                        "type": "number"
+                      },
+                      "instance_type": {
+                        "type": "string"
+                      },
+                      "region": {
+                        "type": "string"
+                      },
+                      "hourly_price": {
+                        "type": "number"
+                      },
+                      "instance_memory": {
+                        "type": "number"
+                      },
+                      "vcpu": {
+                        "type": "number"
+                      },
+                      "instance_storage": {
+                        "type": "string"
+                      },
+                      "created_at": {
+                        "type": "string"
+                      }
+                    },
+                    "required": [
+                      "id",
+                      "instance_type",
+                      "region",
+                      "hourly_price",
+                      "instance_memory",
+                      "vcpu",
+                      "instance_storage",
+                      "created_at"
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    }
+  },
+  "components": {
+    "securitySchemes": {
+      "apikey": {
+        "type": "apiKey",
+        "description": "Enter the token with the Bearer prefix, e.g. \"Bearer <api_key>\"",
+        "name": "Authorization",
+        "in": "header"
+      }
+    }
+  }
+}

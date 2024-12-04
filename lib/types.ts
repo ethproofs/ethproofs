@@ -4,12 +4,12 @@ import type { Tables } from "./database.types"
 
 export type Team = Tables<"teams">
 
-export type ProverMachine = Tables<"prover_machines">
+export type ProverCluster = Tables<"clusters">
 
 type BaseProof = Tables<"proofs">
 type ProofExtensions = {
   team?: Team
-  prover_machines?: ProverMachine
+  cluster?: ProverCluster
   blocks?: Partial<Block>
 }
 export type Proof = BaseProof & ProofExtensions

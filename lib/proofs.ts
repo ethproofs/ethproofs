@@ -158,7 +158,7 @@ export const sortProofsStatusAndTimes = (a: Proof, b: Proof) => {
 }
 
 export const downloadProof = (proof: Proof) => {
-  const { proof: binary, proof_id, block_number, team, machine_id } = proof
+  const { proof: binary, proof_id, block_number, team, cluster_id } = proof
 
   if (!binary) {
     console.warn("Download failed - no proof binary found")
@@ -166,7 +166,7 @@ export const downloadProof = (proof: Proof) => {
     return
   }
 
-  const teamName = team?.team_name ? team.team_name : machine_id.split("-")[0]
+  const teamName = team?.team_name ? team.team_name : cluster_id.split("-")[0]
   const suggestedFilename = `${block_number}_${teamName}_${proof_id}.bin`
 
   const blob = new Blob([binary], { type: "application/octet-stream" })

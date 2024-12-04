@@ -3,7 +3,7 @@ import Link from "next/link"
 import { notFound } from "next/navigation"
 import prettyMilliseconds from "pretty-ms"
 
-import type { Metric, Proof, ProverMachine } from "@/lib/types"
+import type { Metric, Proof, ProverCluster } from "@/lib/types"
 
 import Null from "@/components/Null"
 import ProofStatus, { ProofStatusInfo } from "@/components/ProofStatus"
@@ -81,7 +81,7 @@ export default async function ProverPage({ params }: ProverPageProps) {
 
   const { data: proofsExtended, error: proofError } = await supabase
     .from("proofs")
-    .select("*, prover_machines(*),blocks(gas_used,timestamp)")
+    .select("*, clusters(*), blocks(gas_used,timestamp)")
     .eq("user_id", team.user_id)
 
   if (!team || teamError || !proofsExtended?.length || proofError)
@@ -89,13 +89,13 @@ export default async function ProverPage({ params }: ProverPageProps) {
 
   const provingMachines = Object.values(
     proofsExtended.reduce((acc, curr) => {
-      if (!curr.prover_machines) return acc
+      if (!curr.clusters || !curr.clusters.cluster_id) return acc
       return {
         ...acc,
-        [curr.prover_machines?.id]: curr.prover_machines,
+        [curr.clusters.cluster_id]: curr.clusters,
       }
     }, {})
-  ) as ProverMachine[]
+  ) satisfies ProverCluster[]
 
   const completedProofs = proofsExtended.filter(
     (p) => p.proof_status === "proved"
@@ -268,16 +268,16 @@ export default async function ProverPage({ params }: ProverPageProps) {
           }}
         >
           {provingMachines.map(
-            ({ machine_name, machine_hardware, machine_description }) => (
-              <Card key={machine_name} className="space-y-4">
-                <h3 className="text-xl font-semibold">{machine_name}</h3>
-                {machine_hardware && (
+            ({ cluster_name, cluster_hardware, cluster_description }) => (
+              <Card key={cluster_name} className="space-y-4">
+                <h3 className="text-xl font-semibold">{cluster_name}</h3>
+                {cluster_hardware && (
                   <p className="font-mono text-body">
-                    Hardware: {machine_hardware}
+                    Hardware: {cluster_hardware}
                   </p>
                 )}
-                {machine_description && (
-                  <Info.Description>{machine_description}</Info.Description>
+                {cluster_description && (
+                  <Info.Description>{cluster_description}</Info.Description>
                 )}
               </Card>
             )

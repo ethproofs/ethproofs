@@ -1,7 +1,7 @@
 export const SITE_NAME = "Ethproofs"
 export const SITE_DESCRIPTION = "Building a fully SNARKed Ethereum"
 export const SITE_URL = process.env.SITE_URL || "https://ethproofs.org"
-export const SITE_PREVIEW_URL = "http://ethproofs.netlify.app"
+export const SITE_PREVIEW_URL = "https://main--ethproofs.netlify.app"
 export const SITE_REPO = "ethproofs/ethproofs"
 
 // Beacon chain timing constants
@@ -12,6 +12,6 @@ export const SLOTS_PER_EPOCH = 32 // 2^5
 // Execution constants
 export const BLOCK_GAS_LIMIT = 30_000_000 // TODO: Fetch from execution block
 
-// Prover machine constants
+// Prover cluster constants
 export const FALLBACK_TEAM_LOGO_SRC =
   "https://ibkqxhjnroghhtfyualc.supabase.co/storage/v1/object/public/public-assets/fallback-team-logo.svg"

@@ -23,7 +23,7 @@ import { MetricInfo } from "../ui/metric"
 import { Progress } from "../ui/progress"
 import { TooltipContentFooter, TooltipContentHeader } from "../ui/tooltip"
 
-import MachineDetails from "./MachineDetails"
+import ClusterDetails from "./ClusterDetails"
 import TeamName from "./TeamName"
 
 import { formatTimeAgo } from "@/lib/date"
@@ -205,7 +205,7 @@ export const columns: ColumnDef<BlockWithProofs>[] = [
               }
             >
               <TeamName proof={cheapestProof} />
-              <MachineDetails proof={cheapestProof} />
+              <ClusterDetails proof={cheapestProof} />
             </MetricInfo>
           </span>
           <span className="block whitespace-nowrap text-sm text-body-secondary">
@@ -288,7 +288,7 @@ export const columns: ColumnDef<BlockWithProofs>[] = [
               }
             >
               <TeamName proof={cheapestProof} />
-              <MachineDetails proof={cheapestProof} />
+              <ClusterDetails proof={cheapestProof} />
             </MetricInfo>
           </span>
           <span className="block whitespace-nowrap text-sm text-body-secondary">
@@ -351,7 +351,7 @@ export const columns: ColumnDef<BlockWithProofs>[] = [
               }
             >
               <TeamName proof={fastestProof} />
-              <MachineDetails proof={fastestProof} />
+              <ClusterDetails proof={fastestProof} />
             </MetricInfo>
           </span>
           <span className="block whitespace-nowrap text-sm text-body-secondary">
