@@ -164,6 +164,7 @@ export type Database = {
       }
       clusters: {
         Row: {
+          cluster_cycle_type: string | null
           cluster_description: string | null
           cluster_hardware: string | null
           cluster_id: number | null
@@ -172,6 +173,7 @@ export type Database = {
           user_id: string
         }
         Insert: {
+          cluster_cycle_type?: string | null
           cluster_description?: string | null
           cluster_hardware?: string | null
           cluster_id?: number | null
@@ -180,6 +182,7 @@ export type Database = {
           user_id: string
         }
         Update: {
+          cluster_cycle_type?: string | null
           cluster_description?: string | null
           cluster_hardware?: string | null
           cluster_id?: number | null
@@ -470,3 +473,4 @@ export type Enums<
   : PublicEnumNameOrOptions extends keyof PublicSchema["Enums"]
     ? PublicSchema["Enums"][PublicEnumNameOrOptions]
     : never
+
