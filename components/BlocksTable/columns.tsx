@@ -6,16 +6,16 @@ import { ColumnDef } from "@tanstack/react-table"
 
 import type { BlockWithProofs, Proof } from "@/lib/types"
 
+import * as Metrics from "@/components/Metrics"
 import Null from "@/components/Null"
 import ArrowRight from "@/components/svgs/arrow-right.svg"
 import Award from "@/components/svgs/award.svg"
-import Box from "@/components/svgs/box.svg"
-import BoxDashed from "@/components/svgs/box-dashed.svg"
 import { ButtonLink } from "@/components/ui/button"
+import * as Info from "@/components/ui/info"
 
 import { cn } from "@/lib/utils"
 
-import { BLOCK_GAS_LIMIT, SITE_NAME } from "@/lib/constants"
+import { BLOCK_GAS_LIMIT } from "@/lib/constants"
 
 import ProofStatus, { ProofStatusInfo } from "../ProofStatus"
 import { HidePunctuation } from "../StylePunctuation"
@@ -39,36 +39,26 @@ const getTime = (d: string): number => new Date(d).getTime()
 export const columns: ColumnDef<BlockWithProofs>[] = [
   {
     accessorKey: "block_number",
-    header: () => {
-      const columnLabel = "block"
-      return (
-        <div className="text-left">
-          {columnLabel}
-          <MetricInfo className="space-y-3">
-            <TooltipContentHeader>{columnLabel}</TooltipContentHeader>
-            <div className="rounded border bg-background px-3 py-2">
-              <span className="font-mono text-primary">block_number</span>
-            </div>
+    header: () => (
+      <div className="text-left">
+        {Metrics.BLOCK_NUMBER_LABEL}
+        <MetricInfo className="space-y-3">
+          <Info.Label>{Metrics.BLOCK_NUMBER_LABEL}</Info.Label>
+          <Metrics.BlockNumberDetails />
+          <TooltipContentFooter className="space-y-3">
+            <p className="font-bold">Time since block published</p>
+            <Info.Derivation>
+              <span className="font-mono text-primary-light">now</span> -{" "}
+              <span className="font-mono text-primary-light">timestamp</span>
+            </Info.Derivation>
             <p>
-              <span className="font-mono text-primary">block_number</span> value
-              from execution block header
+              <span className="font-mono text-primary-light">timestamp</span>{" "}
+              value from execution block header
             </p>
-            <p className="text-body-secondary">Block height number</p>
-            <TooltipContentFooter className="space-y-3">
-              <p className="font-bold">Time since block published</p>
-              <div className="rounded border bg-background px-3 py-2">
-                <span className="font-mono text-primary-light">now</span> -{" "}
-                <span className="font-mono text-primary-light">timestamp</span>
-              </div>
-              <p>
-                <span className="font-mono text-primary-light">timestamp</span>{" "}
-                value from execution block header
-              </p>
-            </TooltipContentFooter>
-          </MetricInfo>
-        </div>
-      )
-    },
+          </TooltipContentFooter>
+        </MetricInfo>
+      </div>
+    ),
     cell: ({ row, cell }) => {
       const blockNumber = cell.getValue() as number
 
@@ -101,28 +91,28 @@ export const columns: ColumnDef<BlockWithProofs>[] = [
           {columnLabel}
           <MetricInfo className="whitespace-normal">
             <TooltipContentHeader>{columnLabel}</TooltipContentHeader>
-            <div className="rounded border bg-background px-3 py-2">
-              <span className="font-mono text-primary">gas_used</span>
-            </div>
+            <Info.Derivation>
+              <Info.Term type="codeTerm">gas_used</Info.Term>
+            </Info.Derivation>
             <p>
-              <span className="font-mono text-primary">gas_used</span> value
-              from execution block header
+              <Info.Term type="codeTerm">gas_used</Info.Term> value from
+              execution block header
             </p>
-            <p className="text-body-secondary">
+            <Info.Description>
               Total gas units executed within block
-            </p>
-            <p className="text-body-secondary">
+            </Info.Description>
+            <Info.Description>
               Proportional to the amount of computational effort a block
               outputs. Less gas = less computationally intense = easier to
               prove.
-            </p>
+            </Info.Description>
             <TooltipContentFooter className="space-y-3">
               <p className="font-bold">Percentage of block gas limit</p>
-              <div className="rounded border bg-background px-3 py-2">
+              <Info.Derivation>
                 <span className="font-mono text-primary-light">gas_used</span> /{" "}
                 <span className="font-mono text-primary-light">gas_limit</span>{" "}
                 x <span className="font-mono text-primary-light">100</span>
-              </div>
+              </Info.Derivation>
               <p>
                 <span className="font-mono text-primary-light">gas_used</span>{" "}
                 value from execution block header
@@ -167,16 +157,16 @@ export const columns: ColumnDef<BlockWithProofs>[] = [
           {columnLabel}
           <MetricInfo className="space-y-3 whitespace-normal">
             <TooltipContentHeader>{columnLabel}</TooltipContentHeader>
-            <div className="rounded border bg-background px-3 py-2">
-              <span className="italic">proving costs</span>
-            </div>
+            <Info.Derivation>
+              <Info.Term type="internal">proving costs</Info.Term>
+            </Info.Derivation>
             <p>
-              <span className="italic">proving costs</span> are in USD,
+              <Info.Term type="internal">proving costs</Info.Term> are in USD,
               self-reported by proving teams
             </p>
-            <p className="text-body-secondary">
+            <Info.Description>
               Proving costs in USD to prove entire block
-            </p>
+            </Info.Description>
           </MetricInfo>
         </div>
       )
@@ -234,31 +224,31 @@ export const columns: ColumnDef<BlockWithProofs>[] = [
           {columnLabel}
           <MetricInfo className="whitespace-normal">
             <TooltipContentHeader>{columnLabel}</TooltipContentHeader>
-            <div className="rounded border bg-background px-3 py-2">
-              <span className="italic">proving costs</span> /{" "}
-              <span className="font-mono text-primary">gas_used</span> /{" "}
-              <span className="font-mono text-primary">
+            <Info.Derivation>
+              <Info.Term type="internal">proving costs</Info.Term> /{" "}
+              <Info.Term type="codeTerm">gas_used</Info.Term> /{" "}
+              <Info.Term type="codeTerm">
                 10
                 <sup>6</sup>
-              </span>
-            </div>
+              </Info.Term>
+            </Info.Derivation>
 
             <p>
-              <span className="italic">proving costs</span> are in USD,
+              <Info.Term type="internal">proving costs</Info.Term> are in USD,
               self-reported by proving teams
             </p>
             <p>
-              <span className="font-mono text-primary">gas_used</span> value
-              from execution block header, expressed in millions
+              <Info.Term type="codeTerm">gas_used</Info.Term> value from
+              execution block header, expressed in millions
             </p>
-            <p className="text-body-secondary">
+            <Info.Description>
               Proving costs in USD per million gas units proven
-            </p>
-            <p className="text-body-secondary">
+            </Info.Description>
+            <Info.Description>
               Normalized USD cost per gas unit to allow comparison amongst
               proofs of different sized blocks. More gas consumption in a block
               means more computation to prove.
-            </p>
+            </Info.Description>
           </MetricInfo>
         </div>
       )
@@ -310,27 +300,15 @@ export const columns: ColumnDef<BlockWithProofs>[] = [
   },
   {
     accessorKey: "proofs",
-    header: () => {
-      const columnLabel = "proving time"
-      return (
-        <div className="whitespace-nowrap">
-          {columnLabel}
-          <MetricInfo className="space-y-3 whitespace-normal">
-            <TooltipContentHeader>{columnLabel}</TooltipContentHeader>
-            <div className="rounded border bg-background px-3 py-2">
-              <span className="italic">proof latency</span>
-            </div>
-            <p>
-              <span className="italic">proof latency</span> is duration of the
-              proof generation process, self reported by proving teams
-            </p>
-            <p className="text-body-secondary">
-              Time spent generating proof of execution
-            </p>
-          </MetricInfo>
-        </div>
-      )
-    },
+    header: () => (
+      <div className="whitespace-nowrap">
+        {Metrics.PROVING_TIME_LABEL}
+        <MetricInfo className="space-y-3 whitespace-normal">
+          <Info.Label>{Metrics.PROVING_TIME_LABEL}</Info.Label>
+          <Metrics.ProvingTimeDetails />
+        </MetricInfo>
+      </div>
+    ),
     cell: ({ cell, row }) => {
       const proofs = cell.getValue() as Proof[]
       const timestamp = row.original.timestamp
@@ -385,33 +363,20 @@ export const columns: ColumnDef<BlockWithProofs>[] = [
   },
   {
     accessorKey: "proofs",
-    header: () => {
-      const columnLabel = "proof status"
-      return (
-        <div className="whitespace-nowrap">
-          {columnLabel}
-          <MetricInfo className="whitespace-normal">
-            <ProofStatusInfo />
-            <TooltipContentFooter className="space-y-3">
-              <p className="font-bold">Time to proof (fastest proof shown)</p>
-              <div className="rounded border bg-background px-3 py-2">
-                <span className="italic">proof submission time</span> -{" "}
-                <span className="font-mono text-primary-light">timestamp</span>
-              </div>
-              <p>
-                <span className="italic">proof submission time</span> is the
-                timestamp logged by {SITE_NAME} when a completed proof has been
-                submitted
-              </p>
-              <p>
-                <span className="font-mono text-primary-light">timestamp</span>{" "}
-                value from execution block header
-              </p>
-            </TooltipContentFooter>
-          </MetricInfo>
-        </div>
-      )
-    },
+    header: () => (
+      <div className="whitespace-nowrap">
+        {Metrics.TOTAL_TTP_LABEL}
+        <MetricInfo className="whitespace-normal">
+          <ProofStatusInfo />
+          <TooltipContentFooter className="space-y-3">
+            <Info.Label isSecondary>
+              {Metrics.TOTAL_TTP_LABEL} (fastest proof shown)
+            </Info.Label>
+            <Metrics.TotalTTPDetails />
+          </TooltipContentFooter>
+        </MetricInfo>
+      </div>
+    ),
     cell: ({ cell, row }) => {
       const proofs = cell.getValue() as Proof[]
       const timestamp = row.original.timestamp

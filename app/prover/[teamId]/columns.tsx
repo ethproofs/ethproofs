@@ -1,63 +1,85 @@
 "use client"
 
+import Link from "next/link"
 import prettyMilliseconds from "pretty-ms"
 import { ColumnDef } from "@tanstack/react-table"
 
-import type { Proof } from "@/lib/types"
+import type { ProofExtended } from "@/lib/types"
 
+import DownloadButton from "@/components/DownloadButton"
+import * as Metrics from "@/components/Metrics"
 import Null from "@/components/Null"
-import { ButtonLink } from "@/components/ui/button"
+import { HidePunctuation } from "@/components/StylePunctuation"
 
-import { intervalToReadable } from "@/lib/date"
+import { ColumnHeader } from "./ColumnHeader"
+
 import { formatNumber } from "@/lib/number"
 
-export const columns: ColumnDef<Omit<Proof, "team" | "cluster">>[] = [
+export const columns: ColumnDef<ProofExtended>[] = [
   // Block (time since)
   {
     accessorKey: "block_number",
-    header: () => <div className="text-left">block</div>,
+    header: () => (
+      <ColumnHeader label={Metrics.BLOCK_NUMBER_LABEL} className="text-start">
+        <Metrics.BlockNumberDetails />
+      </ColumnHeader>
+    ),
     cell: ({ cell }) => {
       const blockNumber = cell.getValue() as number
-      const formatted = formatNumber(blockNumber)
-
-      return <div className="text-start text-base">{formatted}</div>
+      return (
+        <div className="text-start">
+          <Link
+            href={`/block/${blockNumber}`}
+            className="tracking-wide hover:text-primary-light hover:underline"
+          >
+            <HidePunctuation>{formatNumber(blockNumber)}</HidePunctuation>
+          </Link>
+        </div>
+      )
     },
   },
   // Instance
   {
     accessorKey: "cluster.cluster_name",
-    header: "instance",
+    header: () => (
+      <ColumnHeader label={Metrics.CLUSTER_LABEL}>
+        <Metrics.ClusterDetails />
+      </ColumnHeader>
+    ),
     cell: ({ cell }) => {
       const instance = cell.getValue() as string
 
       return instance
     },
   },
-  // Proof status
+  // Time to proof (time from block.timestamp to proof.proved_timestamp)
   {
-    accessorKey: "proof_status",
-    header: "status",
-  },
-  // Time to proof (duration)
-  // ? Difference between latency and time to proof?
-  {
-    accessorKey: "prover_duration",
-    header: "time to proof",
-    cell: ({ cell }) => {
-      const interval = cell.getValue() as string
+    accessorKey: "proved_timestamp",
+    header: () => (
+      <ColumnHeader label={Metrics.TOTAL_TTP_LABEL}>
+        <Metrics.TotalTTPDetails />
+      </ColumnHeader>
+    ),
+    cell: ({ cell, row }) => {
+      const provedTimestamp = cell.getValue() as string
+      const blockTimestamp = row.original.block?.timestamp
 
-      if (!interval) return <Null />
+      if (!provedTimestamp || !blockTimestamp) return <Null />
 
-      const formatted = intervalToReadable(interval)
+      const diff =
+        new Date(provedTimestamp).getTime() - new Date(blockTimestamp).getTime()
 
-      return formatted
+      return diff > 0 ? prettyMilliseconds(diff) : <Null />
     },
   },
-  // Latency (duration)
-  // ? Difference between latency and time to proof?
+  // Proving time (proof.proof_latency, duration spent generating proof)
   {
     accessorKey: "proof_latency",
-    header: "latency",
+    header: () => (
+      <ColumnHeader label={Metrics.PROVING_TIME_LABEL}>
+        <Metrics.ProvingTimeDetails />
+      </ColumnHeader>
+    ),
     cell: ({ cell }) => {
       const latency = cell.getValue() as number
 
@@ -66,37 +88,12 @@ export const columns: ColumnDef<Omit<Proof, "team" | "cluster">>[] = [
       return prettyMilliseconds(latency)
     },
   },
-  // Cost (USD)
-  {
-    accessorKey: "proving_cost",
-    header: "prover status",
-    cell: ({ cell }) => {
-      const cost = cell.getValue() as number
-
-      const formatted = new Intl.NumberFormat("en-US", {
-        style: "currency",
-        currency: "USD",
-      }).format(cost)
-
-      return formatted
-    },
-  },
-  // Details
+  // Download button / proof status
   {
     id: "actions",
     cell: ({ row }) => {
-      const blockNumber = row.original.block_number
-      return (
-        <div className="text-right">
-          <ButtonLink
-            href={`/block/${blockNumber}`}
-            variant="outline"
-            className="whitespace-nowrap"
-          >
-            + details
-          </ButtonLink>
-        </div>
-      )
+      const proof = row.original
+      return <DownloadButton proof={proof} />
     },
   },
 ]

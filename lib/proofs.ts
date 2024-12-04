@@ -1,4 +1,4 @@
-import type { BlockWithProofs, Proof } from "./types"
+import type { BlockWithProofs, Proof, ProofExtended } from "./types"
 
 export const isCompleted = (proof: Proof) => proof.proof_status === "proved"
 
@@ -157,7 +157,7 @@ export const sortProofsStatusAndTimes = (a: Proof, b: Proof) => {
   return 0
 }
 
-export const downloadProof = (proof: Proof) => {
+export const downloadProof = (proof: ProofExtended) => {
   const { proof: binary, proof_id, block_number, team, cluster_id } = proof
 
   if (!binary) {

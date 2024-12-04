@@ -1,6 +1,6 @@
-import type { Proof } from "@/lib/types"
+import type { ProofExtended } from "@/lib/types"
 
-const ClusterDetails = ({ proof }: { proof: Proof }) => {
+const ClusterDetails = ({ proof }: { proof: ProofExtended }) => {
   const { cluster_id, cluster } = proof
   if (!cluster) return "Cluster " + cluster_id.split("-")[0]
   const { cluster_description, cluster_hardware, cluster_name } = cluster
