@@ -3,6 +3,7 @@ import * as Info from "@/components/ui/info"
 import { SITE_NAME } from "@/lib/constants"
 
 const BLOCK_NUMBER_LABEL = "Block"
+const CLUSTER_LABEL = "Cluster"
 const PROVING_TIME_LABEL = "Proving time"
 const TOTAL_TTP_LABEL = "Total time to proof"
 
@@ -18,6 +19,23 @@ const BlockNumberDetails = () => {
         execution block header
       </p>
       <Info.Description>Block height number</Info.Description>
+    </>
+  )
+}
+
+const ClusterDetails = () => {
+  const cluster = "cluster"
+  return (
+    <>
+      <Info.Derivation>
+        <Info.Term type="codeTerm">{cluster}</Info.Term>
+      </Info.Derivation>
+      <p>
+        <Info.Term type="codeTerm">{cluster}</Info.Term> is the unique set of
+        hardware being used to generate the proof identifier, self reported as
+        AWS instance equivalents
+      </p>
+      <Info.Description>Cluster identifier</Info.Description>
     </>
   )
 }
@@ -65,6 +83,8 @@ const TotalTTPDetails = () => {
 export {
   BLOCK_NUMBER_LABEL,
   BlockNumberDetails,
+  CLUSTER_LABEL,
+  ClusterDetails,
   PROVING_TIME_LABEL,
   ProvingTimeDetails,
   TOTAL_TTP_LABEL,
