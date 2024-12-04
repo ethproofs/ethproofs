@@ -53,7 +53,7 @@
                   "cluster_description": {
                     "type": "string",
                     "maxLength": 200,
-                    "description": "Description of the machine (e.g., \"Primary RISC-V prover\")"
+                    "description": "Description of the cluster (e.g., \"Primary RISC-V prover\")"
                   },
                   "cluster_hardware": {
                     "type": "string",
@@ -194,7 +194,7 @@
                     "properties": {
                       "proof_id": {
                         "type": "number",
-                        "description": "Unique identifier for the proof. If no proof_id is provided, the system will attempt to find an existing proof for the block_number and machine_id"
+                        "description": "Unique identifier for the proof. If no proof_id is provided, the system will attempt to find an existing proof for the block_number and cluster_id"
                       },
                       "block_number": {
                         "type": "number",
@@ -219,7 +219,7 @@
                     "properties": {
                       "proof_id": {
                         "type": "number",
-                        "description": "Unique identifier for the proof. If no proof_id is provided, the system will attempt to find an existing proof for the block_number and machine_id"
+                        "description": "Unique identifier for the proof. If no proof_id is provided, the system will attempt to find an existing proof for the block_number and cluster_id"
                       },
                       "block_number": {
                         "type": "number",
@@ -244,7 +244,7 @@
                     "properties": {
                       "proof_id": {
                         "type": "number",
-                        "description": "Unique identifier for the proof. If no proof_id is provided, the system will attempt to find an existing proof for the block_number and machine_id"
+                        "description": "Unique identifier for the proof. If no proof_id is provided, the system will attempt to find an existing proof for the block_number and cluster_id"
                       },
                       "block_number": {
                         "type": "number",
@@ -347,7 +347,7 @@
             "description": "Invalid API key"
           },
           "404": {
-            "description": "Machine not found"
+            "description": "Cluster not found"
           },
           "500": {
             "description": "Internal server error or block not found"
