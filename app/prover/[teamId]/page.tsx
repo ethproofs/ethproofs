@@ -3,7 +3,7 @@ import Link from "next/link"
 import { notFound } from "next/navigation"
 import prettyMilliseconds from "pretty-ms"
 
-import type { Metric, Proof, ProofExtended, ProverCluster } from "@/lib/types"
+import type { Metric, ProofExtended, ProverCluster } from "@/lib/types"
 
 import Null from "@/components/Null"
 import ProofStatus, { ProofStatusInfo } from "@/components/ProofStatus"
@@ -87,7 +87,7 @@ export default async function ProverPage({ params }: ProverPageProps) {
   if (!team || teamError || !proofsExtended?.length || proofError)
     return notFound()
 
-  const provingMachines = Object.values(
+  const clusters = Object.values(
     proofsExtended.reduce((acc, curr) => {
       if (!curr.cluster || !curr.cluster.cluster_id) return acc
       return {
@@ -262,7 +262,7 @@ export default async function ProverPage({ params }: ProverPageProps) {
             gridTemplateColumns: "repeat(auto-fill, minmax(24rem, 1fr))",
           }}
         >
-          {provingMachines.map(
+          {clusters.map(
             ({ cluster_name, cluster_hardware, cluster_description }) => (
               <Card key={cluster_name} className="space-y-4">
                 <h3 className="text-xl font-semibold">{cluster_name}</h3>
