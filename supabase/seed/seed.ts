@@ -39,6 +39,13 @@ const main = async () => {
     }))
   )
 
+  const { aws_instance_pricing } = await seed.aws_instance_pricing((x) =>
+    x(3, ({ index }) => ({
+      instance_type: ["t3.medium", "t3.large", "t3.xlarge"][index],
+      hourly_price: [0.0416, 0.0832, 0.1664][index],
+    }))
+  )
+
   for (const user of users) {
     const userIndex = users.indexOf(user)
     const profile = proverProfiles[userIndex]
@@ -70,6 +77,14 @@ const main = async () => {
       {
         connect: { users: [user] },
       }
+    )
+
+    await seed.cluster_configurations(
+      (x) =>
+        x(5, ({ seed }) => ({
+          instance_count: copycat.int(seed, { min: 1, max: 10 }),
+        })),
+      { connect: { clusters, aws_instance_pricing } }
     )
 
     await seed.proofs(
