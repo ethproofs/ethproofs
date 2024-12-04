@@ -16,7 +16,7 @@ export const createClusterSchema = z.object({
     .string()
     .max(200)
     .optional()
-    .describe('Description of the machine (e.g., "Primary RISC-V prover")'),
+    .describe('Description of the cluster (e.g., "Primary RISC-V prover")'),
   cluster_hardware: z
     .string()
     .max(200)

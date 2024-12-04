@@ -66,7 +66,7 @@ export const proofsPaths: ZodOpenApiPathsObject = {
           description: "Invalid API key",
         },
         "404": {
-          description: "Machine not found",
+          description: "Cluster not found",
         },
         "500": {
           description: "Internal server error or block not found",

@@ -39,7 +39,7 @@ For `proof_status: "queued"`:
 ```json
 {
   "block_number": number,
-  "machine_id": number,
+  "cluster_id": number,
   "proof_status": "queued",
   "proof_id": number (optional)
 }
@@ -50,7 +50,7 @@ For `proof_status: "proving"`:
 ```json
 {
   "block_number": number,
-  "machine_id": number,
+  "cluster_id": number,
   "proof_status": "proving",
   "proof_id": number (optional)
 }
@@ -61,7 +61,7 @@ For `proof_status: "proved"`:
 ```json
 {
   "block_number": number,
-  "machine_id": number,
+  "cluster_id": number,
   "proof_status": "proved",
   "proof_id": number (optional),
   "proof": string,
@@ -84,34 +84,34 @@ For `proof_status: "proved"`:
 - Error Responses:
   - 400: Invalid payload
   - 401: Invalid API key
-  - 404: Machine not found
+  - 404: Cluster not found
   - 500: Internal server error or block not found
 
 #### Notes
 
-- If no `proof_id` is provided, the system will attempt to find an existing proof for the `block_number` and `machine_id`
+- If no `proof_id` is provided, the system will attempt to find an existing proof for the `block_number` and `cluster_id`
 - Timestamps are automatically set based on the proof status
 - Block data is automatically fetched and stored if the block doesn't exist in the database
 
-## Prover Machines API
+## Prover Clusters API
 
-### List Machines
+### List Clusters
 
-`GET /api/v0/machines`
+`GET /api/v0/clusters`
 
-Retrieve all prover machines associated with the authenticated user.
+Retrieve all prover clusters associated with the authenticated user.
 
 #### Response
 
-- Success (200): Returns array of machines
+- Success (200): Returns array of clusters
 
 ```json
 [
   {
-    "machine_id": number,
-    "machine_name": string,
-    "machine_description": string (optional),
-    "machine_hardware": string (optional)
+    "cluster_id": number,
+    "cluster_name": string,
+    "cluster_description": string (optional),
+    "cluster_hardware": string (optional)
   }
 ]
 ```
@@ -120,29 +120,30 @@ Retrieve all prover machines associated with the authenticated user.
   - 401: Invalid API key
   - 500: Internal server error
 
-### Register Machine
+### Register Cluster
 
-`POST /api/v0/machines`
+`POST /api/v0/clusters`
 
-Register a new prover machine.
+Register a new prover cluster.
 
 #### Request Body
 
 ```json
 {
-  "machine_name": string, // Human-readable name (e.g., "ZKnight-01", "SNARK-Sentinel")
-  "machine_description": string (optional), // Description of the machine (e.g., "Primary RISC-V prover")
-  "machine_hardware": string (optional) // Technical specifications (e.g., "RISC-V Prover", "STARK-to-SNARK Prover")
+  "cluster_name": string, // Human-readable name (e.g., "ZKnight-01", "SNARK-Sentinel")
+  "cluster_description": string (optional), // Description of the cluster (e.g., "Primary RISC-V prover")
+  "cluster_hardware": string (optional), // Technical specifications (e.g., "RISC-V Prover", "STARK-to-SNARK Prover")
+  "cluster_cycle_type": string (optional) // Type of cycle (e.g., "SP1")
 }
 ```
 
 #### Response
 
-- Success (200): Returns the created machine details
+- Success (200): Returns the created cluster details
 
 ```json
 {
-  "machine_id": number
+  "cluster_id": number
 }
 ```
 
@@ -150,7 +151,6 @@ Register a new prover machine.
   - 400: Invalid payload
   - 401: Invalid API key
   - 500: Internal server error
-
 
 ## AWS Pricing List API
 

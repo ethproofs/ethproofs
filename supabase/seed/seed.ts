@@ -63,6 +63,8 @@ const main = async () => {
             cluster_name: `Cluster ${copycat.firstName(index)}`,
             cluster_description: faker.lorem.sentence(),
             cluster_hardware: faker.lorem.sentence(),
+            cluster_cycle_type:
+              faker.lorem.word().slice(0, 2).toUpperCase() + index,
           }
         }),
       {
