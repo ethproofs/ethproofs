@@ -22,9 +22,9 @@ const provingProofSchema = baseProofSchema.extend({
 
 const provedProofSchema = baseProofSchema.extend({
   proof_status: z.literal("proved"),
-  proof_latency: z
+  proving_time: z
     .number()
-    .positive("proof_latency must be a positive number")
+    .positive("proving_time must be a positive number")
     .describe("Milliseconds taken to generate the proof"),
   proving_cost: z
     .number()

@@ -265,7 +265,7 @@
                         "type": "string",
                         "const": "proved"
                       },
-                      "proof_latency": {
+                      "proving_time": {
                         "type": "number",
                         "exclusiveMinimum": 0,
                         "description": "Milliseconds taken to generate the proof"
@@ -288,7 +288,7 @@
                       "block_number",
                       "cluster_id",
                       "proof_status",
-                      "proof_latency",
+                      "proving_time",
                       "proving_cost",
                       "proving_cycles",
                       "proof"
@@ -319,7 +319,7 @@
                     "block_number": 123456,
                     "cluster_id": 1,
                     "proof_status": "proved",
-                    "proof_latency": 100,
+                    "proving_time": 100,
                     "proving_cost": 540,
                     "proving_cycles": 10000,
                     "proof": "..."

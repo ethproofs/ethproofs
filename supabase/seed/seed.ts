@@ -92,11 +92,12 @@ const main = async () => {
         x(500, () => ({
           proof_id: ({ seed }) => copycat.int(seed, { min: 1, max: 1000000 }),
           proof: Buffer.from("{}"),
-          prover_duration: ({ seed }) => copycat.dateString(seed).slice(11, 19),
-          proof_latency: ({ seed }) =>
+          proving_time: ({ seed }) =>
             copycat.int(seed, { min: 1000, max: 10000 }),
           proof_status: ({ seed }) =>
             copycat.oneOfString(seed, ["proved", "proving", "queued"]),
+          proving_cycles: ({ seed }) =>
+            copycat.int(seed, { min: 100000, max: 1000000 }),
         })),
       { connect: { users, blocks, clusters } }
     )

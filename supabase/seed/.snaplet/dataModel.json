@@ -3173,20 +3173,6 @@
           "maxLength": null
         },
         {
-          "id": "public.proofs.prover_duration",
-          "name": "prover_duration",
-          "columnName": "prover_duration",
-          "type": "interval",
-          "isRequired": false,
-          "kind": "scalar",
-          "isList": false,
-          "isGenerated": false,
-          "sequence": false,
-          "hasDefaultValue": false,
-          "isId": false,
-          "maxLength": null
-        },
-        {
           "id": "public.proofs.proving_cost",
           "name": "proving_cost",
           "columnName": "proving_cost",
@@ -3304,6 +3290,20 @@
           "columnName": "cluster_id",
           "type": "uuid",
           "isRequired": true,
+          "kind": "scalar",
+          "isList": false,
+          "isGenerated": false,
+          "sequence": false,
+          "hasDefaultValue": false,
+          "isId": false,
+          "maxLength": null
+        },
+        {
+          "id": "public.proofs.proving_time",
+          "name": "proving_time",
+          "columnName": "proving_time",
+          "type": "int4",
+          "isRequired": false,
           "kind": "scalar",
           "isList": false,
           "isGenerated": false,

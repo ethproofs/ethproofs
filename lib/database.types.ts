@@ -210,9 +210,9 @@ export type Database = {
           proof_latency: number | null
           proof_status: string
           proved_timestamp: string | null
-          prover_duration: unknown | null
           proving_cost: number | null
           proving_cycles: number | null
+          proving_time: number | null
           proving_timestamp: string | null
           queued_timestamp: string | null
           user_id: string
@@ -226,9 +226,9 @@ export type Database = {
           proof_latency?: number | null
           proof_status: string
           proved_timestamp?: string | null
-          prover_duration?: unknown | null
           proving_cost?: number | null
           proving_cycles?: number | null
+          proving_time?: number | null
           proving_timestamp?: string | null
           queued_timestamp?: string | null
           user_id: string
@@ -242,9 +242,9 @@ export type Database = {
           proof_latency?: number | null
           proof_status?: string
           proved_timestamp?: string | null
-          prover_duration?: unknown | null
           proving_cost?: number | null
           proving_cycles?: number | null
+          proving_time?: number | null
           proving_timestamp?: string | null
           queued_timestamp?: string | null
           user_id?: string
