@@ -147,7 +147,8 @@ CREATE TABLE IF NOT EXISTS "public"."clusters" (
     "user_id" "uuid" NOT NULL,
     "id" "uuid" DEFAULT "gen_random_uuid"() NOT NULL,
     "cluster_description" "text",
-    "cluster_hardware" "text"
+    "cluster_hardware" "text",
+    "cluster_cycle_type" character varying
 );
 
 
