@@ -380,6 +380,10 @@ CREATE POLICY "Enable insert for users with an api key" ON "public"."clusters" F
 
 
 
+CREATE POLICY "Enable insert for users with an api key" ON "public"."cluster_configurations" FOR INSERT WITH CHECK ("public"."is_allowed_apikey"((("current_setting"('request.headers'::"text", true))::"json" ->> 'ethkey'::"text"), '{all,write}'::"public"."key_mode"[]));
+
+
+
 CREATE POLICY "Enable insert for users with an api key" ON "public"."proofs" FOR INSERT WITH CHECK ("public"."is_allowed_apikey"((("current_setting"('request.headers'::"text", true))::"json" ->> 'ethkey'::"text"), '{all,write}'::"public"."key_mode"[]));
 
 
@@ -401,6 +405,10 @@ CREATE POLICY "Enable read access for all users" ON "public"."recursive_root_pro
 
 
 CREATE POLICY "Enable read access for all users" ON "public"."teams" FOR SELECT USING (true);
+
+
+
+CREATE POLICY "Enable read access for all users" ON "public"."aws_instance_pricing" FOR SELECT USING (true);
 
 
 
