@@ -35,7 +35,7 @@ export const POST = withAuth(async ({ request, client, user, timestamp }) => {
     })
   }
 
-  const { block_number, proof_status, machine_id } = proofPayload
+  const { block_number, proof_status, cluster_id } = proofPayload
 
   // validate block_number exists
   console.log("validating block_number", block_number)
@@ -78,17 +78,17 @@ export const POST = withAuth(async ({ request, client, user, timestamp }) => {
     revalidateTag("blocks")
   }
 
-  // get machine uuid from machine_id
-  const { data: proverMachineData, error: proverMachineError } = await client
-    .from("prover_machines")
+  // get cluster uuid from cluster_id
+  const { data: clusterData, error: clusterError } = await client
+    .from("clusters")
     .select("id")
-    .eq("machine_id", machine_id)
+    .eq("cluster_id", cluster_id)
     .eq("user_id", user.id)
     .single()
 
-  if (proverMachineError) {
-    console.error("error getting prover machine", proverMachineError)
-    return new Response("Machine not found", { status: 404 })
+  if (clusterError) {
+    console.error("error getting cluster", clusterError)
+    return new Response("Cluster not found", { status: 404 })
   }
 
   // get proof_id to update or create an existing proof
@@ -98,7 +98,7 @@ export const POST = withAuth(async ({ request, client, user, timestamp }) => {
       .from("proofs")
       .select("proof_id")
       .eq("block_number", block_number)
-      .eq("machine_id", proverMachineData.id)
+      .eq("cluster_id", clusterData.id)
       .eq("user_id", user.id)
       .single()
 
@@ -123,13 +123,13 @@ export const POST = withAuth(async ({ request, client, user, timestamp }) => {
         ...proofPayload,
         proof_id: proofId,
         block_number,
-        machine_id: proverMachineData.id,
+        cluster_id: clusterData.id,
         proof_status,
         user_id: user.id,
         [timestampField]: timestamp,
       },
       {
-        onConflict: "block_number,machine_id",
+        onConflict: "block_number,cluster_id",
       }
     )
     .select("proof_id")

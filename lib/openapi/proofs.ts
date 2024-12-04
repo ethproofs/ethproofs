@@ -6,7 +6,7 @@ import { createProofSchema } from "../zod/schemas/proof"
 export const proofsPaths: ZodOpenApiPathsObject = {
   "/proofs": {
     post: {
-      tags: ["proofs"],
+      tags: ["Proofs"],
       summary: "Submit a new proof or update an existing one",
       requestBody: {
         required: true,
@@ -21,7 +21,7 @@ export const proofsPaths: ZodOpenApiPathsObject = {
                 value: createProofSchema.parse({
                   proof_status: "queued",
                   block_number: 123456,
-                  machine_id: 1,
+                  cluster_id: 1,
                 }),
               },
               proving: {
@@ -29,7 +29,7 @@ export const proofsPaths: ZodOpenApiPathsObject = {
                 value: createProofSchema.parse({
                   proof_status: "proving",
                   block_number: 123456,
-                  machine_id: 1,
+                  cluster_id: 1,
                 }),
               },
               proved: {
@@ -37,7 +37,7 @@ export const proofsPaths: ZodOpenApiPathsObject = {
                 value: createProofSchema.parse({
                   proof_status: "proved",
                   block_number: 123456,
-                  machine_id: 1,
+                  cluster_id: 1,
                   proof: "...",
                   proof_latency: 100,
                   proving_cost: 540,
@@ -66,12 +66,13 @@ export const proofsPaths: ZodOpenApiPathsObject = {
           description: "Invalid API key",
         },
         "404": {
-          description: "Machine not found",
+          description: "Cluster not found",
         },
         "500": {
           description: "Internal server error or block not found",
         },
       },
+      security: [{ apikey: [] }],
     },
   },
 }
