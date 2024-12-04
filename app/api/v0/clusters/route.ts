@@ -10,7 +10,9 @@ export const GET = withAuth(async ({ client, user }) => {
 
   const { data, error } = await client
     .from("clusters")
-    .select("cluster_id, cluster_name, cluster_description, cluster_hardware")
+    .select(
+      "cluster_id, cluster_name, cluster_description, cluster_hardware, cluster_cycle_type"
+    )
     .eq("user_id", user.id)
 
   if (error) {
@@ -46,6 +48,7 @@ export const POST = withAuth(async ({ request, client, user }) => {
     cluster_description,
     cluster_hardware,
     cluster_configuration,
+    cluster_cycle_type,
   } = clusterPayload
 
   // get & validate instance type ids
@@ -73,6 +76,7 @@ export const POST = withAuth(async ({ request, client, user }) => {
       cluster_name,
       cluster_description,
       cluster_hardware,
+      cluster_cycle_type,
       user_id: user.id,
     })
     .select("id, cluster_id")

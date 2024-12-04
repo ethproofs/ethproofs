@@ -5,6 +5,7 @@ export const ClusterSchema = z.object({
   cluster_name: z.string(),
   cluster_description: z.string().optional(),
   cluster_hardware: z.string().optional(),
+  cluster_cycle_type: z.string().optional(),
 })
 
 export const createClusterSchema = z.object({
@@ -24,6 +25,11 @@ export const createClusterSchema = z.object({
     .describe(
       'Technical specifications (e.g., "RISC-V Prover", "STARK-to-SNARK Prover")'
     ),
+  cluster_cycle_type: z
+    .string()
+    .max(50)
+    .optional()
+    .describe('Type of cycle (e.g., "SP1")'),
   cluster_configuration: z
     .array(
       z.object({

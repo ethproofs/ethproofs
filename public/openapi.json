@@ -60,6 +60,11 @@
                     "maxLength": 200,
                     "description": "Technical specifications (e.g., \"RISC-V Prover\", \"STARK-to-SNARK Prover\")"
                   },
+                  "cluster_cycle_type": {
+                    "type": "string",
+                    "maxLength": 50,
+                    "description": "Type of cycle (e.g., \"SP1\")"
+                  },
                   "cluster_configuration": {
                     "type": "array",
                     "items": {
@@ -150,6 +155,9 @@
                         "type": "string"
                       },
                       "cluster_hardware": {
+                        "type": "string"
+                      },
+                      "cluster_cycle_type": {
                         "type": "string"
                       }
                     },
