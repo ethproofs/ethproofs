@@ -40,12 +40,14 @@ const ClusterDetails = () => {
   )
 }
 
-const ProvingTimeDetails = () => {
+const ProvingTimeDetails = ({ average }: { average?: boolean }) => {
   const provingTime = "proving time"
   return (
     <>
       <Info.Derivation>
+        {average ? "∑(" : ""}
         <Info.Term type="internal">{provingTime}</Info.Term>
+        {average ? ") / number of completed proofs for block" : ""}
       </Info.Derivation>
       <p>
         <Info.Term type="internal">{provingTime}</Info.Term> is duration of the
@@ -54,6 +56,12 @@ const ProvingTimeDetails = () => {
       <Info.Description>
         Time spent generating proof of execution
       </Info.Description>
+      {average ? (
+        <Info.Description>
+          Average reported proving time for all completed proofs submitted for
+          this block
+        </Info.Description>
+      ) : null}
     </>
   )
 }
