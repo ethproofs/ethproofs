@@ -193,38 +193,11 @@ export const columns: ColumnDef<BlockWithProofs>[] = [
   },
   {
     accessorKey: "proofs",
-    header: () => {
-      const columnLabel = "cost per gas"
-      return (
-        <ColumnHeader label={columnLabel}>
-          <Info.Derivation>
-            <Info.Term type="internal">proving costs</Info.Term> /{" "}
-            <Info.Term type="codeTerm">gas_used</Info.Term> /{" "}
-            <Info.Term type="codeTerm">
-              10
-              <sup>6</sup>
-            </Info.Term>
-          </Info.Derivation>
-
-          <p>
-            <Info.Term type="internal">proving costs</Info.Term> are in USD,
-            self-reported by proving teams
-          </p>
-          <p>
-            <Info.Term type="codeTerm">gas_used</Info.Term> value from execution
-            block header, expressed in millions
-          </p>
-          <Info.Description>
-            Proving costs in USD per million gas units proven
-          </Info.Description>
-          <Info.Description>
-            Normalized USD cost per gas unit to allow comparison amongst proofs
-            of different sized blocks. More gas consumption in a block means
-            more computation to prove.
-          </Info.Description>
-        </ColumnHeader>
-      )
-    },
+    header: () => (
+      <ColumnHeader label={Metrics.COST_PER_MGAS_LABEL}>
+        <Metrics.CostPerMgas />
+      </ColumnHeader>
+    ),
     cell: ({ cell, row }) => {
       const proofs = cell.getValue() as Proof[]
       const gasUsed = row.original.gas_used
