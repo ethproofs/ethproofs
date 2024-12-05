@@ -56,7 +56,7 @@ export const columns: ColumnDef<Omit<Proof, "team" | "cluster">>[] = [
   // Latency (duration)
   // ? Difference between latency and time to proof?
   {
-    accessorKey: "proof_latency",
+    accessorKey: "proving_time",
     header: "latency",
     cell: ({ cell }) => {
       const latency = cell.getValue() as number

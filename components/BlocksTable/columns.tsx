@@ -354,7 +354,7 @@ export const columns: ColumnDef<BlockWithProofs>[] = [
       const getBestLatency = () => {
         if (!completedProofs.length) return <Null />
 
-        return prettyMilliseconds(fastestProof.proof_latency!)
+        return prettyMilliseconds(fastestProof.proving_time!)
       }
 
       const getAverageLatency = () => {

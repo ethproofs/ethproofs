@@ -142,8 +142,8 @@ export default async function BlockDetailsPage({
           </p>
         </>
       ),
-      value: bestLatencyProof?.proof_latency ? (
-        prettyMilliseconds(bestLatencyProof.proof_latency)
+      value: bestLatencyProof?.proving_time ? (
+        prettyMilliseconds(bestLatencyProof.proving_time)
       ) : (
         <Null />
       ),
@@ -421,7 +421,7 @@ export default async function BlockDetailsPage({
         {proofsWithTeams.sort(sortProofsStatusAndTimes).map((proof) => {
           const {
             proof_id,
-            proof_latency,
+            proving_time,
             proof_status,
             proved_timestamp,
             proving_cost,
@@ -539,8 +539,8 @@ export default async function BlockDetailsPage({
                   </MetricInfo>
                 </MetricLabel>
                 <MetricValue className="font-normal">
-                  {isComplete && proof_latency ? (
-                    prettyMilliseconds(proof_latency)
+                  {isComplete && proving_time ? (
+                    prettyMilliseconds(proving_time)
                   ) : (
                     <Null />
                   )}
