@@ -10,14 +10,21 @@ export const document = createDocument({
   openapi: "3.1.0",
   info: {
     title: `${SITE_NAME} API`,
-    description: `This document outlines the available API endpoints for ${SITE_NAME}.\n\n**Authentication**\n\nAll endpoints require authentication using an API key in the request header:\n\n\`Authorization: Bearer <api_key>\``,
+    description: `This document outlines the available API endpoints for ${SITE_NAME}.
+    \n\n**Base URL**
+    \n\nAll API endpoints are relative to:
+    \n\n\`${new URL("/api/v0", SITE_PREVIEW_URL).toString()}\`
+    \n\n**Authentication**
+    \n\nAll endpoints require authentication using an API key in the request header:
+    \n\n\`Authorization: Bearer <api_key>\``,
     version: "0.0.1",
   },
   servers: [
-    {
-      url: new URL("/api/v0", SITE_URL).toString(),
-      description: "Main server",
-    },
+    // TODO: Uncomment when prod is ready
+    // {
+    //   url: new URL("/api/v0", SITE_URL).toString(),
+    //   description: "Main server",
+    // },
     {
       url: new URL("/api/v0", SITE_PREVIEW_URL).toString(),
       description: "Testing server",
