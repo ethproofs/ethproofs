@@ -269,7 +269,8 @@
                       "proving_cost": {
                         "type": "number",
                         "exclusiveMinimum": 0,
-                        "description": "Cost of generating the proof (in USD)"
+                        "description": "Cost of generating the proof (in USD)",
+                        "deprecated": true
                       },
                       "proving_cycles": {
                         "type": "integer",
