@@ -72,8 +72,8 @@
                   "cluster_proof_type": {
                     "type": "string",
                     "maxLength": 50,
-                    "description": "Type of proofs to be generated",
-                    "example": "STARK"
+                    "description": "Proof system used to generate proofs. (e.g., Groth16 or PlonK)",
+                    "example": "Groth16"
                   },
                   "cluster_configuration": {
                     "type": "array",

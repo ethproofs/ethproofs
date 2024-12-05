@@ -27,8 +27,9 @@ export const createClusterSchema = z.object({
     example: "SP1",
   }),
   cluster_proof_type: z.string().max(50).optional().openapi({
-    description: "Type of proofs to be generated",
-    example: "STARK",
+    description:
+      "Proof system used to generate proofs. (e.g., Groth16 or PlonK)",
+    example: "Groth16",
   }),
   cluster_configuration: z
     .array(
