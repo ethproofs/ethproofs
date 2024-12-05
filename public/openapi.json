@@ -11,7 +11,7 @@
       "description": "Main server"
     },
     {
-      "url": "https://main--ethproofs.netlify.app/api/v0",
+      "url": "https://staging--ethproofs.netlify.app/api/v0",
       "description": "Testing server"
     }
   ],
