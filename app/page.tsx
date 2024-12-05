@@ -5,6 +5,7 @@ import prettyMilliseconds from "pretty-ms"
 import type { BlockWithProofs, SummaryItem } from "@/lib/types"
 
 import BlocksTable from "@/components/BlocksTable"
+import Null from "@/components/Null"
 import Block from "@/components/svgs/box.svg"
 import Clock from "@/components/svgs/clock.svg"
 import DollarSign from "@/components/svgs/dollar-sign.svg"
@@ -218,10 +219,15 @@ export default async function Index() {
                           avg cost
                         </div>
                         <div className="font-mono text-lg">
-                          {formatNumber(avg_proving_cost || 0, {
-                            style: "currency",
-                            currency: "USD",
-                          })}
+                          {avg_proving_cost !== null &&
+                          isFinite(avg_proving_cost) ? (
+                            formatNumber(avg_proving_cost, {
+                              style: "currency",
+                              currency: "USD",
+                            })
+                          ) : (
+                            <Null />
+                          )}
                         </div>
                       </div>
                     </div>

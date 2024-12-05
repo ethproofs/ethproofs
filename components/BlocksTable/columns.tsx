@@ -330,8 +330,12 @@ export const columns: ColumnDef<BlockWithProofs>[] = [
       const fastestProof = reduceFastest(completedProofs)
 
       const getBestProvingTime = () => {
-        if (!completedProofs.length) return <Null />
-
+        if (
+          !completedProofs.length ||
+          fastestProof.proving_time === null ||
+          !isFinite(fastestProof.proving_time)
+        )
+          return <Null />
         return prettyMilliseconds(fastestProof.proving_time!)
       }
 
