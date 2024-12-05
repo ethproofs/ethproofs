@@ -2,16 +2,12 @@
   "openapi": "3.1.0",
   "info": {
     "title": "Ethproofs API",
-    "description": "This document outlines the available API endpoints for Ethproofs.\n\n**Authentication**\n\nAll endpoints require authentication using an API key in the request header:\n\n`Authorization: Bearer <api_key>`",
+    "description": "This document outlines the available API endpoints for Ethproofs.\n    \n\n**Base URL**\n    \n\nAll API endpoints are relative to:\n    \n\n`https://staging--ethproofs.netlify.app/api/v0`\n    \n\n**Authentication**\n    \n\nAll endpoints require authentication using an API key in the request header:\n    \n\n`Authorization: Bearer <api_key>`",
     "version": "0.0.1"
   },
   "servers": [
     {
-      "url": "https://ethproofs.org/api/v0",
-      "description": "Main server"
-    },
-    {
-      "url": "https://main--ethproofs.netlify.app/api/v0",
+      "url": "https://staging--ethproofs.netlify.app/api/v0",
       "description": "Testing server"
     }
   ],
