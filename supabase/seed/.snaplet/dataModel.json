@@ -2610,6 +2610,13 @@
           "nullNotDistinct": false
         },
         {
+          "name": "mfa_factors_phone_key",
+          "fields": [
+            "phone"
+          ],
+          "nullNotDistinct": false
+        },
+        {
           "name": "mfa_factors_pkey",
           "fields": [
             "id"
@@ -2625,7 +2632,7 @@
           "nullNotDistinct": false
         },
         {
-          "name": "unique_phone_factor_per_user",
+          "name": "unique_verified_phone_factor",
           "fields": [
             "phone",
             "user_id"
@@ -3173,20 +3180,6 @@
           "maxLength": null
         },
         {
-          "id": "public.proofs.prover_duration",
-          "name": "prover_duration",
-          "columnName": "prover_duration",
-          "type": "interval",
-          "isRequired": false,
-          "kind": "scalar",
-          "isList": false,
-          "isGenerated": false,
-          "sequence": false,
-          "hasDefaultValue": false,
-          "isId": false,
-          "maxLength": null
-        },
-        {
           "id": "public.proofs.proving_cost",
           "name": "proving_cost",
           "columnName": "proving_cost",
@@ -3285,11 +3278,11 @@
           "maxLength": null
         },
         {
-          "id": "public.proofs.proof_latency",
-          "name": "proof_latency",
-          "columnName": "proof_latency",
-          "type": "int4",
-          "isRequired": false,
+          "id": "public.proofs.cluster_id",
+          "name": "cluster_id",
+          "columnName": "cluster_id",
+          "type": "uuid",
+          "isRequired": true,
           "kind": "scalar",
           "isList": false,
           "isGenerated": false,
@@ -3299,11 +3292,11 @@
           "maxLength": null
         },
         {
-          "id": "public.proofs.cluster_id",
-          "name": "cluster_id",
-          "columnName": "cluster_id",
-          "type": "uuid",
-          "isRequired": true,
+          "id": "public.proofs.proving_time",
+          "name": "proving_time",
+          "columnName": "proving_time",
+          "type": "int4",
+          "isRequired": false,
           "kind": "scalar",
           "isList": false,
           "isGenerated": false,

@@ -3,20 +3,18 @@ import type { BlockWithProofs, Proof, ProofExtended } from "./types"
 export const isCompleted = (proof: Proof) => proof.proof_status === "proved"
 
 /**
- * Calculates the average latency of an array of proofs.
- * Filters to completed proofs; other statuses do not yet have a latency
+ * Calculates the average proving time of an array of proofs.
+ * Filters to completed proofs; other statuses do not yet have a proving time
  *
  * @param {Proof[]} proofs - An array of proof objects.
- * @returns {number} - The average latency of the proofs.
+ * @returns {number} - The average proving time of the proofs.
  */
-export const getProofsAvgLatency = (proofs: Proof[]): number | null => {
+export const getProofsAvgProvingTime = (proofs: Proof[]): number | null => {
   const completedProofs = proofs.filter(isCompleted)
   if (!completedProofs.length) return null
   return (
-    completedProofs.reduce(
-      (acc, proof) => acc + (proof.proof_latency || 0),
-      0
-    ) / completedProofs.length
+    completedProofs.reduce((acc, proof) => acc + (proof.proving_time || 0), 0) /
+    completedProofs.length
   )
 }
 
@@ -46,13 +44,13 @@ export const getProofsAvgTimeToProof = (
   return averageProvedTime - blockTimestamp // In milliseconds
 }
 
-export const getProofBestLatency = (proofs: Proof[]): Proof | null => {
+export const getProofBestProvingTime = (proofs: Proof[]): Proof | null => {
   const completedProofs = proofs.filter(isCompleted)
   if (!completedProofs.length) return null
   return completedProofs.reduce((a, b) => {
-    if (!a.proof_latency) return b
-    if (!b.proof_latency) return a
-    return a.proof_latency < b.proof_latency ? a : b
+    if (!a.proving_time) return b
+    if (!b.proving_time) return a
+    return a.proving_time < b.proving_time ? a : b
   }, completedProofs[0])
 }
 
@@ -123,7 +121,7 @@ export const getProofCheapestProvingCost = (proofs: Proof[]): Proof | null => {
 
 // Primary sort by proof_status: proved, proving, then queued
 // Secondary sorts (lower/earlier first)
-// Within `proved` use `proof_latency`
+// Within `proved` use `proving_time`
 // Within `proving` use `proving_timestamp`
 // Within `queued` use `queued_timestamp`
 export const sortProofsStatusAndTimes = (a: Proof, b: Proof) => {
@@ -134,9 +132,9 @@ export const sortProofsStatusAndTimes = (a: Proof, b: Proof) => {
   if (a.proof_status === "queued" && b.proof_status !== "queued") return -1
   if (a.proof_status !== "queued" && b.proof_status === "queued") return 1
   if (a.proof_status === "proved") {
-    if (!a.proof_latency) return 1
-    if (!b.proof_latency) return -1
-    return a.proof_latency - b.proof_latency
+    if (!a.proving_time) return 1
+    if (!b.proving_time) return -1
+    return a.proving_time - b.proving_time
   }
   if (a.proof_status === "proving") {
     if (!a.proving_timestamp) return 1

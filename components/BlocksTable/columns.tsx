@@ -31,7 +31,7 @@ import { formatNumber } from "@/lib/number"
 import {
   filterCompleted,
   getProofsAvgCost,
-  getProofsAvgLatency,
+  getProofsAvgProvingTime,
 } from "@/lib/proofs"
 
 const getTime = (d: string): number => new Date(d).getTime()
@@ -329,22 +329,26 @@ export const columns: ColumnDef<BlockWithProofs>[] = [
 
       const fastestProof = reduceFastest(completedProofs)
 
-      const getBestLatency = () => {
-        if (!completedProofs.length) return <Null />
-
-        return prettyMilliseconds(fastestProof.proof_latency!)
+      const getBestProvingTime = () => {
+        if (
+          !completedProofs.length ||
+          fastestProof.proving_time === null ||
+          !isFinite(fastestProof.proving_time)
+        )
+          return <Null />
+        return prettyMilliseconds(fastestProof.proving_time!)
       }
 
-      const getAverageLatency = () => {
-        const avgLatency = getProofsAvgLatency(completedProofs)
-        if (!avgLatency) return <Null />
-        return prettyMilliseconds(avgLatency)
+      const getAverageProvingTime = () => {
+        const avgProvingTime = getProofsAvgProvingTime(completedProofs)
+        if (!avgProvingTime) return <Null />
+        return prettyMilliseconds(avgProvingTime)
       }
 
       return (
         <>
           <span className="align-center flex justify-center whitespace-nowrap">
-            {getBestLatency()}
+            {getBestProvingTime()}
             <MetricInfo
               trigger={
                 <Award className="text-primary hover:text-primary-light" />
@@ -355,7 +359,7 @@ export const columns: ColumnDef<BlockWithProofs>[] = [
             </MetricInfo>
           </span>
           <span className="block whitespace-nowrap text-sm text-body-secondary">
-            avg. {getAverageLatency()}
+            avg. {getAverageProvingTime()}
           </span>
         </>
       )

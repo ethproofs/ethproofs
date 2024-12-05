@@ -7,6 +7,7 @@ import type { Metric } from "@/lib/types"
 
 import CopyButton from "@/components/CopyButton"
 import DownloadButton from "@/components/DownloadButton"
+import * as Metrics from "@/components/Metrics"
 import Null from "@/components/Null"
 import ProofStatus, { ProofStatusInfo } from "@/components/ProofStatus"
 import { HidePunctuation } from "@/components/StylePunctuation"
@@ -46,11 +47,11 @@ import { getBlockValueType } from "@/lib/blocks"
 import { getMetadata } from "@/lib/metadata"
 import { formatNumber } from "@/lib/number"
 import {
-  getProofBestLatency,
+  getProofBestProvingTime,
   getProofBestTimeToProof,
   getProofCheapestProvingCost,
   getProofsAvgCost,
-  getProofsAvgLatency,
+  getProofsAvgProvingTime,
   getProofsAvgTimeToProof,
   sortProofsStatusAndTimes,
 } from "@/lib/proofs"
@@ -102,8 +103,8 @@ export default async function BlockDetailsPage({
 
   // TODO: Add proper descriptions
 
-  const bestLatencyProof = getProofBestLatency(proofs)
-  const avgLatency = getProofsAvgLatency(proofs)
+  const bestProvingTimeProof = getProofBestProvingTime(proofs)
+  const avgProvingTime = getProofsAvgProvingTime(proofs)
   const bestTimeToProofProof = getProofBestTimeToProof(proofs)
   const bestTimeToProof = bestTimeToProofProof?.proved_timestamp
     ? new Date(bestTimeToProofProof?.proved_timestamp).getTime() -
@@ -118,56 +119,37 @@ export default async function BlockDetailsPage({
       value: <ProofStatus proofs={proofs} />,
     },
     {
-      label: "Fastest proving time",
+      label: `Fastest ${Metrics.PROVING_TIME_LABEL}`,
       // TODO: Include team information with fastest proving time
       description: (
         <>
-          <TooltipContentHeader>fastest proving time</TooltipContentHeader>
-          <Info.Derivation>
-            <Info.Term type="internal">proof latency</Info.Term>
-          </Info.Derivation>
-          <p>
-            <Info.Term type="internal">proof latency</Info.Term> is duration of
-            the proof generation process, self reported by proving teams
-          </p>
-          <Info.Description>
-            Time spent generating proof of execution
-          </Info.Description>
+          <TooltipContentHeader>
+            fastest {Metrics.PROVING_TIME_LABEL}
+          </TooltipContentHeader>
+          <Metrics.ProvingTimeDetails />
           <Info.Description>
             Fastest reported proving time for any of the proofs submitted for
             this block
           </Info.Description>
         </>
       ),
-      value: bestLatencyProof?.proof_latency ? (
-        prettyMilliseconds(bestLatencyProof.proof_latency)
+      value: bestProvingTimeProof?.proving_time ? (
+        prettyMilliseconds(bestProvingTimeProof.proving_time)
       ) : (
         <Null />
       ),
     },
     {
-      label: "avg proving time",
+      label: `avg ${Metrics.PROVING_TIME_LABEL}`,
       description: (
         <>
-          <TooltipContentHeader>average proving time</TooltipContentHeader>
-          <Info.Derivation>
-            ∑(<Info.Term type="internal">proof latency</Info.Term>) / number of
-            completed proofs for block
-          </Info.Derivation>
-          <p>
-            <Info.Term type="internal">proof latency</Info.Term> is duration of
-            the proof generation process, self reported by proving teams
-          </p>
-          <Info.Description>
-            Time spent generating proof of execution
-          </Info.Description>
-          <Info.Description>
-            Average reported proving time for all completed proofs submitted for
-            this block
-          </Info.Description>
+          <TooltipContentHeader>
+            average {Metrics.PROVING_TIME_LABEL}
+          </TooltipContentHeader>
+          <Metrics.ProvingTimeDetails average />
         </>
       ),
-      value: avgLatency ? prettyMilliseconds(avgLatency) : <Null />,
+      value: avgProvingTime ? prettyMilliseconds(avgProvingTime) : <Null />,
     },
     {
       label: "Fastest time to proof",
@@ -418,7 +400,7 @@ export default async function BlockDetailsPage({
         {proofsWithTeams.sort(sortProofsStatusAndTimes).map((proof) => {
           const {
             proof_id,
-            proof_latency,
+            proving_time,
             proof_status,
             proved_timestamp,
             proving_cost,
@@ -522,22 +504,12 @@ export default async function BlockDetailsPage({
                   proving time
                   <MetricInfo>
                     <TooltipContentHeader>proving time</TooltipContentHeader>
-                    <Info.Derivation>
-                      <Info.Term type="internal">proof latency</Info.Term>
-                    </Info.Derivation>
-                    <p>
-                      <Info.Term type="internal">proof latency</Info.Term> is
-                      duration of the proof generation process, self reported by
-                      proving teams
-                    </p>
-                    <Info.Description>
-                      Time spent generating proof of execution
-                    </Info.Description>
+                    <Metrics.ProvingTimeDetails />
                   </MetricInfo>
                 </MetricLabel>
                 <MetricValue className="font-normal">
-                  {isComplete && proof_latency ? (
-                    prettyMilliseconds(proof_latency)
+                  {isComplete && proving_time ? (
+                    prettyMilliseconds(proving_time)
                   ) : (
                     <Null />
                   )}

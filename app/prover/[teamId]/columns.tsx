@@ -72,20 +72,20 @@ export const columns: ColumnDef<ProofExtended>[] = [
       return diff > 0 ? prettyMilliseconds(diff) : <Null />
     },
   },
-  // Proving time (proof.proof_latency, duration spent generating proof)
+  // Proving time (proof.proving_time, duration spent generating proof)
   {
-    accessorKey: "proof_latency",
+    accessorKey: "proving_time",
     header: () => (
       <ColumnHeader label={Metrics.PROVING_TIME_LABEL}>
         <Metrics.ProvingTimeDetails />
       </ColumnHeader>
     ),
     cell: ({ cell }) => {
-      const latency = cell.getValue() as number
+      const provingTime = cell.getValue() as number
 
-      if (!latency) return <Null />
+      if (!provingTime) return <Null />
 
-      return prettyMilliseconds(latency)
+      return prettyMilliseconds(provingTime)
     },
   },
   // Download button / proof status

@@ -207,12 +207,11 @@ export type Database = {
           created_at: string | null
           proof: string | null
           proof_id: number
-          proof_latency: number | null
           proof_status: string
           proved_timestamp: string | null
-          prover_duration: unknown | null
           proving_cost: number | null
           proving_cycles: number | null
+          proving_time: number | null
           proving_timestamp: string | null
           queued_timestamp: string | null
           user_id: string
@@ -223,12 +222,11 @@ export type Database = {
           created_at?: string | null
           proof?: string | null
           proof_id?: number
-          proof_latency?: number | null
           proof_status: string
           proved_timestamp?: string | null
-          prover_duration?: unknown | null
           proving_cost?: number | null
           proving_cycles?: number | null
+          proving_time?: number | null
           proving_timestamp?: string | null
           queued_timestamp?: string | null
           user_id: string
@@ -239,12 +237,11 @@ export type Database = {
           created_at?: string | null
           proof?: string | null
           proof_id?: number
-          proof_latency?: number | null
           proof_status?: string
           proved_timestamp?: string | null
-          prover_duration?: unknown | null
           proving_cost?: number | null
           proving_cycles?: number | null
+          proving_time?: number | null
           proving_timestamp?: string | null
           queued_timestamp?: string | null
           user_id?: string
@@ -358,15 +355,15 @@ export type Database = {
       recent_summary: {
         Row: {
           avg_cost_per_proof: number | null
-          avg_proof_latency: number | null
+          avg_proving_time: number | null
           total_proven_blocks: number | null
         }
         Relationships: []
       }
       teams_summary: {
         Row: {
-          average_proof_latency: number | null
-          average_proving_cost: number | null
+          avg_proving_cost: number | null
+          avg_proving_time: number | null
           logo_url: string | null
           team_id: number | null
           team_name: string | null

@@ -39,7 +39,7 @@ export const proofsPaths: ZodOpenApiPathsObject = {
                   block_number: 123456,
                   cluster_id: 1,
                   proof: "...",
-                  proof_latency: 100,
+                  proving_time: 100,
                   proving_cost: 540,
                   proving_cycles: 10000,
                 }),
