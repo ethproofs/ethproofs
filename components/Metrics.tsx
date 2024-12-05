@@ -2,10 +2,17 @@ import * as Info from "@/components/ui/info"
 
 import { SITE_NAME } from "@/lib/constants"
 
-const BLOCK_NUMBER_LABEL = "Block"
-const CLUSTER_LABEL = "Cluster"
-const PROVING_TIME_LABEL = "Proving time"
-const TOTAL_TTP_LABEL = "Total time to proof"
+const BLOCK_NUMBER_LABEL = "block"
+const CLUSTER_LABEL = "cluster"
+const GAS_USED_LABEL = "gas used"
+const PROVING_COSTS_LABEL = "proving costs"
+const PROVING_TIME_LABEL = "proving time"
+const TOTAL_TTP_LABEL = "total time to proof"
+const COST_PER_MGAS_LABEL = (
+  <>
+    cost per <span className="uppercase">m</span>gas
+  </>
+)
 
 const BlockNumberDetails = () => {
   const blockNumber = "block_number"
@@ -36,6 +43,80 @@ const ClusterDetails = () => {
         AWS instance equivalents
       </p>
       <Info.Description>Cluster identifier</Info.Description>
+    </>
+  )
+}
+
+const CostPerMgas = () => {
+  const provingCosts = "proving costs"
+  const gasUsed = "gas_used"
+  return (
+    <>
+      <Info.Derivation>
+        <Info.Term type="internal">{provingCosts}</Info.Term> /{" "}
+        <Info.Term type="codeTerm">{gasUsed}</Info.Term> /{" "}
+        <Info.Term type="codeTerm">
+          10
+          <sup>6</sup>
+        </Info.Term>
+      </Info.Derivation>
+
+      <p>
+        <Info.Term type="internal">proving costs</Info.Term> are in USD,
+        self-reported by proving teams
+      </p>
+      <p>
+        <Info.Term type="codeTerm">gas_used</Info.Term> value from execution
+        block header, expressed in millions
+      </p>
+      <Info.Description>
+        Proving costs in USD per million gas units proven
+      </Info.Description>
+      <Info.Description>
+        Normalized USD cost per gas unit to allow comparison amongst proofs of
+        different sized blocks. More gas consumption in a block means more
+        computation to prove.
+      </Info.Description>
+    </>
+  )
+}
+
+const GasUsedDetails = () => {
+  const gasUsed = "gas_used"
+  return (
+    <>
+      <Info.Derivation>
+        <Info.Term type="codeTerm">{gasUsed}</Info.Term>
+      </Info.Derivation>
+      <p>
+        <Info.Term type="codeTerm">{gasUsed}</Info.Term> value from execution
+        block header
+      </p>
+      <Info.Description>Total gas units executed within block</Info.Description>
+      <Info.Description>
+        Proportional to the amount of computational effort a block outputs. Less
+        gas = less computationally intense = easier to prove.
+      </Info.Description>
+    </>
+  )
+}
+
+const ProvingCostsDetails = ({ average }: { average?: boolean }) => {
+  const provingCosts = "proving costs"
+  return (
+    <>
+      <Info.Derivation>
+        {average ? "∑(" : ""}
+        <Info.Term type="internal">{provingCosts}</Info.Term>
+        {average ? ") / number of completed proofs for block" : ""}
+      </Info.Derivation>
+      <p>
+        <Info.Term type="internal">{provingCosts}</Info.Term> are in USD,
+        self-reported by proving teams
+      </p>
+      <Info.Description>
+        Proving costs in USD to prove entire block
+      </Info.Description>
     </>
   )
 }
@@ -93,7 +174,13 @@ export {
   BlockNumberDetails,
   CLUSTER_LABEL,
   ClusterDetails,
+  COST_PER_MGAS_LABEL,
+  CostPerMgas,
+  GAS_USED_LABEL,
+  GasUsedDetails,
+  PROVING_COSTS_LABEL,
   PROVING_TIME_LABEL,
+  ProvingCostsDetails,
   ProvingTimeDetails,
   TOTAL_TTP_LABEL,
   TotalTTPDetails,

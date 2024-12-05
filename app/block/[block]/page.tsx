@@ -219,22 +219,12 @@ export default async function BlockDetailsPage({
   const megaGas = block.gas_used / 1e6
 
   const blockFeeMetrics: Metric[] = [
-    // TODO: Add description
     {
       label: "cheapest cost per proof",
       description: (
         <>
           <TooltipContentHeader>cheapest cost per proof</TooltipContentHeader>
-          <Info.Derivation>
-            <Info.Term type="internal">proving costs</Info.Term>
-          </Info.Derivation>
-          <p>
-            <Info.Term type="internal">proving costs</Info.Term> are in USD,
-            self-reported by proving teams
-          </p>
-          <Info.Description>
-            Proving costs in USD to prove entire block
-          </Info.Description>
+          <Metrics.ProvingCostsDetails />
         </>
       ),
       value: cheapestProof?.proving_cost ? (
@@ -248,7 +238,12 @@ export default async function BlockDetailsPage({
     },
     {
       label: "avg cost per proof",
-      description: <></>,
+      description: (
+        <>
+          <TooltipContentHeader>avg cost per proof</TooltipContentHeader>
+          <Metrics.ProvingCostsDetails average />
+        </>
+      ),
       value: avgCostPerProof ? (
         formatNumber(avgCostPerProof, {
           style: "currency",
@@ -259,12 +254,15 @@ export default async function BlockDetailsPage({
       ),
     },
     {
-      label: (
+      label: <>cheapest {Metrics.COST_PER_MGAS_LABEL}</>,
+      description: (
         <>
-          cheapest cost per <span className="uppercase">M</span>gas
+          <TooltipContentHeader>
+            cheapest {Metrics.COST_PER_MGAS_LABEL}
+          </TooltipContentHeader>
+          <Metrics.CostPerMgas />
         </>
       ),
-      description: <></>,
       value:
         cheapestProof?.proving_cost && block.gas_used ? (
           formatNumber(cheapestProof.proving_cost / megaGas, {
@@ -276,12 +274,15 @@ export default async function BlockDetailsPage({
         ),
     },
     {
-      label: (
+      label: <>avg {Metrics.COST_PER_MGAS_LABEL}</>,
+      description: (
         <>
-          avg cost per <span className="uppercase">M</span>gas
+          <TooltipContentHeader>
+            avg {Metrics.COST_PER_MGAS_LABEL}
+          </TooltipContentHeader>
+          <Metrics.CostPerMgas />
         </>
       ),
-      description: <></>,
       value:
         avgCostPerProof && block.gas_used ? (
           formatNumber(avgCostPerProof / megaGas, {
@@ -364,7 +365,7 @@ export default async function BlockDetailsPage({
           <div className="grid grid-cols-2 gap-x-8 sm:flex sm:flex-wrap">
             {availabilityMetrics.map(({ label, description, value }, idx) => (
               <MetricBox key={idx}>
-                <MetricLabel>
+                <MetricLabel className="lowercase">
                   {label}
                   <MetricInfo>{description}</MetricInfo>
                 </MetricLabel>
