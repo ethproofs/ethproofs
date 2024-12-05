@@ -26,6 +26,7 @@ import { TooltipContentFooter, TooltipContentHeader } from "../ui/tooltip"
 import ClusterDetails from "./ClusterDetails"
 import TeamName from "./TeamName"
 
+import { ColumnHeader } from "@/app/prover/[teamId]/ColumnHeader"
 import { formatTimeAgo } from "@/lib/date"
 import { formatNumber } from "@/lib/number"
 import {
@@ -40,24 +41,20 @@ export const columns: ColumnDef<BlockWithProofs>[] = [
   {
     accessorKey: "block_number",
     header: () => (
-      <div className="text-left">
-        {Metrics.BLOCK_NUMBER_LABEL}
-        <MetricInfo className="space-y-3">
-          <Info.Label>{Metrics.BLOCK_NUMBER_LABEL}</Info.Label>
-          <Metrics.BlockNumberDetails />
-          <TooltipContentFooter className="space-y-3">
-            <p className="font-bold">Time since block published</p>
-            <Info.Derivation>
-              <span className="font-mono text-primary-light">now</span> -{" "}
-              <span className="font-mono text-primary-light">timestamp</span>
-            </Info.Derivation>
-            <p>
-              <span className="font-mono text-primary-light">timestamp</span>{" "}
-              value from execution block header
-            </p>
-          </TooltipContentFooter>
-        </MetricInfo>
-      </div>
+      <ColumnHeader label={Metrics.BLOCK_NUMBER_LABEL} className="text-left">
+        <Metrics.BlockNumberDetails />
+        <TooltipContentFooter className="space-y-3">
+          <p className="font-bold">Time since block published</p>
+          <Info.Derivation>
+            <span className="font-mono text-primary-light">now</span> -{" "}
+            <span className="font-mono text-primary-light">timestamp</span>
+          </Info.Derivation>
+          <p>
+            <span className="font-mono text-primary-light">timestamp</span>{" "}
+            value from execution block header
+          </p>
+        </TooltipContentFooter>
+      </ColumnHeader>
     ),
     cell: ({ row, cell }) => {
       const blockNumber = cell.getValue() as number
@@ -84,48 +81,27 @@ export const columns: ColumnDef<BlockWithProofs>[] = [
   },
   {
     accessorKey: "gas_used",
-    header: () => {
-      const columnLabel = "gas usage"
-      return (
-        <div className="space-y-3 whitespace-nowrap">
-          {columnLabel}
-          <MetricInfo className="whitespace-normal">
-            <TooltipContentHeader>{columnLabel}</TooltipContentHeader>
-            <Info.Derivation>
-              <Info.Term type="codeTerm">gas_used</Info.Term>
-            </Info.Derivation>
-            <p>
-              <Info.Term type="codeTerm">gas_used</Info.Term> value from
-              execution block header
-            </p>
-            <Info.Description>
-              Total gas units executed within block
-            </Info.Description>
-            <Info.Description>
-              Proportional to the amount of computational effort a block
-              outputs. Less gas = less computationally intense = easier to
-              prove.
-            </Info.Description>
-            <TooltipContentFooter className="space-y-3">
-              <p className="font-bold">Percentage of block gas limit</p>
-              <Info.Derivation>
-                <span className="font-mono text-primary-light">gas_used</span> /{" "}
-                <span className="font-mono text-primary-light">gas_limit</span>{" "}
-                x <span className="font-mono text-primary-light">100</span>
-              </Info.Derivation>
-              <p>
-                <span className="font-mono text-primary-light">gas_used</span>{" "}
-                value from execution block header
-              </p>
-              <p>
-                <span className="font-mono text-primary-light">gas_limit</span>{" "}
-                value from execution block header
-              </p>
-            </TooltipContentFooter>
-          </MetricInfo>
-        </div>
-      )
-    },
+    header: () => (
+      <ColumnHeader label={Metrics.GAS_USED_LABEL}>
+        <Metrics.GasUsedDetails />
+        <TooltipContentFooter className="space-y-3">
+          <p className="font-bold">Percentage of block gas limit</p>
+          <Info.Derivation>
+            <span className="font-mono text-primary-light">gas_used</span> /{" "}
+            <span className="font-mono text-primary-light">gas_limit</span> x{" "}
+            <span className="font-mono text-primary-light">100</span>
+          </Info.Derivation>
+          <p>
+            <span className="font-mono text-primary-light">gas_used</span> value
+            from execution block header
+          </p>
+          <p>
+            <span className="font-mono text-primary-light">gas_limit</span>{" "}
+            value from execution block header
+          </p>
+        </TooltipContentFooter>
+      </ColumnHeader>
+    ),
     cell: ({ cell }) => {
       const gasUsed = cell.getValue() as number
 
@@ -220,37 +196,33 @@ export const columns: ColumnDef<BlockWithProofs>[] = [
     header: () => {
       const columnLabel = "cost per gas"
       return (
-        <div className="whitespace-nowrap">
-          {columnLabel}
-          <MetricInfo className="whitespace-normal">
-            <TooltipContentHeader>{columnLabel}</TooltipContentHeader>
-            <Info.Derivation>
-              <Info.Term type="internal">proving costs</Info.Term> /{" "}
-              <Info.Term type="codeTerm">gas_used</Info.Term> /{" "}
-              <Info.Term type="codeTerm">
-                10
-                <sup>6</sup>
-              </Info.Term>
-            </Info.Derivation>
+        <ColumnHeader label={columnLabel}>
+          <Info.Derivation>
+            <Info.Term type="internal">proving costs</Info.Term> /{" "}
+            <Info.Term type="codeTerm">gas_used</Info.Term> /{" "}
+            <Info.Term type="codeTerm">
+              10
+              <sup>6</sup>
+            </Info.Term>
+          </Info.Derivation>
 
-            <p>
-              <Info.Term type="internal">proving costs</Info.Term> are in USD,
-              self-reported by proving teams
-            </p>
-            <p>
-              <Info.Term type="codeTerm">gas_used</Info.Term> value from
-              execution block header, expressed in millions
-            </p>
-            <Info.Description>
-              Proving costs in USD per million gas units proven
-            </Info.Description>
-            <Info.Description>
-              Normalized USD cost per gas unit to allow comparison amongst
-              proofs of different sized blocks. More gas consumption in a block
-              means more computation to prove.
-            </Info.Description>
-          </MetricInfo>
-        </div>
+          <p>
+            <Info.Term type="internal">proving costs</Info.Term> are in USD,
+            self-reported by proving teams
+          </p>
+          <p>
+            <Info.Term type="codeTerm">gas_used</Info.Term> value from execution
+            block header, expressed in millions
+          </p>
+          <Info.Description>
+            Proving costs in USD per million gas units proven
+          </Info.Description>
+          <Info.Description>
+            Normalized USD cost per gas unit to allow comparison amongst proofs
+            of different sized blocks. More gas consumption in a block means
+            more computation to prove.
+          </Info.Description>
+        </ColumnHeader>
       )
     },
     cell: ({ cell, row }) => {
@@ -301,13 +273,9 @@ export const columns: ColumnDef<BlockWithProofs>[] = [
   {
     accessorKey: "proofs",
     header: () => (
-      <div className="whitespace-nowrap">
-        {Metrics.PROVING_TIME_LABEL}
-        <MetricInfo className="space-y-3 whitespace-normal">
-          <Info.Label>{Metrics.PROVING_TIME_LABEL}</Info.Label>
-          <Metrics.ProvingTimeDetails />
-        </MetricInfo>
-      </div>
+      <ColumnHeader label={Metrics.PROVING_TIME_LABEL}>
+        <Metrics.ProvingTimeDetails />
+      </ColumnHeader>
     ),
     cell: ({ cell, row }) => {
       const proofs = cell.getValue() as Proof[]
@@ -369,7 +337,7 @@ export const columns: ColumnDef<BlockWithProofs>[] = [
     accessorKey: "proofs",
     header: () => (
       <div className="whitespace-nowrap">
-        {Metrics.TOTAL_TTP_LABEL}
+        <span className="lowercase">{Metrics.TOTAL_TTP_LABEL}</span>
         <MetricInfo className="whitespace-normal">
           <ProofStatusInfo />
           <TooltipContentFooter className="space-y-3">

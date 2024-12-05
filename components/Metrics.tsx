@@ -4,6 +4,7 @@ import { SITE_NAME } from "@/lib/constants"
 
 const BLOCK_NUMBER_LABEL = "Block"
 const CLUSTER_LABEL = "Cluster"
+const GAS_USED_LABEL = "Gas used"
 const PROVING_TIME_LABEL = "Proving time"
 const TOTAL_TTP_LABEL = "Total time to proof"
 
@@ -36,6 +37,26 @@ const ClusterDetails = () => {
         AWS instance equivalents
       </p>
       <Info.Description>Cluster identifier</Info.Description>
+    </>
+  )
+}
+
+const GasUsedDetails = () => {
+  const gasUsed = "gas_used"
+  return (
+    <>
+      <Info.Derivation>
+        <Info.Term type="codeTerm">{gasUsed}</Info.Term>
+      </Info.Derivation>
+      <p>
+        <Info.Term type="codeTerm">{gasUsed}</Info.Term> value from execution
+        block header
+      </p>
+      <Info.Description>Total gas units executed within block</Info.Description>
+      <Info.Description>
+        Proportional to the amount of computational effort a block outputs. Less
+        gas = less computationally intense = easier to prove.
+      </Info.Description>
     </>
   )
 }
@@ -93,6 +114,8 @@ export {
   BlockNumberDetails,
   CLUSTER_LABEL,
   ClusterDetails,
+  GAS_USED_LABEL,
+  GasUsedDetails,
   PROVING_TIME_LABEL,
   ProvingTimeDetails,
   TOTAL_TTP_LABEL,

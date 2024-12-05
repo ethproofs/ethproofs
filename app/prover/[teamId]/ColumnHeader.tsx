@@ -10,7 +10,7 @@ const ColumnHeader = ({ label, children, className }: ColumnHeaderProps) => (
   <div className={cn("whitespace-nowrap", className)}>
     <span className="lowercase">{label}</span>
     <MetricInfo className="space-y-3 whitespace-normal">
-      <Info.Label>{label}</Info.Label>
+      <Info.Label className="lowercase">{label}</Info.Label>
       {children}
     </MetricInfo>
   </div>

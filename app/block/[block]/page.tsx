@@ -364,7 +364,7 @@ export default async function BlockDetailsPage({
           <div className="grid grid-cols-2 gap-x-8 sm:flex sm:flex-wrap">
             {availabilityMetrics.map(({ label, description, value }, idx) => (
               <MetricBox key={idx}>
-                <MetricLabel>
+                <MetricLabel className="lowercase">
                   {label}
                   <MetricInfo>{description}</MetricInfo>
                 </MetricLabel>
