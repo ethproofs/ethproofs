@@ -1,6 +1,6 @@
 import { createDocument } from "zod-openapi"
 
-import { SITE_NAME, SITE_PREVIEW_URL, SITE_URL } from "../constants"
+import { SITE_NAME, SITE_PREVIEW_URL } from "../constants"
 
 import { awsPricingListPaths } from "./aws-pricing-list"
 import { clustersPaths } from "./clusters"

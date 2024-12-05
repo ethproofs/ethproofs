@@ -29,7 +29,10 @@ const provedProofSchema = baseProofSchema.extend({
   proving_cost: z
     .number()
     .positive("proving_cost must be a positive number")
-    .describe("Cost of generating the proof (in USD)"),
+    .describe("Cost of generating the proof (in USD)")
+    .openapi({
+      deprecated: true,
+    }),
   proving_cycles: z
     .number()
     .int()
