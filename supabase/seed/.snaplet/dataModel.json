@@ -1012,6 +1012,20 @@
           "maxLength": null
         },
         {
+          "id": "public.clusters.cluster_proof_type",
+          "name": "cluster_proof_type",
+          "columnName": "cluster_proof_type",
+          "type": "varchar",
+          "isRequired": false,
+          "kind": "scalar",
+          "isList": false,
+          "isGenerated": false,
+          "sequence": false,
+          "hasDefaultValue": false,
+          "isId": false,
+          "maxLength": null
+        },
+        {
           "name": "users",
           "type": "users",
           "isRequired": true,
@@ -2610,13 +2624,6 @@
           "nullNotDistinct": false
         },
         {
-          "name": "mfa_factors_phone_key",
-          "fields": [
-            "phone"
-          ],
-          "nullNotDistinct": false
-        },
-        {
           "name": "mfa_factors_pkey",
           "fields": [
             "id"
@@ -2632,7 +2639,7 @@
           "nullNotDistinct": false
         },
         {
-          "name": "unique_verified_phone_factor",
+          "name": "unique_phone_factor_per_user",
           "fields": [
             "phone",
             "user_id"
