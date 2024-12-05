@@ -358,7 +358,7 @@ export type Database = {
       recent_summary: {
         Row: {
           avg_cost_per_proof: number | null
-          avg_proof_latency: number | null
+          avg_proving_time: number | null
           total_proven_blocks: number | null
         }
         Relationships: []

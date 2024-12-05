@@ -2610,6 +2610,13 @@
           "nullNotDistinct": false
         },
         {
+          "name": "mfa_factors_phone_key",
+          "fields": [
+            "phone"
+          ],
+          "nullNotDistinct": false
+        },
+        {
           "name": "mfa_factors_pkey",
           "fields": [
             "id"
@@ -2625,7 +2632,7 @@
           "nullNotDistinct": false
         },
         {
-          "name": "unique_phone_factor_per_user",
+          "name": "unique_verified_phone_factor",
           "fields": [
             "phone",
             "user_id"
