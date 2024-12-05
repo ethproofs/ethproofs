@@ -38,7 +38,7 @@ export default async function Index() {
   const teamsSummary = await supabase
     .from("teams_summary")
     .select()
-    .order("average_proof_latency", { ascending: true })
+    .order("avg_proving_time", { ascending: true })
 
   const blocksResponse = await supabase
     .from("blocks")
@@ -76,7 +76,7 @@ export default async function Index() {
         {
           label: "Avg proof latency",
           icon: <Clock />,
-          value: prettyMilliseconds(recentSummary.data?.avg_proof_latency || 0),
+          value: prettyMilliseconds(recentSummary.data?.avg_proving_time || 0),
         },
       ]
     : []
@@ -179,8 +179,8 @@ export default async function Index() {
                 team_id,
                 logo_url,
                 team_name,
-                average_proving_cost,
-                average_proof_latency,
+                avg_proving_cost,
+                avg_proving_time,
               }) => (
                 <div
                   className="flex flex-col gap-4 rounded-4xl border bg-gradient-to-b from-body/[0.06] to-body/[0.03] p-8"
@@ -209,7 +209,7 @@ export default async function Index() {
                           avg latency
                         </div>
                         <div className="font-mono text-lg">
-                          {prettyMilliseconds(average_proof_latency || 0)}
+                          {prettyMilliseconds(avg_proving_time || 0)}
                         </div>
                       </div>
                       <div className="flex flex-col items-center gap-2 px-4">
@@ -217,7 +217,7 @@ export default async function Index() {
                           avg cost
                         </div>
                         <div className="font-mono text-lg">
-                          {formatNumber(average_proving_cost || 0, {
+                          {formatNumber(avg_proving_cost || 0, {
                             style: "currency",
                             currency: "USD",
                           })}

@@ -365,8 +365,8 @@ export type Database = {
       }
       teams_summary: {
         Row: {
-          average_proof_latency: number | null
-          average_proving_cost: number | null
+          avg_proving_cost: number | null
+          avg_proving_time: number | null
           logo_url: string | null
           team_id: number | null
           team_name: string | null
