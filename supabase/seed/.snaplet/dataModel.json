@@ -2395,20 +2395,6 @@
           "maxLength": null
         },
         {
-          "id": "auth.mfa_challenges.web_authn_session_data",
-          "name": "web_authn_session_data",
-          "columnName": "web_authn_session_data",
-          "type": "jsonb",
-          "isRequired": false,
-          "kind": "scalar",
-          "isList": false,
-          "isGenerated": false,
-          "sequence": false,
-          "hasDefaultValue": false,
-          "isId": false,
-          "maxLength": null
-        },
-        {
           "name": "mfa_factors",
           "type": "mfa_factors",
           "isRequired": true,
@@ -2583,34 +2569,6 @@
           "maxLength": null
         },
         {
-          "id": "auth.mfa_factors.web_authn_credential",
-          "name": "web_authn_credential",
-          "columnName": "web_authn_credential",
-          "type": "jsonb",
-          "isRequired": false,
-          "kind": "scalar",
-          "isList": false,
-          "isGenerated": false,
-          "sequence": false,
-          "hasDefaultValue": false,
-          "isId": false,
-          "maxLength": null
-        },
-        {
-          "id": "auth.mfa_factors.web_authn_aaguid",
-          "name": "web_authn_aaguid",
-          "columnName": "web_authn_aaguid",
-          "type": "uuid",
-          "isRequired": false,
-          "kind": "scalar",
-          "isList": false,
-          "isGenerated": false,
-          "sequence": false,
-          "hasDefaultValue": false,
-          "isId": false,
-          "maxLength": null
-        },
-        {
           "name": "users",
           "type": "users",
           "isRequired": true,
@@ -2652,6 +2610,13 @@
           "nullNotDistinct": false
         },
         {
+          "name": "mfa_factors_phone_key",
+          "fields": [
+            "phone"
+          ],
+          "nullNotDistinct": false
+        },
+        {
           "name": "mfa_factors_pkey",
           "fields": [
             "id"
@@ -2667,7 +2632,7 @@
           "nullNotDistinct": false
         },
         {
-          "name": "unique_phone_factor_per_user",
+          "name": "unique_verified_phone_factor",
           "fields": [
             "phone",
             "user_id"
@@ -3303,20 +3268,6 @@
           "name": "queued_timestamp",
           "columnName": "queued_timestamp",
           "type": "timestamptz",
-          "isRequired": false,
-          "kind": "scalar",
-          "isList": false,
-          "isGenerated": false,
-          "sequence": false,
-          "hasDefaultValue": false,
-          "isId": false,
-          "maxLength": null
-        },
-        {
-          "id": "public.proofs.proof_latency",
-          "name": "proof_latency",
-          "columnName": "proof_latency",
-          "type": "int4",
           "isRequired": false,
           "kind": "scalar",
           "isList": false,
@@ -5682,20 +5633,6 @@
           "columnName": "notify_private_alpha",
           "type": "bool",
           "isRequired": false,
-          "kind": "scalar",
-          "isList": false,
-          "isGenerated": false,
-          "sequence": false,
-          "hasDefaultValue": true,
-          "isId": false,
-          "maxLength": null
-        },
-        {
-          "id": "_realtime.tenants.private_only",
-          "name": "private_only",
-          "columnName": "private_only",
-          "type": "bool",
-          "isRequired": true,
           "kind": "scalar",
           "isList": false,
           "isGenerated": false,

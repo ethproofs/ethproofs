@@ -207,7 +207,6 @@ export type Database = {
           created_at: string | null
           proof: string | null
           proof_id: number
-          proof_latency: number | null
           proof_status: string
           proved_timestamp: string | null
           proving_cost: number | null
@@ -223,7 +222,6 @@ export type Database = {
           created_at?: string | null
           proof?: string | null
           proof_id?: number
-          proof_latency?: number | null
           proof_status: string
           proved_timestamp?: string | null
           proving_cost?: number | null
@@ -239,7 +237,6 @@ export type Database = {
           created_at?: string | null
           proof?: string | null
           proof_id?: number
-          proof_latency?: number | null
           proof_status?: string
           proved_timestamp?: string | null
           proving_cost?: number | null
