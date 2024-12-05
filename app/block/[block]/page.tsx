@@ -47,11 +47,11 @@ import { getBlockValueType } from "@/lib/blocks"
 import { getMetadata } from "@/lib/metadata"
 import { formatNumber } from "@/lib/number"
 import {
-  getProofBestLatency,
+  getProofBestProvingTime,
   getProofBestTimeToProof,
   getProofCheapestProvingCost,
   getProofsAvgCost,
-  getProofsAvgLatency,
+  getProofsAvgProvingTime,
   getProofsAvgTimeToProof,
   sortProofsStatusAndTimes,
 } from "@/lib/proofs"
@@ -103,8 +103,8 @@ export default async function BlockDetailsPage({
 
   // TODO: Add proper descriptions
 
-  const bestLatencyProof = getProofBestLatency(proofs)
-  const avgLatency = getProofsAvgLatency(proofs)
+  const bestProvingTimeProof = getProofBestProvingTime(proofs)
+  const avgProvingTime = getProofsAvgProvingTime(proofs)
   const bestTimeToProofProof = getProofBestTimeToProof(proofs)
   const bestTimeToProof = bestTimeToProofProof?.proved_timestamp
     ? new Date(bestTimeToProofProof?.proved_timestamp).getTime() -
@@ -133,8 +133,8 @@ export default async function BlockDetailsPage({
           </Info.Description>
         </>
       ),
-      value: bestLatencyProof?.proving_time ? (
-        prettyMilliseconds(bestLatencyProof.proving_time)
+      value: bestProvingTimeProof?.proving_time ? (
+        prettyMilliseconds(bestProvingTimeProof.proving_time)
       ) : (
         <Null />
       ),
@@ -149,7 +149,7 @@ export default async function BlockDetailsPage({
           <Metrics.ProvingTimeDetails average />
         </>
       ),
-      value: avgLatency ? prettyMilliseconds(avgLatency) : <Null />,
+      value: avgProvingTime ? prettyMilliseconds(avgProvingTime) : <Null />,
     },
     {
       label: "Fastest time to proof",

@@ -3,13 +3,13 @@ import type { BlockWithProofs, Proof, ProofExtended } from "./types"
 export const isCompleted = (proof: Proof) => proof.proof_status === "proved"
 
 /**
- * Calculates the average latency of an array of proofs.
- * Filters to completed proofs; other statuses do not yet have a latency
+ * Calculates the average proving time of an array of proofs.
+ * Filters to completed proofs; other statuses do not yet have a proving time
  *
  * @param {Proof[]} proofs - An array of proof objects.
- * @returns {number} - The average latency of the proofs.
+ * @returns {number} - The average proving time of the proofs.
  */
-export const getProofsAvgLatency = (proofs: Proof[]): number | null => {
+export const getProofsAvgProvingTime = (proofs: Proof[]): number | null => {
   const completedProofs = proofs.filter(isCompleted)
   if (!completedProofs.length) return null
   return (
@@ -44,7 +44,7 @@ export const getProofsAvgTimeToProof = (
   return averageProvedTime - blockTimestamp // In milliseconds
 }
 
-export const getProofBestLatency = (proofs: Proof[]): Proof | null => {
+export const getProofBestProvingTime = (proofs: Proof[]): Proof | null => {
   const completedProofs = proofs.filter(isCompleted)
   if (!completedProofs.length) return null
   return completedProofs.reduce((a, b) => {

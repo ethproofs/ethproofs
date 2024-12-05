@@ -75,7 +75,7 @@ export default async function Index() {
           }),
         },
         {
-          label: "Avg proof latency",
+          label: "Avg proving time",
           icon: <Clock />,
           value: prettyMilliseconds(recentSummary.data?.avg_proving_time || 0),
         },
@@ -207,7 +207,7 @@ export default async function Index() {
                     <div className="flex w-full flex-nowrap">
                       <div className="flex flex-col items-center gap-2 px-4">
                         <div className="flex items-center gap-1 text-body-secondary">
-                          avg latency
+                          avg proving time
                         </div>
                         <div className="font-mono text-lg">
                           {prettyMilliseconds(avg_proving_time || 0)}

@@ -40,7 +40,7 @@ import { columns } from "./columns"
 
 import { getMetadata } from "@/lib/metadata"
 import { formatNumber } from "@/lib/number"
-import { getProofsAvgLatency, isCompleted } from "@/lib/proofs"
+import { getProofsAvgProvingTime } from "@/lib/proofs"
 import { getHost, getTwitterHandle } from "@/lib/url"
 import { createClient } from "@/utils/supabase/client"
 
@@ -115,7 +115,7 @@ export default async function ProverPage({ params }: ProverPageProps) {
   )
   const avgCostPerMgas = proverTotalFees / totalGasProven / 1e6
 
-  const avgProofLatency = getProofsAvgLatency(proofsExtended)
+  const avgProofProvingTime = getProofsAvgProvingTime(proofsExtended)
 
   const performanceMetrics: Metric[] = [
     {
@@ -152,7 +152,11 @@ export default async function ProverPage({ params }: ProverPageProps) {
       label: "Avg proving time",
       description:
         "The average amount of time taken to generate a proof using any proving instance",
-      value: avgProofLatency ? prettyMilliseconds(avgProofLatency) : <Null />,
+      value: avgProofProvingTime ? (
+        prettyMilliseconds(avgProofProvingTime)
+      ) : (
+        <Null />
+      ),
     },
   ]
 
