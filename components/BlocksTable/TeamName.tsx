@@ -1,8 +1,8 @@
 import Link from "next/link"
 
-import type { Proof } from "@/lib/types"
+import type { ProofExtended } from "@/lib/types"
 
-const TeamName = ({ proof: { team, user_id } }: { proof: Proof }) => {
+const TeamName = ({ proof: { team, user_id } }: { proof: ProofExtended }) => {
   if (!team) return `Team ${user_id.split("-")[0]}`
   return (
     <Link

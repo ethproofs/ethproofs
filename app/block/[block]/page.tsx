@@ -9,9 +9,7 @@ import CopyButton from "@/components/CopyButton"
 import DownloadButton from "@/components/DownloadButton"
 import Null from "@/components/Null"
 import ProofStatus, { ProofStatusInfo } from "@/components/ProofStatus"
-import StatusIcon from "@/components/StatusIcon"
 import { HidePunctuation } from "@/components/StylePunctuation"
-import ArrowDown from "@/components/svgs/arrow-down.svg"
 import BookOpen from "@/components/svgs/book-open.svg"
 import Box from "@/components/svgs/box.svg"
 import Clock from "@/components/svgs/clock.svg"
@@ -22,8 +20,6 @@ import Layers from "@/components/svgs/layers.svg"
 import ProofCircle from "@/components/svgs/proof-circle.svg"
 import Timer from "@/components/svgs/timer.svg"
 import Timestamp from "@/components/Timestamp"
-import Tooltip from "@/components/Tooltip"
-import { Button } from "@/components/ui/button"
 import {
   HeroBody,
   HeroDivider,
@@ -32,6 +28,7 @@ import {
   HeroSection,
   HeroTitle,
 } from "@/components/ui/hero"
+import * as Info from "@/components/ui/info"
 import {
   MetricBox,
   MetricInfo,
@@ -126,20 +123,20 @@ export default async function BlockDetailsPage({
       description: (
         <>
           <TooltipContentHeader>fastest proving time</TooltipContentHeader>
-          <div className="rounded border bg-background px-3 py-2">
-            <span className="italic">proof latency</span>
-          </div>
+          <Info.Derivation>
+            <Info.Term type="internal">proof latency</Info.Term>
+          </Info.Derivation>
           <p>
-            <span className="italic">proof latency</span> is duration of the
-            proof generation process, self reported by proving teams
+            <Info.Term type="internal">proof latency</Info.Term> is duration of
+            the proof generation process, self reported by proving teams
           </p>
-          <p className="text-body-secondary">
+          <Info.Description>
             Time spent generating proof of execution
-          </p>
-          <p className="text-body-secondary">
+          </Info.Description>
+          <Info.Description>
             Fastest reported proving time for any of the proofs submitted for
             this block
-          </p>
+          </Info.Description>
         </>
       ),
       value: bestLatencyProof?.proving_time ? (
@@ -153,21 +150,21 @@ export default async function BlockDetailsPage({
       description: (
         <>
           <TooltipContentHeader>average proving time</TooltipContentHeader>
-          <div className="rounded border bg-background px-3 py-2">
-            ∑(<span className="italic">proof latency</span>) / number of
+          <Info.Derivation>
+            ∑(<Info.Term type="internal">proof latency</Info.Term>) / number of
             completed proofs for block
-          </div>
+          </Info.Derivation>
           <p>
-            <span className="italic">proof latency</span> is duration of the
-            proof generation process, self reported by proving teams
+            <Info.Term type="internal">proof latency</Info.Term> is duration of
+            the proof generation process, self reported by proving teams
           </p>
-          <p className="text-body-secondary">
+          <Info.Description>
             Time spent generating proof of execution
-          </p>
-          <p className="text-body-secondary">
+          </Info.Description>
+          <Info.Description>
             Average reported proving time for all completed proofs submitted for
             this block
-          </p>
+          </Info.Description>
         </>
       ),
       value: avgLatency ? prettyMilliseconds(avgLatency) : <Null />,
@@ -178,26 +175,26 @@ export default async function BlockDetailsPage({
       description: (
         <>
           <TooltipContentHeader>fastest time to proof</TooltipContentHeader>
-          <div className="rounded border bg-background px-3 py-2">
-            <span className="italic">proof submission time</span> -{" "}
-            <span className="font-mono text-primary-light">timestamp</span>
-          </div>
+          <Info.Derivation>
+            <Info.Term type="internal">proof submission time</Info.Term> -{" "}
+            <Info.Term type="codeTerm">timestamp</Info.Term>
+          </Info.Derivation>
           <p>
-            <span className="italic">proof submission time</span> is the
+            <Info.Term type="internal">proof submission time</Info.Term> is the
             timestamp logged by {SITE_NAME} when a completed proof has been
             submitted
           </p>
           <p>
-            <span className="font-mono text-primary-light">timestamp</span>{" "}
-            value from execution block header
+            <Info.Term type="codeTerm">timestamp</Info.Term> value from
+            execution block header
           </p>
-          <p className="text-body-secondary">
+          <Info.Description>
             Total time delay between execution block timestamp and completion
             and publishing of proof
-          </p>
-          <p className="text-body-secondary">
+          </Info.Description>
+          <Info.Description>
             Fastest time to proof for any of the proofs submitted for this block
-          </p>
+          </Info.Description>
         </>
       ),
       value:
@@ -208,27 +205,27 @@ export default async function BlockDetailsPage({
       description: (
         <>
           <TooltipContentHeader>average time to proof</TooltipContentHeader>
-          <div className="rounded border bg-background px-3 py-2">
-            ∑(<span className="italic">proof submission time</span> -{" "}
-            <span className="font-mono text-primary-light">timestamp</span>) /
-            number of completed proofs for block
-          </div>
+          <Info.Derivation>
+            ∑(<Info.Term type="internal">proof submission time</Info.Term> -{" "}
+            <Info.Term type="codeTerm">timestamp</Info.Term>) / number of
+            completed proofs for block
+          </Info.Derivation>
           <p>
-            <span className="italic">proof submission time</span> is the
+            <Info.Term type="internal">proof submission time</Info.Term> is the
             timestamp logged by {SITE_NAME} when a completed proof has been
             submitted
           </p>
           <p>
-            <span className="font-mono text-primary-light">timestamp</span>{" "}
-            value from execution block header
+            <Info.Term type="codeTerm">timestamp</Info.Term> value from
+            execution block header
           </p>
-          <p className="text-body-secondary">
+          <Info.Description>
             Total time delay between execution block timestamp and completion
             and publishing of proof
-          </p>
-          <p className="text-body-secondary">
+          </Info.Description>
+          <Info.Description>
             Average time to proof for all of the proofs submitted for this block
-          </p>
+          </Info.Description>
         </>
       ),
       value: avgTimeToProof ? prettyMilliseconds(avgTimeToProof) : <Null />,
@@ -246,16 +243,16 @@ export default async function BlockDetailsPage({
       description: (
         <>
           <TooltipContentHeader>cheapest cost per proof</TooltipContentHeader>
-          <div className="rounded border bg-background px-3 py-2">
-            <span className="italic">proving costs</span>
-          </div>
+          <Info.Derivation>
+            <Info.Term type="internal">proving costs</Info.Term>
+          </Info.Derivation>
           <p>
-            <span className="italic">proving costs</span> are in USD,
+            <Info.Term type="internal">proving costs</Info.Term> are in USD,
             self-reported by proving teams
           </p>
-          <p className="text-body-secondary">
+          <Info.Description>
             Proving costs in USD to prove entire block
-          </p>
+          </Info.Description>
         </>
       ),
       value: cheapestProof?.proving_cost ? (
@@ -483,27 +480,27 @@ export default async function BlockDetailsPage({
                   time to proof
                   <MetricInfo>
                     <TooltipContentHeader>time to proof</TooltipContentHeader>
-                    <div className="rounded border bg-background px-3 py-2">
-                      <span className="italic">proof submission time</span> -{" "}
-                      <span className="font-mono text-primary-light">
-                        timestamp
-                      </span>
-                    </div>
+                    <Info.Derivation>
+                      <Info.Term type="internal">
+                        proof submission time
+                      </Info.Term>{" "}
+                      - <Info.Term type="codeTerm">timestamp</Info.Term>
+                    </Info.Derivation>
                     <p>
-                      <span className="italic">proof submission time</span> is
-                      the timestamp logged by {SITE_NAME} when a completed proof
-                      has been submitted
+                      <Info.Term type="internal">
+                        proof submission time
+                      </Info.Term>{" "}
+                      is the timestamp logged by {SITE_NAME} when a completed
+                      proof has been submitted
                     </p>
                     <p>
-                      <span className="font-mono text-primary-light">
-                        timestamp
-                      </span>{" "}
-                      value from execution block header
+                      <Info.Term type="codeTerm">timestamp</Info.Term> value
+                      from execution block header
                     </p>
-                    <p className="text-body-secondary">
+                    <Info.Description>
                       Total time delay between execution block timestamp and
                       completion and publishing of proof
-                    </p>
+                    </Info.Description>
                   </MetricInfo>
                 </MetricLabel>
                 <MetricValue className="font-normal">
@@ -525,17 +522,17 @@ export default async function BlockDetailsPage({
                   proving time
                   <MetricInfo>
                     <TooltipContentHeader>proving time</TooltipContentHeader>
-                    <div className="rounded border bg-background px-3 py-2">
-                      <span className="italic">proof latency</span>
-                    </div>
+                    <Info.Derivation>
+                      <Info.Term type="internal">proof latency</Info.Term>
+                    </Info.Derivation>
                     <p>
-                      <span className="italic">proof latency</span> is duration
-                      of the proof generation process, self reported by proving
-                      teams
+                      <Info.Term type="internal">proof latency</Info.Term> is
+                      duration of the proof generation process, self reported by
+                      proving teams
                     </p>
-                    <p className="text-body-secondary">
+                    <Info.Description>
                       Time spent generating proof of execution
-                    </p>
+                    </Info.Description>
                   </MetricInfo>
                 </MetricLabel>
                 <MetricValue className="font-normal">
@@ -561,24 +558,24 @@ export default async function BlockDetailsPage({
                       <span className="normal-case">{team?.team_name}</span> zk
                       <span className="uppercase">VM</span> cycles
                     </TooltipContentHeader>
-                    <div className="rounded border bg-background px-3 py-2">
-                      <span className="italic">proving cycles</span>
-                    </div>
+                    <Info.Derivation>
+                      <Info.Term type="internal">proving cycles</Info.Term>
+                    </Info.Derivation>
                     <p>
-                      <span className="italic">proving cycles</span> is
+                      <Info.Term type="internal">proving cycles</Info.Term> is
                       self-reported by{" "}
                       {team?.team_name ? team.team_name : "the proving team"}
                     </p>
-                    <p className="text-body-secondary">
+                    <Info.Description>
                       The number of cycles used by{" "}
                       {team?.team_name ? team.team_name : "the proving team"} to
                       generate the proof.
-                    </p>
-                    <p className="text-body-secondary">
+                    </Info.Description>
+                    <Info.Description>
                       This number will vary depending on hardware and zkVMs
                       being used by different provers and should not be directly
                       compared to other provers.
-                    </p>
+                    </Info.Description>
                   </MetricInfo>
                 </MetricLabel>
                 <MetricValue
@@ -608,18 +605,18 @@ export default async function BlockDetailsPage({
                   proving costs
                   <MetricInfo>
                     <TooltipContentHeader>proving costs</TooltipContentHeader>
-                    <div className="rounded border bg-background px-3 py-2">
-                      <span className="italic">proving costs</span>
-                    </div>
+                    <Info.Derivation>
+                      <Info.Term type="internal">proving costs</Info.Term>
+                    </Info.Derivation>
                     <p>
-                      <span className="italic">proving costs</span> are in USD,
-                      self-reported by{" "}
+                      <Info.Term type="internal">proving costs</Info.Term> are
+                      in USD, self-reported by{" "}
                       {team?.team_name ? team.team_name : "proving team"}
                     </p>
-                    <p className="text-body-secondary">
+                    <Info.Description>
                       Proving costs are in USD, and represent the self-reported
                       expenditures included in proving this block
-                    </p>
+                    </Info.Description>
                   </MetricInfo>
                 </MetricLabel>
                 <MetricValue className="font-normal">

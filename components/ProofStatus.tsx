@@ -1,4 +1,8 @@
+import { Fragment } from "react"
+
 import type { Proof } from "@/lib/types"
+
+import * as Info from "@/components/ui/info"
 
 import { cn } from "@/lib/utils"
 
@@ -6,22 +10,26 @@ import { MetricInfo } from "./ui/metric"
 import { TooltipContentHeader } from "./ui/tooltip"
 import StatusIcon from "./StatusIcon"
 
-import { isCompleted } from "@/lib/proofs"
+const ORDERED_STATUSES = ["proved", "proving", "queued"] as const
 
-export const ProofStatusInfo = () => (
+const DESCRIPTIONS = {
+  proved: "Completed proofs published",
+  proving: "Current proofs in progress",
+  queued: "Queued for proving",
+} as Record<(typeof ORDERED_STATUSES)[number], string>
+
+export const ProofStatusInfo = ({ title }: { title?: string }) => (
   <>
-    <TooltipContentHeader>proof status</TooltipContentHeader>
+    <TooltipContentHeader>{title || "proof status"}</TooltipContentHeader>
     <div className="items-top grid grid-cols-[auto,1fr] gap-4">
-      <StatusIcon status="proved" />
-      Number of completed proofs that have been published for this block
-      <StatusIcon status="proving" />
-      Number of provers currently generating proofs for this block
-      <StatusIcon status="queued" />
-      Number of provers who have indicated intent to prove this block
+      {ORDERED_STATUSES.map((status) => (
+        <Fragment key={status}>
+          <StatusIcon status={status} />
+          {DESCRIPTIONS[status]}
+        </Fragment>
+      ))}
     </div>
-    <p className="text-body-secondary">
-      Current status of proofs for this block
-    </p>
+    <Info.Description>Current status of proofs</Info.Description>
   </>
 )
 
@@ -35,63 +43,34 @@ const ProofStatus = ({
   hideEmpty,
   ...props
 }: ProofStatusProps) => {
-  const completedProofs = proofs.filter(isCompleted)
-  const provingProofs = proofs.filter((p) => p.proof_status === "proving")
-  const queuedProofs = proofs.filter((p) => p.proof_status === "queued")
+  const allProofs: Proof[][] = Array(3)
+    .fill(0)
+    .map((_, i) => proofs.filter((p) => p.proof_status === ORDERED_STATUSES[i]))
 
   return (
     <figure
       className={cn("flex items-center gap-4 font-mono", className)}
       {...props}
     >
-      {(completedProofs.length > 0 || !hideEmpty) && (
-        <div className="flex items-center gap-1">
-          <MetricInfo
-            trigger={
-              <div className="flex flex-nowrap items-center gap-1">
-                <StatusIcon status="proved" />
-                <span className="block">{completedProofs.length}</span>
-              </div>
-            }
-          >
-            <span className="!font-body text-body">
-              Number of completed proofs that have been published for this block
-            </span>
-          </MetricInfo>
-        </div>
-      )}
-      {(provingProofs.length > 0 || !hideEmpty) && (
-        <div className="flex items-center gap-1">
-          <MetricInfo
-            trigger={
-              <div className="flex flex-nowrap items-center gap-1">
-                <StatusIcon status="proving" />
-                <span className="block">{provingProofs.length}</span>
-              </div>
-            }
-          >
-            <span className="!font-body text-body">
-              Number of provers currently generating proofs for this block
-            </span>
-          </MetricInfo>
-        </div>
-      )}
-      {(queuedProofs.length > 0 || !hideEmpty) && (
-        <div className="flex items-center gap-1">
-          <MetricInfo
-            trigger={
-              <div className="flex flex-nowrap items-center gap-1">
-                <StatusIcon status="queued" />
-                <span className="block">{queuedProofs.length}</span>
-              </div>
-            }
-          >
-            <span className="!font-body text-body">
-              Number of provers who have indicated intent to prove this block
-            </span>
-          </MetricInfo>
-        </div>
-      )}
+      {allProofs.map(({ length: proofCount }, idx) => {
+        if (proofCount === 0 && hideEmpty) return null
+        return (
+          <div key={idx} className="flex items-center gap-1">
+            <MetricInfo
+              trigger={
+                <div className="flex flex-nowrap items-center gap-1">
+                  <StatusIcon status={ORDERED_STATUSES[idx]} />
+                  <span className="block">{proofCount}</span>
+                </div>
+              }
+            >
+              <span className="!font-body text-body">
+                {DESCRIPTIONS[ORDERED_STATUSES[idx]]}
+              </span>
+            </MetricInfo>
+          </div>
+        )
+      })}
     </figure>
   )
 }
