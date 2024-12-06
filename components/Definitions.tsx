@@ -83,20 +83,17 @@ const primitives: Record<Primitive, DefinitionDetails> = {
     Term: () => <Info.Term type="codeTerm">{PRIMITIVES.cluster}</Info.Term>,
     Definition: () => (
       <p>
-        <Info.Term type="codeTerm">{PRIMITIVES.cluster}</Info.Term> is the
-        unique set of hardware being used to generate the proof identifier, self
-        reported as AWS instance equivalents
+        <Info.Term type="codeTerm">{PRIMITIVES.cluster}</Info.Term> is the name
+        given to a particular set of hardware being used to compute the proofs.
+        Hardware, cycle type, and description of setup are all self-reported by
+        proving teams, along with a selected AWS setup that best matches their
+        own, used for price comparison
       </p>
     ),
   },
 }
 
-const CONVERSIONS = {
-  gasPerMgas: "gas per Mgas",
-  msToHours: "milliseconds to hours",
-} as const
-
-type Conversion = keyof typeof CONVERSIONS
+type Conversion = "gasPerMgas" | "msToHours"
 
 const conversions: Record<Conversion, DefinitionDetails> = {
   gasPerMgas: {
@@ -126,12 +123,7 @@ const conversions: Record<Conversion, DefinitionDetails> = {
   },
 }
 
-const COMPUTED = {
-  provingCosts: "proving costs",
-  mgas: "mgas",
-} as const
-
-type Computed = keyof typeof COMPUTED
+type Computed = "provingCosts" | "mgas"
 
 const computed: Record<Computed, DefinitionDetails> = {
   provingCosts: {
