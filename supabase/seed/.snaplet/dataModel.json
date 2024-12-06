@@ -1012,6 +1012,20 @@
           "maxLength": null
         },
         {
+          "id": "public.clusters.cluster_proof_type",
+          "name": "cluster_proof_type",
+          "columnName": "cluster_proof_type",
+          "type": "varchar",
+          "isRequired": false,
+          "kind": "scalar",
+          "isList": false,
+          "isGenerated": false,
+          "sequence": false,
+          "hasDefaultValue": false,
+          "isId": false,
+          "maxLength": null
+        },
+        {
           "name": "users",
           "type": "users",
           "isRequired": true,

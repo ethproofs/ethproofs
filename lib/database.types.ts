@@ -169,6 +169,7 @@ export type Database = {
           cluster_hardware: string | null
           cluster_id: number | null
           cluster_name: string
+          cluster_proof_type: string | null
           id: string
           user_id: string
         }
@@ -178,6 +179,7 @@ export type Database = {
           cluster_hardware?: string | null
           cluster_id?: number | null
           cluster_name: string
+          cluster_proof_type?: string | null
           id?: string
           user_id: string
         }
@@ -187,6 +189,7 @@ export type Database = {
           cluster_hardware?: string | null
           cluster_id?: number | null
           cluster_name?: string
+          cluster_proof_type?: string | null
           id?: string
           user_id?: string
         }
