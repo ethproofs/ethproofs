@@ -5,7 +5,8 @@ import { computed, primitives } from "./Definitions"
 type Props = {
   average?: boolean
 }
-export type ColumnDetails = {
+
+type MetricDetails = {
   Label: (props: Props) => React.ReactNode
   Details: (props: Props) => React.ReactNode
 }
@@ -27,7 +28,7 @@ const METRICS = {
 
 type Metric = keyof typeof METRICS
 
-const metrics: Record<Metric, ColumnDetails> = {
+const metrics: Record<Metric, MetricDetails> = {
   blockNumber: {
     Label: () => METRICS.blockNumber,
     Details: () => (
