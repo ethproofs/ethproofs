@@ -3,7 +3,6 @@ import * as Info from "@/components/ui/info"
 import { SITE_NAME } from "@/lib/constants"
 
 type DefinitionDetails = {
-  displayName?: string
   Term: () => React.ReactNode
   Definition: () => React.ReactNode
 }
@@ -22,7 +21,6 @@ type Primitive = keyof typeof PRIMITIVES
 
 const primitives: Record<Primitive, DefinitionDetails> = {
   hourlyPrice: {
-    displayName: PRIMITIVES.hourlyPrice,
     Term: () => <Info.Term type="internal">{PRIMITIVES.hourlyPrice}</Info.Term>,
     Definition: () => (
       <p>
@@ -33,7 +31,6 @@ const primitives: Record<Primitive, DefinitionDetails> = {
     ),
   },
   provingTime: {
-    displayName: PRIMITIVES.provingTime,
     Term: () => <Info.Term type="internal">{PRIMITIVES.provingTime}</Info.Term>,
     Definition: () => (
       <p>
@@ -44,7 +41,6 @@ const primitives: Record<Primitive, DefinitionDetails> = {
     ),
   },
   gasUsed: {
-    displayName: PRIMITIVES.gasUsed,
     Term: () => <Info.Term type="codeTerm">{PRIMITIVES.gasUsed}</Info.Term>,
     Definition: () => (
       <p>
@@ -54,7 +50,6 @@ const primitives: Record<Primitive, DefinitionDetails> = {
     ),
   },
   blockNumber: {
-    displayName: PRIMITIVES.blockNumber,
     Term: () => <Info.Term type="codeTerm">{PRIMITIVES.blockNumber}</Info.Term>,
     Definition: () => (
       <p>
@@ -64,7 +59,6 @@ const primitives: Record<Primitive, DefinitionDetails> = {
     ),
   },
   proofSubmissionTime: {
-    displayName: PRIMITIVES.proofSubmissionTime,
     Term: () => (
       <Info.Term type="internal">{PRIMITIVES.proofSubmissionTime}</Info.Term>
     ),
@@ -77,7 +71,6 @@ const primitives: Record<Primitive, DefinitionDetails> = {
     ),
   },
   timestamp: {
-    displayName: PRIMITIVES.timestamp,
     Term: () => <Info.Term type="codeTerm">{PRIMITIVES.timestamp}</Info.Term>,
     Definition: () => (
       <p>
@@ -87,7 +80,6 @@ const primitives: Record<Primitive, DefinitionDetails> = {
     ),
   },
   cluster: {
-    displayName: PRIMITIVES.cluster,
     Term: () => <Info.Term type="codeTerm">{PRIMITIVES.cluster}</Info.Term>,
     Definition: () => (
       <p>
@@ -108,7 +100,6 @@ type Conversion = keyof typeof CONVERSIONS
 
 const conversions: Record<Conversion, DefinitionDetails> = {
   gasPerMgas: {
-    displayName: CONVERSIONS.gasPerMgas,
     Term: () => (
       <Info.Term type="codeTerm">
         10<sup>6</sup>
@@ -125,7 +116,6 @@ const conversions: Record<Conversion, DefinitionDetails> = {
     ),
   },
   msToHours: {
-    displayName: CONVERSIONS.msToHours,
     Term: () => <Info.Term type="codeTerm">(1000 * 60 * 60)</Info.Term>,
     Definition: () => (
       <p>
@@ -145,7 +135,6 @@ type Computed = keyof typeof COMPUTED
 
 const computed: Record<Computed, DefinitionDetails> = {
   provingCosts: {
-    displayName: COMPUTED.provingCosts,
     Term: () => (
       <>
         <primitives.hourlyPrice.Term /> * <primitives.provingTime.Term /> /{" "}
@@ -161,7 +150,6 @@ const computed: Record<Computed, DefinitionDetails> = {
     ),
   },
   mgas: {
-    displayName: "mgas",
     Term: () => (
       <>
         <primitives.gasUsed.Term /> / <conversions.gasPerMgas.Term />
