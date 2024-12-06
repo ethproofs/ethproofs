@@ -7,7 +7,7 @@ import type { Metric } from "@/lib/types"
 
 import CopyButton from "@/components/CopyButton"
 import DownloadButton from "@/components/DownloadButton"
-import * as Metrics from "@/components/Metrics"
+import { metrics } from "@/components/Metrics"
 import Null from "@/components/Null"
 import ProofStatus, { ProofStatusInfo } from "@/components/ProofStatus"
 import { HidePunctuation } from "@/components/StylePunctuation"
@@ -119,14 +119,18 @@ export default async function BlockDetailsPage({
       value: <ProofStatus proofs={proofs} />,
     },
     {
-      label: `Fastest ${Metrics.PROVING_TIME_LABEL}`,
+      label: (
+        <>
+          Fastest <metrics.provingTime.Label />
+        </>
+      ),
       // TODO: Include team information with fastest proving time
       description: (
         <>
           <TooltipContentHeader>
-            fastest {Metrics.PROVING_TIME_LABEL}
+            fastest <metrics.provingTime.Label />
           </TooltipContentHeader>
-          <Metrics.ProvingTimeDetails />
+          <metrics.provingTime.Details />
           <Info.Description>
             Fastest reported proving time for any of the proofs submitted for
             this block
@@ -140,36 +144,34 @@ export default async function BlockDetailsPage({
       ),
     },
     {
-      label: `avg ${Metrics.PROVING_TIME_LABEL}`,
+      label: (
+        <>
+          avg <metrics.provingTime.Label />
+        </>
+      ),
       description: (
         <>
           <TooltipContentHeader>
-            average {Metrics.PROVING_TIME_LABEL}
+            average <metrics.provingTime.Label />
           </TooltipContentHeader>
-          <Metrics.ProvingTimeDetails average />
+          <metrics.provingTime.Details average />
         </>
       ),
       value: avgProvingTime ? prettyMilliseconds(avgProvingTime) : <Null />,
     },
     {
-      label: "Fastest time to proof",
+      label: (
+        <>
+          Fastest <metrics.totalTTP.Label />
+        </>
+      ),
       // TODO: Include team information with fastest proving time
       description: (
         <>
-          <TooltipContentHeader>fastest time to proof</TooltipContentHeader>
-          <Info.Derivation>
-            <Info.Term type="internal">proof submission time</Info.Term> -{" "}
-            <Info.Term type="codeTerm">timestamp</Info.Term>
-          </Info.Derivation>
-          <p>
-            <Info.Term type="internal">proof submission time</Info.Term> is the
-            timestamp logged by {SITE_NAME} when a completed proof has been
-            submitted
-          </p>
-          <p>
-            <Info.Term type="codeTerm">timestamp</Info.Term> value from
-            execution block header
-          </p>
+          <TooltipContentHeader>
+            fastest <metrics.totalTTP.Label />
+          </TooltipContentHeader>
+          <metrics.totalTTP.Details />
           <Info.Description>
             Total time delay between execution block timestamp and completion
             and publishing of proof
@@ -183,24 +185,17 @@ export default async function BlockDetailsPage({
         bestTimeToProof > 0 ? prettyMilliseconds(bestTimeToProof) : <Null />,
     },
     {
-      label: "avg time to proof",
+      label: (
+        <>
+          Avg <metrics.totalTTP.Label />
+        </>
+      ),
       description: (
         <>
-          <TooltipContentHeader>average time to proof</TooltipContentHeader>
-          <Info.Derivation>
-            ∑(<Info.Term type="internal">proof submission time</Info.Term> -{" "}
-            <Info.Term type="codeTerm">timestamp</Info.Term>) / number of
-            completed proofs for block
-          </Info.Derivation>
-          <p>
-            <Info.Term type="internal">proof submission time</Info.Term> is the
-            timestamp logged by {SITE_NAME} when a completed proof has been
-            submitted
-          </p>
-          <p>
-            <Info.Term type="codeTerm">timestamp</Info.Term> value from
-            execution block header
-          </p>
+          <TooltipContentHeader>
+            average <metrics.totalTTP.Label />
+          </TooltipContentHeader>
+          <metrics.totalTTP.Details average />
           <Info.Description>
             Total time delay between execution block timestamp and completion
             and publishing of proof
@@ -220,11 +215,17 @@ export default async function BlockDetailsPage({
 
   const blockFeeMetrics: Metric[] = [
     {
-      label: "cheapest cost per proof",
+      label: (
+        <>
+          cheapest <metrics.costPerProof.Label />
+        </>
+      ),
       description: (
         <>
-          <TooltipContentHeader>cheapest cost per proof</TooltipContentHeader>
-          <Metrics.ProvingCostsDetails />
+          <TooltipContentHeader>
+            cheapest <metrics.costPerProof.Label />
+          </TooltipContentHeader>
+          <metrics.provingCosts.Details />
         </>
       ),
       value: cheapestProof?.proving_cost ? (
@@ -237,11 +238,15 @@ export default async function BlockDetailsPage({
       ),
     },
     {
-      label: "avg cost per proof",
+      label: (
+        <>
+          avg <metrics.costPerProof.Label />
+        </>
+      ),
       description: (
         <>
           <TooltipContentHeader>avg cost per proof</TooltipContentHeader>
-          <Metrics.ProvingCostsDetails average />
+          <metrics.provingCosts.Details average />
         </>
       ),
       value: avgCostPerProof ? (
@@ -254,13 +259,17 @@ export default async function BlockDetailsPage({
       ),
     },
     {
-      label: <>cheapest {Metrics.COST_PER_MGAS_LABEL}</>,
+      label: (
+        <>
+          cheapest <metrics.costPerMgas.Label />
+        </>
+      ),
       description: (
         <>
           <TooltipContentHeader>
-            cheapest {Metrics.COST_PER_MGAS_LABEL}
+            cheapest <metrics.costPerMgas.Label />
           </TooltipContentHeader>
-          <Metrics.CostPerMgas />
+          <metrics.costPerMgas.Details />
         </>
       ),
       value:
@@ -274,13 +283,17 @@ export default async function BlockDetailsPage({
         ),
     },
     {
-      label: <>avg {Metrics.COST_PER_MGAS_LABEL}</>,
+      label: (
+        <>
+          avg <metrics.costPerMgas.Label />
+        </>
+      ),
       description: (
         <>
           <TooltipContentHeader>
-            avg {Metrics.COST_PER_MGAS_LABEL}
+            avg <metrics.costPerMgas.Label />
           </TooltipContentHeader>
-          <Metrics.CostPerMgas />
+          <metrics.costPerMgas.Details />
         </>
       ),
       value:
@@ -460,30 +473,12 @@ export default async function BlockDetailsPage({
                 )}
               >
                 <MetricLabel>
-                  time to proof
+                  <metrics.totalTTP.Label />
                   <MetricInfo>
-                    <TooltipContentHeader>time to proof</TooltipContentHeader>
-                    <Info.Derivation>
-                      <Info.Term type="internal">
-                        proof submission time
-                      </Info.Term>{" "}
-                      - <Info.Term type="codeTerm">timestamp</Info.Term>
-                    </Info.Derivation>
-                    <p>
-                      <Info.Term type="internal">
-                        proof submission time
-                      </Info.Term>{" "}
-                      is the timestamp logged by {SITE_NAME} when a completed
-                      proof has been submitted
-                    </p>
-                    <p>
-                      <Info.Term type="codeTerm">timestamp</Info.Term> value
-                      from execution block header
-                    </p>
-                    <Info.Description>
-                      Total time delay between execution block timestamp and
-                      completion and publishing of proof
-                    </Info.Description>
+                    <TooltipContentHeader>
+                      <metrics.totalTTP.Label />
+                    </TooltipContentHeader>
+                    <metrics.totalTTP.Details />
                   </MetricInfo>
                 </MetricLabel>
                 <MetricValue className="font-normal">
@@ -502,10 +497,12 @@ export default async function BlockDetailsPage({
                 )}
               >
                 <MetricLabel>
-                  proving time
+                  <metrics.provingTime.Label />
                   <MetricInfo>
-                    <TooltipContentHeader>proving time</TooltipContentHeader>
-                    <Metrics.ProvingTimeDetails />
+                    <TooltipContentHeader>
+                      <metrics.provingTime.Label />
+                    </TooltipContentHeader>
+                    <metrics.provingTime.Details />
                   </MetricInfo>
                 </MetricLabel>
                 <MetricValue className="font-normal">
@@ -575,21 +572,12 @@ export default async function BlockDetailsPage({
                 )}
               >
                 <MetricLabel className="sm:max-md:justify-end">
-                  proving costs
+                  <metrics.provingCosts.Label />
                   <MetricInfo>
-                    <TooltipContentHeader>proving costs</TooltipContentHeader>
-                    <Info.Derivation>
-                      <Info.Term type="internal">proving costs</Info.Term>
-                    </Info.Derivation>
-                    <p>
-                      <Info.Term type="internal">proving costs</Info.Term> are
-                      in USD, self-reported by{" "}
-                      {team?.team_name ? team.team_name : "proving team"}
-                    </p>
-                    <Info.Description>
-                      Proving costs are in USD, and represent the self-reported
-                      expenditures included in proving this block
-                    </Info.Description>
+                    <TooltipContentHeader>
+                      <metrics.provingCosts.Label />
+                    </TooltipContentHeader>
+                    <metrics.provingCosts.Details />
                   </MetricInfo>
                 </MetricLabel>
                 <MetricValue className="font-normal">

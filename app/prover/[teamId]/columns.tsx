@@ -4,10 +4,10 @@ import Link from "next/link"
 import prettyMilliseconds from "pretty-ms"
 import { ColumnDef } from "@tanstack/react-table"
 
-import type { ProofExtended } from "@/lib/types"
+import type { Proof } from "@/lib/types"
 
 import DownloadButton from "@/components/DownloadButton"
-import * as Metrics from "@/components/Metrics"
+import { metrics } from "@/components/Metrics"
 import Null from "@/components/Null"
 import { HidePunctuation } from "@/components/StylePunctuation"
 
@@ -15,13 +15,16 @@ import { ColumnHeader } from "./ColumnHeader"
 
 import { formatNumber } from "@/lib/number"
 
-export const columns: ColumnDef<ProofExtended>[] = [
+export const columns: ColumnDef<Proof>[] = [
   // Block (time since)
   {
     accessorKey: "block_number",
     header: () => (
-      <ColumnHeader label={Metrics.BLOCK_NUMBER_LABEL} className="text-start">
-        <Metrics.BlockNumberDetails />
+      <ColumnHeader
+        label={<metrics.blockNumber.Label />}
+        className="text-start"
+      >
+        <metrics.blockNumber.Details />
       </ColumnHeader>
     ),
     cell: ({ cell }) => {
@@ -42,8 +45,8 @@ export const columns: ColumnDef<ProofExtended>[] = [
   {
     accessorKey: "cluster.cluster_name",
     header: () => (
-      <ColumnHeader label={Metrics.CLUSTER_LABEL}>
-        <Metrics.ClusterDetails />
+      <ColumnHeader label={<metrics.cluster.Label />}>
+        <metrics.cluster.Details />
       </ColumnHeader>
     ),
     cell: ({ cell }) => {
@@ -56,8 +59,8 @@ export const columns: ColumnDef<ProofExtended>[] = [
   {
     accessorKey: "proved_timestamp",
     header: () => (
-      <ColumnHeader label={Metrics.TOTAL_TTP_LABEL}>
-        <Metrics.TotalTTPDetails />
+      <ColumnHeader label={<metrics.totalTTP.Label />}>
+        <metrics.totalTTP.Details />
       </ColumnHeader>
     ),
     cell: ({ cell, row }) => {
@@ -76,8 +79,8 @@ export const columns: ColumnDef<ProofExtended>[] = [
   {
     accessorKey: "proving_time",
     header: () => (
-      <ColumnHeader label={Metrics.PROVING_TIME_LABEL}>
-        <Metrics.ProvingTimeDetails />
+      <ColumnHeader label={<metrics.provingTime.Label />}>
+        <metrics.provingTime.Details />
       </ColumnHeader>
     ),
     cell: ({ cell }) => {

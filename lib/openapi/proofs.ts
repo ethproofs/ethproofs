@@ -1,76 +1,108 @@
 import { z } from "zod"
 import { ZodOpenApiPathsObject } from "zod-openapi"
 
-import { createProofSchema } from "../zod/schemas/proof"
+import {
+  provedProofSchema,
+  provingProofSchema,
+  queuedProofSchema,
+} from "../zod/schemas/proof"
+
+const commonResponses = {
+  "200": {
+    description: "Proof submitted",
+    content: {
+      "application/json": {
+        schema: z.object({
+          proof_id: z.number(),
+        }),
+      },
+    },
+  },
+  "400": {
+    description: "Invalid request body",
+  },
+  "401": {
+    description: "Invalid API key",
+  },
+  "404": {
+    description: "Cluster not found",
+  },
+  "500": {
+    description: "Internal server error or block not found",
+  },
+}
 
 export const proofsPaths: ZodOpenApiPathsObject = {
-  "/proofs": {
+  "/proofs/queued": {
     post: {
       tags: ["Proofs"],
-      summary: "Submit a new proof or update an existing one",
+      summary: "Queued proof",
+      description:
+        "The prover indicates they'll prove a block, but they haven't started proving yet.",
       requestBody: {
         required: true,
-        description:
-          "The request body schema varies based on the `proof_status` field.",
         content: {
           "application/json": {
-            schema: createProofSchema,
-            examples: {
-              queued: {
-                summary: "Queued proof",
-                value: createProofSchema.parse({
-                  proof_status: "queued",
-                  block_number: 123456,
-                  cluster_id: 1,
-                }),
-              },
-              proving: {
-                summary: "Proving proof",
-                value: createProofSchema.parse({
-                  proof_status: "proving",
-                  block_number: 123456,
-                  cluster_id: 1,
-                }),
-              },
-              proved: {
-                summary: "Proved proof",
-                value: createProofSchema.parse({
-                  proof_status: "proved",
-                  block_number: 123456,
-                  cluster_id: 1,
-                  proof: "...",
-                  proving_time: 100,
-                  proving_cost: 540,
-                  proving_cycles: 10000,
-                }),
-              },
-            },
+            schema: queuedProofSchema,
+            example: queuedProofSchema.parse({
+              block_number: 123456,
+              cluster_id: 1,
+            }),
           },
         },
       },
       responses: {
-        "200": {
-          description: "Proof submitted",
-          content: {
-            "application/json": {
-              schema: z.object({
-                proof_id: z.number(),
-              }),
-            },
+        ...commonResponses,
+      },
+      security: [{ apikey: [] }],
+    },
+  },
+  "/proofs/proving": {
+    post: {
+      tags: ["Proofs"],
+      summary: "Proving proof",
+      description: "The prover indicates they've started proving a block.",
+      requestBody: {
+        required: true,
+        content: {
+          "application/json": {
+            schema: provingProofSchema,
+            example: provingProofSchema.parse({
+              block_number: 123456,
+              cluster_id: 1,
+            }),
           },
         },
-        "400": {
-          description: "Invalid request body",
+      },
+      responses: {
+        ...commonResponses,
+      },
+      security: [{ apikey: [] }],
+    },
+  },
+  "/proofs/proved": {
+    post: {
+      tags: ["Proofs"],
+      summary: "Proved proof",
+      description: "The prover indicates they've completed proving a block.",
+      requestBody: {
+        required: true,
+        content: {
+          "application/json": {
+            schema: provedProofSchema,
+            example: provedProofSchema.parse({
+              block_number: 123456,
+              cluster_id: 1,
+              proof: "...",
+              proving_time: 1000,
+              proving_cost: 540,
+              proving_cycles: 10000,
+            }),
+          },
         },
-        "401": {
-          description: "Invalid API key",
-        },
-        "404": {
-          description: "Cluster not found",
-        },
-        "500": {
-          description: "Internal server error or block not found",
-        },
+      },
+      responses: {
+        ...commonResponses,
       },
       security: [{ apikey: [] }],
     },

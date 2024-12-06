@@ -3,7 +3,7 @@ import Link from "next/link"
 import { notFound } from "next/navigation"
 import prettyMilliseconds from "pretty-ms"
 
-import type { Metric, ProofExtended, ProverCluster } from "@/lib/types"
+import type { ClusterBase, Metric, Proof } from "@/lib/types"
 
 import Null from "@/components/Null"
 import ProofStatus, { ProofStatusInfo } from "@/components/ProofStatus"
@@ -95,7 +95,7 @@ export default async function ProverPage({ params }: ProverPageProps) {
         [curr.cluster.cluster_id]: curr.cluster,
       }
     }, {})
-  ) satisfies ProverCluster[]
+  ) satisfies ClusterBase[]
 
   const completedProofs = proofsExtended.filter(
     (p) => p.proof_status === "proved"
@@ -115,13 +115,13 @@ export default async function ProverPage({ params }: ProverPageProps) {
   )
   const avgCostPerMgas = proverTotalFees / totalGasProven / 1e6
 
-  const avgProofProvingTime = getProofsAvgProvingTime(proofsExtended)
+  const avgProofProvingTime = getProofsAvgProvingTime(proofsExtended as Proof[])
 
   const performanceMetrics: Metric[] = [
     {
       label: "Total proofs",
       description: <ProofStatusInfo title="total proofs" />,
-      value: <ProofStatus proofs={proofsExtended} />,
+      value: <ProofStatus proofs={proofsExtended as Proof[]} />,
     },
     {
       label: (
@@ -251,7 +251,7 @@ export default async function ProverPage({ params }: ProverPageProps) {
         </h2>
         <DataTable
           columns={columns}
-          data={proofsExtended as ProofExtended[]}
+          data={proofsExtended as Proof[]}
           sorting={[{ id: "block_number", desc: true }]}
         />
       </section>
