@@ -51,6 +51,9 @@ export default async function Index() {
   const teamsResponse = await supabase.from("teams").select()
   const teams = teamsResponse.data || []
 
+  const aws = await supabase.from("aws_instance_pricing").select()
+  const awsData = aws.data || []
+  console.log({ awsData })
   const blocksProofsTeams = blocks.map((block) => {
     const { proofs } = block
     const proofsWithTeams = proofs.map((proof) => ({
