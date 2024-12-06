@@ -21,13 +21,6 @@ export const provedProofSchema = baseProofSchema.extend({
     .number()
     .positive("proving_time must be a positive number")
     .describe("Milliseconds taken to generate the proof"),
-  proving_cost: z
-    .number()
-    .positive("proving_cost must be a positive number")
-    .describe("Cost of generating the proof (in USD)")
-    .openapi({
-      deprecated: true,
-    }),
   proving_cycles: z
     .number()
     .int()
