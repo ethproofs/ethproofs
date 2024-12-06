@@ -10,9 +10,7 @@ export const GET = withAuth(async ({ client, user }) => {
 
   const { data, error } = await client
     .from("clusters")
-    .select(
-      "cluster_id, cluster_name, cluster_description, cluster_hardware, cluster_cycle_type, cluster_proof_type"
-    )
+    .select("id:index, nickname, description, hardware, cycle_type, proof_type")
     .eq("user_id", user.id)
 
   if (error) {
@@ -44,12 +42,12 @@ export const POST = withAuth(async ({ request, client, user }) => {
   }
 
   const {
-    cluster_name,
-    cluster_description,
-    cluster_hardware,
-    cluster_configuration,
-    cluster_cycle_type,
-    cluster_proof_type,
+    nickname,
+    description,
+    hardware,
+    configuration,
+    cycle_type,
+    proof_type,
   } = clusterPayload
 
   // get & validate instance type ids
@@ -58,7 +56,7 @@ export const POST = withAuth(async ({ request, client, user }) => {
     .select("id, instance_type")
     .in(
       "instance_type",
-      cluster_configuration.map((config) => config.instance_type)
+      configuration.map((config) => config.instance_type)
     )
 
   if (instanceTypeError) {
@@ -66,7 +64,7 @@ export const POST = withAuth(async ({ request, client, user }) => {
     return new Response("Internal server error", { status: 500 })
   }
 
-  if (instanceTypeIds.length !== cluster_configuration.length) {
+  if (instanceTypeIds.length !== configuration.length) {
     return new Response("Invalid cluster configuration", { status: 400 })
   }
 
@@ -74,14 +72,14 @@ export const POST = withAuth(async ({ request, client, user }) => {
   const { data, error } = await client
     .from("clusters")
     .insert({
-      cluster_name,
-      cluster_description,
-      cluster_hardware,
-      cluster_cycle_type,
-      cluster_proof_type,
+      nickname,
+      description,
+      hardware,
+      cycle_type,
+      proof_type,
       user_id: user.id,
     })
-    .select("id, cluster_id")
+    .select("id, index")
     .single()
 
   if (error) {
@@ -101,7 +99,7 @@ export const POST = withAuth(async ({ request, client, user }) => {
   const { error: clusterConfigurationError } = await client
     .from("cluster_configurations")
     .insert(
-      cluster_configuration.map(({ instance_type, instance_count }) => ({
+      configuration.map(({ instance_type, instance_count }) => ({
         cluster_id: data.id,
         instance_type_id: instanceTypeById[instance_type],
         instance_count,
@@ -116,5 +114,5 @@ export const POST = withAuth(async ({ request, client, user }) => {
     return new Response("Internal server error", { status: 500 })
   }
 
-  return Response.json({ cluster_id: data.cluster_id })
+  return Response.json({ id: data.index })
 })

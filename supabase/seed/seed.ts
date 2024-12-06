@@ -67,12 +67,11 @@ const main = async () => {
       (x) =>
         x(2, ({ seed, index }) => {
           return {
-            cluster_name: `Cluster ${copycat.firstName(index)}`,
-            cluster_description: faker.lorem.sentence(),
-            cluster_hardware: faker.lorem.sentence(),
-            cluster_cycle_type:
-              faker.lorem.word().slice(0, 2).toUpperCase() + index,
-            cluster_proof_type: copycat.oneOfString(seed, ["STARK", "SNARK"]),
+            nickname: `Cluster ${copycat.firstName(index)}`,
+            description: faker.lorem.sentence(),
+            hardware: faker.lorem.sentence(),
+            cycle_type: faker.lorem.word().slice(0, 2).toUpperCase() + index,
+            proof_type: copycat.oneOfString(seed, ["STARK", "SNARK"]),
           }
         }),
       {

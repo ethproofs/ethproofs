@@ -1,5 +1,4 @@
 import { revalidateTag } from "next/cache"
-import { formatGwei } from "viem"
 import { ZodError } from "zod"
 
 import { withAuth } from "@/lib/auth"
@@ -64,7 +63,6 @@ export const POST = withAuth(async ({ request, client, user, timestamp }) => {
     console.log("creating block", block_number)
     const { error } = await client.from("blocks").insert({
       block_number,
-      total_fees: parseInt(formatGwei(blockData.feeTotal)),
       gas_used: Number(blockData.gasUsed),
       transaction_count: blockData.txsCount,
       timestamp: new Date(Number(blockData.timestamp) * 1000).toISOString(),
@@ -84,7 +82,7 @@ export const POST = withAuth(async ({ request, client, user, timestamp }) => {
   const { data: clusterData, error: clusterError } = await client
     .from("clusters")
     .select("id")
-    .eq("cluster_id", cluster_id)
+    .eq("index", cluster_id)
     .eq("user_id", user.id)
     .single()
 
