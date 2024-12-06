@@ -57,10 +57,7 @@ export default async function Index() {
     .from("blocks")
     .select(
       `*,proofs!inner(id:proof_id,*,clusters(          *,
-        cluster_configurations(
-          instance_type_id,
-          aws_instance_pricing(*)
-        )
+        cluster_configurations(*)
       ))`
     )
     .order("block_number", { ascending: false })
@@ -73,6 +70,10 @@ export default async function Index() {
 
   const teamsResponse = await supabase.from("teams").select()
   const teams = teamsResponse.data || []
+
+  const config = await supabase.from("cluster_configurations").select()
+  const configData = config.data || []
+  console.log({ configData })
 
   const aws = await supabase.from("aws_instance_pricing").select()
   const awsData = aws.data || []
