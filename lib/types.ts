@@ -2,19 +2,28 @@ import { type ReactNode } from "react"
 
 import type { Tables } from "./database.types"
 
+export type AwsInstance = Tables<"aws_instance_pricing">
+
 export type Block = Tables<"blocks">
 
-export type Proof = Tables<"proofs">
+export type ClusterBase = Tables<"clusters">
+export type ClusterExtensions = {
+  clusterConfig?: ClusterConfiguration
+  awsInstance?: AwsInstance
+}
+export type Cluster = ClusterBase & ClusterExtensions
+
+export type ClusterConfiguration = Tables<"cluster_configurations">
 
 export type Team = Tables<"teams">
 
-export type ProverCluster = Tables<"clusters">
-
-export type ProofExtended = Proof & {
+export type ProofBase = Tables<"proofs">
+export type ProofExtensions = {
+  block?: Block
+  cluster?: Cluster
   team?: Team
-  cluster?: ProverCluster | null
-  block?: Partial<Block> | null
 }
+export type Proof = ProofBase & ProofExtensions
 
 export type EmptyBlock = Partial<Block> & Pick<Block, "block_number">
 

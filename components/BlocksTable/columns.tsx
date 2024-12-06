@@ -6,7 +6,7 @@ import { ColumnDef } from "@tanstack/react-table"
 
 import type { BlockWithProofs, Proof } from "@/lib/types"
 
-import * as Metrics from "@/components/Metrics"
+import { metrics } from "@/components/Metrics"
 import Null from "@/components/Null"
 import ArrowRight from "@/components/svgs/arrow-right.svg"
 import Award from "@/components/svgs/award.svg"
@@ -41,8 +41,8 @@ export const columns: ColumnDef<BlockWithProofs>[] = [
   {
     accessorKey: "block_number",
     header: () => (
-      <ColumnHeader label={Metrics.BLOCK_NUMBER_LABEL} className="text-left">
-        <Metrics.BlockNumberDetails />
+      <ColumnHeader label={<metrics.blockNumber.Label />} className="text-left">
+        <metrics.blockNumber.Details />
         <TooltipContentFooter className="space-y-3">
           <p className="font-bold">Time since block published</p>
           <Info.Derivation>
@@ -82,8 +82,8 @@ export const columns: ColumnDef<BlockWithProofs>[] = [
   {
     accessorKey: "gas_used",
     header: () => (
-      <ColumnHeader label={Metrics.GAS_USED_LABEL}>
-        <Metrics.GasUsedDetails />
+      <ColumnHeader label={<metrics.gasUsed.Label />}>
+        <metrics.gasUsed.Details />
         <TooltipContentFooter className="space-y-3">
           <p className="font-bold">Percentage of block gas limit</p>
           <Info.Derivation>
@@ -126,27 +126,12 @@ export const columns: ColumnDef<BlockWithProofs>[] = [
   },
   {
     accessorKey: "proofs",
-    header: () => {
-      const columnLabel = "cost per proof"
-      return (
-        <div className="whitespace-nowrap">
-          {columnLabel}
-          <MetricInfo className="space-y-3 whitespace-normal">
-            <TooltipContentHeader>{columnLabel}</TooltipContentHeader>
-            <Info.Derivation>
-              <Info.Term type="internal">proving costs</Info.Term>
-            </Info.Derivation>
-            <p>
-              <Info.Term type="internal">proving costs</Info.Term> are in USD,
-              self-reported by proving teams
-            </p>
-            <Info.Description>
-              Proving costs in USD to prove entire block
-            </Info.Description>
-          </MetricInfo>
-        </div>
-      )
-    },
+    header: () => (
+      <ColumnHeader label={<metrics.costPerProof.Label />}>
+        <metrics.costPerProof.Details />
+      </ColumnHeader>
+    ),
+
     cell: ({ cell }) => {
       const proofs = cell.getValue() as Proof[]
       if (!proofs.length) return <Null />
@@ -194,8 +179,8 @@ export const columns: ColumnDef<BlockWithProofs>[] = [
   {
     accessorKey: "proofs",
     header: () => (
-      <ColumnHeader label={Metrics.COST_PER_MGAS_LABEL}>
-        <Metrics.CostPerMgas />
+      <ColumnHeader label={<metrics.costPerMgas.Label />}>
+        <metrics.costPerMgas.Details />
       </ColumnHeader>
     ),
     cell: ({ cell, row }) => {
@@ -246,8 +231,8 @@ export const columns: ColumnDef<BlockWithProofs>[] = [
   {
     accessorKey: "proofs",
     header: () => (
-      <ColumnHeader label={Metrics.PROVING_TIME_LABEL}>
-        <Metrics.ProvingTimeDetails />
+      <ColumnHeader label={<metrics.provingTime.Label />}>
+        <metrics.provingTime.Details />
       </ColumnHeader>
     ),
     cell: ({ cell, row }) => {
@@ -309,18 +294,15 @@ export const columns: ColumnDef<BlockWithProofs>[] = [
   {
     accessorKey: "proofs",
     header: () => (
-      <div className="whitespace-nowrap">
-        <span className="lowercase">{Metrics.TOTAL_TTP_LABEL}</span>
-        <MetricInfo className="whitespace-normal">
-          <ProofStatusInfo />
-          <TooltipContentFooter className="space-y-3">
-            <Info.Label isSecondary>
-              {Metrics.TOTAL_TTP_LABEL} (fastest proof shown)
-            </Info.Label>
-            <Metrics.TotalTTPDetails />
-          </TooltipContentFooter>
-        </MetricInfo>
-      </div>
+      <ColumnHeader label={<metrics.totalTTP.Label />}>
+        <ProofStatusInfo />
+        <TooltipContentFooter className="space-y-3">
+          <Info.Label isSecondary>
+            <metrics.totalTTP.Label /> (fastest proof shown)
+          </Info.Label>
+          <metrics.totalTTP.Details />
+        </TooltipContentFooter>
+      </ColumnHeader>
     ),
     cell: ({ cell, row }) => {
       const proofs = cell.getValue() as Proof[]
@@ -354,7 +336,9 @@ export const columns: ColumnDef<BlockWithProofs>[] = [
         <div className="flex flex-col justify-center text-center">
           <ProofStatus className="mx-auto" proofs={proofs} />
           <div className="whitespace-nowrap text-xs text-body-secondary">
-            <span className="font-body">time to proof:</span>{" "}
+            <span className="font-body">
+              <metrics.totalTTP.Label />:
+            </span>{" "}
             {earliestSubmissionTime
               ? formatted(msAfterBlock(earliestSubmissionTime))
               : "-"}
