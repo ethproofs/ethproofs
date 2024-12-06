@@ -82,7 +82,7 @@ export const POST = withAuth(async ({ request, client, user, timestamp }) => {
   const { data: clusterData, error: clusterError } = await client
     .from("clusters")
     .select("id")
-    .eq("cluster_id", cluster_id)
+    .eq("index", cluster_id)
     .eq("user_id", user.id)
     .single()
 

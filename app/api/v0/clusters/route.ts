@@ -10,7 +10,7 @@ export const GET = withAuth(async ({ client, user }) => {
 
   const { data, error } = await client
     .from("clusters")
-    .select("index, nickname, description, hardware, cycle_type, proof_type")
+    .select("id:index, nickname, description, hardware, cycle_type, proof_type")
     .eq("user_id", user.id)
 
   if (error) {
