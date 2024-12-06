@@ -65,7 +65,11 @@ export default async function Index() {
     )
     .order("block_number", { ascending: false })
   const blocks = blocksResponse.data || []
-  console.log(JSON.stringify(blocks, null, 2))
+  if (blocks.length > 3) {
+    blocks.slice(0, 3).forEach((block) => {
+      console.log(JSON.stringify(block, null, 2))
+    })
+  }
 
   const teamsResponse = await supabase.from("teams").select()
   const teams = teamsResponse.data || []
