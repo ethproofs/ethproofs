@@ -525,20 +525,6 @@
           "maxLength": null
         },
         {
-          "id": "public.blocks.total_fees",
-          "name": "total_fees",
-          "columnName": "total_fees",
-          "type": "int8",
-          "isRequired": true,
-          "kind": "scalar",
-          "isList": false,
-          "isGenerated": false,
-          "sequence": false,
-          "hasDefaultValue": false,
-          "isId": false,
-          "maxLength": null
-        },
-        {
           "id": "public.blocks.hash",
           "name": "hash",
           "columnName": "hash",
@@ -914,9 +900,9 @@
       "tableName": "clusters",
       "fields": [
         {
-          "id": "public.clusters.cluster_id",
-          "name": "cluster_id",
-          "columnName": "cluster_id",
+          "id": "public.clusters.index",
+          "name": "index",
+          "columnName": "index",
           "type": "int2",
           "isRequired": false,
           "kind": "scalar",
@@ -928,9 +914,9 @@
           "maxLength": null
         },
         {
-          "id": "public.clusters.cluster_name",
-          "name": "cluster_name",
-          "columnName": "cluster_name",
+          "id": "public.clusters.nickname",
+          "name": "nickname",
+          "columnName": "nickname",
           "type": "text",
           "isRequired": true,
           "kind": "scalar",
@@ -970,9 +956,9 @@
           "maxLength": null
         },
         {
-          "id": "public.clusters.cluster_description",
-          "name": "cluster_description",
-          "columnName": "cluster_description",
+          "id": "public.clusters.description",
+          "name": "description",
+          "columnName": "description",
           "type": "text",
           "isRequired": false,
           "kind": "scalar",
@@ -984,9 +970,9 @@
           "maxLength": null
         },
         {
-          "id": "public.clusters.cluster_hardware",
-          "name": "cluster_hardware",
-          "columnName": "cluster_hardware",
+          "id": "public.clusters.hardware",
+          "name": "hardware",
+          "columnName": "hardware",
           "type": "text",
           "isRequired": false,
           "kind": "scalar",
@@ -998,9 +984,9 @@
           "maxLength": null
         },
         {
-          "id": "public.clusters.cluster_cycle_type",
-          "name": "cluster_cycle_type",
-          "columnName": "cluster_cycle_type",
+          "id": "public.clusters.cycle_type",
+          "name": "cycle_type",
+          "columnName": "cycle_type",
           "type": "varchar",
           "isRequired": false,
           "kind": "scalar",
@@ -2109,6 +2095,24 @@
       "tableName": "messages",
       "fields": [
         {
+          "id": "realtime.messages.id",
+          "name": "id",
+          "columnName": "id",
+          "type": "int8",
+          "isRequired": true,
+          "kind": "scalar",
+          "isList": false,
+          "isGenerated": false,
+          "sequence": {
+            "identifier": "\"realtime\".\"messages_id_seq\"",
+            "increment": 1,
+            "start": 1
+          },
+          "hasDefaultValue": true,
+          "isId": true,
+          "maxLength": null
+        },
+        {
           "id": "realtime.messages.topic",
           "name": "topic",
           "columnName": "topic",
@@ -2137,44 +2141,16 @@
           "maxLength": null
         },
         {
-          "id": "realtime.messages.payload",
-          "name": "payload",
-          "columnName": "payload",
-          "type": "jsonb",
-          "isRequired": false,
+          "id": "realtime.messages.inserted_at",
+          "name": "inserted_at",
+          "columnName": "inserted_at",
+          "type": "timestamp",
+          "isRequired": true,
           "kind": "scalar",
           "isList": false,
           "isGenerated": false,
           "sequence": false,
           "hasDefaultValue": false,
-          "isId": false,
-          "maxLength": null
-        },
-        {
-          "id": "realtime.messages.event",
-          "name": "event",
-          "columnName": "event",
-          "type": "text",
-          "isRequired": false,
-          "kind": "scalar",
-          "isList": false,
-          "isGenerated": false,
-          "sequence": false,
-          "hasDefaultValue": false,
-          "isId": false,
-          "maxLength": null
-        },
-        {
-          "id": "realtime.messages.private",
-          "name": "private",
-          "columnName": "private",
-          "type": "bool",
-          "isRequired": false,
-          "kind": "scalar",
-          "isList": false,
-          "isGenerated": false,
-          "sequence": false,
-          "hasDefaultValue": true,
           "isId": false,
           "maxLength": null
         },
@@ -2188,36 +2164,8 @@
           "isList": false,
           "isGenerated": false,
           "sequence": false,
-          "hasDefaultValue": true,
+          "hasDefaultValue": false,
           "isId": false,
-          "maxLength": null
-        },
-        {
-          "id": "realtime.messages.inserted_at",
-          "name": "inserted_at",
-          "columnName": "inserted_at",
-          "type": "timestamp",
-          "isRequired": true,
-          "kind": "scalar",
-          "isList": false,
-          "isGenerated": false,
-          "sequence": false,
-          "hasDefaultValue": true,
-          "isId": true,
-          "maxLength": null
-        },
-        {
-          "id": "realtime.messages.id",
-          "name": "id",
-          "columnName": "id",
-          "type": "uuid",
-          "isRequired": true,
-          "kind": "scalar",
-          "isList": false,
-          "isGenerated": false,
-          "sequence": false,
-          "hasDefaultValue": true,
-          "isId": true,
           "maxLength": null
         }
       ],
@@ -2225,8 +2173,7 @@
         {
           "name": "messages_pkey",
           "fields": [
-            "id",
-            "inserted_at"
+            "id"
           ],
           "nullNotDistinct": false
         }
@@ -5707,20 +5654,6 @@
           "columnName": "notify_private_alpha",
           "type": "bool",
           "isRequired": false,
-          "kind": "scalar",
-          "isList": false,
-          "isGenerated": false,
-          "sequence": false,
-          "hasDefaultValue": true,
-          "isId": false,
-          "maxLength": null
-        },
-        {
-          "id": "_realtime.tenants.private_only",
-          "name": "private_only",
-          "columnName": "private_only",
-          "type": "bool",
-          "isRequired": true,
           "kind": "scalar",
           "isList": false,
           "isGenerated": false,
