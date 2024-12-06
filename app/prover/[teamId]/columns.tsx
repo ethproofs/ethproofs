@@ -4,7 +4,7 @@ import Link from "next/link"
 import prettyMilliseconds from "pretty-ms"
 import { ColumnDef } from "@tanstack/react-table"
 
-import type { ProofExtended } from "@/lib/types"
+import type { Proof } from "@/lib/types"
 
 import DownloadButton from "@/components/DownloadButton"
 import * as Metrics from "@/components/Metrics"
@@ -15,7 +15,6 @@ import { ColumnHeader } from "./ColumnHeader"
 
 import { formatNumber } from "@/lib/number"
 
-export const columns: ColumnDef<ProofExtended>[] = [
   // Block (time since)
   {
     accessorKey: "block_number",
