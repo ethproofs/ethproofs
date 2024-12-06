@@ -40,13 +40,32 @@ export default async function Index() {
   const teamsSummary = await supabase
     .from("teams_summary")
     .select()
-    .order("avg_proving_time", { ascending: true })
+    .order("avg_proving_time", { ascending: true }).select(`
+      *,
+      proofs(*, 
+        clusters(
+          *,
+          cluster_configurations(
+            instance_type_id,
+            aws_instance_pricing(*)
+          )
+        )
+      )
+    `)
 
   const blocksResponse = await supabase
     .from("blocks")
-    .select("*,proofs!inner(id:proof_id,*,clusters(*))")
+    .select(
+      `*,proofs!inner(id:proof_id,*,clusters(          *,
+        cluster_configurations(
+          instance_type_id,
+          aws_instance_pricing(*)
+        )
+      ))`
+    )
     .order("block_number", { ascending: false })
   const blocks = blocksResponse.data || []
+  console.log(JSON.stringify(blocks, null, 2))
 
   const teamsResponse = await supabase.from("teams").select()
   const teams = teamsResponse.data || []
