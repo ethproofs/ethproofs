@@ -3,7 +3,7 @@ import Link from "next/link"
 import { notFound } from "next/navigation"
 import prettyMilliseconds from "pretty-ms"
 
-import type { ClusterBase, Metric, Proof } from "@/lib/types"
+import type { Cluster, Metric, Proof } from "@/lib/types"
 
 import Null from "@/components/Null"
 import ProofStatus, { ProofStatusInfo } from "@/components/ProofStatus"
@@ -95,7 +95,7 @@ export default async function ProverPage({ params }: ProverPageProps) {
         [curr.cluster.cluster_id]: curr.cluster,
       }
     }, {})
-  ) satisfies ClusterBase[]
+  ) satisfies Cluster[]
 
   const completedProofs = proofsExtended.filter(
     (p) => p.proof_status === "proved"
