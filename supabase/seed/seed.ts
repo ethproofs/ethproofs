@@ -65,13 +65,14 @@ const main = async () => {
     // add 2 clusters per team/user
     const { clusters } = await seed.clusters(
       (x) =>
-        x(2, ({ index }) => {
+        x(2, ({ seed, index }) => {
           return {
             cluster_name: `Cluster ${copycat.firstName(index)}`,
             cluster_description: faker.lorem.sentence(),
             cluster_hardware: faker.lorem.sentence(),
             cluster_cycle_type:
               faker.lorem.word().slice(0, 2).toUpperCase() + index,
+            cluster_proof_type: copycat.oneOfString(seed, ["STARK", "SNARK"]),
           }
         }),
       {

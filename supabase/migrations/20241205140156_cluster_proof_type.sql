@@ -1,0 +1,1 @@
+alter table "public"."clusters" add column "cluster_proof_type" character varying;

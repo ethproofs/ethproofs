@@ -44,22 +44,32 @@
                   "cluster_name": {
                     "type": "string",
                     "maxLength": 50,
-                    "description": "Human-readable name (e.g., \"ZKnight-01\", \"SNARK-Sentinel\")"
+                    "description": "Human-readable name. Main display name in the UI",
+                    "example": "ZKnight-01"
                   },
                   "cluster_description": {
                     "type": "string",
                     "maxLength": 200,
-                    "description": "Description of the cluster (e.g., \"Primary RISC-V prover\")"
+                    "description": "Description of the cluster",
+                    "example": "Primary RISC-V prover"
                   },
                   "cluster_hardware": {
                     "type": "string",
                     "maxLength": 200,
-                    "description": "Technical specifications (e.g., \"RISC-V Prover\", \"STARK-to-SNARK Prover\")"
+                    "description": "Technical specifications",
+                    "example": "RISC-V Prover"
                   },
                   "cluster_cycle_type": {
                     "type": "string",
                     "maxLength": 50,
-                    "description": "Type of cycle (e.g., \"SP1\")"
+                    "description": "Type of cycle",
+                    "example": "SP1"
+                  },
+                  "cluster_proof_type": {
+                    "type": "string",
+                    "maxLength": 50,
+                    "description": "Proof system used to generate proofs. (e.g., Groth16 or PlonK)",
+                    "example": "Groth16"
                   },
                   "cluster_configuration": {
                     "type": "array",
@@ -68,11 +78,13 @@
                       "properties": {
                         "instance_type": {
                           "type": "string",
-                          "description": "Instance type (e.g., 'c5.xlarge'). Check our aws instance pricing endpoint for available instance types"
+                          "description": "Instance type",
+                          "example": "c5.xlarge"
                         },
                         "instance_count": {
                           "type": "number",
-                          "description": "Number of instances of this type"
+                          "description": "Number of instances of this type",
+                          "example": 10
                         }
                       },
                       "required": [
@@ -154,6 +166,9 @@
                         "type": "string"
                       },
                       "cluster_cycle_type": {
+                        "type": "string"
+                      },
+                      "cluster_proof_type": {
                         "type": "string"
                       }
                     },
