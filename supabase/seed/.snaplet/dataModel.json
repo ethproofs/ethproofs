@@ -998,9 +998,9 @@
           "maxLength": null
         },
         {
-          "id": "public.clusters.cluster_proof_type",
-          "name": "cluster_proof_type",
-          "columnName": "cluster_proof_type",
+          "id": "public.clusters.proof_type",
+          "name": "proof_type",
+          "columnName": "proof_type",
           "type": "varchar",
           "isRequired": false,
           "kind": "scalar",
@@ -4722,50 +4722,6 @@
           "name": "secrets_name_idx",
           "fields": [
             "name"
-          ],
-          "nullNotDistinct": false
-        }
-      ]
-    },
-    "seed_files": {
-      "id": "supabase_migrations.seed_files",
-      "schemaName": "supabase_migrations",
-      "tableName": "seed_files",
-      "fields": [
-        {
-          "id": "supabase_migrations.seed_files.path",
-          "name": "path",
-          "columnName": "path",
-          "type": "text",
-          "isRequired": true,
-          "kind": "scalar",
-          "isList": false,
-          "isGenerated": false,
-          "sequence": false,
-          "hasDefaultValue": false,
-          "isId": true,
-          "maxLength": null
-        },
-        {
-          "id": "supabase_migrations.seed_files.hash",
-          "name": "hash",
-          "columnName": "hash",
-          "type": "text",
-          "isRequired": true,
-          "kind": "scalar",
-          "isList": false,
-          "isGenerated": false,
-          "sequence": false,
-          "hasDefaultValue": false,
-          "isId": false,
-          "maxLength": null
-        }
-      ],
-      "uniqueConstraints": [
-        {
-          "name": "seed_files_pkey",
-          "fields": [
-            "path"
           ],
           "nullNotDistinct": false
         }

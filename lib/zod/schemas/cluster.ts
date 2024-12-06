@@ -1,7 +1,7 @@
 import z from ".."
 
 export const ClusterSchema = z.object({
-  index: z.number(),
+  id: z.number(),
   nickname: z.string(),
   description: z.string().optional(),
   hardware: z.string().optional(),

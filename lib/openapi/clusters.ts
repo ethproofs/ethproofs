@@ -20,7 +20,7 @@ export const clustersPaths: ZodOpenApiPathsObject = {
           content: {
             "application/json": {
               schema: z.object({
-                index: z.number(),
+                id: z.number(),
               }),
             },
           },

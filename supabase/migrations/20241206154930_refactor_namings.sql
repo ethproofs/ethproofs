@@ -12,6 +12,8 @@ ALTER TABLE "public"."clusters" RENAME COLUMN "cluster_id" TO "index";
 
 ALTER TABLE "public"."clusters" RENAME COLUMN "cluster_name" TO "nickname";
 
+ALTER TABLE "public"."clusters" RENAME COLUMN "cluster_proof_type" TO "proof_type";
+
 -- update trigger and function to generate cluster index
 
 DROP TRIGGER "set_cluster_id" ON "public"."clusters";

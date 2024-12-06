@@ -43,7 +43,7 @@ export const columns: ColumnDef<Proof>[] = [
   },
   // Instance
   {
-    accessorKey: "cluster.cluster_name",
+    accessorKey: "cluster.nickname",
     header: () => (
       <ColumnHeader label={<metrics.cluster.Label />}>
         <metrics.cluster.Details />

@@ -161,33 +161,33 @@ export type Database = {
       }
       clusters: {
         Row: {
-          cluster_proof_type: string | null
           cycle_type: string | null
           description: string | null
           hardware: string | null
           id: string
           index: number | null
           nickname: string
+          proof_type: string | null
           user_id: string
         }
         Insert: {
-          cluster_proof_type?: string | null
           cycle_type?: string | null
           description?: string | null
           hardware?: string | null
           id?: string
           index?: number | null
           nickname: string
+          proof_type?: string | null
           user_id: string
         }
         Update: {
-          cluster_proof_type?: string | null
           cycle_type?: string | null
           description?: string | null
           hardware?: string | null
           id?: string
           index?: number | null
           nickname?: string
+          proof_type?: string | null
           user_id?: string
         }
         Relationships: [

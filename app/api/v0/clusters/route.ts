@@ -114,5 +114,5 @@ export const POST = withAuth(async ({ request, client, user }) => {
     return new Response("Internal server error", { status: 500 })
   }
 
-  return Response.json({ index: data.index })
+  return Response.json({ id: data.index })
 })
