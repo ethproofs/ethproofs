@@ -41,37 +41,37 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "cluster_name": {
+                  "nickname": {
                     "type": "string",
                     "maxLength": 50,
                     "description": "Human-readable name. Main display name in the UI",
                     "example": "ZKnight-01"
                   },
-                  "cluster_description": {
+                  "description": {
                     "type": "string",
                     "maxLength": 200,
                     "description": "Description of the cluster",
                     "example": "Primary RISC-V prover"
                   },
-                  "cluster_hardware": {
+                  "hardware": {
                     "type": "string",
                     "maxLength": 200,
                     "description": "Technical specifications",
                     "example": "RISC-V Prover"
                   },
-                  "cluster_cycle_type": {
+                  "cycle_type": {
                     "type": "string",
                     "maxLength": 50,
                     "description": "Type of cycle",
                     "example": "SP1"
                   },
-                  "cluster_proof_type": {
+                  "proof_type": {
                     "type": "string",
                     "maxLength": 50,
                     "description": "Proof system used to generate proofs. (e.g., Groth16 or PlonK)",
                     "example": "Groth16"
                   },
-                  "cluster_configuration": {
+                  "configuration": {
                     "type": "array",
                     "items": {
                       "type": "object",
@@ -96,8 +96,8 @@
                   }
                 },
                 "required": [
-                  "cluster_name",
-                  "cluster_configuration"
+                  "nickname",
+                  "configuration"
                 ]
               }
             }
@@ -111,12 +111,12 @@
                 "schema": {
                   "type": "object",
                   "properties": {
-                    "cluster_id": {
+                    "id": {
                       "type": "number"
                     }
                   },
                   "required": [
-                    "cluster_id"
+                    "id"
                   ]
                 }
               }
@@ -153,28 +153,28 @@
                   "items": {
                     "type": "object",
                     "properties": {
-                      "cluster_id": {
+                      "id": {
                         "type": "number"
                       },
-                      "cluster_name": {
+                      "nickname": {
                         "type": "string"
                       },
-                      "cluster_description": {
+                      "description": {
                         "type": "string"
                       },
-                      "cluster_hardware": {
+                      "hardware": {
                         "type": "string"
                       },
-                      "cluster_cycle_type": {
+                      "cycle_type": {
                         "type": "string"
                       },
-                      "cluster_proof_type": {
+                      "proof_type": {
                         "type": "string"
                       }
                     },
                     "required": [
-                      "cluster_id",
-                      "cluster_name"
+                      "id",
+                      "nickname"
                     ]
                   }
                 }
@@ -379,12 +379,6 @@
                     "exclusiveMinimum": 0,
                     "description": "Milliseconds taken to generate the proof"
                   },
-                  "proving_cost": {
-                    "type": "number",
-                    "exclusiveMinimum": 0,
-                    "description": "Cost of generating the proof (in USD)",
-                    "deprecated": true
-                  },
                   "proving_cycles": {
                     "type": "integer",
                     "exclusiveMinimum": 0
@@ -398,7 +392,6 @@
                   "block_number",
                   "cluster_id",
                   "proving_time",
-                  "proving_cost",
                   "proving_cycles",
                   "proof"
                 ]
@@ -407,7 +400,6 @@
                 "block_number": 123456,
                 "cluster_id": 1,
                 "proving_time": 1000,
-                "proving_cost": 540,
                 "proving_cycles": 10000,
                 "proof": "..."
               }
