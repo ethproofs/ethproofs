@@ -56,6 +56,18 @@ export default async function Index() {
     .order("block_number", { ascending: false })
   const blocks = blocksResponse.data || []
 
+  if (blocks[0]?.proofs[0]) {
+    console.log(`*,proofs!inner(id:proof_id,*,
+        clusters(*,
+          cluster_configurations(*,
+            aws_instance_pricing(*)
+          )
+        )
+      )`)
+    console.log("Logging example proof")
+    console.log(blocks[0]?.proofs[0])
+  }
+
   const teamsResponse = await supabase.from("teams").select()
   const teams = teamsResponse.data || []
 
