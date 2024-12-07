@@ -1,3 +1,7 @@
+import prettyMilliseconds from "pretty-ms"
+
+import { getTime } from "./date"
+import { formatUsd } from "./number"
 import type { Block, Proof } from "./types"
 
 // Filters
@@ -31,7 +35,7 @@ export const hasProvedTimestamp = (p: Proof) => !!p.proved_timestamp
  * @param {Proof} p - The proof object.
  * @returns {boolean} - True if the proof has a proving time, false otherwise.
  */
-export const provingTimeAvailable = (p: Proof) => !!p.proving_time
+export const hasProvingTime = (p: Proof) => !!p.proving_time
 
 /**
  * Determines if a proof has a proved_timestamp, a block has a timestamp, and the block came first.
@@ -39,9 +43,9 @@ export const provingTimeAvailable = (p: Proof) => !!p.proving_time
  * @param {Block} b - The block object.
  * @returns {boolean} - True if the proof has a proved timestamp and the proof came after the block, false otherwise.
  */
-export const timeToProofInfoAvailable = (p: Proof, b: Block) =>
+export const timeToProofInfoAvailable = (p: Proof, timestamp: string) =>
   p.proved_timestamp &&
-  new Date(p.proved_timestamp).getTime() > new Date(b.timestamp!).getTime()
+  new Date(p.proved_timestamp).getTime() > new Date(timestamp).getTime()
 
 /**
  * Calculates the average proving time of an array of proofs.
@@ -59,15 +63,18 @@ export const getProofsAvgProvingTime = (proofs: Proof[]): number | null => {
   )
 }
 
-export const getProofsAvgTimeToProof = (block: Block): number | null => {
-  if (!block.timestamp || !block.proofs) return null
+export const getProofsAvgTimeToProof = (
+  proofs?: Proof[],
+  timestamp?: string
+): number | null => {
+  if (!timestamp || !proofs) return null
 
-  const availableProofs = block.proofs
+  const availableProofs = proofs
     .filter(isCompleted)
-    .filter((p) => timeToProofInfoAvailable(p, block))
+    .filter((p) => timeToProofInfoAvailable(p, timestamp))
   if (!availableProofs.length) return null
 
-  const blockTimestamp = new Date(block.timestamp).getTime()
+  const blockTimestamp = new Date(timestamp).getTime()
 
   const averageProvedTime =
     availableProofs.reduce((acc, proof) => {
@@ -79,9 +86,7 @@ export const getProofsAvgTimeToProof = (block: Block): number | null => {
 }
 
 export const getProofBestProvingTime = (proofs: Proof[]): Proof | null => {
-  const availableProofs = proofs
-    .filter(isCompleted)
-    .filter(provingTimeAvailable)
+  const availableProofs = proofs.filter(isCompleted).filter(hasProvingTime)
 
   if (!availableProofs.length) return null
 
@@ -145,7 +150,7 @@ const getSumProvingCost = (proofs: Proof[]): number => {
  * @param {Proof[]} proofs - An array of proof objects.
  * @returns {number} - The average proving cost (USD) of the proofs.
  */
-export const getAvgProvingCost = (proofs: Proof[]): number => {
+export const getAvgCostPerProof = (proofs: Proof[]): number => {
   const availableProofs = proofs.filter(isCompleted).filter(hasCostInfo)
 
   if (!availableProofs.length) return 0
@@ -155,12 +160,9 @@ export const getAvgProvingCost = (proofs: Proof[]): number => {
   return totalCost / availableProofs.length
 }
 
-export const getAvgCostPerMegaGas = (
-  avgProofCost: number,
-  gasUsed: number
-): number => {
+export const getCostPerMgas = (cost: number, gasUsed: number): number => {
   const megaGasUsed = gasUsed / 1e6
-  return avgProofCost / megaGasUsed
+  return cost / megaGasUsed
 }
 
 const getSumProvingCycles = (proofs: Proof[]): number =>
@@ -246,4 +248,121 @@ export const downloadProof = (proof: Proof) => {
   a.download = suggestedFilename
   a.click()
   URL.revokeObjectURL(url)
+}
+
+export const getCostPerProofStats = (proofs?: Proof[]) => {
+  if (!proofs || !proofs.length) return null
+
+  const availableProofs = proofs.filter(isCompleted).filter(hasCostInfo)
+
+  if (!availableProofs.length) return null
+
+  const avg = getAvgCostPerProof(availableProofs)
+
+  const bestProof = getProofBestProvingCost(availableProofs) as Proof
+
+  const best = getProvingCost(bestProof) as number
+
+  return {
+    avg,
+    avgFormatted: formatUsd(avg),
+    best,
+    bestFormatted: formatUsd(best),
+    bestProof,
+  }
+}
+
+export const getCostPerMgasStats = (proofs?: Proof[], gasUsed?: number) => {
+  if (!proofs || !proofs.length || !gasUsed) return null
+
+  const costPerProofStats = getCostPerProofStats(proofs)
+
+  if (!costPerProofStats) return null
+
+  const { avg, best, bestProof } = costPerProofStats
+
+  const avgPerMgas = getCostPerMgas(avg, gasUsed)
+  const bestPerMgas = getCostPerMgas(best, gasUsed)
+
+  return {
+    avg: avgPerMgas,
+    avgFormatted: formatUsd(avgPerMgas),
+    best: bestPerMgas,
+    bestFormatted: formatUsd(bestPerMgas),
+    bestProof,
+  }
+}
+
+export const getProvingTimeStats = (proofs?: Proof[]) => {
+  if (!proofs || !proofs.length) return null
+
+  const availableProofs = proofs.filter(isCompleted).filter(hasProvingTime)
+
+  if (!availableProofs.length) return null
+
+  const avg = getProofsAvgProvingTime(availableProofs) as number
+
+  const bestProof = availableProofs.reduce((acc, p) => {
+    const oldTime = getTime(acc.proved_timestamp!)
+    const newTime = getTime(p.proved_timestamp!)
+    if (newTime < oldTime) return p
+    return acc
+  }, availableProofs[0])
+
+  const best = bestProof.proving_time as number
+
+  const avgFormatted = avg ? prettyMilliseconds(avg) : null
+
+  if (!isFinite(best)) return null
+
+  const bestFormatted = prettyMilliseconds(best)
+
+  return {
+    avg,
+    avgFormatted,
+    best,
+    bestFormatted,
+    bestProof,
+  }
+}
+
+export const getTotalTTPStats = (proofs?: Proof[], timestamp?: string) => {
+  if (!proofs || !proofs.length || !timestamp) return null
+
+  const availableProofs = proofs.filter(isCompleted).filter(hasProvedTimestamp)
+
+  const bestProof = availableProofs?.reduce((acc, p) => {
+    const oldTime = getTime(acc.proved_timestamp!)
+    const newTime = getTime(p.proved_timestamp!)
+    if (newTime < oldTime) return p
+    return acc
+  }, availableProofs[0])
+
+  const msAfterBlock = (submissionTime: number) =>
+    submissionTime - getTime(timestamp)
+
+  const avgTime = getProofsAvgTimeToProof(proofs, timestamp) as number
+
+  const avg = msAfterBlock(avgTime)
+
+  const bestTime = getTime(bestProof.proved_timestamp as string)
+
+  const best = msAfterBlock(bestTime)
+
+  const formatted = (ms: number) => {
+    if (ms < 0) return "-"
+    prettyMilliseconds(ms)
+  }
+
+  const avgFormatted = formatted(avg)
+
+  const bestFormatted = formatted(best)
+
+  return {
+    avg,
+    avgFormatted,
+    best,
+    bestFormatted,
+    bestProof,
+  }
 }

@@ -14,3 +14,9 @@ export const formatNumber = (
   if (value < 0) return "-"
   return new Intl.NumberFormat(locale, options).format(value)
 }
+
+export const formatUsd = (value: number) =>
+  formatNumber(value, {
+    style: "currency",
+    currency: "USD",
+  })

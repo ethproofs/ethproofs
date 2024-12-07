@@ -40,19 +40,22 @@ import { TooltipContentHeader } from "@/components/ui/tooltip"
 
 import { cn } from "@/lib/utils"
 
-import { SITE_NAME } from "@/lib/constants"
-
 import { timestampToEpoch, timestampToSlot } from "@/lib/beaconchain"
 import { getBlockValueType } from "@/lib/blocks"
 import { getMetadata } from "@/lib/metadata"
 import { formatNumber } from "@/lib/number"
 import {
-  getAvgProvingCost,
+  getAvgCostPerProof,
+  getCostPerMgasStats,
+  getCostPerProofStats,
   getProofBestProvingCost,
   getProofBestProvingTime,
   getProofBestTimeToProof,
   getProofsAvgProvingTime,
   getProofsAvgTimeToProof,
+  getProvingCost,
+  hasProvedTimestamp,
+  isCompleted,
   sortProofsStatusAndTimes,
 } from "@/lib/proofs"
 import { createClient } from "@/utils/supabase/client"
@@ -101,8 +104,6 @@ export default async function BlockDetailsPage({
     return { ...proof, team }
   })
 
-  // TODO: Add proper descriptions
-
   const bestProvingTimeProof = getProofBestProvingTime(proofs)
   const avgProvingTime = getProofsAvgProvingTime(proofs)
   const bestTimeToProofProof = getProofBestTimeToProof(proofs)
@@ -110,7 +111,7 @@ export default async function BlockDetailsPage({
     ? new Date(bestTimeToProofProof?.proved_timestamp).getTime() -
       new Date(block.timestamp).getTime()
     : 0
-  const avgTimeToProof = getProofsAvgTimeToProof(block)
+  const avgTimeToProof = getProofsAvgTimeToProof(block.proofs, block.timestamp)
 
   const availabilityMetrics: Metric[] = [
     {
@@ -210,8 +211,11 @@ export default async function BlockDetailsPage({
   ]
 
   const cheapestProof = getProofBestProvingCost(proofs)
-  const avgCostPerProof = getAvgProvingCost(proofs)
+  const avgCostPerProof = getAvgCostPerProof(proofs)
   const megaGas = block.gas_used / 1e6
+
+  const costPerProofStats = getCostPerProofStats(proofs)
+  const costPerMgasStats = getCostPerMgasStats(proofs)
 
   const blockFeeMetrics: Metric[] = [
     {
@@ -228,14 +232,7 @@ export default async function BlockDetailsPage({
           <metrics.costPerProof.Details />
         </>
       ),
-      value: cheapestProof?.proving_cost ? (
-        formatNumber(cheapestProof.proving_cost, {
-          style: "currency",
-          currency: "USD",
-        })
-      ) : (
-        <Null />
-      ),
+      value: costPerProofStats?.bestFormatted ?? <Null />,
     },
     {
       label: (
@@ -249,14 +246,7 @@ export default async function BlockDetailsPage({
           <metrics.costPerProof.Details average />
         </>
       ),
-      value: avgCostPerProof ? (
-        formatNumber(avgCostPerProof, {
-          style: "currency",
-          currency: "USD",
-        })
-      ) : (
-        <Null />
-      ),
+      value: costPerProofStats?.avgFormatted ?? <Null />,
     },
     {
       label: (
@@ -272,15 +262,7 @@ export default async function BlockDetailsPage({
           <metrics.costPerMgas.Details />
         </>
       ),
-      value:
-        cheapestProof?.proving_cost && block.gas_used ? (
-          formatNumber(cheapestProof.proving_cost / megaGas, {
-            style: "currency",
-            currency: "USD",
-          })
-        ) : (
-          <Null />
-        ),
+      value: costPerMgasStats?.bestFormatted ?? <Null />,
     },
     {
       label: (
@@ -296,15 +278,7 @@ export default async function BlockDetailsPage({
           <metrics.costPerMgas.Details />
         </>
       ),
-      value:
-        avgCostPerProof && block.gas_used ? (
-          formatNumber(avgCostPerProof / megaGas, {
-            style: "currency",
-            currency: "USD",
-          })
-        ) : (
-          <Null />
-        ),
+      value: costPerMgasStats?.avgFormatted ?? <Null />,
     },
   ]
 
@@ -415,13 +389,11 @@ export default async function BlockDetailsPage({
           const {
             proof_id,
             proving_time,
-            proof_status,
             proved_timestamp,
-            proving_cost,
             proving_cycles,
             team,
           } = proof
-          const isComplete = proof_status === "proved" && !!proved_timestamp
+
           const timeToProof = proved_timestamp
             ? Math.max(
                 new Date(proved_timestamp).getTime() -
@@ -429,6 +401,11 @@ export default async function BlockDetailsPage({
                 0
               )
             : 0
+
+          const provingCost = getProvingCost(proof)
+
+          const isComplete = isCompleted(proof) && hasProvedTimestamp(proof)
+
           return (
             <div
               className={cn(
@@ -581,8 +558,8 @@ export default async function BlockDetailsPage({
                   </MetricInfo>
                 </MetricLabel>
                 <MetricValue className="font-normal">
-                  {isComplete && proving_cost ? (
-                    formatNumber(proving_cost, {
+                  {isComplete && provingCost ? (
+                    formatNumber(provingCost, {
                       style: "currency",
                       currency: "USD",
                     })

@@ -1,7 +1,6 @@
 "use client"
 
 import Link from "next/link"
-import prettyMilliseconds from "pretty-ms"
 import { ColumnDef } from "@tanstack/react-table"
 
 import type { Block, Proof } from "@/lib/types"
@@ -30,15 +29,11 @@ import { ColumnHeader } from "@/app/prover/[teamId]/ColumnHeader"
 import { formatTimeAgo } from "@/lib/date"
 import { formatNumber } from "@/lib/number"
 import {
-  getAvgProvingCost,
-  getProofBestProvingCost,
-  getProofsAvgProvingTime,
-  getProvingCost,
-  hasCostInfo,
-  isCompleted,
+  getCostPerMgasStats,
+  getCostPerProofStats,
+  getProvingTimeStats,
+  getTotalTTPStats,
 } from "@/lib/proofs"
-
-const getTime = (d: string): number => new Date(d).getTime()
 
 export const columns: ColumnDef<Block>[] = [
   {
@@ -136,21 +131,12 @@ export const columns: ColumnDef<Block>[] = [
     ),
     cell: ({ cell }) => {
       const proofs = cell.getValue() as Proof[]
-      const availableProofs = proofs.filter(isCompleted).filter(hasCostInfo)
 
-      if (!availableProofs.length) return <Null />
+      const costPerProofStats = getCostPerProofStats(proofs)
 
-      const averageCost = getAvgProvingCost(proofs)
+      if (!costPerProofStats) return <Null />
 
-      const cheapestProof = getProofBestProvingCost(availableProofs) as Proof
-
-      const cheapestCost = getProvingCost(cheapestProof) as number
-
-      const formatted = (value: number) =>
-        formatNumber(value, {
-          style: "currency",
-          currency: "USD",
-        })
+      const { avgFormatted, bestFormatted, bestProof } = costPerProofStats
 
       return (
         <>
@@ -158,17 +144,17 @@ export const columns: ColumnDef<Block>[] = [
             <MetricInfo
               trigger={
                 <div className="flex items-center gap-1">
-                  {formatted(cheapestCost)}
+                  {bestFormatted}
                   <Award className="text-primary hover:text-primary-light" />
                 </div>
               }
             >
-              <TeamName proof={cheapestProof} />
-              <ClusterDetails proof={cheapestProof} />
+              <TeamName proof={bestProof} />
+              <ClusterDetails proof={bestProof} />
             </MetricInfo>
           </span>
           <span className="block whitespace-nowrap text-sm text-body-secondary">
-            avg. {formatted(averageCost)}
+            avg. {avgFormatted}
           </span>
         </>
       )
@@ -184,43 +170,28 @@ export const columns: ColumnDef<Block>[] = [
     cell: ({ cell, row }) => {
       const proofs = cell.getValue() as Proof[]
       const gasUsed = row.original.gas_used
-      if (!gasUsed || !proofs.length) return <Null />
 
-      const mgasUsed = gasUsed / 1e6
+      const costPerMgasStats = getCostPerMgasStats(proofs, gasUsed)
 
-      const averageCost = getAvgProvingCost(proofs)
-      if (isNaN(averageCost)) return <Null />
+      if (!costPerMgasStats) return <Null />
 
-      const completedProofs = proofs.filter(isCompleted)
-      if (!completedProofs.length) return <Null />
-
-      const cheapestProof = completedProofs.reduce((acc, p) => {
-        if (p.proving_cost! < acc.proving_cost!) return p
-        return acc
-      }, completedProofs[0])
-      const cheapestCost = cheapestProof.proving_cost as number
-
-      const formatted = (numerator: number) =>
-        formatNumber(numerator / mgasUsed, {
-          style: "currency",
-          currency: "USD",
-        })
+      const { avgFormatted, bestFormatted, bestProof } = costPerMgasStats
 
       return (
         <>
           <span className="align-center flex justify-center whitespace-nowrap">
-            {formatted(cheapestCost)}
+            {bestFormatted}
             <MetricInfo
               trigger={
                 <Award className="text-primary hover:text-primary-light" />
               }
             >
-              <TeamName proof={cheapestProof} />
-              <ClusterDetails proof={cheapestProof} />
+              <TeamName proof={bestProof} />
+              <ClusterDetails proof={bestProof} />
             </MetricInfo>
           </span>
           <span className="block whitespace-nowrap text-sm text-body-secondary">
-            avg. {formatted(averageCost)}
+            avg. {avgFormatted}
           </span>
         </>
       )
@@ -239,51 +210,27 @@ export const columns: ColumnDef<Block>[] = [
 
       if (!timestamp || !proofs.length) return <Null />
 
-      const completedProofs = proofs.filter(isCompleted)
+      const provingTimeStats = getProvingTimeStats()
 
-      if (!completedProofs.length) return <Null />
+      if (!provingTimeStats) return <Null />
 
-      const reduceFastest = (completedProofs: Proof[]) =>
-        completedProofs.reduce((acc, p) => {
-          const oldTime = getTime(acc.proved_timestamp!)
-          const newTime = getTime(p.proved_timestamp!)
-          if (newTime < oldTime) return p
-          return acc
-        }, completedProofs[0])
-
-      const fastestProof = reduceFastest(completedProofs)
-
-      const getBestProvingTime = () => {
-        if (
-          !completedProofs.length ||
-          fastestProof.proving_time === null ||
-          !isFinite(fastestProof.proving_time)
-        )
-          return <Null />
-        return prettyMilliseconds(fastestProof.proving_time!)
-      }
-
-      const getAverageProvingTime = () => {
-        const avgProvingTime = getProofsAvgProvingTime(completedProofs)
-        if (!avgProvingTime) return <Null />
-        return prettyMilliseconds(avgProvingTime)
-      }
+      const { bestFormatted, avgFormatted, bestProof } = provingTimeStats
 
       return (
         <>
           <span className="align-center flex justify-center whitespace-nowrap">
-            {getBestProvingTime()}
+            {bestFormatted}
             <MetricInfo
               trigger={
                 <Award className="text-primary hover:text-primary-light" />
               }
             >
-              <TeamName proof={fastestProof} />
-              <ClusterDetails proof={fastestProof} />
+              <TeamName proof={bestProof} />
+              <ClusterDetails proof={bestProof} />
             </MetricInfo>
           </span>
           <span className="block whitespace-nowrap text-sm text-body-secondary">
-            avg. {getAverageProvingTime()}
+            avg. {avgFormatted}
           </span>
         </>
       )
@@ -306,29 +253,11 @@ export const columns: ColumnDef<Block>[] = [
       const proofs = cell.getValue() as Proof[]
       const timestamp = row.original.timestamp
 
-      if (!timestamp || !proofs.length) return <Null />
+      const totalTTPStats = getTotalTTPStats(proofs, timestamp)
 
-      const completedProofs = proofs.filter(isCompleted)
+      if (!totalTTPStats) return <Null />
 
-      const fastestProof =
-        completedProofs?.reduce((acc, p) => {
-          const oldTime = getTime(acc.proved_timestamp!)
-          const newTime = getTime(p.proved_timestamp!)
-          if (newTime < oldTime) return p
-          return acc
-        }, completedProofs[0]) || {}
-
-      const msAfterBlock = (submissionTime: number) =>
-        submissionTime - getTime(timestamp)
-
-      const earliestSubmissionTime = fastestProof?.proved_timestamp
-        ? getTime(fastestProof.proved_timestamp)
-        : null
-
-      const formatted = (ms: number) => {
-        if (ms < 0) return <Null />
-        prettyMilliseconds(ms)
-      }
+      const { bestFormatted } = totalTTPStats
 
       return (
         <div className="flex flex-col justify-center text-center">
@@ -337,9 +266,7 @@ export const columns: ColumnDef<Block>[] = [
             <span className="font-body">
               <metrics.totalTTP.Label />:
             </span>{" "}
-            {earliestSubmissionTime
-              ? formatted(msAfterBlock(earliestSubmissionTime))
-              : "-"}
+            {bestFormatted}
           </div>
         </div>
       )

@@ -78,3 +78,5 @@ export const renderTimestamp = (timestamp: string, timeZone?: string): string =>
     timeStyle: "long",
     timeZone,
   }).format(new Date(timestamp))
+
+export const getTime = (d: string): number => new Date(d).getTime()
