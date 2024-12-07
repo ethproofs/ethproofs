@@ -93,9 +93,7 @@ const primitives: Record<Primitive, DefinitionDetails> = {
   },
 }
 
-type Conversion = "gasPerMgas" | "msToHours"
-
-const conversions: Record<Conversion, DefinitionDetails> = {
+const conversions = {
   gasPerMgas: {
     Term: () => (
       <Info.Term type="codeTerm">
@@ -121,11 +119,9 @@ const conversions: Record<Conversion, DefinitionDetails> = {
       </p>
     ),
   },
-}
+} as const satisfies Record<string, DefinitionDetails>
 
-type Computed = "provingCosts" | "mgas"
-
-const computed: Record<Computed, DefinitionDetails> = {
+const computed = {
   provingCosts: {
     Term: () => (
       <>
@@ -154,6 +150,6 @@ const computed: Record<Computed, DefinitionDetails> = {
       </>
     ),
   },
-}
+} as const satisfies Record<string, DefinitionDetails>
 
 export { computed, conversions, primitives }

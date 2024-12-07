@@ -2,13 +2,9 @@ import * as Info from "@/components/ui/info"
 
 import { computed, primitives } from "./Definitions"
 
-type Props = {
-  average?: boolean
-}
-
 type MetricDetails = {
-  Label: (props: Props) => React.ReactNode
-  Details: (props: Props) => React.ReactNode
+  Label: () => React.ReactNode
+  Details: (props: { average?: boolean }) => React.ReactNode
 }
 
 const METRICS = {
