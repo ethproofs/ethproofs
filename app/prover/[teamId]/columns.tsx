@@ -4,12 +4,14 @@ import Link from "next/link"
 import prettyMilliseconds from "pretty-ms"
 import { ColumnDef } from "@tanstack/react-table"
 
-import type { Proof } from "@/lib/types"
+import type { Cluster, Proof } from "@/lib/types"
 
 import DownloadButton from "@/components/DownloadButton"
 import { metrics } from "@/components/Metrics"
 import Null from "@/components/Null"
 import { HidePunctuation } from "@/components/StylePunctuation"
+import Tooltip from "@/components/Tooltip"
+import { TooltipContentHeader } from "@/components/ui/tooltip"
 
 import { ColumnHeader } from "./ColumnHeader"
 
@@ -43,16 +45,26 @@ export const columns: ColumnDef<Proof>[] = [
   },
   // Instance
   {
-    accessorKey: "cluster.nickname",
+    accessorKey: "cluster",
     header: () => (
       <ColumnHeader label={<metrics.cluster.Label />}>
         <metrics.cluster.Details />
       </ColumnHeader>
     ),
     cell: ({ cell }) => {
-      const instance = cell.getValue() as string
+      const cluster = cell.getValue() as Cluster
 
-      return instance
+      // TODO: Add Equivalents for cluster_id by it's instance_type_id (inside cluster_configurations)
+      return (
+        <Tooltip trigger={cluster.nickname}>
+          <TooltipContentHeader>{cluster.nickname}</TooltipContentHeader>
+          <div className="space-y-2">
+            {cluster.hardware && <p>Hardware: {cluster.hardware}</p>}
+            {cluster.cycle_type && <p>Cycle type: {cluster.cycle_type}</p>}
+            {cluster.description && <p>{cluster.description}</p>}
+          </div>
+        </Tooltip>
+      )
     },
   },
   // Time to proof (time from block.timestamp to proof.proved_timestamp)
