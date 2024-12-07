@@ -1,6 +1,34 @@
-import type { BlockWithProofs, Proof } from "./types"
+import type { Block, Proof } from "./types"
 
+// Filters
 export const isCompleted = (proof: Proof) => proof.proof_status === "proved"
+
+export const costInfoAvailable = (p: Proof) =>
+  !!p.proving_time && !!p.cluster_configurations?.[0]?.awsInstance?.hourly_price
+
+/**
+ * Determines if a proof has a proved timestamp.
+ * @param {Proof} p - The proof object.
+ * @returns {boolean} - True if the proof has a proved timestamp, false otherwise.
+ */
+export const provedTimestampAvailable = (p: Proof) => !!p.proved_timestamp
+
+/**
+ * Determines if a proof has a proving time (duration of time computing proof).
+ * @param {Proof} p - The proof object.
+ * @returns {boolean} - True if the proof has a proving time, false otherwise.
+ */
+export const provingTimeAvailable = (p: Proof) => !!p.proving_time
+
+/**
+ * Determines if a proof has a proved_timestamp, a block has a timestamp, and the block came first.
+ * @param {Proof} p - The proof object.
+ * @param {Block} b - The block object.
+ * @returns {boolean} - True if the proof has a proved timestamp and the proof came after the block, false otherwise.
+ */
+export const timeToProofInfoAvailable = (p: Proof, b: Block) =>
+  p.proved_timestamp &&
+  new Date(p.proved_timestamp).getTime() > new Date(b.timestamp!).getTime()
 
 /**
  * Calculates the average proving time of an array of proofs.
@@ -18,66 +46,95 @@ export const getProofsAvgProvingTime = (proofs: Proof[]): number | null => {
   )
 }
 
-export const getProofsAvgTimeToProof = (
-  block: BlockWithProofs
-): number | null => {
+export const getProofsAvgTimeToProof = (block: Block): number | null => {
   if (!block.timestamp || !block.proofs) return null
 
-  const completedProofs = block.proofs
+  const availableProofs = block.proofs
     .filter(isCompleted)
-    .filter(
-      (p) =>
-        p.proved_timestamp &&
-        new Date(p.proved_timestamp).getTime() >
-          new Date(block.timestamp!).getTime()
-    )
-  if (!completedProofs.length) return null
+    .filter((p) => timeToProofInfoAvailable(p, block))
+  if (!availableProofs.length) return null
 
   const blockTimestamp = new Date(block.timestamp).getTime()
 
   const averageProvedTime =
-    completedProofs.reduce((acc, proof) => {
+    availableProofs.reduce((acc, proof) => {
       const timestampTime = new Date(proof.proved_timestamp!).getTime()
       return acc + timestampTime
-    }, 0) / completedProofs.length
+    }, 0) / availableProofs.length
 
   return averageProvedTime - blockTimestamp // In milliseconds
 }
 
 export const getProofBestProvingTime = (proofs: Proof[]): Proof | null => {
-  const completedProofs = proofs.filter(isCompleted)
-  if (!completedProofs.length) return null
-  return completedProofs.reduce((a, b) => {
+  const availableProofs = proofs
+    .filter(isCompleted)
+    .filter(provingTimeAvailable)
+
+  if (!availableProofs.length) return null
+
+  return availableProofs.reduce((a, b) => {
     if (!a.proving_time) return b
     if (!b.proving_time) return a
     return a.proving_time < b.proving_time ? a : b
-  }, completedProofs[0])
+  }, availableProofs[0])
 }
 
 export const getProofBestTimeToProof = (proofs: Proof[]): Proof | null => {
-  const completedProofs = proofs.filter(isCompleted)
-  if (!completedProofs.length) return null
-  return completedProofs.reduce((a, b) => {
+  const availableProofs = proofs
+    .filter(isCompleted)
+    .filter(provedTimestampAvailable)
+
+  if (!availableProofs.length) return null
+
+  return availableProofs.reduce((a, b) => {
     if (!a.proved_timestamp) return b
     if (!b.proved_timestamp) return a
     return a.proved_timestamp < b.proved_timestamp ? a : b
-  }, completedProofs[0])
+  }, availableProofs[0])
 }
 
 /**
+ * Calculates the cost of proving based on the provided proof object.
+ * The cost is calculated as the product of the proving time (milliseconds) and
+ * the hourly price of the cluster configuration.
+ *
+ * @param proof - The proof object containing proving time and cluster configurations.
+ * @example hourly_price(USD/hr) * proving_time(ms) / 1e3(ms/s) / 60(s/min) / 60(min/hr) = proving_cost(USD)
+ * @returns The calculated proving cost in USD.
+ */
+export const getProvingCost = (proof: Proof): number => {
+  const { proving_time, cluster_configurations } = proof
+  const { hourly_price } = cluster_configurations?.[0]?.awsInstance || {}
+  if (!proving_time || !hourly_price) return 0
+  return (proving_time * hourly_price) / 1e3 / 60 / 60
+}
+
+/**
+ * Calculates the total proving cost from an array of proofs.
+ *
+ * @param proofs - An array of Proof objects.
+ * @returns The total proving cost as a number (USD).
+ */
+export const getSumProvingCost = (proofs: Proof[]): number =>
+  proofs
+    .filter(isCompleted)
+    .reduce((acc, proof) => acc + getProvingCost(proof), 0)
+
+/**
  * Calculates the average proving cost of an array of proofs.
+ * Filters to completed proofs and those with proving time and price information
  *
  * @param {Proof[]} proofs - An array of proof objects.
- * @returns {number} - The average proving cost of the proofs.
+ * @returns {number} - The average proving cost (USD) of the proofs.
  */
-export const getProofsAvgCost = (proofs: Proof[]): number => {
-  const completedProofs = proofs.filter(isCompleted)
-  return (
-    completedProofs.reduce(
-      (acc, { proving_cost }) => acc + (proving_cost || 0),
-      0
-    ) / completedProofs.length
-  )
+export const getAvgProvingCost = (proofs: Proof[]): number => {
+  const availableProofs = proofs.filter(isCompleted).filter(costInfoAvailable)
+
+  if (!availableProofs.length) return 0
+
+  const totalCost = getSumProvingCost(availableProofs)
+
+  return totalCost / availableProofs.length
 }
 
 export const getAvgCostPerMegaGas = (
@@ -87,9 +144,6 @@ export const getAvgCostPerMegaGas = (
   const megaGasUsed = gasUsed / 1e6
   return avgProofCost / megaGasUsed
 }
-
-const getSumProvingCost = (proofs: Proof[]): number =>
-  proofs.reduce((acc, { proving_cost }) => acc + (proving_cost || 0), 0)
 
 const getSumProvingCycles = (proofs: Proof[]): number =>
   proofs.reduce((acc, { proving_cycles }) => acc + (proving_cycles || 0), 0)
