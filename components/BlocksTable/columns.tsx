@@ -21,7 +21,7 @@ import ProofStatus, { ProofStatusInfo } from "../ProofStatus"
 import { HidePunctuation } from "../StylePunctuation"
 import { MetricInfo } from "../ui/metric"
 import { Progress } from "../ui/progress"
-import { TooltipContentFooter, TooltipContentHeader } from "../ui/tooltip"
+import { TooltipContentFooter } from "../ui/tooltip"
 
 import ClusterDetails from "./ClusterDetails"
 import TeamName from "./TeamName"
@@ -30,9 +30,8 @@ import { ColumnHeader } from "@/app/prover/[teamId]/ColumnHeader"
 import { formatTimeAgo } from "@/lib/date"
 import { formatNumber } from "@/lib/number"
 import {
-  filterCompleted,
   getAvgProvingCost,
-  getProofCheapestProvingCost,
+  getProofBestProvingCost,
   getProofsAvgProvingTime,
   getProvingCost,
   hasCostInfo,
@@ -143,9 +142,7 @@ export const columns: ColumnDef<Block>[] = [
 
       const averageCost = getAvgProvingCost(proofs)
 
-      const cheapestProof = getProofCheapestProvingCost(
-        availableProofs
-      ) as Proof
+      const cheapestProof = getProofBestProvingCost(availableProofs) as Proof
 
       const cheapestCost = getProvingCost(cheapestProof) as number
 

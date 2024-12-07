@@ -175,7 +175,7 @@ export const getAvgCostPerTx = (
   transactionCount: number
 ): number => avgProofCost / transactionCount
 
-export const getProofCheapestProvingCost = (proofs: Proof[]): Proof | null => {
+export const getProofBestProvingCost = (proofs: Proof[]): Proof | null => {
   const availableProofs = proofs.filter(isCompleted).filter(hasCostInfo)
 
   if (!availableProofs.length) return null

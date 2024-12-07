@@ -48,9 +48,9 @@ import { getMetadata } from "@/lib/metadata"
 import { formatNumber } from "@/lib/number"
 import {
   getAvgProvingCost,
+  getProofBestProvingCost,
   getProofBestProvingTime,
   getProofBestTimeToProof,
-  getProofCheapestProvingCost,
   getProofsAvgProvingTime,
   getProofsAvgTimeToProof,
   sortProofsStatusAndTimes,
@@ -209,7 +209,7 @@ export default async function BlockDetailsPage({
     },
   ]
 
-  const cheapestProof = getProofCheapestProvingCost(proofs)
+  const cheapestProof = getProofBestProvingCost(proofs)
   const avgCostPerProof = getAvgProvingCost(proofs)
   const megaGas = block.gas_used / 1e6
 
