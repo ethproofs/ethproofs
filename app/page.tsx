@@ -64,8 +64,8 @@ export default async function Index() {
           )
         )
       )`)
-    console.log("Logging example proof")
-    console.log(blocks[0]?.proofs[0])
+    console.log("Logging `cluster_configurations` for proofs[0] of blocks[0]")
+    console.log(blocks[0]?.proofs[0].clusters?.cluster_configurations)
   }
 
   const teamsResponse = await supabase.from("teams").select()
