@@ -1,9 +1,22 @@
 import type { Block, Proof } from "./types"
 
 // Filters
+
+/**
+ * Checks if the given proof has been completed.
+ *
+ * @param proof - The proof object to check.
+ * @returns `true` if the proof's status is "proved", otherwise `false`.
+ */
 export const isCompleted = (proof: Proof) => proof.proof_status === "proved"
 
-export const costInfoAvailable = (p: Proof) =>
+/**
+ * Checks if the cost information is available for a given proof.
+ *
+ * @param {Proof} p - The proof object to check.
+ * @returns {boolean} `true` if information to calculate costs are available, otherwise `false`.
+ */
+export const hasCostInfo = (p: Proof) =>
   !!p.proving_time && !!p.cluster_configurations?.[0]?.awsInstance?.hourly_price
 
 /**
@@ -11,7 +24,7 @@ export const costInfoAvailable = (p: Proof) =>
  * @param {Proof} p - The proof object.
  * @returns {boolean} - True if the proof has a proved timestamp, false otherwise.
  */
-export const provedTimestampAvailable = (p: Proof) => !!p.proved_timestamp
+export const hasProvedTimestamp = (p: Proof) => !!p.proved_timestamp
 
 /**
  * Determines if a proof has a proving time (duration of time computing proof).
@@ -80,9 +93,7 @@ export const getProofBestProvingTime = (proofs: Proof[]): Proof | null => {
 }
 
 export const getProofBestTimeToProof = (proofs: Proof[]): Proof | null => {
-  const availableProofs = proofs
-    .filter(isCompleted)
-    .filter(provedTimestampAvailable)
+  const availableProofs = proofs.filter(isCompleted).filter(hasProvedTimestamp)
 
   if (!availableProofs.length) return null
 
@@ -102,10 +113,11 @@ export const getProofBestTimeToProof = (proofs: Proof[]): Proof | null => {
  * @example hourly_price(USD/hr) * proving_time(ms) / 1e3(ms/s) / 60(s/min) / 60(min/hr) = proving_cost(USD)
  * @returns The calculated proving cost in USD.
  */
-export const getProvingCost = (proof: Proof): number => {
+export const getProvingCost = (proof: Proof): number | null => {
   const { proving_time, cluster_configurations } = proof
+  // TODO: Remove [0] when 1:1 cluster_id to instance_type_id established
   const { hourly_price } = cluster_configurations?.[0]?.awsInstance || {}
-  if (!proving_time || !hourly_price) return 0
+  if (!proving_time || !hourly_price) return null
   return (proving_time * hourly_price) / 1e3 / 60 / 60
 }
 
@@ -115,10 +127,16 @@ export const getProvingCost = (proof: Proof): number => {
  * @param proofs - An array of Proof objects.
  * @returns The total proving cost as a number (USD).
  */
-export const getSumProvingCost = (proofs: Proof[]): number =>
-  proofs
-    .filter(isCompleted)
-    .reduce((acc, proof) => acc + getProvingCost(proof), 0)
+const getSumProvingCost = (proofs: Proof[]): number => {
+  const availableProofs = proofs.filter(isCompleted).filter(hasCostInfo)
+
+  if (!availableProofs.length) return 0
+
+  return availableProofs.reduce(
+    (acc, proof) => acc + (getProvingCost(proof) || 0),
+    0
+  )
+}
 
 /**
  * Calculates the average proving cost of an array of proofs.
@@ -128,7 +146,7 @@ export const getSumProvingCost = (proofs: Proof[]): number =>
  * @returns {number} - The average proving cost (USD) of the proofs.
  */
 export const getAvgProvingCost = (proofs: Proof[]): number => {
-  const availableProofs = proofs.filter(isCompleted).filter(costInfoAvailable)
+  const availableProofs = proofs.filter(isCompleted).filter(hasCostInfo)
 
   if (!availableProofs.length) return 0
 
@@ -157,27 +175,27 @@ export const getAvgCostPerTx = (
   transactionCount: number
 ): number => avgProofCost / transactionCount
 
-export const filterCompleted = (proofs: Proof[]) => ({
-  completedProofs: proofs.filter(isCompleted),
-})
-
 export const getProofCheapestProvingCost = (proofs: Proof[]): Proof | null => {
-  const completedProofs = proofs
-    .filter(isCompleted)
-    .filter((p) => !!p.proving_cost)
-  if (!completedProofs.length) return null
-  return completedProofs.reduce((a, b) => {
-    if (!a.proving_cost) return b
-    if (!b.proving_cost) return a
-    return a.proving_cost < b.proving_cost ? a : b
-  }, completedProofs[0])
+  const availableProofs = proofs.filter(isCompleted).filter(hasCostInfo)
+
+  if (!availableProofs.length) return null
+
+  return availableProofs.reduce((a, b) => {
+    const costA = getProvingCost(a) || Infinity
+    const costB = getProvingCost(b) || Infinity
+    return costA < costB ? a : b
+  }, availableProofs[0])
 }
 
-// Primary sort by proof_status: proved, proving, then queued
-// Secondary sorts (lower/earlier first)
-// Within `proved` use `proving_time`
-// Within `proving` use `proving_timestamp`
-// Within `queued` use `queued_timestamp`
+/**
+ * Sorting function for proofs
+ *
+ * Primary sort by proof_status: proved, proving, then queued
+ * Secondary sorts (lower/earlier first)
+ * Within `proved` use `proving_time`
+ * Within `proving` use `proving_timestamp`
+ * Within `queued` use `queued_timestamp`
+ */
 export const sortProofsStatusAndTimes = (a: Proof, b: Proof) => {
   if (a.proof_status === "proved" && b.proof_status !== "proved") return -1
   if (a.proof_status !== "proved" && b.proof_status === "proved") return 1

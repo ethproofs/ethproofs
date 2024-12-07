@@ -32,7 +32,11 @@ import { formatNumber } from "@/lib/number"
 import {
   filterCompleted,
   getAvgProvingCost,
+  getProofCheapestProvingCost,
   getProofsAvgProvingTime,
+  getProvingCost,
+  hasCostInfo,
+  isCompleted,
 } from "@/lib/proofs"
 
 const getTime = (d: string): number => new Date(d).getTime()
@@ -131,24 +135,19 @@ export const columns: ColumnDef<Block>[] = [
         <metrics.costPerProof.Details />
       </ColumnHeader>
     ),
-
     cell: ({ cell }) => {
       const proofs = cell.getValue() as Proof[]
-      if (!proofs.length) return <Null />
+      const availableProofs = proofs.filter(isCompleted).filter(hasCostInfo)
+
+      if (!availableProofs.length) return <Null />
 
       const averageCost = getAvgProvingCost(proofs)
 
-      const { completedProofs } = filterCompleted(proofs)
+      const cheapestProof = getProofCheapestProvingCost(
+        availableProofs
+      ) as Proof
 
-      if (!completedProofs.length) return <Null />
-
-      const cheapestProof = completedProofs.reduce((acc, p) => {
-        if (p.proving_cost! < acc.proving_cost!) return p
-        return acc
-      }, completedProofs[0])
-      if (isNaN(averageCost)) return <Null />
-
-      const cheapestCost = cheapestProof.proving_cost as number
+      const cheapestCost = getProvingCost(cheapestProof) as number
 
       const formatted = (value: number) =>
         formatNumber(value, {
@@ -159,10 +158,12 @@ export const columns: ColumnDef<Block>[] = [
       return (
         <>
           <span className="align-center flex justify-center whitespace-nowrap">
-            {formatted(cheapestCost)}
             <MetricInfo
               trigger={
-                <Award className="text-primary hover:text-primary-light" />
+                <div className="flex items-center gap-1">
+                  {formatted(cheapestCost)}
+                  <Award className="text-primary hover:text-primary-light" />
+                </div>
               }
             >
               <TeamName proof={cheapestProof} />
@@ -193,7 +194,7 @@ export const columns: ColumnDef<Block>[] = [
       const averageCost = getAvgProvingCost(proofs)
       if (isNaN(averageCost)) return <Null />
 
-      const { completedProofs } = filterCompleted(proofs)
+      const completedProofs = proofs.filter(isCompleted)
       if (!completedProofs.length) return <Null />
 
       const cheapestProof = completedProofs.reduce((acc, p) => {
@@ -241,7 +242,7 @@ export const columns: ColumnDef<Block>[] = [
 
       if (!timestamp || !proofs.length) return <Null />
 
-      const { completedProofs } = filterCompleted(proofs)
+      const completedProofs = proofs.filter(isCompleted)
 
       if (!completedProofs.length) return <Null />
 
@@ -310,7 +311,7 @@ export const columns: ColumnDef<Block>[] = [
 
       if (!timestamp || !proofs.length) return <Null />
 
-      const { completedProofs } = filterCompleted(proofs)
+      const completedProofs = proofs.filter(isCompleted)
 
       const fastestProof =
         completedProofs?.reduce((acc, p) => {
