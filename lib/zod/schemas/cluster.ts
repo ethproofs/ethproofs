@@ -1,44 +1,47 @@
 import z from ".."
 
 export const ClusterSchema = z.object({
-  cluster_id: z.number(),
-  cluster_name: z.string(),
-  cluster_description: z.string().optional(),
-  cluster_hardware: z.string().optional(),
-  cluster_cycle_type: z.string().optional(),
+  id: z.number(),
+  nickname: z.string(),
+  description: z.string().optional(),
+  hardware: z.string().optional(),
+  cycle_type: z.string().optional(),
+  proof_type: z.string().optional(),
 })
 
 export const createClusterSchema = z.object({
-  cluster_name: z
-    .string()
-    .max(50)
-    .describe('Human-readable name (e.g., "ZKnight-01", "SNARK-Sentinel")'),
-  cluster_description: z
-    .string()
-    .max(200)
-    .optional()
-    .describe('Description of the cluster (e.g., "Primary RISC-V prover")'),
-  cluster_hardware: z
-    .string()
-    .max(200)
-    .optional()
-    .describe(
-      'Technical specifications (e.g., "RISC-V Prover", "STARK-to-SNARK Prover")'
-    ),
-  cluster_cycle_type: z
-    .string()
-    .max(50)
-    .optional()
-    .describe('Type of cycle (e.g., "SP1")'),
-  cluster_configuration: z
+  nickname: z.string().max(50).openapi({
+    description: "Human-readable name. Main display name in the UI",
+    example: "ZKnight-01",
+  }),
+  description: z.string().max(200).optional().openapi({
+    description: "Description of the cluster",
+    example: "Primary RISC-V prover",
+  }),
+  hardware: z.string().max(200).optional().openapi({
+    description: "Technical specifications",
+    example: "RISC-V Prover",
+  }),
+  cycle_type: z.string().max(50).optional().openapi({
+    description: "Type of cycle",
+    example: "SP1",
+  }),
+  proof_type: z.string().max(50).optional().openapi({
+    description:
+      "Proof system used to generate proofs. (e.g., Groth16 or PlonK)",
+    example: "Groth16",
+  }),
+  configuration: z
     .array(
       z.object({
-        instance_type: z
-          .string()
-          .describe(
-            "Instance type (e.g., 'c5.xlarge'). Check our aws instance pricing endpoint for available instance types"
-          ),
-        instance_count: z.number().describe("Number of instances of this type"),
+        instance_type: z.string().openapi({
+          description: "Instance type",
+          example: "c5.xlarge",
+        }),
+        instance_count: z.number().openapi({
+          description: "Number of instances of this type",
+          example: 10,
+        }),
       })
     )
     .describe("Cluster configuration"),

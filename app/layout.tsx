@@ -1,4 +1,5 @@
 import Link from "next/link"
+import Script from "next/script"
 import { ThemeProvider } from "next-themes"
 
 import ActiveLinkDecorator from "@/components/ActiveLinkDecorator"
@@ -51,6 +52,22 @@ export default function RootLayout({
           href="/apple-icon.png"
           type="image/png"
           sizes="180x180"
+        />
+        <Script
+          strategy="afterInteractive"
+          data-domain="ethproofs.org"
+          src="https://plausible.io/js/script.file-downloads.outbound-links.tagged-events.js"
+        />
+        <Script
+          id="plausible-init"
+          strategy="afterInteractive"
+          dangerouslySetInnerHTML={{
+            __html: `
+            window.plausible = window.plausible || function() {
+              (window.plausible.q = window.plausible.q || []).push(arguments)
+            }
+          `,
+          }}
         />
       </head>
       <body className="pb-80">

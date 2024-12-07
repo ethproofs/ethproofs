@@ -89,10 +89,10 @@ export default async function ProverPage({ params }: ProverPageProps) {
 
   const clusters = Object.values(
     proofsExtended.reduce((acc, curr) => {
-      if (!curr.cluster || !curr.cluster.cluster_id) return acc
+      if (!curr.cluster || !curr.cluster.index) return acc
       return {
         ...acc,
-        [curr.cluster.cluster_id]: curr.cluster,
+        [curr.cluster.index]: curr.cluster,
       }
     }, {})
   ) satisfies Cluster[]
@@ -266,21 +266,17 @@ export default async function ProverPage({ params }: ProverPageProps) {
             gridTemplateColumns: "repeat(auto-fill, minmax(24rem, 1fr))",
           }}
         >
-          {clusters.map(
-            ({ cluster_name, cluster_hardware, cluster_description }) => (
-              <Card key={cluster_name} className="space-y-4">
-                <h3 className="text-xl font-semibold">{cluster_name}</h3>
-                {cluster_hardware && (
-                  <p className="font-mono text-body">
-                    Hardware: {cluster_hardware}
-                  </p>
-                )}
-                {cluster_description && (
-                  <Info.Description>{cluster_description}</Info.Description>
-                )}
-              </Card>
-            )
-          )}
+          {clusters.map(({ nickname, hardware, description }) => (
+            <Card key={nickname} className="space-y-4">
+              <h3 className="text-xl font-semibold">{nickname}</h3>
+              {hardware && (
+                <p className="font-mono text-body">Hardware: {hardware}</p>
+              )}
+              {description && (
+                <Info.Description>{description}</Info.Description>
+              )}
+            </Card>
+          ))}
         </div>
       </section>
     </div>

@@ -3,22 +3,21 @@ import type { Proof } from "@/lib/types"
 const ClusterDetails = ({ proof }: { proof: Proof }) => {
   const { cluster_id, cluster } = proof
   if (!cluster) return "Cluster " + cluster_id.split("-")[0]
-  const { cluster_description, cluster_hardware, cluster_name } = cluster
+  const { description, hardware, nickname } = cluster
 
   return (
     <div className="text-wrap">
-      {cluster_name && (
-        <span className="block text-lg font-semibold">{cluster_name}</span>
+      {nickname && (
+        <span className="block text-lg font-semibold">{nickname}</span>
       )}
-      {cluster_hardware && (
+      {hardware && (
         <span className="block">
-          <span className="font-semibold">Hardware:</span> {cluster_hardware}
+          <span className="font-semibold">Hardware:</span> {hardware}
         </span>
       )}
-      {cluster_description && (
+      {description && (
         <span className="block">
-          <span className="font-semibold">Description:</span>{" "}
-          {cluster_description}
+          <span className="font-semibold">Description:</span> {description}
         </span>
       )}
     </div>

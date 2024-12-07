@@ -12,33 +12,18 @@ const baseProofSchema = z.object({
   cluster_id: z.number(),
 })
 
-const queuedProofSchema = baseProofSchema.extend({
-  proof_status: z.literal("queued"),
-})
+export const queuedProofSchema = baseProofSchema.extend({})
 
-const provingProofSchema = baseProofSchema.extend({
-  proof_status: z.literal("proving"),
-})
+export const provingProofSchema = baseProofSchema.extend({})
 
-const provedProofSchema = baseProofSchema.extend({
-  proof_status: z.literal("proved"),
+export const provedProofSchema = baseProofSchema.extend({
   proving_time: z
     .number()
     .positive("proving_time must be a positive number")
     .describe("Milliseconds taken to generate the proof"),
-  proving_cost: z
-    .number()
-    .positive("proving_cost must be a positive number")
-    .describe("Cost of generating the proof (in USD)"),
   proving_cycles: z
     .number()
     .int()
     .positive("proving_cycles must be a positive integer"),
   proof: z.string().min(1, "proof is required for 'proved' status"),
 })
-
-export const createProofSchema = z.discriminatedUnion("proof_status", [
-  queuedProofSchema,
-  provingProofSchema,
-  provedProofSchema,
-])

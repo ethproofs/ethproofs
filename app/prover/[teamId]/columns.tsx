@@ -56,18 +56,12 @@ export const columns: ColumnDef<Proof>[] = [
 
       // TODO: Add Equivalents for cluster_id by it's instance_type_id (inside cluster_configurations)
       return (
-        <Tooltip trigger={cluster.cluster_name}>
-          <TooltipContentHeader>{cluster.cluster_name}</TooltipContentHeader>
+        <Tooltip trigger={cluster.nickname}>
+          <TooltipContentHeader>{cluster.nickname}</TooltipContentHeader>
           <div className="space-y-2">
-            {cluster.cluster_hardware && (
-              <p>Hardware: {cluster.cluster_hardware}</p>
-            )}
-            {cluster.cluster_cycle_type && (
-              <p>Cycle type: {cluster.cluster_cycle_type}</p>
-            )}
-            {cluster.cluster_description && (
-              <p>{cluster.cluster_description}</p>
-            )}
+            {cluster.hardware && <p>Hardware: {cluster.hardware}</p>}
+            {cluster.cycle_type && <p>Cycle type: {cluster.cycle_type}</p>}
+            {cluster.description && <p>{cluster.description}</p>}
           </div>
         </Tooltip>
       )

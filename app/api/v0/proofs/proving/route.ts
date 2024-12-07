@@ -1,10 +1,11 @@
 import { revalidateTag } from "next/cache"
-import { formatGwei } from "viem"
 import { ZodError } from "zod"
 
 import { withAuth } from "@/lib/auth"
 import { fetchBlockData } from "@/lib/blocks"
-import { createProofSchema } from "@/lib/zod/schemas/proof"
+import { provingProofSchema } from "@/lib/zod/schemas/proof"
+
+// TODO: refactor code to use baseProofHandler and abstract out the logic
 
 export const POST = withAuth(async ({ request, client, user, timestamp }) => {
   const payload = await request.json()
@@ -21,7 +22,7 @@ export const POST = withAuth(async ({ request, client, user, timestamp }) => {
   // validate payload schema
   let proofPayload
   try {
-    proofPayload = createProofSchema.parse(payload)
+    proofPayload = provingProofSchema.parse(payload)
   } catch (error) {
     console.error("proof payload invalid", error)
     if (error instanceof ZodError) {
@@ -35,7 +36,7 @@ export const POST = withAuth(async ({ request, client, user, timestamp }) => {
     })
   }
 
-  const { block_number, proof_status, cluster_id } = proofPayload
+  const { block_number, cluster_id } = proofPayload
 
   // validate block_number exists
   console.log("validating block_number", block_number)
@@ -62,7 +63,6 @@ export const POST = withAuth(async ({ request, client, user, timestamp }) => {
     console.log("creating block", block_number)
     const { error } = await client.from("blocks").insert({
       block_number,
-      total_fees: parseInt(formatGwei(blockData.feeTotal)),
       gas_used: Number(blockData.gasUsed),
       transaction_count: blockData.txsCount,
       timestamp: new Date(Number(blockData.timestamp) * 1000).toISOString(),
@@ -82,7 +82,7 @@ export const POST = withAuth(async ({ request, client, user, timestamp }) => {
   const { data: clusterData, error: clusterError } = await client
     .from("clusters")
     .select("id")
-    .eq("cluster_id", cluster_id)
+    .eq("index", cluster_id)
     .eq("user_id", user.id)
     .single()
 
@@ -110,11 +110,6 @@ export const POST = withAuth(async ({ request, client, user, timestamp }) => {
     proof_id: proofId,
     ...proofPayload,
   })
-  const timestampField = {
-    queued: "queued_timestamp",
-    proving: "proving_timestamp",
-    proved: "proved_timestamp",
-  }[proof_status]
 
   const proofResponse = await client
     .from("proofs")
@@ -124,9 +119,9 @@ export const POST = withAuth(async ({ request, client, user, timestamp }) => {
         proof_id: proofId,
         block_number,
         cluster_id: clusterData.id,
-        proof_status,
+        proof_status: "proving",
+        proving_timestamp: timestamp,
         user_id: user.id,
-        [timestampField]: timestamp,
       },
       {
         onConflict: "block_number,cluster_id",

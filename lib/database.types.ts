@@ -105,7 +105,6 @@ export type Database = {
           gas_used: number
           hash: string
           timestamp: string
-          total_fees: number
           transaction_count: number
         }
         Insert: {
@@ -113,7 +112,6 @@ export type Database = {
           gas_used: number
           hash: string
           timestamp: string
-          total_fees: number
           transaction_count: number
         }
         Update: {
@@ -121,7 +119,6 @@ export type Database = {
           gas_used?: number
           hash?: string
           timestamp?: string
-          total_fees?: number
           transaction_count?: number
         }
         Relationships: []
@@ -164,30 +161,33 @@ export type Database = {
       }
       clusters: {
         Row: {
-          cluster_cycle_type: string | null
-          cluster_description: string | null
-          cluster_hardware: string | null
-          cluster_id: number | null
-          cluster_name: string
+          cycle_type: string | null
+          description: string | null
+          hardware: string | null
           id: string
+          index: number | null
+          nickname: string
+          proof_type: string | null
           user_id: string
         }
         Insert: {
-          cluster_cycle_type?: string | null
-          cluster_description?: string | null
-          cluster_hardware?: string | null
-          cluster_id?: number | null
-          cluster_name: string
+          cycle_type?: string | null
+          description?: string | null
+          hardware?: string | null
           id?: string
+          index?: number | null
+          nickname: string
+          proof_type?: string | null
           user_id: string
         }
         Update: {
-          cluster_cycle_type?: string | null
-          cluster_description?: string | null
-          cluster_hardware?: string | null
-          cluster_id?: number | null
-          cluster_name?: string
+          cycle_type?: string | null
+          description?: string | null
+          hardware?: string | null
           id?: string
+          index?: number | null
+          nickname?: string
+          proof_type?: string | null
           user_id?: string
         }
         Relationships: [
