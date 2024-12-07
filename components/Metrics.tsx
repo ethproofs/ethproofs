@@ -14,16 +14,15 @@ type MetricDetails = {
 const METRICS = {
   blockNumber: "block",
   cluster: "cluster",
-  gasUsed: "gas used",
-  provingCosts: "proving costs",
-  provingTime: "proving time",
-  totalTTP: "total time to proof",
   costPerMgas: (
     <>
       cost per <span className="uppercase">m</span>gas
     </>
   ),
   costPerProof: "cost per proof",
+  gasUsed: "gas used",
+  provingTime: "proving time",
+  totalTTP: "total time to proof",
 } as const
 
 type Metric = keyof typeof METRICS
@@ -77,8 +76,8 @@ const metrics: Record<Metric, MetricDetails> = {
       </>
     ),
   },
-  provingCosts: {
-    Label: () => METRICS.provingCosts,
+  costPerProof: {
+    Label: () => METRICS.costPerProof,
     Details: () => (
       <>
         <Info.Derivation>
@@ -88,7 +87,7 @@ const metrics: Record<Metric, MetricDetails> = {
         <computed.provingCosts.Definition />
 
         <Info.Description>
-          Proving costs in USD to prove entire block
+          Proving costs in USD to prove execution of entire block
         </Info.Description>
       </>
     ),
@@ -153,18 +152,6 @@ const metrics: Record<Metric, MetricDetails> = {
           different sized blocks. More gas consumption in a block means more
           computation to prove.
         </Info.Description>
-      </>
-    ),
-  },
-  costPerProof: {
-    Label: () => METRICS.costPerProof,
-    Details: () => (
-      <>
-        <Info.Derivation>
-          <computed.provingCosts.Term />
-        </Info.Derivation>
-
-        <computed.provingCosts.Definition />
       </>
     ),
   },

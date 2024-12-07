@@ -225,7 +225,7 @@ export default async function BlockDetailsPage({
           <TooltipContentHeader>
             cheapest <metrics.costPerProof.Label />
           </TooltipContentHeader>
-          <metrics.provingCosts.Details />
+          <metrics.costPerProof.Details />
         </>
       ),
       value: cheapestProof?.proving_cost ? (
@@ -246,7 +246,7 @@ export default async function BlockDetailsPage({
       description: (
         <>
           <TooltipContentHeader>avg cost per proof</TooltipContentHeader>
-          <metrics.provingCosts.Details average />
+          <metrics.costPerProof.Details average />
         </>
       ),
       value: avgCostPerProof ? (
@@ -572,12 +572,12 @@ export default async function BlockDetailsPage({
                 )}
               >
                 <MetricLabel className="sm:max-md:justify-end">
-                  <metrics.provingCosts.Label />
+                  <metrics.costPerProof.Label />
                   <MetricInfo>
                     <TooltipContentHeader>
-                      <metrics.provingCosts.Label />
+                      <metrics.costPerProof.Label />
                     </TooltipContentHeader>
-                    <metrics.provingCosts.Details />
+                    <metrics.costPerProof.Details />
                   </MetricInfo>
                 </MetricLabel>
                 <MetricValue className="font-normal">
