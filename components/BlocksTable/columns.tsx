@@ -4,7 +4,7 @@ import Link from "next/link"
 import prettyMilliseconds from "pretty-ms"
 import { ColumnDef } from "@tanstack/react-table"
 
-import type { BlockWithProofs, Proof } from "@/lib/types"
+import type { Block, Proof } from "@/lib/types"
 
 import { metrics } from "@/components/Metrics"
 import Null from "@/components/Null"
@@ -31,13 +31,13 @@ import { formatTimeAgo } from "@/lib/date"
 import { formatNumber } from "@/lib/number"
 import {
   filterCompleted,
-  getProofsAvgCost,
+  getAvgProvingCost,
   getProofsAvgProvingTime,
 } from "@/lib/proofs"
 
 const getTime = (d: string): number => new Date(d).getTime()
 
-export const columns: ColumnDef<BlockWithProofs>[] = [
+export const columns: ColumnDef<Block>[] = [
   {
     accessorKey: "block_number",
     header: () => (
@@ -136,7 +136,7 @@ export const columns: ColumnDef<BlockWithProofs>[] = [
       const proofs = cell.getValue() as Proof[]
       if (!proofs.length) return <Null />
 
-      const averageCost = getProofsAvgCost(proofs)
+      const averageCost = getAvgProvingCost(proofs)
 
       const { completedProofs } = filterCompleted(proofs)
 
@@ -190,7 +190,7 @@ export const columns: ColumnDef<BlockWithProofs>[] = [
 
       const mgasUsed = gasUsed / 1e6
 
-      const averageCost = getProofsAvgCost(proofs)
+      const averageCost = getAvgProvingCost(proofs)
       if (isNaN(averageCost)) return <Null />
 
       const { completedProofs } = filterCompleted(proofs)

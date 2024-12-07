@@ -2,7 +2,7 @@
 
 import { Reducer, useEffect, useReducer } from "react"
 
-import type { Block, BlockWithProofs, Proof } from "@/lib/types"
+import type { Block, BlockBase, Proof } from "@/lib/types"
 
 import DataTable from "@/components/ui/data-table"
 
@@ -12,14 +12,14 @@ import { Actions, createInitialState, reducer, State } from "./reducer"
 import { createClient } from "@/utils/supabase/client"
 
 type Props = {
-  blocks: BlockWithProofs[]
+  blocks: Block[]
   className?: string
 }
 
 const BlocksTable = ({ blocks, className }: Props) => {
   const [state, dispatch] = useReducer<
     Reducer<State, Actions>,
-    { blocks: BlockWithProofs[] }
+    { blocks: Block[] }
   >(reducer, { blocks }, createInitialState)
 
   const supabase = createClient()
@@ -31,14 +31,14 @@ const BlocksTable = ({ blocks, className }: Props) => {
         "postgres_changes",
         { event: "INSERT", schema: "public", table: "blocks" },
         (payload) => {
-          dispatch({ type: "add_block", payload: payload.new as Block })
+          dispatch({ type: "add_block", payload: payload.new as BlockBase })
         }
       )
       .on(
         "postgres_changes",
         { event: "UPDATE", schema: "public", table: "blocks" },
         (payload) => {
-          dispatch({ type: "update_block", payload: payload.new as Block })
+          dispatch({ type: "update_block", payload: payload.new as BlockBase })
         }
       )
       .subscribe()

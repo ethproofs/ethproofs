@@ -2,11 +2,11 @@ import type { Metadata } from "next"
 import Image from "next/image"
 import prettyMilliseconds from "pretty-ms"
 
-import type { BlockWithProofs, SummaryItem } from "@/lib/types"
+import type { Block, SummaryItem } from "@/lib/types"
 
 import BlocksTable from "@/components/BlocksTable"
 import Null from "@/components/Null"
-import Block from "@/components/svgs/box.svg"
+import Box from "@/components/svgs/box.svg"
 import Clock from "@/components/svgs/clock.svg"
 import DollarSign from "@/components/svgs/dollar-sign.svg"
 import ShieldCheck from "@/components/svgs/shield-check.svg"
@@ -66,14 +66,14 @@ export default async function Index() {
       team: teams.find((team) => team.user_id === proof.user_id),
     }))
 
-    return { ...block, proofs: proofsWithTeams } as BlockWithProofs
+    return { ...block, proofs: proofsWithTeams } as Block
   })
 
   const summaryItems: SummaryItem[] = recentSummary.data
     ? [
         {
           label: "Proven blocks",
-          icon: <Block />,
+          icon: <Box />,
           value: formatNumber(recentSummary.data?.total_proven_blocks || 0),
         },
         {

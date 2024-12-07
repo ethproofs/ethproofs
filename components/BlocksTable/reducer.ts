@@ -1,17 +1,12 @@
-import type {
-  Block,
-  BlockWithProofs,
-  BlockWithProofsById,
-  Proof,
-} from "@/lib/types"
+import type { Block, BlockBase, BlocksById, Proof } from "@/lib/types"
 
 export type State = {
-  byId: BlockWithProofsById
+  byId: BlocksById
   allIds: number[]
 }
 
-type AddBlock = { type: "add_block"; payload: Block }
-type UpdateBlock = { type: "update_block"; payload: Block }
+type AddBlock = { type: "add_block"; payload: BlockBase }
+type UpdateBlock = { type: "update_block"; payload: BlockBase }
 type AddProof = { type: "add_proof"; payload: Proof }
 type UpdateProof = { type: "update_proof"; payload: Proof }
 
@@ -82,14 +77,10 @@ export const reducer = (state: State, action: Actions) => {
   }
 }
 
-export const createInitialState = ({
-  blocks,
-}: {
-  blocks: BlockWithProofs[]
-}): State => ({
+export const createInitialState = ({ blocks }: { blocks: Block[] }): State => ({
   byId: blocks.reduce((acc, block) => {
     acc[block.block_number] = block
     return acc
-  }, {} as BlockWithProofsById),
+  }, {} as BlocksById),
   allIds: blocks.map((block) => block.block_number),
 })
