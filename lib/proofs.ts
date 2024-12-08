@@ -2,7 +2,7 @@ import prettyMilliseconds from "pretty-ms"
 
 import { formatUsd } from "./number"
 import { getTime, prettyMs } from "./time"
-import type { Block, Proof, Stats } from "./types"
+import type { Proof, Stats } from "./types"
 
 // Filters
 
