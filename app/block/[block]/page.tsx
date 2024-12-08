@@ -40,19 +40,24 @@ import { TooltipContentHeader } from "@/components/ui/tooltip"
 
 import { cn } from "@/lib/utils"
 
-import { SITE_NAME } from "@/lib/constants"
-
 import { timestampToEpoch, timestampToSlot } from "@/lib/beaconchain"
 import { getBlockValueType } from "@/lib/blocks"
 import { getMetadata } from "@/lib/metadata"
 import { formatNumber } from "@/lib/number"
 import {
+  getAvgCostPerProof,
+  getCostPerMgasStats,
+  getCostPerProofStats,
+  getProofBestProvingCost,
   getProofBestProvingTime,
   getProofBestTimeToProof,
-  getProofCheapestProvingCost,
-  getProofsAvgCost,
   getProofsAvgProvingTime,
   getProofsAvgTimeToProof,
+  getProvingCost,
+  getProvingTimeStats,
+  getTotalTTPStats,
+  hasProvedTimestamp,
+  isCompleted,
   sortProofsStatusAndTimes,
 } from "@/lib/proofs"
 import { createClient } from "@/utils/supabase/client"
@@ -101,16 +106,13 @@ export default async function BlockDetailsPage({
     return { ...proof, team }
   })
 
-  // TODO: Add proper descriptions
+  const costPerProofStats = getCostPerProofStats(proofs)
 
-  const bestProvingTimeProof = getProofBestProvingTime(proofs)
-  const avgProvingTime = getProofsAvgProvingTime(proofs)
-  const bestTimeToProofProof = getProofBestTimeToProof(proofs)
-  const bestTimeToProof = bestTimeToProofProof?.proved_timestamp
-    ? new Date(bestTimeToProofProof?.proved_timestamp).getTime() -
-      new Date(block.timestamp).getTime()
-    : 0
-  const avgTimeToProof = getProofsAvgTimeToProof(block)
+  const costPerMgasStats = getCostPerMgasStats(proofs)
+
+  const provingTimeStats = getProvingTimeStats(proofs)
+
+  const totalTTPStats = getTotalTTPStats(proofs, timestamp)
 
   const availabilityMetrics: Metric[] = [
     {
@@ -137,11 +139,7 @@ export default async function BlockDetailsPage({
           </Info.Description>
         </>
       ),
-      value: bestProvingTimeProof?.proving_time ? (
-        prettyMilliseconds(bestProvingTimeProof.proving_time)
-      ) : (
-        <Null />
-      ),
+      value: provingTimeStats?.bestFormatted ?? <Null />,
     },
     {
       label: (
@@ -157,7 +155,7 @@ export default async function BlockDetailsPage({
           <metrics.provingTime.Details average />
         </>
       ),
-      value: avgProvingTime ? prettyMilliseconds(avgProvingTime) : <Null />,
+      value: provingTimeStats?.avgFormatted ?? <Null />,
     },
     {
       label: (
@@ -181,8 +179,7 @@ export default async function BlockDetailsPage({
           </Info.Description>
         </>
       ),
-      value:
-        bestTimeToProof > 0 ? prettyMilliseconds(bestTimeToProof) : <Null />,
+      value: totalTTPStats?.bestFormatted ?? <Null />,
     },
     {
       label: (
@@ -205,13 +202,9 @@ export default async function BlockDetailsPage({
           </Info.Description>
         </>
       ),
-      value: avgTimeToProof ? prettyMilliseconds(avgTimeToProof) : <Null />,
+      value: totalTTPStats?.avgFormatted ?? <Null />,
     },
   ]
-
-  const cheapestProof = getProofCheapestProvingCost(proofs)
-  const avgCostPerProof = getProofsAvgCost(proofs)
-  const megaGas = block.gas_used / 1e6
 
   const blockFeeMetrics: Metric[] = [
     {
@@ -225,17 +218,10 @@ export default async function BlockDetailsPage({
           <TooltipContentHeader>
             cheapest <metrics.costPerProof.Label />
           </TooltipContentHeader>
-          <metrics.provingCosts.Details />
+          <metrics.costPerProof.Details />
         </>
       ),
-      value: cheapestProof?.proving_cost ? (
-        formatNumber(cheapestProof.proving_cost, {
-          style: "currency",
-          currency: "USD",
-        })
-      ) : (
-        <Null />
-      ),
+      value: costPerProofStats?.bestFormatted ?? <Null />,
     },
     {
       label: (
@@ -246,17 +232,10 @@ export default async function BlockDetailsPage({
       description: (
         <>
           <TooltipContentHeader>avg cost per proof</TooltipContentHeader>
-          <metrics.provingCosts.Details average />
+          <metrics.costPerProof.Details average />
         </>
       ),
-      value: avgCostPerProof ? (
-        formatNumber(avgCostPerProof, {
-          style: "currency",
-          currency: "USD",
-        })
-      ) : (
-        <Null />
-      ),
+      value: costPerProofStats?.avgFormatted ?? <Null />,
     },
     {
       label: (
@@ -272,15 +251,7 @@ export default async function BlockDetailsPage({
           <metrics.costPerMgas.Details />
         </>
       ),
-      value:
-        cheapestProof?.proving_cost && block.gas_used ? (
-          formatNumber(cheapestProof.proving_cost / megaGas, {
-            style: "currency",
-            currency: "USD",
-          })
-        ) : (
-          <Null />
-        ),
+      value: costPerMgasStats?.bestFormatted ?? <Null />,
     },
     {
       label: (
@@ -296,15 +267,7 @@ export default async function BlockDetailsPage({
           <metrics.costPerMgas.Details />
         </>
       ),
-      value:
-        avgCostPerProof && block.gas_used ? (
-          formatNumber(avgCostPerProof / megaGas, {
-            style: "currency",
-            currency: "USD",
-          })
-        ) : (
-          <Null />
-        ),
+      value: costPerMgasStats?.avgFormatted ?? <Null />,
     },
   ]
 
@@ -415,20 +378,24 @@ export default async function BlockDetailsPage({
           const {
             proof_id,
             proving_time,
-            proof_status,
             proved_timestamp,
-            proving_cost,
             proving_cycles,
             team,
           } = proof
-          const isComplete = proof_status === "proved" && !!proved_timestamp
-          const timeToProof = proved_timestamp
-            ? Math.max(
-                new Date(proved_timestamp).getTime() -
-                  new Date(block.timestamp).getTime(),
-                0
-              )
-            : 0
+
+          const isAvailable = isCompleted(proof) && hasProvedTimestamp(proof)
+
+          const timeToProof =
+            isAvailable && proved_timestamp
+              ? Math.max(
+                  new Date(proved_timestamp).getTime() -
+                    new Date(block.timestamp).getTime(),
+                  0
+                )
+              : 0
+
+          const provingCost = getProvingCost(proof)
+
           return (
             <div
               className={cn(
@@ -482,7 +449,7 @@ export default async function BlockDetailsPage({
                   </MetricInfo>
                 </MetricLabel>
                 <MetricValue className="font-normal">
-                  {isComplete && timeToProof > 0 ? (
+                  {isAvailable && timeToProof > 0 ? (
                     prettyMilliseconds(timeToProof)
                   ) : (
                     <Null />
@@ -506,7 +473,7 @@ export default async function BlockDetailsPage({
                   </MetricInfo>
                 </MetricLabel>
                 <MetricValue className="font-normal">
-                  {isComplete && proving_time ? (
+                  {isAvailable && proving_time ? (
                     prettyMilliseconds(proving_time)
                   ) : (
                     <Null />
@@ -552,7 +519,7 @@ export default async function BlockDetailsPage({
                   className="font-normal"
                   title={proving_cycles ? formatNumber(proving_cycles) : ""}
                 >
-                  {isComplete && proving_cycles ? (
+                  {isAvailable && proving_cycles ? (
                     formatNumber(proving_cycles, {
                       notation: "compact",
                       compactDisplay: "short",
@@ -572,17 +539,17 @@ export default async function BlockDetailsPage({
                 )}
               >
                 <MetricLabel className="sm:max-md:justify-end">
-                  <metrics.provingCosts.Label />
+                  <metrics.costPerProof.Label />
                   <MetricInfo>
                     <TooltipContentHeader>
-                      <metrics.provingCosts.Label />
+                      <metrics.costPerProof.Label />
                     </TooltipContentHeader>
-                    <metrics.provingCosts.Details />
+                    <metrics.costPerProof.Details />
                   </MetricInfo>
                 </MetricLabel>
                 <MetricValue className="font-normal">
-                  {isComplete && proving_cost ? (
-                    formatNumber(proving_cost, {
+                  {isAvailable && provingCost ? (
+                    formatNumber(provingCost, {
                       style: "currency",
                       currency: "USD",
                     })
