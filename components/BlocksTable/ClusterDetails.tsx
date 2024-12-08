@@ -1,9 +1,16 @@
 import type { Proof } from "@/lib/types"
 
 const ClusterDetails = ({ proof }: { proof: Proof }) => {
-  const { cluster_id, cluster } = proof
-  if (!cluster) return "Cluster " + cluster_id.split("-")[0]
-  const { description, hardware, nickname } = cluster
+  const { cluster_id, clusters } = proof
+
+  if (!clusters)
+    return (
+      <span className="block text-lg font-semibold">
+        Cluster {cluster_id.split("-")[0]}
+      </span>
+    )
+
+  const { description, hardware, nickname } = clusters
 
   return (
     <div className="text-wrap">
