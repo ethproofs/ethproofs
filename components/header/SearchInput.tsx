@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation"
 import { useEventListener } from "usehooks-ts"
 import { isHash } from "viem"
 
-import { Block } from "@/lib/types"
+import { BlockBase } from "@/lib/types"
 
 import Magnifier from "@/components/svgs/magnifier.svg"
 import { Input } from "@/components/ui/input"
@@ -30,7 +30,7 @@ const SearchInput = ({
   const [query, setQuery] = useState("")
   const [loading, setLoading] = useState(false)
   const [blockMatch, setBlockMatch] = useState<
-    (Block & { proofs: { proof_status: string }[] }) | null
+    (BlockBase & { proofs: { proof_status: string }[] }) | null
   >(null)
 
   const handleSubmit = () => {
