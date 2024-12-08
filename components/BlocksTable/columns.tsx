@@ -167,11 +167,10 @@ export const columns: ColumnDef<Block>[] = [
         <metrics.costPerMgas.Details />
       </ColumnHeader>
     ),
-    cell: ({ cell, row }) => {
-      const proofs = cell.getValue() as Proof[]
-      const gasUsed = row.original.gas_used
+    cell: ({ row }) => {
+      const { proofs, gas_used } = row.original
 
-      const costPerMgasStats = getCostPerMgasStats(proofs, gasUsed)
+      const costPerMgasStats = getCostPerMgasStats(proofs, gas_used)
 
       if (!costPerMgasStats) return <Null />
 
@@ -204,13 +203,10 @@ export const columns: ColumnDef<Block>[] = [
         <metrics.provingTime.Details />
       </ColumnHeader>
     ),
-    cell: ({ cell, row }) => {
+    cell: ({ cell }) => {
       const proofs = cell.getValue() as Proof[]
-      const timestamp = row.original.timestamp
 
-      if (!timestamp || !proofs.length) return <Null />
-
-      const provingTimeStats = getProvingTimeStats()
+      const provingTimeStats = getProvingTimeStats(proofs)
 
       if (!provingTimeStats) return <Null />
 

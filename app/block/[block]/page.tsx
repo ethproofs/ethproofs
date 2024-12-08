@@ -108,7 +108,7 @@ export default async function BlockDetailsPage({
 
   const costPerProofStats = getCostPerProofStats(proofs)
 
-  const costPerMgasStats = getCostPerMgasStats(proofs)
+  const costPerMgasStats = getCostPerMgasStats(proofs, gas_used)
 
   const provingTimeStats = getProvingTimeStats(proofs)
 

@@ -67,8 +67,8 @@ export const getProofsAvgProvingTime = (proofs: Proof[]): number | null => {
 }
 
 export const getProofsAvgTimeToProof = (
-  proofs?: Proof[],
-  timestamp?: string
+  proofs: Proof[] | undefined,
+  timestamp: string | undefined
 ): number | null => {
   if (!timestamp || !proofs) return null
 
@@ -88,7 +88,9 @@ export const getProofsAvgTimeToProof = (
   return averageProvedTime - blockTimestamp // In milliseconds
 }
 
-export const getProofBestProvingTime = (proofs?: Proof[]): Proof | null => {
+export const getProofBestProvingTime = (
+  proofs: Proof[] | undefined
+): Proof | null => {
   if (!proofs || !proofs.length) return null
 
   const availableProofs = proofs.filter(isCompleted).filter(hasProvingTime)
@@ -258,7 +260,9 @@ export const downloadProof = (proof: Proof) => {
 
 // Statistics exporters: avg (with formatting), best (with formatting), best proof (team info)
 
-export const getCostPerProofStats = (proofs?: Proof[]): Stats | null => {
+export const getCostPerProofStats = (
+  proofs: Proof[] | undefined
+): Stats | null => {
   if (!proofs || !proofs.length) return null
 
   const availableProofs = proofs.filter(isCompleted).filter(hasCostInfo)
@@ -281,8 +285,8 @@ export const getCostPerProofStats = (proofs?: Proof[]): Stats | null => {
 }
 
 export const getCostPerMgasStats = (
-  proofs?: Proof[],
-  gasUsed?: number
+  proofs: Proof[] | undefined,
+  gasUsed: number | undefined
 ): Stats | null => {
   if (!proofs || !proofs.length || !gasUsed) return null
 
@@ -304,7 +308,9 @@ export const getCostPerMgasStats = (
   }
 }
 
-export const getProvingTimeStats = (proofs?: Proof[]): Stats | null => {
+export const getProvingTimeStats = (
+  proofs: Proof[] | undefined
+): Stats | null => {
   if (!proofs || !proofs.length) return null
 
   const availableProofs = proofs.filter(isCompleted).filter(hasProvingTime)
@@ -335,8 +341,8 @@ export const getProvingTimeStats = (proofs?: Proof[]): Stats | null => {
 }
 
 export const getTotalTTPStats = (
-  proofs?: Proof[],
-  timestamp?: string
+  proofs: Proof[] | undefined,
+  timestamp: string | undefined
 ): Stats | null => {
   if (!proofs || !proofs.length || !timestamp) return null
 
