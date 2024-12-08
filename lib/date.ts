@@ -1,3 +1,5 @@
+import prettyMilliseconds from "pretty-ms"
+
 export function formatTimeAgo(date: Date | string): string {
   // Initialize a default date as the current date
   let _date: Date = new Date()
@@ -78,5 +80,3 @@ export const renderTimestamp = (timestamp: string, timeZone?: string): string =>
     timeStyle: "long",
     timeZone,
   }).format(new Date(timestamp))
-
-export const getTime = (d: string): number => new Date(d).getTime()

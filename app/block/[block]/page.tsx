@@ -54,6 +54,8 @@ import {
   getProofsAvgProvingTime,
   getProofsAvgTimeToProof,
   getProvingCost,
+  getProvingTimeStats,
+  getTotalTTPStats,
   hasProvedTimestamp,
   isCompleted,
   sortProofsStatusAndTimes,
@@ -104,14 +106,13 @@ export default async function BlockDetailsPage({
     return { ...proof, team }
   })
 
-  const bestProvingTimeProof = getProofBestProvingTime(proofs)
-  const avgProvingTime = getProofsAvgProvingTime(proofs)
-  const bestTimeToProofProof = getProofBestTimeToProof(proofs)
-  const bestTimeToProof = bestTimeToProofProof?.proved_timestamp
-    ? new Date(bestTimeToProofProof?.proved_timestamp).getTime() -
-      new Date(block.timestamp).getTime()
-    : 0
-  const avgTimeToProof = getProofsAvgTimeToProof(block.proofs, block.timestamp)
+  const costPerProofStats = getCostPerProofStats(proofs)
+
+  const costPerMgasStats = getCostPerMgasStats(proofs)
+
+  const provingTimeStats = getProvingTimeStats(proofs)
+
+  const totalTTPStats = getTotalTTPStats(proofs, timestamp)
 
   const availabilityMetrics: Metric[] = [
     {
@@ -138,11 +139,7 @@ export default async function BlockDetailsPage({
           </Info.Description>
         </>
       ),
-      value: bestProvingTimeProof?.proving_time ? (
-        prettyMilliseconds(bestProvingTimeProof.proving_time)
-      ) : (
-        <Null />
-      ),
+      value: provingTimeStats?.bestFormatted ?? <Null />,
     },
     {
       label: (
@@ -158,7 +155,7 @@ export default async function BlockDetailsPage({
           <metrics.provingTime.Details average />
         </>
       ),
-      value: avgProvingTime ? prettyMilliseconds(avgProvingTime) : <Null />,
+      value: provingTimeStats?.avgFormatted ?? <Null />,
     },
     {
       label: (
@@ -182,8 +179,7 @@ export default async function BlockDetailsPage({
           </Info.Description>
         </>
       ),
-      value:
-        bestTimeToProof > 0 ? prettyMilliseconds(bestTimeToProof) : <Null />,
+      value: totalTTPStats?.bestFormatted ?? <Null />,
     },
     {
       label: (
@@ -206,16 +202,9 @@ export default async function BlockDetailsPage({
           </Info.Description>
         </>
       ),
-      value: avgTimeToProof ? prettyMilliseconds(avgTimeToProof) : <Null />,
+      value: totalTTPStats?.avgFormatted ?? <Null />,
     },
   ]
-
-  const cheapestProof = getProofBestProvingCost(proofs)
-  const avgCostPerProof = getAvgCostPerProof(proofs)
-  const megaGas = block.gas_used / 1e6
-
-  const costPerProofStats = getCostPerProofStats(proofs)
-  const costPerMgasStats = getCostPerMgasStats(proofs)
 
   const blockFeeMetrics: Metric[] = [
     {
@@ -394,17 +383,18 @@ export default async function BlockDetailsPage({
             team,
           } = proof
 
-          const timeToProof = proved_timestamp
-            ? Math.max(
-                new Date(proved_timestamp).getTime() -
-                  new Date(block.timestamp).getTime(),
-                0
-              )
-            : 0
+          const isAvailable = isCompleted(proof) && hasProvedTimestamp(proof)
+
+          const timeToProof =
+            isAvailable && proved_timestamp
+              ? Math.max(
+                  new Date(proved_timestamp).getTime() -
+                    new Date(block.timestamp).getTime(),
+                  0
+                )
+              : 0
 
           const provingCost = getProvingCost(proof)
-
-          const isComplete = isCompleted(proof) && hasProvedTimestamp(proof)
 
           return (
             <div
@@ -459,7 +449,7 @@ export default async function BlockDetailsPage({
                   </MetricInfo>
                 </MetricLabel>
                 <MetricValue className="font-normal">
-                  {isComplete && timeToProof > 0 ? (
+                  {isAvailable && timeToProof > 0 ? (
                     prettyMilliseconds(timeToProof)
                   ) : (
                     <Null />
@@ -483,7 +473,7 @@ export default async function BlockDetailsPage({
                   </MetricInfo>
                 </MetricLabel>
                 <MetricValue className="font-normal">
-                  {isComplete && proving_time ? (
+                  {isAvailable && proving_time ? (
                     prettyMilliseconds(proving_time)
                   ) : (
                     <Null />
@@ -529,7 +519,7 @@ export default async function BlockDetailsPage({
                   className="font-normal"
                   title={proving_cycles ? formatNumber(proving_cycles) : ""}
                 >
-                  {isComplete && proving_cycles ? (
+                  {isAvailable && proving_cycles ? (
                     formatNumber(proving_cycles, {
                       notation: "compact",
                       compactDisplay: "short",
@@ -558,7 +548,7 @@ export default async function BlockDetailsPage({
                   </MetricInfo>
                 </MetricLabel>
                 <MetricValue className="font-normal">
-                  {isComplete && provingCost ? (
+                  {isAvailable && provingCost ? (
                     formatNumber(provingCost, {
                       style: "currency",
                       currency: "USD",

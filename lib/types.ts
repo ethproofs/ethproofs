@@ -108,3 +108,15 @@ export type SummaryItem = {
   icon: ReactNode
   value: string
 }
+
+/**
+ * Basic statistical output for a metric
+ * Includes average and best values, as well as proof (team) data for the best
+ */
+export type Stats = {
+  avg: number
+  avgFormatted: string
+  best: number
+  bestFormatted: string
+  bestProof: Proof
+}
