@@ -1,7 +1,6 @@
 import type { Metadata } from "next"
 import Link from "next/link"
 import { notFound } from "next/navigation"
-import prettyMilliseconds from "pretty-ms"
 
 import type { Metric } from "@/lib/types"
 
@@ -56,6 +55,7 @@ import {
   isCompleted,
   sortProofsStatusAndTimes,
 } from "@/lib/proofs"
+import { prettyMs } from "@/lib/time"
 import { createClient } from "@/utils/supabase/client"
 
 const supabase = createClient()
@@ -457,7 +457,7 @@ export default async function BlockDetailsPage({
                 </MetricLabel>
                 <MetricValue className="font-normal">
                   {isAvailable && timeToProof > 0 ? (
-                    prettyMilliseconds(timeToProof)
+                    prettyMs(timeToProof)
                   ) : (
                     <Null />
                   )}
@@ -481,7 +481,7 @@ export default async function BlockDetailsPage({
                 </MetricLabel>
                 <MetricValue className="font-normal">
                   {isAvailable && proving_time ? (
-                    prettyMilliseconds(proving_time)
+                    prettyMs(proving_time)
                   ) : (
                     <Null />
                   )}

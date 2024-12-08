@@ -1,5 +1,3 @@
-import prettyMilliseconds from "pretty-ms"
-
 export function formatTimeAgo(date: Date | string): string {
   // Initialize a default date as the current date
   let _date: Date = new Date()

@@ -1,7 +1,6 @@
 "use client"
 
 import Link from "next/link"
-import prettyMilliseconds from "pretty-ms"
 import { ColumnDef } from "@tanstack/react-table"
 
 import type { Cluster, Proof } from "@/lib/types"
@@ -16,6 +15,7 @@ import { TooltipContentHeader } from "@/components/ui/tooltip"
 import { ColumnHeader } from "./ColumnHeader"
 
 import { formatNumber } from "@/lib/number"
+import { prettyMs } from "@/lib/time"
 
 export const columns: ColumnDef<Proof>[] = [
   // Block (time since)
@@ -84,7 +84,7 @@ export const columns: ColumnDef<Proof>[] = [
       const diff =
         new Date(provedTimestamp).getTime() - new Date(blockTimestamp).getTime()
 
-      return diff > 0 ? prettyMilliseconds(diff) : <Null />
+      return diff > 0 ? prettyMs(diff) : <Null />
     },
   },
   // Proving time (proof.proving_time, duration spent generating proof)
@@ -100,7 +100,7 @@ export const columns: ColumnDef<Proof>[] = [
 
       if (!provingTime) return <Null />
 
-      return prettyMilliseconds(provingTime)
+      return prettyMs(provingTime)
     },
   },
   // Download button / proof status

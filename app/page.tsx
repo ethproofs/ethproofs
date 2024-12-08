@@ -1,6 +1,5 @@
 import type { Metadata } from "next"
 import Image from "next/image"
-import prettyMilliseconds from "pretty-ms"
 
 import type { Block, SummaryItem } from "@/lib/types"
 
@@ -21,6 +20,7 @@ import { AVERAGE_LABEL } from "@/lib/constants"
 
 import { getMetadata } from "@/lib/metadata"
 import { formatNumber } from "@/lib/number"
+import { prettyMs } from "@/lib/time"
 import HeroDark from "@/public/images/hero-background.png"
 import { createClient } from "@/utils/supabase/server"
 
@@ -100,7 +100,7 @@ export default async function Index() {
             </>
           ),
           icon: <Clock />,
-          value: prettyMilliseconds(recentSummary.data?.avg_proving_time || 0),
+          value: prettyMs(recentSummary.data?.avg_proving_time || 0),
         },
       ]
     : []
@@ -233,7 +233,7 @@ export default async function Index() {
                           {AVERAGE_LABEL} proving time
                         </div>
                         <div className="font-mono text-lg">
-                          {prettyMilliseconds(avg_proving_time || 0)}
+                          {prettyMs(avg_proving_time || 0)}
                         </div>
                       </div>
                       <div className="flex flex-col items-center gap-2 px-4">

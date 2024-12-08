@@ -1,5 +1,3 @@
-import prettyMilliseconds from "pretty-ms"
-
 import { formatUsd } from "./number"
 import { getTime, prettyMs } from "./time"
 import type { Proof, Stats } from "./types"
@@ -327,9 +325,9 @@ export const getProvingTimeStats = (
 
   if (!isFinite(best) || !isFinite(avg)) return null
 
-  const avgFormatted = prettyMilliseconds(avg)
+  const avgFormatted = prettyMs(avg)
 
-  const bestFormatted = prettyMilliseconds(best)
+  const bestFormatted = prettyMs(best)
 
   return {
     avg,

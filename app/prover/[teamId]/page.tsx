@@ -1,7 +1,6 @@
 import { type Metadata } from "next"
 import Link from "next/link"
 import { notFound } from "next/navigation"
-import prettyMilliseconds from "pretty-ms"
 
 import type { Cluster, Metric, Proof } from "@/lib/types"
 
@@ -41,6 +40,7 @@ import { columns } from "./columns"
 import { getMetadata } from "@/lib/metadata"
 import { formatNumber } from "@/lib/number"
 import { getProofsAvgProvingTime } from "@/lib/proofs"
+import { prettyMs } from "@/lib/time"
 import { getHost, getTwitterHandle } from "@/lib/url"
 import { createClient } from "@/utils/supabase/client"
 
@@ -157,11 +157,7 @@ export default async function ProverPage({ params }: ProverPageProps) {
       label: `${AVERAGE_LABEL} proving time`,
       description:
         "The average amount of time taken to generate a proof using any proving instance",
-      value: avgProofProvingTime ? (
-        prettyMilliseconds(avgProofProvingTime)
-      ) : (
-        <Null />
-      ),
+      value: avgProofProvingTime ? prettyMs(avgProofProvingTime) : <Null />,
     },
   ]
 
