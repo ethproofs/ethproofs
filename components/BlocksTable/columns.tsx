@@ -251,10 +251,6 @@ export const columns: ColumnDef<Block>[] = [
 
       const totalTTPStats = getTotalTTPStats(proofs, timestamp)
 
-      if (!totalTTPStats) return <Null />
-
-      const { bestFormatted } = totalTTPStats
-
       return (
         <div className="flex flex-col justify-center text-center">
           <ProofStatus className="mx-auto" proofs={proofs} />
@@ -262,7 +258,7 @@ export const columns: ColumnDef<Block>[] = [
             <span className="font-body">
               <metrics.totalTTP.Label />:
             </span>{" "}
-            {bestFormatted}
+            {totalTTPStats?.bestFormatted ?? <Null />}
           </div>
         </div>
       )
