@@ -14,7 +14,7 @@ import * as Info from "@/components/ui/info"
 
 import { cn } from "@/lib/utils"
 
-import { BLOCK_GAS_LIMIT } from "@/lib/constants"
+import { AVERAGE_LABEL, BLOCK_GAS_LIMIT } from "@/lib/constants"
 
 import ProofStatus, { ProofStatusInfo } from "../ProofStatus"
 import { HidePunctuation } from "../StylePunctuation"
@@ -154,7 +154,7 @@ export const columns: ColumnDef<Block>[] = [
             </MetricInfo>
           </span>
           <span className="block whitespace-nowrap text-sm text-body-secondary">
-            avg. {avgFormatted}
+            {AVERAGE_LABEL} {avgFormatted}
           </span>
         </>
       )
@@ -190,7 +190,7 @@ export const columns: ColumnDef<Block>[] = [
             </MetricInfo>
           </span>
           <span className="block whitespace-nowrap text-sm text-body-secondary">
-            avg. {avgFormatted}
+            {AVERAGE_LABEL} {avgFormatted}
           </span>
         </>
       )
@@ -226,7 +226,7 @@ export const columns: ColumnDef<Block>[] = [
             </MetricInfo>
           </span>
           <span className="block whitespace-nowrap text-sm text-body-secondary">
-            avg. {avgFormatted}
+            {AVERAGE_LABEL} {avgFormatted}
           </span>
         </>
       )

@@ -40,6 +40,8 @@ import { TooltipContentHeader } from "@/components/ui/tooltip"
 
 import { cn } from "@/lib/utils"
 
+import { AVERAGE_LABEL } from "@/lib/constants"
+
 import { timestampToEpoch, timestampToSlot } from "@/lib/beaconchain"
 import { getBlockValueType } from "@/lib/blocks"
 import { getMetadata } from "@/lib/metadata"
@@ -144,7 +146,7 @@ export default async function BlockDetailsPage({
     {
       label: (
         <>
-          avg <metrics.provingTime.Label />
+          {AVERAGE_LABEL} <metrics.provingTime.Label />
         </>
       ),
       description: (
@@ -184,7 +186,7 @@ export default async function BlockDetailsPage({
     {
       label: (
         <>
-          Avg <metrics.totalTTP.Label />
+          {AVERAGE_LABEL} <metrics.totalTTP.Label />
         </>
       ),
       description: (
@@ -226,12 +228,14 @@ export default async function BlockDetailsPage({
     {
       label: (
         <>
-          avg <metrics.costPerProof.Label />
+          {AVERAGE_LABEL} <metrics.costPerProof.Label />
         </>
       ),
       description: (
         <>
-          <TooltipContentHeader>avg cost per proof</TooltipContentHeader>
+          <TooltipContentHeader>
+            {AVERAGE_LABEL} cost per proof
+          </TooltipContentHeader>
           <metrics.costPerProof.Details average />
         </>
       ),
@@ -256,13 +260,13 @@ export default async function BlockDetailsPage({
     {
       label: (
         <>
-          avg <metrics.costPerMgas.Label />
+          {AVERAGE_LABEL} <metrics.costPerMgas.Label />
         </>
       ),
       description: (
         <>
           <TooltipContentHeader>
-            avg <metrics.costPerMgas.Label />
+            {AVERAGE_LABEL} <metrics.costPerMgas.Label />
           </TooltipContentHeader>
           <metrics.costPerMgas.Details />
         </>

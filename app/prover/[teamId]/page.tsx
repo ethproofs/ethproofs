@@ -34,7 +34,7 @@ import {
 
 import { cn } from "@/lib/utils"
 
-import { SITE_NAME } from "@/lib/constants"
+import { AVERAGE_LABEL, SITE_NAME } from "@/lib/constants"
 
 import { columns } from "./columns"
 
@@ -126,7 +126,8 @@ export default async function ProverPage({ params }: ProverPageProps) {
     {
       label: (
         <>
-          <span className="normal-case">{team.team_name}</span> Avg zk
+          <span className="normal-case">{team.team_name}</span> {AVERAGE_LABEL}{" "}
+          zk
           <span className="uppercase">VM</span> cycles per{" "}
           <span className="uppercase">M</span>gas
         </>
@@ -138,8 +139,8 @@ export default async function ProverPage({ params }: ProverPageProps) {
     {
       label: (
         <>
-          <span className="normal-case">{team.team_name}</span> Avg cost per{" "}
-          <span className="uppercase">M</span>gas
+          <span className="normal-case">{team.team_name}</span> {AVERAGE_LABEL}{" "}
+          cost per <span className="uppercase">M</span>gas
         </>
       ),
       description: "The average cost incurred for proving a million gas units",
@@ -149,7 +150,7 @@ export default async function ProverPage({ params }: ProverPageProps) {
       }),
     },
     {
-      label: "Avg proving time",
+      label: `${AVERAGE_LABEL} proving time`,
       description:
         "The average amount of time taken to generate a proof using any proving instance",
       value: avgProofProvingTime ? (

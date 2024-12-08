@@ -16,6 +16,8 @@ import { Card } from "@/components/ui/card"
 
 import { cn } from "@/lib/utils"
 
+import { AVERAGE_LABEL } from "@/lib/constants"
+
 import { getMetadata } from "@/lib/metadata"
 import { formatNumber } from "@/lib/number"
 import HeroDark from "@/public/images/hero-background.png"
@@ -77,14 +79,14 @@ export default async function Index() {
           value: formatNumber(recentSummary.data?.total_proven_blocks || 0),
         },
         {
-          label: "Avg cost per proof",
+          label: `${AVERAGE_LABEL} cost per proof`,
           icon: <DollarSign />,
           value: formatNumber(recentSummary.data?.avg_cost_per_proof || 0, {
             maximumFractionDigits: 2,
           }),
         },
         {
-          label: "Avg proving time",
+          label: `${AVERAGE_LABEL} proving time`,
           icon: <Clock />,
           value: prettyMilliseconds(recentSummary.data?.avg_proving_time || 0),
         },
@@ -216,7 +218,7 @@ export default async function Index() {
                     <div className="flex w-full flex-nowrap">
                       <div className="flex flex-col items-center gap-2 px-4">
                         <div className="flex items-center gap-1 text-body-secondary">
-                          avg proving time
+                          {AVERAGE_LABEL} proving time
                         </div>
                         <div className="font-mono text-lg">
                           {prettyMilliseconds(avg_proving_time || 0)}
@@ -224,7 +226,7 @@ export default async function Index() {
                       </div>
                       <div className="flex flex-col items-center gap-2 px-4">
                         <div className="flex items-center gap-1 text-body-secondary">
-                          avg cost
+                          {AVERAGE_LABEL} cost
                         </div>
                         <div className="font-mono text-lg">
                           {avg_proving_cost !== null &&
