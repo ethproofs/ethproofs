@@ -5,6 +5,7 @@ import prettyMilliseconds from "pretty-ms"
 import type { Block, SummaryItem } from "@/lib/types"
 
 import BlocksTable from "@/components/BlocksTable"
+import { metrics } from "@/components/Metrics"
 import Null from "@/components/Null"
 import Box from "@/components/svgs/box.svg"
 import Clock from "@/components/svgs/clock.svg"
@@ -74,19 +75,30 @@ export default async function Index() {
   const summaryItems: SummaryItem[] = recentSummary.data
     ? [
         {
+          key: "proven-blocks",
           label: "Proven blocks",
           icon: <Box />,
           value: formatNumber(recentSummary.data?.total_proven_blocks || 0),
         },
         {
-          label: `${AVERAGE_LABEL} cost per proof`,
+          key: "avg-cost-per-proof",
+          label: (
+            <>
+              {AVERAGE_LABEL} <metrics.costPerProof.Label />
+            </>
+          ),
           icon: <DollarSign />,
           value: formatNumber(recentSummary.data?.avg_cost_per_proof || 0, {
             maximumFractionDigits: 2,
           }),
         },
         {
-          label: `${AVERAGE_LABEL} proving time`,
+          key: "avg-proving-time",
+          label: (
+            <>
+              {AVERAGE_LABEL} <metrics.provingTime.Label />
+            </>
+          ),
           icon: <Clock />,
           value: prettyMilliseconds(recentSummary.data?.avg_proving_time || 0),
         },
@@ -122,8 +134,8 @@ export default async function Index() {
           it will enable full ZK light clients on any smartphone.
         </p>
         <div className="flex w-full max-w-2xl justify-around">
-          {summaryItems.map(({ label, icon, value }) => (
-            <div key={label} className="flex flex-col gap-1 p-2">
+          {summaryItems.map(({ key, label, icon, value }) => (
+            <div key={key} className="flex flex-col gap-1 p-2">
               <div className="flex flex-col items-center justify-center gap-x-2 md:flex-row">
                 <p className="font-mono text-2xl text-primary md:text-3xl lg:text-4xl">
                   {icon}

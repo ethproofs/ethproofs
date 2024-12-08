@@ -43,7 +43,7 @@ const ProofStatus = ({
   hideEmpty,
   ...props
 }: ProofStatusProps) => {
-  const allProofs: Proof[][] = Array(3)
+  const allProofs: Proof[][] = Array(ORDERED_STATUSES.length)
     .fill(0)
     .map((_, i) => proofs.filter((p) => p.proof_status === ORDERED_STATUSES[i]))
 
@@ -55,7 +55,7 @@ const ProofStatus = ({
       {allProofs.map(({ length: proofCount }, idx) => {
         if (proofCount === 0 && hideEmpty) return null
         return (
-          <div key={idx} className="flex items-center gap-1">
+          <div key={ORDERED_STATUSES[idx]} className="flex items-center gap-1">
             <MetricInfo
               trigger={
                 <div className="flex flex-nowrap items-center gap-1">

@@ -119,11 +119,13 @@ export default async function ProverPage({ params }: ProverPageProps) {
 
   const performanceMetrics: Metric[] = [
     {
+      key: "total-proofs",
       label: "Total proofs",
       description: <ProofStatusInfo title="total proofs" />,
       value: <ProofStatus proofs={proofsExtended as Proof[]} />,
     },
     {
+      key: "avg-zkvm-cycles-per-mgas",
       label: (
         <>
           <span className="normal-case">{team.team_name}</span> {AVERAGE_LABEL}{" "}
@@ -137,6 +139,7 @@ export default async function ProverPage({ params }: ProverPageProps) {
       value: formatNumber(avgZkVMCyclesPerMgas),
     },
     {
+      key: "avg-cost-per-mgas",
       label: (
         <>
           <span className="normal-case">{team.team_name}</span> {AVERAGE_LABEL}{" "}
@@ -150,6 +153,7 @@ export default async function ProverPage({ params }: ProverPageProps) {
       }),
     },
     {
+      key: "avg-proving-time",
       label: `${AVERAGE_LABEL} proving time`,
       description:
         "The average amount of time taken to generate a proof using any proving instance",
@@ -234,8 +238,8 @@ export default async function ProverPage({ params }: ProverPageProps) {
           <TrendingUp /> Prover performance
         </h2>
         <div className="flex flex-wrap gap-x-8">
-          {performanceMetrics.map(({ label, description, value }, idx) => (
-            <MetricBox key={idx}>
+          {performanceMetrics.map(({ key, label, description, value }) => (
+            <MetricBox key={key}>
               <MetricLabel>
                 {label}
                 <MetricInfo>{description}</MetricInfo>

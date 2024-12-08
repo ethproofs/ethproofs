@@ -47,14 +47,8 @@ import { getBlockValueType } from "@/lib/blocks"
 import { getMetadata } from "@/lib/metadata"
 import { formatNumber } from "@/lib/number"
 import {
-  getAvgCostPerProof,
   getCostPerMgasStats,
   getCostPerProofStats,
-  getProofBestProvingCost,
-  getProofBestProvingTime,
-  getProofBestTimeToProof,
-  getProofsAvgProvingTime,
-  getProofsAvgTimeToProof,
   getProvingCost,
   getProvingTimeStats,
   getTotalTTPStats,
@@ -118,11 +112,13 @@ export default async function BlockDetailsPage({
 
   const availabilityMetrics: Metric[] = [
     {
+      key: "status-of-proofs",
       label: "Status of proofs",
       description: <ProofStatusInfo />,
       value: <ProofStatus proofs={proofs} />,
     },
     {
+      key: "fastest-proving-time",
       label: (
         <>
           Fastest <metrics.provingTime.Label />
@@ -144,6 +140,7 @@ export default async function BlockDetailsPage({
       value: provingTimeStats?.bestFormatted ?? <Null />,
     },
     {
+      key: "avg-proving-time",
       label: (
         <>
           {AVERAGE_LABEL} <metrics.provingTime.Label />
@@ -160,6 +157,7 @@ export default async function BlockDetailsPage({
       value: provingTimeStats?.avgFormatted ?? <Null />,
     },
     {
+      key: "fastest-total-ttp",
       label: (
         <>
           Fastest <metrics.totalTTP.Label />
@@ -184,6 +182,7 @@ export default async function BlockDetailsPage({
       value: totalTTPStats?.bestFormatted ?? <Null />,
     },
     {
+      key: "avg-total-ttp",
       label: (
         <>
           {AVERAGE_LABEL} <metrics.totalTTP.Label />
@@ -210,6 +209,7 @@ export default async function BlockDetailsPage({
 
   const blockFeeMetrics: Metric[] = [
     {
+      key: "cheapest-cost-per-proof",
       label: (
         <>
           cheapest <metrics.costPerProof.Label />
@@ -226,6 +226,7 @@ export default async function BlockDetailsPage({
       value: costPerProofStats?.bestFormatted ?? <Null />,
     },
     {
+      key: "avg-cost-per-proof",
       label: (
         <>
           {AVERAGE_LABEL} <metrics.costPerProof.Label />
@@ -242,6 +243,7 @@ export default async function BlockDetailsPage({
       value: costPerProofStats?.avgFormatted ?? <Null />,
     },
     {
+      key: "cheapest-cost-per-mgas",
       label: (
         <>
           cheapest <metrics.costPerMgas.Label />
@@ -258,6 +260,7 @@ export default async function BlockDetailsPage({
       value: costPerMgasStats?.bestFormatted ?? <Null />,
     },
     {
+      key: "avg-cost-per-mgas",
       label: (
         <>
           {AVERAGE_LABEL} <metrics.costPerMgas.Label />
@@ -343,8 +346,8 @@ export default async function BlockDetailsPage({
             <Timer /> Proof availability
           </h2>
           <div className="grid grid-cols-2 gap-x-8 sm:flex sm:flex-wrap">
-            {availabilityMetrics.map(({ label, description, value }, idx) => (
-              <MetricBox key={idx}>
+            {availabilityMetrics.map(({ key, label, description, value }) => (
+              <MetricBox key={key}>
                 <MetricLabel className="lowercase">
                   {label}
                   <MetricInfo>{description}</MetricInfo>
@@ -360,8 +363,8 @@ export default async function BlockDetailsPage({
             <DollarSign /> Proof costs
           </h2>
           <div className="grid grid-cols-2 gap-x-8 sm:flex sm:flex-wrap">
-            {blockFeeMetrics.map(({ label, description, value }, idx) => (
-              <MetricBox key={idx}>
+            {blockFeeMetrics.map(({ key, label, description, value }) => (
+              <MetricBox key={key}>
                 <MetricLabel>
                   {label}
                   <MetricInfo>{description}</MetricInfo>

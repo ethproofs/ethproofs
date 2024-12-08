@@ -92,21 +92,25 @@ export type Block = (EmptyBlock | BlockBase) & BlockExtensions
 export type BlocksById = Record<number, Block>
 
 /**
- * Represents a metric with a label, description, and value, all of which are React nodes.
+ * Represents a metric with a label, description, and value, all of which are React nodes,
+ * and a unique key for element array mapping.
  */
 export type Metric = {
+  key: string
   label: ReactNode
   description: ReactNode
   value: ReactNode
 }
 
 /**
- * Represents a summary item with a label, icon, and value.
+ * Represents a summary item with a label, icon, and value,
+ * with a unique key for element array mapping.
  */
 export type SummaryItem = {
-  label: string
+  key: string
+  label: ReactNode
   icon: ReactNode
-  value: string
+  value: ReactNode
 }
 
 /**
