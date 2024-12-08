@@ -20,7 +20,7 @@ export type Team = Tables<"teams">
 export type ProofBase = Tables<"proofs">
 export type ProofExtensions = {
   block?: Block
-  cluster?: Cluster
+  clusters?: Cluster
   team?: Team
 }
 export type Proof = ProofBase & ProofExtensions
