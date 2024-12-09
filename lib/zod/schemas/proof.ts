@@ -24,5 +24,9 @@ export const provedProofSchema = baseProofSchema.extend({
     .number()
     .int()
     .positive("proving_cycles must be a positive integer"),
-  proof: z.string().base64().min(1, "proof is required for 'proved' status"),
+  proof: z
+    .string()
+    .base64()
+    .min(1, "proof is required for 'proved' status")
+    .describe("Proof in base64 format"),
 })
