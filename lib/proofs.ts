@@ -19,7 +19,8 @@ export const isCompleted = (proof: Proof) => proof.proof_status === "proved"
  * @returns {boolean} `true` if information to calculate costs are available, otherwise `false`.
  */
 export const hasCostInfo = (p: Proof) =>
-  !!p.proving_time && !!p.cluster_configurations?.[0]?.awsInstance?.hourly_price
+  !!p.proving_time &&
+  !!p.cluster_configurations?.[0]?.aws_instance_pricing?.hourly_price
 
 /**
  * Determines if a proof has a valid proved timestamp.
@@ -126,7 +127,8 @@ export const getProofBestTimeToProof = (proofs: Proof[]): Proof | null => {
 export const getProvingCost = (proof: Proof): number | null => {
   const { proving_time, cluster_configurations } = proof
   // TODO: Remove [0] when 1:1 cluster_id to instance_type_id established
-  const { hourly_price } = cluster_configurations?.[0]?.awsInstance || {}
+  const { hourly_price } =
+    cluster_configurations?.[0]?.aws_instance_pricing || {}
   if (!proving_time || !hourly_price) return null
   return (proving_time * hourly_price) / 1e3 / 60 / 60
 }
