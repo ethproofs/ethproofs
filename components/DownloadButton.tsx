@@ -10,8 +10,6 @@ import { Button } from "./ui/button"
 import StatusIcon from "./StatusIcon"
 import Tooltip from "./Tooltip"
 
-import { downloadProof } from "@/lib/proofs"
-
 type DownloadButtonProps = {
   proof: Proof & { team?: Team }
   className?: string
@@ -35,10 +33,12 @@ const DownloadButton = ({ className, proof }: DownloadButtonProps) => {
         className={cn(sizingClassName, className)}
         size="icon"
         disabled={!binary}
-        onClick={() => downloadProof(proof)}
+        asChild
       >
-        <ArrowDown />
-        <span className={labelClassName}>Download proof</span>
+        <a href={`/api/v0/proofs/download/${proof.proof_id}`} download>
+          <ArrowDown />
+          <span className={labelClassName}>Download proof</span>
+        </a>
       </Button>
     )
 
