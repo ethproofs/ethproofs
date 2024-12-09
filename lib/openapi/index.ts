@@ -5,6 +5,7 @@ import { SITE_NAME, SITE_PREVIEW_URL } from "../constants"
 import { awsPricingListPaths } from "./aws-pricing-list"
 import { clustersPaths } from "./clusters"
 import { proofsPaths } from "./proofs"
+import { singleMachinePaths } from "./single-machine"
 
 export const document = createDocument({
   openapi: "3.1.0",
@@ -35,6 +36,9 @@ export const document = createDocument({
       name: "Clusters",
     },
     {
+      name: "Single machine",
+    },
+    {
       name: "Proofs",
     },
     {
@@ -43,6 +47,7 @@ export const document = createDocument({
   ],
   paths: {
     ...clustersPaths,
+    ...singleMachinePaths,
     ...proofsPaths,
     ...awsPricingListPaths,
   },
