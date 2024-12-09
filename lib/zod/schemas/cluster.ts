@@ -9,7 +9,7 @@ export const ClusterSchema = z.object({
   proof_type: z.string().optional(),
 })
 
-export const createClusterSchema = z.object({
+const baseClusterSchema = z.object({
   nickname: z.string().max(50).openapi({
     description: "Human-readable name. Main display name in the UI",
     example: "ZKnight-01",
@@ -31,11 +31,14 @@ export const createClusterSchema = z.object({
       "Proof system used to generate proofs. (e.g., Groth16 or PlonK)",
     example: "Groth16",
   }),
+})
+
+export const createClusterSchema = baseClusterSchema.extend({
   configuration: z
     .array(
       z.object({
         instance_type: z.string().openapi({
-          description: "Instance type",
+          description: "Instance type from AWS pricing list",
           example: "c5.xlarge",
         }),
         instance_count: z.number().openapi({
@@ -45,4 +48,11 @@ export const createClusterSchema = z.object({
       })
     )
     .describe("Cluster configuration"),
+})
+
+export const singleMachineSchema = baseClusterSchema.extend({
+  instance_type: z.string().openapi({
+    description: "Instance type from AWS pricing list",
+    example: "c5.xlarge",
+  }),
 })
