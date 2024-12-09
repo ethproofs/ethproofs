@@ -154,27 +154,104 @@
                     "type": "object",
                     "properties": {
                       "id": {
-                        "type": "number"
+                        "type": [
+                          "number",
+                          "null"
+                        ]
                       },
                       "nickname": {
                         "type": "string"
                       },
                       "description": {
-                        "type": "string"
+                        "type": [
+                          "string",
+                          "null"
+                        ]
                       },
                       "hardware": {
-                        "type": "string"
+                        "type": [
+                          "string",
+                          "null"
+                        ]
                       },
                       "cycle_type": {
-                        "type": "string"
+                        "type": [
+                          "string",
+                          "null"
+                        ]
                       },
                       "proof_type": {
-                        "type": "string"
+                        "type": [
+                          "string",
+                          "null"
+                        ]
+                      },
+                      "cluster_configuration": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "instance_type_id": {
+                              "type": "number"
+                            },
+                            "instance_count": {
+                              "type": "number"
+                            },
+                            "aws_instance_pricing": {
+                              "type": [
+                                "object",
+                                "null"
+                              ],
+                              "properties": {
+                                "id": {
+                                  "type": "number"
+                                },
+                                "instance_type": {
+                                  "type": "string"
+                                },
+                                "region": {
+                                  "type": "string"
+                                },
+                                "hourly_price": {
+                                  "type": "number"
+                                },
+                                "instance_memory": {
+                                  "type": "number"
+                                },
+                                "vcpu": {
+                                  "type": "number"
+                                },
+                                "instance_storage": {
+                                  "type": "string"
+                                },
+                                "created_at": {
+                                  "type": "string"
+                                }
+                              },
+                              "required": [
+                                "id",
+                                "instance_type",
+                                "region",
+                                "hourly_price",
+                                "instance_memory",
+                                "vcpu",
+                                "instance_storage",
+                                "created_at"
+                              ]
+                            }
+                          },
+                          "required": [
+                            "instance_type_id",
+                            "instance_count",
+                            "aws_instance_pricing"
+                          ]
+                        }
                       }
                     },
                     "required": [
                       "id",
-                      "nickname"
+                      "nickname",
+                      "cluster_configuration"
                     ]
                   }
                 }
