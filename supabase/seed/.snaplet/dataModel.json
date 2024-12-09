@@ -2109,24 +2109,6 @@
       "tableName": "messages",
       "fields": [
         {
-          "id": "realtime.messages.id",
-          "name": "id",
-          "columnName": "id",
-          "type": "int8",
-          "isRequired": true,
-          "kind": "scalar",
-          "isList": false,
-          "isGenerated": false,
-          "sequence": {
-            "identifier": "\"realtime\".\"messages_id_seq\"",
-            "increment": 1,
-            "start": 1
-          },
-          "hasDefaultValue": true,
-          "isId": true,
-          "maxLength": null
-        },
-        {
           "id": "realtime.messages.topic",
           "name": "topic",
           "columnName": "topic",
@@ -2155,16 +2137,44 @@
           "maxLength": null
         },
         {
-          "id": "realtime.messages.inserted_at",
-          "name": "inserted_at",
-          "columnName": "inserted_at",
-          "type": "timestamp",
-          "isRequired": true,
+          "id": "realtime.messages.payload",
+          "name": "payload",
+          "columnName": "payload",
+          "type": "jsonb",
+          "isRequired": false,
           "kind": "scalar",
           "isList": false,
           "isGenerated": false,
           "sequence": false,
           "hasDefaultValue": false,
+          "isId": false,
+          "maxLength": null
+        },
+        {
+          "id": "realtime.messages.event",
+          "name": "event",
+          "columnName": "event",
+          "type": "text",
+          "isRequired": false,
+          "kind": "scalar",
+          "isList": false,
+          "isGenerated": false,
+          "sequence": false,
+          "hasDefaultValue": false,
+          "isId": false,
+          "maxLength": null
+        },
+        {
+          "id": "realtime.messages.private",
+          "name": "private",
+          "columnName": "private",
+          "type": "bool",
+          "isRequired": false,
+          "kind": "scalar",
+          "isList": false,
+          "isGenerated": false,
+          "sequence": false,
+          "hasDefaultValue": true,
           "isId": false,
           "maxLength": null
         },
@@ -2178,8 +2188,36 @@
           "isList": false,
           "isGenerated": false,
           "sequence": false,
-          "hasDefaultValue": false,
+          "hasDefaultValue": true,
           "isId": false,
+          "maxLength": null
+        },
+        {
+          "id": "realtime.messages.inserted_at",
+          "name": "inserted_at",
+          "columnName": "inserted_at",
+          "type": "timestamp",
+          "isRequired": true,
+          "kind": "scalar",
+          "isList": false,
+          "isGenerated": false,
+          "sequence": false,
+          "hasDefaultValue": true,
+          "isId": true,
+          "maxLength": null
+        },
+        {
+          "id": "realtime.messages.id",
+          "name": "id",
+          "columnName": "id",
+          "type": "uuid",
+          "isRequired": true,
+          "kind": "scalar",
+          "isList": false,
+          "isGenerated": false,
+          "sequence": false,
+          "hasDefaultValue": true,
+          "isId": true,
           "maxLength": null
         }
       ],
@@ -2187,7 +2225,8 @@
         {
           "name": "messages_pkey",
           "fields": [
-            "id"
+            "id",
+            "inserted_at"
           ],
           "nullNotDistinct": false
         }
@@ -5654,6 +5693,20 @@
           "columnName": "notify_private_alpha",
           "type": "bool",
           "isRequired": false,
+          "kind": "scalar",
+          "isList": false,
+          "isGenerated": false,
+          "sequence": false,
+          "hasDefaultValue": true,
+          "isId": false,
+          "maxLength": null
+        },
+        {
+          "id": "_realtime.tenants.private_only",
+          "name": "private_only",
+          "columnName": "private_only",
+          "type": "bool",
+          "isRequired": true,
           "kind": "scalar",
           "isList": false,
           "isGenerated": false,

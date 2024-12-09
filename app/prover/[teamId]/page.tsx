@@ -1,9 +1,8 @@
 import { type Metadata } from "next"
 import Link from "next/link"
 import { notFound } from "next/navigation"
-import prettyMilliseconds from "pretty-ms"
 
-import type { ClusterBase, Metric, Proof } from "@/lib/types"
+import type { Cluster, Metric, Proof } from "@/lib/types"
 
 import Null from "@/components/Null"
 import ProofStatus, { ProofStatusInfo } from "@/components/ProofStatus"
@@ -34,13 +33,14 @@ import {
 
 import { cn } from "@/lib/utils"
 
-import { SITE_NAME } from "@/lib/constants"
+import { AVERAGE_LABEL, SITE_NAME } from "@/lib/constants"
 
 import { columns } from "./columns"
 
 import { getMetadata } from "@/lib/metadata"
 import { formatNumber } from "@/lib/number"
 import { getProofsAvgProvingTime } from "@/lib/proofs"
+import { prettyMs } from "@/lib/time"
 import { getHost, getTwitterHandle } from "@/lib/url"
 import { createClient } from "@/utils/supabase/client"
 
@@ -95,7 +95,7 @@ export default async function ProverPage({ params }: ProverPageProps) {
         [curr.clusters.index]: curr.clusters,
       }
     }, {})
-  ) satisfies ClusterBase[]
+  ) satisfies Cluster[]
 
   const completedProofs = proofsExtended.filter(
     (p) => p.proof_status === "proved"
@@ -119,14 +119,17 @@ export default async function ProverPage({ params }: ProverPageProps) {
 
   const performanceMetrics: Metric[] = [
     {
+      key: "total-proofs",
       label: "Total proofs",
       description: <ProofStatusInfo title="total proofs" />,
       value: <ProofStatus proofs={proofsExtended as Proof[]} />,
     },
     {
+      key: "avg-zkvm-cycles-per-mgas",
       label: (
         <>
-          <span className="normal-case">{team.team_name}</span> Avg zk
+          <span className="normal-case">{team.team_name}</span> {AVERAGE_LABEL}{" "}
+          zk
           <span className="uppercase">VM</span> cycles per{" "}
           <span className="uppercase">M</span>gas
         </>
@@ -136,10 +139,11 @@ export default async function ProverPage({ params }: ProverPageProps) {
       value: formatNumber(avgZkVMCyclesPerMgas),
     },
     {
+      key: "avg-cost-per-mgas",
       label: (
         <>
-          <span className="normal-case">{team.team_name}</span> Avg cost per{" "}
-          <span className="uppercase">M</span>gas
+          <span className="normal-case">{team.team_name}</span> {AVERAGE_LABEL}{" "}
+          cost per <span className="uppercase">M</span>gas
         </>
       ),
       description: "The average cost incurred for proving a million gas units",
@@ -149,14 +153,11 @@ export default async function ProverPage({ params }: ProverPageProps) {
       }),
     },
     {
-      label: "Avg proving time",
+      key: "avg-proving-time",
+      label: `${AVERAGE_LABEL} proving time`,
       description:
         "The average amount of time taken to generate a proof using any proving instance",
-      value: avgProofProvingTime ? (
-        prettyMilliseconds(avgProofProvingTime)
-      ) : (
-        <Null />
-      ),
+      value: avgProofProvingTime ? prettyMs(avgProofProvingTime) : <Null />,
     },
   ]
 
@@ -233,8 +234,8 @@ export default async function ProverPage({ params }: ProverPageProps) {
           <TrendingUp /> Prover performance
         </h2>
         <div className="flex flex-wrap gap-x-8">
-          {performanceMetrics.map(({ label, description, value }, idx) => (
-            <MetricBox key={idx}>
+          {performanceMetrics.map(({ key, label, description, value }) => (
+            <MetricBox key={key}>
               <MetricLabel>
                 {label}
                 <MetricInfo>{description}</MetricInfo>
