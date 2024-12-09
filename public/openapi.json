@@ -381,7 +381,8 @@
                   },
                   "proving_cycles": {
                     "type": "integer",
-                    "exclusiveMinimum": 0
+                    "exclusiveMinimum": 0,
+                    "description": "Number of cycles taken to generate the proof"
                   },
                   "proof": {
                     "type": "string",
@@ -394,7 +395,6 @@
                   "block_number",
                   "cluster_id",
                   "proving_time",
-                  "proving_cycles",
                   "proof"
                 ]
               },

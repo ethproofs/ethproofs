@@ -23,7 +23,9 @@ export const provedProofSchema = baseProofSchema.extend({
   proving_cycles: z
     .number()
     .int()
-    .positive("proving_cycles must be a positive integer"),
+    .positive("proving_cycles must be a positive integer")
+    .optional()
+    .describe("Number of cycles taken to generate the proof"),
   proof: z
     .string()
     .base64()
