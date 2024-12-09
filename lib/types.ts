@@ -62,7 +62,7 @@ export type Cluster = ClusterBase & ClusterExtensions
 export type ProofExtensions = {
   cluster_configurations?: ClusterConfig[]
   block?: BlockBase
-  clusters?: Cluster
+  clusters?: Cluster | null
   team?: Team
 }
 
