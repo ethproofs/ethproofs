@@ -1,6 +1,8 @@
 import { revalidateTag } from "next/cache"
 import { ZodError } from "zod"
 
+import { base64ToHex } from "@/lib/utils"
+
 import { withAuth } from "@/lib/auth"
 import { fetchBlockData } from "@/lib/blocks"
 import { provedProofSchema } from "@/lib/zod/schemas/proof"
@@ -111,6 +113,8 @@ export const POST = withAuth(async ({ request, client, user, timestamp }) => {
     ...proofPayload,
   })
 
+  const proofHex = base64ToHex(proofPayload.proof)
+
   const proofResponse = await client
     .from("proofs")
     .upsert(
@@ -119,6 +123,7 @@ export const POST = withAuth(async ({ request, client, user, timestamp }) => {
         proof_id: proofId,
         block_number,
         cluster_id: clusterData.id,
+        proof: `\\x${proofHex}`,
         proof_status: "proved",
         proved_timestamp: timestamp,
         user_id: user.id,
