@@ -2,32 +2,28 @@ import * as Info from "@/components/ui/info"
 
 import { computed, primitives } from "./Definitions"
 
-type Props = {
-  average?: boolean
-}
-export type ColumnDetails = {
-  Label: (props: Props) => React.ReactNode
-  Details: (props: Props) => React.ReactNode
+type MetricDetails = {
+  Label: () => React.ReactNode
+  Details: (props: { average?: boolean }) => React.ReactNode
 }
 
 const METRICS = {
   blockNumber: "block",
   cluster: "cluster",
-  gasUsed: "gas used",
-  provingCosts: "proving costs",
-  provingTime: "proving time",
-  totalTTP: "total time to proof",
   costPerMgas: (
     <>
       cost per <span className="uppercase">m</span>gas
     </>
   ),
   costPerProof: "cost per proof",
+  gasUsed: "gas used",
+  provingTime: "proving time",
+  totalTTP: "total time to proof",
 } as const
 
 type Metric = keyof typeof METRICS
 
-const metrics: Record<Metric, ColumnDetails> = {
+const metrics: Record<Metric, MetricDetails> = {
   blockNumber: {
     Label: () => METRICS.blockNumber,
     Details: () => (
@@ -76,8 +72,8 @@ const metrics: Record<Metric, ColumnDetails> = {
       </>
     ),
   },
-  provingCosts: {
-    Label: () => METRICS.provingCosts,
+  costPerProof: {
+    Label: () => METRICS.costPerProof,
     Details: () => (
       <>
         <Info.Derivation>
@@ -87,7 +83,7 @@ const metrics: Record<Metric, ColumnDetails> = {
         <computed.provingCosts.Definition />
 
         <Info.Description>
-          Proving costs in USD to prove entire block
+          Proving costs in USD to prove execution of entire block
         </Info.Description>
       </>
     ),
@@ -152,18 +148,6 @@ const metrics: Record<Metric, ColumnDetails> = {
           different sized blocks. More gas consumption in a block means more
           computation to prove.
         </Info.Description>
-      </>
-    ),
-  },
-  costPerProof: {
-    Label: () => METRICS.costPerProof,
-    Details: () => (
-      <>
-        <Info.Derivation>
-          <computed.provingCosts.Term />
-        </Info.Derivation>
-
-        <computed.provingCosts.Definition />
       </>
     ),
   },
