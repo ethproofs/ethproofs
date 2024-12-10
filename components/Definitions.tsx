@@ -8,7 +8,8 @@ type DefinitionDetails = {
 }
 
 const PRIMITIVES = {
-  hourlyPrice: "hourly price",
+  hourlyPricePerInstance: "hourly price per instance",
+  instanceCount: "instances per cluster",
   provingTime: "proving time",
   gasUsed: "gas used",
   blockNumber: "block number",
@@ -20,13 +21,29 @@ const PRIMITIVES = {
 type Primitive = keyof typeof PRIMITIVES
 
 const primitives: Record<Primitive, DefinitionDetails> = {
-  hourlyPrice: {
-    Term: () => <Info.Term type="internal">{PRIMITIVES.hourlyPrice}</Info.Term>,
+  hourlyPricePerInstance: {
+    Term: () => (
+      <Info.Term type="internal">{PRIMITIVES.hourlyPricePerInstance}</Info.Term>
+    ),
     Definition: () => (
       <p>
-        <Info.Term type="internal">{PRIMITIVES.hourlyPrice}</Info.Term> is the
-        per-hour USD rate charged by AWS for the cluster of hardware
-        most-equivalent to that being used by the prover
+        <Info.Term type="internal">
+          {PRIMITIVES.hourlyPricePerInstance}
+        </Info.Term>{" "}
+        is the per-hour USD rate charged by AWS for one instance of the cluster
+        of hardware most-equivalent to that being used by the prover
+      </p>
+    ),
+  },
+  instanceCount: {
+    Term: () => (
+      <Info.Term type="internal">{PRIMITIVES.instanceCount}</Info.Term>
+    ),
+    Definition: () => (
+      <p>
+        <Info.Term type="internal">{PRIMITIVES.instanceCount}</Info.Term> is the
+        number of AWS-equivalent instances being used within a cluster of
+        hardware responsible for generating a proof
       </p>
     ),
   },
@@ -122,16 +139,30 @@ const conversions = {
 } as const satisfies Record<string, DefinitionDetails>
 
 const computed = {
-  provingCosts: {
+  hourlyPricePerCluster: {
     Term: () => (
       <>
-        <primitives.hourlyPrice.Term /> * <primitives.provingTime.Term /> /{" "}
-        <conversions.msToHours.Term />
+        <primitives.hourlyPricePerInstance.Term /> *{" "}
+        <primitives.instanceCount.Term />
       </>
     ),
     Definition: () => (
       <>
-        <primitives.hourlyPrice.Definition />
+        <primitives.hourlyPricePerInstance.Definition />
+        <primitives.instanceCount.Definition />
+      </>
+    ),
+  },
+  provingCosts: {
+    Term: () => (
+      <>
+        <computed.hourlyPricePerCluster.Term /> *{" "}
+        <primitives.provingTime.Term /> / <conversions.msToHours.Term />
+      </>
+    ),
+    Definition: () => (
+      <>
+        <computed.hourlyPricePerCluster.Definition />
         <primitives.provingTime.Definition />
         <conversions.msToHours.Definition />
       </>
