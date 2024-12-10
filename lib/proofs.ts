@@ -1,6 +1,6 @@
 import { formatUsd } from "./number"
 import { getTime, prettyMs } from "./time"
-import type { Proof, Stats } from "./types"
+import type { Cluster, ClusterConfig, Proof, Stats } from "./types"
 
 // Filters
 
@@ -14,13 +14,18 @@ export const isCompleted = (proof: Proof) => proof.proof_status === "proved"
 
 /**
  * Checks if the cost information is available for a given proof.
+ * Requires proof proving_time, per-instance hourly_price, and instance_count
  *
  * @param {Proof} p - The proof object to check.
  * @returns {boolean} `true` if information to calculate costs are available, otherwise `false`.
  */
-export const hasCostInfo = (p: Proof) =>
-  !!p.proving_time &&
-  !!p.cluster_configurations?.[0]?.aws_instance_pricing?.hourly_price
+export const hasCostInfo = (p: Proof) => {
+  if (!p.proving_time || !p.clusters?.cluster_configurations) return false
+  return p.clusters.cluster_configurations.some(
+    (config) =>
+      !!config.aws_instance_pricing?.hourly_price && !!config.instance_count
+  )
+}
 
 /**
  * Determines if a proof has a valid proved timestamp.
@@ -116,21 +121,42 @@ export const getProofBestTimeToProof = (proofs: Proof[]): Proof | null => {
 }
 
 /**
+ * Calculates the total hourly price for a cluster based on its configuration.
+ * Multiplies the hourly price of each instance type by the number of that
+ * instance being used within the cluster, and sums the results to get total
+ * hourly price per cluster.
+ *
+ * @param configs - An array of cluster configurations.
+ * @returns The total hourly price for the cluster.
+ */
+export const getClusterHourlyPrice = (cluster: Cluster): number | null => {
+  if (!cluster.cluster_configurations) return null
+  return cluster.cluster_configurations.reduce((acc, config) => {
+    const { instance_count, aws_instance_pricing } = config
+    if (!aws_instance_pricing?.hourly_price || !instance_count) return acc
+    return acc + instance_count * aws_instance_pricing.hourly_price
+  }, 0)
+}
+
+/**
  * Calculates the cost of proving based on the provided proof object.
  * The cost is calculated as the product of the proving time (milliseconds) and
- * the hourly price of the cluster configuration.
+ * the total hourly price of the cluster configuration.
  *
- * @param proof - The proof object containing proving time and cluster configurations.
- * @example hourly_price(USD/hr) * proving_time(ms) / 1e3(ms/s) / 60(s/min) / 60(min/hr) = proving_cost(USD)
- * @returns The calculated proving cost in USD.
+ * @param proof - The proof object containing proving time and cluster info.
+ * @example clusterHourlyPrice(USD/hr) * proving_time(ms) / 1e3(ms/s) / 60(s/min) / 60(min/hr) = provingCost(USD)
+ * @returns The calculated proving cost in USD, as a number.
  */
 export const getProvingCost = (proof: Proof): number | null => {
-  const { proving_time, cluster_configurations } = proof
-  // TODO: Remove [0] when 1:1 cluster_id to instance_type_id established
-  const { hourly_price } =
-    cluster_configurations?.[0]?.aws_instance_pricing || {}
-  if (!proving_time || !hourly_price) return null
-  return (proving_time * hourly_price) / 1e3 / 60 / 60
+  const { proving_time, clusters } = proof
+
+  if (!proving_time || !clusters) return null
+
+  const clusterHourlyPrice = getClusterHourlyPrice(clusters)
+
+  if (!clusterHourlyPrice) return null
+
+  return (proving_time * clusterHourlyPrice) / 1e3 / 60 / 60
 }
 
 /**
