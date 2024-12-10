@@ -1,7 +1,7 @@
 import type { Metadata } from "next"
 import Image from "next/image"
 
-import type { Block, SummaryItem } from "@/lib/types"
+import type { BlockBase, Proof, SummaryItem } from "@/lib/types"
 
 import BlocksTable from "@/components/BlocksTable"
 import { metrics } from "@/components/Metrics"
@@ -57,7 +57,7 @@ export default async function Index() {
       )`
     )
     .order("block_number", { ascending: false })
-  const blocks = blocksResponse.data || []
+  const blocks = (blocksResponse.data || []) satisfies BlockBase[]
 
   const teamsResponse = await supabase.from("teams").select()
   const teams = teamsResponse.data || []
@@ -67,9 +67,9 @@ export default async function Index() {
     const proofsWithTeams = proofs.map((proof) => ({
       ...proof,
       team: teams.find((team) => team.user_id === proof.user_id),
-    }))
+    })) as Proof[]
 
-    return { ...block, proofs: proofsWithTeams } as Block
+    return { ...block, proofs: proofsWithTeams }
   })
 
   const summaryItems: SummaryItem[] = recentSummary.data

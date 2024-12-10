@@ -48,7 +48,7 @@ export type ClusterConfig = ClusterConfigBase & ClusterConfigExtensions
  * Extensions for the Cluster type, adding optional clusterConfig property.
  */
 export type ClusterExtensions = {
-  cluster_configurations?: ClusterConfig
+  cluster_configurations?: ClusterConfig[]
 }
 
 /**
@@ -60,7 +60,6 @@ export type Cluster = ClusterBase & ClusterExtensions
  * Extensions for the Proof type, adding optional block, cluster, and team properties.
  */
 export type ProofExtensions = {
-  cluster_configurations?: ClusterConfig[]
   block?: BlockBase
   clusters?: Cluster | null
   team?: Team
