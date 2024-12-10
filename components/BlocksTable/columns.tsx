@@ -136,6 +136,8 @@ export const columns: ColumnDef<Block>[] = [
 
       if (!costPerProofStats) return <Null />
 
+      console.log({ costPerProofStats })
+
       const { avgFormatted, bestFormatted, bestProof } = costPerProofStats
 
       return (
