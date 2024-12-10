@@ -200,11 +200,30 @@ export type Database = {
           },
         ]
       }
+      programs: {
+        Row: {
+          created_at: string
+          id: number
+          verifier: string
+        }
+        Insert: {
+          created_at?: string
+          id?: number
+          verifier: string
+        }
+        Update: {
+          created_at?: string
+          id?: number
+          verifier?: string
+        }
+        Relationships: []
+      }
       proofs: {
         Row: {
           block_number: number
           cluster_id: string
           created_at: string | null
+          program_id: number | null
           proof: string | null
           proof_id: number
           proof_status: string
@@ -220,6 +239,7 @@ export type Database = {
           block_number: number
           cluster_id: string
           created_at?: string | null
+          program_id?: number | null
           proof?: string | null
           proof_id?: number
           proof_status: string
@@ -235,6 +255,7 @@ export type Database = {
           block_number?: number
           cluster_id?: string
           created_at?: string | null
+          program_id?: number | null
           proof?: string | null
           proof_id?: number
           proof_status?: string
@@ -259,6 +280,13 @@ export type Database = {
             columns: ["cluster_id"]
             isOneToOne: false
             referencedRelation: "clusters"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "proofs_program_id_fkey"
+            columns: ["program_id"]
+            isOneToOne: false
+            referencedRelation: "programs"
             referencedColumns: ["id"]
           },
           {

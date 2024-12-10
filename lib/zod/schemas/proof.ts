@@ -17,6 +17,7 @@ export const queuedProofSchema = baseProofSchema.extend({})
 export const provingProofSchema = baseProofSchema.extend({})
 
 export const provedProofSchema = baseProofSchema.extend({
+  proof: z.string().min(1, "proof is required for 'proved' status"),
   proving_time: z
     .number()
     .positive("proving_time must be a positive number")
@@ -25,5 +26,5 @@ export const provedProofSchema = baseProofSchema.extend({
     .number()
     .int()
     .positive("proving_cycles must be a positive integer"),
-  proof: z.string().min(1, "proof is required for 'proved' status"),
+  program_id: z.string().optional().describe("vkey/image-id"),
 })

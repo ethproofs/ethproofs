@@ -91,6 +91,37 @@ export const POST = withAuth(async ({ request, client, user, timestamp }) => {
     return new Response("Cluster not found", { status: 404 })
   }
 
+  // create or get program id if it exists
+  let programId
+  if (proofPayload.program_id) {
+    const { data: existingProgramData, error: existingProgramError } =
+      await client
+        .from("programs")
+        .select("id")
+        .eq("verifier", proofPayload.program_id)
+        .single()
+
+    programId = existingProgramData?.id
+
+    if (existingProgramError) {
+      console.info("no existing program")
+
+      const { data: programData, error: programError } = await client
+        .from("programs")
+        .insert({
+          verifier: proofPayload.program_id,
+        })
+        .select("id")
+        .single()
+
+      if (programError) {
+        console.error("error creating program", programError)
+      }
+
+      programId = programData?.id
+    }
+  }
+
   // get proof_id to update or create an existing proof
   let proofId
   if (!proofPayload.proof_id) {
@@ -116,9 +147,10 @@ export const POST = withAuth(async ({ request, client, user, timestamp }) => {
     .upsert(
       {
         ...proofPayload,
-        proof_id: proofId,
         block_number,
+        proof_id: proofId,
         cluster_id: clusterData.id,
+        program_id: programId,
         proof_status: "proved",
         proved_timestamp: timestamp,
         user_id: user.id,

@@ -374,6 +374,10 @@
                   "cluster_id": {
                     "type": "number"
                   },
+                  "proof": {
+                    "type": "string",
+                    "minLength": 1
+                  },
                   "proving_time": {
                     "type": "number",
                     "exclusiveMinimum": 0,
@@ -383,25 +387,25 @@
                     "type": "integer",
                     "exclusiveMinimum": 0
                   },
-                  "proof": {
+                  "program_id": {
                     "type": "string",
-                    "minLength": 1
+                    "description": "vkey/image-id"
                   }
                 },
                 "required": [
                   "block_number",
                   "cluster_id",
+                  "proof",
                   "proving_time",
-                  "proving_cycles",
-                  "proof"
+                  "proving_cycles"
                 ]
               },
               "example": {
                 "block_number": 123456,
                 "cluster_id": 1,
+                "proof": "...",
                 "proving_time": 1000,
-                "proving_cycles": 10000,
-                "proof": "..."
+                "proving_cycles": 10000
               }
             }
           }
