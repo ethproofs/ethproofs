@@ -1,3 +1,5 @@
+import { ZodError } from "zod"
+
 import { withAuth } from "@/lib/auth"
 import { singleMachineSchema } from "@/lib/zod/schemas/cluster"
 
@@ -16,6 +18,12 @@ export const POST = withAuth(async ({ request, client, user }) => {
     singleMachinePayload = singleMachineSchema.parse(requestBody)
   } catch (error) {
     console.error("single machine payload invalid", error)
+    if (error instanceof ZodError) {
+      return new Response(`Invalid payload: ${error.message}`, {
+        status: 400,
+      })
+    }
+
     return new Response("Invalid payload", {
       status: 400,
     })
@@ -38,7 +46,7 @@ export const POST = withAuth(async ({ request, client, user }) => {
     .single()
 
   if (instanceTypeError) {
-    console.error("error fetching instance type ids", instanceTypeError)
+    console.error("error fetching instance type id", instanceTypeError)
     return new Response("Internal server error", { status: 500 })
   }
 
@@ -61,7 +69,7 @@ export const POST = withAuth(async ({ request, client, user }) => {
     return new Response("Internal server error", { status: 500 })
   }
 
-  // create cluster configuration for single machine
+  // create single machine as a cluster with 1 instance
   const { error: clusterConfigurationError } = await client
     .from("cluster_configurations")
     .insert({
@@ -72,7 +80,7 @@ export const POST = withAuth(async ({ request, client, user }) => {
 
   if (clusterConfigurationError) {
     console.error(
-      "error creating cluster configuration",
+      "error creating cluster configuration for single machine",
       clusterConfigurationError
     )
     return new Response("Internal server error", { status: 500 })
