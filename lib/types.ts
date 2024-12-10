@@ -36,7 +36,7 @@ export type Team = Tables<"teams">
  * Extensions for the ClusterConfig type, adding optional awsInstance property.
  */
 export type ClusterConfigExtensions = {
-  awsInstance?: AwsInstance
+  aws_instance_pricing?: AwsInstance
 }
 
 /**
@@ -48,7 +48,7 @@ export type ClusterConfig = ClusterConfigBase & ClusterConfigExtensions
  * Extensions for the Cluster type, adding optional clusterConfig property.
  */
 export type ClusterExtensions = {
-  clusterConfig?: ClusterConfig
+  cluster_configurations?: ClusterConfig
 }
 
 /**
@@ -62,7 +62,7 @@ export type Cluster = ClusterBase & ClusterExtensions
 export type ProofExtensions = {
   cluster_configurations?: ClusterConfig[]
   block?: BlockBase
-  cluster?: Cluster
+  clusters?: Cluster | null
   team?: Team
 }
 

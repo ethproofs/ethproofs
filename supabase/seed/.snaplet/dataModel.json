@@ -3254,20 +3254,6 @@
           "maxLength": null
         },
         {
-          "id": "public.proofs.proving_cost",
-          "name": "proving_cost",
-          "columnName": "proving_cost",
-          "type": "numeric",
-          "isRequired": false,
-          "kind": "scalar",
-          "isList": false,
-          "isGenerated": false,
-          "sequence": false,
-          "hasDefaultValue": false,
-          "isId": false,
-          "maxLength": null
-        },
-        {
           "id": "public.proofs.proving_cycles",
           "name": "proving_cycles",
           "columnName": "proving_cycles",
