@@ -59,6 +59,32 @@ export default async function Index() {
     .order("block_number", { ascending: false })
   const blocks = blocksResponse.data || []
 
+  console.log(`*,proofs!inner(id:proof_id,*,
+        clusters(*,
+          cluster_configurations(*,
+            aws_instance_pricing(*)
+          )
+        )
+      )`)
+  console.log("Logging first proof of first block")
+  console.log("queryResponse.data.blocks[0].proofs[0]")
+  console.log(JSON.stringify(blocks[0].proofs[0], null, 2))
+
+  const cluster_configurations = await supabase
+    .from("cluster_configurations")
+    .select()
+  if (cluster_configurations.data) {
+    console.log("cluster_configurations.data")
+    console.log(cluster_configurations.data)
+  }
+  const aws_instance_pricing = await supabase
+    .from("aws_instance_pricing")
+    .select()
+  if (aws_instance_pricing.data) {
+    console.log("aws_instance_pricing.data")
+    console.log(aws_instance_pricing.data)
+  }
+
   const teamsResponse = await supabase.from("teams").select()
   const teams = teamsResponse.data || []
 
