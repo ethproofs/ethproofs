@@ -16,6 +16,9 @@
       "name": "Clusters"
     },
     {
+      "name": "Single machine"
+    },
+    {
       "name": "Proofs"
     },
     {
@@ -78,7 +81,7 @@
                       "properties": {
                         "instance_type": {
                           "type": "string",
-                          "description": "Instance type",
+                          "description": "Instance type from AWS pricing list",
                           "example": "c5.xlarge"
                         },
                         "instance_count": {
@@ -257,6 +260,99 @@
                 }
               }
             }
+          },
+          "401": {
+            "description": "Invalid API key"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/single-machine": {
+      "post": {
+        "tags": [
+          "Single machine"
+        ],
+        "summary": "Create a single machine",
+        "security": [
+          {
+            "apikey": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "nickname": {
+                    "type": "string",
+                    "maxLength": 50,
+                    "description": "Human-readable name. Main display name in the UI",
+                    "example": "ZKnight-01"
+                  },
+                  "description": {
+                    "type": "string",
+                    "maxLength": 200,
+                    "description": "Description of the cluster",
+                    "example": "Primary RISC-V prover"
+                  },
+                  "hardware": {
+                    "type": "string",
+                    "maxLength": 200,
+                    "description": "Technical specifications",
+                    "example": "RISC-V Prover"
+                  },
+                  "cycle_type": {
+                    "type": "string",
+                    "maxLength": 50,
+                    "description": "Type of cycle",
+                    "example": "SP1"
+                  },
+                  "proof_type": {
+                    "type": "string",
+                    "maxLength": 50,
+                    "description": "Proof system used to generate proofs. (e.g., Groth16 or PlonK)",
+                    "example": "Groth16"
+                  },
+                  "instance_type": {
+                    "type": "string",
+                    "description": "Instance type from AWS pricing list",
+                    "example": "c5.xlarge"
+                  }
+                },
+                "required": [
+                  "nickname",
+                  "instance_type"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Single machine created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "number"
+                    }
+                  },
+                  "required": [
+                    "id"
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request body"
           },
           "401": {
             "description": "Invalid API key"
