@@ -93,12 +93,12 @@ export const POST = withAuth(async ({ request, client, user, timestamp }) => {
 
   // create or get program id if it exists
   let programId
-  if (proofPayload.program_id) {
+  if (proofPayload.verifier_id) {
     const { data: existingProgramData, error: existingProgramError } =
       await client
         .from("programs")
         .select("id")
-        .eq("verifier", proofPayload.program_id)
+        .eq("verifier_id", proofPayload.verifier_id)
         .single()
 
     programId = existingProgramData?.id
@@ -109,7 +109,7 @@ export const POST = withAuth(async ({ request, client, user, timestamp }) => {
       const { data: programData, error: programError } = await client
         .from("programs")
         .insert({
-          verifier: proofPayload.program_id,
+          verifier_id: proofPayload.verifier_id,
         })
         .select("id")
         .single()

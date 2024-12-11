@@ -387,7 +387,7 @@
                     "type": "integer",
                     "exclusiveMinimum": 0
                   },
-                  "program_id": {
+                  "verifier_id": {
                     "type": "string",
                     "description": "vkey/image-id"
                   }
@@ -405,7 +405,8 @@
                 "cluster_id": 1,
                 "proof": "...",
                 "proving_time": 1000,
-                "proving_cycles": 10000
+                "proving_cycles": 10000,
+                "verifier_id": "..."
               }
             }
           }

@@ -204,17 +204,17 @@ export type Database = {
         Row: {
           created_at: string
           id: number
-          verifier: string
+          verifier_id: string
         }
         Insert: {
           created_at?: string
           id?: number
-          verifier: string
+          verifier_id: string
         }
         Update: {
           created_at?: string
           id?: number
-          verifier?: string
+          verifier_id?: string
         }
         Relationships: []
       }

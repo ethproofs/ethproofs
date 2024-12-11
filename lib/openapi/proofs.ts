@@ -97,6 +97,7 @@ export const proofsPaths: ZodOpenApiPathsObject = {
               proving_time: 1000,
               proving_cost: 540,
               proving_cycles: 10000,
+              verifier_id: "...",
             }),
           },
         },

@@ -3173,9 +3173,9 @@
           "maxLength": null
         },
         {
-          "id": "public.programs.verifier",
-          "name": "verifier",
-          "columnName": "verifier",
+          "id": "public.programs.verifier_id",
+          "name": "verifier_id",
+          "columnName": "verifier_id",
           "type": "text",
           "isRequired": true,
           "kind": "scalar",
@@ -3224,9 +3224,9 @@
           "nullNotDistinct": false
         },
         {
-          "name": "programs_verifier_key",
+          "name": "programs_verifier_id_key",
           "fields": [
-            "verifier"
+            "verifier_id"
           ],
           "nullNotDistinct": false
         }

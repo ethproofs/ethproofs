@@ -26,5 +26,5 @@ export const provedProofSchema = baseProofSchema.extend({
     .number()
     .int()
     .positive("proving_cycles must be a positive integer"),
-  program_id: z.string().optional().describe("vkey/image-id"),
+  verifier_id: z.string().optional().describe("vkey/image-id"),
 })
