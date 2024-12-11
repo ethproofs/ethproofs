@@ -36,7 +36,8 @@ export const POST = withAuth(async ({ request, client, user, timestamp }) => {
     })
   }
 
-  const { block_number, cluster_id } = proofPayload
+  const { block_number, cluster_id, verifier_id, ...restProofPayload } =
+    proofPayload
 
   // validate block_number exists
   console.log("validating block_number", block_number)
@@ -93,12 +94,12 @@ export const POST = withAuth(async ({ request, client, user, timestamp }) => {
 
   // create or get program id if it exists
   let programId
-  if (proofPayload.verifier_id) {
+  if (verifier_id) {
     const { data: existingProgramData, error: existingProgramError } =
       await client
         .from("programs")
         .select("id")
-        .eq("verifier_id", proofPayload.verifier_id)
+        .eq("verifier_id", verifier_id)
         .single()
 
     programId = existingProgramData?.id
@@ -108,9 +109,7 @@ export const POST = withAuth(async ({ request, client, user, timestamp }) => {
 
       const { data: programData, error: programError } = await client
         .from("programs")
-        .insert({
-          verifier_id: proofPayload.verifier_id,
-        })
+        .insert({ verifier_id })
         .select("id")
         .single()
 
@@ -139,14 +138,14 @@ export const POST = withAuth(async ({ request, client, user, timestamp }) => {
   // add proof
   console.log("adding proof", {
     proof_id: proofId,
-    ...proofPayload,
+    ...restProofPayload,
   })
 
   const proofResponse = await client
     .from("proofs")
     .upsert(
       {
-        ...proofPayload,
+        ...restProofPayload,
         block_number,
         proof_id: proofId,
         cluster_id: clusterData.id,
