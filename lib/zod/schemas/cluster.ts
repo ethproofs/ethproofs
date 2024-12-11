@@ -1,13 +1,24 @@
 import z from ".."
 
+import { AwsInstancePricingSchema } from "./aws-instance-pricing"
+
 export const ClusterSchema = z.object({
-  id: z.number(),
+  id: z.number().nullable(),
   nickname: z.string(),
-  description: z.string().optional(),
-  hardware: z.string().optional(),
-  cycle_type: z.string().optional(),
-  proof_type: z.string().optional(),
+  description: z.string().optional().nullable(),
+  hardware: z.string().optional().nullable(),
+  cycle_type: z.string().optional().nullable(),
+  proof_type: z.string().optional().nullable(),
+  cluster_configuration: z.array(
+    z.object({
+      instance_type_id: z.number(),
+      instance_count: z.number(),
+      aws_instance_pricing: AwsInstancePricingSchema.nullable(),
+    })
+  ),
 })
+
+export type Cluster = z.infer<typeof ClusterSchema>
 
 const baseClusterSchema = z.object({
   nickname: z.string().max(50).openapi({
