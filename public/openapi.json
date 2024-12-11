@@ -458,18 +458,20 @@
                   },
                   "proving_cycles": {
                     "type": "integer",
-                    "exclusiveMinimum": 0
+                    "exclusiveMinimum": 0,
+                    "description": "Number of cycles taken to generate the proof"
                   },
                   "proof": {
                     "type": "string",
-                    "minLength": 1
+                    "minLength": 1,
+                    "contentEncoding": "base64",
+                    "description": "Proof in base64 format"
                   }
                 },
                 "required": [
                   "block_number",
                   "cluster_id",
                   "proving_time",
-                  "proving_cycles",
                   "proof"
                 ]
               },
@@ -478,7 +480,7 @@
                 "cluster_id": 1,
                 "proving_time": 1000,
                 "proving_cycles": 10000,
-                "proof": "..."
+                "proof": "YmluYXJ5X3Byb29mX2RhdGE="
               }
             }
           }
