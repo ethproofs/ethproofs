@@ -1,6 +1,8 @@
 import { revalidateTag } from "next/cache"
 import { ZodError } from "zod"
 
+import { base64ToHex } from "@/lib/utils"
+
 import { withAuth } from "@/lib/auth"
 import { fetchBlockData } from "@/lib/blocks"
 import { provedProofSchema } from "@/lib/zod/schemas/proof"
@@ -36,7 +38,8 @@ export const POST = withAuth(async ({ request, client, user, timestamp }) => {
     })
   }
 
-  const { block_number, cluster_id } = proofPayload
+  const { block_number, cluster_id, verifier_id, ...restProofPayload } =
+    proofPayload
 
   // validate block_number exists
   console.log("validating block_number", block_number)
@@ -91,6 +94,35 @@ export const POST = withAuth(async ({ request, client, user, timestamp }) => {
     return new Response("Cluster not found", { status: 404 })
   }
 
+  // create or get program id if it exists
+  let programId
+  if (verifier_id) {
+    const { data: existingProgramData, error: existingProgramError } =
+      await client
+        .from("programs")
+        .select("id")
+        .eq("verifier_id", verifier_id)
+        .single()
+
+    programId = existingProgramData?.id
+
+    if (existingProgramError) {
+      console.info("no existing program")
+
+      const { data: programData, error: programError } = await client
+        .from("programs")
+        .insert({ verifier_id })
+        .select("id")
+        .single()
+
+      if (programError) {
+        console.error("error creating program", programError)
+      }
+
+      programId = programData?.id
+    }
+  }
+
   // get proof_id to update or create an existing proof
   let proofId
   if (!proofPayload.proof_id) {
@@ -108,17 +140,21 @@ export const POST = withAuth(async ({ request, client, user, timestamp }) => {
   // add proof
   console.log("adding proof", {
     proof_id: proofId,
-    ...proofPayload,
+    ...restProofPayload,
   })
+
+  const proofHex = base64ToHex(proofPayload.proof)
 
   const proofResponse = await client
     .from("proofs")
     .upsert(
       {
-        ...proofPayload,
-        proof_id: proofId,
+        ...restProofPayload,
         block_number,
+        proof_id: proofId,
         cluster_id: clusterData.id,
+        proof: `\\x${proofHex}`,
+        program_id: programId,
         proof_status: "proved",
         proved_timestamp: timestamp,
         user_id: user.id,

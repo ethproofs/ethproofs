@@ -16,6 +16,9 @@
       "name": "Clusters"
     },
     {
+      "name": "Single machine"
+    },
+    {
       "name": "Proofs"
     },
     {
@@ -78,7 +81,7 @@
                       "properties": {
                         "instance_type": {
                           "type": "string",
-                          "description": "Instance type",
+                          "description": "Instance type from AWS pricing list",
                           "example": "c5.xlarge"
                         },
                         "instance_count": {
@@ -154,32 +157,202 @@
                     "type": "object",
                     "properties": {
                       "id": {
-                        "type": "number"
+                        "type": [
+                          "number",
+                          "null"
+                        ]
                       },
                       "nickname": {
                         "type": "string"
                       },
                       "description": {
-                        "type": "string"
+                        "type": [
+                          "string",
+                          "null"
+                        ]
                       },
                       "hardware": {
-                        "type": "string"
+                        "type": [
+                          "string",
+                          "null"
+                        ]
                       },
                       "cycle_type": {
-                        "type": "string"
+                        "type": [
+                          "string",
+                          "null"
+                        ]
                       },
                       "proof_type": {
-                        "type": "string"
+                        "type": [
+                          "string",
+                          "null"
+                        ]
+                      },
+                      "cluster_configuration": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "instance_type_id": {
+                              "type": "number"
+                            },
+                            "instance_count": {
+                              "type": "number"
+                            },
+                            "aws_instance_pricing": {
+                              "type": [
+                                "object",
+                                "null"
+                              ],
+                              "properties": {
+                                "id": {
+                                  "type": "number"
+                                },
+                                "instance_type": {
+                                  "type": "string"
+                                },
+                                "region": {
+                                  "type": "string"
+                                },
+                                "hourly_price": {
+                                  "type": "number"
+                                },
+                                "instance_memory": {
+                                  "type": "number"
+                                },
+                                "vcpu": {
+                                  "type": "number"
+                                },
+                                "instance_storage": {
+                                  "type": "string"
+                                },
+                                "created_at": {
+                                  "type": "string"
+                                }
+                              },
+                              "required": [
+                                "id",
+                                "instance_type",
+                                "region",
+                                "hourly_price",
+                                "instance_memory",
+                                "vcpu",
+                                "instance_storage",
+                                "created_at"
+                              ]
+                            }
+                          },
+                          "required": [
+                            "instance_type_id",
+                            "instance_count",
+                            "aws_instance_pricing"
+                          ]
+                        }
                       }
                     },
                     "required": [
                       "id",
-                      "nickname"
+                      "nickname",
+                      "cluster_configuration"
                     ]
                   }
                 }
               }
             }
+          },
+          "401": {
+            "description": "Invalid API key"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/single-machine": {
+      "post": {
+        "tags": [
+          "Single machine"
+        ],
+        "summary": "Create a single machine",
+        "security": [
+          {
+            "apikey": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "nickname": {
+                    "type": "string",
+                    "maxLength": 50,
+                    "description": "Human-readable name. Main display name in the UI",
+                    "example": "ZKnight-01"
+                  },
+                  "description": {
+                    "type": "string",
+                    "maxLength": 200,
+                    "description": "Description of the cluster",
+                    "example": "Primary RISC-V prover"
+                  },
+                  "hardware": {
+                    "type": "string",
+                    "maxLength": 200,
+                    "description": "Technical specifications",
+                    "example": "RISC-V Prover"
+                  },
+                  "cycle_type": {
+                    "type": "string",
+                    "maxLength": 50,
+                    "description": "Type of cycle",
+                    "example": "SP1"
+                  },
+                  "proof_type": {
+                    "type": "string",
+                    "maxLength": 50,
+                    "description": "Proof system used to generate proofs. (e.g., Groth16 or PlonK)",
+                    "example": "Groth16"
+                  },
+                  "instance_type": {
+                    "type": "string",
+                    "description": "Instance type from AWS pricing list",
+                    "example": "c5.xlarge"
+                  }
+                },
+                "required": [
+                  "nickname",
+                  "instance_type"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Single machine created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "number"
+                    }
+                  },
+                  "required": [
+                    "id"
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request body"
           },
           "401": {
             "description": "Invalid API key"
@@ -381,18 +554,24 @@
                   },
                   "proving_cycles": {
                     "type": "integer",
-                    "exclusiveMinimum": 0
+                    "exclusiveMinimum": 0,
+                    "description": "Number of cycles taken to generate the proof"
                   },
                   "proof": {
                     "type": "string",
-                    "minLength": 1
+                    "minLength": 1,
+                    "contentEncoding": "base64",
+                    "description": "Proof in base64 format"
+                  },
+                  "verifier_id": {
+                    "type": "string",
+                    "description": "vkey/image-id"
                   }
                 },
                 "required": [
                   "block_number",
                   "cluster_id",
                   "proving_time",
-                  "proving_cycles",
                   "proof"
                 ]
               },
@@ -401,7 +580,8 @@
                 "cluster_id": 1,
                 "proving_time": 1000,
                 "proving_cycles": 10000,
-                "proof": "..."
+                "proof": "YmluYXJ5X3Byb29mX2RhdGE=",
+                "verifier_id": "..."
               }
             }
           }

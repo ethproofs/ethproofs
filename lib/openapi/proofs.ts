@@ -93,10 +93,11 @@ export const proofsPaths: ZodOpenApiPathsObject = {
             example: provedProofSchema.parse({
               block_number: 123456,
               cluster_id: 1,
-              proof: "...",
+              proof: "YmluYXJ5X3Byb29mX2RhdGE=",
               proving_time: 1000,
               proving_cost: 540,
               proving_cycles: 10000,
+              verifier_id: "...",
             }),
           },
         },
