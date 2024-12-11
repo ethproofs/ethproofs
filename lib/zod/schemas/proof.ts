@@ -31,4 +31,5 @@ export const provedProofSchema = baseProofSchema.extend({
     .base64()
     .min(1, "proof is required for 'proved' status")
     .describe("Proof in base64 format"),
+  verifier_id: z.string().optional().describe("vkey/image-id"),
 })

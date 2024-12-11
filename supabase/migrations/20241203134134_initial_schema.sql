@@ -396,6 +396,10 @@ CREATE POLICY "Enable read access for all users" ON "public"."clusters" FOR SELE
 
 
 
+CREATE POLICY "Enable read access for all users" ON "public"."cluster_configurations" FOR SELECT USING (true);
+
+
+
 CREATE POLICY "Enable read access for all users" ON "public"."proofs" FOR SELECT USING (true);
 
 

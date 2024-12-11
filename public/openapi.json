@@ -562,6 +562,10 @@
                     "minLength": 1,
                     "contentEncoding": "base64",
                     "description": "Proof in base64 format"
+                  },
+                  "verifier_id": {
+                    "type": "string",
+                    "description": "vkey/image-id"
                   }
                 },
                 "required": [
@@ -576,7 +580,8 @@
                 "cluster_id": 1,
                 "proving_time": 1000,
                 "proving_cycles": 10000,
-                "proof": "YmluYXJ5X3Byb29mX2RhdGE="
+                "proof": "YmluYXJ5X3Byb29mX2RhdGE=",
+                "verifier_id": "..."
               }
             }
           }
