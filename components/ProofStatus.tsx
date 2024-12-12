@@ -20,7 +20,7 @@ const DESCRIPTIONS = {
 
 export const ProofStatusInfo = ({ title }: { title?: string }) => (
   <>
-    <TooltipContentHeader>{title || "proof status"}</TooltipContentHeader>
+    <TooltipContentHeader>{title ?? "proof status"}</TooltipContentHeader>
     <div className="items-top grid grid-cols-[auto,1fr] gap-4">
       {ORDERED_STATUSES.map((status) => (
         <Fragment key={status}>
