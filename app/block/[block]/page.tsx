@@ -235,7 +235,7 @@ export default async function BlockDetailsPage({
       description: (
         <>
           <TooltipContentHeader>
-            {AVERAGE_LABEL} cost per proof
+            {AVERAGE_LABEL} <metrics.costPerProof.Label />
           </TooltipContentHeader>
           <metrics.costPerProof.Details average />
         </>
