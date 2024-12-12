@@ -149,7 +149,7 @@ export default function LearnPage() {
             <ul>
               <li>
                 <Link
-                  className="hover:text-primary-light"
+                  className="text-primary hover:text-primary-light"
                   href="https://www.lita.foundation/blog/zero-knowledge-paradigm-zkvm"
                 >
                   a zero-knowledge paradigm series
@@ -157,7 +157,7 @@ export default function LearnPage() {
               </li>
               <li>
                 <Link
-                  className="hover:text-primary-light"
+                  className="text-primary hover:text-primary-light"
                   href="https://www.youtube.com/watch?v=vVgHL5vpJxY&t=33s"
                 >
                   cairo – a turing-complete stark-friendly cpu architecture -
@@ -166,7 +166,7 @@ export default function LearnPage() {
               </li>
               <li>
                 <Link
-                  className="hover:text-primary-light"
+                  className="text-primary hover:text-primary-light"
                   href="https://youtube.com/playlist?list=PLjQ9HCQMu_8xjOEM_vh5p26ODtr-mmGxO&si=Uega8IMg_J8kNaa8"
                 >
                   lasso + jolt playlist
@@ -174,7 +174,7 @@ export default function LearnPage() {
               </li>
               <li>
                 <Link
-                  className="hover:text-primary-light"
+                  className="text-primary hover:text-primary-light"
                   href="https://www.mikkoikola.com/blog/2023/12/11/new-paradigm-in-ethereum-l2-scaling-multi-proving-and-zk-vms"
                 >
                   new paradigm in ethereum l2 scaling: multi-proving and zk-vms
@@ -182,7 +182,7 @@ export default function LearnPage() {
               </li>
               <li>
                 <Link
-                  className="hover:text-primary-light"
+                  className="text-primary hover:text-primary-light"
                   href="https://www.youtube.com/watch?v=UtzFOwQp8n4"
                 >
                   the nexus v1.0 zkvm - daniel marin (nexus)
@@ -190,7 +190,7 @@ export default function LearnPage() {
               </li>
               <li>
                 <Link
-                  className="hover:text-primary-light"
+                  className="text-primary hover:text-primary-light"
                   href="https://a16zcrypto.com/posts/article/understanding-jolt-clarifications-and-reflections/"
                 >
                   understanding jolt: clarifications and reflections
@@ -198,7 +198,7 @@ export default function LearnPage() {
               </li>
               <li>
                 <Link
-                  className="hover:text-primary-light"
+                  className="text-primary hover:text-primary-light"
                   href="https://www.youtube.com/watch?v=GRFPGJW0hic"
                 >
                   zk whiteboard sessions – module seven: zero knowledge virtual
@@ -207,7 +207,7 @@ export default function LearnPage() {
               </li>
               <li>
                 <Link
-                  className="hover:text-primary-light"
+                  className="text-primary hover:text-primary-light"
                   href="https://www.youtube.com/watch?v=tWJZX-WmbeY&t=325s"
                 >
                   zk10: analysis of zkvm designs - wei dai & terry chung
@@ -215,7 +215,7 @@ export default function LearnPage() {
               </li>
               <li>
                 <Link
-                  className="hover:text-primary-light"
+                  className="text-primary hover:text-primary-light"
                   href="https://www.youtube.com/watch?v=HDH2KXRAxAc"
                 >
                   zk11: o1vm: building a real-world zkvm for mips - danny
@@ -224,7 +224,7 @@ export default function LearnPage() {
               </li>
               <li>
                 <Link
-                  className="hover:text-primary-light"
+                  className="text-primary hover:text-primary-light"
                   href="https://www.youtube.com/watch?v=kzSYNFh4uQ0&list=PLothk45x3HC9Oz4f3e9-OoYUEytfHWCl5"
                 >
                   zk12: memory checking in ivc-based zkvm - jens groth
@@ -232,7 +232,7 @@ export default function LearnPage() {
               </li>
               <li>
                 <Link
-                  className="hover:text-primary-light"
+                  className="text-primary hover:text-primary-light"
                   href="https://www.youtube.com/watch?v=81UAaiIgIYA&t=803s"
                 >
                   zk7: miden vm: a stark-friendly vm for blockchains - bobbin
@@ -241,7 +241,7 @@ export default function LearnPage() {
               </li>
               <li>
                 <Link
-                  className="hover:text-primary-light"
+                  className="text-primary hover:text-primary-light"
                   href="https://taiko.mirror.xyz/e_5GeGGFJIrOxqvXOfzY6HmWcRjCjRyG0NQF1zbNpNQ"
                 >
                   zeroing into zkvm
@@ -249,7 +249,7 @@ export default function LearnPage() {
               </li>
               <li>
                 <Link
-                  className="hover:text-primary-light"
+                  className="text-primary hover:text-primary-light"
                   href="https://www.youtube.com/watch?v=aobrJ-zTcAU"
                 >
                   zkvm design walkthrough with max and daniel
@@ -257,7 +257,7 @@ export default function LearnPage() {
               </li>
               <li>
                 <Link
-                  className="hover:text-primary-light"
+                  className="text-primary hover:text-primary-light"
                   href="https://github.com/CertiKProject/zkwasm-fv"
                 >
                   Verification of zkWasm in Coq
@@ -265,7 +265,7 @@ export default function LearnPage() {
               </li>
               <li>
                 <Link
-                  className="hover:text-primary-light"
+                  className="text-primary hover:text-primary-light"
                   href="https://www.youtube.com/watch?v=R07ina4k7hg"
                 >
                   zk11: polynomial acceleration for stark vms
@@ -273,7 +273,7 @@ export default function LearnPage() {
               </li>
               <li>
                 <Link
-                  className="hover:text-primary-light"
+                  className="text-primary hover:text-primary-light"
                   href="https://www.youtube.com/watch?v=11DIflEwx50"
                 >
                   what does risc v have to do with risc zero&apos;s zkvm
@@ -281,7 +281,7 @@ export default function LearnPage() {
               </li>
               <li>
                 <Link
-                  className="hover:text-primary-light"
+                  className="text-primary hover:text-primary-light"
                   href="https://www.youtube.com/watch?v=RtGk6967PC4"
                 >
                   risc zero architecture presentation @ stanford
@@ -289,7 +289,7 @@ export default function LearnPage() {
               </li>
               <li>
                 <Link
-                  className="hover:text-primary-light"
+                  className="text-primary hover:text-primary-light"
                   href="https://www.youtube.com/watch?v=h1qWnf-M5lo"
                 >
                   continuations: scaling in zkvm
@@ -297,7 +297,7 @@ export default function LearnPage() {
               </li>
               <li>
                 <Link
-                  className="hover:text-primary-light"
+                  className="text-primary hover:text-primary-light"
                   href="https://a16zcrypto.com/posts/article/getting-bugs-out-of-snarks/"
                 >
                   Getting the bugs out of SNARKs: The road ahead
@@ -305,7 +305,7 @@ export default function LearnPage() {
               </li>
               <li>
                 <Link
-                  className="hover:text-primary-light"
+                  className="text-primary hover:text-primary-light"
                   href="https://www.youtube.com/watch?v=zD45V6GAD00"
                 >
                   ~tacryt-socryp on Zorp, the Nock zkVM | Reassembly23
@@ -318,7 +318,7 @@ export default function LearnPage() {
             <ul>
               <li>
                 <Link
-                  className="hover:text-primary-light"
+                  className="text-primary hover:text-primary-light"
                   href="https://neptune.cash/learn/brainfuck-tutorial/"
                 >
                   brainfuck tutorial
@@ -326,7 +326,7 @@ export default function LearnPage() {
               </li>
               <li>
                 <Link
-                  className="hover:text-primary-light"
+                  className="text-primary hover:text-primary-light"
                   href="https://blog.lambdaclass.com/continuous-read-only-memory-constraints-an-implementation-using-lambdaworks/"
                 >
                   continuous read only memory constraints an implementation
@@ -335,7 +335,7 @@ export default function LearnPage() {
               </li>
               <li>
                 <Link
-                  className="hover:text-primary-light"
+                  className="text-primary hover:text-primary-light"
                   href="https://blog.lambdaclass.com/how-to-code-fri-from-scratch/"
                 >
                   fri from scratch
@@ -343,7 +343,7 @@ export default function LearnPage() {
               </li>
               <li>
                 <Link
-                  className="hover:text-primary-light"
+                  className="text-primary hover:text-primary-light"
                   href="https://dev.risczero.com/proof-system/stark-by-hand"
                 >
                   stark by hand
@@ -351,7 +351,7 @@ export default function LearnPage() {
               </li>
               <li>
                 <Link
-                  className="hover:text-primary-light"
+                  className="text-primary hover:text-primary-light"
                   href="https://aszepieniec.github.io/stark-brainfuck/"
                 >
                   stark brainfuck
@@ -359,7 +359,7 @@ export default function LearnPage() {
               </li>
               <li>
                 <Link
-                  className="hover:text-primary-light"
+                  className="text-primary hover:text-primary-light"
                   href="https://starkware.co/stark-101/"
                 >
                   stark 101
