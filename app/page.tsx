@@ -232,7 +232,7 @@ export default async function Index() {
                     <div className="flex w-full flex-nowrap">
                       <div className="flex flex-col items-center gap-2 px-4">
                         <div className="flex items-center gap-1 text-body-secondary">
-                          {AVERAGE_LABEL} proving time
+                          {AVERAGE_LABEL} <metrics.provingTime.Label />
                         </div>
                         <div className="font-mono text-lg">
                           {prettyMs(avg_proving_time || 0)}
@@ -240,7 +240,7 @@ export default async function Index() {
                       </div>
                       <div className="flex flex-col items-center gap-2 px-4">
                         <div className="flex items-center gap-1 text-body-secondary">
-                          {AVERAGE_LABEL} cost
+                          {AVERAGE_LABEL} <metrics.costPerProof.Label />
                         </div>
                         <div className="font-mono text-lg">
                           {avg_cost_per_proof !== null &&
