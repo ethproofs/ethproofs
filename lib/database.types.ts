@@ -228,7 +228,6 @@ export type Database = {
           proof_id: number
           proof_status: string
           proved_timestamp: string | null
-          proving_cost: number | null
           proving_cycles: number | null
           proving_time: number | null
           proving_timestamp: string | null
@@ -244,7 +243,6 @@ export type Database = {
           proof_id?: number
           proof_status: string
           proved_timestamp?: string | null
-          proving_cost?: number | null
           proving_cycles?: number | null
           proving_time?: number | null
           proving_timestamp?: string | null
@@ -260,7 +258,6 @@ export type Database = {
           proof_id?: number
           proof_status?: string
           proved_timestamp?: string | null
-          proving_cost?: number | null
           proving_cycles?: number | null
           proving_time?: number | null
           proving_timestamp?: string | null
@@ -390,7 +387,7 @@ export type Database = {
       }
       teams_summary: {
         Row: {
-          avg_proving_cost: number | null
+          avg_cost_per_proof: number | null
           avg_proving_time: number | null
           logo_url: string | null
           team_id: number | null

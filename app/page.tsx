@@ -203,7 +203,7 @@ export default async function Index() {
                 team_id,
                 logo_url,
                 team_name,
-                avg_proving_cost,
+                avg_cost_per_proof,
                 avg_proving_time,
               }) => (
                 <Card
@@ -241,9 +241,9 @@ export default async function Index() {
                           {AVERAGE_LABEL} cost
                         </div>
                         <div className="font-mono text-lg">
-                          {avg_proving_cost !== null &&
-                          isFinite(avg_proving_cost) ? (
-                            formatNumber(avg_proving_cost, {
+                          {avg_cost_per_proof !== null &&
+                          isFinite(avg_cost_per_proof) ? (
+                            formatNumber(avg_cost_per_proof, {
                               style: "currency",
                               currency: "USD",
                             })
