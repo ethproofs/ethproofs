@@ -15,8 +15,23 @@ export const formatNumber = (
   return new Intl.NumberFormat(locale, options).format(value)
 }
 
-export const formatUsd = (value: number) =>
-  formatNumber(value, {
-    style: "currency",
-    currency: "USD",
-  })
+export const formatUsd = (
+  value: number,
+  options?: Intl.NumberFormatOptions,
+  locale = "en-US"
+) => {
+  const useCents = value < 1
+
+  const adjustedValue = value * (useCents ? 100 : 1)
+  const formatted = formatNumber(
+    adjustedValue,
+    {
+      style: "currency",
+      currency: "USD",
+      maximumSignificantDigits: useCents ? 3 : undefined,
+      ...options,
+    },
+    locale
+  )
+  return useCents ? formatted.replace("$", "¢") : formatted
+}
