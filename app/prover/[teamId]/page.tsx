@@ -85,7 +85,7 @@ export default async function ProverPage({ params }: ProverPageProps) {
 
   const { data: proofsData, error: proofError } = await supabase
     .from("proofs")
-    .select("*, clusters(*), block:blocks(gas_used,timestamp)")
+    .select("*, cluster:clusters(*), block:blocks(gas_used,timestamp)")
     .eq("user_id", team.user_id)
 
   if (!team || teamError || !proofsData?.length || proofError) return notFound()
@@ -94,10 +94,10 @@ export default async function ProverPage({ params }: ProverPageProps) {
 
   const clusters = Object.values(
     proofs.reduce((acc, curr) => {
-      if (!curr.clusters || !curr.clusters.index) return acc
+      if (!curr.cluster || !curr.cluster.index) return acc
       return {
         ...acc,
-        [curr.clusters.index]: curr.clusters,
+        [curr.cluster.index]: curr.cluster,
       }
     }, {})
   ) satisfies Cluster[]

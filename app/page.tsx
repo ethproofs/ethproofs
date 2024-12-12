@@ -51,7 +51,7 @@ export default async function Index() {
     .from("blocks")
     .select(
       `*,proofs!inner(id:proof_id,*,
-        clusters(*,
+        cluster:clusters(*,
           cluster_configurations(*,
             aws_instance_pricing(*)
           )

@@ -20,8 +20,8 @@ export const isCompleted = (proof: Proof) => proof.proof_status === "proved"
  * @returns {boolean} `true` if information to calculate costs are available, otherwise `false`.
  */
 export const hasCostInfo = (p: Proof) => {
-  if (!p.proving_time || !p.clusters?.cluster_configurations) return false
-  return p.clusters.cluster_configurations.some(
+  if (!p.proving_time || !p.cluster?.cluster_configurations) return false
+  return p.cluster.cluster_configurations.some(
     (config) =>
       !!config.aws_instance_pricing?.hourly_price && !!config.instance_count
   )
@@ -148,11 +148,11 @@ export const getClusterHourlyPrice = (cluster: Cluster): number | null => {
  * @returns The calculated proving cost in USD, as a number.
  */
 export const getProvingCost = (proof: Proof): number | null => {
-  const { proving_time, clusters } = proof
+  const { proving_time, cluster } = proof
 
-  if (!proving_time || !clusters) return null
+  if (!proving_time || !cluster) return null
 
-  const clusterHourlyPrice = getClusterHourlyPrice(clusters)
+  const clusterHourlyPrice = getClusterHourlyPrice(cluster)
 
   if (!clusterHourlyPrice) return null
 

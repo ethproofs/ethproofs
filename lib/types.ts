@@ -61,7 +61,7 @@ export type Cluster = ClusterBase & ClusterExtensions
  */
 export type ProofExtensions = {
   block?: BlockBase
-  clusters?: Cluster | null
+  cluster?: Cluster | null
   team?: Team
 }
 
