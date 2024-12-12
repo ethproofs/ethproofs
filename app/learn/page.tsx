@@ -276,7 +276,7 @@ export default function LearnPage() {
                   className="hover:text-primary-light"
                   href="https://www.youtube.com/watch?v=11DIflEwx50"
                 >
-                  what does risc v have to do with risc zero's zkvm
+                  what does risc v have to do with risc zero&apos;s zkvm
                 </Link>
               </li>
               <li>
