@@ -45,6 +45,8 @@ export default async function Index() {
     .select()
     .order("avg_proving_time", { ascending: true })
 
+  console.log(JSON.stringify(teamsSummary, null, 2))
+
   const blocksResponse = await supabase
     .from("blocks")
     .select(
