@@ -3,6 +3,8 @@ import Link from "next/link"
 
 import { cn } from "@/lib/utils"
 
+import { SITE_NAME } from "@/lib/constants"
+
 import { getMetadata } from "@/lib/metadata"
 import HeroDark from "@/public/images/learn-hero-background.png"
 
@@ -364,6 +366,35 @@ export default function LearnPage() {
                 </Link>
               </li>
             </ul>
+          </div>
+        </div>
+      </section>
+
+      <section className="mx-auto max-w-screen-md space-y-16 md:mt-16 lg:mt-32 xl:mt-48">
+        <div>
+          <h2 className="text-4xl md:text-5xl">{SITE_NAME}</h2>
+          <div className="h-px w-full bg-gradient-to-r from-primary"></div>
+        </div>
+        <div className="space-y-16">
+          <div className="space-y-8">
+            <h3 className="text-3xl">What is {SITE_NAME}?</h3>
+            <p>
+              {SITE_NAME} is a block explorer for Layer 1 zkEVM. It aggregates
+              data from various proving vendors to provide a comprehensive
+              overview of proven blocks, including key metadata such as cost,
+              latency, and proofing time.{" "}
+            </p>
+            <p>
+              Users can compare proofs by block, download them, and explore
+              vendor-specific metadata to better understand the proving process.
+            </p>
+            <p>
+              The aim is to establish a public good that evolves into the
+              standard for zkEVM block exploration, ultimately expanding to
+              encompass all Ethereum blocks while maintaining reasonable costs
+              and latency. This project may also support multiple-proof systems
+              in the future.
+            </p>
           </div>
         </div>
       </section>
