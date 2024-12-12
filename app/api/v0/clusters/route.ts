@@ -1,5 +1,5 @@
 import { withAuth } from "@/lib/auth"
-import { createClusterSchema } from "@/lib/zod/schemas/cluster"
+import { Cluster, createClusterSchema } from "@/lib/zod/schemas/cluster"
 
 export const GET = withAuth(async ({ client, user }) => {
   if (!user) {
@@ -10,7 +10,15 @@ export const GET = withAuth(async ({ client, user }) => {
 
   const { data, error } = await client
     .from("clusters")
-    .select("id:index, nickname, description, hardware, cycle_type, proof_type")
+    .select(
+      `
+      id:index, nickname, description, hardware, cycle_type, proof_type,
+      cluster_configuration:cluster_configurations(
+        instance_type_id,
+        instance_count,
+        aws_instance_pricing(*)
+      )`
+    )
     .eq("user_id", user.id)
 
   if (error) {
@@ -18,7 +26,7 @@ export const GET = withAuth(async ({ client, user }) => {
     return new Response("Internal server error", { status: 500 })
   }
 
-  return Response.json(data)
+  return Response.json(data satisfies Cluster[])
 })
 
 export const POST = withAuth(async ({ request, client, user }) => {

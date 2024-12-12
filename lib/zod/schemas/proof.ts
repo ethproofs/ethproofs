@@ -1,7 +1,6 @@
 import z from ".."
 
 const baseProofSchema = z.object({
-  // If not provided, the proof is going to be searched by block_number and cluster_id
   proof_id: z
     .number()
     .optional()
@@ -24,6 +23,13 @@ export const provedProofSchema = baseProofSchema.extend({
   proving_cycles: z
     .number()
     .int()
-    .positive("proving_cycles must be a positive integer"),
-  proof: z.string().min(1, "proof is required for 'proved' status"),
+    .positive("proving_cycles must be a positive integer")
+    .optional()
+    .describe("Number of cycles taken to generate the proof"),
+  proof: z
+    .string()
+    .base64()
+    .min(1, "proof is required for 'proved' status")
+    .describe("Proof in base64 format"),
+  verifier_id: z.string().optional().describe("vkey/image-id"),
 })

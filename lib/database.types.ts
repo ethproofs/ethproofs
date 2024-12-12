@@ -200,16 +200,34 @@ export type Database = {
           },
         ]
       }
+      programs: {
+        Row: {
+          created_at: string
+          id: number
+          verifier_id: string
+        }
+        Insert: {
+          created_at?: string
+          id?: number
+          verifier_id: string
+        }
+        Update: {
+          created_at?: string
+          id?: number
+          verifier_id?: string
+        }
+        Relationships: []
+      }
       proofs: {
         Row: {
           block_number: number
           cluster_id: string
           created_at: string | null
+          program_id: number | null
           proof: string | null
           proof_id: number
           proof_status: string
           proved_timestamp: string | null
-          proving_cost: number | null
           proving_cycles: number | null
           proving_time: number | null
           proving_timestamp: string | null
@@ -220,11 +238,11 @@ export type Database = {
           block_number: number
           cluster_id: string
           created_at?: string | null
+          program_id?: number | null
           proof?: string | null
           proof_id?: number
           proof_status: string
           proved_timestamp?: string | null
-          proving_cost?: number | null
           proving_cycles?: number | null
           proving_time?: number | null
           proving_timestamp?: string | null
@@ -235,11 +253,11 @@ export type Database = {
           block_number?: number
           cluster_id?: string
           created_at?: string | null
+          program_id?: number | null
           proof?: string | null
           proof_id?: number
           proof_status?: string
           proved_timestamp?: string | null
-          proving_cost?: number | null
           proving_cycles?: number | null
           proving_time?: number | null
           proving_timestamp?: string | null
@@ -259,6 +277,13 @@ export type Database = {
             columns: ["cluster_id"]
             isOneToOne: false
             referencedRelation: "clusters"
+            referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "proofs_program_id_fkey"
+            columns: ["program_id"]
+            isOneToOne: false
+            referencedRelation: "programs"
             referencedColumns: ["id"]
           },
           {
@@ -362,7 +387,7 @@ export type Database = {
       }
       teams_summary: {
         Row: {
-          avg_proving_cost: number | null
+          avg_cost_per_proof: number | null
           avg_proving_time: number | null
           logo_url: string | null
           team_id: number | null

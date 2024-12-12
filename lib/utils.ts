@@ -11,3 +11,7 @@ export const isMobile = (): boolean => {
     window.navigator.userAgent
   )
 }
+
+export const base64ToHex = (base64: string) => {
+  return Buffer.from(base64, "base64").toString("hex")
+}

@@ -3188,6 +3188,89 @@
         }
       ]
     },
+    "programs": {
+      "id": "public.programs",
+      "schemaName": "public",
+      "tableName": "programs",
+      "fields": [
+        {
+          "id": "public.programs.id",
+          "name": "id",
+          "columnName": "id",
+          "type": "int8",
+          "isRequired": true,
+          "kind": "scalar",
+          "isList": false,
+          "isGenerated": false,
+          "sequence": {
+            "identifier": "\"public\".\"programs_id_seq\"",
+            "increment": 1,
+            "start": 1
+          },
+          "hasDefaultValue": false,
+          "isId": true,
+          "maxLength": null
+        },
+        {
+          "id": "public.programs.verifier_id",
+          "name": "verifier_id",
+          "columnName": "verifier_id",
+          "type": "text",
+          "isRequired": true,
+          "kind": "scalar",
+          "isList": false,
+          "isGenerated": false,
+          "sequence": false,
+          "hasDefaultValue": false,
+          "isId": false,
+          "maxLength": null
+        },
+        {
+          "id": "public.programs.created_at",
+          "name": "created_at",
+          "columnName": "created_at",
+          "type": "timestamptz",
+          "isRequired": true,
+          "kind": "scalar",
+          "isList": false,
+          "isGenerated": false,
+          "sequence": false,
+          "hasDefaultValue": true,
+          "isId": false,
+          "maxLength": null
+        },
+        {
+          "name": "proofs",
+          "type": "proofs",
+          "isRequired": false,
+          "kind": "object",
+          "relationName": "proofsToprograms",
+          "relationFromFields": [],
+          "relationToFields": [],
+          "isList": true,
+          "isId": false,
+          "isGenerated": false,
+          "sequence": false,
+          "hasDefaultValue": false
+        }
+      ],
+      "uniqueConstraints": [
+        {
+          "name": "programs_pkey",
+          "fields": [
+            "id"
+          ],
+          "nullNotDistinct": false
+        },
+        {
+          "name": "programs_verifier_id_key",
+          "fields": [
+            "verifier_id"
+          ],
+          "nullNotDistinct": false
+        }
+      ]
+    },
     "proofs": {
       "id": "public.proofs",
       "schemaName": "public",
@@ -3366,6 +3449,20 @@
           "maxLength": null
         },
         {
+          "id": "public.proofs.program_id",
+          "name": "program_id",
+          "columnName": "program_id",
+          "type": "int8",
+          "isRequired": false,
+          "kind": "scalar",
+          "isList": false,
+          "isGenerated": false,
+          "sequence": false,
+          "hasDefaultValue": false,
+          "isId": false,
+          "maxLength": null
+        },
+        {
           "name": "users",
           "type": "users",
           "isRequired": true,
@@ -3409,6 +3506,24 @@
           "relationName": "proofsToclusters",
           "relationFromFields": [
             "cluster_id"
+          ],
+          "relationToFields": [
+            "id"
+          ],
+          "isList": false,
+          "isId": false,
+          "isGenerated": false,
+          "sequence": false,
+          "hasDefaultValue": false
+        },
+        {
+          "name": "programs",
+          "type": "programs",
+          "isRequired": false,
+          "kind": "object",
+          "relationName": "proofsToprograms",
+          "relationFromFields": [
+            "program_id"
           ],
           "relationToFields": [
             "id"
