@@ -165,7 +165,7 @@ export const getProvingCost = (proof: Proof): number | null => {
  * @param proofs - An array of Proof objects.
  * @returns The total proving cost as a number (USD).
  */
-const getSumProvingCost = (proofs: Proof[]): number => {
+export const getSumProvingCost = (proofs: Proof[]): number => {
   const availableProofs = proofs.filter(isCompleted).filter(hasCostInfo)
 
   if (!availableProofs.length) return 0

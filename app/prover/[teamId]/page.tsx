@@ -39,7 +39,11 @@ import { columns } from "./columns"
 
 import { getMetadata } from "@/lib/metadata"
 import { formatNumber } from "@/lib/number"
-import { getProofsAvgProvingTime } from "@/lib/proofs"
+import {
+  getProofsAvgProvingTime,
+  getSumProvingCost,
+  isCompleted,
+} from "@/lib/proofs"
 import { prettyMs } from "@/lib/time"
 import { getHost, getTwitterHandle } from "@/lib/url"
 import { createClient } from "@/utils/supabase/client"
@@ -79,16 +83,17 @@ export default async function ProverPage({ params }: ProverPageProps) {
 
   if (!team || !team.user_id || teamError) return notFound()
 
-  const { data: proofsExtended, error: proofError } = await supabase
+  const { data: proofsData, error: proofError } = await supabase
     .from("proofs")
     .select("*, clusters(*), block:blocks(gas_used,timestamp)")
     .eq("user_id", team.user_id)
 
-  if (!team || teamError || !proofsExtended?.length || proofError)
-    return notFound()
+  if (!team || teamError || !proofsData?.length || proofError) return notFound()
+
+  const proofs = proofsData as Proof[]
 
   const clusters = Object.values(
-    proofsExtended.reduce((acc, curr) => {
+    proofs.reduce((acc, curr) => {
       if (!curr.clusters || !curr.clusters.index) return acc
       return {
         ...acc,
@@ -97,9 +102,7 @@ export default async function ProverPage({ params }: ProverPageProps) {
     }, {})
   ) satisfies Cluster[]
 
-  const completedProofs = proofsExtended.filter(
-    (p) => p.proof_status === "proved"
-  )
+  const completedProofs = proofs.filter(isCompleted)
   const totalZkVMCycles = completedProofs.reduce(
     (acc, proof) => acc + (proof.proving_cycles ?? 0),
     0
@@ -109,20 +112,19 @@ export default async function ProverPage({ params }: ProverPageProps) {
     0
   )
   const avgZkVMCyclesPerMgas = totalZkVMCycles / totalGasProven / 1e6
-  const proverTotalFees = completedProofs.reduce(
-    (acc, proof) => acc + (proof.proving_cost ?? 0),
-    0
-  )
-  const avgCostPerMgas = proverTotalFees / totalGasProven / 1e6
 
-  const avgProofProvingTime = getProofsAvgProvingTime(proofsExtended as Proof[])
+  const totalProvingCosts = getSumProvingCost(completedProofs)
+
+  const avgCostPerMgas = totalProvingCosts / totalGasProven / 1e6
+
+  const avgProofProvingTime = getProofsAvgProvingTime(proofs as Proof[])
 
   const performanceMetrics: Metric[] = [
     {
       key: "total-proofs",
       label: "Total proofs",
       description: <ProofStatusInfo title="total proofs" />,
-      value: <ProofStatus proofs={proofsExtended as Proof[]} />,
+      value: <ProofStatus proofs={proofs as Proof[]} />,
     },
     {
       key: "avg-zkvm-cycles-per-mgas",
@@ -252,7 +254,7 @@ export default async function ProverPage({ params }: ProverPageProps) {
         </h2>
         <DataTable
           columns={columns}
-          data={proofsExtended as Proof[]}
+          data={proofs as Proof[]}
           sorting={[{ id: "block_number", desc: true }]}
         />
       </section>
