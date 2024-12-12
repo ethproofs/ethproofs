@@ -29,6 +29,7 @@ export default function LearnPage() {
             "dark:opacity-100 dark:contrast-100 dark:hue-rotate-0 dark:invert-0" // Dark mode filter resets
           )}
           alt=""
+          priority
         />
       </div>
       <div className="!mt-48 flex w-full flex-col items-center justify-between gap-4 p-3 md:mt-44 xl:!mt-56">
