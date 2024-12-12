@@ -19,7 +19,7 @@ import { cn } from "@/lib/utils"
 import { AVERAGE_LABEL } from "@/lib/constants"
 
 import { getMetadata } from "@/lib/metadata"
-import { formatNumber } from "@/lib/number"
+import { formatNumber, formatUsd } from "@/lib/number"
 import { prettyMs } from "@/lib/time"
 import HeroDark from "@/public/images/hero-background.png"
 import { createClient } from "@/utils/supabase/server"
@@ -243,10 +243,7 @@ export default async function Index() {
                         <div className="font-mono text-lg">
                           {avg_cost_per_proof !== null &&
                           isFinite(avg_cost_per_proof) ? (
-                            formatNumber(avg_cost_per_proof, {
-                              style: "currency",
-                              currency: "USD",
-                            })
+                            formatUsd(avg_cost_per_proof)
                           ) : (
                             <Null />
                           )}

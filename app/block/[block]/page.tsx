@@ -44,7 +44,7 @@ import { AVERAGE_LABEL } from "@/lib/constants"
 import { timestampToEpoch, timestampToSlot } from "@/lib/beaconchain"
 import { getBlockValueType } from "@/lib/blocks"
 import { getMetadata } from "@/lib/metadata"
-import { formatNumber } from "@/lib/number"
+import { formatNumber, formatUsd } from "@/lib/number"
 import {
   getCostPerMgasStats,
   getCostPerProofStats,
@@ -556,10 +556,7 @@ export default async function BlockDetailsPage({
                 </MetricLabel>
                 <MetricValue className="font-normal">
                   {isAvailable && provingCost ? (
-                    formatNumber(provingCost, {
-                      style: "currency",
-                      currency: "USD",
-                    })
+                    formatUsd(provingCost)
                   ) : (
                     <Null />
                   )}

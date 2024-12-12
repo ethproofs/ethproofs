@@ -38,7 +38,7 @@ import { AVERAGE_LABEL, SITE_NAME } from "@/lib/constants"
 import { columns } from "./columns"
 
 import { getMetadata } from "@/lib/metadata"
-import { formatNumber } from "@/lib/number"
+import { formatNumber, formatUsd } from "@/lib/number"
 import {
   getProofsAvgProvingTime,
   getSumProvingCost,
@@ -149,10 +149,7 @@ export default async function ProverPage({ params }: ProverPageProps) {
         </>
       ),
       description: "The average cost incurred for proving a million gas units",
-      value: formatNumber(avgCostPerMgas, {
-        style: "currency",
-        currency: "USD",
-      }),
+      value: formatUsd(avgCostPerMgas),
     },
     {
       key: "avg-proving-time",
