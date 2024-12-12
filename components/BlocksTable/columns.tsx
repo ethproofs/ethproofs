@@ -36,6 +36,7 @@ import {
 } from "@/lib/proofs"
 
 export const columns: ColumnDef<Block>[] = [
+  // Block
   {
     accessorKey: "block_number",
     header: () => (
@@ -77,6 +78,7 @@ export const columns: ColumnDef<Block>[] = [
       )
     },
   },
+  // Gas used
   {
     accessorKey: "gas_used",
     header: () => (
@@ -122,6 +124,7 @@ export const columns: ColumnDef<Block>[] = [
       )
     },
   },
+  // Cost per proof
   {
     accessorKey: "proofs",
     header: () => (
@@ -160,6 +163,7 @@ export const columns: ColumnDef<Block>[] = [
       )
     },
   },
+  // Cost per Mgas
   {
     accessorKey: "proofs",
     header: () => (
@@ -196,6 +200,7 @@ export const columns: ColumnDef<Block>[] = [
       )
     },
   },
+  // Proving time
   {
     accessorKey: "proofs",
     header: () => (
@@ -232,6 +237,7 @@ export const columns: ColumnDef<Block>[] = [
       )
     },
   },
+  // Total TTP
   {
     accessorKey: "proofs",
     header: () => (
@@ -264,6 +270,7 @@ export const columns: ColumnDef<Block>[] = [
       )
     },
   },
+  // Download button / proof status
   {
     accessorKey: "block_number",
     header: "",
