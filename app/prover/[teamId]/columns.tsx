@@ -43,7 +43,7 @@ export const columns: ColumnDef<Proof>[] = [
       )
     },
   },
-  // Instance
+  // Cluster
   {
     accessorKey: "cluster",
     header: () => (

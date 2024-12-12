@@ -48,7 +48,12 @@ const metrics: Record<Metric, MetricDetails> = {
 
         <primitives.cluster.Definition />
 
-        <Info.Description>Cluster identifier</Info.Description>
+        <Info.Description>
+          A cluster is composed of one or more sets of hardware working together
+          to generate a proof. For cost comparisons, clusters are broken down
+          using closest-equivalent AWS hardware instances, each with it&apos;s
+          own pricing as reported by AWS.
+        </Info.Description>
       </>
     ),
   },

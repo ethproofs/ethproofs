@@ -99,13 +99,18 @@ const primitives: Record<Primitive, DefinitionDetails> = {
   cluster: {
     Term: () => <Info.Term type="codeTerm">{PRIMITIVES.cluster}</Info.Term>,
     Definition: () => (
-      <p>
-        <Info.Term type="codeTerm">{PRIMITIVES.cluster}</Info.Term> is the name
-        given to a particular set of hardware being used to compute the proofs.
-        Hardware, cycle type, and description of setup are all self-reported by
-        proving teams, along with a selected AWS setup that best matches their
-        own, used for price comparison
-      </p>
+      <>
+        <p>
+          <Info.Term type="codeTerm">{PRIMITIVES.cluster}</Info.Term> is the
+          name given to a particular set of hardware being used to compute the
+          proofs.
+        </p>
+        <p>
+          Hardware, cycle type, and description of setup are all self-reported
+          by proving teams, along with a selected AWS setup that best matches
+          their own, used for price comparison
+        </p>
+      </>
     ),
   },
 }
