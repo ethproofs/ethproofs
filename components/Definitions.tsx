@@ -42,8 +42,8 @@ const primitives: Record<Primitive, DefinitionDetails> = {
     Definition: () => (
       <p>
         <Info.Term type="internal">{PRIMITIVES.instanceCount}</Info.Term> is the
-        number of AWS-equivalent instances being used within a cluster of
-        hardware responsible for generating a proof
+        number of AWS-equivalent instances of a given type being used within a
+        cluster of hardware responsible for generating a proof
       </p>
     ),
   },
@@ -142,14 +142,19 @@ const computed = {
   hourlyPricePerCluster: {
     Term: () => (
       <>
+        ∑(
         <primitives.hourlyPricePerInstance.Term /> *{" "}
-        <primitives.instanceCount.Term />
+        <primitives.instanceCount.Term />)
       </>
     ),
     Definition: () => (
       <>
         <primitives.hourlyPricePerInstance.Definition />
         <primitives.instanceCount.Definition />
+        <p>
+          The above products are summed up to calculate the total hourly cost
+          for the cluster
+        </p>
       </>
     ),
   },
