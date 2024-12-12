@@ -133,7 +133,8 @@ export default async function Index() {
       </div>
       <div className="mt-56 flex w-full flex-col items-center justify-between gap-4 p-3 md:mt-44 xl:mt-64">
         <h1 className="w-full text-center font-mono font-semibold">
-          Building fully SNARKed <span className="text-primary">Ethereum</span>
+          Building a fully SNARKed{" "}
+          <span className="text-primary">Ethereum</span>
         </h1>
         <p className="max-w-2xl text-center text-lg">
           This is a proof of concept that ZK proves 1-of-N blocks. Eventually,
