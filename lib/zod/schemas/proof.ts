@@ -26,6 +26,7 @@ export const provedProofSchema = baseProofSchema.extend({
     .positive("proving_cycles must be a positive integer")
     .optional()
     .describe("Number of cycles taken to generate the proof"),
+  // Temporarily disable proof validation to test if its giving maximum call stack error
   proof: z
     .string()
     .min(1, "proof is required for 'proved' status")
