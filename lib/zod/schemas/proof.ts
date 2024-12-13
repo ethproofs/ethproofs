@@ -31,7 +31,7 @@ export const provedProofSchema = baseProofSchema.extend({
     .min(1, "proof is required for 'proved' status")
     .refine((val) => isValidBase64(val), { message: "proof must be a valid base64 string" })
     .describe("Proof in base64 format"),
-  verifier_id: z.string().optional(),
+  verifier_id: z.string().optional().describe("vkey/image-id"),
 });
 
 // validate base64 without decoding
