@@ -46,7 +46,7 @@ export type Database = {
           created_at?: string
           id?: string
           mode?: Database["public"]["Enums"]["key_mode"]
-          token?: string
+          token: string
           user_id: string
         }
         Update: {
