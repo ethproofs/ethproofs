@@ -18,16 +18,19 @@ export const provingProofSchema = baseProofSchema.extend({})
 export const provedProofSchema = baseProofSchema.extend({
   proving_time: z
     .number()
-    .positive("proving_time must be a positive number"),
+    .positive("proving_time must be a positive number")
+    .describe("Milliseconds taken to generate the proof"),
   proving_cycles: z
     .number()
     .int()
     .positive("proving_cycles must be a positive integer")
-    .optional(),
+    .optional()
+    .describe("Number of cycles taken to generate the proof"),
   proof: z
     .string()
     .min(1, "proof is required for 'proved' status")
-    .refine((val) => isValidBase64(val), { message: "proof must be a valid base64 string" }),
+    .refine((val) => isValidBase64(val), { message: "proof must be a valid base64 string" })
+    .describe("Proof in base64 format"),
   verifier_id: z.string().optional(),
 });
 
