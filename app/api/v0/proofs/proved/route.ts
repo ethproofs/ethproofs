@@ -3,7 +3,7 @@ import { ZodError } from "zod"
 
 import { base64ToHex } from "@/lib/utils"
 
-import { withAuth } from "@/lib/auth"
+import { withAuth } from "@/lib/auth/withAuth"
 import { fetchBlockData } from "@/lib/blocks"
 import { provedProofSchema } from "@/lib/zod/schemas/proof"
 
