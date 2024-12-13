@@ -1,4 +1,4 @@
-import { withAuth } from "@/lib/auth"
+import { withAuth } from "@/lib/auth/withAuth"
 import { Cluster, createClusterSchema } from "@/lib/zod/schemas/cluster"
 
 export const GET = withAuth(async ({ client, user }) => {
