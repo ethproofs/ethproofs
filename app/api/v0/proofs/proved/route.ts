@@ -21,6 +21,7 @@ export const POST = withAuth(async ({ request, client, user, timestamp }) => {
     })
   }
 
+  type Schema = ReturnType<typeof provedProofSchema.parse>
   // // validate payload schema
   // let proofPayload
   // try {
@@ -38,7 +39,8 @@ export const POST = withAuth(async ({ request, client, user, timestamp }) => {
   //   })
   // }
 
-  const { block_number, cluster_id, verifier_id, ...restProofPayload } = payload // proofPayload
+  const { block_number, cluster_id, verifier_id, ...restProofPayload } =
+    payload as Schema
 
   // validate block_number exists
   console.log("validating block_number", block_number)
@@ -124,7 +126,7 @@ export const POST = withAuth(async ({ request, client, user, timestamp }) => {
 
   // get proof_id to update or create an existing proof
   let proofId
-  if (!proofPayload.proof_id) {
+  if (!payload.proof_id) {
     const { data: existingProofData } = await client
       .from("proofs")
       .select("proof_id")
