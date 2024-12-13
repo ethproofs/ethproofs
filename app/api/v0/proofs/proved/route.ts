@@ -21,25 +21,24 @@ export const POST = withAuth(async ({ request, client, user, timestamp }) => {
     })
   }
 
-  // validate payload schema
-  let proofPayload
-  try {
-    proofPayload = provedProofSchema.parse(payload)
-  } catch (error) {
-    console.error("proof payload invalid", error)
-    if (error instanceof ZodError) {
-      return new Response(`Invalid payload: ${error.message}`, {
-        status: 400,
-      })
-    }
+  // // validate payload schema
+  // let proofPayload
+  // try {
+  //   proofPayload = provedProofSchema.parse(payload)
+  // } catch (error) {
+  //   console.error("proof payload invalid", error)
+  //   if (error instanceof ZodError) {
+  //     return new Response(`Invalid payload: ${error.message}`, {
+  //       status: 400,
+  //     })
+  //   }
 
-    return new Response("Invalid payload", {
-      status: 400,
-    })
-  }
+  //   return new Response("Invalid payload", {
+  //     status: 400,
+  //   })
+  // }
 
-  const { block_number, cluster_id, verifier_id, ...restProofPayload } =
-    proofPayload
+  const { block_number, cluster_id, verifier_id, ...restProofPayload } = payload // proofPayload
 
   // validate block_number exists
   console.log("validating block_number", block_number)
