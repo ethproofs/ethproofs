@@ -1,8 +1,6 @@
 import { revalidateTag } from "next/cache"
 import { ZodError } from "zod"
 
-import { base64ToHex } from "@/lib/utils"
-
 import { withAuth } from "@/lib/auth/withAuth"
 import { fetchBlockData } from "@/lib/blocks"
 import { provedProofSchema } from "@/lib/zod/schemas/proof"
@@ -10,7 +8,9 @@ import { provedProofSchema } from "@/lib/zod/schemas/proof"
 // TODO: refactor code to use baseProofHandler and abstract out the logic
 
 export const POST = withAuth(async ({ request, client, user, timestamp }) => {
-  const payload = await request.json()
+  const formData = await request.formData()
+  const payload = JSON.parse(formData.get("payload") as string)
+  const proofFile = formData.get("proof") as File
 
   // TODO: remove when we go to production, this is a temporary log to debug the payload
   console.log("payload", payload)
@@ -143,7 +143,24 @@ export const POST = withAuth(async ({ request, client, user, timestamp }) => {
     ...restProofPayload,
   })
 
-  const proofHex = base64ToHex(proofPayload.proof)
+  const { data: binaryUpload, error: binaryError } = await client.storage
+    .from("binaries")
+    .createSignedUploadUrl("binary-test.bin")
+
+  if (!binaryUpload?.signedUrl) {
+    console.error("error creating signed URL", binaryError)
+    return new Response("Internal server error", { status: 500 })
+  }
+
+  const uploadResponse = await fetch(binaryUpload.signedUrl, {
+    method: "POST",
+    headers: {
+      "Content-Type": proofFile.type,
+      Authorization: `Bearer ${process.env.SUPABASE_KEY}`,
+    },
+    body: proofFile.stream(),
+  })
+  console.log({ uploadResponse })
 
   const proofResponse = await client
     .from("proofs")
@@ -153,7 +170,7 @@ export const POST = withAuth(async ({ request, client, user, timestamp }) => {
         block_number,
         proof_id: proofId,
         cluster_id: clusterData.id,
-        proof: `\\x${proofHex}`,
+        // proof: `\\x${proofHex}`, // TODO: Fix this
         program_id: programId,
         proof_status: "proved",
         proved_timestamp: timestamp,
