@@ -158,6 +158,7 @@ export const POST = withAuth(async ({ request, client, user, timestamp }) => {
     headers: {
       "Content-Type": proofFile.type,
       Authorization: `Bearer ${process.env.SUPABASE_KEY}`,
+      duplex: "half",
     },
     body: proofFile.stream(),
   })
