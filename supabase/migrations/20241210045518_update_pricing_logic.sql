@@ -1,5 +1,3 @@
-alter table "public"."proofs" drop column "proving_cost";
-
 drop view if exists "public"."recent_summary";
 
 create or replace view "public"."recent_summary" with (security_invoker=on) as
@@ -27,3 +25,5 @@ create or replace view "public"."teams_summary" with (security_invoker=on) as
   left join "public"."cluster_configurations" "cc" on "p"."cluster_id" = "cc"."cluster_id"
   left join "public"."aws_instance_pricing" "a" on "cc"."instance_type_id" = "a"."id"
   group by "t"."team_id";
+
+alter table "public"."proofs" drop column "proving_cost";
