@@ -26,11 +26,10 @@ export const provedProofSchema = baseProofSchema.extend({
     .positive("proving_cycles must be a positive integer")
     .optional()
     .describe("Number of cycles taken to generate the proof"),
-  // Temporarily disable proof validation to test if its giving maximum call stack error
   proof: z
-    .string(),
-  //   .base64()
-  //   .min(1, "proof is required for 'proved' status")
-  //   .describe("Proof in base64 format"),
+    .string()
+    // Temporarily disable proof validation to test if its giving maximum call stack error
+    //   .base64()
+    .describe("Proof in base64 format"),
   verifier_id: z.string().optional().describe("vkey/image-id"),
 })
