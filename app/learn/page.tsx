@@ -1,17 +1,27 @@
+import matter from "gray-matter"
 import Image from "next/image"
 
-import Link from "@/components/ui/link"
+import { MarkdownProvider } from "@/components/Markdown/Provider"
 
 import { cn } from "@/lib/utils"
 
-import { SITE_NAME } from "@/lib/constants"
+import { LEARN_RESOURCES_MD_URL, SITE_NAME } from "@/lib/constants"
 
 import { getMetadata } from "@/lib/metadata"
 import HeroDark from "@/public/images/learn-hero-background.png"
 
 export const metadata = getMetadata({ title: "Learn" })
 
-export default function LearnPage() {
+export default async function LearnPage() {
+  const response = await fetch(LEARN_RESOURCES_MD_URL)
+  const markdown = response.ok ? await response.text() : ""
+
+  const resourcesMatch = markdown.match(/(?<=## resources)([\s\S]*?)\n#{1,2}\s/)
+  const tutorialsMatch = markdown.match(/(?<=## tutorials)([\s\S]*?)\n#{1,2}\s/)
+
+  const resources = resourcesMatch ? matter(resourcesMatch[0]).content : ""
+  const tutorials = tutorialsMatch ? matter(tutorialsMatch[0]).content : ""
+
   return (
     <div className="space-y-16">
       <div
@@ -148,146 +158,11 @@ export default function LearnPage() {
           </div>
           <div className="space-y-8">
             <h3 className="text-3xl">More resources</h3>
-            <ul>
-              <li>
-                <Link href="https://www.lita.foundation/blog/zero-knowledge-paradigm-zkvm">
-                  a zero-knowledge paradigm series
-                </Link>
-              </li>
-              <li>
-                <Link href="https://www.youtube.com/watch?v=vVgHL5vpJxY&t=33s">
-                  cairo – a turing-complete stark-friendly cpu architecture -
-                  shahar papini
-                </Link>
-              </li>
-              <li>
-                <Link href="https://youtube.com/playlist?list=PLjQ9HCQMu_8xjOEM_vh5p26ODtr-mmGxO&si=Uega8IMg_J8kNaa8">
-                  lasso + jolt playlist
-                </Link>
-              </li>
-              <li>
-                <Link href="https://www.mikkoikola.com/blog/2023/12/11/new-paradigm-in-ethereum-l2-scaling-multi-proving-and-zk-vms">
-                  new paradigm in ethereum l2 scaling: multi-proving and zk-vms
-                </Link>
-              </li>
-              <li>
-                <Link href="https://www.youtube.com/watch?v=UtzFOwQp8n4">
-                  the nexus v1.0 zkvm - daniel marin (nexus)
-                </Link>
-              </li>
-              <li>
-                <Link href="https://a16zcrypto.com/posts/article/understanding-jolt-clarifications-and-reflections/">
-                  understanding jolt: clarifications and reflections
-                </Link>
-              </li>
-              <li>
-                <Link href="https://www.youtube.com/watch?v=GRFPGJW0hic">
-                  zk whiteboard sessions – module seven: zero knowledge virtual
-                  machines (zkvm) with grjte
-                </Link>
-              </li>
-              <li>
-                <Link href="https://www.youtube.com/watch?v=tWJZX-WmbeY&t=325s">
-                  zk10: analysis of zkvm designs - wei dai & terry chung
-                </Link>
-              </li>
-              <li>
-                <Link href="https://www.youtube.com/watch?v=HDH2KXRAxAc">
-                  zk11: o1vm: building a real-world zkvm for mips - danny
-                  willems
-                </Link>
-              </li>
-              <li>
-                <Link href="https://www.youtube.com/watch?v=kzSYNFh4uQ0&list=PLothk45x3HC9Oz4f3e9-OoYUEytfHWCl5">
-                  zk12: memory checking in ivc-based zkvm - jens groth
-                </Link>
-              </li>
-              <li>
-                <Link href="https://www.youtube.com/watch?v=81UAaiIgIYA&t=803s">
-                  zk7: miden vm: a stark-friendly vm for blockchains - bobbin
-                  threadbare – polygon
-                </Link>
-              </li>
-              <li>
-                <Link href="https://taiko.mirror.xyz/e_5GeGGFJIrOxqvXOfzY6HmWcRjCjRyG0NQF1zbNpNQ">
-                  zeroing into zkvm
-                </Link>
-              </li>
-              <li>
-                <Link href="https://www.youtube.com/watch?v=aobrJ-zTcAU">
-                  zkvm design walkthrough with max and daniel
-                </Link>
-              </li>
-              <li>
-                <Link href="https://github.com/CertiKProject/zkwasm-fv">
-                  Verification of zkWasm in Coq
-                </Link>
-              </li>
-              <li>
-                <Link href="https://www.youtube.com/watch?v=R07ina4k7hg">
-                  zk11: polynomial acceleration for stark vms
-                </Link>
-              </li>
-              <li>
-                <Link href="https://www.youtube.com/watch?v=11DIflEwx50">
-                  what does risc v have to do with risc zero&apos;s zkvm
-                </Link>
-              </li>
-              <li>
-                <Link href="https://www.youtube.com/watch?v=RtGk6967PC4">
-                  risc zero architecture presentation @ stanford
-                </Link>
-              </li>
-              <li>
-                <Link href="https://www.youtube.com/watch?v=h1qWnf-M5lo">
-                  continuations: scaling in zkvm
-                </Link>
-              </li>
-              <li>
-                <Link href="https://a16zcrypto.com/posts/article/getting-bugs-out-of-snarks/">
-                  Getting the bugs out of SNARKs: The road ahead
-                </Link>
-              </li>
-              <li>
-                <Link href="https://www.youtube.com/watch?v=zD45V6GAD00">
-                  ~tacryt-socryp on Zorp, the Nock zkVM | Reassembly23
-                </Link>
-              </li>
-            </ul>
+            <MarkdownProvider>{resources}</MarkdownProvider>
           </div>
           <div className="space-y-8">
             <h3 className="text-3xl">Tutorials</h3>
-            <ul>
-              <li>
-                <Link href="https://neptune.cash/learn/brainfuck-tutorial/">
-                  brainfuck tutorial
-                </Link>
-              </li>
-              <li>
-                <Link href="https://blog.lambdaclass.com/continuous-read-only-memory-constraints-an-implementation-using-lambdaworks/">
-                  continuous read only memory constraints an implementation
-                  using lambdaworks
-                </Link>
-              </li>
-              <li>
-                <Link href="https://blog.lambdaclass.com/how-to-code-fri-from-scratch/">
-                  fri from scratch
-                </Link>
-              </li>
-              <li>
-                <Link href="https://dev.risczero.com/proof-system/stark-by-hand">
-                  stark by hand
-                </Link>
-              </li>
-              <li>
-                <Link href="https://aszepieniec.github.io/stark-brainfuck/">
-                  stark brainfuck
-                </Link>
-              </li>
-              <li>
-                <Link href="https://starkware.co/stark-101/">stark 101</Link>
-              </li>
-            </ul>
+            <MarkdownProvider>{tutorials}</MarkdownProvider>
           </div>
         </div>
       </section>
