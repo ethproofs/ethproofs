@@ -16,9 +16,9 @@ export default async function LearnPage() {
   const response = await fetch(LEARN_RESOURCES_MD_URL)
   const markdown = response.ok ? await response.text() : ""
 
+  // Extract resources and tutorials sections from fetched markdown
   const resourcesMatch = markdown.match(/(?<=## resources)([\s\S]*?)\n#{1,2}\s/)
   const tutorialsMatch = markdown.match(/(?<=## tutorials)([\s\S]*?)\n#{1,2}\s/)
-
   const resources = resourcesMatch ? matter(resourcesMatch[0]).content : ""
   const tutorials = tutorialsMatch ? matter(tutorialsMatch[0]).content : ""
 
@@ -156,14 +156,18 @@ export default async function LearnPage() {
               </li>
             </ul>
           </div>
-          <div className="space-y-8">
-            <h3 className="text-3xl">More resources</h3>
-            <MarkdownProvider>{resources}</MarkdownProvider>
-          </div>
-          <div className="space-y-8">
-            <h3 className="text-3xl">Tutorials</h3>
-            <MarkdownProvider>{tutorials}</MarkdownProvider>
-          </div>
+          {resources && (
+            <div className="space-y-8">
+              <h3 className="text-3xl">More resources</h3>
+              <MarkdownProvider>{resources}</MarkdownProvider>
+            </div>
+          )}
+          {tutorials && (
+            <div className="space-y-8">
+              <h3 className="text-3xl">Tutorials</h3>
+              <MarkdownProvider>{tutorials}</MarkdownProvider>
+            </div>
+          )}
         </div>
       </section>
 
