@@ -33,6 +33,11 @@ export type ProofBase = Tables<"proofs">
 export type Team = Tables<"teams">
 
 /**
+ * Represents a row in the teams_summary view.
+ */
+export type TeamSummary = Tables<"teams_summary">
+
+/**
  * Extensions for the ClusterConfig type, adding optional awsInstance property.
  */
 export type ClusterConfigExtensions = {
