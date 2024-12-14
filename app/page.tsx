@@ -1,7 +1,7 @@
 import type { Metadata } from "next"
 import Image from "next/image"
 
-import type { BlockBase, Proof, SummaryItem } from "@/lib/types"
+import type { BlockBase, Proof, SummaryItem, TeamSummary } from "@/lib/types"
 
 import BlocksTable from "@/components/BlocksTable"
 import { metrics } from "@/components/Metrics"
@@ -21,6 +21,7 @@ import { AVERAGE_LABEL } from "@/lib/constants"
 
 import { getMetadata } from "@/lib/metadata"
 import { formatNumber, formatUsd, shouldUseCents } from "@/lib/number"
+import { getTotalProvers } from "@/lib/teams"
 import { prettyMs } from "@/lib/time"
 import HeroDark from "@/public/images/hero-background.png"
 import { createClient } from "@/utils/supabase/server"
@@ -190,7 +191,7 @@ export default async function Index() {
                 Prover diversity
               </div>
               <div className="flex items-center gap-2 whitespace-nowrap text-4xl text-primary">
-                <ShieldCheck /> {teamsSummary.data.length}
+                <ShieldCheck /> {getTotalProvers(teamsSummary.data)}
               </div>
               <div className="whitespace-nowrap text-xs font-bold uppercase text-body-secondary">
                 Prover vendors
@@ -213,7 +214,7 @@ export default async function Index() {
                 avg_cost_per_proof,
                 avg_proving_time,
               }) => {
-                console.log({})
+                const isNewTeam = !avg_cost_per_proof || !avg_proving_time
                 return (
                   <Card
                     className="flex min-w-96 flex-1 flex-col gap-4"
@@ -239,33 +240,44 @@ export default async function Index() {
                     </div>
 
                     <div className="mx-auto flex flex-col gap-6">
-                      <div className="flex w-full flex-nowrap">
-                        <div className="flex flex-col items-center gap-2 px-4">
-                          <div className="flex items-center gap-1 text-body-secondary">
-                            {AVERAGE_LABEL} <metrics.provingTime.Label />
-                          </div>
-                          <div className="font-mono text-lg">
-                            {prettyMs(avg_proving_time || 0)}
-                          </div>
+                      {isNewTeam ? (
+                        <div className="py-8 text-center font-mono text-lg uppercase text-body-secondary">
+                          Proving soon
                         </div>
-                        <div className="flex flex-col items-center gap-2 px-4">
-                          <div className="flex items-center gap-1 text-body-secondary">
-                            {AVERAGE_LABEL} <metrics.costPerProof.Label />
+                      ) : (
+                        <>
+                          <div className="flex w-full flex-nowrap">
+                            <div className="flex flex-col items-center gap-2 px-4">
+                              <div className="flex items-center gap-1 text-body-secondary">
+                                {AVERAGE_LABEL} <metrics.provingTime.Label />
+                              </div>
+                              <div className="font-mono text-lg">
+                                {prettyMs(avg_proving_time || 0)}
+                              </div>
+                            </div>
+                            <div className="flex flex-col items-center gap-2 px-4">
+                              <div className="flex items-center gap-1 text-body-secondary">
+                                {AVERAGE_LABEL} <metrics.costPerProof.Label />
+                              </div>
+                              <div className="font-mono text-lg">
+                                {avg_cost_per_proof !== null &&
+                                avg_cost_per_proof !== 0 &&
+                                isFinite(avg_cost_per_proof) ? (
+                                  formatUsd(avg_cost_per_proof)
+                                ) : (
+                                  <Null />
+                                )}
+                              </div>
+                            </div>
                           </div>
-                          <div className="font-mono text-lg">
-                            {avg_cost_per_proof !== null &&
-                            avg_cost_per_proof !== 0 &&
-                            isFinite(avg_cost_per_proof) ? (
-                              formatUsd(avg_cost_per_proof)
-                            ) : (
-                              <Null />
-                            )}
-                          </div>
-                        </div>
-                      </div>
-                      <ButtonLink href={`/prover/${team_id}`} variant="outline">
-                        + details for {team_name}
-                      </ButtonLink>
+                          <ButtonLink
+                            href={`/prover/${team_id}`}
+                            variant="outline"
+                          >
+                            + details for {team_name}
+                          </ButtonLink>
+                        </>
+                      )}
                     </div>
                   </Card>
                 )
