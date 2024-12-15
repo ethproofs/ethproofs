@@ -1,6 +1,6 @@
 import { ZodError } from "zod"
 
-import { withAuth } from "@/lib/auth"
+import { withAuth } from "@/lib/auth/withAuth"
 import { singleMachineSchema } from "@/lib/zod/schemas/cluster"
 
 export const POST = withAuth(async ({ request, client, user }) => {

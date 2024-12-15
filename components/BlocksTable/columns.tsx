@@ -241,8 +241,8 @@ export const columns: ColumnDef<Block>[] = [
   {
     accessorKey: "proofs",
     header: () => (
-      <ColumnHeader label={<metrics.totalTTP.Label />}>
-        <ProofStatusInfo />
+      <ColumnHeader label="proof status">
+        <ProofStatusInfo title="" />
         <TooltipContentFooter className="space-y-3">
           <Info.Label isSecondary>
             <metrics.totalTTP.Label /> (fastest proof shown)

@@ -1,7 +1,7 @@
 import { revalidateTag } from "next/cache"
 import { ZodError } from "zod"
 
-import { withAuth } from "@/lib/auth"
+import { withAuth } from "@/lib/auth/withAuth"
 import { fetchBlockData } from "@/lib/blocks"
 import { provingProofSchema } from "@/lib/zod/schemas/proof"
 
