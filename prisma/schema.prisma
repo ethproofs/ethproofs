@@ -1,0 +1,153 @@
+datasource db {
+  provider  = "postgresql"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_DATABASE_URL")
+}
+
+generator client {
+  provider  = "prisma-client-js"
+}
+
+model ApiAuthToken {
+  id        String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  token     String   @unique
+  teamId    String   @db.Uuid @map("team_id")
+  mode      KeyMode  @default(read)
+  createdAt DateTime @default(now()) @db.Timestamptz(6) @map("created_at")
+
+  team      Team     @relation(fields: [teamId], references: [teamId], onDelete: Cascade, onUpdate: NoAction)
+
+  @@map("api_auth_tokens")
+}
+
+model AwsInstancePricing {
+  id              BigInt   @id @default(autoincrement())
+  instanceType    String   @map("instance_type")
+  region          String   @map("region")
+  hourlyPrice     Float    @map("hourly_price")
+  instanceMemory  Float    @map("instance_memory")
+  vcpu            Int      @map("vcpu")
+  instanceStorage String   @map("instance_storage")
+  createdAt       DateTime @default(now()) @map("created_at")
+
+  clusterConfigurations ClusterConfiguration[]
+
+  @@map("aws_instance_pricing")
+}
+
+model Block {
+  blockNumber       BigInt   @id @map("block_number")
+  timestamp         DateTime @db.Timestamptz(6) @map("timestamp")
+  gasUsed           BigInt   @map("gas_used")
+  transactionCount  Int      @map("transaction_count")
+  hash              String   
+  createdAt         DateTime @default(now()) @db.Timestamptz(6) @map("created_at")
+
+  proofs            Proof[]
+  recursiveRootProofs RecursiveRootProof[]
+
+  @@map("blocks")
+}
+
+model ClusterConfiguration {
+  id              BigInt   @id @default(autoincrement())
+  clusterId       String   @db.Uuid @map("cluster_id")
+  instanceTypeId  BigInt   @map("instance_type_id")
+  instanceCount   Int      @map("instance_count")
+
+  cluster         Cluster @relation(fields: [clusterId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  instanceType    AwsInstancePricing @relation(fields: [instanceTypeId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+
+  @@map("cluster_configurations")
+}
+
+model Cluster {
+  id                  String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  index               Int?     
+  nickname            String   
+  teamId              String   @db.Uuid @map("team_id")
+  description         String?  
+  hardware            String?  
+  cycleType           String?  @map("cycle_type")
+  proofType           String?  @map("proof_type")
+
+  configurations      ClusterConfiguration[]
+  proofs              Proof[]
+  team                Team?    @relation(fields: [teamId], references: [teamId], onDelete: NoAction, onUpdate: NoAction)
+
+  @@map("clusters")
+}
+
+model Program {
+  id            BigInt   @id @default(autoincrement())
+  verifierId    String   @unique @map("verifier_id")
+  createdAt     DateTime @default(now()) @map("created_at")
+
+  proofs        Proof[]
+
+  @@map("programs")
+}
+
+model Proof {
+  proofId           Int         @id @default(autoincrement()) @map("proof_id")
+  blockNumber       BigInt      @map("block_number")
+  proof             Bytes?      @map("proof")
+  proofStatus       String      @map("proof_status")
+  provingCycles     BigInt?     @map("proving_cycles")
+  createdAt         DateTime    @default(now()) @db.Timestamptz(6) @map("created_at")
+  provedTimestamp   DateTime?   @db.Timestamptz(6) @map("proved_timestamp")
+  provingTimestamp  DateTime?   @db.Timestamptz(6) @map("proving_timestamp")
+  queuedTimestamp   DateTime?   @db.Timestamptz(6) @map("queued_timestamp")
+  provingTime       Int         @map("proving_time") 
+  teamId            String      @db.Uuid @map("team_id")
+  clusterId         String      @db.Uuid @map("cluster_id")
+  programId         BigInt?     @map("program_id")
+
+  block             Block       @relation(fields: [blockNumber], references: [blockNumber], onDelete: NoAction, onUpdate: NoAction)
+  cluster           Cluster     @relation(fields: [clusterId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  program           Program?    @relation(fields: [programId], references: [id], onDelete: NoAction, onUpdate: NoAction)
+  team              Team?       @relation(fields: [teamId], references: [teamId], onDelete: NoAction, onUpdate: NoAction)
+
+  @@unique([blockNumber, clusterId], map: "unique_block_cluster")
+  @@map("proofs")
+}
+
+model RecursiveRootProof {
+  rootProofId       Int       @id @default(autoincrement()) @map("root_proof_id")
+  blockNumber       BigInt?   @map("block_number")
+  rootProof         Bytes     @map("root_proof")
+  rootProofSize     BigInt    @map("root_proof_size")
+  totalProofSize    BigInt    @map("total_proof_size")
+  teamId            String    @db.Uuid @map("team_id")
+
+  block             Block?    @relation(fields: [blockNumber], references: [blockNumber], onDelete: NoAction, onUpdate: NoAction)
+  team              Team?     @relation(fields: [teamId], references: [teamId], onDelete: NoAction, onUpdate: NoAction)
+
+  @@map("recursive_root_proofs")
+}
+
+model Team {
+  teamId            String   @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid @map("team_id")
+  teamName          String   @map("team_name")
+  githubOrg         String?  @map("github_org")
+  logoUrl           String?  @map("logo_url")
+  twitterHandle     String?  @map("twitter_handle")
+  websiteUrl        String?  @map("website_url")
+  userId            String   @db.Uuid @map("user_id")
+
+  apiAuthTokens     ApiAuthToken[]
+  clusters          Cluster[]
+  proofs            Proof[]
+  recursiveRootProofs RecursiveRootProof[]
+
+  @@map("teams")
+}
+
+enum KeyMode {
+  read
+  write
+  all
+  upload
+
+  @@map("key_modes")
+}
