@@ -1,5 +1,6 @@
 "use client"
 
+import prettyBytes from "pretty-bytes"
 import type { Proof, Team } from "@/lib/types"
 
 import ArrowDown from "@/components/svgs/arrow-down.svg"
@@ -17,6 +18,7 @@ type DownloadButtonProps = {
 
 const DownloadButton = ({ className, proof }: DownloadButtonProps) => {
   const { proof_status, proof: binary, team } = proof
+
   const teamName = team?.team_name ? team.team_name : "Team"
 
   const sizingClassName =
@@ -26,21 +28,32 @@ const DownloadButton = ({ className, proof }: DownloadButtonProps) => {
   const fakeButtonClassName =
     "bg-body-secondary/10 hover:bg-body-secondary/10 cursor-auto"
 
-  if (proof_status === "proved")
+  if (proof_status === "proved") {
+    const size = binary
+      ? prettyBytes(
+          new Blob([binary], {
+            type: "application/octet-stream",
+          }).size
+        )
+      : ""
+
     return (
-      <Button
-        variant="outline"
-        className={cn(sizingClassName, className)}
-        size="icon"
-        disabled={!binary}
-        asChild
-      >
-        <a href={`/api/v0/proofs/download/${proof.proof_id}`} download>
-          <ArrowDown />
-          <span className={labelClassName}>Download proof</span>
-        </a>
-      </Button>
+      <div className="flex flex-col items-center">
+        <Button
+          variant="outline"
+          className={cn(sizingClassName, className)}
+          size="icon"
+          disabled={!binary}
+          asChild
+        >
+          <a href={`/api/v0/proofs/download/${proof.proof_id}`} download>
+            <ArrowDown />
+            <span className={labelClassName}>Download {size}</span>
+          </a>
+        </Button>
+      </div>
     )
+  }
 
   if (proof_status === "proving")
     return (
