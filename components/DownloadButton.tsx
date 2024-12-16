@@ -30,7 +30,7 @@ const DownloadButton = ({ className, proof }: DownloadButtonProps) => {
   const fakeButtonClassName =
     "bg-body-secondary/10 hover:bg-body-secondary/10 cursor-auto"
 
-  if (proof_status === "proved") {
+  if (proof_status === "proved")
     return (
       <div className="flex flex-col items-center">
         <Button
@@ -49,7 +49,6 @@ const DownloadButton = ({ className, proof }: DownloadButtonProps) => {
         </Button>
       </div>
     )
-  }
 
   if (proof_status === "proving")
     return (
