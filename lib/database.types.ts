@@ -377,6 +377,21 @@ export type Database = {
       }
     }
     Views: {
+      proof_sizes: {
+        Row: {
+          byte_size: number | null
+          proof_id: number | null
+        }
+        Insert: {
+          byte_size?: never
+          proof_id?: number | null
+        }
+        Update: {
+          byte_size?: never
+          proof_id?: number | null
+        }
+        Relationships: []
+      }
       recent_summary: {
         Row: {
           avg_cost_per_proof: number | null
