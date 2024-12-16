@@ -1,5 +1,10 @@
 alter table public.proofs add column size bigint;
 
+-- props: {"title": "update existing rows to set size in proofs table", "runQuery": "true", "isChart": "false"}
+update public.proofs
+set size = octet_length(proof)
+where proof is not null;
+
 -- props: {"title": "create trigger function to update size", "runQuery": "false", "isChart": "false"}
 create or replace function update_size()
 returns trigger as $$
