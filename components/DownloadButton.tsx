@@ -31,6 +31,7 @@ const DownloadButton = ({ className, proof }: DownloadButtonProps) => {
     "bg-body-secondary/10 hover:bg-body-secondary/10 cursor-auto"
 
   if (proof_status === "proved") {
+    console.log({ proof_id, size, binary })
     return (
       <div className="flex flex-col items-center">
         <Button
