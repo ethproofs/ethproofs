@@ -1,5 +1,7 @@
 "use client"
 
+import prettyBytes from "pretty-bytes"
+
 import type { Proof, Team } from "@/lib/types"
 
 import ArrowDown from "@/components/svgs/arrow-down.svg"
@@ -9,7 +11,6 @@ import { cn } from "@/lib/utils"
 import { Button } from "./ui/button"
 import StatusIcon from "./StatusIcon"
 import Tooltip from "./Tooltip"
-import prettyBytes from "pretty-bytes"
 
 type DownloadButtonProps = {
   proof: Proof & { team?: Team }
