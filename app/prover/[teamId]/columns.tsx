@@ -2,7 +2,7 @@
 import Link from "next/link"
 import { ColumnDef } from "@tanstack/react-table"
 
-import type { Block, Cluster, Proof } from "@/lib/types"
+import type { Block, BlockBase, Cluster, Proof } from "@/lib/types"
 
 import { primitives } from "@/components/Definitions"
 import DownloadButton from "@/components/DownloadButton"
@@ -15,6 +15,7 @@ import { TooltipContentHeader } from "@/components/ui/tooltip"
 
 import { ColumnHeader } from "./ColumnHeader"
 
+import { formatTimeAgo } from "@/lib/date"
 import { formatNumber, formatUsd } from "@/lib/number"
 import {
   getProvingCost,
@@ -37,16 +38,25 @@ export const columns: ColumnDef<Proof>[] = [
         <metrics.blockNumber.Details />
       </ColumnHeader>
     ),
-    cell: ({ cell }) => {
+    cell: ({ cell, row }) => {
       const blockNumber = cell.getValue() as number
+      const timestamp = row.original.block?.timestamp as string
+
+      const formattedTimestamp = timestamp
+        ? formatTimeAgo(new Date(timestamp))
+        : "pending"
+
       return (
         <div className="text-start">
           <Link
             href={`/block/${blockNumber}`}
-            className="tracking-wide hover:text-primary-light hover:underline"
+            className="text-lg tracking-wide hover:text-primary-light hover:underline"
           >
             <HidePunctuation>{formatNumber(blockNumber)}</HidePunctuation>
           </Link>
+          <div className="font-sans text-xs text-body-secondary">
+            {formattedTimestamp}
+          </div>
         </div>
       )
     },
