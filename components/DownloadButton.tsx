@@ -13,7 +13,7 @@ import StatusIcon from "./StatusIcon"
 import Tooltip from "./Tooltip"
 
 type DownloadButtonProps = {
-  proof: Proof & { team?: Team }
+  proof: Proof
   className?: string
 }
 
