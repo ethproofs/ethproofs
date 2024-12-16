@@ -17,7 +17,7 @@ type DownloadButtonProps = {
 }
 
 const DownloadButton = ({ className, proof }: DownloadButtonProps) => {
-  const { proof_status, proof: binary, team } = proof
+  const { proof_status, proof: binary, size, team } = proof
 
   const teamName = team?.team_name ? team.team_name : "Team"
 
@@ -29,14 +29,6 @@ const DownloadButton = ({ className, proof }: DownloadButtonProps) => {
     "bg-body-secondary/10 hover:bg-body-secondary/10 cursor-auto"
 
   if (proof_status === "proved") {
-    const size = binary
-      ? prettyBytes(
-          new Blob([binary], {
-            type: "application/octet-stream",
-          }).size
-        )
-      : ""
-
     return (
       <div className="flex flex-col items-center">
         <Button
@@ -48,7 +40,9 @@ const DownloadButton = ({ className, proof }: DownloadButtonProps) => {
         >
           <a href={`/api/v0/proofs/download/${proof.proof_id}`} download>
             <ArrowDown />
-            <span className={labelClassName}>Download {size}</span>
+            <span className={labelClassName}>
+              Download {size ? prettyBytes(size) : ""}
+            </span>
           </a>
         </Button>
       </div>
