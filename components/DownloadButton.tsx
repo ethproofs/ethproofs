@@ -2,7 +2,7 @@
 
 import prettyBytes from "pretty-bytes"
 
-import type { Proof, Team } from "@/lib/types"
+import type { Proof } from "@/lib/types"
 
 import ArrowDown from "@/components/svgs/arrow-down.svg"
 
@@ -42,7 +42,9 @@ const DownloadButton = ({ className, proof }: DownloadButtonProps) => {
           <a href={`/api/v0/proofs/download/${proof_id}`} download>
             <ArrowDown />
             <span className={labelStyle}>
-              <span className={labelDisplay}>Download</span>{" "}
+              <span className={labelDisplay}>
+                Download {size ? "" : "proof"}
+              </span>{" "}
               {size ? prettyBytes(size) : ""}
             </span>
           </a>
