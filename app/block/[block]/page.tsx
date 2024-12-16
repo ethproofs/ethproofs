@@ -53,6 +53,7 @@ import {
   getTotalTTPStats,
   hasProvedTimestamp,
   isCompleted,
+  mapProofSizes,
   sortProofsStatusAndTimes,
 } from "@/lib/proofs"
 import { prettyMs } from "@/lib/time"
@@ -91,15 +92,20 @@ export default async function BlockDetailsPage({
     .eq(getBlockValueType(blockNumber), blockNumber)
     .single()
 
+  const proofSizeResponse = await supabase.from("proof_sizes").select()
+
+  const proofSizeById = mapProofSizes(proofSizeResponse?.data)
+
   const { data: teams } = await supabase.from("teams").select("*")
 
   if (!block || error || !teams) notFound()
 
   const { timestamp, block_number, gas_used, proofs, hash } = block
 
-  const proofsWithTeams = proofs.map((proof) => {
+  const proofsExtended = proofs.map((proof) => {
     const team = teams.find((t) => t.user_id === proof.user_id)
-    return { ...proof, team }
+    const size = proofSizeById[proof.proof_id]
+    return { ...proof, size, team }
   })
 
   const costPerProofStats = getCostPerProofStats(proofs)
@@ -381,7 +387,7 @@ export default async function BlockDetailsPage({
           <ProofCircle /> Proofs
         </h2>
 
-        {proofsWithTeams.sort(sortProofsStatusAndTimes).map((proof) => {
+        {proofsExtended.sort(sortProofsStatusAndTimes).map((proof) => {
           const {
             proof_id,
             proving_time,
