@@ -1,16 +1,19 @@
 "use client"
+
 import Link from "next/link"
 import { ColumnDef } from "@tanstack/react-table"
 
-import type { Block, BlockBase, Cluster, Proof } from "@/lib/types"
+import type { Block, Cluster, Proof } from "@/lib/types"
 
 import { primitives } from "@/components/Definitions"
 import DownloadButton from "@/components/DownloadButton"
 import { metrics } from "@/components/Metrics"
 import Null from "@/components/Null"
 import { HidePunctuation } from "@/components/StylePunctuation"
+import Cpu from "@/components/svgs/cpu.svg"
 import Tooltip from "@/components/Tooltip"
 import * as Info from "@/components/ui/info"
+import { MetricInfo } from "@/components/ui/metric"
 import { TooltipContentHeader } from "@/components/ui/tooltip"
 
 import { ColumnHeader } from "./ColumnHeader"
@@ -61,7 +64,7 @@ export const columns: ColumnDef<Proof>[] = [
       )
     },
   },
-  // Cluster
+  // Cluster (cycle type)
   {
     accessorKey: "cluster",
     header: () => (
@@ -73,16 +76,24 @@ export const columns: ColumnDef<Proof>[] = [
       const cluster = cell.getValue() as Cluster
 
       // TODO: Add Equivalents for cluster_id by it's instance_type_id (inside cluster_configurations)
+
       return (
         <>
-          <Tooltip trigger={cluster.nickname}>
+          <MetricInfo
+            trigger={
+              <div className="flex items-center gap-1">
+                {cluster.nickname}
+                <Cpu />
+              </div>
+            }
+          >
             <TooltipContentHeader>{cluster.nickname}</TooltipContentHeader>
             <div className="space-y-2">
               {cluster.hardware && <p>Hardware: {cluster.hardware}</p>}
               {cluster.cycle_type && <p>Cycle type: {cluster.cycle_type}</p>}
               {cluster.description && <p>{cluster.description}</p>}
             </div>
-          </Tooltip>
+          </MetricInfo>
           <span className="block whitespace-nowrap text-sm text-body-secondary">
             cycle type: {cluster.cycle_type}
           </span>
