@@ -63,6 +63,7 @@ export type ProofExtensions = {
   block?: BlockBase
   cluster?: Cluster | null
   team?: Team
+  size?: number
 }
 
 /**
@@ -89,6 +90,11 @@ export type Block = (EmptyBlock | BlockBase) & BlockExtensions
  * Represents a record of blocks indexed by their block number.
  */
 export type BlocksById = Record<number, Block>
+
+/**
+ * Represents a row in the proof_sizes view with proof_id and calculated byte_size
+ */
+export type ProofSize = Tables<"proof_sizes">
 
 /**
  * Represents a metric with a label, description, and value, all of which are React nodes,

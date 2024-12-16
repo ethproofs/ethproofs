@@ -232,7 +232,6 @@ export type Database = {
           proving_time: number | null
           proving_timestamp: string | null
           queued_timestamp: string | null
-          size: number | null
           user_id: string
         }
         Insert: {
@@ -248,7 +247,6 @@ export type Database = {
           proving_time?: number | null
           proving_timestamp?: string | null
           queued_timestamp?: string | null
-          size?: number | null
           user_id: string
         }
         Update: {
@@ -264,7 +262,6 @@ export type Database = {
           proving_time?: number | null
           proving_timestamp?: string | null
           queued_timestamp?: string | null
-          size?: number | null
           user_id?: string
         }
         Relationships: [
@@ -380,6 +377,21 @@ export type Database = {
       }
     }
     Views: {
+      proof_sizes: {
+        Row: {
+          byte_size: number | null
+          proof_id: number | null
+        }
+        Insert: {
+          byte_size?: never
+          proof_id?: number | null
+        }
+        Update: {
+          byte_size?: never
+          proof_id?: number | null
+        }
+        Relationships: []
+      }
       recent_summary: {
         Row: {
           avg_cost_per_proof: number | null
