@@ -212,64 +212,58 @@ export default async function Index() {
                 team_name,
                 avg_cost_per_proof,
                 avg_proving_time,
-              }) => {
-                console.log({})
-                return (
-                  <Card
-                    className="flex min-w-96 flex-1 flex-col gap-4"
-                    key={team_id}
-                  >
-                    <div className="relative mx-auto flex h-20 w-56 justify-center">
-                      <TeamLogo
-                        src={logo_url}
-                        alt={team_name || "Prover logo"}
-                        className={cn(
-                          "object-center",
-                          !logo_url && "opacity-50"
-                        )}
-                      />
-                      <h3
-                        className={cn(
-                          "absolute inset-0 grid place-items-center text-3xl",
-                          logo_url && "sr-only"
-                        )}
-                      >
-                        {team_name}
-                      </h3>
-                    </div>
+              }) => (
+                <Card
+                  className="flex min-w-96 flex-1 flex-col gap-4"
+                  key={team_id}
+                >
+                  <div className="relative mx-auto flex h-20 w-56 justify-center">
+                    <TeamLogo
+                      src={logo_url}
+                      alt={team_name || "Prover logo"}
+                      className={cn("object-center", !logo_url && "opacity-50")}
+                    />
+                    <h3
+                      className={cn(
+                        "absolute inset-0 grid place-items-center text-3xl",
+                        logo_url && "sr-only"
+                      )}
+                    >
+                      {team_name}
+                    </h3>
+                  </div>
 
-                    <div className="mx-auto flex flex-col gap-6">
-                      <div className="flex w-full flex-nowrap">
-                        <div className="flex flex-col items-center gap-2 px-4">
-                          <div className="flex items-center gap-1 text-body-secondary">
-                            {AVERAGE_LABEL} <metrics.provingTime.Label />
-                          </div>
-                          <div className="font-mono text-lg">
-                            {prettyMs(avg_proving_time || 0)}
-                          </div>
+                  <div className="mx-auto flex flex-col gap-6">
+                    <div className="flex w-full flex-nowrap">
+                      <div className="flex flex-col items-center gap-2 px-4">
+                        <div className="flex items-center gap-1 text-body-secondary">
+                          {AVERAGE_LABEL} <metrics.provingTime.Label />
                         </div>
-                        <div className="flex flex-col items-center gap-2 px-4">
-                          <div className="flex items-center gap-1 text-body-secondary">
-                            {AVERAGE_LABEL} <metrics.costPerProof.Label />
-                          </div>
-                          <div className="font-mono text-lg">
-                            {avg_cost_per_proof !== null &&
-                            avg_cost_per_proof !== 0 &&
-                            isFinite(avg_cost_per_proof) ? (
-                              formatUsd(avg_cost_per_proof)
-                            ) : (
-                              <Null />
-                            )}
-                          </div>
+                        <div className="font-mono text-lg">
+                          {prettyMs(avg_proving_time || 0)}
                         </div>
                       </div>
-                      <ButtonLink href={`/prover/${team_id}`} variant="outline">
-                        + details for {team_name}
-                      </ButtonLink>
+                      <div className="flex flex-col items-center gap-2 px-4">
+                        <div className="flex items-center gap-1 text-body-secondary">
+                          {AVERAGE_LABEL} <metrics.costPerProof.Label />
+                        </div>
+                        <div className="font-mono text-lg">
+                          {avg_cost_per_proof !== null &&
+                          avg_cost_per_proof !== 0 &&
+                          isFinite(avg_cost_per_proof) ? (
+                            formatUsd(avg_cost_per_proof)
+                          ) : (
+                            <Null />
+                          )}
+                        </div>
+                      </div>
                     </div>
-                  </Card>
-                )
-              }
+                    <ButtonLink href={`/prover/${team_id}`} variant="outline">
+                      + details for {team_name}
+                    </ButtonLink>
+                  </div>
+                </Card>
+              )
             )}
         </div>
       </section>
