@@ -1,12 +1,13 @@
 import type { Metadata } from "next"
 import Image from "next/image"
-import prettyMilliseconds from "pretty-ms"
 
-import type { BlockWithProofs, SummaryItem } from "@/lib/types"
+import type { BlockBase, Proof, SummaryItem } from "@/lib/types"
 
 import BlocksTable from "@/components/BlocksTable"
+import { metrics } from "@/components/Metrics"
 import Null from "@/components/Null"
-import Block from "@/components/svgs/box.svg"
+import Box from "@/components/svgs/box.svg"
+import CentSign from "@/components/svgs/cent-sign.svg"
 import Clock from "@/components/svgs/clock.svg"
 import DollarSign from "@/components/svgs/dollar-sign.svg"
 import ShieldCheck from "@/components/svgs/shield-check.svg"
@@ -16,8 +17,11 @@ import { Card } from "@/components/ui/card"
 
 import { cn } from "@/lib/utils"
 
+import { AVERAGE_LABEL } from "@/lib/constants"
+
 import { getMetadata } from "@/lib/metadata"
-import { formatNumber } from "@/lib/number"
+import { formatNumber, formatUsd, shouldUseCents } from "@/lib/number"
+import { prettyMs } from "@/lib/time"
 import HeroDark from "@/public/images/hero-background.png"
 import { createClient } from "@/utils/supabase/server"
 
@@ -44,9 +48,17 @@ export default async function Index() {
 
   const blocksResponse = await supabase
     .from("blocks")
-    .select("*,proofs!inner(id:proof_id,*,clusters(*))")
+    .select(
+      `*,proofs!inner(id:proof_id,*,
+        cluster:clusters(*,
+          cluster_configurations(*,
+            aws_instance_pricing(*)
+          )
+        )
+      )`
+    )
     .order("block_number", { ascending: false })
-  const blocks = blocksResponse.data || []
+  const blocks = (blocksResponse.data || []) satisfies BlockBase[]
 
   const teamsResponse = await supabase.from("teams").select()
   const teams = teamsResponse.data || []
@@ -56,29 +68,45 @@ export default async function Index() {
     const proofsWithTeams = proofs.map((proof) => ({
       ...proof,
       team: teams.find((team) => team.user_id === proof.user_id),
-    }))
+    })) as Proof[]
 
-    return { ...block, proofs: proofsWithTeams } as BlockWithProofs
+    return { ...block, proofs: proofsWithTeams }
   })
 
   const summaryItems: SummaryItem[] = recentSummary.data
     ? [
         {
+          key: "proven-blocks",
           label: "Proven blocks",
-          icon: <Block />,
+          icon: <Box />,
           value: formatNumber(recentSummary.data?.total_proven_blocks || 0),
         },
         {
-          label: "Avg cost per proof",
-          icon: <DollarSign />,
-          value: formatNumber(recentSummary.data?.avg_cost_per_proof || 0, {
-            maximumFractionDigits: 2,
-          }),
+          key: "avg-cost-per-proof",
+          label: (
+            <>
+              {AVERAGE_LABEL} <metrics.costPerProof.Label />
+            </>
+          ),
+          icon: shouldUseCents(recentSummary.data?.avg_cost_per_proof) ? (
+            <CentSign />
+          ) : (
+            <DollarSign />
+          ),
+          value: formatUsd(recentSummary.data?.avg_cost_per_proof || 0).replace(
+            /[¢$]/g,
+            ""
+          ),
         },
         {
-          label: "Avg proving time",
+          key: "avg-proving-time",
+          label: (
+            <>
+              {AVERAGE_LABEL} <metrics.provingTime.Label />
+            </>
+          ),
           icon: <Clock />,
-          value: prettyMilliseconds(recentSummary.data?.avg_proving_time || 0),
+          value: prettyMs(recentSummary.data?.avg_proving_time || 0),
         },
       ]
     : []
@@ -105,15 +133,16 @@ export default async function Index() {
       </div>
       <div className="mt-56 flex w-full flex-col items-center justify-between gap-4 p-3 md:mt-44 xl:mt-64">
         <h1 className="w-full text-center font-mono font-semibold">
-          Building fully SNARKed <span className="text-primary">Ethereum</span>
+          Building a fully SNARKed{" "}
+          <span className="text-primary">Ethereum</span>
         </h1>
         <p className="max-w-2xl text-center text-lg">
           This is a proof of concept that ZK proves 1-of-N blocks. Eventually,
           it will enable full ZK light clients on any smartphone.
         </p>
         <div className="flex w-full max-w-2xl justify-around">
-          {summaryItems.map(({ label, icon, value }) => (
-            <div key={label} className="flex flex-col gap-1 p-2">
+          {summaryItems.map(({ key, label, icon, value }) => (
+            <div key={key} className="flex flex-col gap-1 p-2">
               <div className="flex flex-col items-center justify-center gap-x-2 md:flex-row">
                 <p className="font-mono text-2xl text-primary md:text-3xl lg:text-4xl">
                   {icon}
@@ -181,7 +210,7 @@ export default async function Index() {
                 team_id,
                 logo_url,
                 team_name,
-                avg_proving_cost,
+                avg_cost_per_proof,
                 avg_proving_time,
               }) => (
                 <Card
@@ -208,23 +237,21 @@ export default async function Index() {
                     <div className="flex w-full flex-nowrap">
                       <div className="flex flex-col items-center gap-2 px-4">
                         <div className="flex items-center gap-1 text-body-secondary">
-                          avg proving time
+                          {AVERAGE_LABEL} <metrics.provingTime.Label />
                         </div>
                         <div className="font-mono text-lg">
-                          {prettyMilliseconds(avg_proving_time || 0)}
+                          {prettyMs(avg_proving_time || 0)}
                         </div>
                       </div>
                       <div className="flex flex-col items-center gap-2 px-4">
                         <div className="flex items-center gap-1 text-body-secondary">
-                          avg cost
+                          {AVERAGE_LABEL} <metrics.costPerProof.Label />
                         </div>
                         <div className="font-mono text-lg">
-                          {avg_proving_cost !== null &&
-                          isFinite(avg_proving_cost) ? (
-                            formatNumber(avg_proving_cost, {
-                              style: "currency",
-                              currency: "USD",
-                            })
+                          {avg_cost_per_proof !== null &&
+                          avg_cost_per_proof !== 0 &&
+                          isFinite(avg_cost_per_proof) ? (
+                            formatUsd(avg_cost_per_proof)
                           ) : (
                             <Null />
                           )}

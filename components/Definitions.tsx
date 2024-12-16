@@ -3,13 +3,13 @@ import * as Info from "@/components/ui/info"
 import { SITE_NAME } from "@/lib/constants"
 
 type DefinitionDetails = {
-  displayName?: string
   Term: () => React.ReactNode
   Definition: () => React.ReactNode
 }
 
 const PRIMITIVES = {
-  hourlyPrice: "hourly price",
+  hourlyPricePerInstance: "hourly price per instance",
+  instanceCount: "instances per cluster",
   provingTime: "proving time",
   gasUsed: "gas used",
   blockNumber: "block number",
@@ -21,19 +21,33 @@ const PRIMITIVES = {
 type Primitive = keyof typeof PRIMITIVES
 
 const primitives: Record<Primitive, DefinitionDetails> = {
-  hourlyPrice: {
-    displayName: PRIMITIVES.hourlyPrice,
-    Term: () => <Info.Term type="internal">{PRIMITIVES.hourlyPrice}</Info.Term>,
+  hourlyPricePerInstance: {
+    Term: () => (
+      <Info.Term type="internal">{PRIMITIVES.hourlyPricePerInstance}</Info.Term>
+    ),
     Definition: () => (
       <p>
-        <Info.Term type="internal">{PRIMITIVES.hourlyPrice}</Info.Term> is the
-        per-hour USD rate charged by AWS for the cluster of hardware
-        most-equivalent to that being used by the prover
+        <Info.Term type="internal">
+          {PRIMITIVES.hourlyPricePerInstance}
+        </Info.Term>{" "}
+        is the per-hour USD rate charged by AWS for one instance of the cluster
+        of hardware most-equivalent to that being used by the prover
+      </p>
+    ),
+  },
+  instanceCount: {
+    Term: () => (
+      <Info.Term type="internal">{PRIMITIVES.instanceCount}</Info.Term>
+    ),
+    Definition: () => (
+      <p>
+        <Info.Term type="internal">{PRIMITIVES.instanceCount}</Info.Term> is the
+        number of AWS-equivalent instances of a given type being used within a
+        cluster of hardware responsible for generating a proof
       </p>
     ),
   },
   provingTime: {
-    displayName: PRIMITIVES.provingTime,
     Term: () => <Info.Term type="internal">{PRIMITIVES.provingTime}</Info.Term>,
     Definition: () => (
       <p>
@@ -44,7 +58,6 @@ const primitives: Record<Primitive, DefinitionDetails> = {
     ),
   },
   gasUsed: {
-    displayName: PRIMITIVES.gasUsed,
     Term: () => <Info.Term type="codeTerm">{PRIMITIVES.gasUsed}</Info.Term>,
     Definition: () => (
       <p>
@@ -54,7 +67,6 @@ const primitives: Record<Primitive, DefinitionDetails> = {
     ),
   },
   blockNumber: {
-    displayName: PRIMITIVES.blockNumber,
     Term: () => <Info.Term type="codeTerm">{PRIMITIVES.blockNumber}</Info.Term>,
     Definition: () => (
       <p>
@@ -64,7 +76,6 @@ const primitives: Record<Primitive, DefinitionDetails> = {
     ),
   },
   proofSubmissionTime: {
-    displayName: PRIMITIVES.proofSubmissionTime,
     Term: () => (
       <Info.Term type="internal">{PRIMITIVES.proofSubmissionTime}</Info.Term>
     ),
@@ -77,7 +88,6 @@ const primitives: Record<Primitive, DefinitionDetails> = {
     ),
   },
   timestamp: {
-    displayName: PRIMITIVES.timestamp,
     Term: () => <Info.Term type="codeTerm">{PRIMITIVES.timestamp}</Info.Term>,
     Definition: () => (
       <p>
@@ -87,28 +97,26 @@ const primitives: Record<Primitive, DefinitionDetails> = {
     ),
   },
   cluster: {
-    displayName: PRIMITIVES.cluster,
     Term: () => <Info.Term type="codeTerm">{PRIMITIVES.cluster}</Info.Term>,
     Definition: () => (
-      <p>
-        <Info.Term type="codeTerm">{PRIMITIVES.cluster}</Info.Term> is the
-        unique set of hardware being used to generate the proof identifier, self
-        reported as AWS instance equivalents
-      </p>
+      <>
+        <p>
+          <Info.Term type="codeTerm">{PRIMITIVES.cluster}</Info.Term> is the
+          name given to a particular set of hardware being used to compute the
+          proofs.
+        </p>
+        <p>
+          Hardware, cycle type, and description of setup are all self-reported
+          by proving teams, along with a selected AWS setup that best matches
+          their own, used for price comparison
+        </p>
+      </>
     ),
   },
 }
 
-const CONVERSIONS = {
-  gasPerMgas: "gas per Mgas",
-  msToHours: "milliseconds to hours",
-} as const
-
-type Conversion = keyof typeof CONVERSIONS
-
-const conversions: Record<Conversion, DefinitionDetails> = {
+const conversions = {
   gasPerMgas: {
-    displayName: CONVERSIONS.gasPerMgas,
     Term: () => (
       <Info.Term type="codeTerm">
         10<sup>6</sup>
@@ -125,7 +133,6 @@ const conversions: Record<Conversion, DefinitionDetails> = {
     ),
   },
   msToHours: {
-    displayName: CONVERSIONS.msToHours,
     Term: () => <Info.Term type="codeTerm">(1000 * 60 * 60)</Info.Term>,
     Definition: () => (
       <p>
@@ -134,34 +141,44 @@ const conversions: Record<Conversion, DefinitionDetails> = {
       </p>
     ),
   },
-}
+} as const satisfies Record<string, DefinitionDetails>
 
-const COMPUTED = {
-  provingCosts: "proving costs",
-  mgas: "mgas",
-} as const
-
-type Computed = keyof typeof COMPUTED
-
-const computed: Record<Computed, DefinitionDetails> = {
-  provingCosts: {
-    displayName: COMPUTED.provingCosts,
+const computed = {
+  hourlyPricePerCluster: {
     Term: () => (
       <>
-        <primitives.hourlyPrice.Term /> * <primitives.provingTime.Term /> /{" "}
-        <conversions.msToHours.Term />
+        ∑(
+        <primitives.hourlyPricePerInstance.Term /> *{" "}
+        <primitives.instanceCount.Term />)
       </>
     ),
     Definition: () => (
       <>
-        <primitives.hourlyPrice.Definition />
+        <primitives.hourlyPricePerInstance.Definition />
+        <primitives.instanceCount.Definition />
+        <p>
+          The above products are summed up to calculate the total hourly cost
+          for the cluster
+        </p>
+      </>
+    ),
+  },
+  provingCosts: {
+    Term: () => (
+      <>
+        <computed.hourlyPricePerCluster.Term /> *{" "}
+        <primitives.provingTime.Term /> / <conversions.msToHours.Term />
+      </>
+    ),
+    Definition: () => (
+      <>
+        <computed.hourlyPricePerCluster.Definition />
         <primitives.provingTime.Definition />
         <conversions.msToHours.Definition />
       </>
     ),
   },
   mgas: {
-    displayName: "mgas",
     Term: () => (
       <>
         <primitives.gasUsed.Term /> / <conversions.gasPerMgas.Term />
@@ -174,6 +191,6 @@ const computed: Record<Computed, DefinitionDetails> = {
       </>
     ),
   },
-}
+} as const satisfies Record<string, DefinitionDetails>
 
 export { computed, conversions, primitives }

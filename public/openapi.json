@@ -559,8 +559,6 @@
                   },
                   "proof": {
                     "type": "string",
-                    "minLength": 1,
-                    "contentEncoding": "base64",
                     "description": "Proof in base64 format"
                   },
                   "verifier_id": {

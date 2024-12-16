@@ -18,3 +18,5 @@ export const FALLBACK_TEAM_LOGO_SRC =
 
 export const LEARN_RESOURCES_MD_URL =
   "https://raw.githubusercontent.com/rkdud007/awesome-zkvm/refs/heads/main/README.md"
+
+export const AVERAGE_LABEL = "avg"
