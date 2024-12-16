@@ -1,6 +1,6 @@
 import { formatUsd } from "./number"
 import { getTime, prettyMs } from "./time"
-import type { Cluster, ClusterConfig, Proof, Stats } from "./types"
+import type { Cluster, ClusterConfig, Proof, ProofSize, Stats } from "./types"
 
 // Filters
 
@@ -259,6 +259,22 @@ export const sortProofsStatusAndTimes = (a: Proof, b: Proof) => {
     return getTime(a.queued_timestamp) - getTime(b.queued_timestamp)
   }
   return 0
+}
+
+export const mapProofSizes = (
+  data: ProofSize[] | null
+): Record<number, number> => {
+  if (!data?.length) return {}
+
+  return data
+    .filter(({ proof_id, byte_size }) => !!proof_id && !!byte_size)
+    .reduce(
+      (acc, { proof_id, byte_size }) => ({
+        ...acc,
+        [proof_id!]: byte_size!,
+      }),
+      {}
+    )
 }
 
 // Statistics exporters: avg (with formatting), best (with formatting), best proof (team info)
