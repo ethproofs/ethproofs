@@ -106,15 +106,15 @@ export const columns: ColumnDef<Proof>[] = [
     accessorKey: "proved_timestamp",
     header: () => (
       <ColumnHeader label="time">
-        <>
-          <Info.Derivation>
-            <primitives.proofSubmissionTime.Term /> -{" "}
-            <primitives.timestamp.Term />
-          </Info.Derivation>
+        <TooltipContentHeader>
+          <metrics.provingTime.Label />
+        </TooltipContentHeader>
+        <metrics.provingTime.Details />
 
-          <primitives.proofSubmissionTime.Definition />
-          <primitives.timestamp.Definition />
-        </>
+        <TooltipContentHeader>
+          <metrics.totalTTP.Label />
+        </TooltipContentHeader>
+        <metrics.totalTTP.Details />
       </ColumnHeader>
     ),
     cell: ({ cell, row }) => {
