@@ -93,7 +93,11 @@ export default async function ProverPage({ params }: ProverPageProps) {
 
   const proofSizeResponse = await supabase.from("proof_sizes").select()
 
+  console.log(JSON.stringify(proofSizeResponse, null, 2))
+
   const proofSizeById = mapProofSizes(proofSizeResponse?.data)
+
+  console.log({ proofSizeById })
 
   const proofs = proofsData.map((proof) => ({
     ...proof,
