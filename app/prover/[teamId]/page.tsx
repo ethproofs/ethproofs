@@ -43,7 +43,6 @@ import {
   getProofsAvgProvingTime,
   getSumProvingCost,
   isCompleted,
-  mapProofSizes,
 } from "@/lib/proofs"
 import { prettyMs } from "@/lib/time"
 import { getHost, getTwitterHandle } from "@/lib/url"
@@ -91,14 +90,7 @@ export default async function ProverPage({ params }: ProverPageProps) {
 
   if (!team || teamError || !proofsData?.length || proofError) return notFound()
 
-  const proofSizeResponse = await supabase.from("proof_sizes").select()
-
-  const proofSizeById = mapProofSizes(proofSizeResponse?.data)
-
-  const proofs = proofsData.map((proof) => ({
-    ...proof,
-    size: proofSizeById[proof.proof_id],
-  })) as Proof[]
+  const proofs = proofsData as Proof[]
 
   const clusters = Object.values(
     proofs.reduce((acc, curr) => {
