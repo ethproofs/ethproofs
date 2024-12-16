@@ -158,15 +158,15 @@ export const columns: ColumnDef<Proof>[] = [
     accessorKey: "block",
     header: () => (
       <ColumnHeader label="costs">
-        <>
-          <Info.Derivation>
-            <primitives.proofSubmissionTime.Term /> -{" "}
-            <primitives.timestamp.Term />
-          </Info.Derivation>
+        <TooltipContentHeader>
+          <metrics.costPerProof.Label />
+        </TooltipContentHeader>
+        <metrics.costPerProof.Details />
 
-          <primitives.proofSubmissionTime.Definition />
-          <primitives.timestamp.Definition />
-        </>
+        <TooltipContentHeader>
+          <metrics.costPerMgas.Label />
+        </TooltipContentHeader>
+        <metrics.costPerMgas.Details />
       </ColumnHeader>
     ),
     cell: ({ cell, row }) => {
