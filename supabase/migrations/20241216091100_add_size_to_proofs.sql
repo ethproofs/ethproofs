@@ -1,1 +1,1 @@
-alter table public.proofs add column size bigint;
+alter table public.proofs add column size_bytes bigint;

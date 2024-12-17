@@ -18,7 +18,7 @@ type DownloadButtonProps = {
 }
 
 const DownloadButton = ({ className, proof }: DownloadButtonProps) => {
-  const { proof_status, proof_id, proof: binary, size, team } = proof
+  const { proof_status, proof_id, proof: binary, size_bytes, team } = proof
 
   const teamName = team?.team_name ? team.team_name : "Team"
 
@@ -43,9 +43,9 @@ const DownloadButton = ({ className, proof }: DownloadButtonProps) => {
             <ArrowDown />
             <span className={labelStyle}>
               <span className={labelDisplay}>
-                Download {size ? "" : "proof"}
+                Download {size_bytes ? "" : "proof"}
               </span>{" "}
-              {size ? prettyBytes(size) : ""}
+              {size_bytes ? prettyBytes(size_bytes) : ""}
             </span>
           </a>
         </Button>
