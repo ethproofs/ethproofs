@@ -7,7 +7,6 @@ import {
   smallint,
   timestamp,
   text,
-  foreignKey,
   uuid,
   integer,
   unique,
@@ -47,7 +46,7 @@ export const awsInstancePricing = pgTable(
       .defaultNow()
       .notNull(),
   },
-  (table) => [
+  () => [
     pgPolicy("Enable read access for all users", {
       as: "permissive",
       for: "select",
@@ -68,7 +67,7 @@ export const blocks = pgTable(
     transaction_count: smallint("transaction_count").notNull(),
     hash: text().notNull(),
   },
-  (table) => [
+  () => [
     pgPolicy("Enable read access for all users", {
       as: "permissive",
       for: "select",
@@ -87,21 +86,18 @@ export const clusterConfigurations = pgTable(
   "cluster_configurations",
   {
     id: bigint({ mode: "number" }).primaryKey().generatedByDefaultAsIdentity(),
-    cluster_id: uuid("cluster_id").notNull(),
-    instance_type_id: bigint("instance_type_id", { mode: "number" }).notNull(),
+    cluster_id: uuid("cluster_id")
+      .notNull()
+      .references(() => clusters.id, {
+        onDelete: "cascade",
+        onUpdate: "cascade",
+      }),
+    instance_type_id: bigint("instance_type_id", { mode: "number" })
+      .notNull()
+      .references(() => awsInstancePricing.id),
     instance_count: smallint("instance_count").notNull(),
   },
-  (table) => [
-    foreignKey({
-      columns: [table.cluster_id],
-      foreignColumns: [clusters.id],
-      name: "cluster_configurations_cluster_id_fkey",
-    }),
-    foreignKey({
-      columns: [table.instance_type_id],
-      foreignColumns: [awsInstancePricing.id],
-      name: "cluster_configurations_instance_type_id_fkey",
-    }),
+  () => [
     pgPolicy("Enable read access for all users", {
       as: "permissive",
       for: "select",
@@ -122,23 +118,18 @@ export const recursiveRootProofs = pgTable(
     root_proof_id: integer("root_proof_id")
       .primaryKey()
       .generatedByDefaultAsIdentity(),
-    block_number: bigint("block_number", { mode: "number" }),
+    block_number: bigint("block_number", { mode: "number" }).references(
+      () => blocks.block_number
+    ),
     root_proof: bytea("root_proof").notNull(),
     root_proof_size: bigint("root_proof_size", { mode: "number" }).notNull(),
     total_proof_size: bigint("total_proof_size", { mode: "number" }).notNull(),
-    user_id: uuid("user_id"),
+    user_id: uuid("user_id").references(() => authUsers.id, {
+      onDelete: "cascade",
+      onUpdate: "cascade",
+    }),
   },
-  (table) => [
-    foreignKey({
-      columns: [table.block_number],
-      foreignColumns: [blocks.block_number],
-      name: "recursive_root_proofs_block_number_fkey",
-    }),
-    foreignKey({
-      columns: [table.user_id],
-      foreignColumns: [authUsers.id],
-      name: "recursive_root_proofs_user_id_fkey",
-    }),
+  () => [
     pgPolicy("Enable read access for all users", {
       as: "permissive",
       for: "select",
@@ -153,18 +144,16 @@ export const teams = pgTable(
   {
     team_id: integer("team_id").primaryKey().generatedByDefaultAsIdentity(),
     team_name: text("team_name").notNull(),
-    user_id: uuid("user_id"),
+    user_id: uuid("user_id").references(() => authUsers.id, {
+      onDelete: "cascade",
+      onUpdate: "cascade",
+    }),
     github_org: text("github_org"),
     logo_url: text("logo_url"),
     twitter_handle: text("twitter_handle"),
     website_url: text("website_url"),
   },
-  (table) => [
-    foreignKey({
-      columns: [table.user_id],
-      foreignColumns: [authUsers.id],
-      name: "teams_user_id_fkey",
-    }).onDelete("set null"),
+  () => [
     pgPolicy("Enable read access for all users", {
       as: "permissive",
       for: "select",
@@ -179,19 +168,19 @@ export const clusters = pgTable(
   {
     index: smallint(),
     nickname: text().notNull(),
-    user_id: uuid("user_id").notNull(),
+    user_id: uuid("user_id")
+      .notNull()
+      .references(() => authUsers.id, {
+        onDelete: "cascade",
+        onUpdate: "cascade",
+      }),
     id: uuid().defaultRandom().primaryKey().notNull(),
     description: text(),
     hardware: text(),
     cycle_type: varchar("cycle_type"),
     proof_type: varchar("proof_type"),
   },
-  (table) => [
-    foreignKey({
-      columns: [table.user_id],
-      foreignColumns: [authUsers.id],
-      name: "clusters_user_id_fkey",
-    }).onDelete("set null"),
+  () => [
     pgPolicy("Enable read access for all users", {
       as: "permissive",
       for: "select",
@@ -210,13 +199,12 @@ export const programs = pgTable(
   "programs",
   {
     id: bigint({ mode: "number" }).primaryKey().generatedByDefaultAsIdentity(),
-    verifier_id: text("verifier_id").notNull(),
+    verifier_id: text("verifier_id").notNull().unique(),
     created_at: timestamp("created_at", { withTimezone: true, mode: "string" })
       .defaultNow()
       .notNull(),
   },
-  (table) => [
-    unique("programs_verifier_id_key").on(table.verifier_id),
+  () => [
     pgPolicy("Enable read access for all users", {
       as: "permissive",
       for: "select",
@@ -239,18 +227,15 @@ export const apiAuthTokens = pgTable(
     created_at: timestamp("created_at", { withTimezone: true, mode: "string" })
       .defaultNow()
       .notNull(),
-    token: text().notNull(),
-    user_id: uuid("user_id").notNull(),
+    token: text().notNull().unique(),
+    user_id: uuid("user_id")
+      .notNull()
+      .references(() => authUsers.id, {
+        onDelete: "cascade",
+        onUpdate: "cascade",
+      }),
   },
-  (table) => [
-    foreignKey({
-      columns: [table.user_id],
-      foreignColumns: [authUsers.id],
-      name: "api_auth_tokens_user_id_fkey",
-    })
-      .onUpdate("cascade")
-      .onDelete("cascade"),
-    unique("api_auth_tokens_token_key").on(table.token),
+  () => [
     pgPolicy("Allow users to see API token entries they own", {
       as: "permissive",
       for: "select",
@@ -264,11 +249,18 @@ export const proofs = pgTable(
   "proofs",
   {
     proof_id: integer("proof_id").primaryKey().generatedByDefaultAsIdentity(),
-    block_number: bigint("block_number", { mode: "number" }).notNull(),
+    block_number: bigint("block_number", { mode: "number" })
+      .notNull()
+      .references(() => blocks.block_number),
     proof: bytea("proof"),
     proof_status: text("proof_status").notNull(),
     proving_cycles: bigint("proving_cycles", { mode: "number" }),
-    user_id: uuid("user_id").notNull(),
+    user_id: uuid("user_id")
+      .notNull()
+      .references(() => authUsers.id, {
+        onDelete: "cascade",
+        onUpdate: "cascade",
+      }),
     created_at: timestamp("created_at", {
       withTimezone: true,
       mode: "string",
@@ -285,32 +277,19 @@ export const proofs = pgTable(
       withTimezone: true,
       mode: "string",
     }),
-    cluster_id: uuid("cluster_id").notNull(),
+    cluster_id: uuid("cluster_id")
+      .notNull()
+      .references(() => clusters.id, {
+        onDelete: "cascade",
+        onUpdate: "cascade",
+      }),
     proving_time: integer("proving_time"),
-    program_id: bigint("program_id", { mode: "number" }),
+    program_id: bigint("program_id", { mode: "number" }).references(
+      () => programs.id
+    ),
     size: bigint({ mode: "number" }),
   },
   (table) => [
-    foreignKey({
-      columns: [table.block_number],
-      foreignColumns: [blocks.block_number],
-      name: "proofs_block_number_fkey",
-    }),
-    foreignKey({
-      columns: [table.cluster_id],
-      foreignColumns: [clusters.id],
-      name: "proofs_cluster_id_fkey",
-    }),
-    foreignKey({
-      columns: [table.user_id],
-      foreignColumns: [authUsers.id],
-      name: "proofs_user_id_fkey",
-    }).onDelete("set null"),
-    foreignKey({
-      columns: [table.program_id],
-      foreignColumns: [programs.id],
-      name: "proofs_program_id_fkey",
-    }),
     unique("unique_block_cluster").on(table.block_number, table.cluster_id),
     pgPolicy("Enable updates for users with an api key", {
       as: "permissive",

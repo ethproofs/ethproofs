@@ -21,9 +21,13 @@ export const GET = withAuth(async ({ db, user }) => {
       },
       where: (cluster, { eq }) => eq(cluster.user_id, user.id),
       with: {
-        clusterConfigurations: {
+        cluster_configuration: {
+          columns: {
+            instance_type_id: true,
+            instance_count: true,
+          },
           with: {
-            awsInstancePricing: true,
+            aws_instance_pricing: true,
           },
         },
       },
