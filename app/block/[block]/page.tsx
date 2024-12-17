@@ -100,7 +100,7 @@ export default async function BlockDetailsPage({
   const proofs = blockProofs.map((proof) => {
     const team = teams.find((t) => t.user_id === proof.user_id)
     return { ...proof, team }
-  }) as Proof[]
+  })
 
   const costPerProofStats = getCostPerProofStats(proofs)
 
