@@ -1,8 +1,9 @@
+import { db } from "@/db"
 import { clusterConfigurations, clusters } from "@/db/schema"
 import { withAuth } from "@/lib/auth/withAuth"
 import { createClusterSchema } from "@/lib/zod/schemas/cluster"
 
-export const GET = withAuth(async ({ db, user }) => {
+export const GET = withAuth(async ({ user }) => {
   if (!user) {
     return new Response("Invalid API key", {
       status: 401,
@@ -45,7 +46,7 @@ export const GET = withAuth(async ({ db, user }) => {
   }
 })
 
-export const POST = withAuth(async ({ request, db, user }) => {
+export const POST = withAuth(async ({ request, user }) => {
   const requestBody = await request.json()
 
   if (!user) {

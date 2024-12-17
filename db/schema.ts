@@ -22,7 +22,7 @@ import { authUsers } from "drizzle-orm/supabase"
 
 // Define a custom type for 'bytea'
 const bytea = customType<{
-  data: Buffer
+  data: string
   default: false
 }>({
   dataType() {

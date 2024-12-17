@@ -7,7 +7,6 @@ import { db } from "@/db"
 export const withAuth = (
   handler: (auth: {
     request: Request
-    db: typeof db
     user: { id: string } | null
     apiKey?: { mode: string; user_id: string } | null
     timestamp: string
@@ -24,7 +23,6 @@ export const withAuth = (
     const commonProps = {
       timestamp,
       request,
-      db,
     }
 
     // If there is an auth header, validate api key

@@ -1,4 +1,4 @@
-import { createClient } from "@/utils/supabase/server"
+import { db } from "@/db"
 
 export async function GET(
   _request: Request,
@@ -6,31 +6,33 @@ export async function GET(
 ) {
   const { id } = params
 
-  const client = createClient()
+  const proofRow = await db.query.proofs.findFirst({
+    columns: {
+      proof: true,
+      block_number: true,
+      cluster_id: true,
+      user_id: true,
+    },
+    where: (proofs, { eq }) => eq(proofs.proof_id, Number(id)),
+  })
 
-  const { data, error } = await client
-    .from("proofs")
-    .select("proof, block_number, cluster_id, user_id")
-    .eq("proof_id", id)
-    .single()
-
-  if (error || !data.proof) {
-    console.error(error)
+  if (!proofRow || !proofRow.proof) {
     return new Response("No proof found", { status: 404 })
   }
 
-  const { data: team } = await client
-    .from("teams")
-    .select("team_name")
-    .eq("user_id", data.user_id)
-    .single()
+  const team = await db.query.teams.findFirst({
+    columns: {
+      team_name: true,
+    },
+    where: (teams, { eq }) => eq(teams.user_id, proofRow.user_id),
+  })
 
   const teamName = team?.team_name
     ? team.team_name
-    : data.cluster_id.split("-")[0]
-  const filename = `${data.block_number}_${teamName}_${id}.bin`
+    : proofRow.cluster_id.split("-")[0]
+  const filename = `${proofRow.block_number}_${teamName}_${id}.bin`
 
-  const binaryBuffer = Buffer.from(data.proof.slice(2), "hex")
+  const binaryBuffer = Buffer.from(proofRow.proof.slice(2), "hex")
   const blob = new Blob([binaryBuffer], {
     type: "application/octet-stream",
   })
