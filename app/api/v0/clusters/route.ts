@@ -1,35 +1,32 @@
 import { withAuth } from "@/lib/auth"
-import { Cluster, createClusterSchema } from "@/lib/zod/schemas/cluster"
+import { createClusterSchema } from "@/lib/zod/schemas/cluster"
 
-export const GET = withAuth(async ({ client, user }) => {
+export const GET = withAuth(async ({ prisma, user }) => {
   if (!user) {
     return new Response("Invalid API key", {
       status: 401,
     })
   }
 
-  const { data, error } = await client
-    .from("clusters")
-    .select(
-      `
-      id:index, nickname, description, hardware, cycle_type, proof_type,
-      cluster_configuration:cluster_configurations(
-        instance_type_id,
-        instance_count,
-        aws_instance_pricing(*)
-      )`
-    )
-    .eq("user_id", user.id)
+  const clusters = await prisma.cluster.findMany({
+    where: {
+      teamId: user.id,
+    },
+    include: {
+      configurations: {
+        include: {
+          instanceType: true,
+        }
+      }
+    },
+  })
 
-  if (error) {
-    console.error("error fetching clusters", error)
-    return new Response("Internal server error", { status: 500 })
-  }
+  clusters[0].configurations[0].instanceType.hourlyPrice
 
-  return Response.json(data satisfies Cluster[])
+  return Response.json(clusters)
 })
 
-export const POST = withAuth(async ({ request, client, user }) => {
+export const POST = withAuth(async ({ request, prisma, user }) => {
   const requestBody = await request.json()
 
   if (!user) {
@@ -59,68 +56,49 @@ export const POST = withAuth(async ({ request, client, user }) => {
   } = clusterPayload
 
   // get & validate instance type ids
-  const { data: instanceTypeIds, error: instanceTypeError } = await client
-    .from("aws_instance_pricing")
-    .select("id, instance_type")
-    .in(
-      "instance_type",
-      configuration.map((config) => config.instance_type)
-    )
+  const instanceTypes = await prisma.awsInstancePricing.findMany({
+    where: {
+      instanceType: {
+        in: configuration.map((config) => config.instance_type),
+      },
+    },
+    select: {
+      id: true,
+      instanceType: true,
+    },
+  })
 
-  if (instanceTypeError) {
-    console.error("error fetching instance type ids", instanceTypeError)
-    return new Response("Internal server error", { status: 500 })
-  }
-
-  if (instanceTypeIds.length !== configuration.length) {
+  if (instanceTypes.length !== configuration.length) {
     return new Response("Invalid cluster configuration", { status: 400 })
   }
 
   // create cluster
-  const { data, error } = await client
-    .from("clusters")
-    .insert({
+  const cluster = await prisma.cluster.create({
+    data: {
       nickname,
       description,
       hardware,
-      cycle_type,
-      proof_type,
-      user_id: user.id,
-    })
-    .select("id, index")
-    .single()
-
-  if (error) {
-    console.error("error creating cluster", error)
-    return new Response("Internal server error", { status: 500 })
-  }
-
-  // create cluster configuration
-  const instanceTypeById = instanceTypeIds.reduce(
-    (acc, instanceType) => {
-      acc[instanceType.instance_type] = instanceType.id
-      return acc
+      cycleType: cycle_type,
+      proofType: proof_type,
+      teamId: user.id,
+      configurations: {
+        create: configuration.map(({ instance_type, instance_count }) => ({
+          instanceType: {
+            connect: {
+              id: instanceTypes.find(
+                (instanceType) => instanceType.instanceType === instance_type
+              )!.id,
+            },
+          },
+          instanceCount: instance_count,
+        })),
+      },
     },
-    {} as Record<string, number>
-  )
+    select: {
+      id: true,
+      index: true,
+    },
+  })
 
-  const { error: clusterConfigurationError } = await client
-    .from("cluster_configurations")
-    .insert(
-      configuration.map(({ instance_type, instance_count }) => ({
-        cluster_id: data.id,
-        instance_type_id: instanceTypeById[instance_type],
-        instance_count,
-      }))
-    )
-
-  if (clusterConfigurationError) {
-    console.error(
-      "error creating cluster configuration",
-      clusterConfigurationError
-    )
-    return new Response("Internal server error", { status: 500 })
-  }
-
-  return Response.json({ id: data.index })
+  return Response.json({ id: cluster.index })
 })

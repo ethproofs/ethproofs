@@ -1,11 +1,13 @@
 import { headers } from "next/headers"
 
-import { createClient } from "@/utils/supabase/server"
+import { PrismaClient } from "@prisma/client"
+
+const prisma = new PrismaClient()
 
 export const withAuth = (
   handler: (auth: {
     request: Request
-    client: ReturnType<typeof createClient>
+    prisma: PrismaClient
     user: { id: string } | null
     apiKey?: { mode: string; user_id: string } | null
     timestamp: string
@@ -17,44 +19,32 @@ export const withAuth = (
     const headerStore = headers()
     const authHeader = headerStore.get("authorization")
 
-    // Get the user from the session
-    const client = createClient({
-      global: {
-        headers: {
-          ethkey: authHeader ? authHeader.split(" ")[1] : "",
-        },
-      },
-    })
-
     const commonProps = {
       timestamp,
       request,
-      client,
+      prisma,
     }
 
     // If there is an auth header, validate api key
     if (authHeader) {
       const apiKey = authHeader.split(" ")[1]
 
-      const { data, error } = await client
-        .from("api_auth_tokens")
-        .select("mode, user_id")
-        .eq("token", apiKey)
-        .single()
+      const user = await prisma.apiAuthToken.findUnique({
+        where: {
+          token: apiKey,
+        },
+      })
 
       // api key is invalid
-      if (error) {
+      if (!user) {
         return handler({ ...commonProps, user: null })
       }
 
-      // fetch the user
-      if (data) {
-        return handler({
-          ...commonProps,
-          user: { id: data.user_id },
-          apiKey: data,
-        })
-      }
+      return handler({
+        ...commonProps,
+        user: { id: user.userId },
+        apiKey: { mode: user.mode, user_id: user.userId },
+      })
     }
 
     // TODO: If there is no auth header, then the user is likely logged in
