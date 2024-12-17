@@ -37,12 +37,12 @@ export const awsInstancePricing = pgTable(
   "aws_instance_pricing",
   {
     id: bigint({ mode: "number" }).primaryKey().generatedByDefaultAsIdentity(),
-    instanceType: varchar("instance_type").notNull(),
+    instance_type: varchar("instance_type").notNull(),
     region: varchar().notNull(),
-    hourlyPrice: real("hourly_price").notNull(),
-    instanceMemory: real("instance_memory").notNull(),
+    hourly_price: real("hourly_price").notNull(),
+    instance_memory: real("instance_memory").notNull(),
     vcpu: smallint().notNull(),
-    instanceStorage: varchar("instance_storage").notNull(),
+    instance_storage: varchar("instance_storage").notNull(),
     createdAt: timestamp("created_at", { withTimezone: true, mode: "string" })
       .defaultNow()
       .notNull(),
@@ -60,12 +60,12 @@ export const awsInstancePricing = pgTable(
 export const blocks = pgTable(
   "blocks",
   {
-    blockNumber: bigint("block_number", { mode: "number" })
+    block_number: bigint("block_number", { mode: "number" })
       .primaryKey()
       .notNull(),
     timestamp: timestamp({ withTimezone: true, mode: "string" }).notNull(),
-    gasUsed: bigint("gas_used", { mode: "number" }).notNull(),
-    transactionCount: smallint("transaction_count").notNull(),
+    gas_used: bigint("gas_used", { mode: "number" }).notNull(),
+    transaction_count: smallint("transaction_count").notNull(),
     hash: text().notNull(),
   },
   (table) => [
@@ -87,18 +87,18 @@ export const clusterConfigurations = pgTable(
   "cluster_configurations",
   {
     id: bigint({ mode: "number" }).primaryKey().generatedByDefaultAsIdentity(),
-    clusterId: uuid("cluster_id").notNull(),
-    instanceTypeId: bigint("instance_type_id", { mode: "number" }).notNull(),
-    instanceCount: smallint("instance_count").notNull(),
+    cluster_id: uuid("cluster_id").notNull(),
+    instance_type_id: bigint("instance_type_id", { mode: "number" }).notNull(),
+    instance_count: smallint("instance_count").notNull(),
   },
   (table) => [
     foreignKey({
-      columns: [table.clusterId],
+      columns: [table.cluster_id],
       foreignColumns: [clusters.id],
       name: "cluster_configurations_cluster_id_fkey",
     }),
     foreignKey({
-      columns: [table.instanceTypeId],
+      columns: [table.instance_type_id],
       foreignColumns: [awsInstancePricing.id],
       name: "cluster_configurations_instance_type_id_fkey",
     }),
@@ -119,23 +119,23 @@ export const clusterConfigurations = pgTable(
 export const recursiveRootProofs = pgTable(
   "recursive_root_proofs",
   {
-    rootProofId: integer("root_proof_id")
+    root_proof_id: integer("root_proof_id")
       .primaryKey()
       .generatedByDefaultAsIdentity(),
-    blockNumber: bigint("block_number", { mode: "number" }),
-    rootProof: bytea("root_proof").notNull(),
-    rootProofSize: bigint("root_proof_size", { mode: "number" }).notNull(),
-    totalProofSize: bigint("total_proof_size", { mode: "number" }).notNull(),
-    userId: uuid("user_id"),
+    block_number: bigint("block_number", { mode: "number" }),
+    root_proof: bytea("root_proof").notNull(),
+    root_proof_size: bigint("root_proof_size", { mode: "number" }).notNull(),
+    total_proof_size: bigint("total_proof_size", { mode: "number" }).notNull(),
+    user_id: uuid("user_id"),
   },
   (table) => [
     foreignKey({
-      columns: [table.blockNumber],
-      foreignColumns: [blocks.blockNumber],
+      columns: [table.block_number],
+      foreignColumns: [blocks.block_number],
       name: "recursive_root_proofs_block_number_fkey",
     }),
     foreignKey({
-      columns: [table.userId],
+      columns: [table.user_id],
       foreignColumns: [authUsers.id],
       name: "recursive_root_proofs_user_id_fkey",
     }),
@@ -151,17 +151,17 @@ export const recursiveRootProofs = pgTable(
 export const teams = pgTable(
   "teams",
   {
-    teamId: integer("team_id").primaryKey().generatedByDefaultAsIdentity(),
-    teamName: text("team_name").notNull(),
-    userId: uuid("user_id"),
-    githubOrg: text("github_org"),
-    logoUrl: text("logo_url"),
-    twitterHandle: text("twitter_handle"),
-    websiteUrl: text("website_url"),
+    team_id: integer("team_id").primaryKey().generatedByDefaultAsIdentity(),
+    team_name: text("team_name").notNull(),
+    user_id: uuid("user_id"),
+    github_org: text("github_org"),
+    logo_url: text("logo_url"),
+    twitter_handle: text("twitter_handle"),
+    website_url: text("website_url"),
   },
   (table) => [
     foreignKey({
-      columns: [table.userId],
+      columns: [table.user_id],
       foreignColumns: [authUsers.id],
       name: "teams_user_id_fkey",
     }).onDelete("set null"),
@@ -179,16 +179,16 @@ export const clusters = pgTable(
   {
     index: smallint(),
     nickname: text().notNull(),
-    userId: uuid("user_id").notNull(),
+    user_id: uuid("user_id").notNull(),
     id: uuid().defaultRandom().primaryKey().notNull(),
     description: text(),
     hardware: text(),
-    cycleType: varchar("cycle_type"),
-    proofType: varchar("proof_type"),
+    cycle_type: varchar("cycle_type"),
+    proof_type: varchar("proof_type"),
   },
   (table) => [
     foreignKey({
-      columns: [table.userId],
+      columns: [table.user_id],
       foreignColumns: [authUsers.id],
       name: "clusters_user_id_fkey",
     }).onDelete("set null"),
@@ -210,13 +210,13 @@ export const programs = pgTable(
   "programs",
   {
     id: bigint({ mode: "number" }).primaryKey().generatedByDefaultAsIdentity(),
-    verifierId: text("verifier_id").notNull(),
-    createdAt: timestamp("created_at", { withTimezone: true, mode: "string" })
+    verifier_id: text("verifier_id").notNull(),
+    created_at: timestamp("created_at", { withTimezone: true, mode: "string" })
       .defaultNow()
       .notNull(),
   },
   (table) => [
-    unique("programs_verifier_id_key").on(table.verifierId),
+    unique("programs_verifier_id_key").on(table.verifier_id),
     pgPolicy("Enable read access for all users", {
       as: "permissive",
       for: "select",
@@ -236,15 +236,15 @@ export const apiAuthTokens = pgTable(
   {
     id: uuid().defaultRandom().primaryKey().notNull(),
     mode: keyMode().default("read").notNull(),
-    createdAt: timestamp("created_at", { withTimezone: true, mode: "string" })
+    created_at: timestamp("created_at", { withTimezone: true, mode: "string" })
       .defaultNow()
       .notNull(),
     token: text().notNull(),
-    userId: uuid("user_id").notNull(),
+    user_id: uuid("user_id").notNull(),
   },
   (table) => [
     foreignKey({
-      columns: [table.userId],
+      columns: [table.user_id],
       foreignColumns: [authUsers.id],
       name: "api_auth_tokens_user_id_fkey",
     })
@@ -263,55 +263,55 @@ export const apiAuthTokens = pgTable(
 export const proofs = pgTable(
   "proofs",
   {
-    proofId: integer("proof_id").primaryKey().generatedByDefaultAsIdentity(),
-    blockNumber: bigint("block_number", { mode: "number" }).notNull(),
+    proof_id: integer("proof_id").primaryKey().generatedByDefaultAsIdentity(),
+    block_number: bigint("block_number", { mode: "number" }).notNull(),
     proof: bytea("proof"),
-    proofStatus: text("proof_status").notNull(),
-    provingCycles: bigint("proving_cycles", { mode: "number" }),
-    userId: uuid("user_id").notNull(),
-    createdAt: timestamp("created_at", {
+    proof_status: text("proof_status").notNull(),
+    proving_cycles: bigint("proving_cycles", { mode: "number" }),
+    user_id: uuid("user_id").notNull(),
+    created_at: timestamp("created_at", {
       withTimezone: true,
       mode: "string",
     }).defaultNow(),
-    provedTimestamp: timestamp("proved_timestamp", {
+    proved_timestamp: timestamp("proved_timestamp", {
       withTimezone: true,
       mode: "string",
     }),
-    provingTimestamp: timestamp("proving_timestamp", {
+    proving_timestamp: timestamp("proving_timestamp", {
       withTimezone: true,
       mode: "string",
     }),
-    queuedTimestamp: timestamp("queued_timestamp", {
+    queued_timestamp: timestamp("queued_timestamp", {
       withTimezone: true,
       mode: "string",
     }),
-    clusterId: uuid("cluster_id").notNull(),
-    provingTime: integer("proving_time"),
-    programId: bigint("program_id", { mode: "number" }),
+    cluster_id: uuid("cluster_id").notNull(),
+    proving_time: integer("proving_time"),
+    program_id: bigint("program_id", { mode: "number" }),
     size: bigint({ mode: "number" }),
   },
   (table) => [
     foreignKey({
-      columns: [table.blockNumber],
-      foreignColumns: [blocks.blockNumber],
+      columns: [table.block_number],
+      foreignColumns: [blocks.block_number],
       name: "proofs_block_number_fkey",
     }),
     foreignKey({
-      columns: [table.clusterId],
+      columns: [table.cluster_id],
       foreignColumns: [clusters.id],
       name: "proofs_cluster_id_fkey",
     }),
     foreignKey({
-      columns: [table.userId],
+      columns: [table.user_id],
       foreignColumns: [authUsers.id],
       name: "proofs_user_id_fkey",
     }).onDelete("set null"),
     foreignKey({
-      columns: [table.programId],
+      columns: [table.program_id],
       foreignColumns: [programs.id],
       name: "proofs_program_id_fkey",
     }),
-    unique("unique_block_cluster").on(table.blockNumber, table.clusterId),
+    unique("unique_block_cluster").on(table.block_number, table.cluster_id),
     pgPolicy("Enable updates for users with an api key", {
       as: "permissive",
       for: "update",
@@ -335,9 +335,9 @@ export const proofs = pgTable(
   ]
 )
 export const recentSummary = pgView("recent_summary", {
-  totalProvenBlocks: bigint("total_proven_blocks", { mode: "number" }),
-  avgCostPerProof: doublePrecision("avg_cost_per_proof"),
-  avgProvingTime: numeric("avg_proving_time"),
+  total_proven_blocks: bigint("total_proven_blocks", { mode: "number" }),
+  avg_cost_per_proof: doublePrecision("avg_cost_per_proof"),
+  avg_proving_time: numeric("avg_proving_time"),
 })
   .with({ securityInvoker: true })
   .as(
@@ -353,11 +353,11 @@ export const recentSummary = pgView("recent_summary", {
   )
 
 export const teamsSummary = pgView("teams_summary", {
-  teamId: integer("team_id"),
-  teamName: text("team_name"),
-  logoUrl: text("logo_url"),
-  avgCostPerProof: doublePrecision("avg_cost_per_proof"),
-  avgProvingTime: numeric("avg_proving_time"),
+  team_id: integer("team_id"),
+  team_name: text("team_name"),
+  logo_url: text("logo_url"),
+  avg_cost_per_proof: doublePrecision("avg_cost_per_proof"),
+  avg_proving_time: numeric("avg_proving_time"),
 })
   .with({ securityInvoker: true })
   .as(
