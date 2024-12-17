@@ -2,12 +2,12 @@ import { headers } from "next/headers"
 
 import { hashToken } from "./hash-token"
 
-import { createClient } from "@/utils/supabase/server"
+import { db } from "@/db"
 
 export const withAuth = (
   handler: (auth: {
     request: Request
-    client: ReturnType<typeof createClient>
+    db: typeof db
     user: { id: string } | null
     apiKey?: { mode: string; user_id: string } | null
     timestamp: string
@@ -21,40 +21,33 @@ export const withAuth = (
     const apiKey = authHeader ? authHeader.split(" ")[1] : ""
     const hashedKey = await hashToken(apiKey)
 
-    // Get the user from the session
-    const client = createClient({
-      global: {
-        headers: {
-          ethkey: hashedKey,
-        },
-      },
-    })
-
     const commonProps = {
       timestamp,
       request,
-      client,
+      db,
     }
 
     // If there is an auth header, validate api key
     if (apiKey) {
-      const { data, error } = await client
-        .from("api_auth_tokens")
-        .select("mode, user_id")
-        .eq("token", hashedKey)
-        .single()
+      const apiAuthToken = await db.query.apiAuthTokens.findFirst({
+        columns: {
+          mode: true,
+          user_id: true,
+        },
+        where: (apiAuthToken, { eq }) => eq(apiAuthToken.token, hashedKey),
+      })
 
       // api key is invalid
-      if (error) {
+      if (!apiAuthToken) {
         return handler({ ...commonProps, user: null })
       }
 
       // fetch the user
-      if (data) {
+      if (apiAuthToken) {
         return handler({
           ...commonProps,
-          user: { id: data.user_id },
-          apiKey: data,
+          user: { id: apiAuthToken.user_id },
+          apiKey: apiAuthToken,
         })
       }
     }
