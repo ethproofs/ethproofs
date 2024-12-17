@@ -1,6 +1,6 @@
 import { formatUsd } from "./number"
 import { getTime, prettyMs } from "./time"
-import type { Cluster, ClusterConfig, Proof, Stats } from "./types"
+import type { Cluster, Proof, Stats } from "./types"
 
 // Filters
 
