@@ -5,14 +5,11 @@ import { ColumnDef } from "@tanstack/react-table"
 
 import type { Block, Cluster, Proof } from "@/lib/types"
 
-import { primitives } from "@/components/Definitions"
 import DownloadButton from "@/components/DownloadButton"
 import { metrics } from "@/components/Metrics"
 import Null from "@/components/Null"
 import { HidePunctuation } from "@/components/StylePunctuation"
 import Cpu from "@/components/svgs/cpu.svg"
-import Tooltip from "@/components/Tooltip"
-import * as Info from "@/components/ui/info"
 import { MetricInfo } from "@/components/ui/metric"
 import { TooltipContentHeader } from "@/components/ui/tooltip"
 
@@ -121,18 +118,11 @@ export const columns: ColumnDef<Proof>[] = [
       const provedTimestamp = cell.getValue() as string
       const proof = row.original
 
-      const blockTimestamp = proof.block?.timestamp
       const provingTime = proof.proving_time!
 
-      if (
-        !proof ||
-        !isCompleted(proof) ||
-        !hasProvedTimestamp(proof) ||
-        !hasProvingTime(proof) ||
-        !provedTimestamp ||
-        !blockTimestamp
-      )
-        return <Null />
+      if (!isCompleted(proof) || !proof.block) return <Null />
+
+      const blockTimestamp = proof.block.timestamp
 
       const formattedProvingTime = prettyMs(provingTime)
 
