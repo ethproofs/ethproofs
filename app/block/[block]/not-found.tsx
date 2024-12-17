@@ -12,7 +12,9 @@ export default async function NotFound() {
     <HeroSection className="space-y-4">
       <h1 className="flex flex-col items-center gap-4 font-mono md:flex-row">
         404 <Box strokeWidth="1" className="text-6xl text-primary" />{" "}
-        {typeof block === "string" ? block : ""}
+        <div className="w-full truncate text-center">
+          {typeof block === "string" ? block : ""}
+        </div>
       </h1>
       <p className="text-center md:text-start">Proof not found</p>
     </HeroSection>
