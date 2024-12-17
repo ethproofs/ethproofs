@@ -21,7 +21,7 @@ import { AVERAGE_LABEL } from "@/lib/constants"
 
 import { getMetadata } from "@/lib/metadata"
 import { formatNumber, formatUsd, shouldUseCents } from "@/lib/number"
-import { getTotalProvers } from "@/lib/teams"
+import { getActiveProverCount } from "@/lib/teams"
 import { prettyMs } from "@/lib/time"
 import HeroDark from "@/public/images/hero-background.png"
 import { createClient } from "@/utils/supabase/server"
@@ -191,7 +191,7 @@ export default async function Index() {
                 Prover diversity
               </div>
               <div className="flex items-center gap-2 whitespace-nowrap text-4xl text-primary">
-                <ShieldCheck /> {getTotalProvers(teamsSummary.data)}
+                <ShieldCheck /> {getActiveProverCount(teamsSummary.data)}
               </div>
               <div className="whitespace-nowrap text-xs font-bold uppercase text-body-secondary">
                 Prover vendors

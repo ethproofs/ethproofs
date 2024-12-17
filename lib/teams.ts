@@ -6,5 +6,5 @@ import type { TeamSummary } from "./types"
  * @param data array of rows (TeamSummary) from teams_summary view
  * @returns
  */
-export const getTotalProvers = (data: TeamSummary[]): number =>
+export const getActiveProverCount = (data: TeamSummary[]): number =>
   data.filter((t) => !!t.avg_cost_per_proof && !!t.avg_proving_time).length
