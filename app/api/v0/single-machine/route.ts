@@ -1,9 +1,11 @@
 import { ZodError } from "zod"
 
+import { db } from "@/db"
+import { clusterConfigurations, clusters } from "@/db/schema"
 import { withAuth } from "@/lib/auth/withAuth"
 import { singleMachineSchema } from "@/lib/zod/schemas/cluster"
 
-export const POST = withAuth(async ({ request, client, user }) => {
+export const POST = withAuth(async ({ request, user }) => {
   const requestBody = await request.json()
 
   if (!user) {
@@ -39,52 +41,43 @@ export const POST = withAuth(async ({ request, client, user }) => {
   } = singleMachinePayload
 
   // get & validate instance type id
-  const { data: instanceType, error: instanceTypeError } = await client
-    .from("aws_instance_pricing")
-    .select("id, instance_type")
-    .eq("instance_type", instance_type)
-    .single()
+  const instanceType = await db.query.awsInstancePricing.findFirst({
+    columns: {
+      id: true,
+      instance_type: true,
+    },
+    where: (awsInstancePricing, { eq }) =>
+      eq(awsInstancePricing.instance_type, instance_type),
+  })
 
-  if (instanceTypeError) {
-    console.error("error fetching instance type id", instanceTypeError)
-    return new Response("Internal server error", { status: 500 })
+  if (!instanceType) {
+    return new Response("Instance type not found", { status: 400 })
   }
 
-  // create cluster for single machine
-  const { data, error } = await client
-    .from("clusters")
-    .insert({
-      nickname,
-      description,
-      hardware,
-      cycle_type,
-      proof_type,
-      user_id: user.id,
-    })
-    .select("id, index")
-    .single()
+  let clusterIndex: number | null = null
+  await db.transaction(async (tx) => {
+    // create cluster for single machine
+    const [cluster] = await tx
+      .insert(clusters)
+      .values({
+        nickname,
+        description,
+        hardware,
+        cycle_type,
+        proof_type,
+        user_id: user.id,
+      })
+      .returning({ id: clusters.id, index: clusters.index })
 
-  if (error) {
-    console.error("error creating cluster", error)
-    return new Response("Internal server error", { status: 500 })
-  }
-
-  // create single machine as a cluster with 1 instance
-  const { error: clusterConfigurationError } = await client
-    .from("cluster_configurations")
-    .insert({
-      cluster_id: data.id,
+    // create single machine as a cluster with 1 instance
+    await tx.insert(clusterConfigurations).values({
+      cluster_id: cluster.id,
       instance_type_id: instanceType.id,
       instance_count: 1,
     })
 
-  if (clusterConfigurationError) {
-    console.error(
-      "error creating cluster configuration for single machine",
-      clusterConfigurationError
-    )
-    return new Response("Internal server error", { status: 500 })
-  }
+    clusterIndex = cluster.index
+  })
 
-  return Response.json({ id: data.index })
+  return Response.json({ id: clusterIndex })
 })

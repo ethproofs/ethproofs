@@ -1,13 +1,15 @@
 import { revalidateTag } from "next/cache"
 import { ZodError } from "zod"
 
+import { db } from "@/db"
+import { blocks, proofs } from "@/db/schema"
 import { withAuth } from "@/lib/auth/withAuth"
 import { fetchBlockData } from "@/lib/blocks"
 import { provingProofSchema } from "@/lib/zod/schemas/proof"
 
 // TODO: refactor code to use baseProofHandler and abstract out the logic
 
-export const POST = withAuth(async ({ request, client, user, timestamp }) => {
+export const POST = withAuth(async ({ request, user, timestamp }) => {
   const payload = await request.json()
 
   // TODO: remove when we go to production, this is a temporary log to debug the payload
@@ -40,14 +42,15 @@ export const POST = withAuth(async ({ request, client, user, timestamp }) => {
 
   // validate block_number exists
   console.log("validating block_number", block_number)
-  const block = await client
-    .from("blocks")
-    .select("block_number")
-    .eq("block_number", block_number)
-    .single()
+  const block = await db.query.blocks.findFirst({
+    columns: {
+      block_number: true,
+    },
+    where: (blocks, { eq }) => eq(blocks.block_number, block_number),
+  })
 
   // if block is new (not in db), fetch block data from block explorer and create block record
-  if (block.error) {
+  if (!block) {
     console.log("block not found, fetching block data", block_number)
     let blockData
     try {
@@ -59,50 +62,55 @@ export const POST = withAuth(async ({ request, client, user, timestamp }) => {
       })
     }
 
-    // create block
-    console.log("creating block", block_number)
-    const { error } = await client.from("blocks").insert({
-      block_number,
-      gas_used: Number(blockData.gasUsed),
-      transaction_count: blockData.txsCount,
-      timestamp: new Date(Number(blockData.timestamp) * 1000).toISOString(),
-      hash: blockData.hash,
-    })
+    try {
+      // create block
+      console.log("creating block", block_number)
+      await db.insert(blocks).values({
+        block_number,
+        gas_used: Number(blockData.gasUsed),
+        transaction_count: blockData.txsCount,
+        timestamp: new Date(Number(blockData.timestamp) * 1000).toISOString(),
+        hash: blockData.hash,
+      })
 
-    if (error) {
+      // invalidate blocks cache
+      revalidateTag("blocks")
+    } catch (error) {
       console.error("error creating block", error)
       return new Response("Internal server error", { status: 500 })
     }
-
-    // invalidate blocks cache
-    revalidateTag("blocks")
   }
 
   // get cluster uuid from cluster_id
-  const { data: clusterData, error: clusterError } = await client
-    .from("clusters")
-    .select("id")
-    .eq("index", cluster_id)
-    .eq("user_id", user.id)
-    .single()
+  const cluster = await db.query.clusters.findFirst({
+    columns: {
+      id: true,
+    },
+    where: (clusters, { and, eq }) =>
+      and(eq(clusters.index, cluster_id), eq(clusters.user_id, user.id)),
+  })
 
-  if (clusterError) {
-    console.error("error getting cluster", clusterError)
+  if (!cluster) {
+    console.error("cluster not found", cluster_id)
     return new Response("Cluster not found", { status: 404 })
   }
 
   // get proof_id to update or create an existing proof
   let proofId
   if (!proofPayload.proof_id) {
-    const { data: existingProofData } = await client
-      .from("proofs")
-      .select("proof_id")
-      .eq("block_number", block_number)
-      .eq("cluster_id", clusterData.id)
-      .eq("user_id", user.id)
-      .single()
+    const existingProof = await db.query.proofs.findFirst({
+      columns: {
+        proof_id: true,
+      },
+      where: (proofs, { and, eq }) =>
+        and(
+          eq(proofs.block_number, block_number),
+          eq(proofs.cluster_id, cluster.id),
+          eq(proofs.user_id, user.id)
+        ),
+    })
 
-    proofId = existingProofData?.proof_id
+    proofId = existingProof?.proof_id
   }
 
   // add proof
@@ -111,33 +119,34 @@ export const POST = withAuth(async ({ request, client, user, timestamp }) => {
     ...proofPayload,
   })
 
-  const proofResponse = await client
-    .from("proofs")
-    .upsert(
-      {
+  try {
+    const [proof] = await db
+      .insert(proofs)
+      .values({
         ...proofPayload,
         proof_id: proofId,
         block_number,
-        cluster_id: clusterData.id,
+        cluster_id: cluster.id,
         proof_status: "proving",
         proving_timestamp: timestamp,
         user_id: user.id,
-      },
-      {
-        onConflict: "block_number,cluster_id",
-      }
-    )
-    .select("proof_id")
-    .single()
+      })
+      .onConflictDoUpdate({
+        target: [proofs.block_number, proofs.cluster_id],
+        set: {
+          proof_status: "proving",
+          proving_timestamp: timestamp,
+        },
+      })
+      .returning({ proof_id: proofs.proof_id })
 
-  if (proofResponse.error) {
-    console.error("error adding proof", proofResponse.error)
+    // invalidate proofs cache
+    revalidateTag("proofs")
+
+    // return the generated proof_id
+    return Response.json(proof)
+  } catch (error) {
+    console.error("error adding proof", error)
     return new Response("Internal server error", { status: 500 })
   }
-
-  // invalidate proofs cache
-  revalidateTag("proofs")
-
-  // return the generated proof_id
-  return Response.json(proofResponse.data)
 })
