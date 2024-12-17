@@ -54,7 +54,6 @@ const main = async () => {
     await seed.teams(
       (x) =>
         x(1, () => ({
-          team_id: userIndex + 1,
           ...profile,
         })),
       {

@@ -120,6 +120,134 @@
       ],
       "uniqueConstraints": []
     },
+    "_prisma_migrations": {
+      "id": "public._prisma_migrations",
+      "schemaName": "public",
+      "tableName": "_prisma_migrations",
+      "fields": [
+        {
+          "id": "public._prisma_migrations.id",
+          "name": "id",
+          "columnName": "id",
+          "type": "varchar",
+          "isRequired": true,
+          "kind": "scalar",
+          "isList": false,
+          "isGenerated": false,
+          "sequence": false,
+          "hasDefaultValue": false,
+          "isId": true,
+          "maxLength": 36
+        },
+        {
+          "id": "public._prisma_migrations.checksum",
+          "name": "checksum",
+          "columnName": "checksum",
+          "type": "varchar",
+          "isRequired": true,
+          "kind": "scalar",
+          "isList": false,
+          "isGenerated": false,
+          "sequence": false,
+          "hasDefaultValue": false,
+          "isId": false,
+          "maxLength": 64
+        },
+        {
+          "id": "public._prisma_migrations.finished_at",
+          "name": "finished_at",
+          "columnName": "finished_at",
+          "type": "timestamptz",
+          "isRequired": false,
+          "kind": "scalar",
+          "isList": false,
+          "isGenerated": false,
+          "sequence": false,
+          "hasDefaultValue": false,
+          "isId": false,
+          "maxLength": null
+        },
+        {
+          "id": "public._prisma_migrations.migration_name",
+          "name": "migration_name",
+          "columnName": "migration_name",
+          "type": "varchar",
+          "isRequired": true,
+          "kind": "scalar",
+          "isList": false,
+          "isGenerated": false,
+          "sequence": false,
+          "hasDefaultValue": false,
+          "isId": false,
+          "maxLength": 255
+        },
+        {
+          "id": "public._prisma_migrations.logs",
+          "name": "logs",
+          "columnName": "logs",
+          "type": "text",
+          "isRequired": false,
+          "kind": "scalar",
+          "isList": false,
+          "isGenerated": false,
+          "sequence": false,
+          "hasDefaultValue": false,
+          "isId": false,
+          "maxLength": null
+        },
+        {
+          "id": "public._prisma_migrations.rolled_back_at",
+          "name": "rolled_back_at",
+          "columnName": "rolled_back_at",
+          "type": "timestamptz",
+          "isRequired": false,
+          "kind": "scalar",
+          "isList": false,
+          "isGenerated": false,
+          "sequence": false,
+          "hasDefaultValue": false,
+          "isId": false,
+          "maxLength": null
+        },
+        {
+          "id": "public._prisma_migrations.started_at",
+          "name": "started_at",
+          "columnName": "started_at",
+          "type": "timestamptz",
+          "isRequired": true,
+          "kind": "scalar",
+          "isList": false,
+          "isGenerated": false,
+          "sequence": false,
+          "hasDefaultValue": true,
+          "isId": false,
+          "maxLength": null
+        },
+        {
+          "id": "public._prisma_migrations.applied_steps_count",
+          "name": "applied_steps_count",
+          "columnName": "applied_steps_count",
+          "type": "int4",
+          "isRequired": true,
+          "kind": "scalar",
+          "isList": false,
+          "isGenerated": false,
+          "sequence": false,
+          "hasDefaultValue": true,
+          "isId": false,
+          "maxLength": null
+        }
+      ],
+      "uniqueConstraints": [
+        {
+          "name": "_prisma_migrations_pkey",
+          "fields": [
+            "id"
+          ],
+          "nullNotDistinct": false
+        }
+      ]
+    },
     "api_auth_tokens": {
       "id": "public.api_auth_tokens",
       "schemaName": "public",
@@ -140,10 +268,38 @@
           "maxLength": null
         },
         {
+          "id": "public.api_auth_tokens.token",
+          "name": "token",
+          "columnName": "token",
+          "type": "text",
+          "isRequired": true,
+          "kind": "scalar",
+          "isList": false,
+          "isGenerated": false,
+          "sequence": false,
+          "hasDefaultValue": false,
+          "isId": false,
+          "maxLength": null
+        },
+        {
+          "id": "public.api_auth_tokens.team_id",
+          "name": "team_id",
+          "columnName": "team_id",
+          "type": "uuid",
+          "isRequired": true,
+          "kind": "scalar",
+          "isList": false,
+          "isGenerated": false,
+          "sequence": false,
+          "hasDefaultValue": false,
+          "isId": false,
+          "maxLength": null
+        },
+        {
           "id": "public.api_auth_tokens.mode",
           "name": "mode",
           "columnName": "mode",
-          "type": "key_mode",
+          "type": "key_modes",
           "isRequired": true,
           "kind": "scalar",
           "isList": false,
@@ -168,44 +324,16 @@
           "maxLength": null
         },
         {
-          "id": "public.api_auth_tokens.token",
-          "name": "token",
-          "columnName": "token",
-          "type": "uuid",
-          "isRequired": true,
-          "kind": "scalar",
-          "isList": false,
-          "isGenerated": false,
-          "sequence": false,
-          "hasDefaultValue": true,
-          "isId": false,
-          "maxLength": null
-        },
-        {
-          "id": "public.api_auth_tokens.user_id",
-          "name": "user_id",
-          "columnName": "user_id",
-          "type": "uuid",
-          "isRequired": true,
-          "kind": "scalar",
-          "isList": false,
-          "isGenerated": false,
-          "sequence": false,
-          "hasDefaultValue": false,
-          "isId": false,
-          "maxLength": null
-        },
-        {
-          "name": "users",
-          "type": "users",
+          "name": "teams",
+          "type": "teams",
           "isRequired": true,
           "kind": "object",
-          "relationName": "api_auth_tokensTousers",
+          "relationName": "api_auth_tokensToteams",
           "relationFromFields": [
-            "user_id"
+            "team_id"
           ],
           "relationToFields": [
-            "id"
+            "team_id"
           ],
           "isList": false,
           "isId": false,
@@ -336,7 +464,7 @@
             "increment": 1,
             "start": 1
           },
-          "hasDefaultValue": false,
+          "hasDefaultValue": true,
           "isId": true,
           "maxLength": null
         },
@@ -344,7 +472,7 @@
           "id": "public.aws_instance_pricing.instance_type",
           "name": "instance_type",
           "columnName": "instance_type",
-          "type": "varchar",
+          "type": "text",
           "isRequired": true,
           "kind": "scalar",
           "isList": false,
@@ -358,7 +486,7 @@
           "id": "public.aws_instance_pricing.region",
           "name": "region",
           "columnName": "region",
-          "type": "varchar",
+          "type": "text",
           "isRequired": true,
           "kind": "scalar",
           "isList": false,
@@ -372,7 +500,7 @@
           "id": "public.aws_instance_pricing.hourly_price",
           "name": "hourly_price",
           "columnName": "hourly_price",
-          "type": "float4",
+          "type": "float8",
           "isRequired": true,
           "kind": "scalar",
           "isList": false,
@@ -386,7 +514,7 @@
           "id": "public.aws_instance_pricing.instance_memory",
           "name": "instance_memory",
           "columnName": "instance_memory",
-          "type": "float4",
+          "type": "float8",
           "isRequired": true,
           "kind": "scalar",
           "isList": false,
@@ -400,7 +528,7 @@
           "id": "public.aws_instance_pricing.vcpu",
           "name": "vcpu",
           "columnName": "vcpu",
-          "type": "int2",
+          "type": "int4",
           "isRequired": true,
           "kind": "scalar",
           "isList": false,
@@ -414,7 +542,7 @@
           "id": "public.aws_instance_pricing.instance_storage",
           "name": "instance_storage",
           "columnName": "instance_storage",
-          "type": "varchar",
+          "type": "text",
           "isRequired": true,
           "kind": "scalar",
           "isList": false,
@@ -428,7 +556,7 @@
           "id": "public.aws_instance_pricing.created_at",
           "name": "created_at",
           "columnName": "created_at",
-          "type": "timestamptz",
+          "type": "timestamp",
           "isRequired": true,
           "kind": "scalar",
           "isList": false,
@@ -514,7 +642,7 @@
           "id": "public.blocks.transaction_count",
           "name": "transaction_count",
           "columnName": "transaction_count",
-          "type": "int2",
+          "type": "int4",
           "isRequired": true,
           "kind": "scalar",
           "isList": false,
@@ -535,6 +663,20 @@
           "isGenerated": false,
           "sequence": false,
           "hasDefaultValue": false,
+          "isId": false,
+          "maxLength": null
+        },
+        {
+          "id": "public.blocks.created_at",
+          "name": "created_at",
+          "columnName": "created_at",
+          "type": "timestamptz",
+          "isRequired": true,
+          "kind": "scalar",
+          "isList": false,
+          "isGenerated": false,
+          "sequence": false,
+          "hasDefaultValue": true,
           "isId": false,
           "maxLength": null
         },
@@ -801,7 +943,7 @@
             "increment": 1,
             "start": 1
           },
-          "hasDefaultValue": false,
+          "hasDefaultValue": true,
           "isId": true,
           "maxLength": null
         },
@@ -837,7 +979,7 @@
           "id": "public.cluster_configurations.instance_count",
           "name": "instance_count",
           "columnName": "instance_count",
-          "type": "int2",
+          "type": "int4",
           "isRequired": true,
           "kind": "scalar",
           "isList": false,
@@ -900,10 +1042,24 @@
       "tableName": "clusters",
       "fields": [
         {
+          "id": "public.clusters.id",
+          "name": "id",
+          "columnName": "id",
+          "type": "uuid",
+          "isRequired": true,
+          "kind": "scalar",
+          "isList": false,
+          "isGenerated": false,
+          "sequence": false,
+          "hasDefaultValue": true,
+          "isId": true,
+          "maxLength": null
+        },
+        {
           "id": "public.clusters.index",
           "name": "index",
           "columnName": "index",
-          "type": "int2",
+          "type": "int4",
           "isRequired": false,
           "kind": "scalar",
           "isList": false,
@@ -928,9 +1084,9 @@
           "maxLength": null
         },
         {
-          "id": "public.clusters.user_id",
-          "name": "user_id",
-          "columnName": "user_id",
+          "id": "public.clusters.team_id",
+          "name": "team_id",
+          "columnName": "team_id",
           "type": "uuid",
           "isRequired": true,
           "kind": "scalar",
@@ -939,20 +1095,6 @@
           "sequence": false,
           "hasDefaultValue": false,
           "isId": false,
-          "maxLength": null
-        },
-        {
-          "id": "public.clusters.id",
-          "name": "id",
-          "columnName": "id",
-          "type": "uuid",
-          "isRequired": true,
-          "kind": "scalar",
-          "isList": false,
-          "isGenerated": false,
-          "sequence": false,
-          "hasDefaultValue": true,
-          "isId": true,
           "maxLength": null
         },
         {
@@ -987,7 +1129,7 @@
           "id": "public.clusters.cycle_type",
           "name": "cycle_type",
           "columnName": "cycle_type",
-          "type": "varchar",
+          "type": "text",
           "isRequired": false,
           "kind": "scalar",
           "isList": false,
@@ -1001,7 +1143,7 @@
           "id": "public.clusters.proof_type",
           "name": "proof_type",
           "columnName": "proof_type",
-          "type": "varchar",
+          "type": "text",
           "isRequired": false,
           "kind": "scalar",
           "isList": false,
@@ -1012,16 +1154,16 @@
           "maxLength": null
         },
         {
-          "name": "users",
-          "type": "users",
+          "name": "teams",
+          "type": "teams",
           "isRequired": true,
           "kind": "object",
-          "relationName": "clustersTousers",
+          "relationName": "clustersToteams",
           "relationFromFields": [
-            "user_id"
+            "team_id"
           ],
           "relationToFields": [
-            "id"
+            "team_id"
           ],
           "isList": false,
           "isId": false,
@@ -2395,20 +2537,6 @@
           "maxLength": null
         },
         {
-          "id": "auth.mfa_challenges.web_authn_session_data",
-          "name": "web_authn_session_data",
-          "columnName": "web_authn_session_data",
-          "type": "jsonb",
-          "isRequired": false,
-          "kind": "scalar",
-          "isList": false,
-          "isGenerated": false,
-          "sequence": false,
-          "hasDefaultValue": false,
-          "isId": false,
-          "maxLength": null
-        },
-        {
           "name": "mfa_factors",
           "type": "mfa_factors",
           "isRequired": true,
@@ -2583,34 +2711,6 @@
           "maxLength": null
         },
         {
-          "id": "auth.mfa_factors.web_authn_credential",
-          "name": "web_authn_credential",
-          "columnName": "web_authn_credential",
-          "type": "jsonb",
-          "isRequired": false,
-          "kind": "scalar",
-          "isList": false,
-          "isGenerated": false,
-          "sequence": false,
-          "hasDefaultValue": false,
-          "isId": false,
-          "maxLength": null
-        },
-        {
-          "id": "auth.mfa_factors.web_authn_aaguid",
-          "name": "web_authn_aaguid",
-          "columnName": "web_authn_aaguid",
-          "type": "uuid",
-          "isRequired": false,
-          "kind": "scalar",
-          "isList": false,
-          "isGenerated": false,
-          "sequence": false,
-          "hasDefaultValue": false,
-          "isId": false,
-          "maxLength": null
-        },
-        {
           "name": "users",
           "type": "users",
           "isRequired": true,
@@ -2652,6 +2752,13 @@
           "nullNotDistinct": false
         },
         {
+          "name": "mfa_factors_phone_key",
+          "fields": [
+            "phone"
+          ],
+          "nullNotDistinct": false
+        },
+        {
           "name": "mfa_factors_pkey",
           "fields": [
             "id"
@@ -2667,7 +2774,7 @@
           "nullNotDistinct": false
         },
         {
-          "name": "unique_phone_factor_per_user",
+          "name": "unique_verified_phone_factor",
           "fields": [
             "phone",
             "user_id"
@@ -3168,7 +3275,7 @@
             "increment": 1,
             "start": 1
           },
-          "hasDefaultValue": false,
+          "hasDefaultValue": true,
           "isId": true,
           "maxLength": null
         },
@@ -3190,7 +3297,7 @@
           "id": "public.programs.created_at",
           "name": "created_at",
           "columnName": "created_at",
-          "type": "timestamptz",
+          "type": "timestamp",
           "isRequired": true,
           "kind": "scalar",
           "isList": false,
@@ -3251,7 +3358,7 @@
             "increment": 1,
             "start": 1
           },
-          "hasDefaultValue": false,
+          "hasDefaultValue": true,
           "isId": true,
           "maxLength": null
         },
@@ -3298,20 +3405,6 @@
           "maxLength": null
         },
         {
-          "id": "public.proofs.proving_cost",
-          "name": "proving_cost",
-          "columnName": "proving_cost",
-          "type": "numeric",
-          "isRequired": false,
-          "kind": "scalar",
-          "isList": false,
-          "isGenerated": false,
-          "sequence": false,
-          "hasDefaultValue": false,
-          "isId": false,
-          "maxLength": null
-        },
-        {
           "id": "public.proofs.proving_cycles",
           "name": "proving_cycles",
           "columnName": "proving_cycles",
@@ -3326,25 +3419,11 @@
           "maxLength": null
         },
         {
-          "id": "public.proofs.user_id",
-          "name": "user_id",
-          "columnName": "user_id",
-          "type": "uuid",
-          "isRequired": true,
-          "kind": "scalar",
-          "isList": false,
-          "isGenerated": false,
-          "sequence": false,
-          "hasDefaultValue": false,
-          "isId": false,
-          "maxLength": null
-        },
-        {
           "id": "public.proofs.created_at",
           "name": "created_at",
           "columnName": "created_at",
           "type": "timestamptz",
-          "isRequired": false,
+          "isRequired": true,
           "kind": "scalar",
           "isList": false,
           "isGenerated": false,
@@ -3396,9 +3475,23 @@
           "maxLength": null
         },
         {
-          "id": "public.proofs.cluster_id",
-          "name": "cluster_id",
-          "columnName": "cluster_id",
+          "id": "public.proofs.proving_time",
+          "name": "proving_time",
+          "columnName": "proving_time",
+          "type": "int4",
+          "isRequired": true,
+          "kind": "scalar",
+          "isList": false,
+          "isGenerated": false,
+          "sequence": false,
+          "hasDefaultValue": false,
+          "isId": false,
+          "maxLength": null
+        },
+        {
+          "id": "public.proofs.team_id",
+          "name": "team_id",
+          "columnName": "team_id",
           "type": "uuid",
           "isRequired": true,
           "kind": "scalar",
@@ -3410,11 +3503,11 @@
           "maxLength": null
         },
         {
-          "id": "public.proofs.proving_time",
-          "name": "proving_time",
-          "columnName": "proving_time",
-          "type": "int4",
-          "isRequired": false,
+          "id": "public.proofs.cluster_id",
+          "name": "cluster_id",
+          "columnName": "cluster_id",
+          "type": "uuid",
+          "isRequired": true,
           "kind": "scalar",
           "isList": false,
           "isGenerated": false,
@@ -3436,24 +3529,6 @@
           "hasDefaultValue": false,
           "isId": false,
           "maxLength": null
-        },
-        {
-          "name": "users",
-          "type": "users",
-          "isRequired": true,
-          "kind": "object",
-          "relationName": "proofsTousers",
-          "relationFromFields": [
-            "user_id"
-          ],
-          "relationToFields": [
-            "id"
-          ],
-          "isList": false,
-          "isId": false,
-          "isGenerated": false,
-          "sequence": false,
-          "hasDefaultValue": false
         },
         {
           "name": "blocks",
@@ -3508,6 +3583,24 @@
           "isGenerated": false,
           "sequence": false,
           "hasDefaultValue": false
+        },
+        {
+          "name": "teams",
+          "type": "teams",
+          "isRequired": true,
+          "kind": "object",
+          "relationName": "proofsToteams",
+          "relationFromFields": [
+            "team_id"
+          ],
+          "relationToFields": [
+            "team_id"
+          ],
+          "isList": false,
+          "isId": false,
+          "isGenerated": false,
+          "sequence": false,
+          "hasDefaultValue": false
         }
       ],
       "uniqueConstraints": [
@@ -3547,7 +3640,7 @@
             "increment": 1,
             "start": 1
           },
-          "hasDefaultValue": false,
+          "hasDefaultValue": true,
           "isId": true,
           "maxLength": null
         },
@@ -3608,11 +3701,11 @@
           "maxLength": null
         },
         {
-          "id": "public.recursive_root_proofs.user_id",
-          "name": "user_id",
-          "columnName": "user_id",
+          "id": "public.recursive_root_proofs.team_id",
+          "name": "team_id",
+          "columnName": "team_id",
           "type": "uuid",
-          "isRequired": false,
+          "isRequired": true,
           "kind": "scalar",
           "isList": false,
           "isGenerated": false,
@@ -3620,24 +3713,6 @@
           "hasDefaultValue": false,
           "isId": false,
           "maxLength": null
-        },
-        {
-          "name": "users",
-          "type": "users",
-          "isRequired": false,
-          "kind": "object",
-          "relationName": "recursive_root_proofsTousers",
-          "relationFromFields": [
-            "user_id"
-          ],
-          "relationToFields": [
-            "id"
-          ],
-          "isList": false,
-          "isId": false,
-          "isGenerated": false,
-          "sequence": false,
-          "hasDefaultValue": false
         },
         {
           "name": "blocks",
@@ -3650,6 +3725,24 @@
           ],
           "relationToFields": [
             "block_number"
+          ],
+          "isList": false,
+          "isId": false,
+          "isGenerated": false,
+          "sequence": false,
+          "hasDefaultValue": false
+        },
+        {
+          "name": "teams",
+          "type": "teams",
+          "isRequired": true,
+          "kind": "object",
+          "relationName": "recursive_root_proofsToteams",
+          "relationFromFields": [
+            "team_id"
+          ],
+          "relationToFields": [
+            "team_id"
           ],
           "isList": false,
           "isId": false,
@@ -5449,17 +5542,13 @@
           "id": "public.teams.team_id",
           "name": "team_id",
           "columnName": "team_id",
-          "type": "int4",
+          "type": "uuid",
           "isRequired": true,
           "kind": "scalar",
           "isList": false,
           "isGenerated": false,
-          "sequence": {
-            "identifier": "\"public\".\"teams_team_id_seq\"",
-            "increment": 1,
-            "start": 1
-          },
-          "hasDefaultValue": false,
+          "sequence": false,
+          "hasDefaultValue": true,
           "isId": true,
           "maxLength": null
         },
@@ -5469,20 +5558,6 @@
           "columnName": "team_name",
           "type": "text",
           "isRequired": true,
-          "kind": "scalar",
-          "isList": false,
-          "isGenerated": false,
-          "sequence": false,
-          "hasDefaultValue": false,
-          "isId": false,
-          "maxLength": null
-        },
-        {
-          "id": "public.teams.user_id",
-          "name": "user_id",
-          "columnName": "user_id",
-          "type": "uuid",
-          "isRequired": false,
           "kind": "scalar",
           "isList": false,
           "isGenerated": false,
@@ -5548,18 +5623,70 @@
           "maxLength": null
         },
         {
-          "name": "users",
-          "type": "users",
+          "id": "public.teams.user_id",
+          "name": "user_id",
+          "columnName": "user_id",
+          "type": "uuid",
+          "isRequired": true,
+          "kind": "scalar",
+          "isList": false,
+          "isGenerated": false,
+          "sequence": false,
+          "hasDefaultValue": false,
+          "isId": false,
+          "maxLength": null
+        },
+        {
+          "name": "api_auth_tokens",
+          "type": "api_auth_tokens",
           "isRequired": false,
           "kind": "object",
-          "relationName": "teamsTousers",
-          "relationFromFields": [
-            "user_id"
-          ],
-          "relationToFields": [
-            "id"
-          ],
-          "isList": false,
+          "relationName": "api_auth_tokensToteams",
+          "relationFromFields": [],
+          "relationToFields": [],
+          "isList": true,
+          "isId": false,
+          "isGenerated": false,
+          "sequence": false,
+          "hasDefaultValue": false
+        },
+        {
+          "name": "clusters",
+          "type": "clusters",
+          "isRequired": false,
+          "kind": "object",
+          "relationName": "clustersToteams",
+          "relationFromFields": [],
+          "relationToFields": [],
+          "isList": true,
+          "isId": false,
+          "isGenerated": false,
+          "sequence": false,
+          "hasDefaultValue": false
+        },
+        {
+          "name": "proofs",
+          "type": "proofs",
+          "isRequired": false,
+          "kind": "object",
+          "relationName": "proofsToteams",
+          "relationFromFields": [],
+          "relationToFields": [],
+          "isList": true,
+          "isId": false,
+          "isGenerated": false,
+          "sequence": false,
+          "hasDefaultValue": false
+        },
+        {
+          "name": "recursive_root_proofs",
+          "type": "recursive_root_proofs",
+          "isRequired": false,
+          "kind": "object",
+          "relationName": "recursive_root_proofsToteams",
+          "relationFromFields": [],
+          "relationToFields": [],
+          "isList": true,
           "isId": false,
           "isGenerated": false,
           "sequence": false,
@@ -6366,76 +6493,6 @@
           "isGenerated": false,
           "sequence": false,
           "hasDefaultValue": false
-        },
-        {
-          "name": "api_auth_tokens",
-          "type": "api_auth_tokens",
-          "isRequired": false,
-          "kind": "object",
-          "relationName": "api_auth_tokensTousers",
-          "relationFromFields": [],
-          "relationToFields": [],
-          "isList": true,
-          "isId": false,
-          "isGenerated": false,
-          "sequence": false,
-          "hasDefaultValue": false
-        },
-        {
-          "name": "clusters",
-          "type": "clusters",
-          "isRequired": false,
-          "kind": "object",
-          "relationName": "clustersTousers",
-          "relationFromFields": [],
-          "relationToFields": [],
-          "isList": true,
-          "isId": false,
-          "isGenerated": false,
-          "sequence": false,
-          "hasDefaultValue": false
-        },
-        {
-          "name": "proofs",
-          "type": "proofs",
-          "isRequired": false,
-          "kind": "object",
-          "relationName": "proofsTousers",
-          "relationFromFields": [],
-          "relationToFields": [],
-          "isList": true,
-          "isId": false,
-          "isGenerated": false,
-          "sequence": false,
-          "hasDefaultValue": false
-        },
-        {
-          "name": "recursive_root_proofs",
-          "type": "recursive_root_proofs",
-          "isRequired": false,
-          "kind": "object",
-          "relationName": "recursive_root_proofsTousers",
-          "relationFromFields": [],
-          "relationToFields": [],
-          "isList": true,
-          "isId": false,
-          "isGenerated": false,
-          "sequence": false,
-          "hasDefaultValue": false
-        },
-        {
-          "name": "teams",
-          "type": "teams",
-          "isRequired": false,
-          "kind": "object",
-          "relationName": "teamsTousers",
-          "relationFromFields": [],
-          "relationToFields": [],
-          "isList": true,
-          "isId": false,
-          "isGenerated": false,
-          "sequence": false,
-          "hasDefaultValue": false
         }
       ],
       "uniqueConstraints": [
@@ -6641,7 +6698,7 @@
         }
       ]
     },
-    "key_mode": {
+    "key_modes": {
       "schemaName": "public",
       "values": [
         {
