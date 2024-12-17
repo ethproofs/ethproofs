@@ -36,7 +36,7 @@ export type Team = Tables<"teams">
  * Extensions for the ClusterConfig type, adding optional awsInstance property.
  */
 export type ClusterConfigExtensions = {
-  aws_instance_pricing?: AwsInstance
+  aws_instance_pricing?: AwsInstance | null
 }
 
 /**
