@@ -54,7 +54,6 @@ const main = async () => {
     await seed.teams(
       (x) =>
         x(1, () => ({
-          team_id: userIndex + 1,
           ...profile,
         })),
       {
@@ -98,7 +97,8 @@ const main = async () => {
             copycat.oneOfString(seed, ["proved", "proving", "queued"]),
           proving_cycles: ({ seed }) =>
             copycat.int(seed, { min: 100000, max: 1000000 }),
-          size: ({ seed }) => copycat.int(seed, { min: 2 ** 15, max: 2 ** 23 }),
+          size_bytes: ({ seed }) =>
+            copycat.int(seed, { min: 2 ** 15, max: 2 ** 23 }),
         })),
       { connect: { users, blocks, clusters } }
     )
