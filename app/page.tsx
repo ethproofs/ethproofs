@@ -59,7 +59,6 @@ export default async function Index() {
         created_at,
         program_id,
         proof_status,
-        proved_timestamp,
         proving_cycles,
         proving_time,
         queued_timestamp,
