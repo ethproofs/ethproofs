@@ -50,7 +50,23 @@ export default async function Index() {
   const blocksResponse = await supabase
     .from("blocks")
     .select(
-      `*,proofs!inner(id:proof_id,*,
+      `*,
+      proofs!inner(
+        id:proof_id,
+        proof_id,
+        block_number,
+        cluster_id,
+        created_at,
+        program_id,
+        proof_status,
+        proved_timestamp,
+        proving_cycles,
+        proving_time,
+        queued_timestamp,
+        proving_timestamp,
+        proved_timestamp,
+        size_bytes,
+        user_id,
         cluster:clusters(*,
           cluster_configurations(*,
             aws_instance_pricing(*)
@@ -69,7 +85,7 @@ export default async function Index() {
     const proofsWithTeams = proofs.map((proof) => ({
       ...proof,
       team: teams.find((team) => team.user_id === proof.user_id),
-    })) as Proof[]
+    }))
 
     return { ...block, proofs: proofsWithTeams }
   })
