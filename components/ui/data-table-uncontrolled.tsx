@@ -7,6 +7,7 @@ import {
   getSortedRowModel,
   useReactTable,
 } from "@tanstack/react-table"
+
 import DataTable from "./data-table"
 
 type Props<TData, TValue> = {

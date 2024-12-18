@@ -1,3 +1,5 @@
+import { flexRender, Table as TableType } from "@tanstack/react-table"
+
 import {
   Table,
   TableBody,
@@ -10,7 +12,6 @@ import {
 import { cn } from "@/lib/utils"
 
 import { Button } from "./button"
-import { flexRender, Table as TableType } from "@tanstack/react-table"
 
 type Props<TData> = {
   className?: string
