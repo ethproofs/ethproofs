@@ -37,6 +37,7 @@ import { AVERAGE_LABEL, SITE_NAME } from "@/lib/constants"
 
 import { columns } from "./columns"
 
+import { db } from "@/db"
 import { getMetadata } from "@/lib/metadata"
 import { formatNumber, formatUsd } from "@/lib/number"
 import {
@@ -46,7 +47,6 @@ import {
 } from "@/lib/proofs"
 import { prettyMs } from "@/lib/time"
 import { getHost, getTwitterHandle } from "@/lib/url"
-import { createClient } from "@/utils/supabase/client"
 
 type ProverPageProps = {
   params: Promise<{ teamId: number }>
@@ -57,15 +57,14 @@ export async function generateMetadata({
 }: ProverPageProps): Promise<Metadata> {
   const { teamId } = await params
 
-  const supabase = createClient()
+  const team = await db.query.teams.findFirst({
+    columns: {
+      team_name: true,
+    },
+    where: (teams, { eq }) => eq(teams.team_id, teamId),
+  })
 
-  const { data: team, error: teamError } = await supabase
-    .from("teams")
-    .select("*")
-    .eq("team_id", teamId)
-    .single()
-
-  if (teamError || !team) return { title: `Prover not found - ${SITE_NAME}` }
+  if (!team) return { title: `Prover not found - ${SITE_NAME}` }
 
   return getMetadata({ title: `${team.team_name}` })
 }
@@ -73,24 +72,21 @@ export async function generateMetadata({
 export default async function ProverPage({ params }: ProverPageProps) {
   const { teamId } = await params
 
-  const supabase = createClient()
+  const team = await db.query.teams.findFirst({
+    where: (teams, { eq }) => eq(teams.team_id, teamId),
+  })
 
-  const { data: team, error: teamError } = await supabase
-    .from("teams")
-    .select("*")
-    .eq("team_id", teamId)
-    .single()
+  if (!team) return notFound()
 
-  if (!team || !team.user_id || teamError) return notFound()
+  const proofs = await db.query.proofs.findMany({
+    where: (proofs, { eq }) => eq(proofs.user_id, team.user_id),
+    with: {
+      block: true,
+      cluster: true,
+    },
+  })
 
-  const { data: proofsData, error: proofError } = await supabase
-    .from("proofs")
-    .select("*, cluster:clusters(*), block:blocks(gas_used,timestamp)")
-    .eq("user_id", team.user_id)
-
-  if (!team || teamError || !proofsData?.length || proofError) return notFound()
-
-  const proofs = proofsData as Proof[]
+  if (!proofs.length) return notFound()
 
   const clusters = Object.values(
     proofs.reduce((acc, curr) => {

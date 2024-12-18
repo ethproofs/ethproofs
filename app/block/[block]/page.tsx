@@ -41,6 +41,7 @@ import { cn } from "@/lib/utils"
 
 import { AVERAGE_LABEL } from "@/lib/constants"
 
+import { db } from "@/db"
 import { timestampToEpoch, timestampToSlot } from "@/lib/beaconchain"
 import { getBlockValueType } from "@/lib/blocks"
 import { getMetadata } from "@/lib/metadata"
@@ -56,9 +57,6 @@ import {
   sortProofsStatusAndTimes,
 } from "@/lib/proofs"
 import { prettyMs } from "@/lib/time"
-import { createClient } from "@/utils/supabase/client"
-
-const supabase = createClient()
 
 type BlockDetailsPageProps = {
   params: Promise<{ block: number }>
@@ -69,14 +67,16 @@ export async function generateMetadata({
 }: BlockDetailsPageProps): Promise<Metadata> {
   const { block } = await params
 
-  const { data, error } = await supabase
-    .from("blocks")
-    .select("*, proofs(*)")
-    .eq(getBlockValueType(block), block)
-    .single()
+  const blockValueType = getBlockValueType(block)
+  const blockData = await db.query.blocks.findFirst({
+    where: (blocks, { eq }) => eq(blocks[blockValueType], block),
+    with: {
+      proofs: true,
+    },
+  })
 
   return getMetadata({
-    title: `Block ${error ? block : data.block_number}`,
+    title: `Block ${blockData ? blockData.block_number : block}`,
   })
 }
 
@@ -85,15 +85,30 @@ export default async function BlockDetailsPage({
 }: BlockDetailsPageProps) {
   const blockNumber = (await params).block
 
-  const { data: block, error } = await supabase
-    .from("blocks")
-    .select("*, proofs(*)")
-    .eq(getBlockValueType(blockNumber), blockNumber)
-    .single()
+  const blockValueType = getBlockValueType(blockNumber)
 
-  const { data: teams } = await supabase.from("teams").select("*")
+  const block = await db.query.blocks.findFirst({
+    with: {
+      proofs: {
+        with: {
+          cluster: {
+            with: {
+              cluster_configuration: {
+                with: {
+                  aws_instance_pricing: true,
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+    where: (blocks, { eq }) => eq(blocks[blockValueType], blockNumber),
+  })
 
-  if (!block || error || !teams) notFound()
+  const teams = await db.query.teams.findMany()
+
+  if (!block || !teams) notFound()
 
   const { timestamp, block_number, gas_used, proofs, hash } = block
 

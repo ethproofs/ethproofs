@@ -124,10 +124,12 @@ export const recursiveRootProofs = pgTable(
     root_proof: bytea("root_proof").notNull(),
     root_proof_size: bigint("root_proof_size", { mode: "number" }).notNull(),
     total_proof_size: bigint("total_proof_size", { mode: "number" }).notNull(),
-    user_id: uuid("user_id").references(() => authUsers.id, {
-      onDelete: "cascade",
-      onUpdate: "cascade",
-    }),
+    user_id: uuid("user_id")
+      .notNull()
+      .references(() => authUsers.id, {
+        onDelete: "cascade",
+        onUpdate: "cascade",
+      }),
   },
   () => [
     pgPolicy("Enable read access for all users", {
@@ -144,10 +146,12 @@ export const teams = pgTable(
   {
     team_id: integer("team_id").primaryKey().generatedByDefaultAsIdentity(),
     team_name: text("team_name").notNull(),
-    user_id: uuid("user_id").references(() => authUsers.id, {
-      onDelete: "cascade",
-      onUpdate: "cascade",
-    }),
+    user_id: uuid("user_id")
+      .notNull()
+      .references(() => authUsers.id, {
+        onDelete: "cascade",
+        onUpdate: "cascade",
+      }),
     github_org: text("github_org"),
     logo_url: text("logo_url"),
     twitter_handle: text("twitter_handle"),
@@ -316,7 +320,7 @@ export const proofs = pgTable(
 export const recentSummary = pgView("recent_summary", {
   total_proven_blocks: bigint("total_proven_blocks", { mode: "number" }),
   avg_cost_per_proof: doublePrecision("avg_cost_per_proof"),
-  avg_proving_time: numeric("avg_proving_time"),
+  avg_proving_time: integer("avg_proving_time"),
 })
   .with({ securityInvoker: true })
   .as(
@@ -336,7 +340,7 @@ export const teamsSummary = pgView("teams_summary", {
   team_name: text("team_name"),
   logo_url: text("logo_url"),
   avg_cost_per_proof: doublePrecision("avg_cost_per_proof"),
-  avg_proving_time: numeric("avg_proving_time"),
+  avg_proving_time: integer("avg_proving_time"),
 })
   .with({ securityInvoker: true })
   .as(
