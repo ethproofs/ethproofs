@@ -63,7 +63,8 @@ export const fetchBlocksPaginated = async (pagination: PaginationState) => {
             aws_instance_pricing(*)
           )
         )
-      )`
+      )`,
+      { count: "exact" }
     )
     .order("block_number", { ascending: false })
     .range(
@@ -71,13 +72,9 @@ export const fetchBlocksPaginated = async (pagination: PaginationState) => {
       (pagination.pageIndex + 1) * pagination.pageSize - 1
     )
 
-  const { count } = await client
-    .from("blocks")
-    .select("*", { count: "exact", head: true })
-
   return {
     rows: blocks.data,
-    rowCount: count,
+    rowCount: blocks.count,
   }
 }
 
