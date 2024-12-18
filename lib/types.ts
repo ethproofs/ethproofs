@@ -25,7 +25,7 @@ export type ClusterConfigBase = Tables<"cluster_configurations">
 /**
  * Represents a row in the proofs table.
  */
-export type ProofBase = Tables<"proofs">
+export type ProofBase = Omit<Tables<"proofs">, "proof">
 
 /**
  * Represents a row in the teams table.
