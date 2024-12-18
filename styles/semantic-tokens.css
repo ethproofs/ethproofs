@@ -10,8 +10,9 @@
     --background-active: var(--green-300);
 
     --primary: var(--green-700);
-    --primary-light: var(--green-600); /* TODO: Confirm */
+    --primary-light: var(--green-600);
     --primary-dark: var(--green-800);
+    --primary-visited: var(--green-600);
     --primary-border: var(--green-800);
 
     --body: var(--gray-700);
@@ -29,6 +30,7 @@
     --primary: var(--green-500);
     --primary-light: var(--green-400);
     --primary-dark: var(--green-700);
+    --primary-visited: var(--green-600);
 
     --body: var(--gray-200);
   }
