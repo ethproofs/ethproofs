@@ -218,6 +218,29 @@ export type Database = {
         }
         Relationships: []
       }
+      proof_binaries: {
+        Row: {
+          proof_binary: string
+          proof_id: number
+        }
+        Insert: {
+          proof_binary: string
+          proof_id: number
+        }
+        Update: {
+          proof_binary?: string
+          proof_id?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "proof_binaries_proof_id_fkey"
+            columns: ["proof_id"]
+            isOneToOne: true
+            referencedRelation: "proofs"
+            referencedColumns: ["proof_id"]
+          },
+        ]
+      }
       proofs: {
         Row: {
           block_number: number
