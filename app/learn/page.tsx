@@ -1,3 +1,6 @@
+import fs from "fs"
+import path from "path"
+
 import matter from "gray-matter"
 import Image from "next/image"
 
@@ -5,22 +8,26 @@ import { MarkdownProvider } from "@/components/Markdown/Provider"
 
 import { cn } from "@/lib/utils"
 
-import { LEARN_RESOURCES_MD_URL, SITE_NAME } from "@/lib/constants"
+import { LEARN_CONTENT_PATH, SITE_NAME } from "@/lib/constants"
 
 import { getMetadata } from "@/lib/metadata"
 import HeroDark from "@/public/images/learn-hero-background.png"
 
 export const metadata = getMetadata({ title: "Learn" })
 
-export default async function LearnPage() {
-  const response = await fetch(LEARN_RESOURCES_MD_URL)
-  const markdown = response.ok ? await response.text() : ""
+const getMarkdown = (path: string) =>
+  fs.existsSync(path) ? fs.readFileSync(path, "utf8") : ""
 
-  // Extract resources and tutorials sections from fetched markdown
-  const resourcesMatch = markdown.match(/(?<=## resources)([\s\S]*?)\n#{1,2}\s/)
-  const tutorialsMatch = markdown.match(/(?<=## tutorials)([\s\S]*?)\n#{1,2}\s/)
-  const resources = resourcesMatch ? matter(resourcesMatch[0]).content : ""
-  const tutorials = tutorialsMatch ? matter(tutorialsMatch[0]).content : ""
+export default function LearnPage() {
+  const dir = path.resolve(LEARN_CONTENT_PATH)
+  const resourcesPath = path.resolve(dir, "resources.md")
+  const tutorialsPath = path.resolve(dir, "tutorials.md")
+
+  const resourcesMarkdown = getMarkdown(resourcesPath)
+  const tutorialsMarkdown = getMarkdown(tutorialsPath)
+
+  const resources = resourcesMarkdown ? matter(resourcesMarkdown).content : ""
+  const tutorials = tutorialsMarkdown ? matter(tutorialsMarkdown).content : ""
 
   return (
     <div className="space-y-16">

@@ -16,7 +16,6 @@ export const BLOCK_GAS_LIMIT = 30_000_000 // TODO: Fetch from execution block
 export const FALLBACK_TEAM_LOGO_SRC =
   "https://ibkqxhjnroghhtfyualc.supabase.co/storage/v1/object/public/public-assets/fallback-team-logo.svg"
 
-export const LEARN_RESOURCES_MD_URL =
-  "https://raw.githubusercontent.com/rkdud007/awesome-zkvm/refs/heads/main/README.md"
+export const LEARN_CONTENT_PATH = "app/learn/content"
 
 export const AVERAGE_LABEL = "avg"
