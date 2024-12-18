@@ -157,6 +157,7 @@ export const POST = withAuth(async ({ request, client, user, timestamp }) => {
         program_id: programId,
         proof_status: "proved",
         proved_timestamp: timestamp,
+        size_bytes: Buffer.byteLength(proofHex, "hex"),
         user_id: user.id,
       },
       {

@@ -63,6 +63,7 @@ export type ProofExtensions = {
   block?: BlockBase
   cluster?: Cluster | null
   team?: Team
+  size?: number | null
 }
 
 /**
