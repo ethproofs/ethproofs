@@ -20,6 +20,17 @@ const proverProfiles: Partial<teamsScalars>[] = [
   },
 ]
 
+const getRandomHexString = (minBytes: number, maxBytes: number) => {
+  const minLength = minBytes * 2 // Each byte is represented by 2 hex characters
+  const maxLength = maxBytes * 2
+  const length =
+    Math.floor(Math.random() * (maxLength - minLength + 1)) + minLength
+  return Array(length)
+    .fill(0)
+    .map(() => Math.floor(Math.random() * 16).toString(16))
+    .join("")
+}
+
 const main = async () => {
   const seed = await createSeedClient({ dryRun: true })
 
@@ -86,11 +97,10 @@ const main = async () => {
       { connect: { clusters, aws_instance_pricing } }
     )
 
-    await seed.proofs(
+    const { proofs } = await seed.proofs(
       (x) =>
         x(500, () => ({
           proof_id: ({ seed }) => copycat.int(seed, { min: 1, max: 1000000 }),
-          proof: Buffer.from("{}"),
           proving_time: ({ seed }) =>
             copycat.int(seed, { min: 1000, max: 10000 }),
           proof_status: ({ seed }) =>
@@ -102,6 +112,17 @@ const main = async () => {
         })),
       { connect: { users, blocks, clusters } }
     )
+
+    for (const { proof_id, proof_status } of proofs) {
+      if (proof_status !== "proved") continue
+
+      await seed.proof_binaries((x) =>
+        x(1, () => ({
+          proof_id,
+          proof_binary: Buffer.from(getRandomHexString(500, 4200)),
+        }))
+      )
+    }
   }
 
   process.exit()
