@@ -1,25 +1,27 @@
-CREATE TABLE public.proof_binaries (
-  proof_id integer NOT NULL,
-  proof_binary bytea NOT NULL,
-  CONSTRAINT proof_binaries_pkey PRIMARY KEY (proof_id),
-  CONSTRAINT proof_binaries_proof_id_fkey FOREIGN KEY (proof_id) REFERENCES public.proofs(proof_id) ON DELETE CASCADE
-) WITH (OIDS=FALSE);
+create table public.proof_binaries (
+  proof_id integer not null,
+  proof_binary bytea not null,
+  constraint proof_binaries_pkey primary key (proof_id),
+  constraint proof_binaries_proof_id_fkey foreign key (proof_id) references public.proofs(proof_id) on delete cascade
+) with (oids=false);
 
-ALTER TABLE "public"."proof_binaries" OWNER TO "postgres";
+alter table public.proof_binaries owner to postgres;
 
-INSERT INTO public.proof_binaries (proof_id, proof_binary)
-SELECT proof_id, proof
-FROM public.proofs
-WHERE proof IS NOT NULL;
+insert into public.proof_binaries (proof_id, proof_binary)
+select proof_id, proof
+from public.proofs
+where proof is not null;
 
-CREATE POLICY "Enable insert for users with an api key" ON "public"."proof_binaries" FOR INSERT WITH CHECK ("public"."is_allowed_apikey"((("current_setting"('request.headers'::"text", true))::"json" ->> 'ethkey'::"text"), '{all,write}'::"public"."key_mode"[]));
+create policy enable_insert_for_users_with_an_api_key on public.proof_binaries for insert with check (public.is_allowed_apikey(((current_setting('request.headers'::text, true))::json ->> 'ethkey'::text), '{all,write}'::public.key_mode[]));
 
-CREATE POLICY "Enable read access for all users" ON "public"."proof_binaries" FOR SELECT USING (true);
+create policy enable_read_access_for_all_users on public.proof_binaries for select using (true);
 
-CREATE POLICY "Enable updates for users with an api key" ON "public"."proof_binaries" FOR UPDATE USING ("public"."is_allowed_apikey"((("current_setting"('request.headers'::"text", true))::"json" ->> 'ethkey'::"text"), '{all,write}'::"public"."key_mode"[]));
+create policy enable_updates_for_users_with_an_api_key on public.proof_binaries for update using (public.is_allowed_apikey(((current_setting('request.headers'::text, true))::json ->> 'ethkey'::text), '{all,write}'::public.key_mode[]));
 
-ALTER TABLE "public"."proof_binaries" ENABLE ROW LEVEL SECURITY;
+alter table public.proof_binaries enable row level security;
 
-GRANT ALL ON TABLE "public"."proof_binaries" TO "anon";
-GRANT ALL ON TABLE "public"."proof_binaries" TO "authenticated";
-GRANT ALL ON TABLE "public"."proof_binaries" TO "service_role";
+grant all on table public.proof_binaries to anon;
+grant all on table public.proof_binaries to authenticated;
+grant all on table public.proof_binaries to service_role;
+
+alter table public.proofs drop column proof;

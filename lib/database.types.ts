@@ -247,7 +247,6 @@ export type Database = {
           cluster_id: string
           created_at: string | null
           program_id: number | null
-          proof: string | null
           proof_id: number
           proof_status: string
           proved_timestamp: string | null
@@ -263,7 +262,6 @@ export type Database = {
           cluster_id: string
           created_at?: string | null
           program_id?: number | null
-          proof?: string | null
           proof_id?: number
           proof_status: string
           proved_timestamp?: string | null
@@ -279,7 +277,6 @@ export type Database = {
           cluster_id?: string
           created_at?: string | null
           program_id?: number | null
-          proof?: string | null
           proof_id?: number
           proof_status?: string
           proved_timestamp?: string | null
