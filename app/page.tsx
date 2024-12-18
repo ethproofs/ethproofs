@@ -1,7 +1,8 @@
 import type { Metadata } from "next"
 import Image from "next/image"
+import { QueryClient } from "@tanstack/react-query"
 
-import type { BlockBase, Proof, SummaryItem, TeamSummary } from "@/lib/types"
+import type { SummaryItem } from "@/lib/types"
 
 import BlocksTable from "@/components/BlocksTable"
 import { metrics } from "@/components/Metrics"
@@ -19,6 +20,7 @@ import { cn } from "@/lib/utils"
 
 import { AVERAGE_LABEL } from "@/lib/constants"
 
+import { fetchBlocksPaginated, mergeBlocksWithTeams } from "@/lib/blocks"
 import { getMetadata } from "@/lib/metadata"
 import { formatNumber, formatUsd, shouldUseCents } from "@/lib/number"
 import { getActiveProverCount } from "@/lib/teams"
@@ -29,6 +31,8 @@ import { createClient } from "@/utils/supabase/server"
 export const metadata: Metadata = getMetadata()
 
 export default async function Index() {
+  const queryClient = new QueryClient()
+
   const supabase = createClient({
     global: {
       fetch: (input, init) =>
@@ -47,46 +51,18 @@ export default async function Index() {
     .select()
     .order("avg_proving_time", { ascending: true })
 
-  const blocksResponse = await supabase
-    .from("blocks")
-    .select(
-      `*,
-      proofs!inner(
-        id:proof_id,
-        proof_id,
-        block_number,
-        cluster_id,
-        created_at,
-        program_id,
-        proof_status,
-        proving_cycles,
-        proving_time,
-        queued_timestamp,
-        proving_timestamp,
-        proved_timestamp,
-        size_bytes,
-        user_id,
-        cluster:clusters(*,
-          cluster_configurations(*,
-            aws_instance_pricing(*)
-          )
-        )
-      )`
-    )
-    .order("block_number", { ascending: false })
-  const blocks = (blocksResponse.data || []) satisfies BlockBase[]
-
   const teamsResponse = await supabase.from("teams").select()
   const teams = teamsResponse.data || []
 
-  const blocksProofsTeams = blocks.map((block) => {
-    const { proofs } = block
-    const proofsWithTeams = proofs.map((proof) => ({
-      ...proof,
-      team: teams.find((team) => team.user_id === proof.user_id),
-    }))
-
-    return { ...block, proofs: proofsWithTeams }
+  await queryClient.prefetchQuery({
+    queryKey: ["blocks", { pageIndex: 0, pageSize: 15 }],
+    queryFn: async () => {
+      const blocks = await fetchBlocksPaginated({ pageIndex: 0, pageSize: 15 })
+      return {
+        ...blocks,
+        rows: mergeBlocksWithTeams(blocks.rows ?? [], teams),
+      }
+    },
   })
 
   const summaryItems: SummaryItem[] = recentSummary.data
@@ -181,7 +157,7 @@ export default async function Index() {
       </div>
 
       <section id="blocks" className="w-full scroll-m-20">
-        <BlocksTable blocks={blocksProofsTeams} />
+        <BlocksTable teams={teams} />
       </section>
 
       <section className="w-full scroll-m-20 space-y-8" id="provers">

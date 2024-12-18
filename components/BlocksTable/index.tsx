@@ -1,80 +1,50 @@
 "use client"
 
-import { Reducer, useEffect, useReducer } from "react"
+import { useMemo, useState } from "react"
+import { keepPreviousData, useQuery } from "@tanstack/react-query"
+import { PaginationState } from "@tanstack/react-table"
 
-import type { Block, BlockBase, Proof } from "@/lib/types"
+import { Team } from "@/lib/types"
 
-import DataTable from "@/components/ui/data-table"
+import DataTableControlled from "../ui/data-table-controlled"
 
 import { columns } from "./columns"
-import { Actions, createInitialState, reducer, State } from "./reducer"
 
-import { createClient } from "@/utils/supabase/client"
+import { fetchBlocksPaginated, mergeBlocksWithTeams } from "@/lib/blocks"
 
 type Props = {
-  blocks: Block[]
   className?: string
+  teams: Team[]
 }
 
-const BlocksTable = ({ blocks, className }: Props) => {
-  const [state, dispatch] = useReducer<
-    Reducer<State, Actions>,
-    { blocks: Block[] }
-  >(reducer, { blocks }, createInitialState)
+const BlocksTable = ({ className, teams }: Props) => {
+  const [pagination, setPagination] = useState<PaginationState>({
+    pageIndex: 0,
+    pageSize: 15,
+  })
 
-  const supabase = createClient()
+  const blocksQuery = useQuery({
+    queryKey: ["blocks", pagination],
+    queryFn: async () => {
+      const blocks = await fetchBlocksPaginated(pagination)
+      return {
+        ...blocks,
+        rows: mergeBlocksWithTeams(blocks.rows ?? [], teams),
+      }
+    },
+    placeholderData: keepPreviousData,
+  })
 
-  useEffect(() => {
-    const blocksChannel = supabase
-      .channel("blocks")
-      .on(
-        "postgres_changes",
-        { event: "INSERT", schema: "public", table: "blocks" },
-        (payload) => {
-          dispatch({ type: "add_block", payload: payload.new as BlockBase })
-        }
-      )
-      .on(
-        "postgres_changes",
-        { event: "UPDATE", schema: "public", table: "blocks" },
-        (payload) => {
-          dispatch({ type: "update_block", payload: payload.new as BlockBase })
-        }
-      )
-      .subscribe()
-
-    const proofsChannel = supabase
-      .channel("proofs")
-      .on(
-        "postgres_changes",
-        { event: "INSERT", schema: "public", table: "proofs" },
-        (payload) => {
-          dispatch({ type: "add_proof", payload: payload.new as Proof })
-        }
-      )
-      .on(
-        "postgres_changes",
-        { event: "UPDATE", schema: "public", table: "proofs" },
-        (payload) => {
-          dispatch({ type: "update_proof", payload: payload.new as Proof })
-        }
-      )
-      .subscribe()
-
-    return () => {
-      supabase.removeChannel(blocksChannel)
-      supabase.removeChannel(proofsChannel)
-    }
-  }, [state, supabase])
-
-  const blockData = state.allIds.map((id) => state.byId[id])
+  const defaultData = useMemo(() => [], [])
 
   return (
-    <DataTable
+    <DataTableControlled
       className={className}
       columns={columns}
-      data={blockData}
-      sorting={[{ id: "block_number", desc: true }]}
+      data={blocksQuery.data?.rows ?? defaultData}
+      rowCount={blocksQuery.data?.rowCount ?? 0}
+      pagination={pagination}
+      setPagination={setPagination}
     />
   )
 }
