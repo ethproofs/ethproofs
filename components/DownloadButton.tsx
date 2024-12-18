@@ -18,7 +18,7 @@ type DownloadButtonProps = {
 }
 
 const DownloadButton = ({ className, proof }: DownloadButtonProps) => {
-  const { proof_status, proof_id, proof: binary, size_bytes, team } = proof
+  const { proof_status, proof_id, size_bytes, team } = proof
 
   const teamName = team?.team_name ? team.team_name : "Team"
 
@@ -36,7 +36,6 @@ const DownloadButton = ({ className, proof }: DownloadButtonProps) => {
         <Button
           variant="outline"
           className={cn(sizingClassName, className)}
-          disabled={!binary}
           asChild
         >
           <a href={`/api/v0/proofs/download/${proof_id}`} download>
