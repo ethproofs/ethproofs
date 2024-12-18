@@ -92,7 +92,6 @@ export default async function ProverPage({ params }: ProverPageProps) {
         created_at,
         program_id,
         proof_status,
-        proved_timestamp,
         proving_cycles,
         proving_time,
         queued_timestamp,
