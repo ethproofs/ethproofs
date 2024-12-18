@@ -41,7 +41,7 @@ export type TeamSummary = Tables<"teams_summary">
  * Extensions for the ClusterConfig type, adding optional awsInstance property.
  */
 export type ClusterConfigExtensions = {
-  aws_instance_pricing?: AwsInstance
+  aws_instance_pricing?: AwsInstance | null
 }
 
 /**
@@ -68,6 +68,7 @@ export type ProofExtensions = {
   block?: BlockBase
   cluster?: Cluster | null
   team?: Team
+  size?: number | null
 }
 
 /**

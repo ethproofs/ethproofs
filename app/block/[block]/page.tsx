@@ -2,7 +2,7 @@ import type { Metadata } from "next"
 import Link from "next/link"
 import { notFound } from "next/navigation"
 
-import type { Metric } from "@/lib/types"
+import type { Metric, Proof } from "@/lib/types"
 
 import CopyButton from "@/components/CopyButton"
 import DownloadButton from "@/components/DownloadButton"
@@ -87,7 +87,7 @@ export default async function BlockDetailsPage({
 
   const { data: block, error } = await supabase
     .from("blocks")
-    .select("*, proofs(*)")
+    .select("*, proofs(*,cluster:clusters(*,cluster_configurations(*,aws_instance_pricing(*))))")
     .eq(getBlockValueType(blockNumber), blockNumber)
     .single()
 
@@ -95,9 +95,9 @@ export default async function BlockDetailsPage({
 
   if (!block || error || !teams) notFound()
 
-  const { timestamp, block_number, gas_used, proofs, hash } = block
+  const { timestamp, block_number, gas_used, proofs: blockProofs, hash } = block
 
-  const proofsWithTeams = proofs.map((proof) => {
+  const proofs = blockProofs.map((proof) => {
     const team = teams.find((t) => t.user_id === proof.user_id)
     return { ...proof, team }
   })
@@ -381,7 +381,7 @@ export default async function BlockDetailsPage({
           <ProofCircle /> Proofs
         </h2>
 
-        {proofsWithTeams.sort(sortProofsStatusAndTimes).map((proof) => {
+        {proofs.sort(sortProofsStatusAndTimes).map((proof) => {
           const {
             proof_id,
             proving_time,

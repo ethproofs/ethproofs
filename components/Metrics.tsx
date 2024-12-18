@@ -57,22 +57,24 @@ const metrics: Record<Metric, MetricDetails> = {
       </>
     ),
   },
-  gasUsed: {
-    Label: () => METRICS.gasUsed,
+  costPerMgas: {
+    Label: () => METRICS.costPerMgas,
     Details: () => (
       <>
         <Info.Derivation>
-          <primitives.gasUsed.Term />
+          <computed.provingCosts.Term /> / <computed.mgas.Term />
         </Info.Derivation>
 
-        <primitives.gasUsed.Definition />
+        <computed.provingCosts.Definition />
+        <computed.mgas.Definition />
 
         <Info.Description>
-          Total gas units executed within block
+          Proving costs in USD per million gas units proven
         </Info.Description>
         <Info.Description>
-          Proportional to the amount of computational effort a block outputs.
-          Less gas = less computationally intense = easier to prove.
+          Normalized USD cost per gas unit to allow comparison amongst proofs of
+          different sized blocks. More gas consumption in a block means more
+          computation to prove.
         </Info.Description>
       </>
     ),
@@ -89,6 +91,26 @@ const metrics: Record<Metric, MetricDetails> = {
 
         <Info.Description>
           Proving costs in USD to prove execution of entire block
+        </Info.Description>
+      </>
+    ),
+  },
+  gasUsed: {
+    Label: () => METRICS.gasUsed,
+    Details: () => (
+      <>
+        <Info.Derivation>
+          <primitives.gasUsed.Term />
+        </Info.Derivation>
+
+        <primitives.gasUsed.Definition />
+
+        <Info.Description>
+          Total gas units executed within block
+        </Info.Description>
+        <Info.Description>
+          Proportional to the amount of computational effort a block outputs.
+          Less gas = less computationally intense = easier to prove.
         </Info.Description>
       </>
     ),
@@ -131,28 +153,6 @@ const metrics: Record<Metric, MetricDetails> = {
 
         <primitives.proofSubmissionTime.Definition />
         <primitives.timestamp.Definition />
-      </>
-    ),
-  },
-  costPerMgas: {
-    Label: () => METRICS.costPerMgas,
-    Details: () => (
-      <>
-        <Info.Derivation>
-          <computed.provingCosts.Term /> / <computed.mgas.Term />
-        </Info.Derivation>
-
-        <computed.provingCosts.Definition />
-        <computed.mgas.Definition />
-
-        <Info.Description>
-          Proving costs in USD per million gas units proven
-        </Info.Description>
-        <Info.Description>
-          Normalized USD cost per gas unit to allow comparison amongst proofs of
-          different sized blocks. More gas consumption in a block means more
-          computation to prove.
-        </Info.Description>
       </>
     ),
   },

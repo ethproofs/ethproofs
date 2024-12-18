@@ -111,7 +111,9 @@ const DataTable = <TData, TValue>({
         <span className="flex items-center gap-1 font-mono uppercase text-body-secondary">
           <div>
             Page {table.getState().pagination.pageIndex + 1} of{" "}
-            {table.getPageCount().toLocaleString()}
+            {table.getPageCount() === 0
+              ? 1
+              : table.getPageCount().toLocaleString()}
           </div>
         </span>
         <Button
