@@ -124,7 +124,7 @@ export const POST = withAuth(async ({ request, client, user, timestamp }) => {
   }
 
   // get proof_id to update or create an existing proof
-  let proofId
+  let proofId = proofPayload.proof_id
   if (!proofPayload.proof_id) {
     const { data: existingProofData } = await client
       .from("proofs")
@@ -145,6 +145,11 @@ export const POST = withAuth(async ({ request, client, user, timestamp }) => {
 
   const proofHex = base64ToHex(proofPayload.proof)
 
+  const proofBinaryResponse = await client.from("proof_binaries").upsert({
+    proof_id: proofId!,
+    proof_binary: `\\x${proofHex}`,
+  })
+
   const proofResponse = await client
     .from("proofs")
     .upsert(
@@ -153,7 +158,6 @@ export const POST = withAuth(async ({ request, client, user, timestamp }) => {
         block_number,
         proof_id: proofId,
         cluster_id: clusterData.id,
-        proof: `\\x${proofHex}`,
         program_id: programId,
         proof_status: "proved",
         proved_timestamp: timestamp,
@@ -167,13 +171,14 @@ export const POST = withAuth(async ({ request, client, user, timestamp }) => {
     .select("proof_id")
     .single()
 
-  if (proofResponse.error) {
+  if (proofResponse.error || proofBinaryResponse.error) {
     console.error("error adding proof", proofResponse.error)
     return new Response("Internal server error", { status: 500 })
   }
 
-  // invalidate proofs cache
+  // invalidate proofs and proof_binaries cache
   revalidateTag("proofs")
+  revalidateTag("proof_binaries")
 
   // return the generated proof_id
   return Response.json(proofResponse.data)
