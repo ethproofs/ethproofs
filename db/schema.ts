@@ -13,7 +13,6 @@ import {
   check,
   pgView,
   doublePrecision,
-  numeric,
   pgEnum,
   customType,
 } from "drizzle-orm/pg-core"
@@ -66,6 +65,10 @@ export const blocks = pgTable(
     gas_used: bigint("gas_used", { mode: "number" }).notNull(),
     transaction_count: smallint("transaction_count").notNull(),
     hash: text().notNull(),
+    created_at: timestamp("created_at", {
+      withTimezone: true,
+      mode: "string",
+    }).defaultNow(),
   },
   () => [
     pgPolicy("Enable read access for all users", {
@@ -156,6 +159,10 @@ export const teams = pgTable(
     logo_url: text("logo_url"),
     twitter_handle: text("twitter_handle"),
     website_url: text("website_url"),
+    created_at: timestamp("created_at", {
+      withTimezone: true,
+      mode: "string",
+    }).defaultNow(),
   },
   () => [
     pgPolicy("Enable read access for all users", {
@@ -183,6 +190,10 @@ export const clusters = pgTable(
     hardware: text(),
     cycle_type: varchar("cycle_type"),
     proof_type: varchar("proof_type"),
+    created_at: timestamp("created_at", {
+      withTimezone: true,
+      mode: "string",
+    }).defaultNow(),
   },
   () => [
     pgPolicy("Enable read access for all users", {
@@ -291,7 +302,7 @@ export const proofs = pgTable(
     program_id: bigint("program_id", { mode: "number" }).references(
       () => programs.id
     ),
-    size: bigint({ mode: "number" }),
+    size_bytes: bigint({ mode: "number" }),
   },
   (table) => [
     unique("unique_block_cluster").on(table.block_number, table.cluster_id),

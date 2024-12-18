@@ -100,6 +100,10 @@ export const proofsRelations = relations(proofs, ({ one }) => ({
     fields: [proofs.program_id],
     references: [programs.id],
   }),
+  team: one(teams, {
+    fields: [proofs.user_id],
+    references: [teams.user_id],
+  }),
 }))
 
 export const programsRelations = relations(programs, ({ many }) => ({

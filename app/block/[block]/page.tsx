@@ -91,6 +91,7 @@ export default async function BlockDetailsPage({
     with: {
       proofs: {
         with: {
+          team: true,
           cluster: {
             with: {
               cluster_configuration: {
@@ -106,16 +107,9 @@ export default async function BlockDetailsPage({
     where: (blocks, { eq }) => eq(blocks[blockValueType], blockNumber),
   })
 
-  const teams = await db.query.teams.findMany()
-
-  if (!block || !teams) notFound()
+  if (!block) notFound()
 
   const { timestamp, block_number, gas_used, proofs, hash } = block
-
-  const proofsWithTeams = proofs.map((proof) => {
-    const team = teams.find((t) => t.user_id === proof.user_id)
-    return { ...proof, team }
-  })
 
   const costPerProofStats = getCostPerProofStats(proofs)
 
@@ -396,7 +390,7 @@ export default async function BlockDetailsPage({
           <ProofCircle /> Proofs
         </h2>
 
-        {proofsWithTeams.sort(sortProofsStatusAndTimes).map((proof) => {
+        {proofs.sort(sortProofsStatusAndTimes).map((proof) => {
           const {
             proof_id,
             proving_time,
@@ -416,6 +410,7 @@ export default async function BlockDetailsPage({
                 )
               : 0
 
+          console.log(proof)
           const provingCost = getProvingCost(proof)
 
           return (

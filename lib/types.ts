@@ -1,36 +1,43 @@
 import { type ReactNode } from "react"
 
-import type { Tables } from "./database.types"
+import {
+  awsInstancePricing,
+  blocks,
+  clusterConfigurations,
+  clusters,
+  proofs,
+  teams,
+} from "@/db/schema"
 
 /**
  * Represents a row in the aws_instance_pricing table.
  */
-export type AwsInstance = Tables<"aws_instance_pricing">
+export type AwsInstance = typeof awsInstancePricing.$inferSelect
 
 /**
  * Represents a row in the blocks table.
  */
-export type BlockBase = Tables<"blocks">
+export type BlockBase = typeof blocks.$inferSelect
 
 /**
  * Represents a row in the clusters table.
  */
-export type ClusterBase = Tables<"clusters">
+export type ClusterBase = typeof clusters.$inferSelect
 
 /**
  * Represents a row in the cluster_configurations table.
  */
-export type ClusterConfigBase = Tables<"cluster_configurations">
+export type ClusterConfigBase = typeof clusterConfigurations.$inferSelect
 
 /**
  * Represents a row in the proofs table.
  */
-export type ProofBase = Tables<"proofs">
+export type ProofBase = typeof proofs.$inferSelect
 
 /**
  * Represents a row in the teams table.
  */
-export type Team = Tables<"teams">
+export type Team = typeof teams.$inferSelect
 
 /**
  * Extensions for the ClusterConfig type, adding optional awsInstance property.
@@ -48,7 +55,7 @@ export type ClusterConfig = ClusterConfigBase & ClusterConfigExtensions
  * Extensions for the Cluster type, adding optional clusterConfig property.
  */
 export type ClusterExtensions = {
-  cluster_configurations?: ClusterConfig[]
+  cluster_configuration?: ClusterConfig[]
 }
 
 /**

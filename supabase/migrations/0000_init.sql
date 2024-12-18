@@ -26,7 +26,8 @@ CREATE TABLE "blocks" (
 	"timestamp" timestamp with time zone NOT NULL,
 	"gas_used" bigint NOT NULL,
 	"transaction_count" smallint NOT NULL,
-	"hash" text NOT NULL
+	"hash" text NOT NULL,
+	"created_at" timestamp with time zone DEFAULT now()
 );
 --> statement-breakpoint
 ALTER TABLE "blocks" ENABLE ROW LEVEL SECURITY;--> statement-breakpoint
@@ -46,7 +47,8 @@ CREATE TABLE "clusters" (
 	"description" text,
 	"hardware" text,
 	"cycle_type" varchar,
-	"proof_type" varchar
+	"proof_type" varchar,
+	"created_at" timestamp with time zone DEFAULT now()
 );
 --> statement-breakpoint
 ALTER TABLE "clusters" ENABLE ROW LEVEL SECURITY;--> statement-breakpoint
@@ -72,7 +74,7 @@ CREATE TABLE "proofs" (
 	"cluster_id" uuid NOT NULL,
 	"proving_time" integer,
 	"program_id" bigint,
-	"size" bigint,
+	"size_bytes" bigint,
 	CONSTRAINT "unique_block_cluster" UNIQUE("block_number","cluster_id"),
 	CONSTRAINT "proofs_proof_status_check" CHECK (proof_status = ANY (ARRAY['queued'::text, 'proving'::text, 'proved'::text]))
 );
@@ -95,8 +97,10 @@ CREATE TABLE "teams" (
 	"github_org" text,
 	"logo_url" text,
 	"twitter_handle" text,
-	"website_url" text
+	"website_url" text,
+	"created_at" timestamp with time zone DEFAULT now()
 );
+--> statement-breakpoint
 
 -- CUSTOM FUNCTIONS
 
@@ -128,7 +132,6 @@ $$;
 
 CREATE TRIGGER "set_cluster_index" BEFORE INSERT ON "public"."clusters" FOR EACH ROW EXECUTE FUNCTION "public"."generate_cluster_index"();
 
---> statement-breakpoint
 ALTER TABLE "teams" ENABLE ROW LEVEL SECURITY;--> statement-breakpoint
 ALTER TABLE "api_auth_tokens" ADD CONSTRAINT "api_auth_tokens_user_id_users_id_fk" FOREIGN KEY ("user_id") REFERENCES "auth"."users"("id") ON DELETE cascade ON UPDATE cascade;--> statement-breakpoint
 ALTER TABLE "cluster_configurations" ADD CONSTRAINT "cluster_configurations_cluster_id_clusters_id_fk" FOREIGN KEY ("cluster_id") REFERENCES "public"."clusters"("id") ON DELETE cascade ON UPDATE cascade;--> statement-breakpoint

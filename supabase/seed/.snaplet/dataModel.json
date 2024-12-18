@@ -223,7 +223,7 @@
           "nullNotDistinct": false
         },
         {
-          "name": "api_auth_tokens_token_key",
+          "name": "api_auth_tokens_token_unique",
           "fields": [
             "token"
           ],
@@ -535,6 +535,20 @@
           "isGenerated": false,
           "sequence": false,
           "hasDefaultValue": false,
+          "isId": false,
+          "maxLength": null
+        },
+        {
+          "id": "public.blocks.created_at",
+          "name": "created_at",
+          "columnName": "created_at",
+          "type": "timestamptz",
+          "isRequired": false,
+          "kind": "scalar",
+          "isList": false,
+          "isGenerated": false,
+          "sequence": false,
+          "hasDefaultValue": true,
           "isId": false,
           "maxLength": null
         },
@@ -1008,6 +1022,20 @@
           "isGenerated": false,
           "sequence": false,
           "hasDefaultValue": false,
+          "isId": false,
+          "maxLength": null
+        },
+        {
+          "id": "public.clusters.created_at",
+          "name": "created_at",
+          "columnName": "created_at",
+          "type": "timestamptz",
+          "isRequired": false,
+          "kind": "scalar",
+          "isList": false,
+          "isGenerated": false,
+          "sequence": false,
+          "hasDefaultValue": true,
           "isId": false,
           "maxLength": null
         },
@@ -2109,6 +2137,24 @@
       "tableName": "messages",
       "fields": [
         {
+          "id": "realtime.messages.id",
+          "name": "id",
+          "columnName": "id",
+          "type": "int8",
+          "isRequired": true,
+          "kind": "scalar",
+          "isList": false,
+          "isGenerated": false,
+          "sequence": {
+            "identifier": "\"realtime\".\"messages_id_seq\"",
+            "increment": 1,
+            "start": 1
+          },
+          "hasDefaultValue": true,
+          "isId": true,
+          "maxLength": null
+        },
+        {
           "id": "realtime.messages.topic",
           "name": "topic",
           "columnName": "topic",
@@ -2137,44 +2183,16 @@
           "maxLength": null
         },
         {
-          "id": "realtime.messages.payload",
-          "name": "payload",
-          "columnName": "payload",
-          "type": "jsonb",
-          "isRequired": false,
+          "id": "realtime.messages.inserted_at",
+          "name": "inserted_at",
+          "columnName": "inserted_at",
+          "type": "timestamp",
+          "isRequired": true,
           "kind": "scalar",
           "isList": false,
           "isGenerated": false,
           "sequence": false,
           "hasDefaultValue": false,
-          "isId": false,
-          "maxLength": null
-        },
-        {
-          "id": "realtime.messages.event",
-          "name": "event",
-          "columnName": "event",
-          "type": "text",
-          "isRequired": false,
-          "kind": "scalar",
-          "isList": false,
-          "isGenerated": false,
-          "sequence": false,
-          "hasDefaultValue": false,
-          "isId": false,
-          "maxLength": null
-        },
-        {
-          "id": "realtime.messages.private",
-          "name": "private",
-          "columnName": "private",
-          "type": "bool",
-          "isRequired": false,
-          "kind": "scalar",
-          "isList": false,
-          "isGenerated": false,
-          "sequence": false,
-          "hasDefaultValue": true,
           "isId": false,
           "maxLength": null
         },
@@ -2188,36 +2206,8 @@
           "isList": false,
           "isGenerated": false,
           "sequence": false,
-          "hasDefaultValue": true,
+          "hasDefaultValue": false,
           "isId": false,
-          "maxLength": null
-        },
-        {
-          "id": "realtime.messages.inserted_at",
-          "name": "inserted_at",
-          "columnName": "inserted_at",
-          "type": "timestamp",
-          "isRequired": true,
-          "kind": "scalar",
-          "isList": false,
-          "isGenerated": false,
-          "sequence": false,
-          "hasDefaultValue": true,
-          "isId": true,
-          "maxLength": null
-        },
-        {
-          "id": "realtime.messages.id",
-          "name": "id",
-          "columnName": "id",
-          "type": "uuid",
-          "isRequired": true,
-          "kind": "scalar",
-          "isList": false,
-          "isGenerated": false,
-          "sequence": false,
-          "hasDefaultValue": true,
-          "isId": true,
           "maxLength": null
         }
       ],
@@ -2225,8 +2215,7 @@
         {
           "name": "messages_pkey",
           "fields": [
-            "id",
-            "inserted_at"
+            "id"
           ],
           "nullNotDistinct": false
         }
@@ -3263,7 +3252,7 @@
           "nullNotDistinct": false
         },
         {
-          "name": "programs_verifier_id_key",
+          "name": "programs_verifier_id_unique",
           "fields": [
             "verifier_id"
           ],
@@ -3463,6 +3452,20 @@
           "maxLength": null
         },
         {
+          "id": "public.proofs.size_bytes",
+          "name": "size_bytes",
+          "columnName": "size_bytes",
+          "type": "int8",
+          "isRequired": false,
+          "kind": "scalar",
+          "isList": false,
+          "isGenerated": false,
+          "sequence": false,
+          "hasDefaultValue": false,
+          "isId": false,
+          "maxLength": null
+        },
+        {
           "name": "users",
           "type": "users",
           "isRequired": true,
@@ -3637,7 +3640,7 @@
           "name": "user_id",
           "columnName": "user_id",
           "type": "uuid",
-          "isRequired": false,
+          "isRequired": true,
           "kind": "scalar",
           "isList": false,
           "isGenerated": false,
@@ -3649,7 +3652,7 @@
         {
           "name": "users",
           "type": "users",
-          "isRequired": false,
+          "isRequired": true,
           "kind": "object",
           "relationName": "recursive_root_proofsTousers",
           "relationFromFields": [
@@ -4867,50 +4870,6 @@
         }
       ]
     },
-    "seed_files": {
-      "id": "supabase_migrations.seed_files",
-      "schemaName": "supabase_migrations",
-      "tableName": "seed_files",
-      "fields": [
-        {
-          "id": "supabase_migrations.seed_files.path",
-          "name": "path",
-          "columnName": "path",
-          "type": "text",
-          "isRequired": true,
-          "kind": "scalar",
-          "isList": false,
-          "isGenerated": false,
-          "sequence": false,
-          "hasDefaultValue": false,
-          "isId": true,
-          "maxLength": null
-        },
-        {
-          "id": "supabase_migrations.seed_files.hash",
-          "name": "hash",
-          "columnName": "hash",
-          "type": "text",
-          "isRequired": true,
-          "kind": "scalar",
-          "isList": false,
-          "isGenerated": false,
-          "sequence": false,
-          "hasDefaultValue": false,
-          "isId": false,
-          "maxLength": null
-        }
-      ],
-      "uniqueConstraints": [
-        {
-          "name": "seed_files_pkey",
-          "fields": [
-            "path"
-          ],
-          "nullNotDistinct": false
-        }
-      ]
-    },
     "sessions": {
       "id": "auth.sessions",
       "schemaName": "auth",
@@ -5507,7 +5466,7 @@
           "name": "user_id",
           "columnName": "user_id",
           "type": "uuid",
-          "isRequired": false,
+          "isRequired": true,
           "kind": "scalar",
           "isList": false,
           "isGenerated": false,
@@ -5573,9 +5532,23 @@
           "maxLength": null
         },
         {
+          "id": "public.teams.created_at",
+          "name": "created_at",
+          "columnName": "created_at",
+          "type": "timestamptz",
+          "isRequired": false,
+          "kind": "scalar",
+          "isList": false,
+          "isGenerated": false,
+          "sequence": false,
+          "hasDefaultValue": true,
+          "isId": false,
+          "maxLength": null
+        },
+        {
           "name": "users",
           "type": "users",
-          "isRequired": false,
+          "isRequired": true,
           "kind": "object",
           "relationName": "teamsTousers",
           "relationFromFields": [
@@ -5808,20 +5781,6 @@
           "columnName": "notify_private_alpha",
           "type": "bool",
           "isRequired": false,
-          "kind": "scalar",
-          "isList": false,
-          "isGenerated": false,
-          "sequence": false,
-          "hasDefaultValue": true,
-          "isId": false,
-          "maxLength": null
-        },
-        {
-          "id": "_realtime.tenants.private_only",
-          "name": "private_only",
-          "columnName": "private_only",
-          "type": "bool",
-          "isRequired": true,
           "kind": "scalar",
           "isList": false,
           "isGenerated": false,
