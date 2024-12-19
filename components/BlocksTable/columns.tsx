@@ -38,6 +38,7 @@ import {
 export const columns: ColumnDef<Block>[] = [
   // Block
   {
+    id: "block_number",
     accessorKey: "block_number",
     header: () => (
       <ColumnHeader label={<metrics.blockNumber.Label />} className="text-left">
@@ -80,6 +81,7 @@ export const columns: ColumnDef<Block>[] = [
   },
   // Gas used
   {
+    id: "gas_used",
     accessorKey: "gas_used",
     header: () => (
       <ColumnHeader label={<metrics.gasUsed.Label />}>
@@ -126,6 +128,7 @@ export const columns: ColumnDef<Block>[] = [
   },
   // Cost per proof
   {
+    id: "cost_per_proof",
     accessorKey: "proofs",
     header: () => (
       <ColumnHeader label={<metrics.costPerProof.Label />}>
@@ -165,6 +168,7 @@ export const columns: ColumnDef<Block>[] = [
   },
   // Cost per Mgas
   {
+    id: "cost_per_mgas",
     accessorKey: "proofs",
     header: () => (
       <ColumnHeader label={<metrics.costPerMgas.Label />}>
@@ -202,6 +206,7 @@ export const columns: ColumnDef<Block>[] = [
   },
   // Proving time
   {
+    id: "proving_time",
     accessorKey: "proofs",
     header: () => (
       <ColumnHeader label={<metrics.provingTime.Label />}>
@@ -239,6 +244,7 @@ export const columns: ColumnDef<Block>[] = [
   },
   // Total TTP
   {
+    id: "proof_status",
     accessorKey: "proofs",
     header: () => (
       <ColumnHeader label="proof status">
@@ -272,6 +278,7 @@ export const columns: ColumnDef<Block>[] = [
   },
   // Download button / proof status
   {
+    id: "download_button",
     accessorKey: "block_number",
     header: "",
     cell: ({ cell }) => {
