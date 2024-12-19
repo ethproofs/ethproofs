@@ -1,7 +1,11 @@
 "use client"
 
-import { useMemo, useState } from "react"
-import { keepPreviousData, useQuery } from "@tanstack/react-query"
+import { useEffect, useMemo, useState } from "react"
+import {
+  keepPreviousData,
+  useQuery,
+  useQueryClient,
+} from "@tanstack/react-query"
 import { PaginationState } from "@tanstack/react-table"
 
 import { Team } from "@/lib/types"
@@ -11,6 +15,7 @@ import DataTableControlled from "../ui/data-table-controlled"
 import { columns } from "./columns"
 
 import { fetchBlocksPaginated, mergeBlocksWithTeams } from "@/lib/blocks"
+import { createClient } from "@/utils/supabase/client"
 
 type Props = {
   className?: string
@@ -34,6 +39,53 @@ const BlocksTable = ({ className, teams }: Props) => {
     },
     placeholderData: keepPreviousData,
   })
+
+  const queryClient = useQueryClient()
+
+  const supabase = createClient()
+
+  useEffect(() => {
+    const blocksChannel = supabase
+      .channel("blocks")
+      .on(
+        "postgres_changes",
+        { event: "INSERT", schema: "public", table: "blocks" },
+        () => {
+          queryClient.invalidateQueries({ queryKey: ["blocks"] })
+        }
+      )
+      .on(
+        "postgres_changes",
+        { event: "UPDATE", schema: "public", table: "blocks" },
+        () => {
+          queryClient.invalidateQueries({ queryKey: ["blocks"] })
+        }
+      )
+      .subscribe()
+
+    const proofsChannel = supabase
+      .channel("proofs")
+      .on(
+        "postgres_changes",
+        { event: "INSERT", schema: "public", table: "proofs" },
+        () => {
+          queryClient.invalidateQueries({ queryKey: ["blocks"] })
+        }
+      )
+      .on(
+        "postgres_changes",
+        { event: "UPDATE", schema: "public", table: "proofs" },
+        () => {
+          queryClient.invalidateQueries({ queryKey: ["blocks"] })
+        }
+      )
+      .subscribe()
+
+    return () => {
+      supabase.removeChannel(blocksChannel)
+      supabase.removeChannel(proofsChannel)
+    }
+  }, [queryClient, supabase])
 
   const defaultData = useMemo(() => [], [])
 
