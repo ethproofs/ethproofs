@@ -1,10 +1,12 @@
 "use client"
 
-import { useMemo, useState } from "react"
+import { useState } from "react"
 import { keepPreviousData, useQuery } from "@tanstack/react-query"
 import { PaginationState } from "@tanstack/react-table"
 
 import { Team } from "@/lib/types"
+
+import { DEFAULT_PAGE_STATE } from "@/lib/constants"
 
 import DataTableControlled from "../ui/data-table-controlled"
 
@@ -19,32 +21,24 @@ type Props = {
 }
 
 const BlocksTable = ({ className, teams }: Props) => {
-  const [pagination, setPagination] = useState<PaginationState>({
-    pageIndex: 0,
-    pageSize: 15,
-  })
+  const [pagination, setPagination] =
+    useState<PaginationState>(DEFAULT_PAGE_STATE)
 
   const blocksQuery = useQuery({
     queryKey: ["blocks", pagination],
-    queryFn: async () => {
-      const blocks = await fetchBlocksPaginated(pagination)
-      return {
-        ...blocks,
-        rows: mergeBlocksWithTeams(blocks.rows ?? [], teams),
-      }
-    },
+    queryFn: () => fetchBlocksPaginated(pagination),
     placeholderData: keepPreviousData,
   })
 
   useRealtimeUpdates()
 
-  const defaultData = useMemo(() => [], [])
+  const blocks = mergeBlocksWithTeams(blocksQuery.data?.rows ?? [], teams)
 
   return (
     <DataTableControlled
       className={className}
       columns={columns}
-      data={blocksQuery.data?.rows ?? defaultData}
+      data={blocks}
       rowCount={blocksQuery.data?.rowCount ?? 0}
       pagination={pagination}
       setPagination={setPagination}

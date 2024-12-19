@@ -22,9 +22,9 @@ import { Card } from "@/components/ui/card"
 
 import { cn } from "@/lib/utils"
 
-import { AVERAGE_LABEL } from "@/lib/constants"
+import { AVERAGE_LABEL, DEFAULT_PAGE_STATE } from "@/lib/constants"
 
-import { fetchBlocksPaginated, mergeBlocksWithTeams } from "@/lib/blocks"
+import { fetchBlocksPaginated } from "@/lib/blocks"
 import { getMetadata } from "@/lib/metadata"
 import { formatNumber, formatUsd, shouldUseCents } from "@/lib/number"
 import { getActiveProverCount } from "@/lib/teams"
@@ -59,14 +59,8 @@ export default async function Index() {
   const teams = teamsResponse.data || []
 
   await queryClient.prefetchQuery({
-    queryKey: ["blocks", { pageIndex: 0, pageSize: 15 }],
-    queryFn: async () => {
-      const blocks = await fetchBlocksPaginated({ pageIndex: 0, pageSize: 15 })
-      return {
-        ...blocks,
-        rows: mergeBlocksWithTeams(blocks.rows ?? [], teams),
-      }
-    },
+    queryKey: ["blocks", DEFAULT_PAGE_STATE],
+    queryFn: () => fetchBlocksPaginated(DEFAULT_PAGE_STATE),
   })
 
   const summaryItems: SummaryItem[] = recentSummary.data
