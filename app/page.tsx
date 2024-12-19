@@ -1,6 +1,10 @@
 import type { Metadata } from "next"
 import Image from "next/image"
-import { QueryClient } from "@tanstack/react-query"
+import {
+  dehydrate,
+  HydrationBoundary,
+  QueryClient,
+} from "@tanstack/react-query"
 
 import type { SummaryItem } from "@/lib/types"
 
@@ -157,7 +161,9 @@ export default async function Index() {
       </div>
 
       <section id="blocks" className="w-full scroll-m-20">
-        <BlocksTable teams={teams} />
+        <HydrationBoundary state={dehydrate(queryClient)}>
+          <BlocksTable teams={teams} />
+        </HydrationBoundary>
       </section>
 
       <section className="w-full scroll-m-20 space-y-8" id="provers">
