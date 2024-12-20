@@ -41,6 +41,10 @@ export const defaults = (custom: CustomMetadata): Metadata => {
       site: SITE_URL,
       title,
     },
+    robots: {
+      index: process.env.CONTEXT === "production",
+      follow: process.env.CONTEXT === "production",
+    },
   }
 }
 
