@@ -1,7 +1,9 @@
+import { ArrowRightIcon } from "lucide-react"
 import type { Metadata } from "next"
 import Image from "next/image"
 
 import EthProofsLogo from "@/components/svgs/eth-proofs-logo.svg"
+import { ButtonLink } from "@/components/ui/button"
 
 import { cn } from "@/lib/utils"
 
@@ -44,6 +46,13 @@ export default async function Index() {
             className="size-full object-contain"
           />
         </div>
+      </div>
+
+      <div className="mt-20 flex flex-col items-center gap-2 text-center">
+        <ButtonLink href="https://staging--ethproofs.netlify.app/" size="lg">
+          <ArrowRightIcon className="size-4" /> Check out the preview
+        </ButtonLink>
+        <p className="text-muted-foreground mt-2 text-sm"></p>
       </div>
     </div>
   )
