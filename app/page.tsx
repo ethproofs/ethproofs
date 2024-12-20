@@ -48,7 +48,7 @@ export default async function Index() {
         </div>
       </div>
 
-      <div className="mt-20 flex flex-col items-center gap-2 text-center">
+      <div className="flex flex-col items-center gap-2 text-center">
         <ButtonLink href="https://staging--ethproofs.netlify.app/" size="lg">
           <ArrowRightIcon className="size-4" /> Check out the preview
         </ButtonLink>
