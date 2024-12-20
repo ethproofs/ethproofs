@@ -130,7 +130,7 @@ export default async function Index() {
   return (
     <div className="flex w-full flex-1 flex-col items-center gap-20">
       <div
-        className="absolute inset-0 -z-10 h-[14rem] xl:h-[22rem] md:max-xl:h-96"
+        className="absolute inset-0 -z-10 h-[14rem] md:max-xl:h-96 xl:h-[22rem]"
         style={{ mask: "linear-gradient(180deg, white 80%, transparent)" }}
       >
         <Image
@@ -147,16 +147,17 @@ export default async function Index() {
           alt=""
         />
       </div>
-      <div className="mt-10 flex w-full flex-col items-center justify-between gap-4 p-3 sm:mt-18 md:mt-36 xl:mt-36">
+      <div className="sm:mt-18 mt-10 flex w-full flex-col items-center justify-between gap-4 p-3 md:mt-36 xl:mt-36">
         <h1 className="w-full text-center font-mono font-semibold">
-          SNARKs that scale{" "}
-          <span className="text-primary">Ethereum</span>
+          SNARKs that scale <span className="text-primary">Ethereum</span>
         </h1>
         <p className="max-w-2xl text-center text-2xl">
-          Progressing towards fully <span className="text-primary">SNARKing the L1</span>
+          Progressing towards fully{" "}
+          <span className="text-primary">SNARKing the L1</span>
         </p>
-        <p className="max-w-2xl text-center text-lg mb-4">
-          Starting by proving 1-of-100 blocks and soon <span className="text-primary">real time proving</span>
+        <p className="mb-4 max-w-2xl text-center text-lg">
+          Starting by proving 1-of-100 blocks and soon{" "}
+          <span className="text-primary">real time proving</span>
         </p>
         <div className="flex w-full max-w-2xl justify-around">
           {summaryItems.map(({ key, label, icon, value }) => (
