@@ -149,12 +149,11 @@ export default async function Index() {
       </div>
       <div className="mt-56 flex w-full flex-col items-center justify-between gap-4 p-3 md:mt-44 xl:mt-64">
         <h1 className="w-full text-center font-mono font-semibold">
-          Building a fully SNARKed{" "}
+          SNARKs that scale{" "}
           <span className="text-primary">Ethereum</span>
         </h1>
         <p className="max-w-2xl text-center text-lg">
-          This is a proof of concept that ZK proves 1-of-N blocks. Eventually,
-          it will enable full ZK light clients on any smartphone.
+          Progressing towards fully SNARKing the L1, starting by proving 1-of-100 blocks and soon <span className="text-primary">real time proving</span>
         </p>
         <div className="flex w-full max-w-2xl justify-around">
           {summaryItems.map(({ key, label, icon, value }) => (
