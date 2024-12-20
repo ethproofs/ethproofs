@@ -13,6 +13,6 @@ export default function robots(): MetadataRoute.Robots {
             disallow: "/",
           },
     host: process.env.SITE_URL,
-    sitemap: `${process.env.SITE_URL}/sitemap.xml`,
+    sitemap: new URL("/sitemap.xml", process.env.SITE_URL).toString(),
   }
 }
