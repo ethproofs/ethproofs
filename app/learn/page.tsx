@@ -24,7 +24,7 @@ export default function LearnPage() {
   return (
     <div className="space-y-16">
       <div
-        className="absolute inset-0 -z-10 h-[28rem] md:max-xl:h-96"
+        className="absolute inset-0 -z-10 h-[24rem] xl:h-[22rem] md:max-xl:h-96"
         style={{ mask: "linear-gradient(180deg, white 80%, transparent)" }}
       >
         <Image
@@ -42,7 +42,7 @@ export default function LearnPage() {
           priority
         />
       </div>
-      <div className="!mt-48 flex w-full flex-col items-center justify-between gap-4 p-3 md:mt-44 xl:!mt-56">
+      <div className="!mt-36 flex w-full flex-col items-center justify-between gap-4 p-3">
         <h1 className="w-full text-center font-mono font-semibold">
           Learn <span className="text-primary">&</span> resources
         </h1>

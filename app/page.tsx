@@ -130,14 +130,14 @@ export default async function Index() {
   return (
     <div className="flex w-full flex-1 flex-col items-center gap-20">
       <div
-        className="absolute inset-0 -z-10 h-[28rem] md:max-xl:h-96"
+        className="absolute inset-0 -z-10 h-[14rem] xl:h-[22rem] md:max-xl:h-96"
         style={{ mask: "linear-gradient(180deg, white 80%, transparent)" }}
       >
         <Image
           src={HeroDark}
           style={{
             mask: "radial-gradient(circle, white 60%, transparent 90%)",
-            objectPosition: "50% 30%", // Position around checkmark in image
+            objectPosition: "50% 35%", // Position around checkmark in image
           }}
           className={cn(
             "mx-auto h-full w-full max-w-screen-2xl object-cover",
@@ -147,7 +147,7 @@ export default async function Index() {
           alt=""
         />
       </div>
-      <div className="mt-56 flex w-full flex-col items-center justify-between gap-4 p-3 md:mt-44 xl:mt-64">
+      <div className="mt-10 flex w-full flex-col items-center justify-between gap-4 p-3 sm:mt-18 md:mt-36 xl:mt-36">
         <h1 className="w-full text-center font-mono font-semibold">
           SNARKs that scale{" "}
           <span className="text-primary">Ethereum</span>
