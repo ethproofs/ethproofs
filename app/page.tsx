@@ -152,8 +152,11 @@ export default async function Index() {
           SNARKs that scale{" "}
           <span className="text-primary">Ethereum</span>
         </h1>
-        <p className="max-w-2xl text-center text-lg">
-          Progressing towards fully SNARKing the L1, starting by proving 1-of-100 blocks and soon <span className="text-primary">real time proving</span>
+        <p className="max-w-2xl text-center text-2xl">
+          Progressing towards fully <span className="text-primary">SNARKing the L1</span>
+        </p>
+        <p className="max-w-2xl text-center text-lg mb-4">
+          Starting by proving 1-of-100 blocks and soon <span className="text-primary">real time proving</span>
         </p>
         <div className="flex w-full max-w-2xl justify-around">
           {summaryItems.map(({ key, label, icon, value }) => (
