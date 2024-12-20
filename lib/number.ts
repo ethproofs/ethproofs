@@ -15,25 +15,19 @@ export const formatNumber = (
   return new Intl.NumberFormat(locale, options).format(value)
 }
 
-export const shouldUseCents = (value: number | null) => value && value < 1
-
 export const formatUsd = (
   value: number,
   options?: Intl.NumberFormatOptions,
   locale = "en-US"
-) => {
-  const useCents = shouldUseCents(value)
-
-  const adjustedValue = value * (useCents ? 100 : 1)
-  const formatted = formatNumber(
-    adjustedValue,
+) =>
+  formatNumber(
+    value,
     {
       style: "currency",
       currency: "USD",
-      maximumSignificantDigits: useCents ? 3 : undefined,
+      minimumFractionDigits: 4,
+      maximumFractionDigits: 4,
       ...options,
     },
     locale
   )
-  return useCents ? formatted.replace("$", "¢") : formatted
-}

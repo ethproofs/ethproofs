@@ -1,13 +1,12 @@
 import type { Metadata } from "next"
 import Image from "next/image"
 
-import type { BlockBase, Proof, SummaryItem, TeamSummary } from "@/lib/types"
+import type { BlockBase, SummaryItem } from "@/lib/types"
 
 import BlocksTable from "@/components/BlocksTable"
 import { metrics } from "@/components/Metrics"
 import Null from "@/components/Null"
 import Box from "@/components/svgs/box.svg"
-import CentSign from "@/components/svgs/cent-sign.svg"
 import Clock from "@/components/svgs/clock.svg"
 import DollarSign from "@/components/svgs/dollar-sign.svg"
 import ShieldCheck from "@/components/svgs/shield-check.svg"
@@ -20,7 +19,7 @@ import { cn } from "@/lib/utils"
 import { AVERAGE_LABEL } from "@/lib/constants"
 
 import { getMetadata } from "@/lib/metadata"
-import { formatNumber, formatUsd, shouldUseCents } from "@/lib/number"
+import { formatNumber, formatUsd } from "@/lib/number"
 import { getActiveProverCount } from "@/lib/teams"
 import { prettyMs } from "@/lib/time"
 import HeroDark from "@/public/images/hero-background.png"
@@ -104,11 +103,7 @@ export default async function Index() {
               {AVERAGE_LABEL} <metrics.costPerProof.Label />
             </>
           ),
-          icon: shouldUseCents(recentSummary.data?.avg_cost_per_proof) ? (
-            <CentSign />
-          ) : (
-            <DollarSign />
-          ),
+          icon: <DollarSign />,
           value: formatUsd(recentSummary.data?.avg_cost_per_proof || 0).replace(
             /[¢$]/g,
             ""
