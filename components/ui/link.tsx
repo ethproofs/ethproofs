@@ -70,7 +70,7 @@ const InlineLink = forwardRef<HTMLAnchorElement, LinkProps>(
   (props: LinkProps, ref) => {
     return (
       <BaseLink
-        className="visited:text-primary-visited font-body text-primary hover:text-primary-light"
+        className="font-body text-primary visited:text-primary-visited hover:text-primary-light"
         ref={ref}
         {...props}
       />

@@ -85,7 +85,8 @@ export default async function ProverPage({ params }: ProverPageProps) {
 
   const { data: proofsData, error: proofError } = await supabase
     .from("proofs")
-    .select(`
+    .select(
+      `
         proof_id,
         block_number,
         cluster_id,
@@ -101,7 +102,8 @@ export default async function ProverPage({ params }: ProverPageProps) {
         user_id,
         cluster:clusters(*),
         block:blocks(gas_used,timestamp)
-    `)
+    `
+    )
     .eq("user_id", team.user_id)
 
   if (!team || teamError || !proofsData?.length || proofError) return notFound()

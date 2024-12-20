@@ -87,7 +87,9 @@ export default async function BlockDetailsPage({
 
   const { data: block, error } = await supabase
     .from("blocks")
-    .select("*, proofs(*,cluster:clusters(*,cluster_configurations(*,aws_instance_pricing(*))))")
+    .select(
+      "*, proofs(*,cluster:clusters(*,cluster_configurations(*,aws_instance_pricing(*))))"
+    )
     .eq(getBlockValueType(blockNumber), blockNumber)
     .single()
 
