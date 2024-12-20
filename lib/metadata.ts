@@ -1,6 +1,11 @@
 import type { Metadata } from "next"
 
-import { SITE_DESCRIPTION, SITE_NAME, SITE_URL } from "./constants"
+import {
+  isNetlifyProduction,
+  SITE_DESCRIPTION,
+  SITE_NAME,
+  SITE_URL,
+} from "./constants"
 
 export type CustomMetadata = {
   title?: string
@@ -42,8 +47,8 @@ export const defaults = (custom: CustomMetadata): Metadata => {
       title,
     },
     robots: {
-      index: process.env.CONTEXT === "production",
-      follow: process.env.CONTEXT === "production",
+      index: isNetlifyProduction,
+      follow: isNetlifyProduction,
     },
   }
 }
