@@ -19,3 +19,5 @@ export const FALLBACK_TEAM_LOGO_SRC =
 export const LEARN_CONTENT_MD = "app/learn/content/index.md"
 
 export const AVERAGE_LABEL = "avg"
+
+export const isNetlifyProduction = process.env.CONTEXT === "production"
