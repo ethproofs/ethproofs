@@ -14,7 +14,7 @@ import TrendingUp from "@/components/svgs/trending-up.svg"
 import XLogo from "@/components/svgs/x-logo.svg"
 import TeamLogo from "@/components/TeamLogo"
 import { Card } from "@/components/ui/card"
-import DataTable from "@/components/ui/data-table"
+import DataTableUncontrolled from "@/components/ui/data-table-uncontrolled"
 import {
   HeroBody,
   HeroDivider,
@@ -85,7 +85,8 @@ export default async function ProverPage({ params }: ProverPageProps) {
 
   const { data: proofsData, error: proofError } = await supabase
     .from("proofs")
-    .select(`
+    .select(
+      `
         proof_id,
         block_number,
         cluster_id,
@@ -101,7 +102,8 @@ export default async function ProverPage({ params }: ProverPageProps) {
         user_id,
         cluster:clusters(*),
         block:blocks(gas_used,timestamp)
-    `)
+    `
+    )
     .eq("user_id", team.user_id)
 
   if (!team || teamError || !proofsData?.length || proofError) return notFound()
@@ -265,7 +267,7 @@ export default async function ProverPage({ params }: ProverPageProps) {
         <h2 className="flex items-center gap-2 text-lg font-normal text-primary">
           <ProofCircle /> Proofs
         </h2>
-        <DataTable
+        <DataTableUncontrolled
           columns={columns}
           data={proofs as Proof[]}
           sorting={[{ id: "block_number", desc: true }]}

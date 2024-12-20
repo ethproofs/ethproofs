@@ -1,6 +1,5 @@
 import Link from "next/link"
 import Script from "next/script"
-import { ThemeProvider } from "next-themes"
 
 import ActiveLinkDecorator from "@/components/ActiveLinkDecorator"
 import HeaderScrollEffects from "@/components/header/HeaderScrollEffects"
@@ -26,6 +25,8 @@ import {
 import { cn } from "@/lib/utils"
 
 import { SITE_NAME, SITE_REPO } from "@/lib/constants"
+
+import Providers from "./providers"
 
 import "../styles/globals.css"
 
@@ -71,7 +72,7 @@ export default function RootLayout({
         />
       </head>
       <body className="pb-80">
-        <ThemeProvider attribute="class">
+        <Providers>
           <div className="mx-auto flex max-w-screen-2xl flex-col gap-16 px-4 sm:px-4 md:px-8 xl:px-16">
             <header
               className={cn(
@@ -219,7 +220,7 @@ export default function RootLayout({
               </Link>
             </footer>
           </div>
-        </ThemeProvider>
+        </Providers>
       </body>
     </html>
   )
