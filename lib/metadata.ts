@@ -16,12 +16,13 @@ export const defaults = (custom: CustomMetadata): Metadata => {
   const description = custom.description || SITE_DESCRIPTION
   const images = custom.images || [
     {
-      url: "images/hero-background.png",
+      url: "images/social-preview.png",
       alt: "Artistic hero image of blocks beings checked off",
     },
   ]
 
   return {
+    metadataBase: new URL(SITE_URL),
     title,
     description,
     openGraph: {
