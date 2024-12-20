@@ -9,14 +9,14 @@ import prettyMilliseconds, { type Options } from "pretty-ms"
 export const prettyMs = (milliseconds: number, options?: Options): string => {
   if (milliseconds < 0) return "-"
 
-  const isSubMinute = milliseconds < 60_0000
+  const isSubMinute = milliseconds < 60_000
   const isSubSecond = milliseconds < 1_000
   const isSubMillisecond = milliseconds < 1
 
   const defaultOptions: Options = {
     separateMilliseconds: isSubSecond,
     formatSubMilliseconds: isSubMillisecond,
-    unitCount: isSubMinute ? 1 : 2,
+    unitCount: 2,
     keepDecimalsOnWholeSeconds: true,
     secondsDecimalDigits: isSubMinute ? 1 : 0,
     millisecondsDecimalDigits: isSubMillisecond ? 1 : 0,
