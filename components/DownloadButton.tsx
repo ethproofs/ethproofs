@@ -9,8 +9,8 @@ import ArrowDown from "@/components/svgs/arrow-down.svg"
 import { cn } from "@/lib/utils"
 
 import { Button } from "./ui/button"
+import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover"
 import StatusIcon from "./StatusIcon"
-import Tooltip from "./Tooltip"
 
 type DownloadButtonProps = {
   proof: Proof
@@ -53,36 +53,48 @@ const DownloadButton = ({ className, proof }: DownloadButtonProps) => {
 
   if (proof_status === "proving")
     return (
-      <Tooltip
-        content={`${teamName} currently generating proof for this block`}
-      >
-        <Button size="icon" variant="outline" asChild>
-          <div className={cn(sizingClassName, fakeButtonClassName, className)}>
-            <StatusIcon status="proving" className="animate-pulse" />
-            <span
-              className={cn(labelDisplay, labelStyle, "text-body-secondary")}
+      <Popover>
+        <PopoverTrigger>
+          <Button size="icon" variant="outline" asChild>
+            <div
+              className={cn(sizingClassName, fakeButtonClassName, className)}
             >
-              Proving
-            </span>
-          </div>
-        </Button>
-      </Tooltip>
+              <StatusIcon status="proving" className="animate-pulse" />
+              <span
+                className={cn(labelDisplay, labelStyle, "text-body-secondary")}
+              >
+                Proving
+              </span>
+            </div>
+          </Button>
+        </PopoverTrigger>
+        <PopoverContent>
+          {teamName} currently generating proof for this block
+        </PopoverContent>
+      </Popover>
     )
 
   if (proof_status === "queued")
     return (
-      <Tooltip content={`${teamName} has indicated intent to prove this block`}>
-        <Button size="icon" variant="outline" asChild>
-          <div className={cn(sizingClassName, fakeButtonClassName, className)}>
-            <StatusIcon status="queued" />
-            <span
-              className={cn(labelDisplay, labelStyle, "text-body-secondary")}
+      <Popover>
+        <PopoverTrigger>
+          <Button size="icon" variant="outline" asChild>
+            <div
+              className={cn(sizingClassName, fakeButtonClassName, className)}
             >
-              Queued
-            </span>
-          </div>
-        </Button>
-      </Tooltip>
+              <StatusIcon status="queued" />
+              <span
+                className={cn(labelDisplay, labelStyle, "text-body-secondary")}
+              >
+                Queued
+              </span>
+            </div>
+          </Button>
+        </PopoverTrigger>
+        <PopoverContent>
+          {teamName} has indicated intent to prove this block
+        </PopoverContent>
+      </Popover>
     )
 }
 
