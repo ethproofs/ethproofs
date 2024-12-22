@@ -20,6 +20,7 @@ import Layers from "@/components/svgs/layers.svg"
 import ProofCircle from "@/components/svgs/proof-circle.svg"
 import Timer from "@/components/svgs/timer.svg"
 import Timestamp from "@/components/Timestamp"
+import DataTable from "@/components/ui/data-table"
 import {
   HeroBody,
   HeroDivider,
@@ -40,6 +41,8 @@ import { TooltipContentHeader } from "@/components/ui/tooltip"
 import { cn } from "@/lib/utils"
 
 import { AVERAGE_LABEL } from "@/lib/constants"
+
+import { columns } from "./columns"
 
 import { timestampToEpoch, timestampToSlot } from "@/lib/beaconchain"
 import { getBlockValueType } from "@/lib/blocks"
@@ -87,7 +90,9 @@ export default async function BlockDetailsPage({
 
   const { data: block, error } = await supabase
     .from("blocks")
-    .select("*, proofs(*,cluster:clusters(*,cluster_configurations(*,aws_instance_pricing(*))))")
+    .select(
+      "*, proofs(*,cluster:clusters(*,cluster_configurations(*,aws_instance_pricing(*))))"
+    )
     .eq(getBlockValueType(blockNumber), blockNumber)
     .single()
 
@@ -99,7 +104,7 @@ export default async function BlockDetailsPage({
 
   const proofs = blockProofs.map((proof) => {
     const team = teams.find((t) => t.user_id === proof.user_id)
-    return { ...proof, team }
+    return { ...proof, team, block }
   })
 
   const costPerProofStats = getCostPerProofStats(proofs)
@@ -380,191 +385,10 @@ export default async function BlockDetailsPage({
         <h2 className="flex items-center gap-2 text-lg font-normal text-primary">
           <ProofCircle /> Proofs
         </h2>
-
-        {proofs.sort(sortProofsStatusAndTimes).map((proof) => {
-          const {
-            proof_id,
-            proving_time,
-            proved_timestamp,
-            proving_cycles,
-            team,
-          } = proof
-
-          const isAvailable = isCompleted(proof) && hasProvedTimestamp(proof)
-
-          const timeToProof =
-            isAvailable && proved_timestamp
-              ? Math.max(
-                  new Date(proved_timestamp).getTime() -
-                    new Date(block.timestamp).getTime(),
-                  0
-                )
-              : 0
-
-          const provingCost = getProvingCost(proof)
-
-          return (
-            <div
-              className={cn(
-                "grid grid-flow-dense grid-cols-4 grid-rows-3",
-                "sm:grid-rows-2",
-                "md:grid-cols-6-auto md:grid-rows-1"
-              )}
-              key={proof_id}
-            >
-              <div
-                className={cn(
-                  "relative flex h-full items-center",
-                  "col-span-3 col-start-1 row-span-1 row-start-1",
-                  "sm:col-span-2 sm:col-start-1 sm:row-span-1 sm:row-start-1",
-                  "md:col-span-1 md:col-start-1 md:row-span-1 md:row-start-1"
-                )}
-              >
-                {team?.team_name && (
-                  <Link
-                    href={"/prover/" + team?.team_id}
-                    className="text-2xl hover:text-primary-light hover:underline"
-                  >
-                    {team.team_name}
-                  </Link>
-                )}
-              </div>
-              <div
-                className={cn(
-                  "ms-auto self-center",
-                  "col-span-1 col-start-4 row-span-1 row-start-1",
-                  "sm:col-span-2 sm:col-start-3 sm:row-span-1 sm:row-start-1",
-                  "md:col-span-1 md:col-start-6 md:row-span-1 md:row-start-1"
-                )}
-              >
-                <DownloadButton proof={proof} />
-              </div>{" "}
-              <MetricBox
-                className={cn(
-                  "col-span-2 col-start-1 row-span-1 row-start-2",
-                  "sm:col-span-1 sm:col-start-1 sm:row-span-1 sm:row-start-2",
-                  "md:col-span-1 md:col-start-2 md:row-span-1 md:row-start-1"
-                )}
-              >
-                <MetricLabel>
-                  <metrics.totalTTP.Label />
-                  <MetricInfo>
-                    <TooltipContentHeader>
-                      <metrics.totalTTP.Label />
-                    </TooltipContentHeader>
-                    <metrics.totalTTP.Details />
-                  </MetricInfo>
-                </MetricLabel>
-                <MetricValue className="font-normal">
-                  {isAvailable && timeToProof > 0 ? (
-                    prettyMs(timeToProof)
-                  ) : (
-                    <Null />
-                  )}
-                </MetricValue>
-              </MetricBox>
-              <MetricBox
-                className={cn(
-                  "col-span-2 col-start-3 row-span-1 row-start-2",
-                  "sm:col-span-1 sm:col-start-2 sm:row-span-1 sm:row-start-2",
-                  "md:col-span-1 md:col-start-3 md:row-span-1 md:row-start-1"
-                )}
-              >
-                <MetricLabel>
-                  <metrics.provingTime.Label />
-                  <MetricInfo>
-                    <TooltipContentHeader>
-                      <metrics.provingTime.Label />
-                    </TooltipContentHeader>
-                    <metrics.provingTime.Details />
-                  </MetricInfo>
-                </MetricLabel>
-                <MetricValue className="font-normal">
-                  {isAvailable && proving_time ? (
-                    prettyMs(proving_time)
-                  ) : (
-                    <Null />
-                  )}
-                </MetricValue>
-              </MetricBox>
-              <MetricBox
-                className={cn(
-                  "col-span-2 col-start-1 row-span-1 row-start-3",
-                  "sm:col-span-1 sm:col-start-3 sm:row-span-1 sm:row-start-2",
-                  "md:col-span-1 md:col-start-4 md:row-span-1 md:row-start-1"
-                )}
-              >
-                <MetricLabel>
-                  <span className="normal-case">{team?.team_name}</span> zk
-                  <span className="uppercase">VM</span> cycles
-                  <MetricInfo>
-                    <TooltipContentHeader>
-                      <span className="normal-case">{team?.team_name}</span> zk
-                      <span className="uppercase">VM</span> cycles
-                    </TooltipContentHeader>
-                    <Info.Derivation>
-                      <Info.Term type="internal">proving cycles</Info.Term>
-                    </Info.Derivation>
-                    <p>
-                      <Info.Term type="internal">proving cycles</Info.Term> is
-                      self-reported by{" "}
-                      {team?.team_name ? team.team_name : "the proving team"}
-                    </p>
-                    <Info.Description>
-                      The number of cycles used by{" "}
-                      {team?.team_name ? team.team_name : "the proving team"} to
-                      generate the proof.
-                    </Info.Description>
-                    <Info.Description>
-                      This number will vary depending on hardware and zkVMs
-                      being used by different provers and should not be directly
-                      compared to other provers.
-                    </Info.Description>
-                  </MetricInfo>
-                </MetricLabel>
-                <MetricValue
-                  className="font-normal"
-                  title={proving_cycles ? formatNumber(proving_cycles) : ""}
-                >
-                  {isAvailable && proving_cycles ? (
-                    formatNumber(proving_cycles, {
-                      notation: "compact",
-                      compactDisplay: "short",
-                      maximumSignificantDigits: 4,
-                    })
-                  ) : (
-                    <Null />
-                  )}
-                </MetricValue>
-              </MetricBox>
-              <MetricBox
-                className={cn(
-                  "col-span-2 col-start-3 row-span-1 row-start-3",
-                  "sm:col-span-1 sm:col-start-4 sm:row-span-1 sm:row-start-2",
-                  "md:col-span-1 md:col-start-5 md:row-span-1 md:row-start-1",
-                  "sm:max-md:text-end"
-                )}
-              >
-                <MetricLabel className="sm:max-md:justify-end">
-                  <metrics.costPerProof.Label />
-                  <MetricInfo>
-                    <TooltipContentHeader>
-                      <metrics.costPerProof.Label />
-                    </TooltipContentHeader>
-                    <metrics.costPerProof.Details />
-                  </MetricInfo>
-                </MetricLabel>
-                <MetricValue className="font-normal">
-                  {isAvailable && provingCost ? (
-                    formatUsd(provingCost)
-                  ) : (
-                    <Null />
-                  )}
-                </MetricValue>
-              </MetricBox>
-            </div>
-          )
-        })}
+        <DataTable
+          columns={columns}
+          data={proofs.sort(sortProofsStatusAndTimes) as Proof[]}
+        />
       </section>
     </div>
   )
