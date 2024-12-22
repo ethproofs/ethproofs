@@ -145,12 +145,12 @@ export default async function ProverPage({ params }: ProverPageProps) {
     {
       key: "avg-zkvm-cycles-per-mgas",
       label: (
-        <>
+        <div>
           <span className="normal-case">{team.team_name}</span> {AVERAGE_LABEL}{" "}
           zk
           <span className="uppercase">VM</span> cycles per{" "}
           <span className="uppercase">M</span>gas
-        </>
+        </div>
       ),
       description:
         "The average number of zkVM cycles required to prove a million gas units",
@@ -159,10 +159,10 @@ export default async function ProverPage({ params }: ProverPageProps) {
     {
       key: "avg-cost-per-mgas",
       label: (
-        <>
+        <div>
           <span className="normal-case">{team.team_name}</span> {AVERAGE_LABEL}{" "}
           cost per <span className="uppercase">M</span>gas
-        </>
+        </div>
       ),
       description: "The average cost incurred for proving a million gas units",
       value: formatUsd(avgCostPerMgas),
@@ -252,8 +252,7 @@ export default async function ProverPage({ params }: ProverPageProps) {
           {performanceMetrics.map(({ key, label, description, value }) => (
             <MetricBox key={key}>
               <MetricLabel>
-                {label}
-                <MetricInfo>{description}</MetricInfo>
+                <MetricInfo label={label}>{description}</MetricInfo>
               </MetricLabel>
               <MetricValue>{value}</MetricValue>
             </MetricBox>

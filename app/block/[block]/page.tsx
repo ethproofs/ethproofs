@@ -245,9 +245,9 @@ export default async function BlockDetailsPage({
     {
       key: "cheapest-cost-per-mgas",
       label: (
-        <>
+        <div>
           cheapest <metrics.costPerMgas.Label />
-        </>
+        </div>
       ),
       description: (
         <>
@@ -262,9 +262,9 @@ export default async function BlockDetailsPage({
     {
       key: "avg-cost-per-mgas",
       label: (
-        <>
+        <div>
           {AVERAGE_LABEL} <metrics.costPerMgas.Label />
-        </>
+        </div>
       ),
       description: (
         <>
@@ -349,8 +349,11 @@ export default async function BlockDetailsPage({
             {availabilityMetrics.map(({ key, label, description, value }) => (
               <MetricBox key={key}>
                 <MetricLabel className="lowercase">
-                  {label}
-                  <MetricInfo>{description}</MetricInfo>
+                  <MetricInfo
+                    label={<span className="lowercase">{label}</span>}
+                  >
+                    {description}
+                  </MetricInfo>
                 </MetricLabel>
                 <MetricValue className="font-normal">{value}</MetricValue>
               </MetricBox>
@@ -366,8 +369,11 @@ export default async function BlockDetailsPage({
             {blockFeeMetrics.map(({ key, label, description, value }) => (
               <MetricBox key={key}>
                 <MetricLabel>
-                  {label}
-                  <MetricInfo>{description}</MetricInfo>
+                  <MetricInfo
+                    label={<span className="lowercase">{label}</span>}
+                  >
+                    {description}
+                  </MetricInfo>
                 </MetricLabel>
                 <MetricValue className="font-normal">{value}</MetricValue>
               </MetricBox>
@@ -447,8 +453,7 @@ export default async function BlockDetailsPage({
                 )}
               >
                 <MetricLabel>
-                  <metrics.totalTTP.Label />
-                  <MetricInfo>
+                  <MetricInfo label={<metrics.totalTTP.Label />}>
                     <TooltipContentHeader>
                       <metrics.totalTTP.Label />
                     </TooltipContentHeader>
@@ -471,8 +476,7 @@ export default async function BlockDetailsPage({
                 )}
               >
                 <MetricLabel>
-                  <metrics.provingTime.Label />
-                  <MetricInfo>
+                  <MetricInfo label={<metrics.provingTime.Label />}>
                     <TooltipContentHeader>
                       <metrics.provingTime.Label />
                     </TooltipContentHeader>
@@ -495,9 +499,15 @@ export default async function BlockDetailsPage({
                 )}
               >
                 <MetricLabel>
-                  <span className="normal-case">{team?.team_name}</span> zk
-                  <span className="uppercase">VM</span> cycles
-                  <MetricInfo>
+                  <MetricInfo
+                    label={
+                      <div>
+                        <span className="normal-case">{team?.team_name}</span>{" "}
+                        zk
+                        <span className="uppercase">VM</span> cycles
+                      </div>
+                    }
+                  >
                     <TooltipContentHeader>
                       <span className="normal-case">{team?.team_name}</span> zk
                       <span className="uppercase">VM</span> cycles
@@ -546,8 +556,7 @@ export default async function BlockDetailsPage({
                 )}
               >
                 <MetricLabel className="sm:max-md:justify-end">
-                  <metrics.costPerProof.Label />
-                  <MetricInfo>
+                  <MetricInfo label={<metrics.costPerProof.Label />}>
                     <TooltipContentHeader>
                       <metrics.costPerProof.Label />
                     </TooltipContentHeader>
