@@ -5,6 +5,7 @@ import { ColumnDef } from "@tanstack/react-table"
 
 import type { Block, Proof } from "@/lib/types"
 
+import { ColumnHeader } from "@/components/ColumnHeader"
 import { metrics } from "@/components/Metrics"
 import Null from "@/components/Null"
 import ArrowRight from "@/components/svgs/arrow-right.svg"
@@ -25,7 +26,6 @@ import { TooltipContentFooter } from "../ui/tooltip"
 import ClusterDetails from "./ClusterDetails"
 import TeamName from "./TeamName"
 
-import { ColumnHeader } from "@/components/ColumnHeader"
 import { formatTimeAgo } from "@/lib/date"
 import { formatNumber } from "@/lib/number"
 import {
