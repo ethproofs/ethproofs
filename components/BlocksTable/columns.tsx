@@ -25,7 +25,7 @@ import { TooltipContentFooter } from "../ui/tooltip"
 import ClusterDetails from "./ClusterDetails"
 import TeamName from "./TeamName"
 
-import { ColumnHeader } from "@/app/prover/[teamId]/ColumnHeader"
+import { ColumnHeader } from "@/components/ColumnHeader"
 import { formatTimeAgo } from "@/lib/date"
 import { formatNumber } from "@/lib/number"
 import {
