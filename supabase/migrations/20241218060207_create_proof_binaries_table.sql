@@ -23,5 +23,3 @@ alter table public.proof_binaries enable row level security;
 grant all on table public.proof_binaries to anon;
 grant all on table public.proof_binaries to authenticated;
 grant all on table public.proof_binaries to service_role;
-
-alter table public.proofs drop column proof;
