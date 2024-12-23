@@ -33,6 +33,7 @@
     "@radix-ui/react-tooltip": "^1.1.3",
     "@supabase/ssr": "latest",
     "@supabase/supabase-js": "latest",
+    "@tanstack/react-query": "^5.62.8",
     "@tanstack/react-table": "^8.20.5",
     "autoprefixer": "10.4.17",
     "class-variance-authority": "^0.7.0",
