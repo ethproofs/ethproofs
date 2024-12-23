@@ -10,17 +10,13 @@ export async function GET(
 
   const { data, error } = await client
     .from("proofs")
-    .select("block_number, cluster_id, user_id")
+    .select(
+      "block_number, cluster_id, user_id, proof_binaries!inner(proof_binary)"
+    )
     .eq("proof_id", id)
     .single()
 
-  const { data: binaryData, error: binaryError } = await client
-    .from("proof_binaries")
-    .select("proof_binary")
-    .eq("proof_id", id)
-    .single()
-
-  if (error || binaryError || !binaryData.proof_binary) {
+  if (error) {
     console.error(error)
     return new Response("No proof found", { status: 404 })
   }
@@ -36,7 +32,10 @@ export async function GET(
     : data.cluster_id.split("-")[0]
   const filename = `${data.block_number}_${teamName}_${id}.bin`
 
-  const binaryBuffer = Buffer.from(binaryData.proof_binary.slice(2), "hex")
+  const binaryBuffer = Buffer.from(
+    data.proof_binaries.proof_binary.slice(2),
+    "hex"
+  )
   const blob = new Blob([binaryBuffer], {
     type: "application/octet-stream",
   })
