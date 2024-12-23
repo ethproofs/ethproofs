@@ -26,3 +26,5 @@ export const DEFAULT_PAGE_STATE = {
   pageIndex: DEFAULT_PAGE_INDEX,
   pageSize: DEFAULT_PAGE_SIZE,
 }
+
+export const isNetlifyProduction = process.env.CONTEXT === "production"
