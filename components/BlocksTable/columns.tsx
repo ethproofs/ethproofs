@@ -8,22 +8,19 @@ import type { Block, Proof } from "@/lib/types"
 import { metrics } from "@/components/Metrics"
 import Null from "@/components/Null"
 import ArrowRight from "@/components/svgs/arrow-right.svg"
-import Award from "@/components/svgs/award.svg"
 import { ButtonLink } from "@/components/ui/button"
 import * as Info from "@/components/ui/info"
 
 import { cn } from "@/lib/utils"
 
-import { AVERAGE_LABEL, BLOCK_GAS_LIMIT } from "@/lib/constants"
+import { BLOCK_GAS_LIMIT } from "@/lib/constants"
 
 import ProofStatus, { ProofStatusInfo } from "../ProofStatus"
 import { HidePunctuation } from "../StylePunctuation"
-import { MetricInfo } from "../ui/metric"
 import { Progress } from "../ui/progress"
 import { TooltipContentFooter } from "../ui/tooltip"
 
-import ClusterDetails from "./ClusterDetails"
-import TeamName from "./TeamName"
+import AvgBestMetric from "./AvgBestMetric"
 
 import { ColumnHeader } from "@/app/prover/[teamId]/ColumnHeader"
 import { formatTimeAgo } from "@/lib/date"
@@ -138,32 +135,11 @@ export const columns: ColumnDef<Block>[] = [
     cell: ({ cell }) => {
       const proofs = cell.getValue() as Proof[]
 
-      const costPerProofStats = getCostPerProofStats(proofs)
+      const stats = getCostPerProofStats(proofs)
 
-      if (!costPerProofStats) return <Null />
+      if (!stats) return <Null />
 
-      const { avgFormatted, bestFormatted, bestProof } = costPerProofStats
-
-      return (
-        <>
-          <span className="align-center flex justify-center whitespace-nowrap">
-            <MetricInfo
-              trigger={
-                <div className="flex items-center gap-1">
-                  {bestFormatted}
-                  <Award className="text-primary hover:text-primary-light" />
-                </div>
-              }
-            >
-              <TeamName proof={bestProof} />
-              <ClusterDetails proof={bestProof} />
-            </MetricInfo>
-          </span>
-          <span className="block whitespace-nowrap text-sm text-body-secondary">
-            {AVERAGE_LABEL} {avgFormatted}
-          </span>
-        </>
-      )
+      return <AvgBestMetric stats={stats} />
     },
   },
   // Cost per Mgas
@@ -178,30 +154,11 @@ export const columns: ColumnDef<Block>[] = [
     cell: ({ row }) => {
       const { proofs, gas_used } = row.original
 
-      const costPerMgasStats = getCostPerMgasStats(proofs, gas_used)
+      const stats = getCostPerMgasStats(proofs, gas_used)
 
-      if (!costPerMgasStats) return <Null />
+      if (!stats) return <Null />
 
-      const { avgFormatted, bestFormatted, bestProof } = costPerMgasStats
-
-      return (
-        <>
-          <span className="align-center flex justify-center whitespace-nowrap">
-            {bestFormatted}
-            <MetricInfo
-              trigger={
-                <Award className="text-primary hover:text-primary-light" />
-              }
-            >
-              <TeamName proof={bestProof} />
-              <ClusterDetails proof={bestProof} />
-            </MetricInfo>
-          </span>
-          <span className="block whitespace-nowrap text-sm text-body-secondary">
-            {AVERAGE_LABEL} {avgFormatted}
-          </span>
-        </>
-      )
+      return <AvgBestMetric stats={stats} />
     },
   },
   // Proving time
@@ -216,30 +173,11 @@ export const columns: ColumnDef<Block>[] = [
     cell: ({ cell }) => {
       const proofs = cell.getValue() as Proof[]
 
-      const provingTimeStats = getProvingTimeStats(proofs)
+      const stats = getProvingTimeStats(proofs)
 
-      if (!provingTimeStats) return <Null />
+      if (!stats) return <Null />
 
-      const { bestFormatted, avgFormatted, bestProof } = provingTimeStats
-
-      return (
-        <>
-          <span className="align-center flex justify-center whitespace-nowrap">
-            {bestFormatted}
-            <MetricInfo
-              trigger={
-                <Award className="text-primary hover:text-primary-light" />
-              }
-            >
-              <TeamName proof={bestProof} />
-              <ClusterDetails proof={bestProof} />
-            </MetricInfo>
-          </span>
-          <span className="block whitespace-nowrap text-sm text-body-secondary">
-            {AVERAGE_LABEL} {avgFormatted}
-          </span>
-        </>
-      )
+      return <AvgBestMetric stats={stats} />
     },
   },
   // Total TTP
