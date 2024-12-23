@@ -145,11 +145,6 @@ export const POST = withAuth(async ({ request, client, user, timestamp }) => {
 
   const proofHex = base64ToHex(proofPayload.proof)
 
-  const proofBinaryResponse = await client.from("proof_binaries").upsert({
-    proof_id: proofId!,
-    proof_binary: `\\x${proofHex}`,
-  })
-
   const proofResponse = await client
     .from("proofs")
     .upsert(
@@ -171,8 +166,19 @@ export const POST = withAuth(async ({ request, client, user, timestamp }) => {
     .select("proof_id")
     .single()
 
-  if (proofResponse.error || proofBinaryResponse.error) {
+  if (proofResponse.error) {
     console.error("error adding proof", proofResponse.error)
+    return new Response("Internal server error", { status: 500 })
+  }
+
+  // add proof binary
+  const proofBinaryResponse = await client.from("proof_binaries").upsert({
+    proof_id: proofResponse.data.proof_id,
+    proof_binary: `\\x${proofHex}`,
+  })
+
+  if (proofBinaryResponse.error) {
+    console.error("error adding proof binary", proofBinaryResponse.error)
     return new Response("Internal server error", { status: 500 })
   }
 
