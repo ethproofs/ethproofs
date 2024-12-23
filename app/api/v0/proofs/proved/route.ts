@@ -182,9 +182,8 @@ export const POST = withAuth(async ({ request, client, user, timestamp }) => {
     return new Response("Internal server error", { status: 500 })
   }
 
-  // invalidate proofs and proof_binaries cache
+  // invalidate proofs cache
   revalidateTag("proofs")
-  revalidateTag("proof_binaries")
 
   // return the generated proof_id
   return Response.json(proofResponse.data)
