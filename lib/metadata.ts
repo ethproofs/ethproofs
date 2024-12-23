@@ -1,6 +1,11 @@
 import type { Metadata } from "next"
 
-import { SITE_DESCRIPTION, SITE_NAME, SITE_URL } from "./constants"
+import {
+  isNetlifyProduction,
+  SITE_DESCRIPTION,
+  SITE_NAME,
+  SITE_URL,
+} from "./constants"
 
 export type CustomMetadata = {
   title?: string
@@ -40,6 +45,10 @@ export const defaults = (custom: CustomMetadata): Metadata => {
       card: "summary_large_image",
       site: SITE_URL,
       title,
+    },
+    robots: {
+      index: isNetlifyProduction,
+      follow: isNetlifyProduction,
     },
   }
 }

@@ -16,4 +16,15 @@ export const BLOCK_GAS_LIMIT = 30_000_000 // TODO: Fetch from execution block
 export const FALLBACK_TEAM_LOGO_SRC =
   "https://ibkqxhjnroghhtfyualc.supabase.co/storage/v1/object/public/public-assets/fallback-team-logo.svg"
 
+export const LEARN_CONTENT_MD = "app/learn/content/index.md"
+
 export const AVERAGE_LABEL = "avg"
+
+export const DEFAULT_PAGE_SIZE = 15
+export const DEFAULT_PAGE_INDEX = 0
+export const DEFAULT_PAGE_STATE = {
+  pageIndex: DEFAULT_PAGE_INDEX,
+  pageSize: DEFAULT_PAGE_SIZE,
+}
+
+export const isNetlifyProduction = process.env.CONTEXT === "production"

@@ -49,6 +49,7 @@ const config = {
           DEFAULT: "hsla(var(--primary))",
           light: "hsla(var(--primary-light))",
           dark: "hsla(var(--primary-dark))",
+          visited: "hsla(var(--primary-visited))",
           border: "hsla(var(--primary-border))",
         },
         body: {
