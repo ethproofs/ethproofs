@@ -38,7 +38,7 @@ export const POST = withAuth(async ({ request, client, user, timestamp }) => {
     })
   }
 
-  const { block_number, cluster_id, verifier_id, ...restProofPayload } =
+  const { block_number, cluster_id, verifier_id, proof, ...restProofPayload } =
     proofPayload
 
   // validate block_number exists
@@ -143,7 +143,7 @@ export const POST = withAuth(async ({ request, client, user, timestamp }) => {
     ...restProofPayload,
   })
 
-  const proofHex = base64ToHex(proofPayload.proof)
+  const proofHex = base64ToHex(proof)
 
   const proofResponse = await client
     .from("proofs")
