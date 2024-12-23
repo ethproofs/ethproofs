@@ -24,7 +24,7 @@ export default function LearnPage() {
   return (
     <div className="space-y-16">
       <div
-        className="absolute inset-0 -z-10 h-[24rem] xl:h-[22rem] md:max-xl:h-96"
+        className="absolute inset-0 -z-10 h-[24rem] md:max-xl:h-96 xl:h-[22rem]"
         style={{ mask: "linear-gradient(180deg, white 80%, transparent)" }}
       >
         <Image
