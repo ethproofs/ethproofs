@@ -1,8 +1,9 @@
 import type { Metadata } from "next"
 import Link from "next/link"
 import { notFound } from "next/navigation"
+import { PopoverTrigger } from "@radix-ui/react-popover"
 
-import type { Metric, Proof } from "@/lib/types"
+import type { Metric } from "@/lib/types"
 
 import CopyButton from "@/components/CopyButton"
 import DownloadButton from "@/components/DownloadButton"
@@ -35,6 +36,7 @@ import {
   MetricLabel,
   MetricValue,
 } from "@/components/ui/metric"
+import { Popover, PopoverContent } from "@/components/ui/popover"
 import { TooltipContentHeader } from "@/components/ui/tooltip"
 
 import { cn } from "@/lib/utils"
@@ -391,6 +393,7 @@ export default async function BlockDetailsPage({
 
         {proofs.sort(sortProofsStatusAndTimes).map((proof) => {
           const {
+            cluster,
             proof_id,
             proving_time,
             proved_timestamp,
@@ -410,6 +413,8 @@ export default async function BlockDetailsPage({
               : 0
 
           const provingCost = getProvingCost(proof)
+
+          const clusterConfigs = cluster?.cluster_configurations
 
           return (
             <div
@@ -567,7 +572,97 @@ export default async function BlockDetailsPage({
                 </MetricLabel>
                 <MetricValue className="font-normal">
                   {isAvailable && provingCost ? (
-                    formatUsd(provingCost)
+                    <Popover>
+                      <PopoverTrigger className="flex items-center gap-2">
+                        {formatUsd(provingCost)} <Cpu />
+                      </PopoverTrigger>
+                      {cluster && clusterConfigs && (
+                        <PopoverContent className="w-[40rem] max-w-[100vw]">
+                          <TooltipContentHeader>
+                            {cluster.nickname}
+                          </TooltipContentHeader>
+
+                          <div className="space-y-2">
+                            {cluster.hardware && (
+                              <p>Hardware: {cluster.hardware}</p>
+                            )}
+                            {cluster.cycle_type && (
+                              <p>Cycle type: {cluster.cycle_type}</p>
+                            )}
+                            {cluster.description && (
+                              <p>{cluster.description}</p>
+                            )}
+                          </div>
+
+                          <hr className="my-4 bg-body-secondary" />
+
+                          <TooltipContentHeader>
+                            AWS Equivalency
+                          </TooltipContentHeader>
+
+                          <div className="space-y-4">
+                            {clusterConfigs.map(
+                              ({
+                                instance_count,
+                                instance_type_id,
+                                aws_instance_pricing,
+                              }) => {
+                                const {
+                                  instance_memory,
+                                  instance_storage,
+                                  instance_type,
+                                  region,
+                                  vcpu,
+                                  hourly_price,
+                                } = aws_instance_pricing || {}
+                                const total_price = hourly_price
+                                  ? hourly_price * instance_count
+                                  : 0
+                                return (
+                                  <div
+                                    className="flex flex-col divide-y-2 overflow-hidden rounded bg-background"
+                                    key={instance_type_id}
+                                  >
+                                    <div className="flex gap-8">
+                                      <div className="space-y-2 p-2">
+                                        {instance_memory && (
+                                          <p>Memory: {instance_memory}</p>
+                                        )}
+                                        {instance_storage && (
+                                          <p>Storage: {instance_storage}</p>
+                                        )}
+                                        {instance_type && (
+                                          <p>Type: {instance_type}</p>
+                                        )}
+                                        {region && <p>Region: {region}</p>}
+                                        {vcpu && <p>vCPU: {vcpu}</p>}
+                                      </div>
+                                      {instance_count && (
+                                        <div className="grid h-fit place-items-center rounded-bl bg-primary-dark px-4 py-2 text-xl font-bold text-background-highlight">
+                                          x{instance_count}
+                                        </div>
+                                      )}
+                                    </div>
+                                    {hourly_price && (
+                                      <div className="p-2">
+                                        Hourly price per instance:{" "}
+                                        {formatUsd(hourly_price)}
+                                      </div>
+                                    )}
+                                    {total_price && (
+                                      <div className="p-2">
+                                        <strong>Total hourly price</strong>:{" "}
+                                        {formatUsd(total_price)}
+                                      </div>
+                                    )}
+                                  </div>
+                                )
+                              }
+                            )}{" "}
+                          </div>
+                        </PopoverContent>
+                      )}
+                    </Popover>
                   ) : (
                     <Null />
                   )}
