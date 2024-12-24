@@ -1,13 +1,17 @@
 import type { Metadata } from "next"
 import Image from "next/image"
+import {
+  dehydrate,
+  HydrationBoundary,
+  QueryClient,
+} from "@tanstack/react-query"
 
-import type { BlockBase, Proof, SummaryItem, TeamSummary } from "@/lib/types"
+import type { SummaryItem } from "@/lib/types"
 
 import BlocksTable from "@/components/BlocksTable"
 import { metrics } from "@/components/Metrics"
 import Null from "@/components/Null"
 import Box from "@/components/svgs/box.svg"
-import CentSign from "@/components/svgs/cent-sign.svg"
 import Clock from "@/components/svgs/clock.svg"
 import DollarSign from "@/components/svgs/dollar-sign.svg"
 import ShieldCheck from "@/components/svgs/shield-check.svg"
@@ -17,10 +21,11 @@ import { Card } from "@/components/ui/card"
 
 import { cn } from "@/lib/utils"
 
-import { AVERAGE_LABEL } from "@/lib/constants"
+import { AVERAGE_LABEL, DEFAULT_PAGE_STATE } from "@/lib/constants"
 
+import { fetchBlocksPaginated } from "@/lib/blocks"
 import { getMetadata } from "@/lib/metadata"
-import { formatNumber, formatUsd, shouldUseCents } from "@/lib/number"
+import { formatNumber, formatUsd } from "@/lib/number"
 import { getActiveProverCount } from "@/lib/teams"
 import { prettyMs } from "@/lib/time"
 import HeroDark from "@/public/images/hero-background.png"
@@ -29,6 +34,8 @@ import { createClient } from "@/utils/supabase/server"
 export const metadata: Metadata = getMetadata()
 
 export default async function Index() {
+  const queryClient = new QueryClient()
+
   const supabase = createClient({
     global: {
       fetch: (input, init) =>
@@ -47,46 +54,12 @@ export default async function Index() {
     .select()
     .order("avg_proving_time", { ascending: true })
 
-  const blocksResponse = await supabase
-    .from("blocks")
-    .select(
-      `*,
-      proofs!inner(
-        id:proof_id,
-        proof_id,
-        block_number,
-        cluster_id,
-        created_at,
-        program_id,
-        proof_status,
-        proving_cycles,
-        proving_time,
-        queued_timestamp,
-        proving_timestamp,
-        proved_timestamp,
-        size_bytes,
-        user_id,
-        cluster:clusters(*,
-          cluster_configurations(*,
-            aws_instance_pricing(*)
-          )
-        )
-      )`
-    )
-    .order("block_number", { ascending: false })
-  const blocks = (blocksResponse.data || []) satisfies BlockBase[]
-
   const teamsResponse = await supabase.from("teams").select()
   const teams = teamsResponse.data || []
 
-  const blocksProofsTeams = blocks.map((block) => {
-    const { proofs } = block
-    const proofsWithTeams = proofs.map((proof) => ({
-      ...proof,
-      team: teams.find((team) => team.user_id === proof.user_id),
-    }))
-
-    return { ...block, proofs: proofsWithTeams }
+  await queryClient.prefetchQuery({
+    queryKey: ["blocks", DEFAULT_PAGE_STATE],
+    queryFn: () => fetchBlocksPaginated(DEFAULT_PAGE_STATE),
   })
 
   const summaryItems: SummaryItem[] = recentSummary.data
@@ -104,11 +77,7 @@ export default async function Index() {
               {AVERAGE_LABEL} <metrics.costPerProof.Label />
             </>
           ),
-          icon: shouldUseCents(recentSummary.data?.avg_cost_per_proof) ? (
-            <CentSign />
-          ) : (
-            <DollarSign />
-          ),
+          icon: <DollarSign />,
           value: formatUsd(recentSummary.data?.avg_cost_per_proof || 0).replace(
             /[¢$]/g,
             ""
@@ -130,7 +99,7 @@ export default async function Index() {
   return (
     <div className="flex w-full flex-1 flex-col items-center gap-20">
       <div
-        className="absolute inset-0 -z-10 h-[14rem] xl:h-[22rem] md:max-xl:h-96"
+        className="absolute inset-0 -z-10 h-[14rem] md:max-xl:h-96 xl:h-[22rem]"
         style={{ mask: "linear-gradient(180deg, white 80%, transparent)" }}
       >
         <Image
@@ -147,16 +116,17 @@ export default async function Index() {
           alt=""
         />
       </div>
-      <div className="mt-10 flex w-full flex-col items-center justify-between gap-4 p-3 sm:mt-18 md:mt-36 xl:mt-36">
+      <div className="sm:mt-18 mt-10 flex w-full flex-col items-center justify-between gap-4 p-3 md:mt-36 xl:mt-36">
         <h1 className="w-full text-center font-mono font-semibold">
-          SNARKs that scale{" "}
-          <span className="text-primary">Ethereum</span>
+          SNARKs that scale <span className="text-primary">Ethereum</span>
         </h1>
         <p className="max-w-2xl text-center text-2xl">
-          Progressing towards fully <span className="text-primary">SNARKing the L1</span>
+          Progressing towards fully{" "}
+          <span className="text-primary">SNARKing the L1</span>
         </p>
-        <p className="max-w-2xl text-center text-lg mb-4">
-          Starting by proving 1-of-100 blocks and soon <span className="text-primary">real time proving</span>
+        <p className="mb-4 max-w-2xl text-center text-lg">
+          Starting by proving 1-of-100 blocks and soon{" "}
+          <span className="text-primary">real time proving</span>
         </p>
         <div className="flex w-full max-w-2xl justify-around">
           {summaryItems.map(({ key, label, icon, value }) => (
@@ -183,7 +153,9 @@ export default async function Index() {
       </div>
 
       <section id="blocks" className="w-full scroll-m-20">
-        <BlocksTable blocks={blocksProofsTeams} />
+        <HydrationBoundary state={dehydrate(queryClient)}>
+          <BlocksTable teams={teams} />
+        </HydrationBoundary>
       </section>
 
       <section className="w-full scroll-m-20 space-y-8" id="provers">

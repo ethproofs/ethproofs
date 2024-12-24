@@ -218,13 +218,35 @@ export type Database = {
         }
         Relationships: []
       }
+      proof_binaries: {
+        Row: {
+          proof_binary: string
+          proof_id: number
+        }
+        Insert: {
+          proof_binary: string
+          proof_id: number
+        }
+        Update: {
+          proof_binary?: string
+          proof_id?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "proof_binaries_proof_id_fkey"
+            columns: ["proof_id"]
+            isOneToOne: true
+            referencedRelation: "proofs"
+            referencedColumns: ["proof_id"]
+          },
+        ]
+      }
       proofs: {
         Row: {
           block_number: number
           cluster_id: string
           created_at: string | null
           program_id: number | null
-          proof: string | null
           proof_id: number
           proof_status: string
           proved_timestamp: string | null
@@ -240,7 +262,6 @@ export type Database = {
           cluster_id: string
           created_at?: string | null
           program_id?: number | null
-          proof?: string | null
           proof_id?: number
           proof_status: string
           proved_timestamp?: string | null
@@ -256,7 +277,6 @@ export type Database = {
           cluster_id?: string
           created_at?: string | null
           program_id?: number | null
-          proof?: string | null
           proof_id?: number
           proof_status?: string
           proved_timestamp?: string | null
