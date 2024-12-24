@@ -445,7 +445,12 @@ export default async function BlockDetailsPage({
                   "md:col-span-1 md:col-start-6 md:row-span-1 md:row-start-1"
                 )}
               >
-                <DownloadButton proof={proof} />
+                <DownloadButton
+                  proof={proof}
+                  className="sm:max-md:w-40 lg:w-40"
+                  labelClass="hidden sm:inline-block md:hidden lg:inline-block"
+                  containerClass="flex-row-reverse md:flex-col"
+                />
               </div>
               <MetricBox
                 className={cn(

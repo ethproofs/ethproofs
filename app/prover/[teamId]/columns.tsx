@@ -183,7 +183,14 @@ export const columns: ColumnDef<Proof>[] = [
     id: "actions",
     cell: ({ row }) => {
       const proof = row.original
-      return <DownloadButton proof={proof} />
+      return (
+        <DownloadButton
+          proof={proof}
+          className="!w-40"
+          labelClass="inline-block"
+          containerClass="flex-col"
+        />
+      )
     },
   },
 ]
