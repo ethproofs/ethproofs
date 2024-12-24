@@ -1,5 +1,5 @@
 {
-  "id": "02d893aa-5e8c-4987-a16a-8dd1adabfcef",
+  "id": "66f90741-9f7b-44f9-ba6c-6e578dbb6237",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -205,7 +205,7 @@
           "name": "created_at",
           "type": "timestamp with time zone",
           "primaryKey": false,
-          "notNull": false,
+          "notNull": true,
           "default": "now()"
         }
       },
@@ -332,6 +332,13 @@
       "name": "clusters",
       "schema": "",
       "columns": {
+        "id": {
+          "name": "id",
+          "type": "uuid",
+          "primaryKey": true,
+          "notNull": true,
+          "default": "gen_random_uuid()"
+        },
         "index": {
           "name": "index",
           "type": "smallint",
@@ -349,13 +356,6 @@
           "type": "uuid",
           "primaryKey": false,
           "notNull": true
-        },
-        "id": {
-          "name": "id",
-          "type": "uuid",
-          "primaryKey": true,
-          "notNull": true,
-          "default": "gen_random_uuid()"
         },
         "description": {
           "name": "description",
@@ -385,7 +385,7 @@
           "name": "created_at",
           "type": "timestamp with time zone",
           "primaryKey": false,
-          "notNull": false,
+          "notNull": true,
           "default": "now()"
         }
       },
@@ -499,6 +499,71 @@
       "checkConstraints": {},
       "isRLSEnabled": false
     },
+    "public.proof_binaries": {
+      "name": "proof_binaries",
+      "schema": "",
+      "columns": {
+        "proof_id": {
+          "name": "proof_id",
+          "type": "integer",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "proof_binary": {
+          "name": "proof_binary",
+          "type": "bytea",
+          "primaryKey": false,
+          "notNull": true
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {
+        "proof_binaries_proof_id_proofs_proof_id_fk": {
+          "name": "proof_binaries_proof_id_proofs_proof_id_fk",
+          "tableFrom": "proof_binaries",
+          "tableTo": "proofs",
+          "columnsFrom": [
+            "proof_id"
+          ],
+          "columnsTo": [
+            "proof_id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "cascade"
+        }
+      },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {
+        "Enable updates for users with an api key": {
+          "name": "Enable updates for users with an api key",
+          "as": "PERMISSIVE",
+          "for": "UPDATE",
+          "to": [
+            "public"
+          ],
+          "using": "is_allowed_apikey(((current_setting('request.headers'::text, true))::json ->> 'ethkey'::text), '{all,write}'::key_mode[])"
+        },
+        "Enable read access for all users": {
+          "name": "Enable read access for all users",
+          "as": "PERMISSIVE",
+          "for": "SELECT",
+          "to": [
+            "public"
+          ]
+        },
+        "Enable insert for users with an api key": {
+          "name": "Enable insert for users with an api key",
+          "as": "PERMISSIVE",
+          "for": "INSERT",
+          "to": [
+            "public"
+          ]
+        }
+      },
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
     "public.proofs": {
       "name": "proofs",
       "schema": "",
@@ -526,12 +591,6 @@
           "primaryKey": false,
           "notNull": true
         },
-        "proof": {
-          "name": "proof",
-          "type": "bytea",
-          "primaryKey": false,
-          "notNull": false
-        },
         "proof_status": {
           "name": "proof_status",
           "type": "text",
@@ -554,7 +613,7 @@
           "name": "created_at",
           "type": "timestamp with time zone",
           "primaryKey": false,
-          "notNull": false,
+          "notNull": true,
           "default": "now()"
         },
         "proved_timestamp": {
@@ -652,8 +711,8 @@
           "columnsTo": [
             "id"
           ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
+          "onDelete": "set null",
+          "onUpdate": "cascade"
         }
       },
       "compositePrimaryKeys": {},
@@ -766,8 +825,8 @@
           "columnsTo": [
             "block_number"
           ],
-          "onDelete": "no action",
-          "onUpdate": "no action"
+          "onDelete": "cascade",
+          "onUpdate": "cascade"
         },
         "recursive_root_proofs_user_id_users_id_fk": {
           "name": "recursive_root_proofs_user_id_users_id_fk",
@@ -861,7 +920,7 @@
           "name": "created_at",
           "type": "timestamp with time zone",
           "primaryKey": false,
-          "notNull": false,
+          "notNull": true,
           "default": "now()"
         }
       },
@@ -932,12 +991,12 @@
         },
         "avg_proving_time": {
           "name": "avg_proving_time",
-          "type": "integer",
+          "type": "numeric",
           "primaryKey": false,
           "notNull": false
         }
       },
-      "definition": "SELECT \n\tcount(DISTINCT b.block_number) AS total_proven_blocks, \n\tCOALESCE(avg(cc.instance_count::double precision * a.hourly_price * p.proving_time::double precision / (1000.0 * 60::numeric * 60::numeric)::double precision), 0::numeric::double precision) AS avg_cost_per_proof, \n\tCOALESCE(avg(p.proving_time), 0::numeric) AS avg_proving_time \n\tFROM blocks b \n\tJOIN proofs p ON b.block_number = p.block_number AND p.proof_status = 'proved'::text \n\tJOIN cluster_configurations cc ON p.cluster_id = cc.cluster_id \n\tJOIN aws_instance_pricing a ON cc.instance_type_id = a.id \n\tWHERE b.\"timestamp\" >= (now() - '30 days'::interval)",
+      "definition": "\n    SELECT count(DISTINCT b.block_number) AS total_proven_blocks,\n      COALESCE(avg(cc.instance_count::double precision * a.hourly_price * p.proving_time::double precision / (1000.0 * 60::numeric * 60::numeric)::double precision), 0::numeric::double precision) AS avg_cost_per_proof,\n      COALESCE(avg(p.proving_time), 0::numeric) AS avg_proving_time\n    FROM blocks b\n    INNER JOIN proofs p ON b.block_number = p.block_number AND p.proof_status = 'proved'::text\n    INNER JOIN cluster_configurations cc ON p.cluster_id = cc.cluster_id\n    INNER JOIN aws_instance_pricing a ON cc.instance_type_id = a.id\n    WHERE b.\"timestamp\" >= (now() - '30 days'::interval)",
       "name": "recent_summary",
       "schema": "public",
       "isExisting": false,
@@ -974,12 +1033,12 @@
         },
         "avg_proving_time": {
           "name": "avg_proving_time",
-          "type": "integer",
+          "type": "numeric",
           "primaryKey": false,
           "notNull": false
         }
       },
-      "definition": "SELECT\n\tt.team_id,\n\tt.team_name,\n\tt.logo_url,\n\tCOALESCE(sum(cc.instance_count::double precision * a.hourly_price * (p.proving_time::numeric / (1000.0 * 60::numeric * 60::numeric))::double precision) / NULLIF(count(p.proof_id), 0)::double precision, 0::double precision) AS avg_cost_per_proof,\n\tavg(p.proving_time) AS avg_proving_time\n\tFROM teams t\n\tLEFT JOIN proofs p ON t.user_id = p.user_id AND p.proof_status = 'proved'::text\n\tLEFT JOIN cluster_configurations cc ON p.cluster_id = cc.cluster_id\n\tLEFT JOIN aws_instance_pricing a ON cc.instance_type_id = a.id\n\tGROUP BY t.team_id",
+      "definition": "\n    SELECT t.team_id,\n      t.team_name,\n      t.logo_url,\n      COALESCE(sum(cc.instance_count::double precision * a.hourly_price * (p.proving_time::numeric / (1000.0 * 60::numeric * 60::numeric))::double precision) / NULLIF(count(p.proof_id), 0)::double precision, 0::double precision) AS avg_cost_per_proof,\n      avg(p.proving_time) AS avg_proving_time\n    FROM teams t \n    LEFT JOIN proofs p ON t.user_id = p.user_id AND p.proof_status = 'proved'::text \n    LEFT JOIN cluster_configurations cc ON p.cluster_id = cc.cluster_id \n    LEFT JOIN aws_instance_pricing a ON cc.instance_type_id = a.id \n    GROUP BY t.team_id",
       "name": "teams_summary",
       "schema": "public",
       "isExisting": false,

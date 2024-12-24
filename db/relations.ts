@@ -9,8 +9,24 @@ import {
   apiAuthTokens,
   proofs,
   programs,
+  proofBinaries,
 } from "./schema"
 import { authUsers } from "drizzle-orm/supabase"
+
+export const apiAuthTokensRelations = relations(apiAuthTokens, ({ one }) => ({
+  user: one(authUsers, {
+    fields: [apiAuthTokens.user_id],
+    references: [authUsers.id],
+  }),
+}))
+
+export const usersRelations = relations(authUsers, ({ many }) => ({
+  recursive_root_proofs: many(recursiveRootProofs),
+  teams: many(teams),
+  clusters: many(clusters),
+  api_auth_tokens: many(apiAuthTokens),
+  proofs: many(proofs),
+}))
 
 export const clusterConfigurationsRelations = relations(
   clusterConfigurations,
@@ -61,24 +77,9 @@ export const blocksRelations = relations(blocks, ({ many }) => ({
   proofs: many(proofs),
 }))
 
-export const usersRelations = relations(authUsers, ({ many }) => ({
-  recursive_root_proofs: many(recursiveRootProofs),
-  teams: many(teams),
-  clusters: many(clusters),
-  api_auth_tokens: many(apiAuthTokens),
-  proofs: many(proofs),
-}))
-
 export const teamsRelations = relations(teams, ({ one }) => ({
   user: one(authUsers, {
     fields: [teams.user_id],
-    references: [authUsers.id],
-  }),
-}))
-
-export const apiAuthTokensRelations = relations(apiAuthTokens, ({ one }) => ({
-  user: one(authUsers, {
-    fields: [apiAuthTokens.user_id],
     references: [authUsers.id],
   }),
 }))
@@ -104,8 +105,19 @@ export const proofsRelations = relations(proofs, ({ one }) => ({
     fields: [proofs.user_id],
     references: [teams.user_id],
   }),
+  proof_binary: one(proofBinaries, {
+    fields: [proofs.proof_id],
+    references: [proofBinaries.proof_id],
+  }),
 }))
 
 export const programsRelations = relations(programs, ({ many }) => ({
   proofs: many(proofs),
+}))
+
+export const proofBinariesRelations = relations(proofBinaries, ({ one }) => ({
+  proof: one(proofs, {
+    fields: [proofBinaries.proof_id],
+    references: [proofs.proof_id],
+  }),
 }))
