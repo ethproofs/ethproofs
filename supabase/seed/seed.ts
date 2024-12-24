@@ -43,6 +43,14 @@ const main = async () => {
     }))
   )
 
+  await seed.api_auth_tokens((x) =>
+    x(1, () => ({
+      user_id: users[0].id,
+      // token (w/ SECRET=secret): Y01Xu-5hwHpKkKtCo_uHEGTn
+      token: "bee1968d88a7ee4560c3409146ad1812b44a778735b59953344abea41aafa206",
+    }))
+  )
+
   const { blocks } = await seed.blocks((x) =>
     x(2000, () => ({
       hash: () => "0x" + faker.git.commitSha({ length: 64 }),
