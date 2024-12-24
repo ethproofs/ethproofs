@@ -192,7 +192,7 @@ export const columns: ColumnDef<Proof>[] = [
       return (
         <DownloadButton
           proof={proof}
-          className="w-40"
+          className="!w-40"
           labelClass="inline-block"
           containerClass="flex-col"
         />
