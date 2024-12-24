@@ -58,7 +58,7 @@ export type Database = {
         }
         Relationships: [
           {
-            foreignKeyName: "api_auth_tokens_user_id_fkey"
+            foreignKeyName: "api_auth_tokens_user_id_users_id_fk"
             columns: ["user_id"]
             isOneToOne: false
             referencedRelation: "users"
@@ -102,6 +102,7 @@ export type Database = {
       blocks: {
         Row: {
           block_number: number
+          created_at: string
           gas_used: number
           hash: string
           timestamp: string
@@ -109,6 +110,7 @@ export type Database = {
         }
         Insert: {
           block_number: number
+          created_at?: string
           gas_used: number
           hash: string
           timestamp: string
@@ -116,6 +118,7 @@ export type Database = {
         }
         Update: {
           block_number?: number
+          created_at?: string
           gas_used?: number
           hash?: string
           timestamp?: string
@@ -144,14 +147,14 @@ export type Database = {
         }
         Relationships: [
           {
-            foreignKeyName: "cluster_configurations_cluster_id_fkey"
+            foreignKeyName: "cluster_configurations_cluster_id_clusters_id_fk"
             columns: ["cluster_id"]
             isOneToOne: false
             referencedRelation: "clusters"
             referencedColumns: ["id"]
           },
           {
-            foreignKeyName: "cluster_configurations_instance_type_id_fkey"
+            foreignKeyName: "cluster_configurations_instance_type_id_aws_instance_pricing_id"
             columns: ["instance_type_id"]
             isOneToOne: false
             referencedRelation: "aws_instance_pricing"
@@ -161,6 +164,7 @@ export type Database = {
       }
       clusters: {
         Row: {
+          created_at: string
           cycle_type: string | null
           description: string | null
           hardware: string | null
@@ -171,6 +175,7 @@ export type Database = {
           user_id: string
         }
         Insert: {
+          created_at?: string
           cycle_type?: string | null
           description?: string | null
           hardware?: string | null
@@ -181,6 +186,7 @@ export type Database = {
           user_id: string
         }
         Update: {
+          created_at?: string
           cycle_type?: string | null
           description?: string | null
           hardware?: string | null
@@ -192,7 +198,7 @@ export type Database = {
         }
         Relationships: [
           {
-            foreignKeyName: "clusters_user_id_fkey"
+            foreignKeyName: "clusters_user_id_users_id_fk"
             columns: ["user_id"]
             isOneToOne: false
             referencedRelation: "users"
@@ -233,7 +239,7 @@ export type Database = {
         }
         Relationships: [
           {
-            foreignKeyName: "proof_binaries_proof_id_fkey"
+            foreignKeyName: "proof_binaries_proof_id_proofs_proof_id_fk"
             columns: ["proof_id"]
             isOneToOne: true
             referencedRelation: "proofs"
@@ -245,7 +251,7 @@ export type Database = {
         Row: {
           block_number: number
           cluster_id: string
-          created_at: string | null
+          created_at: string
           program_id: number | null
           proof_id: number
           proof_status: string
@@ -260,7 +266,7 @@ export type Database = {
         Insert: {
           block_number: number
           cluster_id: string
-          created_at?: string | null
+          created_at?: string
           program_id?: number | null
           proof_id?: number
           proof_status: string
@@ -275,7 +281,7 @@ export type Database = {
         Update: {
           block_number?: number
           cluster_id?: string
-          created_at?: string | null
+          created_at?: string
           program_id?: number | null
           proof_id?: number
           proof_status?: string
@@ -289,28 +295,28 @@ export type Database = {
         }
         Relationships: [
           {
-            foreignKeyName: "proofs_block_number_fkey"
+            foreignKeyName: "proofs_block_number_blocks_block_number_fk"
             columns: ["block_number"]
             isOneToOne: false
             referencedRelation: "blocks"
             referencedColumns: ["block_number"]
           },
           {
-            foreignKeyName: "proofs_cluster_id_fkey"
+            foreignKeyName: "proofs_cluster_id_clusters_id_fk"
             columns: ["cluster_id"]
             isOneToOne: false
             referencedRelation: "clusters"
             referencedColumns: ["id"]
           },
           {
-            foreignKeyName: "proofs_program_id_fkey"
+            foreignKeyName: "proofs_program_id_programs_id_fk"
             columns: ["program_id"]
             isOneToOne: false
             referencedRelation: "programs"
             referencedColumns: ["id"]
           },
           {
-            foreignKeyName: "proofs_user_id_fkey"
+            foreignKeyName: "proofs_user_id_users_id_fk"
             columns: ["user_id"]
             isOneToOne: false
             referencedRelation: "users"
@@ -325,7 +331,7 @@ export type Database = {
           root_proof_id: number
           root_proof_size: number
           total_proof_size: number
-          user_id: string | null
+          user_id: string
         }
         Insert: {
           block_number?: number | null
@@ -333,7 +339,7 @@ export type Database = {
           root_proof_id?: number
           root_proof_size: number
           total_proof_size: number
-          user_id?: string | null
+          user_id: string
         }
         Update: {
           block_number?: number | null
@@ -341,18 +347,18 @@ export type Database = {
           root_proof_id?: number
           root_proof_size?: number
           total_proof_size?: number
-          user_id?: string | null
+          user_id?: string
         }
         Relationships: [
           {
-            foreignKeyName: "recursive_root_proofs_block_number_fkey"
+            foreignKeyName: "recursive_root_proofs_block_number_blocks_block_number_fk"
             columns: ["block_number"]
             isOneToOne: false
             referencedRelation: "blocks"
             referencedColumns: ["block_number"]
           },
           {
-            foreignKeyName: "recursive_root_proofs_user_id_fkey"
+            foreignKeyName: "recursive_root_proofs_user_id_users_id_fk"
             columns: ["user_id"]
             isOneToOne: false
             referencedRelation: "users"
@@ -362,35 +368,38 @@ export type Database = {
       }
       teams: {
         Row: {
+          created_at: string
           github_org: string | null
           logo_url: string | null
           team_id: number
           team_name: string
           twitter_handle: string | null
-          user_id: string | null
+          user_id: string
           website_url: string | null
         }
         Insert: {
+          created_at?: string
           github_org?: string | null
           logo_url?: string | null
           team_id?: number
           team_name: string
           twitter_handle?: string | null
-          user_id?: string | null
+          user_id: string
           website_url?: string | null
         }
         Update: {
+          created_at?: string
           github_org?: string | null
           logo_url?: string | null
           team_id?: number
           team_name?: string
           twitter_handle?: string | null
-          user_id?: string | null
+          user_id?: string
           website_url?: string | null
         }
         Relationships: [
           {
-            foreignKeyName: "teams_user_id_fkey"
+            foreignKeyName: "teams_user_id_users_id_fk"
             columns: ["user_id"]
             isOneToOne: false
             referencedRelation: "users"

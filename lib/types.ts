@@ -7,6 +7,7 @@ import {
   clusters,
   proofs,
   teams,
+  teamsSummary,
 } from "@/db/schema"
 
 /**
@@ -42,7 +43,7 @@ export type Team = typeof teams.$inferSelect
 /**
  * Represents a row in the teams_summary view.
  */
-export type TeamSummary = Tables<"teams_summary">
+export type TeamSummary = typeof teamsSummary.$inferSelect
 
 /**
  * Extensions for the ClusterConfig type, adding optional awsInstance property.
