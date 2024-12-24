@@ -1,13 +1,4 @@
-"use client"
-
-import {
-  ColumnDef,
-  flexRender,
-  getCoreRowModel,
-  getPaginationRowModel,
-  getSortedRowModel,
-  useReactTable,
-} from "@tanstack/react-table"
+import { flexRender, Table as TableType } from "@tanstack/react-table"
 
 import {
   Table,
@@ -22,35 +13,12 @@ import { cn } from "@/lib/utils"
 
 import { Button } from "./button"
 
-type Props<TData, TValue> = {
+type Props<TData> = {
   className?: string
-  data: TData[]
-  columns: ColumnDef<TData, TValue>[]
-  sorting?: { id: string; desc: boolean }[]
+  table: TableType<TData>
 }
 
-const DataTable = <TData, TValue>({
-  data,
-  columns,
-  className,
-  sorting = [],
-}: Props<TData, TValue>) => {
-  const table = useReactTable({
-    data,
-    columns,
-    getCoreRowModel: getCoreRowModel(),
-    getPaginationRowModel: getPaginationRowModel(),
-    getSortedRowModel: getSortedRowModel(),
-    initialState: {
-      pagination: {
-        pageSize: 15,
-      },
-    },
-    state: {
-      sorting,
-    },
-  })
-
+const DataTable = <TData,>({ className, table }: Props<TData>) => {
   return (
     <div className={cn("flex w-full flex-col gap-8", className)}>
       <Table>
@@ -90,7 +58,10 @@ const DataTable = <TData, TValue>({
             ))
           ) : (
             <TableRow>
-              <TableCell colSpan={columns.length} className="h-24 text-center">
+              <TableCell
+                colSpan={table.getHeaderGroups()[0].headers.length}
+                className="h-24 text-center"
+              >
                 No results.
               </TableCell>
             </TableRow>
@@ -111,7 +82,9 @@ const DataTable = <TData, TValue>({
         <span className="flex items-center gap-1 font-mono uppercase text-body-secondary">
           <div>
             Page {table.getState().pagination.pageIndex + 1} of{" "}
-            {table.getPageCount().toLocaleString()}
+            {table.getPageCount() === 0
+              ? 1
+              : table.getPageCount().toLocaleString()}
           </div>
         </span>
         <Button

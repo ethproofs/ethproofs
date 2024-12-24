@@ -14,7 +14,7 @@ import TrendingUp from "@/components/svgs/trending-up.svg"
 import XLogo from "@/components/svgs/x-logo.svg"
 import TeamLogo from "@/components/TeamLogo"
 import { Card } from "@/components/ui/card"
-import DataTable from "@/components/ui/data-table"
+import DataTableUncontrolled from "@/components/ui/data-table-uncontrolled"
 import {
   HeroBody,
   HeroDivider,
@@ -125,12 +125,12 @@ export default async function ProverPage({ params }: ProverPageProps) {
     {
       key: "avg-zkvm-cycles-per-mgas",
       label: (
-        <>
+        <div>
           <span className="normal-case">{team.team_name}</span> {AVERAGE_LABEL}{" "}
           zk
           <span className="uppercase">VM</span> cycles per{" "}
           <span className="uppercase">M</span>gas
-        </>
+        </div>
       ),
       description:
         "The average number of zkVM cycles required to prove a million gas units",
@@ -139,10 +139,10 @@ export default async function ProverPage({ params }: ProverPageProps) {
     {
       key: "avg-cost-per-mgas",
       label: (
-        <>
+        <div>
           <span className="normal-case">{team.team_name}</span> {AVERAGE_LABEL}{" "}
           cost per <span className="uppercase">M</span>gas
-        </>
+        </div>
       ),
       description: "The average cost incurred for proving a million gas units",
       value: formatUsd(avgCostPerMgas),
@@ -232,8 +232,7 @@ export default async function ProverPage({ params }: ProverPageProps) {
           {performanceMetrics.map(({ key, label, description, value }) => (
             <MetricBox key={key}>
               <MetricLabel>
-                {label}
-                <MetricInfo>{description}</MetricInfo>
+                <MetricInfo label={label}>{description}</MetricInfo>
               </MetricLabel>
               <MetricValue>{value}</MetricValue>
             </MetricBox>
@@ -245,7 +244,7 @@ export default async function ProverPage({ params }: ProverPageProps) {
         <h2 className="flex items-center gap-2 text-lg font-normal text-primary">
           <ProofCircle /> Proofs
         </h2>
-        <DataTable
+        <DataTableUncontrolled
           columns={columns}
           data={proofs as Proof[]}
           sorting={[{ id: "block_number", desc: true }]}

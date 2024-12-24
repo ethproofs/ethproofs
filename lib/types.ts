@@ -40,10 +40,15 @@ export type ProofBase = typeof proofs.$inferSelect
 export type Team = typeof teams.$inferSelect
 
 /**
+ * Represents a row in the teams_summary view.
+ */
+export type TeamSummary = Tables<"teams_summary">
+
+/**
  * Extensions for the ClusterConfig type, adding optional awsInstance property.
  */
 export type ClusterConfigExtensions = {
-  aws_instance_pricing?: AwsInstance
+  aws_instance_pricing?: AwsInstance | null
 }
 
 /**

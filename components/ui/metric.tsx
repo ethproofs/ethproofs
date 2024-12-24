@@ -30,14 +30,16 @@ const MetricLabel = React.forwardRef<
 MetricLabel.displayName = "MetricLabel"
 
 type MetricInfoProps = React.HTMLAttributes<HTMLDivElement> & {
+  label?: React.ReactNode
   trigger?: React.ReactNode
 }
 const MetricInfo = React.forwardRef<HTMLDivElement, MetricInfoProps>(
-  ({ trigger, className, children, ...props }, ref) => (
+  ({ label, trigger, className, children, ...props }, ref) => (
     <Tooltip
       trigger={
         trigger || (
-          <div className="ms-2">
+          <div className="flex items-center gap-2">
+            {label}
             <InfoCircle className="-mb-0.5" />
           </div>
         )

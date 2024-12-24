@@ -40,7 +40,7 @@ export const POST = withAuth(async ({ request, user, timestamp }) => {
     })
   }
 
-  const { block_number, cluster_id, verifier_id, ...restProofPayload } =
+  const { block_number, cluster_id, verifier_id, proof, ...restProofPayload } =
     proofPayload
 
   // validate block_number exists
@@ -152,7 +152,7 @@ export const POST = withAuth(async ({ request, user, timestamp }) => {
     ...restProofPayload,
   })
 
-  const proofHex = base64ToHex(proofPayload.proof)
+  const proofHex = base64ToHex(proof)
 
   try {
     const [proof] = await db
@@ -162,10 +162,10 @@ export const POST = withAuth(async ({ request, user, timestamp }) => {
         block_number,
         proof_id: proofId,
         cluster_id: cluster.id,
-        proof: `\\x${proofHex}`,
         program_id: programId,
         proof_status: "proved",
         proved_timestamp: timestamp,
+        size_bytes: Buffer.byteLength(proofHex, "hex"),
         user_id: user.id,
       })
       .onConflictDoUpdate({
@@ -176,6 +176,17 @@ export const POST = withAuth(async ({ request, user, timestamp }) => {
         },
       })
       .returning({ proof_id: proofs.proof_id })
+
+// add proof binary
+  const proofBinaryResponse = await client.from("proof_binaries").upsert({
+    proof_id: proofResponse.data.proof_id,
+    proof_binary: `\\x${proofHex}`,
+  })
+
+  if (proofBinaryResponse.error) {
+    console.error("error adding proof binary", proofBinaryResponse.error)
+    return new Response("Internal server error", { status: 500 })
+  }
 
     // invalidate proofs cache
     revalidateTag("proofs")

@@ -8,8 +8,10 @@ type ColumnHeaderProps = React.HTMLAttributes<HTMLDivElement> & {
 }
 const ColumnHeader = ({ label, children, className }: ColumnHeaderProps) => (
   <div className={cn("whitespace-nowrap", className)}>
-    <span className="lowercase">{label}</span>
-    <MetricInfo className="space-y-3 whitespace-normal">
+    <MetricInfo
+      className="space-y-3 whitespace-normal"
+      label={<span className="lowercase">{label}</span>}
+    >
       <Info.Label className="lowercase">{label}</Info.Label>
       {children}
     </MetricInfo>
