@@ -29,7 +29,7 @@ import {
   recentSummary as recentSummaryView,
   teamsSummary as teamsSummaryView,
 } from "@/db/schema"
-import { fetchBlocksPaginated } from "@/lib/blocks"
+import { fetchBlocksPaginated } from "@/lib/api/blocks"
 import { getMetadata } from "@/lib/metadata"
 import { formatNumber, formatUsd } from "@/lib/number"
 import { getActiveProverCount } from "@/lib/teams"
