@@ -38,7 +38,7 @@ export const POST = withAuth(async ({ request, client, user, timestamp }) => {
     })
   }
 
-  const { block_number, cluster_id, verifier_id, ...restProofPayload } =
+  const { block_number, cluster_id, verifier_id, proof, ...restProofPayload } =
     proofPayload
 
   // validate block_number exists
@@ -124,7 +124,7 @@ export const POST = withAuth(async ({ request, client, user, timestamp }) => {
   }
 
   // get proof_id to update or create an existing proof
-  let proofId
+  let proofId = proofPayload.proof_id
   if (!proofPayload.proof_id) {
     const { data: existingProofData } = await client
       .from("proofs")
@@ -143,7 +143,7 @@ export const POST = withAuth(async ({ request, client, user, timestamp }) => {
     ...restProofPayload,
   })
 
-  const proofHex = base64ToHex(proofPayload.proof)
+  const proofHex = base64ToHex(proof)
 
   const proofResponse = await client
     .from("proofs")
@@ -153,7 +153,6 @@ export const POST = withAuth(async ({ request, client, user, timestamp }) => {
         block_number,
         proof_id: proofId,
         cluster_id: clusterData.id,
-        proof: `\\x${proofHex}`,
         program_id: programId,
         proof_status: "proved",
         proved_timestamp: timestamp,
@@ -169,6 +168,17 @@ export const POST = withAuth(async ({ request, client, user, timestamp }) => {
 
   if (proofResponse.error) {
     console.error("error adding proof", proofResponse.error)
+    return new Response("Internal server error", { status: 500 })
+  }
+
+  // add proof binary
+  const proofBinaryResponse = await client.from("proof_binaries").upsert({
+    proof_id: proofResponse.data.proof_id,
+    proof_binary: `\\x${proofHex}`,
+  })
+
+  if (proofBinaryResponse.error) {
+    console.error("error adding proof binary", proofBinaryResponse.error)
     return new Response("Internal server error", { status: 500 })
   }
 

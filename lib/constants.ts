@@ -20,4 +20,11 @@ export const LEARN_CONTENT_MD = "app/learn/content/index.md"
 
 export const AVERAGE_LABEL = "avg"
 
+export const DEFAULT_PAGE_SIZE = 15
+export const DEFAULT_PAGE_INDEX = 0
+export const DEFAULT_PAGE_STATE = {
+  pageIndex: DEFAULT_PAGE_INDEX,
+  pageSize: DEFAULT_PAGE_SIZE,
+}
+
 export const isNetlifyProduction = process.env.CONTEXT === "production"
