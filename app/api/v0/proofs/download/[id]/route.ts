@@ -8,15 +8,17 @@ export async function GET(
 
   const proofRow = await db.query.proofs.findFirst({
     columns: {
-      proof: true,
       block_number: true,
       cluster_id: true,
       user_id: true,
     },
+    with: {
+      proof_binary: true,
+    },
     where: (proofs, { eq }) => eq(proofs.proof_id, Number(id)),
   })
 
-  if (!proofRow || !proofRow.proof) {
+  if (!proofRow || !proofRow.proof_binary) {
     return new Response("No proof found", { status: 404 })
   }
 
@@ -32,7 +34,10 @@ export async function GET(
     : proofRow.cluster_id.split("-")[0]
   const filename = `${proofRow.block_number}_${teamName}_${id}.bin`
 
-  const binaryBuffer = Buffer.from(proofRow.proof.slice(2), "hex")
+  const binaryBuffer = Buffer.from(
+    proofRow.proof_binary.proof_binary.slice(2),
+    "hex"
+  )
   const blob = new Blob([binaryBuffer], {
     type: "application/octet-stream",
   })

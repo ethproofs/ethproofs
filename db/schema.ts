@@ -377,9 +377,9 @@ export const proofBinaries = pgTable(
 )
 
 export const recentSummary = pgView("recent_summary", {
-  totalProvenBlocks: bigint("total_proven_blocks", { mode: "number" }),
-  avgCostPerProof: doublePrecision("avg_cost_per_proof"),
-  avgProvingTime: numeric("avg_proving_time"),
+  total_proven_blocks: bigint("total_proven_blocks", { mode: "number" }),
+  avg_cost_per_proof: doublePrecision("avg_cost_per_proof"),
+  avg_proving_time: numeric("avg_proving_time"),
 })
   .with({ securityInvoker: true })
   .as(
@@ -395,11 +395,11 @@ export const recentSummary = pgView("recent_summary", {
   )
 
 export const teamsSummary = pgView("teams_summary", {
-  teamId: integer("team_id"),
-  teamName: text("team_name"),
-  logoUrl: text("logo_url"),
-  avgCostPerProof: doublePrecision("avg_cost_per_proof"),
-  avgProvingTime: numeric("avg_proving_time"),
+  team_id: integer("team_id"),
+  team_name: text("team_name"),
+  logo_url: text("logo_url"),
+  avg_cost_per_proof: doublePrecision("avg_cost_per_proof"),
+  avg_proving_time: numeric("avg_proving_time"),
 })
   .with({ securityInvoker: true })
   .as(

@@ -4,7 +4,8 @@ import { PaginationState } from "@tanstack/react-table"
 
 import { Block, Team } from "./types"
 
-import { createClient } from "@/utils/supabase/client"
+import { db } from "@/db"
+import { blocks } from "@/db/schema"
 
 const rpcUrl = process.env.RPC_URL
 
@@ -37,44 +38,33 @@ export const getBlockValueType = (block: number) =>
   block > 0xffffffff ? "hash" : "block_number"
 
 export const fetchBlocksPaginated = async (pagination: PaginationState) => {
-  const client = createClient()
-
-  const blocks = await client
-    .from("blocks")
-    .select(
-      `*,
-      proofs!inner(
-        id:proof_id,
-        proof_id,
-        block_number,
-        cluster_id,
-        created_at,
-        program_id,
-        proof_status,
-        proving_cycles,
-        proving_time,
-        queued_timestamp,
-        proving_timestamp,
-        proved_timestamp,
-        size_bytes,
-        user_id,
-        cluster:clusters(*,
-          cluster_configurations(*,
-            aws_instance_pricing(*)
-          )
-        )
-      )`,
-      { count: "exact" }
-    )
-    .order("block_number", { ascending: false })
-    .range(
-      pagination.pageIndex * pagination.pageSize,
-      (pagination.pageIndex + 1) * pagination.pageSize - 1
-    )
+  const blocksRows = await db.query.blocks.findMany({
+    with: {
+      proofs: {
+        with: {
+          cluster: {
+            with: {
+              cluster_configuration: {
+                with: {
+                  aws_instance_pricing: true,
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+    orderBy: (blocks, { desc }) => [desc(blocks.block_number)],
+    limit: pagination.pageSize,
+    offset: pagination.pageIndex * pagination.pageSize,
+    extras: {
+      rowCount: db.$count(blocks).as("count"),
+    },
+  })
 
   return {
-    rows: blocks.data,
-    rowCount: blocks.count,
+    rows: blocksRows,
+    rowCount: blocksRows[0].rowCount,
   }
 }
 

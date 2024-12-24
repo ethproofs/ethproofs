@@ -13,7 +13,6 @@ import BlocksTable from "@/components/BlocksTable"
 import { metrics } from "@/components/Metrics"
 import Null from "@/components/Null"
 import Box from "@/components/svgs/box.svg"
-import CentSign from "@/components/svgs/cent-sign.svg"
 import Clock from "@/components/svgs/clock.svg"
 import DollarSign from "@/components/svgs/dollar-sign.svg"
 import ShieldCheck from "@/components/svgs/shield-check.svg"
@@ -26,7 +25,10 @@ import { cn } from "@/lib/utils"
 import { AVERAGE_LABEL, DEFAULT_PAGE_STATE } from "@/lib/constants"
 
 import { db } from "@/db"
-import { recentSummary as recentSummaryView, teamsSummary as teamsSummaryView } from "@/db/schema"
+import {
+  recentSummary as recentSummaryView,
+  teamsSummary as teamsSummaryView,
+} from "@/db/schema"
 import { fetchBlocksPaginated } from "@/lib/blocks"
 import { getMetadata } from "@/lib/metadata"
 import { formatNumber, formatUsd } from "@/lib/number"
@@ -82,7 +84,7 @@ export default async function Index() {
             </>
           ),
           icon: <Clock />,
-          value: prettyMs(recentSummary.avg_proving_time || 0),
+          value: prettyMs(Number(recentSummary.avg_proving_time) || 0),
         },
       ]
     : []
@@ -232,7 +234,7 @@ export default async function Index() {
                                 {AVERAGE_LABEL} <metrics.provingTime.Label />
                               </div>
                               <div className="font-mono text-lg">
-                                {prettyMs(avg_proving_time || 0)}
+                                {prettyMs(Number(avg_proving_time) || 0)}
                               </div>
                             </div>
                             <div className="flex flex-col items-center gap-2 px-4">

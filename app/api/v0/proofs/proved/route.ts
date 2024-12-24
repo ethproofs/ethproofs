@@ -4,7 +4,7 @@ import { ZodError } from "zod"
 import { base64ToHex } from "@/lib/utils"
 
 import { db } from "@/db"
-import { blocks, programs, proofs } from "@/db/schema"
+import { blocks, programs, proofBinaries, proofs } from "@/db/schema"
 import { withAuth } from "@/lib/auth/withAuth"
 import { fetchBlockData } from "@/lib/blocks"
 import { provedProofSchema } from "@/lib/zod/schemas/proof"
@@ -155,7 +155,7 @@ export const POST = withAuth(async ({ request, user, timestamp }) => {
   const proofHex = base64ToHex(proof)
 
   try {
-    const [proof] = await db
+    const [insertedProof] = await db
       .insert(proofs)
       .values({
         ...restProofPayload,
@@ -177,16 +177,11 @@ export const POST = withAuth(async ({ request, user, timestamp }) => {
       })
       .returning({ proof_id: proofs.proof_id })
 
-// add proof binary
-  const proofBinaryResponse = await client.from("proof_binaries").upsert({
-    proof_id: proofResponse.data.proof_id,
-    proof_binary: `\\x${proofHex}`,
-  })
-
-  if (proofBinaryResponse.error) {
-    console.error("error adding proof binary", proofBinaryResponse.error)
-    return new Response("Internal server error", { status: 500 })
-  }
+    // add proof binary
+    await db.insert(proofBinaries).values({
+      proof_id: insertedProof.proof_id,
+      proof_binary: `\\x${proofHex}`,
+    })
 
     // invalidate proofs cache
     revalidateTag("proofs")
