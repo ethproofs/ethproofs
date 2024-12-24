@@ -440,7 +440,7 @@ export default async function BlockDetailsPage({
               <div
                 className={cn(
                   "ms-auto self-center",
-                  "col-span-1 col-start-4 row-span-1 row-start-1",
+                  "col-span-2 col-start-3 row-span-1 row-start-1",
                   "sm:col-span-2 sm:col-start-3 sm:row-span-1 sm:row-start-1",
                   "md:col-span-1 md:col-start-6 md:row-span-1 md:row-start-1"
                 )}
@@ -451,7 +451,7 @@ export default async function BlockDetailsPage({
                   labelClass="hidden sm:inline-block md:hidden lg:inline-block"
                   containerClass="flex-row-reverse md:flex-col"
                 />
-              </div>{" "}
+              </div>
               <MetricBox
                 className={cn(
                   "col-span-2 col-start-1 row-span-1 row-start-2",
