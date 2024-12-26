@@ -1,35 +1,43 @@
-## Overview
+# What is Ethproofs?
 
-### What are zkEVM?
+Ethproofs is a block proof explorer for Ethereum. It aggregates data from various zkVM teams to provide a comprehensive overview of proven blocks, including key metrics such as cost, latency, and proving time.
 
-zkEVM, or Zero-Knowledge Ethereum Virtual Machine, is an advanced version of the Ethereum Virtual Machine (EVM) that utilizes zero-knowledge proofs to enhance privacy and scalability in executing smart contracts. It allows developers to run computations off-chain while submitting only proofs of their validity to the Ethereum mainnet, ensuring that sensitive data remains confidential.
+Users can compare proofs by block, download them, and explore various proof metadata(size, clock cycle, type) to better understand the indivisual zkVMs and its proof generation process.
 
-By integrating zero-knowledge technology, zkEVM enables verifiable transactions without exposing underlying information, making it a crucial component of Layer 2 scaling solutions like zk-rollups. This innovation is pivotal for improving Ethereum’s throughput and accommodating a broader range of decentralized applications (dApps) while maintaining security and privacy.
+The aim is to establish a public good that evolves into the standard for Ethereum block execution proof for zkVMs, ultimately expanding to encompass all Ethereum blocks while maintaining reasonable costs and latency. This project may also support multiple-proof systems in the future.
 
-### What are the proofs?
+# Overview
 
-Proofs validate each Ethereum block like a stamp of authenticity. This unlocks faster, more secure transactions, ensuring efficiency and privacy and paving the way for a stronger Ethereum network. Proofs are a foundation for a new class of applications and clients and act as a major step towards a fully enshrined Ethereum.
+## What is zkVM?
 
-### What are SNARKs?
+A zkVM (Zero-Knowledge Virtual Machine) is a virtual machine that leverage [zero-knowledge proofs](https://ethereum.org/en/zero-knowledge-proofs/) for private and verifiable computation on generic programs. Note that it's broader concept than zkEVM (zero-knowledge Ethereum Virtual Machine) which one of type of zkVM that   designed to execute Ethereum smart contracts. 
+
+## What are SNARKs?
 
 SNARK stands for Succinct Non-interactive ARgument of Knowledge. It is a cryptographic proof that allows one party to demonstrate to another party that they know a particular piece of information without revealing the information itself.
 
 Key features of SNARKs:
-
 - Succinct: The proofs are very short and can be verified quickly, even if the original computation is complex.
 - Non-interactive: The proof is provided in a single communication, with no need for multiple rounds of exchange between the prover and verifier.
 - Argument of Knowledge: The prover demonstrates that they actually possess knowledge of the solution, not just that a solution exists.
 
-In blockchain and Ethereum, SNARKs can be used to verify transactions or computations off-chain, improving scalability and privacy by reducing the amount of data that needs to be processed on-chain.
 
-### Potential benefits and use cases
+In blockchain and Ethereum, SNARKs can be used to verify state or computations off-chain, improving scalability and privacy by reducing the amount of data that needs to be processed on-chain.
 
-- Enabling full ZK light clients of Ethereum to run on low powered devices (eg. smartphones). Syncing with the network can be done via a single ZK proof verification (once we combine Zeth ZK proofs with Sync Committee ZK proofs).
+## Potential benefits and use cases
+
+- Enabling full ZK light clients of Ethereum to run on low powered devices (eg. smartphones). Syncing with the network can be done via a single ZK proof verification (once we combine block execution ZK proofs with Sync Committee ZK proofs).
 - Reduce the time and resources necessary for a new node or wallet to participate in the Ethereum network.
 - Validate any current or historic Ethereum state with a single proof.
 - Lay the groundwork for multi-client & multi-proof ZK proofs of Ethereum.
 - Start tests of Ethereum enshrinement. These proofs will provide a large corpus of data for further research into performance improvements, gas/proving fee schedules, and more for the larger ZK community.
 - Empower the Ethereum Ecosystem to take this powerful new ZK technology
+
+
+## Learn about zkVMs
+
+There are [list of zkVMs](https://github.com/rkdud007/awesome-zkvm?tab=readme-ov-file) that are designed in various approaches.
+
 
 ### More resources
 
@@ -65,13 +73,3 @@ In blockchain and Ethereum, SNARKs can be used to verify transactions or computa
 - [stark 101](https://starkware.co/stark-101/)
 - [stwo brainfuck](https://github.com/kkrt-labs/stwo-brainfuck)
 - [useless zkvm](https://github.com/armanthepythonguy/Useless-ZKVM)
-
-## Ethproofs
-
-### What is Ethproofs?
-
-Ethproofs is a block explorer for Layer 1 zkEVM. It aggregates data from various proving vendors to provide a comprehensive overview of proven blocks, including key metadata such as cost, latency, and proofing time.
-
-Users can compare proofs by block, download them, and explore vendor-specific metadata to better understand the proving process.
-
-The aim is to establish a public good that evolves into the standard for zkEVM block exploration, ultimately expanding to encompass all Ethereum blocks while maintaining reasonable costs and latency. This project may also support multiple-proof systems in the future.
