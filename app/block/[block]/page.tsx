@@ -44,6 +44,7 @@ import { AVERAGE_LABEL } from "@/lib/constants"
 import { db } from "@/db"
 import { timestampToEpoch, timestampToSlot } from "@/lib/beaconchain"
 import { getBlockValueType } from "@/lib/blocks"
+import { tmp_renameClusterConfiguration } from "@/lib/clusters"
 import { getMetadata } from "@/lib/metadata"
 import { formatNumber, formatUsd } from "@/lib/number"
 import {
@@ -87,16 +88,16 @@ export default async function BlockDetailsPage({
 
   const blockValueType = getBlockValueType(blockNumber)
 
-  const block = await db.query.blocks.findFirst({
+  const blockRaw = await db.query.blocks.findFirst({
     with: {
       proofs: {
         with: {
           team: true,
           cluster: {
             with: {
-              cluster_configuration: {
+              cc: {
                 with: {
-                  aws_instance_pricing: true,
+                  aip: true,
                 },
               },
             },
@@ -107,7 +108,15 @@ export default async function BlockDetailsPage({
     where: (blocks, { eq }) => eq(blocks[blockValueType], blockNumber),
   })
 
-  if (!block) notFound()
+  if (!blockRaw) notFound()
+
+  const block = {
+    ...blockRaw,
+    proofs: blockRaw.proofs.map((proof) => ({
+      ...proof,
+      cluster: tmp_renameClusterConfiguration(proof.cluster),
+    })),
+  }
 
   const { timestamp, block_number, gas_used, proofs, hash } = block
 

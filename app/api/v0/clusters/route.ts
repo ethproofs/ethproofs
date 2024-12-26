@@ -1,6 +1,7 @@
 import { db } from "@/db"
 import { clusterConfigurations, clusters } from "@/db/schema"
 import { withAuth } from "@/lib/auth/withAuth"
+import { tmp_renameClusterConfiguration } from "@/lib/clusters"
 import { createClusterSchema } from "@/lib/zod/schemas/cluster"
 
 export const GET = withAuth(async ({ user }) => {
@@ -22,20 +23,22 @@ export const GET = withAuth(async ({ user }) => {
       },
       where: (cluster, { eq }) => eq(cluster.user_id, user.id),
       with: {
-        cluster_configuration: {
+        cc: {
           columns: {
             instance_type_id: true,
             instance_count: true,
           },
           with: {
-            aws_instance_pricing: true,
+            aip: true,
           },
         },
       },
     })
 
+    const renamedClusters = clusters.map(tmp_renameClusterConfiguration)
+
     return Response.json(
-      clusters.map(({ index, ...cluster }) => ({
+      renamedClusters.map(({ index, ...cluster }) => ({
         id: index,
         ...cluster,
       }))

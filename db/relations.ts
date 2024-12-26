@@ -35,7 +35,7 @@ export const clusterConfigurationsRelations = relations(
       fields: [clusterConfigurations.cluster_id],
       references: [clusters.id],
     }),
-    aws_instance_pricing: one(awsInstancePricing, {
+    aip: one(awsInstancePricing, {
       fields: [clusterConfigurations.instance_type_id],
       references: [awsInstancePricing.id],
     }),
@@ -43,7 +43,7 @@ export const clusterConfigurationsRelations = relations(
 )
 
 export const clustersRelations = relations(clusters, ({ one, many }) => ({
-  cluster_configuration: many(clusterConfigurations),
+  cc: many(clusterConfigurations),
   user: one(authUsers, {
     fields: [clusters.user_id],
     references: [authUsers.id],
@@ -54,7 +54,7 @@ export const clustersRelations = relations(clusters, ({ one, many }) => ({
 export const awsInstancePricingRelations = relations(
   awsInstancePricing,
   ({ many }) => ({
-    cluster_configuration: many(clusterConfigurations),
+    cc: many(clusterConfigurations),
   })
 )
 

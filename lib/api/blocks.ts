@@ -1,5 +1,7 @@
 import { PaginationState } from "@tanstack/react-table"
 
+import { tmp_renameClusterConfiguration } from "../clusters"
+
 import { db } from "@/db"
 import { blocks } from "@/db/schema"
 
@@ -10,9 +12,9 @@ export const fetchBlocksPaginated = async (pagination: PaginationState) => {
         with: {
           cluster: {
             with: {
-              cluster_configuration: {
+              cc: {
                 with: {
-                  aws_instance_pricing: true,
+                  aip: true,
                 },
               },
             },
@@ -28,8 +30,16 @@ export const fetchBlocksPaginated = async (pagination: PaginationState) => {
     },
   })
 
+  const renamedBlocks = blocksRows.map((block) => ({
+    ...block,
+    proofs: block.proofs.map((proof) => ({
+      ...proof,
+      cluster: tmp_renameClusterConfiguration(proof.cluster),
+    })),
+  }))
+
   return {
-    rows: blocksRows,
+    rows: renamedBlocks,
     rowCount: blocksRows[0].rowCount,
   }
 }
