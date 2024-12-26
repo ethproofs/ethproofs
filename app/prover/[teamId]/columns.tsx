@@ -17,13 +17,7 @@ import { ColumnHeader } from "./ColumnHeader"
 
 import { formatTimeAgo } from "@/lib/date"
 import { formatNumber, formatUsd } from "@/lib/number"
-import {
-  getProvingCost,
-  hasCostInfo,
-  hasProvedTimestamp,
-  hasProvingTime,
-  isCompleted,
-} from "@/lib/proofs"
+import { getProvingCost, hasCostInfo, isCompleted } from "@/lib/proofs"
 import { prettyMs } from "@/lib/time"
 
 export const columns: ColumnDef<Proof>[] = [
@@ -78,9 +72,9 @@ export const columns: ColumnDef<Proof>[] = [
         <>
           <MetricInfo
             trigger={
-              <div className="flex items-center gap-2">
+              <div className="flex items-center gap-2 text-nowrap">
                 {cluster.nickname}
-                <Cpu />
+                <Cpu className="shrink-0" />
               </div>
             }
           >
@@ -189,7 +183,14 @@ export const columns: ColumnDef<Proof>[] = [
     id: "actions",
     cell: ({ row }) => {
       const proof = row.original
-      return <DownloadButton proof={proof} />
+      return (
+        <DownloadButton
+          proof={proof}
+          className="!w-40"
+          labelClass="inline-block"
+          containerClass="flex-col"
+        />
+      )
     },
   },
 ]
