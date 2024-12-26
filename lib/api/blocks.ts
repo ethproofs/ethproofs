@@ -1,3 +1,5 @@
+import { eq } from "drizzle-orm"
+import { count } from "drizzle-orm"
 import { PaginationState } from "@tanstack/react-table"
 
 import { tmp_renameClusterConfiguration } from "../clusters"
@@ -32,10 +34,12 @@ export const fetchBlocksPaginated = async (pagination: PaginationState) => {
     orderBy: (blocks, { desc }) => [desc(blocks.block_number)],
     limit: pagination.pageSize,
     offset: pagination.pageIndex * pagination.pageSize,
-    extras: {
-      rowCount: db.$count(blocks).as("count"),
-    },
   })
+
+  const [rowCount] = await db
+    .select({ count: count() })
+    .from(blocks)
+    .innerJoin(proofs, eq(blocks.block_number, proofs.block_number))
 
   const renamedBlocks = blocksRows.map((block) => ({
     ...block,
@@ -47,6 +51,6 @@ export const fetchBlocksPaginated = async (pagination: PaginationState) => {
 
   return {
     rows: renamedBlocks,
-    rowCount: blocksRows[0].rowCount,
+    rowCount: rowCount.count,
   }
 }
