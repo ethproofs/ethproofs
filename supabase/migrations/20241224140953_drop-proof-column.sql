@@ -1,0 +1,1 @@
+alter table public.proofs drop column proof;
