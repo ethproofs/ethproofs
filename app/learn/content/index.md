@@ -1,4 +1,4 @@
-# What is Ethproofs?
+## What is Ethproofs?
 
 Ethproofs is a block proof explorer for Ethereum. It aggregates data from various zkVM teams to provide a comprehensive overview of proven blocks, including key metrics such as cost, latency, and proving time.
 
@@ -6,13 +6,13 @@ Users can compare proofs by block, download them, and explore various proof meta
 
 The aim is to establish a public good that evolves into the standard for Ethereum block execution proof for zkVMs, ultimately expanding to encompass all Ethereum blocks while maintaining reasonable costs and latency. This project may also support multiple-proof systems in the future.
 
-# Overview
+## Overview
 
-## What is zkVM?
+### What is zkVM?
 
 A zkVM (Zero-Knowledge Virtual Machine) is a virtual machine that leverage [zero-knowledge proofs](https://ethereum.org/en/zero-knowledge-proofs/) for private and verifiable computation on generic programs. Note that it's broader concept than zkEVM (zero-knowledge Ethereum Virtual Machine) which one of type of zkVM that   designed to execute Ethereum smart contracts. 
 
-## What are SNARKs?
+### What are SNARKs?
 
 SNARK stands for Succinct Non-interactive ARgument of Knowledge. It is a cryptographic proof that allows one party to demonstrate to another party that they know a particular piece of information without revealing the information itself.
 
@@ -24,7 +24,7 @@ Key features of SNARKs:
 
 In blockchain and Ethereum, SNARKs can be used to verify state or computations off-chain, improving scalability and privacy by reducing the amount of data that needs to be processed on-chain.
 
-## Potential benefits and use cases
+### Potential benefits and use cases
 
 - Enabling full ZK light clients of Ethereum to run on low powered devices (eg. smartphones). Syncing with the network can be done via a single ZK proof verification (once we combine block execution ZK proofs with Sync Committee ZK proofs).
 - Reduce the time and resources necessary for a new node or wallet to participate in the Ethereum network.
