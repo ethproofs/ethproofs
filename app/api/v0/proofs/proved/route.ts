@@ -99,7 +99,7 @@ export const POST = withAuth(async ({ request, user, timestamp }) => {
   }
 
   // create or get program id if it exists
-  let programId
+  let programId: number | undefined
   if (verifier_id) {
     const existingProgram = await db.query.programs.findFirst({
       columns: {
@@ -129,7 +129,7 @@ export const POST = withAuth(async ({ request, user, timestamp }) => {
   }
 
   // get proof_id to update or create an existing proof
-  let proofId
+  let proofId: number | undefined
   if (!proofPayload.proof_id) {
     const existingProof = await db.query.proofs.findFirst({
       columns: {
@@ -155,47 +155,51 @@ export const POST = withAuth(async ({ request, user, timestamp }) => {
   const proofHex = base64ToHex(proof)
 
   try {
-    const [insertedProof] = await db
-      .insert(proofs)
-      .values({
-        ...restProofPayload,
-        block_number,
-        proof_id: proofId,
-        cluster_id: cluster.id,
-        program_id: programId,
-        proof_status: "proved",
-        proved_timestamp: timestamp,
-        size_bytes: Buffer.byteLength(proofHex, "hex"),
-        user_id: user.id,
-      })
-      .onConflictDoUpdate({
-        target: [proofs.block_number, proofs.cluster_id],
-        set: {
+    const newProof = await db.transaction(async (tx) => {
+      const [newProof] = await tx
+        .insert(proofs)
+        .values({
+          ...restProofPayload,
+          block_number,
+          proof_id: proofId,
+          cluster_id: cluster.id,
+          program_id: programId,
           proof_status: "proved",
           proved_timestamp: timestamp,
-        },
-      })
-      .returning({ proof_id: proofs.proof_id })
+          size_bytes: Buffer.byteLength(proofHex, "hex"),
+          user_id: user.id,
+        })
+        .onConflictDoUpdate({
+          target: [proofs.block_number, proofs.cluster_id],
+          set: {
+            proof_status: "proved",
+            proved_timestamp: timestamp,
+          },
+        })
+        .returning({ proof_id: proofs.proof_id })
 
-    // add proof binary
-    await db
-      .insert(proofBinaries)
-      .values({
-        proof_id: insertedProof.proof_id,
-        proof_binary: `\\x${proofHex}`,
-      })
-      .onConflictDoUpdate({
-        target: [proofBinaries.proof_id],
-        set: {
+      // add proof binary
+      await tx
+        .insert(proofBinaries)
+        .values({
+          proof_id: newProof.proof_id,
           proof_binary: `\\x${proofHex}`,
-        },
-      })
+        })
+        .onConflictDoUpdate({
+          target: [proofBinaries.proof_id],
+          set: {
+            proof_binary: `\\x${proofHex}`,
+          },
+        })
+
+      return newProof
+    })
 
     // invalidate proofs cache
     revalidateTag("proofs")
 
     // return the generated proof_id
-    return Response.json(insertedProof)
+    return Response.json(newProof)
   } catch (error) {
     console.error("error adding proof", error)
     return new Response("Internal server error", { status: 500 })
