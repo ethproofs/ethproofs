@@ -195,7 +195,7 @@ export const POST = withAuth(async ({ request, user, timestamp }) => {
     revalidateTag("proofs")
 
     // return the generated proof_id
-    return Response.json(proof)
+    return Response.json(insertedProof)
   } catch (error) {
     console.error("error adding proof", error)
     return new Response("Internal server error", { status: 500 })
