@@ -56,8 +56,8 @@
       "warn",
       {
         "args": "all",
-        "argsIgnorePattern": "^_$",
-        "varsIgnorePattern": "^_$"
+        "argsIgnorePattern": "^_",
+        "varsIgnorePattern": "^_"
       }
     ]
   }
