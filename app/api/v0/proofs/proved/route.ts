@@ -178,10 +178,18 @@ export const POST = withAuth(async ({ request, user, timestamp }) => {
       .returning({ proof_id: proofs.proof_id })
 
     // add proof binary
-    await db.insert(proofBinaries).values({
-      proof_id: insertedProof.proof_id,
-      proof_binary: `\\x${proofHex}`,
-    })
+    await db
+      .insert(proofBinaries)
+      .values({
+        proof_id: insertedProof.proof_id,
+        proof_binary: `\\x${proofHex}`,
+      })
+      .onConflictDoUpdate({
+        target: [proofBinaries.proof_id],
+        set: {
+          proof_binary: `\\x${proofHex}`,
+        },
+      })
 
     // invalidate proofs cache
     revalidateTag("proofs")
