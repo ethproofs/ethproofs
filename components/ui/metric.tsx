@@ -37,7 +37,7 @@ type MetricInfoProps = React.HTMLAttributes<HTMLDivElement> & {
 const MetricInfo = React.forwardRef<HTMLDivElement, MetricInfoProps>(
   ({ label, trigger, className, children, ...props }, ref) => (
     <Popover>
-      <PopoverTrigger>
+      <PopoverTrigger className="hover:animate-pulse">
         {trigger || (
           <div className="flex items-center gap-2">
             {label}
