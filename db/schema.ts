@@ -403,8 +403,8 @@ export const teamsSummary = pgView("teams_summary", {
   .with({ securityInvoker: true })
   .as(
     sql`
-    SELECT t.id,
-      t.name,
+    SELECT t.id as team_id,
+      t.name as team_name,
       t.logo_url,
       COALESCE(sum(cc.instance_count::double precision * a.hourly_price * (p.proving_time::numeric / (1000.0 * 60::numeric * 60::numeric))::double precision) / NULLIF(count(p.proof_id), 0)::double precision, 0::double precision) AS avg_cost_per_proof,
       avg(p.proving_time) AS avg_proving_time

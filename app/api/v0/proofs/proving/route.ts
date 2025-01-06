@@ -87,7 +87,7 @@ export const POST = withAuth(async ({ request, user, timestamp }) => {
       id: true,
     },
     where: (clusters, { and, eq }) =>
-      and(eq(clusters.index, cluster_id), eq(clusters.user_id, user.id)),
+      and(eq(clusters.index, cluster_id), eq(clusters.team_id, user.id)),
   })
 
   if (!cluster) {
@@ -106,7 +106,7 @@ export const POST = withAuth(async ({ request, user, timestamp }) => {
         and(
           eq(proofs.block_number, block_number),
           eq(proofs.cluster_id, cluster.id),
-          eq(proofs.user_id, user.id)
+          eq(proofs.team_id, user.id)
         ),
     })
 
@@ -129,7 +129,7 @@ export const POST = withAuth(async ({ request, user, timestamp }) => {
         cluster_id: cluster.id,
         proof_status: "proving",
         proving_timestamp: timestamp,
-        user_id: user.id,
+        team_id: user.id,
       })
       .onConflictDoUpdate({
         target: [proofs.block_number, proofs.cluster_id],

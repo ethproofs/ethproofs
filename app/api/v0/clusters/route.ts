@@ -21,7 +21,7 @@ export const GET = withAuth(async ({ user }) => {
         cycle_type: true,
         proof_type: true,
       },
-      where: (cluster, { eq }) => eq(cluster.user_id, user.id),
+      where: (cluster, { eq }) => eq(cluster.team_id, user.id),
       with: {
         cc: {
           columns: {
@@ -106,7 +106,7 @@ export const POST = withAuth(async ({ request, user }) => {
         hardware,
         cycle_type,
         proof_type,
-        user_id: user.id,
+        team_id: user.id,
       })
       .returning({ id: clusters.id, index: clusters.index })
 

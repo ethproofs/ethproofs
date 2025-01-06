@@ -8,7 +8,7 @@ export const withAuth = (
   handler: (auth: {
     request: Request
     user: { id: string } | null
-    apiKey?: { mode: string; user_id: string } | null
+    apiKey?: { mode: string; team_id: string } | null
     timestamp: string
   }) => void
 ) => {
@@ -30,7 +30,7 @@ export const withAuth = (
       const apiAuthToken = await db.query.apiAuthTokens.findFirst({
         columns: {
           mode: true,
-          user_id: true,
+          team_id: true,
         },
         where: (apiAuthToken, { eq }) => eq(apiAuthToken.token, hashedKey),
       })
@@ -44,7 +44,7 @@ export const withAuth = (
       if (apiAuthToken) {
         return handler({
           ...commonProps,
-          user: { id: apiAuthToken.user_id },
+          user: { id: apiAuthToken.team_id },
           apiKey: apiAuthToken,
         })
       }

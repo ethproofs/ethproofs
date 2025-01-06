@@ -49,7 +49,7 @@ import { prettyMs } from "@/lib/time"
 import { getHost, getTwitterHandle } from "@/lib/url"
 
 type ProverPageProps = {
-  params: Promise<{ teamId: number }>
+  params: Promise<{ teamId: string }>
 }
 
 export async function generateMetadata({
@@ -59,27 +59,27 @@ export async function generateMetadata({
 
   const team = await db.query.teams.findFirst({
     columns: {
-      team_name: true,
+      name: true,
     },
-    where: (teams, { eq }) => eq(teams.team_id, teamId),
+    where: (teams, { eq }) => eq(teams.id, teamId),
   })
 
   if (!team) return { title: `Prover not found - ${SITE_NAME}` }
 
-  return getMetadata({ title: `${team.team_name}` })
+  return getMetadata({ title: `${team.name}` })
 }
 
 export default async function ProverPage({ params }: ProverPageProps) {
   const { teamId } = await params
 
   const team = await db.query.teams.findFirst({
-    where: (teams, { eq }) => eq(teams.team_id, teamId),
+    where: (teams, { eq }) => eq(teams.id, teamId),
   })
 
   if (!team) return notFound()
 
   const proofs = await db.query.proofs.findMany({
-    where: (proofs, { eq }) => eq(proofs.user_id, team.user_id),
+    where: (proofs, { eq }) => eq(proofs.team_id, team.id),
     with: {
       block: true,
       cluster: true,
@@ -126,8 +126,7 @@ export default async function ProverPage({ params }: ProverPageProps) {
       key: "avg-zkvm-cycles-per-mgas",
       label: (
         <div>
-          <span className="normal-case">{team.team_name}</span> {AVERAGE_LABEL}{" "}
-          zk
+          <span className="normal-case">{team.name}</span> {AVERAGE_LABEL} zk
           <span className="uppercase">VM</span> cycles per{" "}
           <span className="uppercase">M</span>gas
         </div>
@@ -140,8 +139,8 @@ export default async function ProverPage({ params }: ProverPageProps) {
       key: "avg-cost-per-mgas",
       label: (
         <div>
-          <span className="normal-case">{team.team_name}</span> {AVERAGE_LABEL}{" "}
-          cost per <span className="uppercase">M</span>gas
+          <span className="normal-case">{team.name}</span> {AVERAGE_LABEL} cost
+          per <span className="uppercase">M</span>gas
         </div>
       ),
       description: "The average cost incurred for proving a million gas units",
@@ -163,7 +162,7 @@ export default async function ProverPage({ params }: ProverPageProps) {
           <div className="relative h-20 w-56">
             <TeamLogo
               src={team.logo_url}
-              alt={`${team.team_name || "Prover"} logo`}
+              alt={`${team.name || "Prover"} logo`}
             />
           </div>
           <h1
@@ -172,7 +171,7 @@ export default async function ProverPage({ params }: ProverPageProps) {
               team.logo_url && "sr-only"
             )}
           >
-            {team.team_name}
+            {team.name}
           </h1>
         </HeroTitle>
 
