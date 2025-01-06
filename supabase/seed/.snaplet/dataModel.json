@@ -182,9 +182,9 @@
           "maxLength": null
         },
         {
-          "id": "public.api_auth_tokens.user_id",
-          "name": "user_id",
-          "columnName": "user_id",
+          "id": "public.api_auth_tokens.team_id",
+          "name": "team_id",
+          "columnName": "team_id",
           "type": "uuid",
           "isRequired": true,
           "kind": "scalar",
@@ -196,13 +196,13 @@
           "maxLength": null
         },
         {
-          "name": "users",
-          "type": "users",
+          "name": "teams",
+          "type": "teams",
           "isRequired": true,
           "kind": "object",
-          "relationName": "api_auth_tokensTousers",
+          "relationName": "api_auth_tokensToteams",
           "relationFromFields": [
-            "user_id"
+            "team_id"
           ],
           "relationToFields": [
             "id"
@@ -956,9 +956,9 @@
           "maxLength": null
         },
         {
-          "id": "public.clusters.user_id",
-          "name": "user_id",
-          "columnName": "user_id",
+          "id": "public.clusters.team_id",
+          "name": "team_id",
+          "columnName": "team_id",
           "type": "uuid",
           "isRequired": true,
           "kind": "scalar",
@@ -1040,13 +1040,13 @@
           "maxLength": null
         },
         {
-          "name": "users",
-          "type": "users",
+          "name": "teams",
+          "type": "teams",
           "isRequired": true,
           "kind": "object",
-          "relationName": "clustersTousers",
+          "relationName": "clustersToteams",
           "relationFromFields": [
-            "user_id"
+            "team_id"
           ],
           "relationToFields": [
             "id"
@@ -3388,9 +3388,9 @@
           "maxLength": null
         },
         {
-          "id": "public.proofs.user_id",
-          "name": "user_id",
-          "columnName": "user_id",
+          "id": "public.proofs.team_id",
+          "name": "team_id",
+          "columnName": "team_id",
           "type": "uuid",
           "isRequired": true,
           "kind": "scalar",
@@ -3514,24 +3514,6 @@
           "maxLength": null
         },
         {
-          "name": "users",
-          "type": "users",
-          "isRequired": true,
-          "kind": "object",
-          "relationName": "proofsTousers",
-          "relationFromFields": [
-            "user_id"
-          ],
-          "relationToFields": [
-            "id"
-          ],
-          "isList": false,
-          "isId": false,
-          "isGenerated": false,
-          "sequence": false,
-          "hasDefaultValue": false
-        },
-        {
           "name": "blocks",
           "type": "blocks",
           "isRequired": true,
@@ -3575,6 +3557,24 @@
           "relationName": "proofsToprograms",
           "relationFromFields": [
             "program_id"
+          ],
+          "relationToFields": [
+            "id"
+          ],
+          "isList": false,
+          "isId": false,
+          "isGenerated": false,
+          "sequence": false,
+          "hasDefaultValue": false
+        },
+        {
+          "name": "teams",
+          "type": "teams",
+          "isRequired": true,
+          "kind": "object",
+          "relationName": "proofsToteams",
+          "relationFromFields": [
+            "team_id"
           ],
           "relationToFields": [
             "id"
@@ -3698,9 +3698,9 @@
           "maxLength": null
         },
         {
-          "id": "public.recursive_root_proofs.user_id",
-          "name": "user_id",
-          "columnName": "user_id",
+          "id": "public.recursive_root_proofs.team_id",
+          "name": "team_id",
+          "columnName": "team_id",
           "type": "uuid",
           "isRequired": true,
           "kind": "scalar",
@@ -3710,24 +3710,6 @@
           "hasDefaultValue": false,
           "isId": false,
           "maxLength": null
-        },
-        {
-          "name": "users",
-          "type": "users",
-          "isRequired": true,
-          "kind": "object",
-          "relationName": "recursive_root_proofsTousers",
-          "relationFromFields": [
-            "user_id"
-          ],
-          "relationToFields": [
-            "id"
-          ],
-          "isList": false,
-          "isId": false,
-          "isGenerated": false,
-          "sequence": false,
-          "hasDefaultValue": false
         },
         {
           "name": "blocks",
@@ -3740,6 +3722,24 @@
           ],
           "relationToFields": [
             "block_number"
+          ],
+          "isList": false,
+          "isId": false,
+          "isGenerated": false,
+          "sequence": false,
+          "hasDefaultValue": false
+        },
+        {
+          "name": "teams",
+          "type": "teams",
+          "isRequired": true,
+          "kind": "object",
+          "relationName": "recursive_root_proofsToteams",
+          "relationFromFields": [
+            "team_id"
+          ],
+          "relationToFields": [
+            "id"
           ],
           "isList": false,
           "isId": false,
@@ -5492,42 +5492,24 @@
       "tableName": "teams",
       "fields": [
         {
-          "id": "public.teams.team_id",
-          "name": "team_id",
-          "columnName": "team_id",
-          "type": "int4",
-          "isRequired": true,
-          "kind": "scalar",
-          "isList": false,
-          "isGenerated": false,
-          "sequence": {
-            "identifier": "\"public\".\"teams_team_id_seq\"",
-            "increment": 1,
-            "start": 1
-          },
-          "hasDefaultValue": false,
-          "isId": true,
-          "maxLength": null
-        },
-        {
-          "id": "public.teams.team_name",
-          "name": "team_name",
-          "columnName": "team_name",
-          "type": "text",
+          "id": "public.teams.id",
+          "name": "id",
+          "columnName": "id",
+          "type": "uuid",
           "isRequired": true,
           "kind": "scalar",
           "isList": false,
           "isGenerated": false,
           "sequence": false,
           "hasDefaultValue": false,
-          "isId": false,
+          "isId": true,
           "maxLength": null
         },
         {
-          "id": "public.teams.user_id",
-          "name": "user_id",
-          "columnName": "user_id",
-          "type": "uuid",
+          "id": "public.teams.name",
+          "name": "name",
+          "columnName": "name",
+          "type": "text",
           "isRequired": true,
           "kind": "scalar",
           "isList": false,
@@ -5614,12 +5596,68 @@
           "kind": "object",
           "relationName": "teamsTousers",
           "relationFromFields": [
-            "user_id"
+            "id"
           ],
           "relationToFields": [
             "id"
           ],
           "isList": false,
+          "isId": false,
+          "isGenerated": false,
+          "sequence": false,
+          "hasDefaultValue": false
+        },
+        {
+          "name": "api_auth_tokens",
+          "type": "api_auth_tokens",
+          "isRequired": false,
+          "kind": "object",
+          "relationName": "api_auth_tokensToteams",
+          "relationFromFields": [],
+          "relationToFields": [],
+          "isList": true,
+          "isId": false,
+          "isGenerated": false,
+          "sequence": false,
+          "hasDefaultValue": false
+        },
+        {
+          "name": "clusters",
+          "type": "clusters",
+          "isRequired": false,
+          "kind": "object",
+          "relationName": "clustersToteams",
+          "relationFromFields": [],
+          "relationToFields": [],
+          "isList": true,
+          "isId": false,
+          "isGenerated": false,
+          "sequence": false,
+          "hasDefaultValue": false
+        },
+        {
+          "name": "proofs",
+          "type": "proofs",
+          "isRequired": false,
+          "kind": "object",
+          "relationName": "proofsToteams",
+          "relationFromFields": [],
+          "relationToFields": [],
+          "isList": true,
+          "isId": false,
+          "isGenerated": false,
+          "sequence": false,
+          "hasDefaultValue": false
+        },
+        {
+          "name": "recursive_root_proofs",
+          "type": "recursive_root_proofs",
+          "isRequired": false,
+          "kind": "object",
+          "relationName": "recursive_root_proofsToteams",
+          "relationFromFields": [],
+          "relationToFields": [],
+          "isList": true,
           "isId": false,
           "isGenerated": false,
           "sequence": false,
@@ -5630,7 +5668,7 @@
         {
           "name": "teams_pkey",
           "fields": [
-            "team_id"
+            "id"
           ],
           "nullNotDistinct": false
         }
@@ -6419,62 +6457,6 @@
           "isRequired": false,
           "kind": "object",
           "relationName": "sessionsTousers",
-          "relationFromFields": [],
-          "relationToFields": [],
-          "isList": true,
-          "isId": false,
-          "isGenerated": false,
-          "sequence": false,
-          "hasDefaultValue": false
-        },
-        {
-          "name": "api_auth_tokens",
-          "type": "api_auth_tokens",
-          "isRequired": false,
-          "kind": "object",
-          "relationName": "api_auth_tokensTousers",
-          "relationFromFields": [],
-          "relationToFields": [],
-          "isList": true,
-          "isId": false,
-          "isGenerated": false,
-          "sequence": false,
-          "hasDefaultValue": false
-        },
-        {
-          "name": "clusters",
-          "type": "clusters",
-          "isRequired": false,
-          "kind": "object",
-          "relationName": "clustersTousers",
-          "relationFromFields": [],
-          "relationToFields": [],
-          "isList": true,
-          "isId": false,
-          "isGenerated": false,
-          "sequence": false,
-          "hasDefaultValue": false
-        },
-        {
-          "name": "proofs",
-          "type": "proofs",
-          "isRequired": false,
-          "kind": "object",
-          "relationName": "proofsTousers",
-          "relationFromFields": [],
-          "relationToFields": [],
-          "isList": true,
-          "isId": false,
-          "isGenerated": false,
-          "sequence": false,
-          "hasDefaultValue": false
-        },
-        {
-          "name": "recursive_root_proofs",
-          "type": "recursive_root_proofs",
-          "isRequired": false,
-          "kind": "object",
-          "relationName": "recursive_root_proofsTousers",
           "relationFromFields": [],
           "relationToFields": [],
           "isList": true,
