@@ -23,6 +23,7 @@ import { prettyMs } from "@/lib/time"
 export const columns: ColumnDef<Proof>[] = [
   // Block (time since)
   {
+    id: "block_number",
     accessorKey: "block_number",
     header: () => (
       <ColumnHeader
