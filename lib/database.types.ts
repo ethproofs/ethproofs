@@ -39,30 +39,37 @@ export type Database = {
           created_at: string
           id: string
           mode: Database["public"]["Enums"]["key_mode"]
+          team_id: string
           token: string
-          user_id: string
         }
         Insert: {
           created_at?: string
           id?: string
           mode?: Database["public"]["Enums"]["key_mode"]
+          team_id: string
           token: string
-          user_id: string
         }
         Update: {
           created_at?: string
           id?: string
           mode?: Database["public"]["Enums"]["key_mode"]
+          team_id?: string
           token?: string
-          user_id?: string
         }
         Relationships: [
           {
-            foreignKeyName: "api_auth_tokens_user_id_users_id_fk"
-            columns: ["user_id"]
+            foreignKeyName: "api_auth_tokens_team_id_teams_id_fk"
+            columns: ["team_id"]
             isOneToOne: false
-            referencedRelation: "users"
+            referencedRelation: "teams"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "api_auth_tokens_team_id_teams_id_fk"
+            columns: ["team_id"]
+            isOneToOne: false
+            referencedRelation: "teams_summary"
+            referencedColumns: ["team_id"]
           },
         ]
       }
@@ -172,7 +179,7 @@ export type Database = {
           index: number | null
           nickname: string
           proof_type: string | null
-          user_id: string
+          team_id: string
         }
         Insert: {
           created_at?: string
@@ -183,7 +190,7 @@ export type Database = {
           index?: number | null
           nickname: string
           proof_type?: string | null
-          user_id: string
+          team_id: string
         }
         Update: {
           created_at?: string
@@ -194,15 +201,22 @@ export type Database = {
           index?: number | null
           nickname?: string
           proof_type?: string | null
-          user_id?: string
+          team_id?: string
         }
         Relationships: [
           {
-            foreignKeyName: "clusters_user_id_users_id_fk"
-            columns: ["user_id"]
+            foreignKeyName: "clusters_team_id_teams_id_fk"
+            columns: ["team_id"]
             isOneToOne: false
-            referencedRelation: "users"
+            referencedRelation: "teams"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "clusters_team_id_teams_id_fk"
+            columns: ["team_id"]
+            isOneToOne: false
+            referencedRelation: "teams_summary"
+            referencedColumns: ["team_id"]
           },
         ]
       }
@@ -261,7 +275,7 @@ export type Database = {
           proving_timestamp: string | null
           queued_timestamp: string | null
           size_bytes: number | null
-          user_id: string
+          team_id: string
         }
         Insert: {
           block_number: number
@@ -276,7 +290,7 @@ export type Database = {
           proving_timestamp?: string | null
           queued_timestamp?: string | null
           size_bytes?: number | null
-          user_id: string
+          team_id: string
         }
         Update: {
           block_number?: number
@@ -291,7 +305,7 @@ export type Database = {
           proving_timestamp?: string | null
           queued_timestamp?: string | null
           size_bytes?: number | null
-          user_id?: string
+          team_id?: string
         }
         Relationships: [
           {
@@ -316,11 +330,18 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
-            foreignKeyName: "proofs_user_id_users_id_fk"
-            columns: ["user_id"]
+            foreignKeyName: "proofs_team_id_teams_id_fk"
+            columns: ["team_id"]
             isOneToOne: false
-            referencedRelation: "users"
+            referencedRelation: "teams"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "proofs_team_id_teams_id_fk"
+            columns: ["team_id"]
+            isOneToOne: false
+            referencedRelation: "teams_summary"
+            referencedColumns: ["team_id"]
           },
         ]
       }
@@ -330,24 +351,24 @@ export type Database = {
           root_proof: string
           root_proof_id: number
           root_proof_size: number
+          team_id: string
           total_proof_size: number
-          user_id: string
         }
         Insert: {
           block_number?: number | null
           root_proof: string
           root_proof_id?: number
           root_proof_size: number
+          team_id: string
           total_proof_size: number
-          user_id: string
         }
         Update: {
           block_number?: number | null
           root_proof?: string
           root_proof_id?: number
           root_proof_size?: number
+          team_id?: string
           total_proof_size?: number
-          user_id?: string
         }
         Relationships: [
           {
@@ -358,11 +379,18 @@ export type Database = {
             referencedColumns: ["block_number"]
           },
           {
-            foreignKeyName: "recursive_root_proofs_user_id_users_id_fk"
-            columns: ["user_id"]
+            foreignKeyName: "recursive_root_proofs_team_id_teams_id_fk"
+            columns: ["team_id"]
             isOneToOne: false
-            referencedRelation: "users"
+            referencedRelation: "teams"
             referencedColumns: ["id"]
+          },
+          {
+            foreignKeyName: "recursive_root_proofs_team_id_teams_id_fk"
+            columns: ["team_id"]
+            isOneToOne: false
+            referencedRelation: "teams_summary"
+            referencedColumns: ["team_id"]
           },
         ]
       }
@@ -370,38 +398,35 @@ export type Database = {
         Row: {
           created_at: string
           github_org: string | null
+          id: string
           logo_url: string | null
-          team_id: number
-          team_name: string
+          name: string
           twitter_handle: string | null
-          user_id: string
           website_url: string | null
         }
         Insert: {
           created_at?: string
           github_org?: string | null
+          id: string
           logo_url?: string | null
-          team_id?: number
-          team_name: string
+          name: string
           twitter_handle?: string | null
-          user_id: string
           website_url?: string | null
         }
         Update: {
           created_at?: string
           github_org?: string | null
+          id?: string
           logo_url?: string | null
-          team_id?: number
-          team_name?: string
+          name?: string
           twitter_handle?: string | null
-          user_id?: string
           website_url?: string | null
         }
         Relationships: [
           {
-            foreignKeyName: "teams_user_id_users_id_fk"
-            columns: ["user_id"]
-            isOneToOne: false
+            foreignKeyName: "teams_id_users_id_fk"
+            columns: ["id"]
+            isOneToOne: true
             referencedRelation: "users"
             referencedColumns: ["id"]
           },
@@ -422,10 +447,18 @@ export type Database = {
           avg_cost_per_proof: number | null
           avg_proving_time: number | null
           logo_url: string | null
-          team_id: number | null
+          team_id: string | null
           team_name: string | null
         }
-        Relationships: []
+        Relationships: [
+          {
+            foreignKeyName: "teams_id_users_id_fk"
+            columns: ["team_id"]
+            isOneToOne: true
+            referencedRelation: "users"
+            referencedColumns: ["id"]
+          },
+        ]
       }
     }
     Functions: {
