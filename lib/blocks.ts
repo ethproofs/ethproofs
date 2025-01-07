@@ -1,10 +1,7 @@
 import { createPublicClient, http } from "viem"
 import { mainnet } from "viem/chains"
-import { PaginationState } from "@tanstack/react-table"
 
 import { Block, Team } from "./types"
-
-import { createClient } from "@/utils/supabase/client"
 
 const rpcUrl = process.env.RPC_URL
 
@@ -35,48 +32,6 @@ export const fetchBlockData = async (block_number: number) => {
  */
 export const getBlockValueType = (block: number) =>
   block > 0xffffffff ? "hash" : "block_number"
-
-export const fetchBlocksPaginated = async (pagination: PaginationState) => {
-  const client = createClient()
-
-  const blocks = await client
-    .from("blocks")
-    .select(
-      `*,
-      proofs!inner(
-        id:proof_id,
-        proof_id,
-        block_number,
-        cluster_id,
-        created_at,
-        program_id,
-        proof_status,
-        proving_cycles,
-        proving_time,
-        queued_timestamp,
-        proving_timestamp,
-        proved_timestamp,
-        size_bytes,
-        user_id,
-        cluster:clusters(*,
-          cluster_configurations(*,
-            aws_instance_pricing(*)
-          )
-        )
-      )`,
-      { count: "exact" }
-    )
-    .order("block_number", { ascending: false })
-    .range(
-      pagination.pageIndex * pagination.pageSize,
-      (pagination.pageIndex + 1) * pagination.pageSize - 1
-    )
-
-  return {
-    rows: blocks.data,
-    rowCount: blocks.count,
-  }
-}
 
 export const mergeBlocksWithTeams = (blocks: Block[], teams: Team[]) => {
   return blocks.map((block) => {

@@ -1,3 +1,4 @@
+import { asc } from "drizzle-orm"
 import type { Metadata } from "next"
 import Image from "next/image"
 import {
@@ -23,52 +24,44 @@ import { cn } from "@/lib/utils"
 
 import { AVERAGE_LABEL, DEFAULT_PAGE_STATE } from "@/lib/constants"
 
-import { fetchBlocksPaginated } from "@/lib/blocks"
+import { db } from "@/db"
+import {
+  recentSummary as recentSummaryView,
+  teamsSummary as teamsSummaryView,
+} from "@/db/schema"
+import { fetchBlocksPaginated } from "@/lib/api/blocks"
 import { getMetadata } from "@/lib/metadata"
 import { formatNumber, formatUsd } from "@/lib/number"
 import { getActiveProverCount } from "@/lib/teams"
 import { prettyMs } from "@/lib/time"
 import HeroDark from "@/public/images/hero-background.png"
-import { createClient } from "@/utils/supabase/server"
 
 export const metadata: Metadata = getMetadata()
 
 export default async function Index() {
   const queryClient = new QueryClient()
 
-  const supabase = createClient({
-    global: {
-      fetch: (input, init) =>
-        fetch(input, {
-          ...init,
-          cache: "force-cache",
-          next: { tags: ["blocks", "proofs"] },
-        }),
-    },
-  })
+  const [recentSummary] = await db.select().from(recentSummaryView)
 
-  const recentSummary = await supabase.from("recent_summary").select().single()
-
-  const teamsSummary = await supabase
-    .from("teams_summary")
+  const teamsSummary = await db
     .select()
-    .order("avg_proving_time", { ascending: true })
+    .from(teamsSummaryView)
+    .orderBy(asc(teamsSummaryView.avg_proving_time))
 
-  const teamsResponse = await supabase.from("teams").select()
-  const teams = teamsResponse.data || []
+  const teams = await db.query.teams.findMany()
 
   await queryClient.prefetchQuery({
     queryKey: ["blocks", DEFAULT_PAGE_STATE],
     queryFn: () => fetchBlocksPaginated(DEFAULT_PAGE_STATE),
   })
 
-  const summaryItems: SummaryItem[] = recentSummary.data
+  const summaryItems: SummaryItem[] = recentSummary
     ? [
         {
           key: "proven-blocks",
           label: "Proven blocks",
           icon: <Box />,
-          value: formatNumber(recentSummary.data?.total_proven_blocks || 0),
+          value: formatNumber(recentSummary.total_proven_blocks || 0),
         },
         {
           key: "avg-cost-per-proof",
@@ -78,7 +71,7 @@ export default async function Index() {
             </>
           ),
           icon: <DollarSign />,
-          value: formatUsd(recentSummary.data?.avg_cost_per_proof || 0).replace(
+          value: formatUsd(recentSummary.avg_cost_per_proof || 0).replace(
             /[¢$]/g,
             ""
           ),
@@ -91,7 +84,7 @@ export default async function Index() {
             </>
           ),
           icon: <Clock />,
-          value: prettyMs(recentSummary.data?.avg_proving_time || 0),
+          value: prettyMs(Number(recentSummary.avg_proving_time) || 0),
         },
       ]
     : []
@@ -174,13 +167,13 @@ export default async function Index() {
               proofs are representing that a certain block has been valid.
             </p>
           </div>
-          {teamsSummary.data && (
+          {teamsSummary && (
             <div className="flex flex-1 flex-col items-center gap-2">
               <div className="whitespace-nowrap text-sm font-bold uppercase text-body">
                 Prover diversity
               </div>
               <div className="flex items-center gap-2 whitespace-nowrap text-4xl text-primary">
-                <ShieldCheck /> {getActiveProverCount(teamsSummary.data)}
+                <ShieldCheck /> {getActiveProverCount(teamsSummary)}
               </div>
               <div className="whitespace-nowrap text-xs font-bold uppercase text-body-secondary">
                 Prover vendors
@@ -194,8 +187,8 @@ export default async function Index() {
             gridTemplateColumns: "repeat(auto-fill, minmax(24rem, 1fr))",
           }}
         >
-          {teamsSummary.data &&
-            teamsSummary.data.map(
+          {teamsSummary &&
+            teamsSummary.map(
               ({
                 team_id,
                 logo_url,
@@ -241,7 +234,7 @@ export default async function Index() {
                                 {AVERAGE_LABEL} <metrics.provingTime.Label />
                               </div>
                               <div className="font-mono text-lg">
-                                {prettyMs(avg_proving_time || 0)}
+                                {prettyMs(Number(avg_proving_time) || 0)}
                               </div>
                             </div>
                             <div className="flex flex-col items-center gap-2 px-4">

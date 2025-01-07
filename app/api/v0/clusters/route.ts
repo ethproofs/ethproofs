@@ -1,35 +1,55 @@
+import { db } from "@/db"
+import { clusterConfigurations, clusters } from "@/db/schema"
 import { withAuth } from "@/lib/auth/withAuth"
-import { Cluster, createClusterSchema } from "@/lib/zod/schemas/cluster"
+import { tmp_renameClusterConfiguration } from "@/lib/clusters"
+import { createClusterSchema } from "@/lib/zod/schemas/cluster"
 
-export const GET = withAuth(async ({ client, user }) => {
+export const GET = withAuth(async ({ user }) => {
   if (!user) {
     return new Response("Invalid API key", {
       status: 401,
     })
   }
 
-  const { data, error } = await client
-    .from("clusters")
-    .select(
-      `
-      id:index, nickname, description, hardware, cycle_type, proof_type,
-      cluster_configuration:cluster_configurations(
-        instance_type_id,
-        instance_count,
-        aws_instance_pricing(*)
-      )`
-    )
-    .eq("user_id", user.id)
+  try {
+    const clusters = await db.query.clusters.findMany({
+      columns: {
+        index: true,
+        nickname: true,
+        description: true,
+        hardware: true,
+        cycle_type: true,
+        proof_type: true,
+      },
+      where: (cluster, { eq }) => eq(cluster.user_id, user.id),
+      with: {
+        cc: {
+          columns: {
+            instance_type_id: true,
+            instance_count: true,
+          },
+          with: {
+            aip: true,
+          },
+        },
+      },
+    })
 
-  if (error) {
+    const renamedClusters = clusters.map(tmp_renameClusterConfiguration)
+
+    return Response.json(
+      renamedClusters.map(({ index, ...cluster }) => ({
+        id: index,
+        ...cluster,
+      }))
+    )
+  } catch (error) {
     console.error("error fetching clusters", error)
     return new Response("Internal server error", { status: 500 })
   }
-
-  return Response.json(data satisfies Cluster[])
 })
 
-export const POST = withAuth(async ({ request, client, user }) => {
+export const POST = withAuth(async ({ request, user }) => {
   const requestBody = await request.json()
 
   if (!user) {
@@ -59,68 +79,56 @@ export const POST = withAuth(async ({ request, client, user }) => {
   } = clusterPayload
 
   // get & validate instance type ids
-  const { data: instanceTypeIds, error: instanceTypeError } = await client
-    .from("aws_instance_pricing")
-    .select("id, instance_type")
-    .in(
-      "instance_type",
-      configuration.map((config) => config.instance_type)
-    )
-
-  if (instanceTypeError) {
-    console.error("error fetching instance type ids", instanceTypeError)
-    return new Response("Internal server error", { status: 500 })
-  }
+  const instanceTypeIds = await db.query.awsInstancePricing.findMany({
+    columns: {
+      id: true,
+      instance_type: true,
+    },
+    where: (awsInstancePricing, { inArray }) =>
+      inArray(
+        awsInstancePricing.instance_type,
+        configuration.map((config) => config.instance_type)
+      ),
+  })
 
   if (instanceTypeIds.length !== configuration.length) {
     return new Response("Invalid cluster configuration", { status: 400 })
   }
 
-  // create cluster
-  const { data, error } = await client
-    .from("clusters")
-    .insert({
-      nickname,
-      description,
-      hardware,
-      cycle_type,
-      proof_type,
-      user_id: user.id,
-    })
-    .select("id, index")
-    .single()
+  let clusterIndex: number | null = null
+  await db.transaction(async (tx) => {
+    // create cluster
+    const [cluster] = await tx
+      .insert(clusters)
+      .values({
+        nickname,
+        description,
+        hardware,
+        cycle_type,
+        proof_type,
+        user_id: user.id,
+      })
+      .returning({ id: clusters.id, index: clusters.index })
 
-  if (error) {
-    console.error("error creating cluster", error)
-    return new Response("Internal server error", { status: 500 })
-  }
+    // create cluster configuration
+    const instanceTypeById = instanceTypeIds.reduce(
+      (acc, instanceType) => {
+        acc[instanceType.instance_type] = instanceType.id
+        return acc
+      },
+      {} as Record<string, number>
+    )
 
-  // create cluster configuration
-  const instanceTypeById = instanceTypeIds.reduce(
-    (acc, instanceType) => {
-      acc[instanceType.instance_type] = instanceType.id
-      return acc
-    },
-    {} as Record<string, number>
-  )
-
-  const { error: clusterConfigurationError } = await client
-    .from("cluster_configurations")
-    .insert(
+    await tx.insert(clusterConfigurations).values(
       configuration.map(({ instance_type, instance_count }) => ({
-        cluster_id: data.id,
+        cluster_id: cluster.id,
         instance_type_id: instanceTypeById[instance_type],
         instance_count,
       }))
     )
 
-  if (clusterConfigurationError) {
-    console.error(
-      "error creating cluster configuration",
-      clusterConfigurationError
-    )
-    return new Response("Internal server error", { status: 500 })
-  }
+    clusterIndex = cluster.index
+  })
 
-  return Response.json({ id: data.index })
+  return Response.json({ id: clusterIndex })
 })

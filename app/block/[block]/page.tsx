@@ -43,8 +43,10 @@ import { cn } from "@/lib/utils"
 
 import { AVERAGE_LABEL } from "@/lib/constants"
 
+import { db } from "@/db"
 import { timestampToEpoch, timestampToSlot } from "@/lib/beaconchain"
 import { getBlockValueType } from "@/lib/blocks"
+import { tmp_renameClusterConfiguration } from "@/lib/clusters"
 import { getMetadata } from "@/lib/metadata"
 import { formatNumber, formatUsd } from "@/lib/number"
 import {
@@ -58,9 +60,6 @@ import {
   sortProofsStatusAndTimes,
 } from "@/lib/proofs"
 import { prettyMs } from "@/lib/time"
-import { createClient } from "@/utils/supabase/client"
-
-const supabase = createClient()
 
 type BlockDetailsPageProps = {
   params: Promise<{ block: number }>
@@ -71,14 +70,16 @@ export async function generateMetadata({
 }: BlockDetailsPageProps): Promise<Metadata> {
   const { block } = await params
 
-  const { data, error } = await supabase
-    .from("blocks")
-    .select("*, proofs(*)")
-    .eq(getBlockValueType(block), block)
-    .single()
+  const blockValueType = getBlockValueType(block)
+  const blockData = await db.query.blocks.findFirst({
+    where: (blocks, { eq }) => eq(blocks[blockValueType], block),
+    with: {
+      proofs: true,
+    },
+  })
 
   return getMetadata({
-    title: `Block ${error ? block : data.block_number}`,
+    title: `Block ${blockData ? blockData.block_number : block}`,
   })
 }
 
@@ -87,24 +88,39 @@ export default async function BlockDetailsPage({
 }: BlockDetailsPageProps) {
   const blockNumber = (await params).block
 
-  const { data: block, error } = await supabase
-    .from("blocks")
-    .select(
-      "*, proofs(*,cluster:clusters(*,cluster_configurations(*,aws_instance_pricing(*))))"
-    )
-    .eq(getBlockValueType(blockNumber), blockNumber)
-    .single()
+  const blockValueType = getBlockValueType(blockNumber)
 
-  const { data: teams } = await supabase.from("teams").select("*")
-
-  if (!block || error || !teams) notFound()
-
-  const { timestamp, block_number, gas_used, proofs: blockProofs, hash } = block
-
-  const proofs = blockProofs.map((proof) => {
-    const team = teams.find((t) => t.user_id === proof.user_id)
-    return { ...proof, team }
+  const blockRaw = await db.query.blocks.findFirst({
+    with: {
+      proofs: {
+        with: {
+          team: true,
+          cluster: {
+            with: {
+              cc: {
+                with: {
+                  aip: true,
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+    where: (blocks, { eq }) => eq(blocks[blockValueType], blockNumber),
   })
+
+  if (!blockRaw) notFound()
+
+  const block = {
+    ...blockRaw,
+    proofs: blockRaw.proofs.map((proof) => ({
+      ...proof,
+      cluster: tmp_renameClusterConfiguration(proof.cluster),
+    })),
+  }
+
+  const { timestamp, block_number, gas_used, proofs, hash } = block
 
   const costPerProofStats = getCostPerProofStats(proofs)
 
