@@ -68,9 +68,7 @@ const DownloadButton = ({
               className={cn(sizingClassName, fakeButtonClassName, className)}
             >
               <StatusIcon status="proving" className="animate-pulse" />
-              <span
-                className={cn(labelClassName, "text-body-secondary")}
-              >
+              <span className={cn(labelClassName, "text-body-secondary")}>
                 Proving
               </span>
             </div>
@@ -91,9 +89,7 @@ const DownloadButton = ({
               className={cn(sizingClassName, fakeButtonClassName, className)}
             >
               <StatusIcon status="queued" />
-              <span
-                className={cn(labelClassName, "text-body-secondary")}
-              >
+              <span className={cn(labelClassName, "text-body-secondary")}>
                 Queued
               </span>
             </div>
