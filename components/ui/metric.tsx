@@ -1,9 +1,10 @@
 import React from "react"
 
 import InfoCircle from "@/components/svgs/info-circle.svg"
-import Tooltip from "@/components/Tooltip"
 
 import { cn } from "@/lib/utils"
+
+import { Popover, PopoverContent, PopoverTrigger } from "./popover"
 
 const MetricBox = React.forwardRef<
   HTMLDivElement,
@@ -35,25 +36,25 @@ type MetricInfoProps = React.HTMLAttributes<HTMLDivElement> & {
 }
 const MetricInfo = React.forwardRef<HTMLDivElement, MetricInfoProps>(
   ({ label, trigger, className, children, ...props }, ref) => (
-    <Tooltip
-      trigger={
-        trigger || (
+    <Popover>
+      <PopoverTrigger className="hover:animate-pulse">
+        {trigger || (
           <div className="flex items-center gap-2">
             {label}
             <InfoCircle className="-mb-0.5" />
           </div>
-        )
-      }
-      className="max-w-80 sm:max-w-96"
-    >
-      <div
-        ref={ref}
-        className={cn("space-y-2 text-start", className)}
-        {...props}
-      >
-        {children}
-      </div>
-    </Tooltip>
+        )}
+      </PopoverTrigger>
+      <PopoverContent className="max-w-80 sm:max-w-96">
+        <div
+          ref={ref}
+          className={cn("space-y-2 text-start", className)}
+          {...props}
+        >
+          {children}
+        </div>
+      </PopoverContent>
+    </Popover>
   )
 )
 MetricInfo.displayName = "MetricInfo"
