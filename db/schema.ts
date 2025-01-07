@@ -1,23 +1,23 @@
+import { sql } from "drizzle-orm"
 import {
-  pgTable,
-  pgPolicy,
   bigint,
-  varchar,
+  check,
+  customType,
+  doublePrecision,
+  integer,
+  numeric,
+  pgEnum,
+  pgPolicy,
+  pgTable,
+  pgView,
   real,
   smallint,
-  timestamp,
   text,
-  uuid,
-  integer,
+  timestamp,
   unique,
-  check,
-  pgView,
-  doublePrecision,
-  pgEnum,
-  customType,
-  numeric,
+  uuid,
+  varchar,
 } from "drizzle-orm/pg-core"
-import { sql } from "drizzle-orm"
 import { authUsers } from "drizzle-orm/supabase"
 
 // Define a custom type for 'bytea'
@@ -68,7 +68,7 @@ export const awsInstancePricing = pgTable(
     instance_memory: real("instance_memory").notNull(),
     vcpu: smallint().notNull(),
     instance_storage: varchar("instance_storage").notNull(),
-    createdAt: timestamp("created_at", { withTimezone: true, mode: "string" })
+    created_at: timestamp("created_at", { withTimezone: true, mode: "string" })
       .defaultNow()
       .notNull(),
   },
