@@ -68,7 +68,7 @@ export const awsInstancePricing = pgTable(
     instance_memory: real("instance_memory").notNull(),
     vcpu: smallint().notNull(),
     instance_storage: varchar("instance_storage").notNull(),
-    createdAt: timestamp("created_at", { withTimezone: true, mode: "string" })
+    created_at: timestamp("created_at", { withTimezone: true, mode: "string" })
       .defaultNow()
       .notNull(),
   },
