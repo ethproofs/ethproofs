@@ -27,7 +27,7 @@ const DownloadButton = ({
 }: DownloadButtonProps) => {
   const { proof_status, proof_id, size_bytes, team } = proof
 
-  const teamName = team?.team_name ? team.team_name : "Team"
+  const teamName = team?.name ? team.name : "Team"
 
   const fakeButtonClassName =
     "bg-body-secondary/10 hover:bg-body-secondary/10 cursor-auto"

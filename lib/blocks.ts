@@ -38,7 +38,7 @@ export const mergeBlocksWithTeams = (blocks: Block[], teams: Team[]) => {
     const { proofs } = block
     const proofsWithTeams = proofs.map((proof) => ({
       ...proof,
-      team: teams.find((team) => team.user_id === proof.user_id),
+      team: teams.find((team) => team.id === proof.team_id),
     }))
 
     return { ...block, proofs: proofsWithTeams }

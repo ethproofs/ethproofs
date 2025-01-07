@@ -1,5 +1,5 @@
 {
-  "id": "66f90741-9f7b-44f9-ba6c-6e578dbb6237",
+  "id": "288427be-7cff-43be-b749-afb7a53d3ba1",
   "prevId": "00000000-0000-0000-0000-000000000000",
   "version": "7",
   "dialect": "postgresql",
@@ -36,8 +36,8 @@
           "primaryKey": false,
           "notNull": true
         },
-        "user_id": {
-          "name": "user_id",
+        "team_id": {
+          "name": "team_id",
           "type": "uuid",
           "primaryKey": false,
           "notNull": true
@@ -45,13 +45,12 @@
       },
       "indexes": {},
       "foreignKeys": {
-        "api_auth_tokens_user_id_users_id_fk": {
-          "name": "api_auth_tokens_user_id_users_id_fk",
+        "api_auth_tokens_team_id_teams_id_fk": {
+          "name": "api_auth_tokens_team_id_teams_id_fk",
           "tableFrom": "api_auth_tokens",
-          "tableTo": "users",
-          "schemaTo": "auth",
+          "tableTo": "teams",
           "columnsFrom": [
-            "user_id"
+            "team_id"
           ],
           "columnsTo": [
             "id"
@@ -351,8 +350,8 @@
           "primaryKey": false,
           "notNull": true
         },
-        "user_id": {
-          "name": "user_id",
+        "team_id": {
+          "name": "team_id",
           "type": "uuid",
           "primaryKey": false,
           "notNull": true
@@ -391,13 +390,12 @@
       },
       "indexes": {},
       "foreignKeys": {
-        "clusters_user_id_users_id_fk": {
-          "name": "clusters_user_id_users_id_fk",
+        "clusters_team_id_teams_id_fk": {
+          "name": "clusters_team_id_teams_id_fk",
           "tableFrom": "clusters",
-          "tableTo": "users",
-          "schemaTo": "auth",
+          "tableTo": "teams",
           "columnsFrom": [
-            "user_id"
+            "team_id"
           ],
           "columnsTo": [
             "id"
@@ -603,8 +601,8 @@
           "primaryKey": false,
           "notNull": false
         },
-        "user_id": {
-          "name": "user_id",
+        "team_id": {
+          "name": "team_id",
           "type": "uuid",
           "primaryKey": false,
           "notNull": true
@@ -674,13 +672,12 @@
           "onDelete": "no action",
           "onUpdate": "no action"
         },
-        "proofs_user_id_users_id_fk": {
-          "name": "proofs_user_id_users_id_fk",
+        "proofs_team_id_teams_id_fk": {
+          "name": "proofs_team_id_teams_id_fk",
           "tableFrom": "proofs",
-          "tableTo": "users",
-          "schemaTo": "auth",
+          "tableTo": "teams",
           "columnsFrom": [
-            "user_id"
+            "team_id"
           ],
           "columnsTo": [
             "id"
@@ -806,8 +803,8 @@
           "primaryKey": false,
           "notNull": true
         },
-        "user_id": {
-          "name": "user_id",
+        "team_id": {
+          "name": "team_id",
           "type": "uuid",
           "primaryKey": false,
           "notNull": true
@@ -828,13 +825,12 @@
           "onDelete": "cascade",
           "onUpdate": "cascade"
         },
-        "recursive_root_proofs_user_id_users_id_fk": {
-          "name": "recursive_root_proofs_user_id_users_id_fk",
+        "recursive_root_proofs_team_id_teams_id_fk": {
+          "name": "recursive_root_proofs_team_id_teams_id_fk",
           "tableFrom": "recursive_root_proofs",
-          "tableTo": "users",
-          "schemaTo": "auth",
+          "tableTo": "teams",
           "columnsFrom": [
-            "user_id"
+            "team_id"
           ],
           "columnsTo": [
             "id"
@@ -863,32 +859,15 @@
       "name": "teams",
       "schema": "",
       "columns": {
-        "team_id": {
-          "name": "team_id",
-          "type": "integer",
+        "id": {
+          "name": "id",
+          "type": "uuid",
           "primaryKey": true,
-          "notNull": true,
-          "identity": {
-            "type": "byDefault",
-            "name": "teams_team_id_seq",
-            "schema": "public",
-            "increment": "1",
-            "startWith": "1",
-            "minValue": "1",
-            "maxValue": "2147483647",
-            "cache": "1",
-            "cycle": false
-          }
-        },
-        "team_name": {
-          "name": "team_name",
-          "type": "text",
-          "primaryKey": false,
           "notNull": true
         },
-        "user_id": {
-          "name": "user_id",
-          "type": "uuid",
+        "name": {
+          "name": "name",
+          "type": "text",
           "primaryKey": false,
           "notNull": true
         },
@@ -926,13 +905,13 @@
       },
       "indexes": {},
       "foreignKeys": {
-        "teams_user_id_users_id_fk": {
-          "name": "teams_user_id_users_id_fk",
+        "teams_id_users_id_fk": {
+          "name": "teams_id_users_id_fk",
           "tableFrom": "teams",
           "tableTo": "users",
           "schemaTo": "auth",
           "columnsFrom": [
-            "user_id"
+            "id"
           ],
           "columnsTo": [
             "id"
@@ -1038,7 +1017,7 @@
           "notNull": false
         }
       },
-      "definition": "\n    SELECT t.team_id,\n      t.team_name,\n      t.logo_url,\n      COALESCE(sum(cc.instance_count::double precision * a.hourly_price * (p.proving_time::numeric / (1000.0 * 60::numeric * 60::numeric))::double precision) / NULLIF(count(p.proof_id), 0)::double precision, 0::double precision) AS avg_cost_per_proof,\n      avg(p.proving_time) AS avg_proving_time\n    FROM teams t \n    LEFT JOIN proofs p ON t.user_id = p.user_id AND p.proof_status = 'proved'::text \n    LEFT JOIN cluster_configurations cc ON p.cluster_id = cc.cluster_id \n    LEFT JOIN aws_instance_pricing a ON cc.instance_type_id = a.id \n    GROUP BY t.team_id",
+      "definition": "\n    SELECT t.id as team_id,\n      t.name as team_name,\n      t.logo_url,\n      COALESCE(sum(cc.instance_count::double precision * a.hourly_price * (p.proving_time::numeric / (1000.0 * 60::numeric * 60::numeric))::double precision) / NULLIF(count(p.proof_id), 0)::double precision, 0::double precision) AS avg_cost_per_proof,\n      avg(p.proving_time) AS avg_proving_time\n    FROM teams t \n    LEFT JOIN proofs p ON t.id = p.team_id AND p.proof_status = 'proved'::text \n    LEFT JOIN cluster_configurations cc ON p.cluster_id = cc.cluster_id \n    LEFT JOIN aws_instance_pricing a ON cc.instance_type_id = a.id \n    GROUP BY t.id",
       "name": "teams_summary",
       "schema": "public",
       "isExisting": false,

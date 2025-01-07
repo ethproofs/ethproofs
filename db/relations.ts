@@ -1,22 +1,23 @@
 import { relations } from "drizzle-orm/relations"
-import {
-  clusters,
-  clusterConfigurations,
-  awsInstancePricing,
-  blocks,
-  recursiveRootProofs,
-  teams,
-  apiAuthTokens,
-  proofs,
-  programs,
-  proofBinaries,
-} from "./schema"
 import { authUsers } from "drizzle-orm/supabase"
 
+import {
+  apiAuthTokens,
+  awsInstancePricing,
+  blocks,
+  clusterConfigurations,
+  clusters,
+  programs,
+  proofBinaries,
+  proofs,
+  recursiveRootProofs,
+  teams,
+} from "./schema"
+
 export const apiAuthTokensRelations = relations(apiAuthTokens, ({ one }) => ({
-  user: one(authUsers, {
-    fields: [apiAuthTokens.user_id],
-    references: [authUsers.id],
+  team: one(teams, {
+    fields: [apiAuthTokens.team_id],
+    references: [teams.id],
   }),
 }))
 
@@ -44,9 +45,9 @@ export const clusterConfigurationsRelations = relations(
 
 export const clustersRelations = relations(clusters, ({ one, many }) => ({
   cc: many(clusterConfigurations),
-  user: one(authUsers, {
-    fields: [clusters.user_id],
-    references: [authUsers.id],
+  team: one(teams, {
+    fields: [clusters.team_id],
+    references: [teams.id],
   }),
   proofs: many(proofs),
 }))
@@ -65,9 +66,9 @@ export const recursiveRootProofsRelations = relations(
       fields: [recursiveRootProofs.block_number],
       references: [blocks.block_number],
     }),
-    user: one(authUsers, {
-      fields: [recursiveRootProofs.user_id],
-      references: [authUsers.id],
+    team: one(teams, {
+      fields: [recursiveRootProofs.team_id],
+      references: [teams.id],
     }),
   })
 )
@@ -79,7 +80,7 @@ export const blocksRelations = relations(blocks, ({ many }) => ({
 
 export const teamsRelations = relations(teams, ({ one }) => ({
   user: one(authUsers, {
-    fields: [teams.user_id],
+    fields: [teams.id],
     references: [authUsers.id],
   }),
 }))
@@ -93,17 +94,13 @@ export const proofsRelations = relations(proofs, ({ one }) => ({
     fields: [proofs.cluster_id],
     references: [clusters.id],
   }),
-  user: one(authUsers, {
-    fields: [proofs.user_id],
-    references: [authUsers.id],
+  team: one(teams, {
+    fields: [proofs.team_id],
+    references: [teams.id],
   }),
   program: one(programs, {
     fields: [proofs.program_id],
     references: [programs.id],
-  }),
-  team: one(teams, {
-    fields: [proofs.user_id],
-    references: [teams.user_id],
   }),
   proof_binary: one(proofBinaries, {
     fields: [proofs.proof_id],

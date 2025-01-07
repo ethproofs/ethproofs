@@ -449,12 +449,12 @@ export default async function BlockDetailsPage({
                   "md:col-span-1 md:col-start-1 md:row-span-1 md:row-start-1"
                 )}
               >
-                {team?.team_name && (
+                {team?.name && (
                   <Link
-                    href={"/prover/" + team?.team_id}
+                    href={"/prover/" + team?.id}
                     className="text-2xl hover:text-primary-light hover:underline"
                   >
-                    {team.team_name}
+                    {team.name}
                   </Link>
                 )}
               </div>
@@ -530,14 +530,13 @@ export default async function BlockDetailsPage({
                   <MetricInfo
                     label={
                       <div>
-                        <span className="normal-case">{team?.team_name}</span>{" "}
-                        zk
+                        <span className="normal-case">{team?.name}</span> zk
                         <span className="uppercase">VM</span> cycles
                       </div>
                     }
                   >
                     <TooltipContentHeader>
-                      <span className="normal-case">{team?.team_name}</span> zk
+                      <span className="normal-case">{team?.name}</span> zk
                       <span className="uppercase">VM</span> cycles
                     </TooltipContentHeader>
                     <Info.Derivation>
@@ -546,12 +545,12 @@ export default async function BlockDetailsPage({
                     <p>
                       <Info.Term type="internal">proving cycles</Info.Term> is
                       self-reported by{" "}
-                      {team?.team_name ? team.team_name : "the proving team"}
+                      {team?.name ? team.name : "the proving team"}
                     </p>
                     <Info.Description>
                       The number of cycles used by{" "}
-                      {team?.team_name ? team.team_name : "the proving team"} to
-                      generate the proof.
+                      {team?.name ? team.name : "the proving team"} to generate
+                      the proof.
                     </Info.Description>
                     <Info.Description>
                       This number will vary depending on hardware and zkVMs

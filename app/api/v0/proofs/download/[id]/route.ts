@@ -10,7 +10,7 @@ export async function GET(
     columns: {
       block_number: true,
       cluster_id: true,
-      user_id: true,
+      team_id: true,
     },
     with: {
       proof_binary: true,
@@ -24,14 +24,12 @@ export async function GET(
 
   const team = await db.query.teams.findFirst({
     columns: {
-      team_name: true,
+      name: true,
     },
-    where: (teams, { eq }) => eq(teams.user_id, proofRow.user_id),
+    where: (teams, { eq }) => eq(teams.id, proofRow.team_id),
   })
 
-  const teamName = team?.team_name
-    ? team.team_name
-    : proofRow.cluster_id.split("-")[0]
+  const teamName = team?.name ? team.name : proofRow.cluster_id.split("-")[0]
   const filename = `${proofRow.block_number}_${teamName}_${id}.bin`
 
   const binaryBuffer = Buffer.from(

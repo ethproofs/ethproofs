@@ -3,7 +3,7 @@ import { createSeedClient, teamsScalars } from "@snaplet/seed"
 
 const proverProfiles: Partial<teamsScalars>[] = [
   {
-    team_name: "Succinct",
+    name: "Succinct",
     logo_url:
       "https://ibkqxhjnroghhtfyualc.supabase.co/storage/v1/object/public/public-assets/succinct-logo.svg",
     website_url: "https://succinct.xyz",
@@ -11,7 +11,7 @@ const proverProfiles: Partial<teamsScalars>[] = [
     github_org: "Succinct",
   },
   {
-    team_name: "RiscZero",
+    name: "RiscZero",
     logo_url:
       "https://ibkqxhjnroghhtfyualc.supabase.co/storage/v1/object/public/public-assets/risc-zero-logo.svg",
     website_url: "https://risczero.com",
@@ -39,13 +39,17 @@ const main = async () => {
       aud: "authenticated",
       role: "authenticated",
       email: `${proverProfiles[index].github_org}@test.com`,
+      raw_user_meta_data: {
+        first_name: copycat.firstName(index),
+        last_name: copycat.lastName(index),
+      },
       encrypted_password: "password",
     }))
   )
 
   await seed.api_auth_tokens((x) =>
     x(1, () => ({
-      user_id: users[0].id,
+      team_id: users[0].id,
       // token (w/ SECRET=secret): Y01Xu-5hwHpKkKtCo_uHEGTn
       token: "bee1968d88a7ee4560c3409146ad1812b44a778735b59953344abea41aafa206",
     }))
@@ -70,15 +74,15 @@ const main = async () => {
     const profile = proverProfiles[userIndex]
 
     // add team for user
-    await seed.teams(
-      (x) =>
-        x(1, () => ({
-          ...profile,
-        })),
-      {
-        connect: { users: [user] },
-      }
-    )
+    // const { teams } = await seed.teams(
+    //   (x) =>
+    //     x(1, () => ({
+    //       ...profile,
+    //     })),
+    //   {
+    //     connect: { users: [user] },
+    //   }
+    // )
 
     // add 2 clusters per team/user
     const { clusters } = await seed.clusters(
@@ -93,7 +97,7 @@ const main = async () => {
           }
         }),
       {
-        connect: { users: [user] },
+        connect: { teams: [{ id: user.id }] },
       }
     )
 
@@ -107,7 +111,7 @@ const main = async () => {
 
     const { proofs } = await seed.proofs(
       (x) =>
-        x(500, () => ({
+        x(200, () => ({
           proof_id: ({ seed }) => copycat.int(seed, { min: 1, max: 1000000 }),
           proving_time: ({ seed }) =>
             copycat.int(seed, { min: 1000, max: 10000 }),
@@ -117,8 +121,9 @@ const main = async () => {
             copycat.int(seed, { min: 100000, max: 1000000 }),
           size_bytes: ({ seed }) =>
             copycat.int(seed, { min: 2 ** 15, max: 2 ** 23 }),
+          team_id: user.id,
         })),
-      { connect: { users, blocks, clusters } }
+      { connect: { blocks, clusters } }
     )
 
     for (const { proof_id, proof_status } of proofs) {
