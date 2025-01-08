@@ -13,10 +13,15 @@ export async function GET(
       block_number: true,
       cluster_id: true,
       team_id: true,
-      proof_id: true,
     },
     with: {
       proof_binary: true,
+      cluster: {
+        columns: {
+          proof_type: true,
+          cycle_type: true,
+        },
+      },
     },
     where: (proofs, { eq }) => eq(proofs.block_number, Number(block)),
   })
@@ -35,8 +40,9 @@ export async function GET(
       where: (teams, { eq }) => eq(teams.id, proofRow.team_id),
     })
 
+    const { proof_type, cycle_type } = proofRow.cluster
     const teamName = team?.name ? team.name : proofRow.cluster_id.split("-")[0]
-    const filename = `block_${block}_proof_${proofRow.proof_id}_${teamName}.txt`
+    const filename = `block_${block}_${proof_type}_${cycle_type}_${teamName}.txt`
 
     const binaryBuffer = Buffer.from(
       proofRow.proof_binary.proof_binary.slice(2),
