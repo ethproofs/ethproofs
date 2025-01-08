@@ -33,7 +33,7 @@ const DownloadButton = ({
     "bg-body-secondary/10 hover:bg-body-secondary/10 cursor-auto"
 
   const labelClassName = cn(
-    "inline-block text-nowrap text-xs font-bold",
+    "inline-block text-nowrap text-xs font-bold font-body",
     labelClass
   )
 
