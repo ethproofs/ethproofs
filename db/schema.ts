@@ -394,7 +394,7 @@ export const recentSummary = pgView("recent_summary", {
   )
 
 export const teamsSummary = pgView("teams_summary", {
-  team_id: integer("team_id"),
+  team_id: uuid("team_id"),
   team_name: text("team_name"),
   logo_url: text("logo_url"),
   avg_cost_per_proof: doublePrecision("avg_cost_per_proof"),
