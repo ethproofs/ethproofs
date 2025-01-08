@@ -7,7 +7,7 @@ export const withAuth = (
     request: Request
     client: ReturnType<typeof createClient>
     user: { id: string } | null
-    apiKey?: { mode: string; user_id: string } | null
+    apiKey?: { mode: string; team_id: string } | null
     timestamp: string
   }) => void
 ) => {
@@ -38,7 +38,7 @@ export const withAuth = (
 
       const { data, error } = await client
         .from("api_auth_tokens")
-        .select("mode, user_id")
+        .select("mode, team_id")
         .eq("token", apiKey)
         .single()
 
@@ -51,7 +51,7 @@ export const withAuth = (
       if (data) {
         return handler({
           ...commonProps,
-          user: { id: data.user_id },
+          user: { id: data.team_id },
           apiKey: data,
         })
       }
