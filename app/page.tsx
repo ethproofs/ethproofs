@@ -19,6 +19,7 @@ import ShieldCheck from "@/components/svgs/shield-check.svg"
 import TeamLogo from "@/components/TeamLogo"
 import { ButtonLink } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
+import { Divider } from "@/components/ui/divider"
 
 import { cn } from "@/lib/utils"
 
@@ -154,7 +155,7 @@ export default async function Index() {
       <section className="w-full scroll-m-20 space-y-8" id="provers">
         <div>
           <h2>Provers</h2>
-          <div className="h-0.5 w-full bg-gradient-to-r from-primary" />
+          <Divider className="h-0.5" />
         </div>
         <div className="flex flex-col-reverse gap-8 sm:flex-row">
           <div className="flex-1">
