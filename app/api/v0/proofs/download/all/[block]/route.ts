@@ -52,12 +52,9 @@ export async function GET(
     binaryBuffers.push({ binaryBuffer, filename })
   }
 
-  console.log(`Adding ${binaryBuffers.length} files to the zip`)
-
   // Create a zip file from buffers using adm-zip
   const zip = new AdmZip()
   binaryBuffers.forEach(({ binaryBuffer, filename }) => {
-    console.log(`Adding file: ${filename}`)
     zip.addFile(filename, binaryBuffer)
   })
 
