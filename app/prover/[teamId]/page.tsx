@@ -133,7 +133,12 @@ export default async function ProverPage({ params }: ProverPageProps) {
       ),
       description:
         "The average number of zkVM cycles required to prove a million gas units",
-      value: formatNumber(avgZkVMCyclesPerMgas),
+      value:
+        avgZkVMCyclesPerMgas > 0 ? (
+          formatNumber(avgZkVMCyclesPerMgas)
+        ) : (
+          <Null />
+        ),
     },
     {
       key: "avg-cost-per-mgas",
@@ -144,14 +149,19 @@ export default async function ProverPage({ params }: ProverPageProps) {
         </div>
       ),
       description: "The average cost incurred for proving a million gas units",
-      value: formatUsd(avgCostPerMgas),
+      value: avgCostPerMgas > 0 ? formatUsd(avgCostPerMgas) : <Null />,
     },
     {
       key: "avg-proving-time",
       label: `${AVERAGE_LABEL} proving time`,
       description:
         "The average amount of time taken to generate a proof using any proving instance",
-      value: avgProofProvingTime ? prettyMs(avgProofProvingTime) : <Null />,
+      value:
+        avgProofProvingTime && avgProofProvingTime > 0 ? (
+          prettyMs(avgProofProvingTime)
+        ) : (
+          <Null />
+        ),
     },
   ]
 
