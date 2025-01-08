@@ -11,6 +11,7 @@ import { metrics } from "@/components/Metrics"
 import Null from "@/components/Null"
 import ProofStatus, { ProofStatusInfo } from "@/components/ProofStatus"
 import { HidePunctuation } from "@/components/StylePunctuation"
+import ArrowDown from "@/components/svgs/arrow-down.svg"
 import BookOpen from "@/components/svgs/book-open.svg"
 import Box from "@/components/svgs/box.svg"
 import Clock from "@/components/svgs/clock.svg"
@@ -21,6 +22,7 @@ import Layers from "@/components/svgs/layers.svg"
 import ProofCircle from "@/components/svgs/proof-circle.svg"
 import Timer from "@/components/svgs/timer.svg"
 import Timestamp from "@/components/Timestamp"
+import { Button } from "@/components/ui/button"
 import {
   HeroBody,
   HeroDivider,
@@ -403,9 +405,23 @@ export default async function BlockDetailsPage({
       </div>
 
       <section>
-        <h2 className="flex items-center gap-2 text-lg font-normal text-primary">
-          <ProofCircle /> Proofs
-        </h2>
+        <div className="flex justify-between">
+          <h2 className="flex items-center gap-2 text-lg font-normal text-primary">
+            <ProofCircle /> Proofs
+          </h2>
+          <Button
+            className="h-8 gap-2 self-center px-4 text-2xl"
+            size="icon"
+            asChild
+          >
+            <a href={`/api/v0/proofs/download/all/${blockNumber}`} download>
+              <ArrowDown />
+              <span className="inline-block text-nowrap text-xs font-bold">
+                Download all proofs
+              </span>
+            </a>
+          </Button>
+        </div>
 
         {proofs.sort(sortProofsStatusAndTimes).map((proof) => {
           const {
