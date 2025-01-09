@@ -154,26 +154,27 @@ export const POST = withAuth(async ({ request, user, timestamp }) => {
 
   const proofHex = base64ToHex(proof)
 
+  const dataToInsert = {
+    ...restProofPayload,
+    block_number,
+    proof_id: proofId,
+    cluster_id: cluster.id,
+    program_id: programId,
+    proof_status: "proved",
+    proved_timestamp: timestamp,
+    size_bytes: Buffer.byteLength(proofHex, "hex"),
+    team_id: user.id,
+  }
+
   try {
     const newProof = await db.transaction(async (tx) => {
       const [newProof] = await tx
         .insert(proofs)
-        .values({
-          ...restProofPayload,
-          block_number,
-          proof_id: proofId,
-          cluster_id: cluster.id,
-          program_id: programId,
-          proof_status: "proved",
-          proved_timestamp: timestamp,
-          size_bytes: Buffer.byteLength(proofHex, "hex"),
-          team_id: user.id,
-        })
+        .values(dataToInsert)
         .onConflictDoUpdate({
           target: [proofs.block_number, proofs.cluster_id],
           set: {
-            proof_status: "proved",
-            proved_timestamp: timestamp,
+            ...dataToInsert,
           },
         })
         .returning({ proof_id: proofs.proof_id })
