@@ -1,7 +1,6 @@
-import { LinkProps } from "next/link"
-
 import { ButtonLink } from "./ui/button"
 import { HeroSection } from "./ui/hero"
+import { type LinkProps } from "./ui/link"
 
 type NotFoundsTemplateProps = Partial<
   Pick<React.HTMLAttributes<HTMLDivElement>, "children"> &
