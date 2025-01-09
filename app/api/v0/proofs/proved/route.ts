@@ -128,52 +128,31 @@ export const POST = withAuth(async ({ request, user, timestamp }) => {
     }
   }
 
-  // get proof_id to update or create an existing proof
-  let proofId: number | undefined
-  if (!proofPayload.proof_id) {
-    const existingProof = await db.query.proofs.findFirst({
-      columns: {
-        proof_id: true,
-      },
-      where: (proofs, { and, eq }) =>
-        and(
-          eq(proofs.block_number, block_number),
-          eq(proofs.cluster_id, cluster.id),
-          eq(proofs.team_id, user.id)
-        ),
-    })
-
-    proofId = existingProof?.proof_id
-  }
+  const proofHex = base64ToHex(proof)
 
   // add proof
-  console.log("adding proof", {
-    proof_id: proofId,
+  const dataToInsert = {
     ...restProofPayload,
-  })
+    block_number,
+    cluster_id: cluster.id,
+    program_id: programId,
+    proof_status: "proved",
+    proved_timestamp: timestamp,
+    size_bytes: Buffer.byteLength(proofHex, "hex"),
+    team_id: user.id,
+  }
 
-  const proofHex = base64ToHex(proof)
+  console.log("adding proved proof", dataToInsert)
 
   try {
     const newProof = await db.transaction(async (tx) => {
       const [newProof] = await tx
         .insert(proofs)
-        .values({
-          ...restProofPayload,
-          block_number,
-          proof_id: proofId,
-          cluster_id: cluster.id,
-          program_id: programId,
-          proof_status: "proved",
-          proved_timestamp: timestamp,
-          size_bytes: Buffer.byteLength(proofHex, "hex"),
-          team_id: user.id,
-        })
+        .values(dataToInsert)
         .onConflictDoUpdate({
           target: [proofs.block_number, proofs.cluster_id],
           set: {
-            proof_status: "proved",
-            proved_timestamp: timestamp,
+            ...dataToInsert,
           },
         })
         .returning({ proof_id: proofs.proof_id })
