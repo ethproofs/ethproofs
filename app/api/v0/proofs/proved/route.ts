@@ -128,13 +128,9 @@ export const POST = withAuth(async ({ request, user, timestamp }) => {
     }
   }
 
-  // add proof
-  console.log("adding proved proof", {
-    ...restProofPayload,
-  })
-
   const proofHex = base64ToHex(proof)
 
+  // add proof
   const dataToInsert = {
     ...restProofPayload,
     block_number,
@@ -145,6 +141,8 @@ export const POST = withAuth(async ({ request, user, timestamp }) => {
     size_bytes: Buffer.byteLength(proofHex, "hex"),
     team_id: user.id,
   }
+
+  console.log("adding proved proof", dataToInsert)
 
   try {
     const newProof = await db.transaction(async (tx) => {

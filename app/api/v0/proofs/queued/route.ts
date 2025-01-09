@@ -96,21 +96,21 @@ export const POST = withAuth(async ({ request, user, timestamp }) => {
   }
 
   // add proof
-  console.log("adding queued proof", {
+  const dataToInsert = {
     ...proofPayload,
-  })
+    block_number,
+    cluster_id: cluster.id,
+    proof_status: "queued",
+    queued_timestamp: timestamp,
+    team_id: user.id,
+  }
+
+  console.log("adding queued proof", dataToInsert)
 
   try {
     const [proof] = await db
       .insert(proofs)
-      .values({
-        ...proofPayload,
-        block_number,
-        cluster_id: cluster.id,
-        proof_status: "queued",
-        queued_timestamp: timestamp,
-        team_id: user.id,
-      })
+      .values(dataToInsert)
       .onConflictDoUpdate({
         target: [proofs.block_number, proofs.cluster_id],
         set: {
