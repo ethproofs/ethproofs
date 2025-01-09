@@ -95,27 +95,8 @@ export const POST = withAuth(async ({ request, user, timestamp }) => {
     return new Response("Cluster not found", { status: 404 })
   }
 
-  // get proof_id to update or create an existing proof
-  let proofId
-  if (!proofPayload.proof_id) {
-    const existingProof = await db.query.proofs.findFirst({
-      columns: {
-        proof_id: true,
-      },
-      where: (proofs, { and, eq }) =>
-        and(
-          eq(proofs.block_number, block_number),
-          eq(proofs.cluster_id, cluster.id),
-          eq(proofs.team_id, user.id)
-        ),
-    })
-
-    proofId = existingProof?.proof_id
-  }
-
   // add proof
-  console.log("adding proof", {
-    proof_id: proofId,
+  console.log("adding queued proof", {
     ...proofPayload,
   })
 
@@ -124,7 +105,6 @@ export const POST = withAuth(async ({ request, user, timestamp }) => {
       .insert(proofs)
       .values({
         ...proofPayload,
-        proof_id: proofId,
         block_number,
         cluster_id: cluster.id,
         proof_status: "queued",

@@ -128,27 +128,8 @@ export const POST = withAuth(async ({ request, user, timestamp }) => {
     }
   }
 
-  // get proof_id to update or create an existing proof
-  let proofId: number | undefined
-  if (!proofPayload.proof_id) {
-    const existingProof = await db.query.proofs.findFirst({
-      columns: {
-        proof_id: true,
-      },
-      where: (proofs, { and, eq }) =>
-        and(
-          eq(proofs.block_number, block_number),
-          eq(proofs.cluster_id, cluster.id),
-          eq(proofs.team_id, user.id)
-        ),
-    })
-
-    proofId = existingProof?.proof_id
-  }
-
   // add proof
-  console.log("adding proof", {
-    proof_id: proofId,
+  console.log("adding proved proof", {
     ...restProofPayload,
   })
 
@@ -157,7 +138,6 @@ export const POST = withAuth(async ({ request, user, timestamp }) => {
   const dataToInsert = {
     ...restProofPayload,
     block_number,
-    proof_id: proofId,
     cluster_id: cluster.id,
     program_id: programId,
     proof_status: "proved",
