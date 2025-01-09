@@ -430,7 +430,7 @@ export default async function BlockDetailsPage({
 
           const provingCost = getProvingCost(proof)
 
-          const clusterConfigs = cluster?.cluster_configurations
+          const clusterConfigs = cluster?.cluster_configuration
 
           return (
             <div

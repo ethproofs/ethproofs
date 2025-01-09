@@ -382,10 +382,6 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "proof_id": {
-                    "type": "number",
-                    "description": "Unique identifier for the proof. If no proof_id is provided, the system will attempt to find an existing proof for the block_number and cluster_id"
-                  },
                   "block_number": {
                     "type": "number",
                     "minimum": 0
@@ -459,10 +455,6 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "proof_id": {
-                    "type": "number",
-                    "description": "Unique identifier for the proof. If no proof_id is provided, the system will attempt to find an existing proof for the block_number and cluster_id"
-                  },
                   "block_number": {
                     "type": "number",
                     "minimum": 0
@@ -536,10 +528,6 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "proof_id": {
-                    "type": "number",
-                    "description": "Unique identifier for the proof. If no proof_id is provided, the system will attempt to find an existing proof for the block_number and cluster_id"
-                  },
                   "block_number": {
                     "type": "number",
                     "minimum": 0
