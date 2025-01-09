@@ -1,3 +1,7 @@
+"use client"
+
+import { useParams } from "next/navigation"
+
 import Box from "@/components/svgs/box.svg"
 import { ButtonLink } from "@/components/ui/button"
 import { Divider } from "@/components/ui/divider"
@@ -5,7 +9,9 @@ import Link from "@/components/ui/link"
 
 import { SITE_REPO } from "@/lib/constants"
 
-export default async function NotFound() {
+export default function NotFound() {
+  const { block } = useParams()
+
   return (
     <div className="flex flex-col items-center gap-4 text-center">
       <Box className="size-40 stroke-[0.5px] text-body-secondary" />
@@ -13,7 +19,7 @@ export default async function NotFound() {
         No block found with proofs
       </h1>
       <p className="text-lg">
-        This block does not have proofs or was not proven by any of our
+        The block {block} does not have proofs or was not proven by any of our
         supported providers
       </p>
       <p className="text-lg">
