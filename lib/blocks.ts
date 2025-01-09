@@ -27,11 +27,18 @@ export const fetchBlockData = async (block_number: number) => {
 /**
  * Determines the type of value for a given block.
  *
- * @param block - The block parameter to evaluate.
- * @returns A string indicating the type of value: "hash" if the block number is greater than 0xffffffff, otherwise "block_number".
+ * @param block - The block parameter to evaluate in string format
+ * @returns null if not parsable to a number; "hash" if matching 64 hex chars, else "block_number"
  */
-export const getBlockValueType = (block: number) =>
-  block > 0xffffffff ? "hash" : "block_number"
+export const getBlockValueType = (
+  block: string
+): keyof Pick<Block, "hash" | "block_number"> | null => {
+  if (isNaN(+block)) return null
+
+  if (/^0x[0-9a-fA-F]{64}$/.test(block)) return "hash"
+
+  return "block_number"
+}
 
 export const mergeBlocksWithTeams = (blocks: Block[], teams: Team[]) => {
   return blocks.map((block) => {
