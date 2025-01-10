@@ -1,5 +1,7 @@
 import { headers } from "next/headers"
 
+import { withTelemetry } from "../middleware/with-telemetry"
+
 import { hashToken } from "./hash-token"
 
 import { db } from "@/db"
@@ -11,8 +13,8 @@ export const withAuth = (
     apiKey?: { mode: string; team_id: string }
     timestamp: string
   }) => Promise<Response>
-) => {
-  return async (request: Request) => {
+) =>
+  withTelemetry(async (request: Request) => {
     const timestamp = new Date().toISOString()
 
     const headerStore = headers()
@@ -52,5 +54,4 @@ export const withAuth = (
       user: { id: apiAuthToken.team_id },
       apiKey: apiAuthToken,
     })
-  }
-}
+  })
