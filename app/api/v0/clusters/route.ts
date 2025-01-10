@@ -1,7 +1,7 @@
 import { db } from "@/db"
 import { clusterConfigurations, clusters } from "@/db/schema"
-import { withAuth } from "@/lib/auth/with-auth"
 import { tmp_renameClusterConfiguration } from "@/lib/clusters"
+import { withAuth } from "@/lib/middleware/with-auth"
 import { createClusterSchema } from "@/lib/zod/schemas/cluster"
 
 export const GET = withAuth(async ({ user }) => {

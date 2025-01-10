@@ -5,8 +5,8 @@ import { base64ToHex } from "@/lib/utils"
 
 import { db } from "@/db"
 import { blocks, programs, proofBinaries, proofs } from "@/db/schema"
-import { withAuth } from "@/lib/auth/with-auth"
 import { fetchBlockData } from "@/lib/blocks"
+import { withAuth } from "@/lib/middleware/with-auth"
 import { provedProofSchema } from "@/lib/zod/schemas/proof"
 
 // TODO: refactor code to use baseProofHandler and abstract out the logic

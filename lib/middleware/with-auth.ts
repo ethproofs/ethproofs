@@ -1,8 +1,8 @@
 import { headers } from "next/headers"
 
-import { withTelemetry } from "../middleware/with-telemetry"
+import { hashToken } from "../auth/hash-token"
 
-import { hashToken } from "./hash-token"
+import { withTelemetry } from "./with-telemetry"
 
 import { db } from "@/db"
 
