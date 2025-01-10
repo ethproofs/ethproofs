@@ -38,6 +38,7 @@ import { AVERAGE_LABEL, SITE_NAME } from "@/lib/constants"
 import { columns } from "./columns"
 
 import { db } from "@/db"
+import { tmp_renameClusterConfiguration } from "@/lib/clusters"
 import { getMetadata } from "@/lib/metadata"
 import { formatNumber, formatUsd } from "@/lib/number"
 import {
@@ -78,15 +79,28 @@ export default async function ProverPage({ params }: ProverPageProps) {
 
   if (!team) return notFound()
 
-  const proofs = await db.query.proofs.findMany({
+  const proofsRaw = await db.query.proofs.findMany({
     where: (proofs, { eq }) => eq(proofs.team_id, team.id),
     with: {
       block: true,
-      cluster: true,
+      cluster: {
+        with: {
+          cc: {
+            with: {
+              aip: true,
+            },
+          },
+        },
+      },
     },
   })
 
-  if (!proofs.length) return notFound()
+  if (!proofsRaw.length) return notFound()
+
+  const proofs = proofsRaw.map((proof) => ({
+    ...proof,
+    cluster: tmp_renameClusterConfiguration(proof.cluster),
+  }))
 
   const clusters = Object.values(
     proofs.reduce((acc, curr) => {
