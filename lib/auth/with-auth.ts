@@ -7,10 +7,10 @@ import { db } from "@/db"
 export const withAuth = (
   handler: (auth: {
     request: Request
-    user: { id: string } | null
-    apiKey?: { mode: string; team_id: string } | null
+    user: { id: string }
+    apiKey?: { mode: string; team_id: string }
     timestamp: string
-  }) => void
+  }) => Promise<Response>
 ) => {
   return async (request: Request) => {
     const timestamp = new Date().toISOString()
@@ -25,34 +25,32 @@ export const withAuth = (
       request,
     }
 
-    // If there is an auth header, validate api key
-    if (apiKey) {
-      const apiAuthToken = await db.query.apiAuthTokens.findFirst({
-        columns: {
-          mode: true,
-          team_id: true,
-        },
-        where: (apiAuthToken, { eq }) => eq(apiAuthToken.token, hashedKey),
+    if (!apiKey) {
+      return new Response("No API key provided", {
+        status: 401,
       })
-
-      // api key is invalid
-      if (!apiAuthToken) {
-        return handler({ ...commonProps, user: null })
-      }
-
-      // fetch the user
-      if (apiAuthToken) {
-        return handler({
-          ...commonProps,
-          user: { id: apiAuthToken.team_id },
-          apiKey: apiAuthToken,
-        })
-      }
     }
 
-    // TODO: If there is no auth header, then the user is likely logged in
-    // const user = await client.auth.getUser()
+    // If there is an auth header, validate api key
+    const apiAuthToken = await db.query.apiAuthTokens.findFirst({
+      columns: {
+        mode: true,
+        team_id: true,
+      },
+      where: (apiAuthToken, { eq }) => eq(apiAuthToken.token, hashedKey),
+    })
 
-    return handler({ ...commonProps, user: null, apiKey: null })
+    // api key is invalid
+    if (!apiAuthToken) {
+      return new Response("Invalid API key", {
+        status: 401,
+      })
+    }
+
+    return handler({
+      ...commonProps,
+      user: { id: apiAuthToken.team_id },
+      apiKey: apiAuthToken,
+    })
   }
 }

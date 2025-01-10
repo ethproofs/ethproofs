@@ -8,12 +8,6 @@ import { singleMachineSchema } from "@/lib/zod/schemas/cluster"
 export const POST = withAuth(async ({ request, user }) => {
   const requestBody = await request.json()
 
-  if (!user) {
-    return new Response("Invalid API key", {
-      status: 401,
-    })
-  }
-
   // validate payload schema
   let singleMachinePayload
   try {

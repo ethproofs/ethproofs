@@ -5,12 +5,6 @@ import { tmp_renameClusterConfiguration } from "@/lib/clusters"
 import { createClusterSchema } from "@/lib/zod/schemas/cluster"
 
 export const GET = withAuth(async ({ user }) => {
-  if (!user) {
-    return new Response("Invalid API key", {
-      status: 401,
-    })
-  }
-
   try {
     const clusters = await db.query.clusters.findMany({
       columns: {
@@ -51,12 +45,6 @@ export const GET = withAuth(async ({ user }) => {
 
 export const POST = withAuth(async ({ request, user }) => {
   const requestBody = await request.json()
-
-  if (!user) {
-    return new Response("Invalid API key", {
-      status: 401,
-    })
-  }
 
   // validate payload schema
   let clusterPayload

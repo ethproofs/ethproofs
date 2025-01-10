@@ -15,12 +15,6 @@ export const POST = withAuth(async ({ request, user, timestamp }) => {
   // TODO: remove when we go to production, this is a temporary log to debug the payload
   console.log("payload", payload)
 
-  if (!user) {
-    return new Response("Invalid API key", {
-      status: 401,
-    })
-  }
-
   // validate payload schema
   let proofPayload
   try {
