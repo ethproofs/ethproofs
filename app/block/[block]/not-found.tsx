@@ -23,7 +23,7 @@ export default function NotFound() {
       <h1 className="mb-4 font-mono text-3xl text-primary">
         No block found with proofs
       </h1>
-      <p className="text-lg">
+      <p className="max-w-screen-lg text-lg">
         The block{" "}
         {blockType === "hash" ? (
           <>
