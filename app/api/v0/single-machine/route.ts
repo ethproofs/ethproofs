@@ -2,7 +2,7 @@ import { ZodError } from "zod"
 
 import { db } from "@/db"
 import { clusterConfigurations, clusters } from "@/db/schema"
-import { withAuth } from "@/lib/auth/withAuth"
+import { withAuth } from "@/lib/auth/with-auth"
 import { singleMachineSchema } from "@/lib/zod/schemas/cluster"
 
 export const POST = withAuth(async ({ request, user }) => {

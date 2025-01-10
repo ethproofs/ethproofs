@@ -3,7 +3,7 @@ import { ZodError } from "zod"
 
 import { db } from "@/db"
 import { blocks, proofs } from "@/db/schema"
-import { withAuth } from "@/lib/auth/withAuth"
+import { withAuth } from "@/lib/auth/with-auth"
 import { fetchBlockData } from "@/lib/blocks"
 import { provingProofSchema } from "@/lib/zod/schemas/proof"
 
