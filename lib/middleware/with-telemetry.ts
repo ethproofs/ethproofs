@@ -7,6 +7,7 @@ type Report = {
   durationMs: number
   statusCode?: number
   errorMessage?: string
+  requestBody?: string
 }
 
 const sendReport = async (message: string, report: Report) => {
@@ -36,6 +37,19 @@ const sendReport = async (message: string, report: Report) => {
   }
 }
 
+const getRequestBody = async (request: Request) => {
+  if (!request.body) {
+    return
+  }
+
+  try {
+    return await request.json()
+    // eslint-disable-next-line unused-imports/no-unused-vars
+  } catch (_error) {
+    return await request.text()
+  }
+}
+
 export const withTelemetry = (
   handler: (request: Request) => Promise<Response>
 ) => {
@@ -56,6 +70,7 @@ export const withTelemetry = (
 
       const message = `${request.method} ${request.url} ${report.statusCode} in ${report.durationMs}ms ${report.date}`
       if (report.statusCode !== 200) {
+        report.requestBody = await getRequestBody(request)
         sendReport(message, report)
       }
 
@@ -66,6 +81,7 @@ export const withTelemetry = (
       report.endTime = new Date().getTime()
       report.durationMs = report.endTime - report.startTime
       report.statusCode = 500
+      report.requestBody = await getRequestBody(request)
 
       if (error instanceof Error) {
         report.errorMessage = error.message
