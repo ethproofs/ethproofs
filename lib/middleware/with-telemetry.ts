@@ -44,7 +44,6 @@ const getRequestBody = async (request: Request) => {
 
   try {
     return await request.json()
-    // eslint-disable-next-line unused-imports/no-unused-vars
   } catch (_error) {
     return await request.text()
   }
