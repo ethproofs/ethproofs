@@ -41,7 +41,7 @@ const MetricInfo = React.forwardRef<HTMLDivElement, MetricInfoProps>(
         {trigger || (
           <div className="flex items-center gap-2">
             {label}
-            <InfoCircle className="-mb-0.5" />
+            <InfoCircle className="-mb-0.5 shrink-0" />
           </div>
         )}
       </PopoverTrigger>
