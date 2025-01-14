@@ -40,7 +40,7 @@ type ProofStatusProps = React.HTMLAttributes<HTMLDivElement> & {
 const ProofStatus = ({
   proofs,
   className,
-  hideEmpty,
+  hideEmpty = true,
   ...props
 }: ProofStatusProps) => {
   const allProofs: Proof[][] = Array(ORDERED_STATUSES.length)
@@ -53,7 +53,8 @@ const ProofStatus = ({
       {...props}
     >
       {allProofs.map(({ length: proofCount }, idx) => {
-        if (proofCount === 0 && hideEmpty) return null
+        // Hide "proving" or "queued" if there are no proofs in that status
+        if (proofCount === 0 && hideEmpty && idx !== 0) return null
         return (
           <div key={ORDERED_STATUSES[idx]} className="flex items-center gap-1">
             <MetricInfo
