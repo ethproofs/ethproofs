@@ -607,7 +607,7 @@ export default async function BlockDetailsPage({
                         {formatUsd(provingCost)} <Cpu />
                       </PopoverTrigger>
                       {cluster && clusterConfigs && (
-                        <PopoverContent className="w-[40rem] max-w-[100vw]">
+                        <PopoverContent>
                           <TooltipContentHeader>
                             {cluster.nickname}
                           </TooltipContentHeader>
@@ -630,7 +630,7 @@ export default async function BlockDetailsPage({
                             AWS Equivalency
                           </TooltipContentHeader>
 
-                          <div className="space-y-4">
+                          <div className="w-fit space-y-4">
                             {clusterConfigs.map(
                               ({
                                 instance_count,
@@ -654,7 +654,7 @@ export default async function BlockDetailsPage({
                                     key={instance_type_id}
                                   >
                                     <div className="flex gap-8">
-                                      <div className="space-y-2 p-2">
+                                      <div className="flex-1 space-y-2 p-2">
                                         {instance_memory && (
                                           <p>Memory: {instance_memory}</p>
                                         )}
