@@ -10,7 +10,7 @@ import EthProofsLogo from "@/components/svgs/eth-proofs-logo.svg"
 import GitHub from "@/components/svgs/github.svg"
 import Hamburger from "@/components/svgs/hamburger.svg"
 import Heart from "@/components/svgs/heart.svg"
-import { Button } from "@/components/ui/button"
+import { Button, ButtonLink } from "@/components/ui/button"
 import {
   Drawer,
   DrawerClose,
@@ -177,17 +177,14 @@ export default function RootLayout({
             <main className="min-h-[50vh]">{children}</main>
 
             <footer className="mx-auto mt-16 flex max-w-prose flex-col items-center">
-              <Button asChild size="lg">
-                <Link
-                  href={new URL(SITE_REPO, "https://github.com").toString()}
-                  className="mb-12"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  <GitHub className="size-6" />
-                  <span>Contribute to {SITE_NAME}</span>
-                </Link>
-              </Button>
+              <ButtonLink
+                size="lg"
+                href={new URL(SITE_REPO, "https://github.com").toString()}
+                className="mb-12"
+              >
+                <GitHub className="size-6" />
+                <span>Contribute to {SITE_NAME}</span>
+              </ButtonLink>
 
               <p className="mb-4 text-center">
                 Built with{" "}

@@ -2,6 +2,8 @@ import * as React from "react"
 
 import { cn } from "@/lib/utils"
 
+import { Divider } from "./divider"
+
 const HeroSection = React.forwardRef<
   HTMLDivElement,
   React.HTMLAttributes<HTMLDivElement>
@@ -29,11 +31,7 @@ const HeroDivider = React.forwardRef<
   HTMLDivElement,
   React.HTMLAttributes<HTMLDivElement>
 >(({ className, ...props }, ref) => (
-  <div
-    ref={ref}
-    className={cn("my-8 h-px w-full bg-gradient-to-r from-primary", className)}
-    {...props}
-  />
+  <Divider ref={ref} className={cn("my-8", className)} {...props} />
 ))
 HeroDivider.displayName = "HeroDivider"
 
