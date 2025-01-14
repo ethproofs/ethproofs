@@ -2,17 +2,11 @@ import { ZodError } from "zod"
 
 import { db } from "@/db"
 import { clusterConfigurations, clusters } from "@/db/schema"
-import { withAuth } from "@/lib/auth/with-auth"
+import { withAuth } from "@/lib/middleware/with-auth"
 import { singleMachineSchema } from "@/lib/zod/schemas/cluster"
 
 export const POST = withAuth(async ({ request, user }) => {
   const requestBody = await request.json()
-
-  if (!user) {
-    return new Response("Invalid API key", {
-      status: 401,
-    })
-  }
 
   // validate payload schema
   let singleMachinePayload

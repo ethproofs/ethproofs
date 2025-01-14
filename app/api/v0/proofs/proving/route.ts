@@ -3,8 +3,8 @@ import { ZodError } from "zod"
 
 import { db } from "@/db"
 import { blocks, proofs } from "@/db/schema"
-import { withAuth } from "@/lib/auth/with-auth"
 import { fetchBlockData } from "@/lib/blocks"
+import { withAuth } from "@/lib/middleware/with-auth"
 import { provingProofSchema } from "@/lib/zod/schemas/proof"
 
 // TODO: refactor code to use baseProofHandler and abstract out the logic
@@ -14,12 +14,6 @@ export const POST = withAuth(async ({ request, user, timestamp }) => {
 
   // TODO: remove when we go to production, this is a temporary log to debug the payload
   console.log("payload", payload)
-
-  if (!user) {
-    return new Response("Invalid API key", {
-      status: 401,
-    })
-  }
 
   // validate payload schema
   let proofPayload
