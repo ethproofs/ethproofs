@@ -404,11 +404,14 @@ export default async function BlockDetailsPage({
       </div>
 
       <section>
-        <div className="flex justify-between">
+        <div className="flex justify-between md:mb-4">
           <h2 className="flex items-center gap-2 text-lg font-normal text-primary">
             <ProofCircle /> Proofs
           </h2>
-          <DownloadAllButton blockNumber={blockNumber} className="max-md:hidden" />
+          <DownloadAllButton
+            blockNumber={blockNumber}
+            className="max-md:hidden"
+          />
         </div>
 
         {proofs.sort(sortProofsStatusAndTimes).map((proof) => {
