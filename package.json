@@ -68,6 +68,7 @@
     "@types/react-dom": "18.2.18",
     "@typescript-eslint/eslint-plugin": "^8.12.2",
     "@typescript-eslint/parser": "^8.0.0",
+    "@vlad-yakovlev/telegram-md": "^2.0.0",
     "adm-zip": "^0.5.16",
     "dotenv": "^16.4.7",
     "dotenv-flow": "^4.1.0",

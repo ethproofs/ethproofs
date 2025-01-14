@@ -38,6 +38,7 @@ import { AVERAGE_LABEL, SITE_NAME } from "@/lib/constants"
 import { columns } from "./columns"
 
 import { db } from "@/db"
+import { tmp_renameClusterConfiguration } from "@/lib/clusters"
 import { getMetadata } from "@/lib/metadata"
 import { formatNumber, formatUsd } from "@/lib/number"
 import {
@@ -78,15 +79,28 @@ export default async function ProverPage({ params }: ProverPageProps) {
 
   if (!team) return notFound()
 
-  const proofs = await db.query.proofs.findMany({
+  const proofsRaw = await db.query.proofs.findMany({
     where: (proofs, { eq }) => eq(proofs.team_id, team.id),
     with: {
       block: true,
-      cluster: true,
+      cluster: {
+        with: {
+          cc: {
+            with: {
+              aip: true,
+            },
+          },
+        },
+      },
     },
   })
 
-  if (!proofs.length) return notFound()
+  if (!proofsRaw.length) return notFound()
+
+  const proofs = proofsRaw.map((proof) => ({
+    ...proof,
+    cluster: tmp_renameClusterConfiguration(proof.cluster),
+  }))
 
   const clusters = Object.values(
     proofs.reduce((acc, curr) => {
@@ -133,7 +147,12 @@ export default async function ProverPage({ params }: ProverPageProps) {
       ),
       description:
         "The average number of zkVM cycles required to prove a million gas units",
-      value: formatNumber(avgZkVMCyclesPerMgas),
+      value:
+        avgZkVMCyclesPerMgas > 0 ? (
+          formatNumber(avgZkVMCyclesPerMgas)
+        ) : (
+          <Null />
+        ),
     },
     {
       key: "avg-cost-per-mgas",
@@ -144,14 +163,19 @@ export default async function ProverPage({ params }: ProverPageProps) {
         </div>
       ),
       description: "The average cost incurred for proving a million gas units",
-      value: formatUsd(avgCostPerMgas),
+      value: avgCostPerMgas > 0 ? formatUsd(avgCostPerMgas) : <Null />,
     },
     {
       key: "avg-proving-time",
       label: `${AVERAGE_LABEL} proving time`,
       description:
         "The average amount of time taken to generate a proof using any proving instance",
-      value: avgProofProvingTime ? prettyMs(avgProofProvingTime) : <Null />,
+      value:
+        avgProofProvingTime && avgProofProvingTime > 0 ? (
+          prettyMs(avgProofProvingTime)
+        ) : (
+          <Null />
+        ),
     },
   ]
 

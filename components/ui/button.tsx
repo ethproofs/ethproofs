@@ -1,7 +1,8 @@
 import * as React from "react"
 import { cva, type VariantProps } from "class-variance-authority"
-import Link, { LinkProps } from "next/link"
 import { Slot } from "@radix-ui/react-slot"
+
+import Link, { type LinkProps } from "@/components/ui/link"
 
 import { cn } from "@/lib/utils"
 
@@ -133,7 +134,11 @@ const ButtonLink = React.forwardRef<HTMLAnchorElement, ButtonLinkProps>(
       >
         <Link
           ref={ref}
-          className={cn("no-underline hover:no-underline", className)}
+          hideArrow
+          className={cn(
+            "font-body font-bold no-underline hover:no-underline",
+            className
+          )}
           {...linkProps}
         >
           {children}

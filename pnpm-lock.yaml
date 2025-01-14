@@ -138,6 +138,9 @@ importers:
       '@typescript-eslint/parser':
         specifier: ^8.0.0
         version: 8.12.2(eslint@8.57.1)(typescript@5.3.3)
+      '@vlad-yakovlev/telegram-md':
+        specifier: ^2.0.0
+        version: 2.0.0
       adm-zip:
         specifier: ^0.5.16
         version: 0.5.16
@@ -2319,6 +2322,9 @@ packages:
 
   '@ungap/structured-clone@1.2.0':
     resolution: {integrity: sha512-zuVdFrMJiuCDQUMCzQaD6KL28MjnqqN8XnAqiEq9PNm/hCPTSGfrXCOfwj1ow4LFb/tNymJPwsNbVePc1xFqrQ==}
+
+  '@vlad-yakovlev/telegram-md@2.0.0':
+    resolution: {integrity: sha512-qdJYD2N1I7CN0uRboTE2PDvHL9/w519RjIA0bnsOllr8BYIZOzBnjmPqTvg1laZk+dqmcchrHSmEhLGAZBSSfA==}
 
   abitype@1.0.6:
     resolution: {integrity: sha512-MMSqYh4+C/aVqI2RQaWqbvI4Kxo5cQV40WQ4QFtDnNzCkqChm8MuENhElmynZlO0qUy/ObkEUaXtKqYnx1Kp3A==}
@@ -7700,6 +7706,8 @@ snapshots:
       eslint-visitor-keys: 3.4.3
 
   '@ungap/structured-clone@1.2.0': {}
+
+  '@vlad-yakovlev/telegram-md@2.0.0': {}
 
   abitype@1.0.6(typescript@5.3.3)(zod@3.23.8):
     optionalDependencies:

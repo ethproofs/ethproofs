@@ -63,7 +63,7 @@ import {
 import { prettyMs } from "@/lib/time"
 
 type BlockDetailsPageProps = {
-  params: Promise<{ block: number }>
+  params: Promise<{ block: string }>
 }
 
 export async function generateMetadata({
@@ -72,6 +72,8 @@ export async function generateMetadata({
   const { block } = await params
 
   const blockValueType = getBlockValueType(block)
+  if (!blockValueType) throw new Error()
+
   const blockData = await db.query.blocks.findFirst({
     where: (blocks, { eq }) => eq(blocks[blockValueType], block),
     with: {
@@ -90,6 +92,7 @@ export default async function BlockDetailsPage({
   const blockNumber = (await params).block
 
   const blockValueType = getBlockValueType(blockNumber)
+  if (!blockValueType) throw new Error()
 
   const blockRaw = await db.query.blocks.findFirst({
     with: {

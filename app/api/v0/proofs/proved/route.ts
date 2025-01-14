@@ -1,12 +1,12 @@
-import { revalidateTag } from "next/cache"
+import { revalidatePath } from "next/cache"
 import { ZodError } from "zod"
 
 import { base64ToHex } from "@/lib/utils"
 
 import { db } from "@/db"
 import { blocks, programs, proofBinaries, proofs } from "@/db/schema"
-import { withAuth } from "@/lib/auth/withAuth"
 import { fetchBlockData } from "@/lib/blocks"
+import { withAuth } from "@/lib/middleware/with-auth"
 import { provedProofSchema } from "@/lib/zod/schemas/proof"
 
 // TODO: refactor code to use baseProofHandler and abstract out the logic
@@ -16,12 +16,6 @@ export const POST = withAuth(async ({ request, user, timestamp }) => {
 
   // TODO: remove when we go to production, this is a temporary log to debug the payload
   console.log("payload", payload)
-
-  if (!user) {
-    return new Response("Invalid API key", {
-      status: 401,
-    })
-  }
 
   // validate payload schema
   let proofPayload
@@ -75,9 +69,6 @@ export const POST = withAuth(async ({ request, user, timestamp }) => {
         timestamp: new Date(Number(blockData.timestamp) * 1000).toISOString(),
         hash: blockData.hash,
       })
-
-      // invalidate blocks cache
-      revalidateTag("blocks")
     } catch (error) {
       console.error("error creating block", error)
       return new Response("Internal server error", { status: 500 })
@@ -128,52 +119,31 @@ export const POST = withAuth(async ({ request, user, timestamp }) => {
     }
   }
 
-  // get proof_id to update or create an existing proof
-  let proofId: number | undefined
-  if (!proofPayload.proof_id) {
-    const existingProof = await db.query.proofs.findFirst({
-      columns: {
-        proof_id: true,
-      },
-      where: (proofs, { and, eq }) =>
-        and(
-          eq(proofs.block_number, block_number),
-          eq(proofs.cluster_id, cluster.id),
-          eq(proofs.team_id, user.id)
-        ),
-    })
-
-    proofId = existingProof?.proof_id
-  }
+  const proofHex = base64ToHex(proof)
 
   // add proof
-  console.log("adding proof", {
-    proof_id: proofId,
+  const dataToInsert = {
     ...restProofPayload,
-  })
+    block_number,
+    cluster_id: cluster.id,
+    program_id: programId,
+    proof_status: "proved",
+    proved_timestamp: timestamp,
+    size_bytes: Buffer.byteLength(proofHex, "hex"),
+    team_id: user.id,
+  }
 
-  const proofHex = base64ToHex(proof)
+  console.log("adding proved proof", dataToInsert)
 
   try {
     const newProof = await db.transaction(async (tx) => {
       const [newProof] = await tx
         .insert(proofs)
-        .values({
-          ...restProofPayload,
-          block_number,
-          proof_id: proofId,
-          cluster_id: cluster.id,
-          program_id: programId,
-          proof_status: "proved",
-          proved_timestamp: timestamp,
-          size_bytes: Buffer.byteLength(proofHex, "hex"),
-          team_id: user.id,
-        })
+        .values(dataToInsert)
         .onConflictDoUpdate({
           target: [proofs.block_number, proofs.cluster_id],
           set: {
-            proof_status: "proved",
-            proved_timestamp: timestamp,
+            ...dataToInsert,
           },
         })
         .returning({ proof_id: proofs.proof_id })
@@ -195,8 +165,8 @@ export const POST = withAuth(async ({ request, user, timestamp }) => {
       return newProof
     })
 
-    // invalidate proofs cache
-    revalidateTag("proofs")
+    // invalidate home page cache
+    revalidatePath("/")
 
     // return the generated proof_id
     return Response.json(newProof)
