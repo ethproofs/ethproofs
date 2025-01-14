@@ -10,7 +10,7 @@ const StylePunctuation = ({
   className,
 }: StylePunctuationProps): React.ReactNode[] =>
   children.split("").map((char, i) => {
-    if (/\d/g.test(char)) return char
+    if (/[\d\w]/g.test(char)) return char
     return (
       <span key={i} className={className}>
         {char}
@@ -25,7 +25,7 @@ type HidePunctuationProps = {
 const HidePunctuation = ({ children }: HidePunctuationProps) => {
   if (children === "-") return <Null />
   return (
-    <StylePunctuation className="invisible select-none text-[8px]">
+    <StylePunctuation className="invisible mx-[-0.15em] select-none">
       {children}
     </StylePunctuation>
   )
