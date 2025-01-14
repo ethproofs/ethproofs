@@ -5,7 +5,7 @@ import { cn } from "@/lib/utils"
 import { Button } from "./ui/button"
 
 type DownloadAllButtonProps = {
-  blockNumber: number
+  blockNumber: string
   className?: string
   containerClass?: string
   labelClass?: string
