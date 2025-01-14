@@ -6,6 +6,7 @@ import { PopoverTrigger } from "@radix-ui/react-popover"
 import type { Metric } from "@/lib/types"
 
 import CopyButton from "@/components/CopyButton"
+import DownloadAllButton from "@/components/DownloadAllButton"
 import DownloadButton from "@/components/DownloadButton"
 import { metrics } from "@/components/Metrics"
 import Null from "@/components/Null"
@@ -62,7 +63,7 @@ import {
 import { prettyMs } from "@/lib/time"
 
 type BlockDetailsPageProps = {
-  params: Promise<{ block: number }>
+  params: Promise<{ block: string }>
 }
 
 export async function generateMetadata({
@@ -71,6 +72,8 @@ export async function generateMetadata({
   const { block } = await params
 
   const blockValueType = getBlockValueType(block)
+  if (!blockValueType) throw new Error()
+
   const blockData = await db.query.blocks.findFirst({
     where: (blocks, { eq }) => eq(blocks[blockValueType], block),
     with: {
@@ -89,6 +92,7 @@ export default async function BlockDetailsPage({
   const blockNumber = (await params).block
 
   const blockValueType = getBlockValueType(blockNumber)
+  if (!blockValueType) throw new Error()
 
   const blockRaw = await db.query.blocks.findFirst({
     with: {
@@ -403,9 +407,15 @@ export default async function BlockDetailsPage({
       </div>
 
       <section>
-        <h2 className="flex items-center gap-2 text-lg font-normal text-primary">
-          <ProofCircle /> Proofs
-        </h2>
+        <div className="flex justify-between md:mb-4">
+          <h2 className="flex items-center gap-2 text-lg font-normal text-primary">
+            <ProofCircle /> Proofs
+          </h2>
+          <DownloadAllButton
+            blockNumber={blockNumber}
+            className="max-md:hidden"
+          />
+        </div>
 
         {proofs.sort(sortProofsStatusAndTimes).map((proof) => {
           const {
