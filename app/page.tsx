@@ -12,6 +12,7 @@ import type { SummaryItem } from "@/lib/types"
 import BlocksTable from "@/components/BlocksTable"
 import { metrics } from "@/components/Metrics"
 import Null from "@/components/Null"
+import { HidePunctuation } from "@/components/StylePunctuation"
 import Box from "@/components/svgs/box.svg"
 import Clock from "@/components/svgs/clock.svg"
 import DollarSign from "@/components/svgs/dollar-sign.svg"
@@ -62,7 +63,11 @@ export default async function Index() {
           key: "proven-blocks",
           label: "Proven blocks",
           icon: <Box />,
-          value: formatNumber(recentSummary.total_proven_blocks || 0),
+          value: (
+            <HidePunctuation>
+              {formatNumber(recentSummary.total_proven_blocks || 0)}
+            </HidePunctuation>
+          ),
         },
         {
           key: "avg-cost-per-proof",
@@ -72,10 +77,10 @@ export default async function Index() {
             </>
           ),
           icon: <DollarSign />,
-          value: formatUsd(recentSummary.avg_cost_per_proof || 0).replace(
-            /[¢$]/g,
-            ""
-          ),
+          value: formatNumber(recentSummary.avg_cost_per_proof || 0, {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2,
+          }),
         },
         {
           key: "avg-proving-time",
@@ -85,7 +90,11 @@ export default async function Index() {
             </>
           ),
           icon: <Clock />,
-          value: prettyMs(Number(recentSummary.avg_proving_time) || 0),
+          value: (
+            <HidePunctuation>
+              {prettyMs(Number(recentSummary.avg_proving_time) || 0)}
+            </HidePunctuation>
+          ),
         },
       ]
     : []
