@@ -1,4 +1,4 @@
-import { revalidateTag } from "next/cache"
+import { revalidatePath } from "next/cache"
 import { ZodError } from "zod"
 
 import { db } from "@/db"
@@ -66,9 +66,6 @@ export const POST = withAuth(async ({ request, user, timestamp }) => {
         timestamp: new Date(Number(blockData.timestamp) * 1000).toISOString(),
         hash: blockData.hash,
       })
-
-      // invalidate blocks cache
-      revalidateTag("blocks")
     } catch (error) {
       console.error("error creating block", error)
       return new Response("Internal server error", { status: 500 })
@@ -114,8 +111,8 @@ export const POST = withAuth(async ({ request, user, timestamp }) => {
       })
       .returning({ proof_id: proofs.proof_id })
 
-    // invalidate proofs cache
-    revalidateTag("proofs")
+    // invalidate home page cache
+    revalidatePath("/")
 
     // return the generated proof_id
     return Response.json(proof)
