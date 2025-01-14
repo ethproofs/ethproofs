@@ -369,12 +369,15 @@ export default async function BlockDetailsPage({
           <h2 className="flex items-center gap-2 text-lg font-normal text-primary">
             <Timer /> Proof availability
           </h2>
-          <div className="grid grid-cols-2 gap-x-8 sm:flex sm:flex-wrap">
+          <div className="grid grid-cols-2 gap-x-8 sm:grid-cols-[repeat(5,auto)] sm:grid-rows-[auto,auto] md:flex md:flex-wrap">
             {availabilityMetrics.map(({ key, label, description, value }) => (
-              <MetricBox key={key}>
-                <MetricLabel className="lowercase">
+              <MetricBox
+                key={key}
+                className="row-span-2 grid grid-rows-subgrid"
+              >
+                <MetricLabel className="flex items-stretch lowercase">
                   <MetricInfo
-                    label={<span className="lowercase">{label}</span>}
+                    label={<span className="h-full lowercase">{label}</span>}
                   >
                     {description}
                   </MetricInfo>
@@ -391,7 +394,10 @@ export default async function BlockDetailsPage({
           </h2>
           <div className="grid grid-cols-2 gap-x-8 sm:flex sm:flex-wrap">
             {blockFeeMetrics.map(({ key, label, description, value }) => (
-              <MetricBox key={key}>
+              <MetricBox
+                key={key}
+                className="row-span-2 grid grid-rows-subgrid"
+              >
                 <MetricLabel>
                   <MetricInfo
                     label={<span className="lowercase">{label}</span>}
