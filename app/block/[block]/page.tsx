@@ -6,6 +6,7 @@ import { PopoverTrigger } from "@radix-ui/react-popover"
 import type { Metric } from "@/lib/types"
 
 import CopyButton from "@/components/CopyButton"
+import DownloadAllButton from "@/components/DownloadAllButton"
 import DownloadButton from "@/components/DownloadButton"
 import { metrics } from "@/components/Metrics"
 import Null from "@/components/Null"
@@ -406,9 +407,15 @@ export default async function BlockDetailsPage({
       </div>
 
       <section>
-        <h2 className="flex items-center gap-2 text-lg font-normal text-primary">
-          <ProofCircle /> Proofs
-        </h2>
+        <div className="flex justify-between md:mb-4">
+          <h2 className="flex items-center gap-2 text-lg font-normal text-primary">
+            <ProofCircle /> Proofs
+          </h2>
+          <DownloadAllButton
+            blockNumber={blockNumber}
+            className="max-md:hidden"
+          />
+        </div>
 
         {proofs.sort(sortProofsStatusAndTimes).map((proof) => {
           const {
