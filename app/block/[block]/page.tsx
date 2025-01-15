@@ -486,7 +486,7 @@ export default async function BlockDetailsPage({
                   proof={proof}
                   className="sm:max-md:w-40 lg:w-40"
                   labelClass="hidden sm:inline-block md:hidden lg:inline-block"
-                  containerClass="flex-row-reverse md:flex-col"
+                  containerClass="flex-row-reverse md:flex-col-reverse"
                 />
               </div>
               <MetricBox
