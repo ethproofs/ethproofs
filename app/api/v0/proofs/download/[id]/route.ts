@@ -30,7 +30,7 @@ export async function GET(
   })
 
   const teamName = team?.name ? team.name : proofRow.cluster_id.split("-")[0]
-  const filename = `${proofRow.block_number}_${teamName}_${id}.bin`
+  const filename = `${proofRow.block_number}_${teamName}_${id}.txt`
 
   const binaryBuffer = Buffer.from(
     proofRow.proof_binary.proof_binary.slice(2),
