@@ -53,8 +53,8 @@ const ProofStatus = ({
       {...props}
     >
       {allProofs.map(({ length: proofCount }, idx) => {
-        // Hide "proving" or "queued" if there are no proofs in that status
-        if (proofCount === 0 && hideEmpty && idx !== 0) return null
+        // Hide if no proofs for that status
+        if (proofCount === 0 && hideEmpty) return null
         return (
           <div key={ORDERED_STATUSES[idx]} className="flex items-center gap-1">
             <MetricInfo
