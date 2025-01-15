@@ -199,6 +199,8 @@ export const columns: ColumnDef<Block>[] = [
       const proofs = cell.getValue() as Proof[]
       const timestamp = row.original.timestamp
 
+      if (!timestamp) return <Null />
+
       const totalTTPStats = getTotalTTPStats(proofs, timestamp)
 
       return (
