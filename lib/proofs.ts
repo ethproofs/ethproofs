@@ -70,26 +70,14 @@ export const getProofsAvgProvingTime = (proofs: Proof[]): number | null => {
   )
 }
 
-export const getProofsAvgTimeToProof = (
-  proofs: Proof[] | undefined,
-  timestamp: string | undefined
-): number | null => {
-  if (!timestamp || !proofs) return null
-
-  const availableProofs = proofs
-    .filter(isCompleted)
-    .filter((p) => timeToProofInfoAvailable(p, timestamp))
-  if (!availableProofs.length) return null
-
-  const blockTimestamp = getTime(timestamp)
-
+export const getProofsAvgTimeToProof = (proofs: Proof[]) => {
   const averageProvedTime =
-    availableProofs.reduce((acc, proof) => {
+    proofs.reduce((acc, proof) => {
       const timestampTime = getTime(proof.proved_timestamp!)
       return acc + timestampTime
-    }, 0) / availableProofs.length
+    }, 0) / proofs.length
 
-  return averageProvedTime - blockTimestamp // In milliseconds
+  return averageProvedTime // In milliseconds
 }
 
 export const getProofBestProvingTime = (
@@ -344,12 +332,14 @@ export const getProvingTimeStats = (
 }
 
 export const getTotalTTPStats = (
-  proofs: Proof[] | undefined,
-  timestamp: string | undefined
+  proofs: Proof[],
+  timestamp: string
 ): Stats | null => {
-  if (!proofs || !proofs.length || !timestamp) return null
+  if (!proofs.length) return null
 
-  const availableProofs = proofs.filter(isCompleted).filter(hasProvedTimestamp)
+  const availableProofs = proofs
+    .filter(isCompleted)
+    .filter((p) => timeToProofInfoAvailable(p, timestamp))
 
   if (!availableProofs.length) return null
 
@@ -362,7 +352,7 @@ export const getTotalTTPStats = (
 
   if (bestProof.proved_timestamp === null) return null
 
-  const avgTime = getProofsAvgTimeToProof(proofs, timestamp) as number
+  const avgTime = getProofsAvgTimeToProof(proofs)
 
   const avg = getMsTotalTTP(avgTime, timestamp)
 
