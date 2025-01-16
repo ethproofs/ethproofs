@@ -164,7 +164,7 @@ export const columns: ColumnDef<Proof>[] = [
       const costPerProof = getProvingCost(proof)!
       const formattedCostPerProof = formatUsd(costPerProof)
 
-      const costPerMgas = costPerProof / gas_used / 1e6
+      const costPerMgas = costPerProof / (gas_used / 1e6)
       const formattedCostPerMgas = formatUsd(costPerMgas)
 
       return (

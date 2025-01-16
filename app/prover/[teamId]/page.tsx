@@ -121,11 +121,11 @@ export default async function ProverPage({ params }: ProverPageProps) {
     (acc, proof) => acc + (proof.block?.gas_used ?? 0),
     0
   )
-  const avgZkVMCyclesPerMgas = totalZkVMCycles / totalGasProven / 1e6
+  const avgZkVMCyclesPerMgas = totalZkVMCycles / (totalGasProven / 1e6)
 
   const totalProvingCosts = getSumProvingCost(completedProofs)
 
-  const avgCostPerMgas = totalProvingCosts / totalGasProven / 1e6
+  const avgCostPerMgas = totalProvingCosts / (totalGasProven / 1e6)
 
   const avgProofProvingTime = getProofsAvgProvingTime(proofs as Proof[])
 
