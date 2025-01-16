@@ -342,6 +342,13 @@ export const proofs = pgTable(
       "proofs_proof_status_check",
       sql`proof_status = ANY (ARRAY['queued'::text, 'proving'::text, 'proved'::text])`
     ),
+    check(
+      "proof_status_timestamp_check",
+      sql`
+        (proof_status = 'proved' AND proved_timestamp IS NOT NULL) or
+        (proof_status = 'proving' AND proving_timestamp IS NOT NULL) or
+        (proof_status = 'queued' AND queued_timestamp IS NOT NULL)`
+    ),
   ]
 )
 

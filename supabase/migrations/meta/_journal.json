@@ -15,6 +15,13 @@
       "when": 1737051764778,
       "tag": "0001_add_team_slug",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1737057570653,
+      "tag": "0002_proof_status_constraints",
+      "breakpoints": true
     }
   ]
 }
