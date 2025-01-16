@@ -50,19 +50,19 @@ import { prettyMs } from "@/lib/time"
 import { getHost, getTwitterHandle } from "@/lib/url"
 
 type ProverPageProps = {
-  params: Promise<{ teamId: string }>
+  params: Promise<{ teamSlug: string }>
 }
 
 export async function generateMetadata({
   params,
 }: ProverPageProps): Promise<Metadata> {
-  const { teamId } = await params
+  const { teamSlug } = await params
 
   const team = await db.query.teams.findFirst({
     columns: {
       name: true,
     },
-    where: (teams, { eq }) => eq(teams.id, teamId),
+    where: (teams, { eq }) => eq(teams.slug, teamSlug),
   })
 
   if (!team) return { title: `Prover not found - ${SITE_NAME}` }
@@ -71,10 +71,10 @@ export async function generateMetadata({
 }
 
 export default async function ProverPage({ params }: ProverPageProps) {
-  const { teamId } = await params
+  const { teamSlug } = await params
 
   const team = await db.query.teams.findFirst({
-    where: (teams, { eq }) => eq(teams.id, teamId),
+    where: (teams, { eq }) => eq(teams.slug, teamSlug),
   })
 
   if (!team) return notFound()
