@@ -1,4 +1,4 @@
-import { asc } from "drizzle-orm"
+import { asc, notIlike } from "drizzle-orm"
 import type { Metadata } from "next"
 import Image from "next/image"
 import {
@@ -47,6 +47,8 @@ export default async function Index() {
   const teamsSummary = await db
     .select()
     .from(teamsSummaryView)
+    // hide test teams from the provers list
+    .where(notIlike(teamsSummaryView.team_name, "%test%"))
     .orderBy(asc(teamsSummaryView.avg_proving_time))
 
   const teams = await db.query.teams.findMany()
