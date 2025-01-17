@@ -199,15 +199,14 @@ export const columns: ColumnDef<Block>[] = [
       const proofs = cell.getValue() as Proof[]
       const timestamp = row.original.timestamp
 
+      if (!timestamp) return <Null />
+
       const totalTTPStats = getTotalTTPStats(proofs, timestamp)
 
       return (
         <div className="flex flex-col justify-center text-center">
           <ProofStatus className="mx-auto" proofs={proofs} />
-          <div className="whitespace-nowrap text-xs text-body-secondary">
-            <span className="font-body">
-              <metrics.totalTTP.Label />:
-            </span>{" "}
+          <div className="whitespace-nowrap text-sm text-body-secondary">
             {totalTTPStats?.bestFormatted ?? <Null />}
           </div>
         </div>
