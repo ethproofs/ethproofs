@@ -1,10 +1,11 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useState } from "react"
 import Link from "next/link"
 import { useRouter } from "next/navigation"
-import { useEventListener } from "usehooks-ts"
+import { useDebounceValue, useEventListener } from "usehooks-ts"
 import { isHash } from "viem"
+import { useQuery } from "@tanstack/react-query"
 
 import { BlockBase } from "@/lib/types"
 
@@ -15,12 +16,10 @@ import { cn } from "@/lib/utils"
 
 import { useContainerQuery } from "@/hooks/useContainerQuery"
 import useSearchKeyboardShortcuts from "@/hooks/useSearchKeyboardShortcuts"
-import { createClient } from "@/utils/supabase/client"
 
 const DEBOUNCE = 250 // ms delay before querying database
 const PLACEHOLDER = "Search by block number or hash"
 const k = 6.5
-const supabase = createClient()
 
 const SearchInput = ({
   className,
@@ -28,10 +27,18 @@ const SearchInput = ({
 }: React.HTMLAttributes<HTMLInputElement> & { onSubmit?: () => void }) => {
   const router = useRouter()
   const [query, setQuery] = useState("")
-  const [loading, setLoading] = useState(false)
-  const [blockMatch, setBlockMatch] = useState<
+  const [deferredQuery] = useDebounceValue(query, DEBOUNCE)
+
+  const { data: blockMatch, isLoading } = useQuery<
     (BlockBase & { proofs: { proof_status: string }[] }) | null
-  >(null)
+  >({
+    queryKey: ["blocks", deferredQuery],
+    queryFn: async () => {
+      const response = await fetch(`/api/blocks/search?query=${deferredQuery}`)
+      return response.json()
+    },
+    enabled: !!deferredQuery,
+  })
 
   const handleSubmit = () => {
     setQuery("")
@@ -45,38 +52,6 @@ const SearchInput = ({
     handleSubmit()
     router.push(path)
   })
-
-  useEffect(() => {
-    setLoading(true)
-    if (!query) {
-      setBlockMatch(null)
-      setLoading(false)
-      return
-    }
-    const handler = setTimeout(async () => {
-      const { data: match, error } = await supabase
-        .from("blocks")
-        .select(
-          `*,
-          proofs!inner(proof_status)
-        `
-        )
-        .eq(isHash(query) ? "hash" : "block_number", query)
-        .single()
-      if (!error && match) {
-        setBlockMatch(match)
-        setLoading(false)
-        return
-      }
-
-      setBlockMatch(null)
-      setLoading(false)
-    }, DEBOUNCE)
-
-    return () => {
-      clearTimeout(handler)
-    }
-  }, [query])
 
   const { inputRef } = useSearchKeyboardShortcuts()
 
@@ -132,7 +107,7 @@ const SearchInput = ({
             </Link>
           ) : (
             <div className="rounded-lg border border-primary-light bg-background-active p-2">
-              {loading ? "Loading" : "No results"}
+              {isLoading ? "Loading" : "No results"}
             </div>
           )}
         </div>
