@@ -1,6 +1,7 @@
 "use client"
 
 import { useState } from "react"
+import { useDebounceValue } from "usehooks-ts"
 import { keepPreviousData, useQuery } from "@tanstack/react-query"
 import { PaginationState } from "@tanstack/react-table"
 
@@ -23,12 +24,13 @@ type Props = {
 const BlocksTable = ({ className, teams }: Props) => {
   const [pagination, setPagination] =
     useState<PaginationState>(DEFAULT_PAGE_STATE)
+  const [deferredPagination] = useDebounceValue(pagination, 200)
 
   const blocksQuery = useQuery<{ rows: Block[]; rowCount: number }>({
-    queryKey: ["blocks", pagination],
+    queryKey: ["blocks", deferredPagination],
     queryFn: async () => {
       const response = await fetch(
-        `/api/blocks?page_index=${pagination.pageIndex}&page_size=${pagination.pageSize}`
+        `/api/blocks?page_index=${deferredPagination.pageIndex}&page_size=${deferredPagination.pageSize}`
       )
       return response.json()
     },
