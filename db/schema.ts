@@ -187,6 +187,7 @@ export const teams = pgTable(
         onUpdate: "cascade",
       }),
     name: text("name").notNull(),
+    slug: text("slug").notNull().unique(),
     github_org: text("github_org"),
     logo_url: text("logo_url"),
     twitter_handle: text("twitter_handle"),
@@ -394,8 +395,9 @@ export const recentSummary = pgView("recent_summary", {
   )
 
 export const teamsSummary = pgView("teams_summary", {
-  team_id: uuid("team_id"),
-  team_name: text("team_name"),
+  team_id: uuid("team_id").notNull(),
+  team_name: text("team_name").notNull(),
+  slug: text("slug").notNull(),
   logo_url: text("logo_url"),
   avg_cost_per_proof: doublePrecision("avg_cost_per_proof"),
   avg_proving_time: numeric("avg_proving_time"),
@@ -406,6 +408,7 @@ export const teamsSummary = pgView("teams_summary", {
     SELECT t.id as team_id,
       t.name as team_name,
       t.logo_url,
+      t.slug,
       COALESCE(sum(cc.instance_count::double precision * a.hourly_price * (p.proving_time::numeric / (1000.0 * 60::numeric * 60::numeric))::double precision) / NULLIF(count(p.proof_id), 0)::double precision, 0::double precision) AS avg_cost_per_proof,
       avg(p.proving_time) AS avg_proving_time
     FROM teams t 

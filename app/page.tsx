@@ -194,6 +194,7 @@ export default async function Index() {
                 team_id,
                 logo_url,
                 team_name,
+                slug,
                 avg_cost_per_proof,
                 avg_proving_time,
               }) => {
@@ -254,7 +255,7 @@ export default async function Index() {
                             </div>
                           </div>
                           <ButtonLink
-                            href={`/prover/${team_id}`}
+                            href={`/prover/${slug}`}
                             variant="outline"
                           >
                             + details for {team_name}

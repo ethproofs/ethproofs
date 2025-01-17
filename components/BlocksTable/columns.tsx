@@ -22,7 +22,7 @@ import { TooltipContentFooter } from "../ui/tooltip"
 
 import AvgBestMetric from "./AvgBestMetric"
 
-import { ColumnHeader } from "@/app/prover/[teamId]/ColumnHeader"
+import { ColumnHeader } from "@/app/prover/[teamSlug]/ColumnHeader"
 import { formatTimeAgo } from "@/lib/date"
 import { formatNumber } from "@/lib/number"
 import {
