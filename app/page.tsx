@@ -90,11 +90,7 @@ export default async function Index() {
             </>
           ),
           icon: <Clock />,
-          value: (
-            <HidePunctuation>
-              {prettyMs(Number(recentSummary.avg_proving_time) || 0)}
-            </HidePunctuation>
-          ),
+          value: prettyMs(Number(recentSummary.avg_proving_time) || 0),
         },
       ]
     : []

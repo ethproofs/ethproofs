@@ -10,7 +10,7 @@ const StylePunctuation = ({
   className,
 }: StylePunctuationProps): React.ReactNode[] =>
   children.split("").map((char, i) => {
-    if (/[\d\w]/g.test(char)) return char
+    if (/[\d]/g.test(char)) return char
     return (
       <span key={i} className={className}>
         {char}
