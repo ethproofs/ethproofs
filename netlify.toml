@@ -1,0 +1,10 @@
+[[redirects]]
+  from = "ethproofs.com"
+  to = "ethproofs.org/"
+  status = 301
+  force = true
+[[redirects]]
+  from = "www.ethproofs.com"
+  to = "ethproofs.org/"
+  status = 301
+  force = true
