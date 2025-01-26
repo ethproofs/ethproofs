@@ -12,6 +12,7 @@ import type { SummaryItem } from "@/lib/types"
 import BlocksTable from "@/components/BlocksTable"
 import { metrics } from "@/components/Metrics"
 import Null from "@/components/Null"
+import { HidePunctuation } from "@/components/StylePunctuation"
 import Box from "@/components/svgs/box.svg"
 import Clock from "@/components/svgs/clock.svg"
 import DollarSign from "@/components/svgs/dollar-sign.svg"
@@ -64,7 +65,11 @@ export default async function Index() {
           key: "proven-blocks",
           label: "Proven blocks",
           icon: <Box />,
-          value: formatNumber(recentSummary.total_proven_blocks || 0),
+          value: (
+            <HidePunctuation>
+              {formatNumber(recentSummary.total_proven_blocks || 0)}
+            </HidePunctuation>
+          ),
         },
         {
           key: "avg-cost-per-proof",
@@ -74,10 +79,10 @@ export default async function Index() {
             </>
           ),
           icon: <DollarSign />,
-          value: formatUsd(recentSummary.avg_cost_per_proof || 0).replace(
-            /[¢$]/g,
-            ""
-          ),
+          value: formatNumber(recentSummary.avg_cost_per_proof || 0, {
+            minimumFractionDigits: 2,
+            maximumFractionDigits: 2,
+          }),
         },
         {
           key: "avg-proving-time",
@@ -124,22 +129,28 @@ export default async function Index() {
           Starting by proving 1-of-100 blocks and soon{" "}
           <span className="text-primary">real time proving</span>
         </p>
-        <div className="flex w-full max-w-2xl justify-around">
+        <div className="mx-auto grid w-full max-w-2xl grid-cols-[auto,auto,auto] gap-4">
           {summaryItems.map(({ key, label, icon, value }) => (
-            <div key={key} className="flex flex-col gap-1 p-2">
-              <div className="flex flex-col items-center justify-center gap-x-2 md:flex-row">
+            <div
+              key={key}
+              className="row-span-3 grid grid-rows-subgrid gap-1 p-2"
+            >
+              {/* Row 1 - Metric icon and value */}
+              <div className="col-span-1 row-span-1 flex h-full flex-col items-center justify-center gap-x-2 md:flex-row">
                 <p className="font-mono text-2xl text-primary md:text-3xl lg:text-4xl">
                   {icon}
                 </p>
-                <p className="text-center font-mono text-2xl text-primary md:text-3xl lg:text-4xl">
+                <p className="h-auto text-nowrap text-center font-mono text-2xl text-primary md:text-3xl lg:text-4xl">
                   {value}
                 </p>
               </div>
+              {/* Row 2 - Metric label */}
               <div>
                 <p className="text-center text-xs uppercase md:text-sm">
                   {label}
                 </p>
               </div>
+              {/* Row 3 - Metric time span */}
               <p className="text-center text-xs font-bold uppercase text-body-secondary">
                 Last 30 days
               </p>
