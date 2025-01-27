@@ -279,10 +279,7 @@ export default async function ProverPage({ params }: ProverPageProps) {
           <Cpu /> Proving instances
         </h2>
         <div
-          className="mt-8 grid gap-8"
-          style={{
-            gridTemplateColumns: "repeat(auto-fill, minmax(24rem, 1fr))",
-          }}
+          className="mt-8 grid gap-8 md:grid-cols-[repeat(auto-fill,minmax(24rem,1fr))]"
         >
           {clusters.map(({ nickname, hardware, description }) => (
             <Card key={nickname} className="space-y-4">
