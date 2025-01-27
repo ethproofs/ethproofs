@@ -7,6 +7,10 @@
   },
   "servers": [
     {
+      "url": "https://ethproofs.org/api/v0",
+      "description": "Main server"
+    },
+    {
       "url": "https://staging--ethproofs.netlify.app/api/v0",
       "description": "Testing server"
     }
