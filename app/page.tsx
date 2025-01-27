@@ -195,12 +195,7 @@ export default async function Index() {
             </div>
           )}
         </div>
-        <div
-          className="grid gap-8"
-          style={{
-            gridTemplateColumns: "repeat(auto-fill, minmax(24rem, 1fr))",
-          }}
-        >
+        <div className="grid gap-8 md:grid-cols-[repeat(auto-fill,minmax(24rem,1fr))]">
           {teamsSummary &&
             teamsSummary.map(
               ({
@@ -213,10 +208,10 @@ export default async function Index() {
                 const isNewTeam = !avg_cost_per_proof || !avg_proving_time
                 return (
                   <Card
-                    className="flex min-w-96 flex-1 flex-col gap-4"
+                    className="flex flex-1 flex-col gap-4"
                     key={team_id}
                   >
-                    <div className="relative mx-auto flex h-20 w-56 justify-center">
+                    <div className="relative mx-auto flex h-20 w-full max-w-56 justify-center">
                       <TeamLogo
                         src={logo_url}
                         alt={team_name || "Prover logo"}
@@ -227,7 +222,7 @@ export default async function Index() {
                       />
                       <h3
                         className={cn(
-                          "absolute inset-0 grid place-items-center text-3xl",
+                          "absolute inset-0 inline-block text-center text-3xl min-w-[100px] truncate",
                           logo_url && "sr-only"
                         )}
                       >
