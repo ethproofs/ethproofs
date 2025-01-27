@@ -1,6 +1,6 @@
 import { createDocument } from "zod-openapi"
 
-import { SITE_NAME, SITE_PREVIEW_URL } from "../constants"
+import { SITE_NAME, SITE_PREVIEW_URL, SITE_URL } from "../constants"
 
 import { awsPricingListPaths } from "./aws-pricing-list"
 import { clustersPaths } from "./clusters"
@@ -21,11 +21,10 @@ export const document = createDocument({
     version: "0.0.1",
   },
   servers: [
-    // TODO: Uncomment when prod is ready
-    // {
-    //   url: new URL("/api/v0", SITE_URL).toString(),
-    //   description: "Main server",
-    // },
+    {
+      url: new URL("/api/v0", SITE_URL).toString(),
+      description: "Main server",
+    },
     {
       url: new URL("/api/v0", SITE_PREVIEW_URL).toString(),
       description: "Testing server",
