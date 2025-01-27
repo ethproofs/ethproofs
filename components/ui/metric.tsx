@@ -40,8 +40,8 @@ const MetricInfo = React.forwardRef<HTMLDivElement, MetricInfoProps>(
       <PopoverTrigger className="hover:animate-pulse">
         {trigger || (
           <div className="flex items-center gap-2">
-            {label}
-            <InfoCircle className="-mb-0.5" />
+            <span className="line-clamp-1 text-start">{label}</span>
+            <InfoCircle className="-mb-0.5 shrink-0" />
           </div>
         )}
       </PopoverTrigger>

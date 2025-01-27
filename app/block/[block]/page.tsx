@@ -369,12 +369,15 @@ export default async function BlockDetailsPage({
           <h2 className="flex items-center gap-2 text-lg font-normal text-primary">
             <Timer /> Proof availability
           </h2>
-          <div className="grid grid-cols-2 gap-x-8 sm:flex sm:flex-wrap">
+          <div className="grid grid-cols-2 gap-x-8 sm:grid-cols-[repeat(5,auto)] sm:grid-rows-[auto,auto] md:flex md:flex-wrap">
             {availabilityMetrics.map(({ key, label, description, value }) => (
-              <MetricBox key={key}>
-                <MetricLabel className="lowercase">
+              <MetricBox
+                key={key}
+                className="row-span-2 grid grid-rows-subgrid"
+              >
+                <MetricLabel className="flex items-stretch lowercase">
                   <MetricInfo
-                    label={<span className="lowercase">{label}</span>}
+                    label={<span className="h-full lowercase">{label}</span>}
                   >
                     {description}
                   </MetricInfo>
@@ -391,7 +394,10 @@ export default async function BlockDetailsPage({
           </h2>
           <div className="grid grid-cols-2 gap-x-8 sm:flex sm:flex-wrap">
             {blockFeeMetrics.map(({ key, label, description, value }) => (
-              <MetricBox key={key}>
+              <MetricBox
+                key={key}
+                className="row-span-2 grid grid-rows-subgrid"
+              >
                 <MetricLabel>
                   <MetricInfo
                     label={<span className="lowercase">{label}</span>}
@@ -480,7 +486,7 @@ export default async function BlockDetailsPage({
                   proof={proof}
                   className="sm:max-md:w-40 lg:w-40"
                   labelClass="hidden sm:inline-block md:hidden lg:inline-block"
-                  containerClass="flex-row-reverse md:flex-col"
+                  containerClass="flex-row-reverse md:flex-col-reverse"
                 />
               </div>
               <MetricBox
@@ -607,7 +613,7 @@ export default async function BlockDetailsPage({
                         {formatUsd(provingCost)} <Cpu />
                       </PopoverTrigger>
                       {cluster && clusterConfigs && (
-                        <PopoverContent className="w-[40rem] max-w-[100vw]">
+                        <PopoverContent>
                           <TooltipContentHeader>
                             {cluster.nickname}
                           </TooltipContentHeader>
@@ -630,7 +636,7 @@ export default async function BlockDetailsPage({
                             AWS Equivalency
                           </TooltipContentHeader>
 
-                          <div className="space-y-4">
+                          <div className="w-fit space-y-4">
                             {clusterConfigs.map(
                               ({
                                 instance_count,
@@ -654,7 +660,7 @@ export default async function BlockDetailsPage({
                                     key={instance_type_id}
                                   >
                                     <div className="flex gap-8">
-                                      <div className="space-y-2 p-2">
+                                      <div className="flex-1 space-y-2 p-2">
                                         {instance_memory && (
                                           <p>Memory: {instance_memory}</p>
                                         )}
