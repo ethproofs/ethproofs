@@ -2,7 +2,7 @@
 
 Ethproofs is a block proof explorer for Ethereum. It aggregates data from various zkVM teams to provide a comprehensive overview of proven blocks, including key metrics such as cost, latency, and proving time.
 
-Users can compare proofs by block, download them, and explore various proof metadata(size, clock cycle, type) to better understand the indivisual zkVMs and its proof generation process.
+Users can compare proofs by block, download them, and explore various proof metadata(size, clock cycle, type) to better understand the individual zkVMs and its proof generation process.
 
 The aim is to establish a public good that evolves into the standard for Ethereum block execution proof for zkVMs, ultimately expanding to encompass all Ethereum blocks while maintaining reasonable costs and latency. This project may also support multiple-proof systems in the future.
 
