@@ -23,7 +23,8 @@ export async function GET(
         },
       },
     },
-    where: (proofs, { eq }) => eq(proofs.block_number, Number(block)),
+    where: (proofs, { eq, and }) =>
+      and(eq(proofs.block_number, Number(block)), eq(proofs.proof_status, "proved")),
   })
 
   if (!proofRows || !proofRows.length) {
