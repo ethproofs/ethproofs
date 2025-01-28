@@ -2,7 +2,7 @@
 
 Ethproofs is a block proof explorer for Ethereum. It aggregates data from various zkVM teams to provide a comprehensive overview of proven blocks, including key metrics such as cost, latency, and proving time.
 
-Users can compare proofs by block, download them, and explore various proof metadata(size, clock cycle, type) to better understand the indivisual zkVMs and its proof generation process.
+Users can compare proofs by block, download them, and explore various proof metadata(size, clock cycle, type) to better understand the individual zkVMs and its proof generation process.
 
 The aim is to establish a public good that evolves into the standard for Ethereum block execution proof for zkVMs, ultimately expanding to encompass all Ethereum blocks while maintaining reasonable costs and latency. This project may also support multiple-proof systems in the future.
 
@@ -10,28 +10,28 @@ The aim is to establish a public good that evolves into the standard for Ethereu
 
 ### What is zkVM?
 
-A zkVM (Zero-Knowledge Virtual Machine) is a virtual machine that leverage [zero-knowledge proofs](https://ethereum.org/en/zero-knowledge-proofs/) for private and verifiable computation on generic programs. Note that it's broader concept than zkEVM (zero-knowledge Ethereum Virtual Machine) which one of type of zkVM that   designed to execute Ethereum smart contracts. 
+A zkVM (Zero-Knowledge Virtual Machine) is a virtual machine that leverages [zero-knowledge proofs](https://ethereum.org/en/zero-knowledge-proofs/) for private and verifiable computation on generic programs. It is a broader concept than a zkEVM (Zero-Knowledge Ethereum Virtual Machine), which is a specific type of zkVM designed to execute Ethereum smart contracts.
 
 ### What are SNARKs?
 
 SNARK stands for Succinct Non-interactive ARgument of Knowledge. It is a cryptographic proof that allows one party to demonstrate to another party that they know a particular piece of information without revealing the information itself.
 
-Key features of SNARKs:
-- Succinct: The proofs are very short and can be verified quickly, even if the original computation is complex.
-- Non-interactive: The proof is provided in a single communication, with no need for multiple rounds of exchange between the prover and verifier.
-- Argument of Knowledge: The prover demonstrates that they actually possess knowledge of the solution, not just that a solution exists.
+**Key features of SNARKs:**
+- **Succinct:** The proofs are very short and can be verified quickly, even if the original computation is complex.
+- **Non-interactive:** The proof is provided in a single communication, with no need for multiple rounds of exchange between the prover and verifier.
+- **Argument of Knowledge:** The prover demonstrates that they actually possess knowledge of the solution, not just that a solution exists.
 
 
 In blockchain and Ethereum, SNARKs can be used to verify state or computations off-chain, improving scalability and privacy by reducing the amount of data that needs to be processed on-chain.
 
 ### Potential benefits and use cases
 
-- Enabling full ZK light clients of Ethereum to run on low powered devices (eg. smartphones). Syncing with the network can be done via a single ZK proof verification (once we combine block execution ZK proofs with Sync Committee ZK proofs).
-- Reduce the time and resources necessary for a new node or wallet to participate in the Ethereum network.
-- Validate any current or historic Ethereum state with a single proof.
-- Lay the groundwork for multi-client & multi-proof ZK proofs of Ethereum.
-- Start tests of Ethereum enshrinement. These proofs will provide a large corpus of data for further research into performance improvements, gas/proving fee schedules, and more for the larger ZK community.
-- Empower the Ethereum Ecosystem to take this powerful new ZK technology
+- **Enabling full ZK light clients of Ethereum to run on low powered devices** (eg. smartphones). Syncing with the network can be done via a single ZK proof verification (once we combine block execution ZK proofs with Sync Committee ZK proofs).
+- **Reduce the time and resources** necessary for a new node or wallet to participate in the Ethereum network.
+- **Validate any current or historic Ethereum state** with a single proof.
+- **Lay the groundwork** for multi-client & multi-proof ZK proofs of Ethereum.
+- Start tests of Ethereum enshrinement. These proofs will provide a large corpus of data for **further research into performance improvements**, gas/proving fee schedules, and more for the larger ZK community.
+- **Empower the Ethereum Ecosystem** to take this powerful new ZK technology
 
 
 ## Learn about zkVMs
