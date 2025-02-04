@@ -1,5 +1,7 @@
 import { md } from "@vlad-yakovlev/telegram-md"
 
+const LAMBDA_TIMEOUT_MS = 30000
+
 type Report = {
   date: string
   startTime: number
@@ -60,8 +62,22 @@ export const withTelemetry = (
       durationMs: 0,
     }
 
+    // create timeout to send report if lambda timeout is imminent
+    const timeoutChecker = setTimeout(async () => {
+      report.endTime = new Date().getTime()
+      report.durationMs = report.endTime - report.startTime
+      report.statusCode = 500
+      report.errorMessage = "Lambda timeout imminent"
+      report.requestBody = await getRequestBody(request)
+
+      const message = `[timeout warning] ${request.method} ${request.url} ${report.statusCode} in ${report.durationMs}ms ${report.date}`
+      await sendReport(message, report)
+    }, LAMBDA_TIMEOUT_MS - 2000) // send report 2 seconds before timeout
+
     try {
       const response = await handler(request)
+
+      clearTimeout(timeoutChecker)
 
       report.endTime = new Date().getTime()
       report.durationMs = report.endTime - report.startTime
@@ -77,6 +93,8 @@ export const withTelemetry = (
 
       return response
     } catch (error) {
+      clearTimeout(timeoutChecker)
+
       report.endTime = new Date().getTime()
       report.durationMs = report.endTime - report.startTime
       report.statusCode = 500
