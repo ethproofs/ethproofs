@@ -30,31 +30,30 @@ export async function GET(
   const teamName = team?.name ? team.name : proofRow.cluster_id.split("-")[0]
   const filename = `${proofRow.block_number}_${teamName}_${id}.txt`
 
-  // if proof_binary field in db is not found, look for it in the bucket
-  if (!proofRow.proof_binary) {
-    const data = await getProofBinary(filename)
+  // backwards compatibility: new proofs live in the bucket, old proofs live in the db
+  if (proofRow.proof_binary) {
+    const binaryBuffer = Buffer.from(
+      proofRow.proof_binary.proof_binary.slice(2),
+      "hex"
+    )
+    const blob = new Blob([binaryBuffer], {
+      type: "application/octet-stream",
+    })
 
-    if (!data) {
-      return new Response("No proof binary found", { status: 404 })
-    }
-
-    console.log("data", data)
-    // redirect to the public url
-    return Response.redirect(data.publicUrl)
+    return new Response(blob, {
+      headers: {
+        "Content-Type": "application/octet-stream",
+        "Content-Disposition": `attachment; filename="${filename}"`,
+      },
+    })
   }
 
-  const binaryBuffer = Buffer.from(
-    proofRow.proof_binary.proof_binary.slice(2),
-    "hex"
-  )
-  const blob = new Blob([binaryBuffer], {
-    type: "application/octet-stream",
-  })
+  const data = await getProofBinary(filename)
 
-  return new Response(blob, {
-    headers: {
-      "Content-Type": "application/octet-stream",
-      "Content-Disposition": `attachment; filename="${filename}"`,
-    },
-  })
+  if (!data) {
+    return new Response("No proof binary found", { status: 404 })
+  }
+
+  // redirect to the public url
+  return Response.redirect(data.publicUrl)
 }
