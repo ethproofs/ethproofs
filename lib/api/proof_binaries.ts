@@ -32,3 +32,20 @@ export const getProofBinary = async (filename: string) => {
 
   return data
 }
+
+export const downloadProofBinary = async (filename: string) => {
+  const supabase = createClient()
+
+  const { data, error } = await supabase.storage
+    .from(PROOF_BINARY_BUCKET)
+    .download(filename)
+
+  if (error) {
+    console.error(`Error downloading ${filename}:`, error)
+    return null
+  }
+
+  console.log("downloaded proof binary", data)
+
+  return data
+}
