@@ -44,22 +44,35 @@ const getRequestBody = async (request: Request) => {
     return
   }
 
-  try {
-    return await request.json()
-  } catch (_error) {
-    return await request.text()
+  let body: string | undefined
+  if (request.body) {
+    try {
+      const clonedRequest = request.clone()
+      try {
+        body = await clonedRequest.json()
+      } catch {
+        body = await clonedRequest.text()
+      }
+    } catch (error) {
+      console.warn("Could not parse request body:", error)
+    }
   }
+
+  return body
 }
 
 export const withTelemetry = (
   handler: (request: Request) => Promise<Response>
 ) => {
   return async (request: Request) => {
+    const requestBody = await getRequestBody(request)
+
     const report: Report = {
       date: new Date().toISOString(),
       startTime: new Date().getTime(),
       endTime: new Date().getTime(),
       durationMs: 0,
+      requestBody,
     }
 
     // create timeout to send report if lambda timeout is imminent
@@ -68,7 +81,6 @@ export const withTelemetry = (
       report.durationMs = report.endTime - report.startTime
       report.statusCode = 500
       report.errorMessage = "Lambda timeout imminent"
-      report.requestBody = await getRequestBody(request)
 
       const message = `[timeout warning] ${request.method} ${request.url} ${report.statusCode} in ${report.durationMs}ms ${report.date}`
       await sendReport(message, report)
@@ -85,7 +97,6 @@ export const withTelemetry = (
 
       const message = `${request.method} ${request.url} ${report.statusCode} in ${report.durationMs}ms ${report.date}`
       if (report.statusCode !== 200) {
-        report.requestBody = await getRequestBody(request)
         sendReport(message, report)
       }
 
@@ -98,7 +109,6 @@ export const withTelemetry = (
       report.endTime = new Date().getTime()
       report.durationMs = report.endTime - report.startTime
       report.statusCode = 500
-      report.requestBody = await getRequestBody(request)
 
       if (error instanceof Error) {
         report.errorMessage = error.message
