@@ -1,4 +1,6 @@
 import { db } from "@/db"
+import { getProofBinary } from "@/lib/api/proof_binaries"
+import { getTeam } from "@/lib/api/teams"
 
 export async function GET(
   _request: Request,
@@ -15,22 +17,31 @@ export async function GET(
     with: {
       proof_binary: true,
     },
-    where: (proofs, { eq }) => eq(proofs.proof_id, Number(id)),
+    where: (proofs, { and, eq }) =>
+      and(eq(proofs.proof_id, Number(id)), eq(proofs.proof_status, "proved")),
   })
 
-  if (!proofRow || !proofRow.proof_binary) {
+  if (!proofRow) {
     return new Response("No proof found", { status: 404 })
   }
 
-  const team = await db.query.teams.findFirst({
-    columns: {
-      name: true,
-    },
-    where: (teams, { eq }) => eq(teams.id, proofRow.team_id),
-  })
+  const team = await getTeam(proofRow.team_id)
 
   const teamName = team?.name ? team.name : proofRow.cluster_id.split("-")[0]
   const filename = `${proofRow.block_number}_${teamName}_${id}.txt`
+
+  // if proof_binary field in db is not found, look for it in the bucket
+  if (!proofRow.proof_binary) {
+    const data = await getProofBinary(filename)
+
+    if (!data) {
+      return new Response("No proof binary found", { status: 404 })
+    }
+
+    console.log("data", data)
+    // redirect to the public url
+    return Response.redirect(data.publicUrl)
+  }
 
   const binaryBuffer = Buffer.from(
     proofRow.proof_binary.proof_binary.slice(2),
