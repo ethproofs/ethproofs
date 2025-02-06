@@ -19,6 +19,12 @@ export async function GET(
     },
     with: {
       proof_binary: true,
+      cluster: {
+        columns: {
+          proof_type: true,
+          cycle_type: true,
+        },
+      },
     },
     where: (proofs, { eq, and }) =>
       and(
@@ -36,8 +42,9 @@ export async function GET(
   for (const proofRow of proofRows) {
     const team = await getTeam(proofRow.team_id)
 
+    const { proof_type, cycle_type } = proofRow.cluster
     const teamName = team?.name ? team.name : proofRow.cluster_id.split("-")[0]
-    const filename = `${proofRow.block_number}_${teamName}_${proofRow.proof_id}.txt`
+    const filename = `block_${block}_${proof_type}_${cycle_type}_${teamName}.txt`
 
     // backwards compatibility: new proofs live in the bucket, old proofs live in the db
     if (proofRow.proof_binary) {
