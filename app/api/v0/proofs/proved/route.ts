@@ -1,10 +1,10 @@
 import { revalidatePath } from "next/cache"
 import { ZodError } from "zod"
 
-import { base64ToHex } from "@/lib/utils"
-
 import { db } from "@/db"
-import { blocks, programs, proofBinaries, proofs } from "@/db/schema"
+import { blocks, programs, proofs } from "@/db/schema"
+import { uploadProofBinary } from "@/lib/api/proof_binaries"
+import { getTeam } from "@/lib/api/teams"
 import { fetchBlockData } from "@/lib/blocks"
 import { withAuth } from "@/lib/middleware/with-auth"
 import { provedProofSchema } from "@/lib/zod/schemas/proof"
@@ -119,7 +119,7 @@ export const POST = withAuth(async ({ request, user, timestamp }) => {
     }
   }
 
-  const proofHex = base64ToHex(proof)
+  const binaryBuffer = Buffer.from(proof, "base64")
 
   // add proof
   const dataToInsert = {
@@ -129,7 +129,7 @@ export const POST = withAuth(async ({ request, user, timestamp }) => {
     program_id: programId,
     proof_status: "proved",
     proved_timestamp: timestamp,
-    size_bytes: Buffer.byteLength(proofHex, "hex"),
+    size_bytes: binaryBuffer.byteLength,
     team_id: user.id,
   }
 
@@ -148,19 +148,13 @@ export const POST = withAuth(async ({ request, user, timestamp }) => {
         })
         .returning({ proof_id: proofs.proof_id })
 
-      // add proof binary
-      await tx
-        .insert(proofBinaries)
-        .values({
-          proof_id: newProof.proof_id,
-          proof_binary: `\\x${proofHex}`,
-        })
-        .onConflictDoUpdate({
-          target: [proofBinaries.proof_id],
-          set: {
-            proof_binary: `\\x${proofHex}`,
-          },
-        })
+      // store proof binary
+      const team = await getTeam(user.id)
+
+      const teamName = team?.name ? team.name : cluster.id.split("-")[0]
+      const filename = `${block_number}_${teamName}_${newProof.proof_id}.txt`
+
+      await uploadProofBinary(filename, binaryBuffer)
 
       return newProof
     })

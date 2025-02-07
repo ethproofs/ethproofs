@@ -8,7 +8,7 @@ const proverProfiles: Partial<teamsScalars>[] = [
       "https://ibkqxhjnroghhtfyualc.supabase.co/storage/v1/object/public/public-assets/succinct-logo.svg",
     website_url: "https://succinct.xyz",
     twitter_handle: "succinctlabs",
-    github_org: "Succinct",
+    github_org: "succinctlabs",
   },
   {
     name: "RiscZero",
