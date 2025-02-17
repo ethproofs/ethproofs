@@ -18,7 +18,6 @@ export async function GET(
       team_id: true,
     },
     with: {
-      proof_binary: true,
       cluster: {
         columns: {
           proof_type: true,
@@ -46,21 +45,12 @@ export async function GET(
     const teamName = team?.name ? team.name : proofRow.cluster_id.split("-")[0]
     const filename = `block_${block}_${proof_type}_${cycle_type}_${teamName}.txt`
 
-    // backwards compatibility: new proofs live in the bucket, old proofs live in the db
-    if (proofRow.proof_binary) {
-      const binaryBuffer = Buffer.from(
-        proofRow.proof_binary.proof_binary.slice(2),
-        "hex"
-      )
-      binaryBuffers.push({ binaryBuffer, filename })
-    } else {
-      const blob = await downloadProofBinary(filename)
-      if (blob) {
-        const arrayBuffer = await blob.arrayBuffer()
-        const binaryBuffer = Buffer.from(arrayBuffer)
+    const blob = await downloadProofBinary(filename)
+    if (blob) {
+      const arrayBuffer = await blob.arrayBuffer()
+      const binaryBuffer = Buffer.from(arrayBuffer)
 
-        binaryBuffers.push({ binaryBuffer, filename })
-      }
+      binaryBuffers.push({ binaryBuffer, filename })
     }
   }
 

@@ -344,37 +344,6 @@ export const proofs = pgTable(
   ]
 )
 
-export const proofBinaries = pgTable(
-  "proof_binaries",
-  {
-    proof_id: integer("proof_id")
-      .primaryKey()
-      .references(() => proofs.proof_id, {
-        onDelete: "cascade",
-        onUpdate: "cascade",
-      }),
-    proof_binary: bytea("proof_binary").notNull(),
-  },
-  () => [
-    pgPolicy("Enable updates for users with an api key", {
-      as: "permissive",
-      for: "update",
-      to: ["public"],
-      using: sql`is_allowed_apikey(((current_setting('request.headers'::text, true))::json ->> 'ethkey'::text), '{all,write}'::key_mode[])`,
-    }),
-    pgPolicy("Enable read access for all users", {
-      as: "permissive",
-      for: "select",
-      to: ["public"],
-    }),
-    pgPolicy("Enable insert for users with an api key", {
-      as: "permissive",
-      for: "insert",
-      to: ["public"],
-    }),
-  ]
-)
-
 export const recentSummary = pgView("recent_summary", {
   total_proven_blocks: bigint("total_proven_blocks", { mode: "number" }),
   avg_cost_per_proof: doublePrecision("avg_cost_per_proof"),
