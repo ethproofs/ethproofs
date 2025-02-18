@@ -8,7 +8,6 @@ import {
   clusterConfigurations,
   clusters,
   programs,
-  proofBinaries,
   proofs,
   recursiveRootProofs,
   teams,
@@ -102,19 +101,8 @@ export const proofsRelations = relations(proofs, ({ one }) => ({
     fields: [proofs.program_id],
     references: [programs.id],
   }),
-  proof_binary: one(proofBinaries, {
-    fields: [proofs.proof_id],
-    references: [proofBinaries.proof_id],
-  }),
 }))
 
 export const programsRelations = relations(programs, ({ many }) => ({
   proofs: many(proofs),
-}))
-
-export const proofBinariesRelations = relations(proofBinaries, ({ one }) => ({
-  proof: one(proofs, {
-    fields: [proofBinaries.proof_id],
-    references: [proofs.proof_id],
-  }),
 }))
