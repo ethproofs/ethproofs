@@ -14,9 +14,6 @@ export async function GET(
       cluster_id: true,
       team_id: true,
     },
-    with: {
-      proof_binary: true,
-    },
     where: (proofs, { and, eq }) =>
       and(eq(proofs.proof_id, Number(id)), eq(proofs.proof_status, "proved")),
   })
@@ -29,24 +26,6 @@ export async function GET(
 
   const teamName = team?.name ? team.name : proofRow.cluster_id.split("-")[0]
   const filename = `${proofRow.block_number}_${teamName}_${id}.txt`
-
-  // backwards compatibility: new proofs live in the bucket, old proofs live in the db
-  if (proofRow.proof_binary) {
-    const binaryBuffer = Buffer.from(
-      proofRow.proof_binary.proof_binary.slice(2),
-      "hex"
-    )
-    const blob = new Blob([binaryBuffer], {
-      type: "application/octet-stream",
-    })
-
-    return new Response(blob, {
-      headers: {
-        "Content-Type": "application/octet-stream",
-        "Content-Disposition": `attachment; filename="${filename}"`,
-      },
-    })
-  }
 
   const data = await getProofBinary(filename)
 
