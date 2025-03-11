@@ -2,6 +2,7 @@
 
 import { useFormState } from "react-dom"
 
+import CopyButton from "../CopyButton"
 import { Input } from "../ui/input"
 
 import { Errors } from "./errors"
@@ -34,7 +35,10 @@ export function AdminApiKeyForm() {
       {state.data && (
         <div className="flex flex-col gap-2">
           <h3 className="text-sm font-bold">API Key</h3>
-          <p>{state.data.apikey}</p>
+          <div className="flex gap-2">
+            <div>{state.data.apikey}</div>
+            <CopyButton message={state.data.apikey} />
+          </div>
         </div>
       )}
     </form>
