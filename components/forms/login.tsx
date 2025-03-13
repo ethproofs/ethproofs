@@ -30,6 +30,7 @@ export function LoginForm() {
         name="password"
         type="password"
         placeholder="Password"
+        autoComplete="current-password"
         required
       />
 
