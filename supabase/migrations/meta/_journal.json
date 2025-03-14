@@ -15,6 +15,13 @@
       "when": 1739530033776,
       "tag": "0001_drop-proof-binaries",
       "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1741703181579,
+      "tag": "0002_api-key-manager",
+      "breakpoints": true
     }
   ]
 }
