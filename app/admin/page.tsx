@@ -3,6 +3,8 @@ import { AdminUserForm } from "@/components/forms/admin-user"
 import { LoginForm } from "@/components/forms/login"
 import { Card } from "@/components/ui/card"
 
+import { db } from "@/db"
+import { teams } from "@/db/schema"
 import { createClient } from "@/utils/supabase/server"
 
 export default async function AdminPage() {
@@ -11,6 +13,9 @@ export default async function AdminPage() {
   const {
     data: { user },
   } = await supabase.auth.getUser()
+
+  // Get existing users/teams
+  const existingTeams = await db.select().from(teams)
 
   if (!user) {
     return (
@@ -37,7 +42,7 @@ export default async function AdminPage() {
 
         <Card className="flex min-w-96 flex-col gap-4">
           <h3 className="text-lg font-bold">Generate API Key</h3>
-          <AdminApiKeyForm />
+          <AdminApiKeyForm teams={existingTeams} />
         </Card>
       </div>
     </div>

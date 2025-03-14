@@ -110,6 +110,9 @@ export async function createUser(_prevState: unknown, formData: FormData) {
       })
       .where(eq(teams.id, data.user.id))
 
+    // revalidate admin page to show new user
+    revalidatePath("/admin", "page")
+
     return {
       data: { user: data.user },
     }
@@ -125,12 +128,12 @@ export async function createUser(_prevState: unknown, formData: FormData) {
 }
 
 const apiKeySchema = z.object({
-  email: z.string().email(),
+  team: z.string(),
 })
 
 export async function generateApiKey(_prevState: unknown, formData: FormData) {
   const validatedFields = apiKeySchema.safeParse({
-    email: formData.get("email"),
+    team: formData.get("team"),
   })
 
   if (!validatedFields.success) {
@@ -139,7 +142,7 @@ export async function generateApiKey(_prevState: unknown, formData: FormData) {
     }
   }
 
-  const { email } = validatedFields.data
+  const { team: teamId } = validatedFields.data
 
   try {
     const supabase = createClient()
@@ -161,7 +164,7 @@ export async function generateApiKey(_prevState: unknown, formData: FormData) {
     const userData = await db
       .select()
       .from(authUsers)
-      .where(eq(authUsers.email, email))
+      .where(eq(authUsers.id, teamId))
 
     if (userData.length === 0) {
       return {
