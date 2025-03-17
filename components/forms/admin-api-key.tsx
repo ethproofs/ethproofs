@@ -2,8 +2,16 @@
 
 import { useFormState } from "react-dom"
 
+import { Team } from "@/lib/types"
+
 import CopyButton from "../CopyButton"
-import { Input } from "../ui/input"
+import {
+  Select,
+  SelectContent,
+  SelectItem,
+  SelectTrigger,
+  SelectValue,
+} from "../ui/select"
 
 import { Errors } from "./errors"
 import { SubmitButton } from "./submit-button"
@@ -15,19 +23,26 @@ const initialState = {
   errors: {},
 }
 
-export function AdminApiKeyForm() {
+export function AdminApiKeyForm({ teams }: { teams: Team[] }) {
   const [state, formAction] = useFormState(generateApiKey, initialState)
 
   return (
     <form className="flex flex-col gap-4" action={formAction}>
-      <Input
-        id="email"
-        name="email"
-        type="email"
-        placeholder="User's email"
-        required
-      />
-
+      <Select name="team" required>
+        <SelectTrigger>
+          <SelectValue placeholder="Select user" />
+        </SelectTrigger>
+        <SelectContent>
+          {teams.map((team) => (
+            <SelectItem key={team.id} value={team.id}>
+              {team.name}{" "}
+              <small className="text-muted-foreground">
+                ({team.id.slice(0, 8)}...{team.id.slice(-12)})
+              </small>
+            </SelectItem>
+          ))}
+        </SelectContent>
+      </Select>
       <Errors errors={state.errors ?? {}} />
 
       <SubmitButton>Generate</SubmitButton>
