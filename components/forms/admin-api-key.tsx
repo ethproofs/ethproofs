@@ -30,7 +30,7 @@ export function AdminApiKeyForm({ teams }: { teams: Team[] }) {
     <form className="flex flex-col gap-4" action={formAction}>
       <Select name="team" required>
         <SelectTrigger>
-          <SelectValue placeholder="Select team" />
+          <SelectValue placeholder="Select user" />
         </SelectTrigger>
         <SelectContent>
           {teams.map((team) => (
