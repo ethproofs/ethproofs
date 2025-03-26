@@ -35,13 +35,13 @@ export const POST = withAuth(async ({ request, user }) => {
   } = singleMachinePayload
 
   // get & validate instance type id
-  const instanceType = await db.query.awsInstancePricing.findFirst({
+  const instanceType = await db.query.instanceTypes.findFirst({
     columns: {
       id: true,
-      instance_type: true,
+      instance_name: true,
     },
-    where: (awsInstancePricing, { eq }) =>
-      eq(awsInstancePricing.instance_type, instance_type),
+    where: (instanceTypes, { eq }) =>
+      eq(instanceTypes.instance_name, instance_type),
   })
 
   if (!instanceType) {

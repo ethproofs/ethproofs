@@ -16,7 +16,7 @@ export const fetchBlocksPaginated = async (pagination: PaginationState) => {
             with: {
               cc: {
                 with: {
-                  aip: true,
+                  it: true,
                 },
               },
             },

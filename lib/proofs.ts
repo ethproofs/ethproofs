@@ -22,8 +22,7 @@ export const isCompleted = (proof: Proof) => proof.proof_status === "proved"
 export const hasCostInfo = (p: Proof) => {
   if (!p.proving_time || !p.cluster?.cluster_configuration) return false
   return p.cluster.cluster_configuration.some(
-    (config) =>
-      !!config.aws_instance_pricing?.hourly_price && !!config.instance_count
+    (config) => !!config.instance_type?.hourly_price && !!config.instance_count
   )
 }
 
@@ -120,9 +119,9 @@ export const getProofBestTimeToProof = (proofs: Proof[]): Proof | null => {
 export const getClusterHourlyPrice = (cluster: Cluster): number | null => {
   if (!cluster.cluster_configuration) return null
   return cluster.cluster_configuration.reduce((acc, config) => {
-    const { instance_count, aws_instance_pricing } = config
-    if (!aws_instance_pricing?.hourly_price || !instance_count) return acc
-    return acc + instance_count * aws_instance_pricing.hourly_price
+    const { instance_count, instance_type } = config
+    if (!instance_type?.hourly_price || !instance_count) return acc
+    return acc + instance_count * instance_type.hourly_price
   }, 0)
 }
 

@@ -103,7 +103,7 @@ export default async function BlockDetailsPage({
             with: {
               cc: {
                 with: {
-                  aip: true,
+                  it: true,
                 },
               },
             },
@@ -641,16 +641,17 @@ export default async function BlockDetailsPage({
                               ({
                                 instance_count,
                                 instance_type_id,
-                                aws_instance_pricing,
+                                instance_type,
                               }) => {
                                 const {
-                                  instance_memory,
-                                  instance_storage,
-                                  instance_type,
+                                  memory,
+                                  disk_name,
+                                  disk_space,
+                                  instance_name,
                                   region,
-                                  vcpu,
+                                  cpu_cores,
                                   hourly_price,
-                                } = aws_instance_pricing || {}
+                                } = instance_type || {}
                                 const total_price = hourly_price
                                   ? hourly_price * instance_count
                                   : 0
@@ -661,17 +662,17 @@ export default async function BlockDetailsPage({
                                   >
                                     <div className="flex gap-8">
                                       <div className="flex-1 space-y-2 p-2">
-                                        {instance_memory && (
-                                          <p>Memory: {instance_memory}</p>
+                                        {memory && <p>Memory: {memory} GB</p>}
+                                        {disk_name && (
+                                          <p>
+                                            Storage: {disk_name} {disk_space} GB
+                                          </p>
                                         )}
-                                        {instance_storage && (
-                                          <p>Storage: {instance_storage}</p>
-                                        )}
-                                        {instance_type && (
-                                          <p>Type: {instance_type}</p>
+                                        {instance_name && (
+                                          <p>Type: {instance_name}</p>
                                         )}
                                         {region && <p>Region: {region}</p>}
-                                        {vcpu && <p>vCPU: {vcpu}</p>}
+                                        {cpu_cores && <p>vCPU: {cpu_cores}</p>}
                                       </div>
                                       {instance_count && (
                                         <div className="grid h-fit place-items-center rounded-bl bg-primary-dark px-4 py-2 text-xl font-bold text-background-highlight">

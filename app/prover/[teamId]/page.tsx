@@ -87,7 +87,7 @@ export default async function ProverPage({ params }: ProverPageProps) {
         with: {
           cc: {
             with: {
-              aip: true,
+              it: true,
             },
           },
         },
@@ -278,9 +278,7 @@ export default async function ProverPage({ params }: ProverPageProps) {
         <h2 className="flex items-center gap-2 text-lg font-normal text-primary">
           <Cpu /> Proving instances
         </h2>
-        <div
-          className="mt-8 grid gap-8 md:grid-cols-[repeat(auto-fill,minmax(24rem,1fr))]"
-        >
+        <div className="mt-8 grid gap-8 md:grid-cols-[repeat(auto-fill,minmax(24rem,1fr))]">
           {clusters.map(({ nickname, hardware, description }) => (
             <Card key={nickname} className="space-y-4">
               <h3 className="text-xl font-semibold">{nickname}</h3>

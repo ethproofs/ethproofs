@@ -23,7 +23,7 @@ export const GET = withAuth(async ({ user }) => {
             instance_count: true,
           },
           with: {
-            aip: true,
+            it: true,
           },
         },
       },
@@ -67,14 +67,14 @@ export const POST = withAuth(async ({ request, user }) => {
   } = clusterPayload
 
   // get & validate instance type ids
-  const instanceTypeIds = await db.query.awsInstancePricing.findMany({
+  const instanceTypeIds = await db.query.instanceTypes.findMany({
     columns: {
       id: true,
-      instance_type: true,
+      instance_name: true,
     },
-    where: (awsInstancePricing, { inArray }) =>
+    where: (instanceTypes, { inArray }) =>
       inArray(
-        awsInstancePricing.instance_type,
+        instanceTypes.instance_name,
         configuration.map((config) => config.instance_type)
       ),
   })
@@ -101,7 +101,7 @@ export const POST = withAuth(async ({ request, user }) => {
     // create cluster configuration
     const instanceTypeById = instanceTypeIds.reduce(
       (acc, instanceType) => {
-        acc[instanceType.instance_type] = instanceType.id
+        acc[instanceType.instance_name] = instanceType.id
         return acc
       },
       {} as Record<string, number>
