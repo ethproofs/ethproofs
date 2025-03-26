@@ -26,7 +26,7 @@
       "name": "Proofs"
     },
     {
-      "name": "Aws pricing list"
+      "name": "Instance types"
     }
   ],
   "paths": {
@@ -204,7 +204,7 @@
                             "instance_count": {
                               "type": "number"
                             },
-                            "aws_instance_pricing": {
+                            "instance_type": {
                               "type": [
                                 "object",
                                 "null"
@@ -213,7 +213,10 @@
                                 "id": {
                                   "type": "number"
                                 },
-                                "instance_type": {
+                                "provider": {
+                                  "type": "string"
+                                },
+                                "instance_name": {
                                   "type": "string"
                                 },
                                 "region": {
@@ -222,35 +225,76 @@
                                 "hourly_price": {
                                   "type": "number"
                                 },
-                                "instance_memory": {
-                                  "type": "number"
-                                },
-                                "vcpu": {
-                                  "type": "number"
-                                },
-                                "instance_storage": {
+                                "cpu_arch": {
                                   "type": "string"
                                 },
+                                "cpu_cores": {
+                                  "type": "number"
+                                },
+                                "cpu_effective_cores": {
+                                  "type": "number"
+                                },
+                                "cpu_name": {
+                                  "type": "string"
+                                },
+                                "memory": {
+                                  "type": "number"
+                                },
+                                "gpu_count": {
+                                  "type": "number"
+                                },
+                                "gpu_arch": {
+                                  "type": "string"
+                                },
+                                "gpu_name": {
+                                  "type": "string"
+                                },
+                                "gpu_memory": {
+                                  "type": "number"
+                                },
+                                "mobo_name": {
+                                  "type": "string"
+                                },
+                                "disk_name": {
+                                  "type": "string"
+                                },
+                                "disk_space": {
+                                  "type": "number"
+                                },
                                 "created_at": {
+                                  "type": "string"
+                                },
+                                "snapshot_date": {
                                   "type": "string"
                                 }
                               },
                               "required": [
                                 "id",
-                                "instance_type",
+                                "provider",
+                                "instance_name",
                                 "region",
                                 "hourly_price",
-                                "instance_memory",
-                                "vcpu",
-                                "instance_storage",
-                                "created_at"
+                                "cpu_arch",
+                                "cpu_cores",
+                                "cpu_effective_cores",
+                                "cpu_name",
+                                "memory",
+                                "gpu_count",
+                                "gpu_arch",
+                                "gpu_name",
+                                "gpu_memory",
+                                "mobo_name",
+                                "disk_name",
+                                "disk_space",
+                                "created_at",
+                                "snapshot_date"
                               ]
                             }
                           },
                           "required": [
                             "instance_type_id",
                             "instance_count",
-                            "aws_instance_pricing"
+                            "instance_type"
                           ]
                         }
                       }
@@ -610,15 +654,15 @@
         }
       }
     },
-    "/aws-pricing-list": {
+    "/instance-types": {
       "get": {
         "tags": [
-          "Aws pricing list"
+          "Instance types"
         ],
-        "summary": "List aws pricing list",
+        "summary": "List instance types",
         "responses": {
           "200": {
-            "description": "Aws pricing list",
+            "description": "Instance types",
             "content": {
               "application/json": {
                 "schema": {
@@ -629,7 +673,10 @@
                       "id": {
                         "type": "number"
                       },
-                      "instance_type": {
+                      "provider": {
+                        "type": "string"
+                      },
+                      "instance_name": {
                         "type": "string"
                       },
                       "region": {
@@ -638,28 +685,69 @@
                       "hourly_price": {
                         "type": "number"
                       },
-                      "instance_memory": {
-                        "type": "number"
-                      },
-                      "vcpu": {
-                        "type": "number"
-                      },
-                      "instance_storage": {
+                      "cpu_arch": {
                         "type": "string"
                       },
+                      "cpu_cores": {
+                        "type": "number"
+                      },
+                      "cpu_effective_cores": {
+                        "type": "number"
+                      },
+                      "cpu_name": {
+                        "type": "string"
+                      },
+                      "memory": {
+                        "type": "number"
+                      },
+                      "gpu_count": {
+                        "type": "number"
+                      },
+                      "gpu_arch": {
+                        "type": "string"
+                      },
+                      "gpu_name": {
+                        "type": "string"
+                      },
+                      "gpu_memory": {
+                        "type": "number"
+                      },
+                      "mobo_name": {
+                        "type": "string"
+                      },
+                      "disk_name": {
+                        "type": "string"
+                      },
+                      "disk_space": {
+                        "type": "number"
+                      },
                       "created_at": {
+                        "type": "string"
+                      },
+                      "snapshot_date": {
                         "type": "string"
                       }
                     },
                     "required": [
                       "id",
-                      "instance_type",
+                      "provider",
+                      "instance_name",
                       "region",
                       "hourly_price",
-                      "instance_memory",
-                      "vcpu",
-                      "instance_storage",
-                      "created_at"
+                      "cpu_arch",
+                      "cpu_cores",
+                      "cpu_effective_cores",
+                      "cpu_name",
+                      "memory",
+                      "gpu_count",
+                      "gpu_arch",
+                      "gpu_name",
+                      "gpu_memory",
+                      "mobo_name",
+                      "disk_name",
+                      "disk_space",
+                      "created_at",
+                      "snapshot_date"
                     ]
                   }
                 }

@@ -1,6 +1,6 @@
 import z from ".."
 
-import { AwsInstancePricingSchema } from "./aws-instance-pricing"
+import { InstanceTypesSchema } from "./instance-types"
 
 export const ClusterSchema = z.object({
   id: z.number().nullable(),
@@ -13,7 +13,7 @@ export const ClusterSchema = z.object({
     z.object({
       instance_type_id: z.number(),
       instance_count: z.number(),
-      aws_instance_pricing: AwsInstancePricingSchema.nullable(),
+      instance_type: InstanceTypesSchema.nullable(),
     })
   ),
 })
