@@ -3,10 +3,10 @@ import { authUsers } from "drizzle-orm/supabase"
 
 import {
   apiAuthTokens,
-  awsInstancePricing,
   blocks,
   clusterConfigurations,
   clusters,
+  instanceTypes,
   programs,
   proofs,
   recursiveRootProofs,
@@ -35,9 +35,9 @@ export const clusterConfigurationsRelations = relations(
       fields: [clusterConfigurations.cluster_id],
       references: [clusters.id],
     }),
-    aip: one(awsInstancePricing, {
+    it: one(instanceTypes, {
       fields: [clusterConfigurations.instance_type_id],
-      references: [awsInstancePricing.id],
+      references: [instanceTypes.id],
     }),
   })
 )
@@ -51,12 +51,9 @@ export const clustersRelations = relations(clusters, ({ one, many }) => ({
   proofs: many(proofs),
 }))
 
-export const awsInstancePricingRelations = relations(
-  awsInstancePricing,
-  ({ many }) => ({
-    cc: many(clusterConfigurations),
-  })
-)
+export const instanceTypesRelations = relations(instanceTypes, ({ many }) => ({
+  cc: many(clusterConfigurations),
+}))
 
 export const recursiveRootProofsRelations = relations(
   recursiveRootProofs,

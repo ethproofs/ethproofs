@@ -3,6 +3,7 @@ import {
   bigint,
   check,
   customType,
+  decimal,
   doublePrecision,
   integer,
   numeric,
@@ -32,6 +33,8 @@ const bytea = customType<{
 
 export const keyMode = pgEnum("key_mode", ["read", "write", "all", "upload"])
 
+export const providerType = pgEnum("provider", ["aws", "vastai"])
+
 export const apiAuthTokens = pgTable(
   "api_auth_tokens",
   {
@@ -58,21 +61,39 @@ export const apiAuthTokens = pgTable(
   ]
 )
 
-export const awsInstancePricing = pgTable(
-  "aws_instance_pricing",
+export const instanceTypes = pgTable(
+  "instance_types",
   {
     id: bigint({ mode: "number" }).primaryKey().generatedByDefaultAsIdentity(),
-    instance_type: varchar("instance_type").notNull(),
-    region: varchar().notNull(),
+    provider: providerType().notNull().default("aws"),
+    instance_name: text("instance_name").notNull(), // Instance name or machine ID
+    region: text("region").notNull(), // Region or geolocation
     hourly_price: real("hourly_price").notNull(),
-    instance_memory: real("instance_memory").notNull(),
-    vcpu: smallint().notNull(),
-    instance_storage: varchar("instance_storage").notNull(),
+    cpu_arch: text("cpu_arch"), // CPU architecture (e.g., x86)
+    cpu_cores: integer("cpu_cores").notNull(), // Number of CPU cores
+    cpu_effective_cores: integer("cpu_effective_cores"), // Effective CPU cores (optional)
+    cpu_name: text("cpu_name"), // Name of the CPU
+    memory: decimal("memory", { precision: 10, scale: 2 }).notNull(), // Total memory (in GB)
+    gpu_count: integer("gpu_count"), // Number of GPUs (optional)
+    gpu_arch: text("gpu_arch"), // GPU architecture (optional)
+    gpu_name: text("gpu_name"), // Name of the GPU (optional)
+    gpu_memory: decimal("gpu_memory", { precision: 10, scale: 2 }), // Total GPU memory (in GB, optional)
+    mobo_name: text("mobo_name"), // Motherboard name (optional, VastAI-specific)
+    disk_name: text("disk_name"), // Disk name (optional, VastAI-specific)
+    disk_space: decimal("disk_space", { precision: 10, scale: 2 }), // Total storage (in GB)
     created_at: timestamp("created_at", { withTimezone: true, mode: "string" })
       .defaultNow()
-      .notNull(),
+      .notNull(), // Timestamp when the record was created
+    snapshot_date: timestamp("snapshot_date", {
+      withTimezone: true,
+      mode: "string",
+    }).notNull(), // Date when the pricing/specs were captured
   },
-  () => [
+  (table) => [
+    unique("unique_instance_name_provider").on(
+      table.instance_name,
+      table.provider
+    ),
     pgPolicy("Enable read access for all users", {
       as: "permissive",
       for: "select",
@@ -126,7 +147,7 @@ export const clusterConfigurations = pgTable(
       }),
     instance_type_id: bigint("instance_type_id", { mode: "number" })
       .notNull()
-      .references(() => awsInstancePricing.id),
+      .references(() => instanceTypes.id),
     instance_count: smallint("instance_count").notNull(),
   },
   () => [
