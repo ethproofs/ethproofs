@@ -660,6 +660,19 @@
           "Instance types"
         ],
         "summary": "List instance types",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "provider",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "aws",
+                "vastai"
+              ]
+            }
+          }
+        ],
         "responses": {
           "200": {
             "description": "Instance types",
@@ -753,6 +766,9 @@
                 }
               }
             }
+          },
+          "400": {
+            "description": "Invalid query parameters"
           },
           "500": {
             "description": "Internal server error"
