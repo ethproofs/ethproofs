@@ -8,8 +8,6 @@ import { MetricInfo } from "./ui/metric"
 import { TooltipContentHeader } from "./ui/tooltip"
 import StatusIcon from "./StatusIcon"
 
-type ProofStatus = "proved" | "proving" | "queued"
-
 const ORDERED_STATUSES = ["proved", "proving", "queued"] as const
 
 const DESCRIPTIONS = {
@@ -34,7 +32,7 @@ export const ProofStatusInfo = ({ title }: { title?: string }) => (
 )
 
 type ProofStatusProps = React.HTMLAttributes<HTMLDivElement> & {
-  statusCount: Record<ProofStatus, number>
+  statusCount: Record<string, number>
   hideEmpty?: boolean
 }
 const ProofStatus = ({

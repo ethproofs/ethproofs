@@ -1,4 +1,4 @@
-import { eq } from "drizzle-orm"
+import { eq, sql } from "drizzle-orm"
 import { count } from "drizzle-orm"
 import { PaginationState } from "@tanstack/react-table"
 
@@ -44,4 +44,17 @@ export const fetchTeamProofsPaginated = async (
     rows: renamedProofs,
     rowCount: rowCount.count,
   }
+}
+
+export const fetchTeamProofsPerStatusCount = async (teamId: string) => {
+  const proofsPerStatusCount = await db
+    .select({
+      proof_status: proofs.proof_status,
+      count: sql<number>`cast(count(${proofs.proof_id}) as int)`,
+    })
+    .from(proofs)
+    .where(eq(proofs.team_id, teamId))
+    .groupBy(proofs.proof_status)
+
+  return proofsPerStatusCount
 }

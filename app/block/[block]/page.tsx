@@ -53,6 +53,7 @@ import { formatNumber, formatUsd } from "@/lib/number"
 import {
   getCostPerMgasStats,
   getCostPerProofStats,
+  getProofsPerStatusCount,
   getProvingCost,
   getProvingTimeStats,
   getTotalTTPStats,
@@ -126,14 +127,7 @@ export default async function BlockDetailsPage({
 
   const { timestamp, block_number, gas_used, proofs, hash } = block
 
-  const proofsPerStatusCount = proofs.reduce(
-    (acc, curr) => {
-      acc[curr.proof_status as ProofStatus] =
-        (acc[curr.proof_status as ProofStatus] ?? 0) + 1
-      return acc
-    },
-    {} as Record<ProofStatus, number>
-  )
+  const proofsPerStatusCount = getProofsPerStatusCount(proofs)
 
   const costPerProofStats = getCostPerProofStats(proofs)
 

@@ -5,6 +5,7 @@ import { ColumnDef } from "@tanstack/react-table"
 
 import type { Block, Cluster, Proof } from "@/lib/types"
 
+import { ColumnHeader } from "@/components/ColumnHeader"
 import DownloadButton from "@/components/DownloadButton"
 import { metrics } from "@/components/Metrics"
 import Null from "@/components/Null"
@@ -12,8 +13,6 @@ import { HidePunctuation } from "@/components/StylePunctuation"
 import Cpu from "@/components/svgs/cpu.svg"
 import { MetricInfo } from "@/components/ui/metric"
 import { TooltipContentHeader } from "@/components/ui/tooltip"
-
-import { ColumnHeader } from "@/components/ColumnHeader"
 
 import { formatTimeAgo } from "@/lib/date"
 import { formatNumber, formatUsd } from "@/lib/number"

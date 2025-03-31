@@ -1,4 +1,3 @@
-import { eq, sql } from "drizzle-orm"
 import { type Metadata } from "next"
 import Link from "next/link"
 import { notFound } from "next/navigation"
@@ -42,8 +41,10 @@ import { cn } from "@/lib/utils"
 import { AVERAGE_LABEL, DEFAULT_PAGE_STATE, SITE_NAME } from "@/lib/constants"
 
 import { db } from "@/db"
-import { proofs as proofsTable } from "@/db/schema"
-import { fetchTeamProofsPaginated } from "@/lib/api/proofs"
+import {
+  fetchTeamProofsPaginated,
+  fetchTeamProofsPerStatusCount,
+} from "@/lib/api/proofs"
 import { getMetadata } from "@/lib/metadata"
 import { formatNumber, formatUsd } from "@/lib/number"
 import {
@@ -84,22 +85,13 @@ export default async function ProverPage({ params }: ProverPageProps) {
 
   if (!team) return notFound()
 
-  // fetch proofs per status count
-  const proofsPerStatusCount = await db
-    .select({
-      proof_status: proofsTable.proof_status,
-      count: sql<number>`cast(count(${proofsTable.proof_id}) as int)`,
-    })
-    .from(proofsTable)
-    .where(eq(proofsTable.team_id, team.id))
-    .groupBy(proofsTable.proof_status)
-
+  const proofsPerStatusCount = await fetchTeamProofsPerStatusCount(team.id)
   const proofsPerStatusCountMap = proofsPerStatusCount.reduce(
     (acc, curr) => {
-      acc[curr.proof_status as ProofStatus] = curr.count
+      acc[curr.proof_status] = curr.count
       return acc
     },
-    {} as Record<ProofStatus, number>
+    {} as Record<string, number>
   )
 
   // prefetch proofs for first page of table
