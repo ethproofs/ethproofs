@@ -2,9 +2,18 @@ import type { NextRequest } from "next/server"
 
 import { DEFAULT_PAGE_SIZE } from "@/lib/constants"
 
-import { fetchBlocksPaginated } from "@/lib/api/blocks"
+import { fetchTeamProofsPaginated } from "@/lib/api/proofs"
 
-export async function GET(request: NextRequest) {
+export async function GET(
+  request: NextRequest,
+  { params }: { params: Promise<{ teamId: string }> }
+) {
+  const { teamId } = await params
+
+  if (!teamId) {
+    return new Response("Invalid team ID", { status: 400 })
+  }
+
   const searchParams = request.nextUrl.searchParams
 
   const pageIndex = Number(searchParams.get("page_index"))
@@ -15,14 +24,14 @@ export async function GET(request: NextRequest) {
   }
 
   try {
-    const blocks = await fetchBlocksPaginated({
+    const proofs = await fetchTeamProofsPaginated(teamId, {
       pageIndex,
       pageSize: Math.max(pageSize, DEFAULT_PAGE_SIZE),
     })
 
-    return Response.json(blocks)
+    return Response.json(proofs)
   } catch (error) {
-    console.error("Error fetching blocks", error)
+    console.error("Error fetching proofs", error)
     return new Response("Internal server error", { status: 500 })
   }
 }

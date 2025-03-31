@@ -13,7 +13,7 @@ import Cpu from "@/components/svgs/cpu.svg"
 import { MetricInfo } from "@/components/ui/metric"
 import { TooltipContentHeader } from "@/components/ui/tooltip"
 
-import { ColumnHeader } from "./ColumnHeader"
+import { ColumnHeader } from "@/components/ColumnHeader"
 
 import { formatTimeAgo } from "@/lib/date"
 import { formatNumber, formatUsd } from "@/lib/number"
