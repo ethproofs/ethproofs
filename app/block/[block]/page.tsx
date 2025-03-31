@@ -126,6 +126,15 @@ export default async function BlockDetailsPage({
 
   const { timestamp, block_number, gas_used, proofs, hash } = block
 
+  const proofsPerStatusCount = proofs.reduce(
+    (acc, curr) => {
+      acc[curr.proof_status as ProofStatus] =
+        (acc[curr.proof_status as ProofStatus] ?? 0) + 1
+      return acc
+    },
+    {} as Record<ProofStatus, number>
+  )
+
   const costPerProofStats = getCostPerProofStats(proofs)
 
   const costPerMgasStats = getCostPerMgasStats(proofs, gas_used)
@@ -139,7 +148,7 @@ export default async function BlockDetailsPage({
       key: "status-of-proofs",
       label: "Status of proofs",
       description: <ProofStatusInfo />,
-      value: <ProofStatus proofs={proofs} />,
+      value: <ProofStatus statusCount={proofsPerStatusCount} />,
     },
     {
       key: "fastest-proving-time",

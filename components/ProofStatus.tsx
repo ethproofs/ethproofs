@@ -1,7 +1,5 @@
 import { Fragment } from "react"
 
-import type { Proof } from "@/lib/types"
-
 import * as Info from "@/components/ui/info"
 
 import { cn } from "@/lib/utils"
@@ -9,6 +7,8 @@ import { cn } from "@/lib/utils"
 import { MetricInfo } from "./ui/metric"
 import { TooltipContentHeader } from "./ui/tooltip"
 import StatusIcon from "./StatusIcon"
+
+type ProofStatus = "proved" | "proving" | "queued"
 
 const ORDERED_STATUSES = ["proved", "proving", "queued"] as const
 
@@ -34,39 +34,36 @@ export const ProofStatusInfo = ({ title }: { title?: string }) => (
 )
 
 type ProofStatusProps = React.HTMLAttributes<HTMLDivElement> & {
-  proofs: Proof[]
+  statusCount: Record<ProofStatus, number>
   hideEmpty?: boolean
 }
 const ProofStatus = ({
-  proofs,
+  statusCount,
   className,
   hideEmpty = true,
   ...props
 }: ProofStatusProps) => {
-  const allProofs: Proof[][] = Array(ORDERED_STATUSES.length)
-    .fill(0)
-    .map((_, i) => proofs.filter((p) => p.proof_status === ORDERED_STATUSES[i]))
-
   return (
     <figure
       className={cn("flex items-center gap-4 font-mono", className)}
       {...props}
     >
-      {allProofs.map(({ length: proofCount }, idx) => {
+      {ORDERED_STATUSES.map((status) => {
+        const count = statusCount[status] ?? 0
         // Hide if no proofs for that status
-        if (proofCount === 0 && hideEmpty) return null
+        if (count === 0 && hideEmpty) return null
         return (
-          <div key={ORDERED_STATUSES[idx]} className="flex items-center gap-1">
+          <div key={status} className="flex items-center gap-1">
             <MetricInfo
               trigger={
                 <div className="flex flex-nowrap items-center gap-1">
-                  <StatusIcon status={ORDERED_STATUSES[idx]} />
-                  <span className="block">{proofCount}</span>
+                  <StatusIcon status={status} />
+                  <span className="block">{count}</span>
                 </div>
               }
             >
               <span className="!font-body text-body">
-                {DESCRIPTIONS[ORDERED_STATUSES[idx]]}
+                {DESCRIPTIONS[status]}
               </span>
             </MetricInfo>
           </div>
