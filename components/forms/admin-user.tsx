@@ -1,5 +1,6 @@
 "use client"
 
+import Link from "next/link"
 import { useFormState } from "react-dom"
 
 import { Input } from "../ui/input"
@@ -28,6 +29,46 @@ export function AdminUserForm() {
         placeholder="Email"
         required
       />
+
+      <Input
+        id="github_org"
+        name="github_org"
+        type="text"
+        placeholder="GitHub Organization"
+      />
+
+      <Input
+        id="twitter_handle"
+        name="twitter_handle"
+        type="text"
+        placeholder="Twitter Handle"
+      />
+
+      <Input id="website" name="website" type="text" placeholder="Website" />
+
+      <div className="mt-4 flex flex-col gap-2">
+        <label htmlFor="logo" className="text-sm font-bold">
+          Logo
+        </label>
+        <p className="text-secondary text-sm">
+          SVG file. Fill color black.{" "}
+          <Link
+            href="https://ndjfbkojyebmdbckigbe.supabase.co/storage/v1/object/public/public-assets/succinct-logo-new.svg"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="text-sm text-primary-light"
+          >
+            Example
+          </Link>
+        </p>
+        <Input
+          id="logo"
+          name="logo"
+          type="file"
+          placeholder="Logo"
+          accept="image/svg+xml"
+        />
+      </div>
 
       <Errors errors={state.errors ?? {}} />
 
