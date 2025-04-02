@@ -17,7 +17,7 @@ export async function GET(request: NextRequest) {
   try {
     const blocks = await fetchBlocksPaginated({
       pageIndex,
-      pageSize: Math.max(pageSize, DEFAULT_PAGE_SIZE),
+      pageSize: Math.min(pageSize, DEFAULT_PAGE_SIZE),
     })
 
     return Response.json(blocks)
