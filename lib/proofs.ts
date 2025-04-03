@@ -372,3 +372,15 @@ export const getTotalTTPStats = (
     bestProof,
   }
 }
+
+export const getProofsPerStatusCount = (
+  proofs: Proof[]
+): Record<string, number> => {
+  return proofs.reduce(
+    (acc, proof) => {
+      acc[proof.proof_status] = (acc[proof.proof_status] ?? 0) + 1
+      return acc
+    },
+    {} as Record<string, number>
+  )
+}
