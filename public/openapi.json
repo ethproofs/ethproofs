@@ -26,7 +26,7 @@
       "name": "Proofs"
     },
     {
-      "name": "Instance types"
+      "name": "Cloud instances"
     }
   ],
   "paths": {
@@ -83,20 +83,20 @@
                     "items": {
                       "type": "object",
                       "properties": {
-                        "instance_type": {
+                        "cloud_instance": {
                           "type": "string",
-                          "description": "Instance type from AWS pricing list",
+                          "description": "Cloud instance name",
                           "example": "c5.xlarge"
                         },
-                        "instance_count": {
+                        "cloud_instance_count": {
                           "type": "number",
                           "description": "Number of instances of this type",
                           "example": 10
                         }
                       },
                       "required": [
-                        "instance_type",
-                        "instance_count"
+                        "cloud_instance",
+                        "cloud_instance_count"
                       ]
                     },
                     "description": "Cluster configuration"
@@ -198,13 +198,13 @@
                         "items": {
                           "type": "object",
                           "properties": {
-                            "instance_type_id": {
+                            "cloud_instance_id": {
                               "type": "number"
                             },
-                            "instance_count": {
+                            "cloud_instance_count": {
                               "type": "number"
                             },
-                            "instance_type": {
+                            "cloud_instance": {
                               "type": [
                                 "object",
                                 "null"
@@ -274,27 +274,16 @@
                                 "instance_name",
                                 "region",
                                 "hourly_price",
-                                "cpu_arch",
                                 "cpu_cores",
-                                "cpu_effective_cores",
-                                "cpu_name",
                                 "memory",
-                                "gpu_count",
-                                "gpu_arch",
-                                "gpu_name",
-                                "gpu_memory",
-                                "mobo_name",
-                                "disk_name",
-                                "disk_space",
-                                "created_at",
-                                "snapshot_date"
+                                "created_at"
                               ]
                             }
                           },
                           "required": [
-                            "instance_type_id",
-                            "instance_count",
-                            "instance_type"
+                            "cloud_instance_id",
+                            "cloud_instance_count",
+                            "cloud_instance"
                           ]
                         }
                       }
@@ -366,15 +355,15 @@
                     "description": "Proof system used to generate proofs. (e.g., Groth16 or PlonK)",
                     "example": "Groth16"
                   },
-                  "instance_type": {
+                  "cloud_instance": {
                     "type": "string",
-                    "description": "Instance type from AWS pricing list",
+                    "description": "Cloud instance name",
                     "example": "c5.xlarge"
                   }
                 },
                 "required": [
                   "nickname",
-                  "instance_type"
+                  "cloud_instance"
                 ]
               }
             }
@@ -654,12 +643,12 @@
         }
       }
     },
-    "/instance-types": {
+    "/cloud-instances": {
       "get": {
         "tags": [
-          "Instance types"
+          "Cloud instances"
         ],
-        "summary": "List instance types",
+        "summary": "List cloud instances",
         "parameters": [
           {
             "in": "query",
@@ -675,7 +664,7 @@
         ],
         "responses": {
           "200": {
-            "description": "Instance types",
+            "description": "Cloud instances",
             "content": {
               "application/json": {
                 "schema": {
@@ -747,20 +736,9 @@
                       "instance_name",
                       "region",
                       "hourly_price",
-                      "cpu_arch",
                       "cpu_cores",
-                      "cpu_effective_cores",
-                      "cpu_name",
                       "memory",
-                      "gpu_count",
-                      "gpu_arch",
-                      "gpu_name",
-                      "gpu_memory",
-                      "mobo_name",
-                      "disk_name",
-                      "disk_space",
-                      "created_at",
-                      "snapshot_date"
+                      "created_at"
                     ]
                   }
                 }
