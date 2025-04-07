@@ -19,11 +19,11 @@ export const GET = withAuth(async ({ user }) => {
       with: {
         cc: {
           columns: {
-            instance_type_id: true,
-            instance_count: true,
+            cloud_instance_id: true,
+            cloud_instance_count: true,
           },
           with: {
-            aip: true,
+            ci: true,
           },
         },
       },
@@ -66,20 +66,20 @@ export const POST = withAuth(async ({ request, user }) => {
     proof_type,
   } = clusterPayload
 
-  // get & validate instance type ids
-  const instanceTypeIds = await db.query.awsInstancePricing.findMany({
+  // get & validate cloud instance ids
+  const cloudInstanceIds = await db.query.cloudInstances.findMany({
     columns: {
       id: true,
-      instance_type: true,
+      instance_name: true,
     },
-    where: (awsInstancePricing, { inArray }) =>
+    where: (cloudInstances, { inArray }) =>
       inArray(
-        awsInstancePricing.instance_type,
-        configuration.map((config) => config.instance_type)
+        cloudInstances.instance_name,
+        configuration.map((config) => config.cloud_instance)
       ),
   })
 
-  if (instanceTypeIds.length !== configuration.length) {
+  if (cloudInstanceIds.length !== configuration.length) {
     return new Response("Invalid cluster configuration", { status: 400 })
   }
 
@@ -99,19 +99,19 @@ export const POST = withAuth(async ({ request, user }) => {
       .returning({ id: clusters.id, index: clusters.index })
 
     // create cluster configuration
-    const instanceTypeById = instanceTypeIds.reduce(
-      (acc, instanceType) => {
-        acc[instanceType.instance_type] = instanceType.id
+    const cloudInstanceByName = cloudInstanceIds.reduce(
+      (acc, cloudInstance) => {
+        acc[cloudInstance.instance_name] = cloudInstance.id
         return acc
       },
       {} as Record<string, number>
     )
 
     await tx.insert(clusterConfigurations).values(
-      configuration.map(({ instance_type, instance_count }) => ({
+      configuration.map(({ cloud_instance, cloud_instance_count }) => ({
         cluster_id: cluster.id,
-        instance_type_id: instanceTypeById[instance_type],
-        instance_count,
+        cloud_instance_id: cloudInstanceByName[cloud_instance],
+        cloud_instance_count,
       }))
     )
 

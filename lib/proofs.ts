@@ -23,7 +23,7 @@ export const hasCostInfo = (p: Proof) => {
   if (!p.proving_time || !p.cluster?.cluster_configuration) return false
   return p.cluster.cluster_configuration.some(
     (config) =>
-      !!config.aws_instance_pricing?.hourly_price && !!config.instance_count
+      !!config.cloud_instance?.hourly_price && !!config.cloud_instance_count
   )
 }
 
@@ -120,9 +120,9 @@ export const getProofBestTimeToProof = (proofs: Proof[]): Proof | null => {
 export const getClusterHourlyPrice = (cluster: Cluster): number | null => {
   if (!cluster.cluster_configuration) return null
   return cluster.cluster_configuration.reduce((acc, config) => {
-    const { instance_count, aws_instance_pricing } = config
-    if (!aws_instance_pricing?.hourly_price || !instance_count) return acc
-    return acc + instance_count * aws_instance_pricing.hourly_price
+    const { cloud_instance_count, cloud_instance } = config
+    if (!cloud_instance?.hourly_price || !cloud_instance_count) return acc
+    return acc + cloud_instance_count * cloud_instance.hourly_price
   }, 0)
 }
 
@@ -371,4 +371,16 @@ export const getTotalTTPStats = (
     bestFormatted,
     bestProof,
   }
+}
+
+export const getProofsPerStatusCount = (
+  proofs: Proof[]
+): Record<string, number> => {
+  return proofs.reduce(
+    (acc, proof) => {
+      acc[proof.proof_status] = (acc[proof.proof_status] ?? 0) + 1
+      return acc
+    },
+    {} as Record<string, number>
+  )
 }
