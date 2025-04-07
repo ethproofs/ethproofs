@@ -1,6 +1,11 @@
 import { type Metadata } from "next"
 import Link from "next/link"
 import { notFound } from "next/navigation"
+import {
+  dehydrate,
+  HydrationBoundary,
+  QueryClient,
+} from "@tanstack/react-query"
 
 import type { Cluster, Metric, Proof } from "@/lib/types"
 
@@ -13,8 +18,8 @@ import ProofCircle from "@/components/svgs/proof-circle.svg"
 import TrendingUp from "@/components/svgs/trending-up.svg"
 import XLogo from "@/components/svgs/x-logo.svg"
 import TeamLogo from "@/components/TeamLogo"
+import TeamProofsTable from "@/components/TeamProofsTable"
 import { Card } from "@/components/ui/card"
-import DataTableUncontrolled from "@/components/ui/data-table-uncontrolled"
 import {
   HeroBody,
   HeroDivider,
@@ -33,12 +38,13 @@ import {
 
 import { cn } from "@/lib/utils"
 
-import { AVERAGE_LABEL, SITE_NAME } from "@/lib/constants"
-
-import { columns } from "./columns"
+import { AVERAGE_LABEL, DEFAULT_PAGE_STATE, SITE_NAME } from "@/lib/constants"
 
 import { db } from "@/db"
-import { tmp_renameClusterConfiguration } from "@/lib/clusters"
+import {
+  fetchTeamProofsPaginated,
+  fetchTeamProofsPerStatusCount,
+} from "@/lib/api/proofs"
 import { getMetadata } from "@/lib/metadata"
 import { formatNumber, formatUsd } from "@/lib/number"
 import {
@@ -79,28 +85,24 @@ export default async function ProverPage({ params }: ProverPageProps) {
 
   if (!team) return notFound()
 
-  const proofsRaw = await db.query.proofs.findMany({
-    where: (proofs, { eq }) => eq(proofs.team_id, team.id),
-    with: {
-      block: true,
-      cluster: {
-        with: {
-          cc: {
-            with: {
-              it: true,
-            },
-          },
-        },
-      },
+  const proofsPerStatusCount = await fetchTeamProofsPerStatusCount(team.id)
+  const proofsPerStatusCountMap = proofsPerStatusCount.reduce(
+    (acc, curr) => {
+      acc[curr.proof_status] = curr.count
+      return acc
     },
+    {} as Record<string, number>
+  )
+
+  // prefetch proofs for first page of table
+  const queryClient = new QueryClient()
+  const response = await fetchTeamProofsPaginated(team.id, DEFAULT_PAGE_STATE)
+  await queryClient.prefetchQuery({
+    queryKey: ["proofs", team.id, DEFAULT_PAGE_STATE],
+    queryFn: () => response,
   })
 
-  if (!proofsRaw.length) return notFound()
-
-  const proofs = proofsRaw.map((proof) => ({
-    ...proof,
-    cluster: tmp_renameClusterConfiguration(proof.cluster),
-  }))
+  const proofs = response.rows
 
   const clusters = Object.values(
     proofs.reduce((acc, curr) => {
@@ -134,7 +136,7 @@ export default async function ProverPage({ params }: ProverPageProps) {
       key: "total-proofs",
       label: "Total proofs",
       description: <ProofStatusInfo title="total proofs" />,
-      value: <ProofStatus proofs={proofs as Proof[]} />,
+      value: <ProofStatus statusCount={proofsPerStatusCountMap} />,
     },
     {
       key: "avg-zkvm-cycles-per-mgas",
@@ -267,11 +269,9 @@ export default async function ProverPage({ params }: ProverPageProps) {
         <h2 className="flex items-center gap-2 text-lg font-normal text-primary">
           <ProofCircle /> Proofs
         </h2>
-        <DataTableUncontrolled
-          columns={columns}
-          data={proofs as Proof[]}
-          sorting={[{ id: "block_number", desc: true }]}
-        />
+        <HydrationBoundary state={dehydrate(queryClient)}>
+          <TeamProofsTable teamId={team.id} />
+        </HydrationBoundary>
       </section>
 
       <section>
