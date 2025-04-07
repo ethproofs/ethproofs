@@ -87,7 +87,7 @@ export const cloudInstances = pgTable(
     snapshot_date: timestamp("snapshot_date", {
       withTimezone: true,
       mode: "string",
-    }).notNull(), // Date when the pricing/specs were captured
+    }), // Date when the pricing/specs were captured
   },
   () => [
     pgPolicy("Enable read access for all users", {
@@ -370,7 +370,7 @@ export const recentSummary = pgView("recent_summary", {
   .as(
     sql`
     SELECT count(DISTINCT b.block_number) AS total_proven_blocks,
-      COALESCE(avg(cc.cloud_instance_count::double precision * a.hourly_price * p.proving_time::double precision / (1000.0 * 60::numeric * 60::numeric)::double precision), 0::numeric::double precision) AS avg_cost_per_proof,
+      COALESCE(avg(cc.cloud_instance_count::double precision * c.hourly_price * p.proving_time::double precision / (1000.0 * 60::numeric * 60::numeric)::double precision), 0::numeric::double precision) AS avg_cost_per_proof,
       COALESCE(avg(p.proving_time), 0::numeric) AS avg_proving_time
     FROM blocks b
     INNER JOIN proofs p ON b.block_number = p.block_number AND p.proof_status = 'proved'::text

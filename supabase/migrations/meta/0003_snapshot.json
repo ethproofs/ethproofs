@@ -1,5 +1,5 @@
 {
-  "id": "53aa23ef-9dc4-4894-99fe-97f24ba2f596",
+  "id": "0ad10132-e5da-4069-afab-0afb2b9c3943",
   "prevId": "30eac886-9a51-40f2-a367-661cc89be43b",
   "version": "7",
   "dialect": "postgresql",
@@ -281,7 +281,7 @@
           "name": "snapshot_date",
           "type": "timestamp with time zone",
           "primaryKey": false,
-          "notNull": true
+          "notNull": false
         }
       },
       "indexes": {},
@@ -994,7 +994,7 @@
           "notNull": false
         }
       },
-      "definition": "\n    SELECT count(DISTINCT b.block_number) AS total_proven_blocks,\n      COALESCE(avg(cc.cloud_instance_count::double precision * a.hourly_price * p.proving_time::double precision / (1000.0 * 60::numeric * 60::numeric)::double precision), 0::numeric::double precision) AS avg_cost_per_proof,\n      COALESCE(avg(p.proving_time), 0::numeric) AS avg_proving_time\n    FROM blocks b\n    INNER JOIN proofs p ON b.block_number = p.block_number AND p.proof_status = 'proved'::text\n    INNER JOIN cluster_configurations cc ON p.cluster_id = cc.cluster_id\n    INNER JOIN cloud_instances c ON cc.cloud_instance_id = c.id\n    WHERE b.\"timestamp\" >= (now() - '30 days'::interval)",
+      "definition": "\n    SELECT count(DISTINCT b.block_number) AS total_proven_blocks,\n      COALESCE(avg(cc.cloud_instance_count::double precision * c.hourly_price * p.proving_time::double precision / (1000.0 * 60::numeric * 60::numeric)::double precision), 0::numeric::double precision) AS avg_cost_per_proof,\n      COALESCE(avg(p.proving_time), 0::numeric) AS avg_proving_time\n    FROM blocks b\n    INNER JOIN proofs p ON b.block_number = p.block_number AND p.proof_status = 'proved'::text\n    INNER JOIN cluster_configurations cc ON p.cluster_id = cc.cluster_id\n    INNER JOIN cloud_instances c ON cc.cloud_instance_id = c.id\n    WHERE b.\"timestamp\" >= (now() - '30 days'::interval)",
       "name": "recent_summary",
       "schema": "public",
       "isExisting": false,

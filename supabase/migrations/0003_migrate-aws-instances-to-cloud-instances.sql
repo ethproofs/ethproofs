@@ -21,12 +21,13 @@ ALTER TABLE "cloud_instances" ADD COLUMN "gpu_name" text;--> statement-breakpoin
 ALTER TABLE "cloud_instances" ADD COLUMN "gpu_memory" numeric(10, 2);--> statement-breakpoint
 ALTER TABLE "cloud_instances" ADD COLUMN "mobo_name" text;--> statement-breakpoint
 ALTER TABLE "cloud_instances" ADD COLUMN "disk_space" numeric(10, 2);--> statement-breakpoint
-ALTER TABLE "cloud_instances" ADD COLUMN "snapshot_date" timestamp with time zone NOT NULL;--> statement-breakpoint
+ALTER TABLE "cloud_instances" ADD COLUMN "snapshot_date" timestamp with time zone;--> statement-breakpoint
+ALTER TABLE "cloud_instances" RENAME CONSTRAINT "aws_instance_pricing_pkey" TO "cloud_instances_pkey";
 ALTER TABLE "cluster_configurations" ADD CONSTRAINT "cluster_configurations_cloud_instance_id_cloud_instances_id_fk" FOREIGN KEY ("cloud_instance_id") REFERENCES "public"."cloud_instances"("id") ON DELETE no action ON UPDATE no action;--> statement-breakpoint
 ALTER TABLE "cloud_instances" ADD CONSTRAINT "cloud_instances_instance_name_unique" UNIQUE("instance_name");--> statement-breakpoint
 CREATE VIEW "public"."recent_summary" WITH (security_invoker = true) AS (
     SELECT count(DISTINCT b.block_number) AS total_proven_blocks,
-      COALESCE(avg(cc.cloud_instance_count::double precision * a.hourly_price * p.proving_time::double precision / (1000.0 * 60::numeric * 60::numeric)::double precision), 0::numeric::double precision) AS avg_cost_per_proof,
+      COALESCE(avg(cc.cloud_instance_count::double precision * c.hourly_price * p.proving_time::double precision / (1000.0 * 60::numeric * 60::numeric)::double precision), 0::numeric::double precision) AS avg_cost_per_proof,
       COALESCE(avg(p.proving_time), 0::numeric) AS avg_proving_time
     FROM blocks b
     INNER JOIN proofs p ON b.block_number = p.block_number AND p.proof_status = 'proved'::text
