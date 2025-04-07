@@ -1,8 +1,8 @@
 import { type ReactNode } from "react"
 
 import {
-  awsInstancePricing,
   blocks,
+  cloudInstances,
   clusterConfigurations,
   clusters,
   proofs,
@@ -11,9 +11,9 @@ import {
 } from "@/db/schema"
 
 /**
- * Represents a row in the aws_instance_pricing table.
+ * Represents a row in the cloud_instances table.
  */
-export type AwsInstance = typeof awsInstancePricing.$inferSelect
+export type CloudInstance = typeof cloudInstances.$inferSelect
 
 /**
  * Represents a row in the blocks table.
@@ -46,10 +46,10 @@ export type Team = typeof teams.$inferSelect
 export type TeamSummary = typeof teamsSummary.$inferSelect
 
 /**
- * Extensions for the ClusterConfig type, adding optional awsInstance property.
+ * Extensions for the ClusterConfig type, adding optional cloudInstance property.
  */
 export type ClusterConfigExtensions = {
-  aws_instance_pricing?: AwsInstance | null
+  cloud_instance?: CloudInstance | null
 }
 
 /**

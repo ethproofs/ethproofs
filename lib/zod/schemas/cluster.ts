@@ -1,6 +1,6 @@
 import z from ".."
 
-import { AwsInstancePricingSchema } from "./aws-instance-pricing"
+import { CloudInstancesSchema } from "./cloud-instance"
 
 export const ClusterSchema = z.object({
   id: z.number().nullable(),
@@ -11,9 +11,9 @@ export const ClusterSchema = z.object({
   proof_type: z.string().optional().nullable(),
   cluster_configuration: z.array(
     z.object({
-      instance_type_id: z.number(),
-      instance_count: z.number(),
-      aws_instance_pricing: AwsInstancePricingSchema.nullable(),
+      cloud_instance_id: z.number(),
+      cloud_instance_count: z.number(),
+      cloud_instance: CloudInstancesSchema.nullable(),
     })
   ),
 })
@@ -48,11 +48,11 @@ export const createClusterSchema = baseClusterSchema.extend({
   configuration: z
     .array(
       z.object({
-        instance_type: z.string().openapi({
-          description: "Instance type from AWS pricing list",
+        cloud_instance: z.string().openapi({
+          description: "Cloud instance name",
           example: "c5.xlarge",
         }),
-        instance_count: z.number().openapi({
+        cloud_instance_count: z.number().openapi({
           description: "Number of instances of this type",
           example: 10,
         }),
@@ -62,8 +62,8 @@ export const createClusterSchema = baseClusterSchema.extend({
 })
 
 export const singleMachineSchema = baseClusterSchema.extend({
-  instance_type: z.string().openapi({
-    description: "Instance type from AWS pricing list",
+  cloud_instance: z.string().openapi({
+    description: "Cloud instance name",
     example: "c5.xlarge",
   }),
 })

@@ -22,6 +22,13 @@
       "when": 1741703181579,
       "tag": "0002_api-key-manager",
       "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1744036764546,
+      "tag": "0003_migrate-aws-instances-to-cloud-instances",
+      "breakpoints": true
     }
   ]
 }

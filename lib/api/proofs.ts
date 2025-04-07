@@ -18,7 +18,7 @@ export const fetchTeamProofsPaginated = async (
         with: {
           cc: {
             with: {
-              aip: true,
+              ci: true,
             },
           },
         },
