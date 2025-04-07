@@ -7,6 +7,8 @@ import { revalidatePath } from "next/cache"
 import { redirect } from "next/navigation"
 import { z } from "zod"
 
+import { PUBLIC_ASSETS_BUCKET } from "@/lib/constants"
+
 import { db } from "@/db"
 import { apiAuthTokens, teams } from "@/db/schema"
 import { hashToken } from "@/lib/auth/hash-token"
@@ -55,12 +57,31 @@ export async function login(_prevState: unknown, formData: FormData) {
 const userSchema = z.object({
   email: z.string().email(),
   name: z.string(),
+  website: z.string().optional(),
+  github_org: z.string().optional(),
+  twitter_handle: z.string().optional(),
+  logo: z
+    .any()
+    .optional()
+    .refine(
+      (file) => {
+        if (!file) return true
+        return file.type === "image/svg+xml"
+      },
+      {
+        message: "Logo must be a SVG file",
+      }
+    ),
 })
 
 export async function createUser(_prevState: unknown, formData: FormData) {
   const validatedFields = userSchema.safeParse({
     email: formData.get("email"),
     name: formData.get("name"),
+    website: formData.get("website"),
+    github_org: formData.get("github_org"),
+    twitter_handle: formData.get("twitter_handle"),
+    logo: formData.get("logo"),
   })
 
   if (!validatedFields.success) {
@@ -69,7 +90,8 @@ export async function createUser(_prevState: unknown, formData: FormData) {
     }
   }
 
-  const { email, name } = validatedFields.data
+  const { email, name, website, github_org, twitter_handle, logo } =
+    validatedFields.data
 
   try {
     const supabase = createClient()
@@ -97,9 +119,31 @@ export async function createUser(_prevState: unknown, formData: FormData) {
       console.error("error creating user", error)
       return {
         errors: {
-          email: ["Error creating user"],
+          email: ["Error creating user", error?.message],
         },
       }
+    }
+
+    // upload logo
+    let logoUrl = null
+    if (logo) {
+      const { data, error } = await supabase.storage
+        .from(PUBLIC_ASSETS_BUCKET)
+        .upload(`${name.toLowerCase().replace(" ", "-")}.svg`, logo)
+
+      if (error) {
+        console.error("error uploading logo", error)
+        return {
+          errors: { logo: ["Error uploading logo"] },
+        }
+      }
+
+      // get public url
+      const { data: publicUrlData } = supabase.storage
+        .from(PUBLIC_ASSETS_BUCKET)
+        .getPublicUrl(data.path)
+
+      logoUrl = publicUrlData.publicUrl
     }
 
     // update team name
@@ -107,6 +151,10 @@ export async function createUser(_prevState: unknown, formData: FormData) {
       .update(teams)
       .set({
         name: name,
+        website_url: website,
+        github_org,
+        twitter_handle,
+        logo_url: logoUrl,
       })
       .where(eq(teams.id, data.user.id))
 
