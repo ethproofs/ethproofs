@@ -4,9 +4,9 @@ import { authUsers } from "drizzle-orm/supabase"
 import {
   apiAuthTokens,
   blocks,
+  cloudInstances,
   clusterConfigurations,
   clusters,
-  instanceTypes,
   programs,
   proofs,
   recursiveRootProofs,
@@ -35,9 +35,9 @@ export const clusterConfigurationsRelations = relations(
       fields: [clusterConfigurations.cluster_id],
       references: [clusters.id],
     }),
-    it: one(instanceTypes, {
-      fields: [clusterConfigurations.instance_type_id],
-      references: [instanceTypes.id],
+    ci: one(cloudInstances, {
+      fields: [clusterConfigurations.cloud_instance_id],
+      references: [cloudInstances.id],
     }),
   })
 )
@@ -51,9 +51,12 @@ export const clustersRelations = relations(clusters, ({ one, many }) => ({
   proofs: many(proofs),
 }))
 
-export const instanceTypesRelations = relations(instanceTypes, ({ many }) => ({
-  cc: many(clusterConfigurations),
-}))
+export const cloudInstancesRelations = relations(
+  cloudInstances,
+  ({ many }) => ({
+    cc: many(clusterConfigurations),
+  })
+)
 
 export const recursiveRootProofsRelations = relations(
   recursiveRootProofs,

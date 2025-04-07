@@ -61,12 +61,12 @@ export const apiAuthTokens = pgTable(
   ]
 )
 
-export const instanceTypes = pgTable(
-  "instance_types",
+export const cloudInstances = pgTable(
+  "cloud_instances",
   {
     id: bigint({ mode: "number" }).primaryKey().generatedByDefaultAsIdentity(),
     provider: providerType().notNull().default("aws"),
-    instance_name: text("instance_name").notNull(), // Instance name or machine ID
+    instance_name: text("instance_name").notNull().unique(), // Instance name or machine ID
     region: text("region").notNull(), // Region or geolocation
     hourly_price: real("hourly_price").notNull(),
     cpu_arch: text("cpu_arch"), // CPU architecture (e.g., x86)
@@ -89,11 +89,7 @@ export const instanceTypes = pgTable(
       mode: "string",
     }).notNull(), // Date when the pricing/specs were captured
   },
-  (table) => [
-    unique("unique_instance_name_provider").on(
-      table.instance_name,
-      table.provider
-    ),
+  () => [
     pgPolicy("Enable read access for all users", {
       as: "permissive",
       for: "select",
@@ -145,10 +141,10 @@ export const clusterConfigurations = pgTable(
         onDelete: "cascade",
         onUpdate: "cascade",
       }),
-    instance_type_id: bigint("instance_type_id", { mode: "number" })
+    cloud_instance_id: bigint("cloud_instance_id", { mode: "number" })
       .notNull()
-      .references(() => instanceTypes.id),
-    instance_count: smallint("instance_count").notNull(),
+      .references(() => cloudInstances.id),
+    cloud_instance_count: smallint("cloud_instance_count").notNull(),
   },
   () => [
     pgPolicy("Enable read access for all users", {
@@ -374,12 +370,12 @@ export const recentSummary = pgView("recent_summary", {
   .as(
     sql`
     SELECT count(DISTINCT b.block_number) AS total_proven_blocks,
-      COALESCE(avg(cc.instance_count::double precision * a.hourly_price * p.proving_time::double precision / (1000.0 * 60::numeric * 60::numeric)::double precision), 0::numeric::double precision) AS avg_cost_per_proof,
+      COALESCE(avg(cc.cloud_instance_count::double precision * a.hourly_price * p.proving_time::double precision / (1000.0 * 60::numeric * 60::numeric)::double precision), 0::numeric::double precision) AS avg_cost_per_proof,
       COALESCE(avg(p.proving_time), 0::numeric) AS avg_proving_time
     FROM blocks b
     INNER JOIN proofs p ON b.block_number = p.block_number AND p.proof_status = 'proved'::text
     INNER JOIN cluster_configurations cc ON p.cluster_id = cc.cluster_id
-    INNER JOIN aws_instance_pricing a ON cc.instance_type_id = a.id
+    INNER JOIN cloud_instances c ON cc.cloud_instance_id = c.id
     WHERE b."timestamp" >= (now() - '30 days'::interval)`
   )
 
@@ -396,11 +392,11 @@ export const teamsSummary = pgView("teams_summary", {
     SELECT t.id as team_id,
       t.name as team_name,
       t.logo_url,
-      COALESCE(sum(cc.instance_count::double precision * a.hourly_price * (p.proving_time::numeric / (1000.0 * 60::numeric * 60::numeric))::double precision) / NULLIF(count(p.proof_id), 0)::double precision, 0::double precision) AS avg_cost_per_proof,
+      COALESCE(sum(cc.cloud_instance_count::double precision * c.hourly_price * (p.proving_time::numeric / (1000.0 * 60::numeric * 60::numeric))::double precision) / NULLIF(count(p.proof_id), 0)::double precision, 0::double precision) AS avg_cost_per_proof,
       avg(p.proving_time) AS avg_proving_time
     FROM teams t 
     LEFT JOIN proofs p ON t.id = p.team_id AND p.proof_status = 'proved'::text 
     LEFT JOIN cluster_configurations cc ON p.cluster_id = cc.cluster_id 
-    LEFT JOIN aws_instance_pricing a ON cc.instance_type_id = a.id 
+    LEFT JOIN cloud_instances c ON cc.cloud_instance_id = c.id 
     GROUP BY t.id`
   )
