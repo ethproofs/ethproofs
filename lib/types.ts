@@ -2,18 +2,18 @@ import { type ReactNode } from "react"
 
 import {
   blocks,
+  cloudInstances,
   clusterConfigurations,
   clusters,
-  instanceTypes,
   proofs,
   teams,
   teamsSummary,
 } from "@/db/schema"
 
 /**
- * Represents a row in the instance_types table.
+ * Represents a row in the cloud_instances table.
  */
-export type InstanceType = typeof instanceTypes.$inferSelect
+export type CloudInstance = typeof cloudInstances.$inferSelect
 
 /**
  * Represents a row in the blocks table.
@@ -46,10 +46,10 @@ export type Team = typeof teams.$inferSelect
 export type TeamSummary = typeof teamsSummary.$inferSelect
 
 /**
- * Extensions for the ClusterConfig type, adding optional awsInstance property.
+ * Extensions for the ClusterConfig type, adding optional cloudInstance property.
  */
 export type ClusterConfigExtensions = {
-  instance_type?: InstanceType | null
+  cloud_instance?: CloudInstance | null
 }
 
 /**

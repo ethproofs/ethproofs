@@ -2,24 +2,24 @@ import { z } from "zod"
 import { ZodOpenApiPathsObject } from "zod-openapi"
 
 import {
-  InstanceTypesQuerySchema,
-  InstanceTypesSchema,
-} from "../zod/schemas/instance-types"
+  CloudInstancesQuerySchema,
+  CloudInstancesSchema,
+} from "../zod/schemas/cloud-instance"
 
-export const instanceTypesPaths: ZodOpenApiPathsObject = {
-  "/instance-types": {
+export const cloudInstancesPaths: ZodOpenApiPathsObject = {
+  "/cloud-instances": {
     get: {
-      tags: ["Instance types"],
-      summary: "List instance types",
+      tags: ["Cloud instances"],
+      summary: "List cloud instances",
       requestParams: {
-        query: InstanceTypesQuerySchema,
+        query: CloudInstancesQuerySchema,
       },
       responses: {
         "200": {
-          description: "Instance types",
+          description: "Cloud instances",
           content: {
             "application/json": {
-              schema: z.array(InstanceTypesSchema),
+              schema: z.array(CloudInstancesSchema),
             },
           },
         },

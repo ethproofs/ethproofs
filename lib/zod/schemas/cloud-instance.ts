@@ -2,7 +2,7 @@ import z from ".."
 
 import { providerType } from "@/db/schema"
 
-export const InstanceTypesSchema = z.object({
+export const CloudInstancesSchema = z.object({
   id: z.number(),
   provider: z.string(),
   instance_name: z.string(),
@@ -24,10 +24,10 @@ export const InstanceTypesSchema = z.object({
   snapshot_date: z.string(),
 })
 
-export type InstanceType = z.infer<typeof InstanceTypesSchema>
+export type CloudInstance = z.infer<typeof CloudInstancesSchema>
 
-export const InstanceTypesQuerySchema = z.object({
+export const CloudInstancesQuerySchema = z.object({
   provider: z.enum(providerType.enumValues).optional(),
 })
 
-export type InstanceTypesQuery = z.infer<typeof InstanceTypesQuerySchema>
+export type CloudInstancesQuery = z.infer<typeof CloudInstancesQuerySchema>

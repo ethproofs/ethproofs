@@ -8,22 +8,22 @@ export const tmp_renameClusterConfiguration = <
   V extends object,
 >(
   cluster: T & {
-    cc: (U & { it: V })[]
+    cc: (U & { ci: V })[]
   }
 ) => {
   const { cc, ...clusterWithoutCC } = cluster
   return {
     ...clusterWithoutCC,
-    cluster_configuration: cc.map(tmp_renameInstanceTypes),
+    cluster_configuration: cc.map(tmp_renameCloudInstances),
   }
 }
 
-export const tmp_renameInstanceTypes = <T extends object, U extends object>(
-  clusterConfig: T & { it: U }
+export const tmp_renameCloudInstances = <T extends object, U extends object>(
+  clusterConfig: T & { ci: U }
 ) => {
-  const { it, ...clusterConfigWithoutIT } = clusterConfig
+  const { ci, ...clusterConfigWithoutCI } = clusterConfig
   return {
-    ...clusterConfigWithoutIT,
-    instance_type: it,
+    ...clusterConfigWithoutCI,
+    cloud_instance: ci,
   }
 }

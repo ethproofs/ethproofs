@@ -104,7 +104,7 @@ export default async function BlockDetailsPage({
             with: {
               cc: {
                 with: {
-                  it: true,
+                  ci: true,
                 },
               },
             },
@@ -642,9 +642,9 @@ export default async function BlockDetailsPage({
                           <div className="w-fit space-y-4">
                             {clusterConfigs.map(
                               ({
-                                instance_count,
-                                instance_type_id,
-                                instance_type,
+                                cloud_instance_count,
+                                cloud_instance_id,
+                                cloud_instance,
                               }) => {
                                 const {
                                   memory,
@@ -654,14 +654,14 @@ export default async function BlockDetailsPage({
                                   region,
                                   cpu_cores,
                                   hourly_price,
-                                } = instance_type || {}
+                                } = cloud_instance || {}
                                 const total_price = hourly_price
-                                  ? hourly_price * instance_count
+                                  ? hourly_price * cloud_instance_count
                                   : 0
                                 return (
                                   <div
                                     className="flex flex-col divide-y-2 overflow-hidden rounded bg-background"
-                                    key={instance_type_id}
+                                    key={cloud_instance_id}
                                   >
                                     <div className="flex gap-8">
                                       <div className="flex-1 space-y-2 p-2">
@@ -677,9 +677,9 @@ export default async function BlockDetailsPage({
                                         {region && <p>Region: {region}</p>}
                                         {cpu_cores && <p>vCPU: {cpu_cores}</p>}
                                       </div>
-                                      {instance_count && (
+                                      {cloud_instance_count && (
                                         <div className="grid h-fit place-items-center rounded-bl bg-primary-dark px-4 py-2 text-xl font-bold text-background-highlight">
-                                          x{instance_count}
+                                          x{cloud_instance_count}
                                         </div>
                                       )}
                                     </div>
