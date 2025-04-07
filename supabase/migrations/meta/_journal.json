@@ -29,6 +29,13 @@
       "when": 1744036764546,
       "tag": "0003_migrate-aws-instances-to-cloud-instances",
       "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1744049706363,
+      "tag": "0004_storage-quotas",
+      "breakpoints": true
     }
   ]
 }

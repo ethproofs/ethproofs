@@ -208,6 +208,7 @@ export const teams = pgTable(
     logo_url: text("logo_url"),
     twitter_handle: text("twitter_handle"),
     website_url: text("website_url"),
+    storage_quota_bytes: bigint("storage_quota_bytes", { mode: "number" }),
     created_at: timestamp("created_at", {
       withTimezone: true,
       mode: "string",

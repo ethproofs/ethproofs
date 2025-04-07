@@ -1,3 +1,4 @@
+import { eq, sql } from "drizzle-orm"
 import { revalidatePath } from "next/cache"
 import { ZodError } from "zod"
 
@@ -119,7 +120,37 @@ export const POST = withAuth(async ({ request, user, timestamp }) => {
     }
   }
 
+  const team = await getTeam(user.id)
   const binaryBuffer = Buffer.from(proof, "base64")
+
+  // Check storage quota
+  let shouldUploadBinary = true
+  if (team?.storage_quota_bytes) {
+    const currentUsage = await db
+      .select({
+        total: sql<number>`COALESCE(SUM(${proofs.size_bytes}), 0)`,
+      })
+      .from(proofs)
+      .where(eq(proofs.team_id, user.id))
+
+    const newTotal =
+      Number(currentUsage[0]?.total || 0) + binaryBuffer.byteLength
+
+    console.log(
+      `[Storage Quota Check] Team ${user.id}: Current usage: ${
+        currentUsage[0]?.total || 0
+      } bytes, New total: ${newTotal} bytes, Quota: ${
+        team?.storage_quota_bytes
+      } bytes`
+    )
+
+    if (newTotal > team?.storage_quota_bytes) {
+      shouldUploadBinary = false
+      console.log(
+        `[Storage Quota] Team ${user.id} has reached quota. Skipping binary upload.`
+      )
+    }
+  }
 
   // add proof
   const dataToInsert = {
@@ -148,13 +179,11 @@ export const POST = withAuth(async ({ request, user, timestamp }) => {
         })
         .returning({ proof_id: proofs.proof_id })
 
-      // store proof binary
-      const team = await getTeam(user.id)
-
-      const teamName = team?.name ? team.name : cluster.id.split("-")[0]
-      const filename = `${block_number}_${teamName}_${newProof.proof_id}.txt`
-
-      await uploadProofBinary(filename, binaryBuffer)
+      if (shouldUploadBinary) {
+        const teamName = team?.name ? team.name : cluster.id.split("-")[0]
+        const filename = `${block_number}_${teamName}_${newProof.proof_id}.txt`
+        await uploadProofBinary(filename, binaryBuffer)
+      }
 
       return newProof
     })
