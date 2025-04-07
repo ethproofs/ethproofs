@@ -61,7 +61,7 @@ const userSchema = z.object({
   github_org: z.string().optional(),
   twitter_handle: z.string().optional(),
   logo: z
-    .instanceof(File)
+    .any()
     .optional()
     .refine(
       (file) => {
