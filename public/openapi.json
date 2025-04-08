@@ -63,8 +63,9 @@
                   "hardware": {
                     "type": "string",
                     "maxLength": 200,
-                    "description": "Technical specifications",
-                    "example": "RISC-V Prover"
+                    "description": "Technical specifications. Use `configuration.cluster_machine` field instead.",
+                    "example": "RISC-V Prover",
+                    "deprecated": true
                   },
                   "cycle_type": {
                     "type": "string",
@@ -83,18 +84,72 @@
                     "items": {
                       "type": "object",
                       "properties": {
+                        "cluster_machine": {
+                          "type": "object",
+                          "properties": {
+                            "gpu_models": {
+                              "type": "array",
+                              "items": {
+                                "type": "string"
+                              },
+                              "description": "List of GPU models",
+                              "example": [
+                                "RTX 4090",
+                                "RTX 4080"
+                              ]
+                            },
+                            "memory_gb": {
+                              "type": "number",
+                              "description": "Memory in GB",
+                              "example": 256
+                            },
+                            "memory_specification": {
+                              "type": "string",
+                              "description": "Memory specification",
+                              "example": "8x32GB DDR5-4800 ECC"
+                            },
+                            "network_configuration": {
+                              "type": "string",
+                              "description": "Network configuration",
+                              "example": "10Gbps"
+                            }
+                          },
+                          "required": [
+                            "gpu_models",
+                            "memory_gb",
+                            "memory_specification",
+                            "network_configuration"
+                          ],
+                          "description": "Physical hardware specifications of the machine",
+                          "example": {
+                            "gpu_models": [
+                              "RTX 4090",
+                              "RTX 4080"
+                            ],
+                            "memory_gb": 256,
+                            "memory_specification": "8x32GB DDR5-4800 ECC",
+                            "network_configuration": "10Gbps"
+                          }
+                        },
+                        "cluster_machine_count": {
+                          "type": "number",
+                          "description": "Number of machines of this type",
+                          "example": 1
+                        },
                         "cloud_instance": {
                           "type": "string",
-                          "description": "Cloud instance name",
+                          "description": "Equivalent cloud instance name",
                           "example": "c5.xlarge"
                         },
                         "cloud_instance_count": {
                           "type": "number",
-                          "description": "Number of instances of this type",
+                          "description": "Number of equivalent cloud instances",
                           "example": 10
                         }
                       },
                       "required": [
+                        "cluster_machine",
+                        "cluster_machine_count",
                         "cloud_instance",
                         "cloud_instance_count"
                       ]
@@ -198,6 +253,49 @@
                         "items": {
                           "type": "object",
                           "properties": {
+                            "cluster_machine_id": {
+                              "type": "number"
+                            },
+                            "cluster_machine_count": {
+                              "type": "number"
+                            },
+                            "cluster_machine": {
+                              "type": "object",
+                              "properties": {
+                                "gpu_models": {
+                                  "type": "array",
+                                  "items": {
+                                    "type": "string"
+                                  },
+                                  "description": "List of GPU models",
+                                  "example": [
+                                    "RTX 4090",
+                                    "RTX 4080"
+                                  ]
+                                },
+                                "memory_gb": {
+                                  "type": "number",
+                                  "description": "Memory in GB",
+                                  "example": 256
+                                },
+                                "memory_specification": {
+                                  "type": "string",
+                                  "description": "Memory specification",
+                                  "example": "8x32GB DDR5-4800 ECC"
+                                },
+                                "network_configuration": {
+                                  "type": "string",
+                                  "description": "Network configuration",
+                                  "example": "10Gbps"
+                                }
+                              },
+                              "required": [
+                                "gpu_models",
+                                "memory_gb",
+                                "memory_specification",
+                                "network_configuration"
+                              ]
+                            },
                             "cloud_instance_id": {
                               "type": "number"
                             },
@@ -205,10 +303,7 @@
                               "type": "number"
                             },
                             "cloud_instance": {
-                              "type": [
-                                "object",
-                                "null"
-                              ],
+                              "type": "object",
                               "properties": {
                                 "id": {
                                   "type": "number"
@@ -281,6 +376,9 @@
                             }
                           },
                           "required": [
+                            "cluster_machine_id",
+                            "cluster_machine_count",
+                            "cluster_machine",
                             "cloud_instance_id",
                             "cloud_instance_count",
                             "cloud_instance"
@@ -340,8 +438,9 @@
                   "hardware": {
                     "type": "string",
                     "maxLength": 200,
-                    "description": "Technical specifications",
-                    "example": "RISC-V Prover"
+                    "description": "Technical specifications. Use `configuration.cluster_machine` field instead.",
+                    "example": "RISC-V Prover",
+                    "deprecated": true
                   },
                   "cycle_type": {
                     "type": "string",
@@ -355,14 +454,62 @@
                     "description": "Proof system used to generate proofs. (e.g., Groth16 or PlonK)",
                     "example": "Groth16"
                   },
+                  "cluster_machine": {
+                    "type": "object",
+                    "properties": {
+                      "gpu_models": {
+                        "type": "array",
+                        "items": {
+                          "type": "string"
+                        },
+                        "description": "List of GPU models",
+                        "example": [
+                          "RTX 4090",
+                          "RTX 4080"
+                        ]
+                      },
+                      "memory_gb": {
+                        "type": "number",
+                        "description": "Memory in GB",
+                        "example": 256
+                      },
+                      "memory_specification": {
+                        "type": "string",
+                        "description": "Memory specification",
+                        "example": "8x32GB DDR5-4800 ECC"
+                      },
+                      "network_configuration": {
+                        "type": "string",
+                        "description": "Network configuration",
+                        "example": "10Gbps"
+                      }
+                    },
+                    "required": [
+                      "gpu_models",
+                      "memory_gb",
+                      "memory_specification",
+                      "network_configuration"
+                    ],
+                    "description": "Real hardware specifications",
+                    "example": {
+                      "gpu_models": [
+                        "RTX 4090",
+                        "RTX 4080"
+                      ],
+                      "memory_gb": 256,
+                      "memory_specification": "8x32GB DDR5-4800 ECC",
+                      "network_configuration": "10Gbps"
+                    }
+                  },
                   "cloud_instance": {
                     "type": "string",
-                    "description": "Cloud instance name",
+                    "description": "Equivalent cloud instance name",
                     "example": "c5.xlarge"
                   }
                 },
                 "required": [
                   "nickname",
+                  "cluster_machine",
                   "cloud_instance"
                 ]
               }
