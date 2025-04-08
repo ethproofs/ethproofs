@@ -6,6 +6,7 @@ import {
   blocks,
   cloudInstances,
   clusterConfigurations,
+  clusterMachines,
   clusters,
   programs,
   proofs,
@@ -35,6 +36,10 @@ export const clusterConfigurationsRelations = relations(
       fields: [clusterConfigurations.cluster_id],
       references: [clusters.id],
     }),
+    machine: one(clusterMachines, {
+      fields: [clusterConfigurations.cluster_machine_id],
+      references: [clusterMachines.id],
+    }),
     ci: one(cloudInstances, {
       fields: [clusterConfigurations.cloud_instance_id],
       references: [cloudInstances.id],
@@ -53,6 +58,13 @@ export const clustersRelations = relations(clusters, ({ one, many }) => ({
 
 export const cloudInstancesRelations = relations(
   cloudInstances,
+  ({ many }) => ({
+    cc: many(clusterConfigurations),
+  })
+)
+
+export const clusterMachinesRelations = relations(
+  clusterMachines,
   ({ many }) => ({
     cc: many(clusterConfigurations),
   })

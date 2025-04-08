@@ -36,6 +36,13 @@
       "when": 1744049706363,
       "tag": "0004_storage-quotas",
       "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1744118084973,
+      "tag": "0005_cluster-machines",
+      "breakpoints": true
     }
   ]
 }

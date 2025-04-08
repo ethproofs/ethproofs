@@ -141,10 +141,44 @@ export const clusterConfigurations = pgTable(
         onDelete: "cascade",
         onUpdate: "cascade",
       }),
+    cluster_machine_id: bigint("cluster_machine_id", { mode: "number" })
+      .notNull()
+      .references(() => clusterMachines.id, {
+        onDelete: "cascade",
+        onUpdate: "cascade",
+      }),
+    cluster_machine_count: smallint("cluster_machine_count").notNull(),
     cloud_instance_id: bigint("cloud_instance_id", { mode: "number" })
       .notNull()
       .references(() => cloudInstances.id),
     cloud_instance_count: smallint("cloud_instance_count").notNull(),
+  },
+  () => [
+    pgPolicy("Enable read access for all users", {
+      as: "permissive",
+      for: "select",
+      to: ["public"],
+      using: sql`true`,
+    }),
+    pgPolicy("Enable insert for users with an api key", {
+      as: "permissive",
+      for: "insert",
+      to: ["public"],
+    }),
+  ]
+)
+
+export const clusterMachines = pgTable(
+  "cluster_machines",
+  {
+    id: bigint({ mode: "number" }).primaryKey().generatedByDefaultAsIdentity(),
+    gpu_models: text().array().notNull(),
+    memory_gb: integer().notNull(),
+    memory_specification: text().notNull(),
+    network_configuration: text(),
+    created_at: timestamp("created_at", { withTimezone: true, mode: "string" })
+      .defaultNow()
+      .notNull(),
   },
   () => [
     pgPolicy("Enable read access for all users", {
@@ -239,6 +273,7 @@ export const clusters = pgTable(
         onUpdate: "cascade",
       }),
     description: text(),
+    // DEPRECATED: use cluster_hardware table instead
     hardware: text(),
     cycle_type: varchar("cycle_type"),
     proof_type: varchar("proof_type"),
