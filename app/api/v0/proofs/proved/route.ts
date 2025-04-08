@@ -5,11 +5,11 @@ import { ZodError } from "zod"
 import { db } from "@/db"
 import { blocks, programs, proofs } from "@/db/schema"
 import { uploadProofBinary } from "@/lib/api/proof_binaries"
+import { isStorageQuotaExceeded } from "@/lib/api/storage"
 import { getTeam } from "@/lib/api/teams"
 import { fetchBlockData } from "@/lib/blocks"
 import { withAuth } from "@/lib/middleware/with-auth"
 import { provedProofSchema } from "@/lib/zod/schemas/proof"
-
 // TODO: refactor code to use baseProofHandler and abstract out the logic
 
 export const POST = withAuth(async ({ request, user, timestamp }) => {
@@ -120,36 +120,18 @@ export const POST = withAuth(async ({ request, user, timestamp }) => {
     }
   }
 
-  const team = await getTeam(user.id)
   const binaryBuffer = Buffer.from(proof, "base64")
 
   // Check storage quota
-  let shouldUploadBinary = true
-  if (team?.storage_quota_bytes) {
-    const currentUsage = await db
-      .select({
-        total: sql<number>`COALESCE(SUM(${proofs.size_bytes}), 0)`,
-      })
-      .from(proofs)
-      .where(eq(proofs.team_id, user.id))
+  const storageQuotaExceeded = await isStorageQuotaExceeded(
+    user.id,
+    binaryBuffer.byteLength
+  )
 
-    const newTotal =
-      Number(currentUsage[0]?.total || 0) + binaryBuffer.byteLength
-
+  if (storageQuotaExceeded) {
     console.log(
-      `[Storage Quota Check] Team ${user.id}: Current usage: ${
-        currentUsage[0]?.total || 0
-      } bytes, New total: ${newTotal} bytes, Quota: ${
-        team?.storage_quota_bytes
-      } bytes`
+      `[Storage Quota] team ${user.id} has reached quota. Skipping binary upload.`
     )
-
-    if (newTotal > team?.storage_quota_bytes) {
-      shouldUploadBinary = false
-      console.log(
-        `[Storage Quota] Team ${user.id} has reached quota. Skipping binary upload.`
-      )
-    }
   }
 
   // add proof
@@ -179,7 +161,8 @@ export const POST = withAuth(async ({ request, user, timestamp }) => {
         })
         .returning({ proof_id: proofs.proof_id })
 
-      if (shouldUploadBinary) {
+      if (!storageQuotaExceeded) {
+        const team = await getTeam(user.id)
         const teamName = team?.name ? team.name : cluster.id.split("-")[0]
         const filename = `${block_number}_${teamName}_${newProof.proof_id}.txt`
         await uploadProofBinary(filename, binaryBuffer)
