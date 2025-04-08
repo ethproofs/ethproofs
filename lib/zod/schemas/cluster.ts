@@ -14,10 +14,10 @@ export const ClusterSchema = z.object({
   cluster_configuration: z.array(
     z.object({
       cluster_machine_id: z.number(),
-      cluster_machine_count: z.number(),
+      cluster_machine_count: z.number().int().positive(),
       cluster_machine: ClusterMachineSchema,
       cloud_instance_id: z.number(),
-      cloud_instance_count: z.number(),
+      cloud_instance_count: z.number().int().positive(),
       cloud_instance: CloudInstancesSchema,
     })
   ),
@@ -64,7 +64,7 @@ export const createClusterSchema = baseClusterSchema.extend({
             network_configuration: "10Gbps",
           },
         }),
-        cluster_machine_count: z.number().openapi({
+        cluster_machine_count: z.number().int().positive().openapi({
           description: "Number of machines of this type",
           example: 1,
         }),
@@ -72,7 +72,7 @@ export const createClusterSchema = baseClusterSchema.extend({
           description: "Equivalent cloud instance name",
           example: "c5.xlarge",
         }),
-        cloud_instance_count: z.number().openapi({
+        cloud_instance_count: z.number().int().positive().openapi({
           description: "Number of equivalent cloud instances",
           example: 10,
         }),
