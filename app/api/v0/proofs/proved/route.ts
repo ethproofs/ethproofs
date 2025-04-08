@@ -1,14 +1,15 @@
+import { eq, sql } from "drizzle-orm"
 import { revalidatePath } from "next/cache"
 import { ZodError } from "zod"
 
 import { db } from "@/db"
 import { blocks, programs, proofs } from "@/db/schema"
 import { uploadProofBinary } from "@/lib/api/proof_binaries"
+import { isStorageQuotaExceeded } from "@/lib/api/storage"
 import { getTeam } from "@/lib/api/teams"
 import { fetchBlockData } from "@/lib/blocks"
 import { withAuth } from "@/lib/middleware/with-auth"
 import { provedProofSchema } from "@/lib/zod/schemas/proof"
-
 // TODO: refactor code to use baseProofHandler and abstract out the logic
 
 export const POST = withAuth(async ({ request, user, timestamp }) => {
@@ -121,6 +122,18 @@ export const POST = withAuth(async ({ request, user, timestamp }) => {
 
   const binaryBuffer = Buffer.from(proof, "base64")
 
+  // Check storage quota
+  const storageQuotaExceeded = await isStorageQuotaExceeded(
+    user.id,
+    binaryBuffer.byteLength
+  )
+
+  if (storageQuotaExceeded) {
+    console.log(
+      `[Storage Quota] team ${user.id} has reached quota. Skipping binary upload.`
+    )
+  }
+
   // add proof
   const dataToInsert = {
     ...restProofPayload,
@@ -148,13 +161,12 @@ export const POST = withAuth(async ({ request, user, timestamp }) => {
         })
         .returning({ proof_id: proofs.proof_id })
 
-      // store proof binary
-      const team = await getTeam(user.id)
-
-      const teamName = team?.name ? team.name : cluster.id.split("-")[0]
-      const filename = `${block_number}_${teamName}_${newProof.proof_id}.txt`
-
-      await uploadProofBinary(filename, binaryBuffer)
+      if (!storageQuotaExceeded) {
+        const team = await getTeam(user.id)
+        const teamName = team?.name ? team.name : cluster.id.split("-")[0]
+        const filename = `${block_number}_${teamName}_${newProof.proof_id}.txt`
+        await uploadProofBinary(filename, binaryBuffer)
+      }
 
       return newProof
     })
