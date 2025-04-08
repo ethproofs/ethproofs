@@ -1,3 +1,5 @@
+import { ZodError } from "zod"
+
 import { db } from "@/db"
 import { clusterConfigurations, clusterMachines, clusters } from "@/db/schema"
 import { tmp_renameClusterConfiguration } from "@/lib/clusters"
@@ -54,6 +56,13 @@ export const POST = withAuth(async ({ request, user }) => {
     clusterPayload = createClusterSchema.parse(requestBody)
   } catch (error) {
     console.error("cluster payload invalid", error)
+
+    if (error instanceof ZodError) {
+      return new Response(error.message, {
+        status: 400,
+      })
+    }
+
     return new Response("Invalid payload", {
       status: 400,
     })
