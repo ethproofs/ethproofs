@@ -1,7 +1,7 @@
 import { ZodError } from "zod"
 
 import { db } from "@/db"
-import { clusterConfigurations, clusters } from "@/db/schema"
+import { clusterConfigurations, clusterMachines, clusters } from "@/db/schema"
 import { withAuth } from "@/lib/middleware/with-auth"
 import { singleMachineSchema } from "@/lib/zod/schemas/cluster"
 
@@ -32,6 +32,7 @@ export const POST = withAuth(async ({ request, user }) => {
     cycle_type,
     proof_type,
     cloud_instance,
+    cluster_machine,
   } = singleMachinePayload
 
   // get & validate cloud instance id
@@ -63,9 +64,22 @@ export const POST = withAuth(async ({ request, user }) => {
       })
       .returning({ id: clusters.id, index: clusters.index })
 
+    // create cluster machines
+    const [clusterMachine] = await tx
+      .insert(clusterMachines)
+      .values({
+        gpu_models: cluster_machine.gpu_models,
+        memory_gb: cluster_machine.memory_gb,
+        memory_specification: cluster_machine.memory_specification,
+        network_configuration: cluster_machine.network_configuration,
+      })
+      .returning({ id: clusterMachines.id })
+
     // create single machine as a cluster with 1 instance
     await tx.insert(clusterConfigurations).values({
       cluster_id: cluster.id,
+      cluster_machine_id: clusterMachine.id,
+      cluster_machine_count: 1,
       cloud_instance_id: cloudInstance.id,
       cloud_instance_count: 1,
     })

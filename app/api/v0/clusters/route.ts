@@ -1,5 +1,5 @@
 import { db } from "@/db"
-import { clusterConfigurations, clusters } from "@/db/schema"
+import { clusterConfigurations, clusterMachines, clusters } from "@/db/schema"
 import { tmp_renameClusterConfiguration } from "@/lib/clusters"
 import { withAuth } from "@/lib/middleware/with-auth"
 import { createClusterSchema } from "@/lib/zod/schemas/cluster"
@@ -11,7 +11,6 @@ export const GET = withAuth(async ({ user }) => {
         index: true,
         nickname: true,
         description: true,
-        hardware: true,
         cycle_type: true,
         proof_type: true,
       },
@@ -24,6 +23,7 @@ export const GET = withAuth(async ({ user }) => {
           },
           with: {
             ci: true,
+            machine: true,
           },
         },
       },
@@ -107,12 +107,33 @@ export const POST = withAuth(async ({ request, user }) => {
       {} as Record<string, number>
     )
 
+    // create cluster machines
+    const clusterMachineIds = await tx
+      .insert(clusterMachines)
+      .values(
+        configuration.map(({ cluster_machine }) => ({
+          gpu_models: cluster_machine.gpu_models,
+          memory_gb: cluster_machine.memory_gb,
+          memory_specification: cluster_machine.memory_specification,
+          network_configuration: cluster_machine.network_configuration,
+        }))
+      )
+      .returning({ id: clusterMachines.id })
+
+    // create cluster configurations
     await tx.insert(clusterConfigurations).values(
-      configuration.map(({ cloud_instance, cloud_instance_count }) => ({
-        cluster_id: cluster.id,
-        cloud_instance_id: cloudInstanceByName[cloud_instance],
-        cloud_instance_count,
-      }))
+      configuration.map(
+        (
+          { cloud_instance, cloud_instance_count, cluster_machine_count },
+          index
+        ) => ({
+          cluster_id: cluster.id,
+          cluster_machine_id: clusterMachineIds[index].id,
+          cluster_machine_count,
+          cloud_instance_id: cloudInstanceByName[cloud_instance],
+          cloud_instance_count,
+        })
+      )
     )
 
     clusterIndex = cluster.index
