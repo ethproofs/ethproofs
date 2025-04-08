@@ -36,7 +36,7 @@ export const clusterConfigurationsRelations = relations(
       fields: [clusterConfigurations.cluster_id],
       references: [clusters.id],
     }),
-    machine: one(clusterMachines, {
+    cluster_machine: one(clusterMachines, {
       fields: [clusterConfigurations.cluster_machine_id],
       references: [clusterMachines.id],
     }),
