@@ -140,6 +140,12 @@ export const clusterVersions = pgTable("cluster_versions", {
       onDelete: "cascade",
       onUpdate: "cascade",
     }),
+  zkvm_version_id: bigint({ mode: "number" })
+    .notNull()
+    .references(() => zkvmVersions.id, {
+      onDelete: "cascade",
+      onUpdate: "cascade",
+    }),
   version: text().notNull(),
   description: text(),
   created_at: timestamp("created_at", {
@@ -294,6 +300,7 @@ export const recursiveRootProofs = pgTable(
   ]
 )
 
+// TODO: rename to provers
 export const teams = pgTable(
   "teams",
   {
@@ -325,6 +332,61 @@ export const teams = pgTable(
     }),
   ]
 )
+
+export const vendors = pgTable("vendors", {
+  id: uuid().defaultRandom().primaryKey().notNull(),
+  user_id: uuid()
+    .notNull()
+    .references(() => authUsers.id, {
+      onDelete: "cascade",
+      onUpdate: "cascade",
+    }),
+  name: text().notNull(),
+  github_org: text("github_org"),
+  logo_url: text("logo_url"),
+  twitter_handle: text("twitter_handle"),
+  website_url: text("website_url"),
+  created_at: timestamp("created_at", {
+    withTimezone: true,
+    mode: "string",
+  })
+    .defaultNow()
+    .notNull(),
+})
+
+export const zkvms = pgTable("zkvms", {
+  id: bigint({ mode: "number" }).primaryKey().generatedByDefaultAsIdentity(),
+  vendor_id: uuid()
+    .notNull()
+    .references(() => vendors.id, {
+      onDelete: "cascade",
+      onUpdate: "cascade",
+    }),
+  name: text().notNull(),
+  created_at: timestamp("created_at", {
+    withTimezone: true,
+    mode: "string",
+  })
+    .defaultNow()
+    .notNull(),
+})
+
+export const zkvmVersions = pgTable("zkvm_versions", {
+  id: bigint({ mode: "number" }).primaryKey().generatedByDefaultAsIdentity(),
+  zkvm_id: bigint({ mode: "number" })
+    .notNull()
+    .references(() => zkvms.id, {
+      onDelete: "cascade",
+      onUpdate: "cascade",
+    }),
+  version: text().notNull(),
+  created_at: timestamp("created_at", {
+    withTimezone: true,
+    mode: "string",
+  })
+    .defaultNow()
+    .notNull(),
+})
 
 export const programs = pgTable(
   "programs",

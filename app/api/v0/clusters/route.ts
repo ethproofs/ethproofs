@@ -114,6 +114,8 @@ export const POST = withAuth(async ({ request, user }) => {
         cycle_type,
         proof_type,
         team_id: user.id,
+        // TODO: remove this once we have a real zkvm version
+        zkvm_version_id: 1,
       })
       .returning({ id: clusters.id, index: clusters.index })
 
