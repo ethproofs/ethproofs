@@ -68,10 +68,16 @@ export const POST = withAuth(async ({ request, user }) => {
     const [clusterMachine] = await tx
       .insert(clusterMachines)
       .values({
+        cpu_model: cluster_machine.cpu_model,
+        cpu_cores: cluster_machine.cpu_cores,
         gpu_models: cluster_machine.gpu_models,
-        memory_gb: cluster_machine.memory_gb,
-        memory_specification: cluster_machine.memory_specification,
-        network_configuration: cluster_machine.network_configuration,
+        gpu_count: cluster_machine.gpu_count,
+        memory_size_gb: cluster_machine.memory_size_gb,
+        memory_count: cluster_machine.memory_count,
+        memory_type: cluster_machine.memory_type,
+        storage_size_gb: cluster_machine.storage_size_gb,
+        total_tera_flops: cluster_machine.total_tera_flops,
+        network_between_machines: cluster_machine.network_between_machines,
       })
       .returning({ id: clusterMachines.id })
 

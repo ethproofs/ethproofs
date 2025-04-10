@@ -172,10 +172,16 @@ export const clusterMachines = pgTable(
   "cluster_machines",
   {
     id: bigint({ mode: "number" }).primaryKey().generatedByDefaultAsIdentity(),
-    gpu_models: text().array().notNull(),
-    memory_gb: integer().notNull(),
-    memory_specification: text().notNull(),
-    network_configuration: text(),
+    cpu_model: text(),
+    cpu_cores: integer(),
+    gpu_models: text().array(),
+    gpu_count: integer().array(),
+    memory_size_gb: integer().array(),
+    memory_count: integer().array(),
+    memory_type: text().array(),
+    storage_size_gb: integer(),
+    total_tera_flops: integer(),
+    network_between_machines: text(),
     created_at: timestamp("created_at", { withTimezone: true, mode: "string" })
       .defaultNow()
       .notNull(),

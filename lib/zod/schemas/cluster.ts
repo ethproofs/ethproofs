@@ -58,10 +58,16 @@ export const createClusterSchema = baseClusterSchema.extend({
         cluster_machine: ClusterMachineSchema.openapi({
           description: "Physical hardware specifications of the machine",
           example: {
+            cpu_model: "Intel(R) Xeon(R) CPU @ 2.20GHz",
+            cpu_cores: 2,
             gpu_models: ["RTX 4090", "RTX 4080"],
-            memory_gb: 256,
-            memory_specification: "8x32GB DDR5-4800 ECC",
-            network_configuration: "10Gbps",
+            gpu_count: [1, 1],
+            memory_size_gb: [32, 32],
+            memory_count: [8, 8],
+            memory_type: ["DDR5-4800 ECC", "DDR5-4800 ECC"],
+            storage_size_gb: 1000,
+            total_tera_flops: 1000,
+            network_between_machines: "10Gbps",
           },
         }),
         cluster_machine_count: z.number().int().positive().openapi({
@@ -85,10 +91,16 @@ export const singleMachineSchema = baseClusterSchema.extend({
   cluster_machine: ClusterMachineSchema.openapi({
     description: "Real hardware specifications",
     example: {
+      cpu_model: "Intel(R) Xeon(R) CPU @ 2.20GHz",
+      cpu_cores: 2,
       gpu_models: ["RTX 4090", "RTX 4080"],
-      memory_gb: 256,
-      memory_specification: "8x32GB DDR5-4800 ECC",
-      network_configuration: "10Gbps",
+      gpu_count: [1, 1],
+      memory_size_gb: [32, 32],
+      memory_count: [8, 8],
+      memory_type: ["DDR5-4800 ECC", "DDR5-4800 ECC"],
+      storage_size_gb: 1000,
+      total_tera_flops: 1000,
+      network_between_machines: "10Gbps",
     },
   }),
   cloud_instance: z.string().openapi({

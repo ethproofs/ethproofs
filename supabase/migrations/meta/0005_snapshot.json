@@ -1,5 +1,5 @@
 {
-  "id": "35cd55df-4486-4c95-85d8-51f93b0aedc2",
+  "id": "a3eb4fd0-a2d8-43d4-9010-790ce79ee69d",
   "prevId": "6cfda2a6-a58f-4774-a24b-ad551b75693d",
   "version": "7",
   "dialect": "postgresql",
@@ -449,26 +449,62 @@
             "cycle": false
           }
         },
+        "cpu_model": {
+          "name": "cpu_model",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "cpu_cores": {
+          "name": "cpu_cores",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
         "gpu_models": {
           "name": "gpu_models",
           "type": "text[]",
           "primaryKey": false,
-          "notNull": true
+          "notNull": false
         },
-        "memory_gb": {
-          "name": "memory_gb",
+        "gpu_count": {
+          "name": "gpu_count",
+          "type": "integer[]",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "memory_size_gb": {
+          "name": "memory_size_gb",
+          "type": "integer[]",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "memory_count": {
+          "name": "memory_count",
+          "type": "integer[]",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "memory_type": {
+          "name": "memory_type",
+          "type": "text[]",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "storage_size_gb": {
+          "name": "storage_size_gb",
           "type": "integer",
           "primaryKey": false,
-          "notNull": true
+          "notNull": false
         },
-        "memory_specification": {
-          "name": "memory_specification",
-          "type": "text",
+        "total_tera_flops": {
+          "name": "total_tera_flops",
+          "type": "integer",
           "primaryKey": false,
-          "notNull": true
+          "notNull": false
         },
-        "network_configuration": {
-          "name": "network_configuration",
+        "network_between_machines": {
+          "name": "network_between_machines",
           "type": "text",
           "primaryKey": false,
           "notNull": false
