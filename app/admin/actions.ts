@@ -65,7 +65,7 @@ const userSchema = z.object({
     .optional()
     .refine(
       (file) => {
-        if (!file) return true
+        if (!file || !file.size) return true
         return file.type === "image/svg+xml"
       },
       {
@@ -75,13 +75,15 @@ const userSchema = z.object({
 })
 
 export async function createUser(_prevState: unknown, formData: FormData) {
+  const formLogo = formData.get("logo") as File | null
+
   const validatedFields = userSchema.safeParse({
     email: formData.get("email"),
     name: formData.get("name"),
     website: formData.get("website"),
     github_org: formData.get("github_org"),
     twitter_handle: formData.get("twitter_handle"),
-    logo: formData.get("logo"),
+    logo: formLogo?.size ? formLogo : null,
   })
 
   if (!validatedFields.success) {
