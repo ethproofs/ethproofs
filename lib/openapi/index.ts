@@ -2,7 +2,7 @@ import { createDocument } from "zod-openapi"
 
 import { SITE_NAME, SITE_PREVIEW_URL, SITE_URL } from "../constants"
 
-import { awsPricingListPaths } from "./aws-pricing-list"
+import { cloudInstancesPaths } from "./cloud-instances"
 import { clustersPaths } from "./clusters"
 import { proofsPaths } from "./proofs"
 import { singleMachinePaths } from "./single-machine"
@@ -41,14 +41,14 @@ export const document = createDocument({
       name: "Proofs",
     },
     {
-      name: "Aws pricing list",
+      name: "Cloud instances",
     },
   ],
   paths: {
     ...clustersPaths,
     ...singleMachinePaths,
     ...proofsPaths,
-    ...awsPricingListPaths,
+    ...cloudInstancesPaths,
   },
   components: {
     securitySchemes: {
