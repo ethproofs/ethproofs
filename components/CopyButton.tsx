@@ -29,6 +29,7 @@ const CopyButton = ({ message, className }: CopyButtonProps) => {
             size="icon"
             variant="ghost"
             className={cn("text-primary-dark", className)}
+            type="button"
             onClick={onCopy(message)}
           >
             {hasCopied ? <ClipboardCheck /> : <Copy />}

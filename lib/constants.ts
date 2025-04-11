@@ -29,5 +29,6 @@ export const DEFAULT_PAGE_STATE = {
 
 export const isNetlifyProduction = process.env.CONTEXT === "production"
 
-// Supabase storage bucket for proof binaries
+// Supabase storage buckets
 export const PROOF_BINARY_BUCKET = "proof_binaries"
+export const PUBLIC_ASSETS_BUCKET = "public-assets"

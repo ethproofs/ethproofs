@@ -26,7 +26,7 @@
       "name": "Proofs"
     },
     {
-      "name": "Aws pricing list"
+      "name": "Cloud instances"
     }
   ],
   "paths": {
@@ -83,20 +83,20 @@
                     "items": {
                       "type": "object",
                       "properties": {
-                        "instance_type": {
+                        "cloud_instance": {
                           "type": "string",
-                          "description": "Instance type from AWS pricing list",
+                          "description": "Cloud instance name",
                           "example": "c5.xlarge"
                         },
-                        "instance_count": {
+                        "cloud_instance_count": {
                           "type": "number",
                           "description": "Number of instances of this type",
                           "example": 10
                         }
                       },
                       "required": [
-                        "instance_type",
-                        "instance_count"
+                        "cloud_instance",
+                        "cloud_instance_count"
                       ]
                     },
                     "description": "Cluster configuration"
@@ -198,13 +198,13 @@
                         "items": {
                           "type": "object",
                           "properties": {
-                            "instance_type_id": {
+                            "cloud_instance_id": {
                               "type": "number"
                             },
-                            "instance_count": {
+                            "cloud_instance_count": {
                               "type": "number"
                             },
-                            "aws_instance_pricing": {
+                            "cloud_instance": {
                               "type": [
                                 "object",
                                 "null"
@@ -213,7 +213,10 @@
                                 "id": {
                                   "type": "number"
                                 },
-                                "instance_type": {
+                                "provider": {
+                                  "type": "string"
+                                },
+                                "instance_name": {
                                   "type": "string"
                                 },
                                 "region": {
@@ -222,35 +225,65 @@
                                 "hourly_price": {
                                   "type": "number"
                                 },
-                                "instance_memory": {
-                                  "type": "number"
-                                },
-                                "vcpu": {
-                                  "type": "number"
-                                },
-                                "instance_storage": {
+                                "cpu_arch": {
                                   "type": "string"
                                 },
+                                "cpu_cores": {
+                                  "type": "number"
+                                },
+                                "cpu_effective_cores": {
+                                  "type": "number"
+                                },
+                                "cpu_name": {
+                                  "type": "string"
+                                },
+                                "memory": {
+                                  "type": "number"
+                                },
+                                "gpu_count": {
+                                  "type": "number"
+                                },
+                                "gpu_arch": {
+                                  "type": "string"
+                                },
+                                "gpu_name": {
+                                  "type": "string"
+                                },
+                                "gpu_memory": {
+                                  "type": "number"
+                                },
+                                "mobo_name": {
+                                  "type": "string"
+                                },
+                                "disk_name": {
+                                  "type": "string"
+                                },
+                                "disk_space": {
+                                  "type": "number"
+                                },
                                 "created_at": {
+                                  "type": "string"
+                                },
+                                "snapshot_date": {
                                   "type": "string"
                                 }
                               },
                               "required": [
                                 "id",
-                                "instance_type",
+                                "provider",
+                                "instance_name",
                                 "region",
                                 "hourly_price",
-                                "instance_memory",
-                                "vcpu",
-                                "instance_storage",
+                                "cpu_cores",
+                                "memory",
                                 "created_at"
                               ]
                             }
                           },
                           "required": [
-                            "instance_type_id",
-                            "instance_count",
-                            "aws_instance_pricing"
+                            "cloud_instance_id",
+                            "cloud_instance_count",
+                            "cloud_instance"
                           ]
                         }
                       }
@@ -322,15 +355,15 @@
                     "description": "Proof system used to generate proofs. (e.g., Groth16 or PlonK)",
                     "example": "Groth16"
                   },
-                  "instance_type": {
+                  "cloud_instance": {
                     "type": "string",
-                    "description": "Instance type from AWS pricing list",
+                    "description": "Cloud instance name",
                     "example": "c5.xlarge"
                   }
                 },
                 "required": [
                   "nickname",
-                  "instance_type"
+                  "cloud_instance"
                 ]
               }
             }
@@ -610,15 +643,28 @@
         }
       }
     },
-    "/aws-pricing-list": {
+    "/cloud-instances": {
       "get": {
         "tags": [
-          "Aws pricing list"
+          "Cloud instances"
         ],
-        "summary": "List aws pricing list",
+        "summary": "List cloud instances",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "provider",
+            "schema": {
+              "type": "string",
+              "enum": [
+                "aws",
+                "vastai"
+              ]
+            }
+          }
+        ],
         "responses": {
           "200": {
-            "description": "Aws pricing list",
+            "description": "Cloud instances",
             "content": {
               "application/json": {
                 "schema": {
@@ -629,7 +675,10 @@
                       "id": {
                         "type": "number"
                       },
-                      "instance_type": {
+                      "provider": {
+                        "type": "string"
+                      },
+                      "instance_name": {
                         "type": "string"
                       },
                       "region": {
@@ -638,33 +687,66 @@
                       "hourly_price": {
                         "type": "number"
                       },
-                      "instance_memory": {
-                        "type": "number"
-                      },
-                      "vcpu": {
-                        "type": "number"
-                      },
-                      "instance_storage": {
+                      "cpu_arch": {
                         "type": "string"
                       },
+                      "cpu_cores": {
+                        "type": "number"
+                      },
+                      "cpu_effective_cores": {
+                        "type": "number"
+                      },
+                      "cpu_name": {
+                        "type": "string"
+                      },
+                      "memory": {
+                        "type": "number"
+                      },
+                      "gpu_count": {
+                        "type": "number"
+                      },
+                      "gpu_arch": {
+                        "type": "string"
+                      },
+                      "gpu_name": {
+                        "type": "string"
+                      },
+                      "gpu_memory": {
+                        "type": "number"
+                      },
+                      "mobo_name": {
+                        "type": "string"
+                      },
+                      "disk_name": {
+                        "type": "string"
+                      },
+                      "disk_space": {
+                        "type": "number"
+                      },
                       "created_at": {
+                        "type": "string"
+                      },
+                      "snapshot_date": {
                         "type": "string"
                       }
                     },
                     "required": [
                       "id",
-                      "instance_type",
+                      "provider",
+                      "instance_name",
                       "region",
                       "hourly_price",
-                      "instance_memory",
-                      "vcpu",
-                      "instance_storage",
+                      "cpu_cores",
+                      "memory",
                       "created_at"
                     ]
                   }
                 }
               }
             }
+          },
+          "400": {
+            "description": "Invalid query parameters"
           },
           "500": {
             "description": "Internal server error"

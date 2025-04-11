@@ -31,21 +31,21 @@ export const POST = withAuth(async ({ request, user }) => {
     hardware,
     cycle_type,
     proof_type,
-    instance_type,
+    cloud_instance,
   } = singleMachinePayload
 
-  // get & validate instance type id
-  const instanceType = await db.query.awsInstancePricing.findFirst({
+  // get & validate cloud instance id
+  const cloudInstance = await db.query.cloudInstances.findFirst({
     columns: {
       id: true,
-      instance_type: true,
+      instance_name: true,
     },
-    where: (awsInstancePricing, { eq }) =>
-      eq(awsInstancePricing.instance_type, instance_type),
+    where: (cloudInstances, { eq }) =>
+      eq(cloudInstances.instance_name, cloud_instance),
   })
 
-  if (!instanceType) {
-    return new Response("Instance type not found", { status: 400 })
+  if (!cloudInstance) {
+    return new Response("Cloud instance not found", { status: 400 })
   }
 
   let clusterIndex: number | null = null
@@ -66,8 +66,8 @@ export const POST = withAuth(async ({ request, user }) => {
     // create single machine as a cluster with 1 instance
     await tx.insert(clusterConfigurations).values({
       cluster_id: cluster.id,
-      instance_type_id: instanceType.id,
-      instance_count: 1,
+      cloud_instance_id: cloudInstance.id,
+      cloud_instance_count: 1,
     })
 
     clusterIndex = cluster.index
