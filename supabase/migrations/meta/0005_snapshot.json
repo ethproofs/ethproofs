@@ -1,5 +1,5 @@
 {
-  "id": "a3eb4fd0-a2d8-43d4-9010-790ce79ee69d",
+  "id": "043a3c11-b0e3-4246-9a0f-3eb812c16022",
   "prevId": "6cfda2a6-a58f-4774-a24b-ad551b75693d",
   "version": "7",
   "dialect": "postgresql",
@@ -310,8 +310,8 @@
       "checkConstraints": {},
       "isRLSEnabled": false
     },
-    "public.cluster_configurations": {
-      "name": "cluster_configurations",
+    "public.cluster_machines": {
+      "name": "cluster_machines",
       "schema": "",
       "columns": {
         "id": {
@@ -321,7 +321,7 @@
           "notNull": true,
           "identity": {
             "type": "byDefault",
-            "name": "cluster_configurations_id_seq",
+            "name": "cluster_machines_id_seq",
             "schema": "public",
             "increment": "1",
             "startWith": "1",
@@ -331,20 +331,20 @@
             "cycle": false
           }
         },
-        "cluster_id": {
-          "name": "cluster_id",
-          "type": "uuid",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "cluster_machine_id": {
-          "name": "cluster_machine_id",
+        "cluster_version_id": {
+          "name": "cluster_version_id",
           "type": "bigint",
           "primaryKey": false,
           "notNull": true
         },
-        "cluster_machine_count": {
-          "name": "cluster_machine_count",
+        "machine_id": {
+          "name": "machine_id",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "machine_count": {
+          "name": "machine_count",
           "type": "smallint",
           "primaryKey": false,
           "notNull": true
@@ -364,12 +364,12 @@
       },
       "indexes": {},
       "foreignKeys": {
-        "cluster_configurations_cluster_id_clusters_id_fk": {
-          "name": "cluster_configurations_cluster_id_clusters_id_fk",
-          "tableFrom": "cluster_configurations",
-          "tableTo": "clusters",
+        "cluster_machines_cluster_version_id_cluster_versions_id_fk": {
+          "name": "cluster_machines_cluster_version_id_cluster_versions_id_fk",
+          "tableFrom": "cluster_machines",
+          "tableTo": "cluster_versions",
           "columnsFrom": [
-            "cluster_id"
+            "cluster_version_id"
           ],
           "columnsTo": [
             "id"
@@ -377,12 +377,12 @@
           "onDelete": "cascade",
           "onUpdate": "cascade"
         },
-        "cluster_configurations_cluster_machine_id_cluster_machines_id_fk": {
-          "name": "cluster_configurations_cluster_machine_id_cluster_machines_id_fk",
-          "tableFrom": "cluster_configurations",
-          "tableTo": "cluster_machines",
+        "cluster_machines_machine_id_machines_id_fk": {
+          "name": "cluster_machines_machine_id_machines_id_fk",
+          "tableFrom": "cluster_machines",
+          "tableTo": "machines",
           "columnsFrom": [
-            "cluster_machine_id"
+            "machine_id"
           ],
           "columnsTo": [
             "id"
@@ -390,9 +390,9 @@
           "onDelete": "cascade",
           "onUpdate": "cascade"
         },
-        "cluster_configurations_cloud_instance_id_cloud_instances_id_fk": {
-          "name": "cluster_configurations_cloud_instance_id_cloud_instances_id_fk",
-          "tableFrom": "cluster_configurations",
+        "cluster_machines_cloud_instance_id_cloud_instances_id_fk": {
+          "name": "cluster_machines_cloud_instance_id_cloud_instances_id_fk",
+          "tableFrom": "cluster_machines",
           "tableTo": "cloud_instances",
           "columnsFrom": [
             "cloud_instance_id"
@@ -428,8 +428,8 @@
       "checkConstraints": {},
       "isRLSEnabled": false
     },
-    "public.cluster_machines": {
-      "name": "cluster_machines",
+    "public.cluster_versions": {
+      "name": "cluster_versions",
       "schema": "",
       "columns": {
         "id": {
@@ -439,7 +439,7 @@
           "notNull": true,
           "identity": {
             "type": "byDefault",
-            "name": "cluster_machines_id_seq",
+            "name": "cluster_versions_id_seq",
             "schema": "public",
             "increment": "1",
             "startWith": "1",
@@ -449,62 +449,20 @@
             "cycle": false
           }
         },
-        "cpu_model": {
-          "name": "cpu_model",
+        "cluster_id": {
+          "name": "cluster_id",
+          "type": "uuid",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "version": {
+          "name": "version",
           "type": "text",
           "primaryKey": false,
-          "notNull": false
+          "notNull": true
         },
-        "cpu_cores": {
-          "name": "cpu_cores",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "gpu_models": {
-          "name": "gpu_models",
-          "type": "text[]",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "gpu_count": {
-          "name": "gpu_count",
-          "type": "integer[]",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "memory_size_gb": {
-          "name": "memory_size_gb",
-          "type": "integer[]",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "memory_count": {
-          "name": "memory_count",
-          "type": "integer[]",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "memory_type": {
-          "name": "memory_type",
-          "type": "text[]",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "storage_size_gb": {
-          "name": "storage_size_gb",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "total_tera_flops": {
-          "name": "total_tera_flops",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "network_between_machines": {
-          "name": "network_between_machines",
+        "description": {
+          "name": "description",
           "type": "text",
           "primaryKey": false,
           "notNull": false
@@ -518,28 +476,24 @@
         }
       },
       "indexes": {},
-      "foreignKeys": {},
-      "compositePrimaryKeys": {},
-      "uniqueConstraints": {},
-      "policies": {
-        "Enable read access for all users": {
-          "name": "Enable read access for all users",
-          "as": "PERMISSIVE",
-          "for": "SELECT",
-          "to": [
-            "public"
+      "foreignKeys": {
+        "cluster_versions_cluster_id_clusters_id_fk": {
+          "name": "cluster_versions_cluster_id_clusters_id_fk",
+          "tableFrom": "cluster_versions",
+          "tableTo": "clusters",
+          "columnsFrom": [
+            "cluster_id"
           ],
-          "using": "true"
-        },
-        "Enable insert for users with an api key": {
-          "name": "Enable insert for users with an api key",
-          "as": "PERMISSIVE",
-          "for": "INSERT",
-          "to": [
-            "public"
-          ]
+          "columnsTo": [
+            "id"
+          ],
+          "onDelete": "cascade",
+          "onUpdate": "cascade"
         }
       },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {},
       "checkConstraints": {},
       "isRLSEnabled": false
     },
@@ -620,6 +574,121 @@
           "onUpdate": "cascade"
         }
       },
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {
+        "Enable read access for all users": {
+          "name": "Enable read access for all users",
+          "as": "PERMISSIVE",
+          "for": "SELECT",
+          "to": [
+            "public"
+          ],
+          "using": "true"
+        },
+        "Enable insert for users with an api key": {
+          "name": "Enable insert for users with an api key",
+          "as": "PERMISSIVE",
+          "for": "INSERT",
+          "to": [
+            "public"
+          ]
+        }
+      },
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.machines": {
+      "name": "machines",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "bigint",
+          "primaryKey": true,
+          "notNull": true,
+          "identity": {
+            "type": "byDefault",
+            "name": "machines_id_seq",
+            "schema": "public",
+            "increment": "1",
+            "startWith": "1",
+            "minValue": "1",
+            "maxValue": "9223372036854775807",
+            "cache": "1",
+            "cycle": false
+          }
+        },
+        "cpu_model": {
+          "name": "cpu_model",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "cpu_cores": {
+          "name": "cpu_cores",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "gpu_models": {
+          "name": "gpu_models",
+          "type": "text[]",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "gpu_count": {
+          "name": "gpu_count",
+          "type": "integer[]",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "memory_size_gb": {
+          "name": "memory_size_gb",
+          "type": "integer[]",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "memory_count": {
+          "name": "memory_count",
+          "type": "integer[]",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "memory_type": {
+          "name": "memory_type",
+          "type": "text[]",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "storage_size_gb": {
+          "name": "storage_size_gb",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "total_tera_flops": {
+          "name": "total_tera_flops",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "network_between_machines": {
+          "name": "network_between_machines",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
       "compositePrimaryKeys": {},
       "uniqueConstraints": {},
       "policies": {
@@ -783,9 +852,9 @@
           "primaryKey": false,
           "notNull": false
         },
-        "cluster_id": {
-          "name": "cluster_id",
-          "type": "uuid",
+        "cluster_version_id": {
+          "name": "cluster_version_id",
+          "type": "bigint",
           "primaryKey": false,
           "notNull": true
         },
@@ -836,12 +905,12 @@
           "onDelete": "cascade",
           "onUpdate": "cascade"
         },
-        "proofs_cluster_id_clusters_id_fk": {
-          "name": "proofs_cluster_id_clusters_id_fk",
+        "proofs_cluster_version_id_cluster_versions_id_fk": {
+          "name": "proofs_cluster_version_id_cluster_versions_id_fk",
           "tableFrom": "proofs",
-          "tableTo": "clusters",
+          "tableTo": "cluster_versions",
           "columnsFrom": [
-            "cluster_id"
+            "cluster_version_id"
           ],
           "columnsTo": [
             "id"
@@ -865,12 +934,12 @@
       },
       "compositePrimaryKeys": {},
       "uniqueConstraints": {
-        "unique_block_cluster": {
-          "name": "unique_block_cluster",
+        "unique_block_cluster_version": {
+          "name": "unique_block_cluster_version",
           "nullsNotDistinct": false,
           "columns": [
             "block_number",
-            "cluster_id"
+            "cluster_version_id"
           ]
         }
       },
@@ -1140,7 +1209,7 @@
           "notNull": false
         }
       },
-      "definition": "\n    SELECT count(DISTINCT b.block_number) AS total_proven_blocks,\n      COALESCE(avg(cc.cloud_instance_count::double precision * c.hourly_price * p.proving_time::double precision / (1000.0 * 60::numeric * 60::numeric)::double precision), 0::numeric::double precision) AS avg_cost_per_proof,\n      COALESCE(avg(p.proving_time), 0::numeric) AS avg_proving_time\n    FROM blocks b\n    INNER JOIN proofs p ON b.block_number = p.block_number AND p.proof_status = 'proved'::text\n    INNER JOIN cluster_configurations cc ON p.cluster_id = cc.cluster_id\n    INNER JOIN cloud_instances c ON cc.cloud_instance_id = c.id\n    WHERE b.\"timestamp\" >= (now() - '30 days'::interval)",
+      "definition": "\n    SELECT count(DISTINCT b.block_number) AS total_proven_blocks,\n      COALESCE(avg(cm.cloud_instance_count::double precision * ci.hourly_price * p.proving_time::double precision / (1000.0 * 60::numeric * 60::numeric)::double precision), 0::numeric::double precision) AS avg_cost_per_proof,\n      COALESCE(avg(p.proving_time), 0::numeric) AS avg_proving_time\n    FROM blocks b\n    INNER JOIN proofs p ON b.block_number = p.block_number AND p.proof_status = 'proved'::text\n    INNER JOIN cluster_versions cv ON p.cluster_version_id = cv.id\n    INNER JOIN cluster_machines cm ON cv.id = cm.cluster_version_id\n    INNER JOIN cloud_instances ci ON cm.cloud_instance_id = ci.id\n    WHERE b.\"timestamp\" >= (now() - '30 days'::interval)",
       "name": "recent_summary",
       "schema": "public",
       "isExisting": false,
@@ -1182,7 +1251,7 @@
           "notNull": false
         }
       },
-      "definition": "\n    SELECT t.id as team_id,\n      t.name as team_name,\n      t.logo_url,\n      COALESCE(sum(cc.cloud_instance_count::double precision * c.hourly_price * (p.proving_time::numeric / (1000.0 * 60::numeric * 60::numeric))::double precision) / NULLIF(count(p.proof_id), 0)::double precision, 0::double precision) AS avg_cost_per_proof,\n      avg(p.proving_time) AS avg_proving_time\n    FROM teams t \n    LEFT JOIN proofs p ON t.id = p.team_id AND p.proof_status = 'proved'::text \n    LEFT JOIN cluster_configurations cc ON p.cluster_id = cc.cluster_id \n    LEFT JOIN cloud_instances c ON cc.cloud_instance_id = c.id \n    GROUP BY t.id",
+      "definition": "\n    SELECT t.id as team_id,\n      t.name as team_name,\n      t.logo_url,\n      COALESCE(sum(cm.cloud_instance_count::double precision * ci.hourly_price * (p.proving_time::numeric / (1000.0 * 60::numeric * 60::numeric))::double precision) / NULLIF(count(p.proof_id), 0)::double precision, 0::double precision) AS avg_cost_per_proof,\n      avg(p.proving_time) AS avg_proving_time\n    FROM teams t \n    LEFT JOIN proofs p ON t.id = p.team_id AND p.proof_status = 'proved'::text \n    LEFT JOIN cluster_versions cv ON p.cluster_version_id = cv.id\n    LEFT JOIN cluster_machines cm ON cv.id = cm.cluster_version_id\n    LEFT JOIN cloud_instances ci ON cm.cloud_instance_id = ci.id \n    GROUP BY t.id",
       "name": "teams_summary",
       "schema": "public",
       "isExisting": false,
