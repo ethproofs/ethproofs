@@ -1,7 +1,12 @@
 import { ZodError } from "zod"
 
 import { db } from "@/db"
-import { clusterConfigurations, clusterMachines, clusters } from "@/db/schema"
+import {
+  clusterMachines,
+  clusters,
+  clusterVersions,
+  machines,
+} from "@/db/schema"
 import { withAuth } from "@/lib/middleware/with-auth"
 import { singleMachineSchema } from "@/lib/zod/schemas/cluster"
 
@@ -32,7 +37,7 @@ export const POST = withAuth(async ({ request, user }) => {
     cycle_type,
     proof_type,
     cloud_instance,
-    cluster_machine,
+    machine,
   } = singleMachinePayload
 
   // get & validate cloud instance id
@@ -64,28 +69,27 @@ export const POST = withAuth(async ({ request, user }) => {
       })
       .returning({ id: clusters.id, index: clusters.index })
 
-    // create cluster machines
-    const [clusterMachine] = await tx
-      .insert(clusterMachines)
+    // create cluster version
+    const [clusterVersion] = await tx
+      .insert(clusterVersions)
       .values({
-        cpu_model: cluster_machine.cpu_model,
-        cpu_cores: cluster_machine.cpu_cores,
-        gpu_models: cluster_machine.gpu_models,
-        gpu_count: cluster_machine.gpu_count,
-        memory_size_gb: cluster_machine.memory_size_gb,
-        memory_count: cluster_machine.memory_count,
-        memory_type: cluster_machine.memory_type,
-        storage_size_gb: cluster_machine.storage_size_gb,
-        total_tera_flops: cluster_machine.total_tera_flops,
-        network_between_machines: cluster_machine.network_between_machines,
+        cluster_id: cluster.id,
+        // TODO: remove this once we have a real version management system for users
+        version: "v0.1",
       })
-      .returning({ id: clusterMachines.id })
+      .returning({ id: clusterVersions.id })
+
+    // create machine
+    const [createdMachine] = await tx
+      .insert(machines)
+      .values(machine)
+      .returning({ id: machines.id })
 
     // create single machine as a cluster with 1 instance
-    await tx.insert(clusterConfigurations).values({
-      cluster_id: cluster.id,
-      cluster_machine_id: clusterMachine.id,
-      cluster_machine_count: 1,
+    await tx.insert(clusterMachines).values({
+      cluster_version_id: clusterVersion.id,
+      machine_id: createdMachine.id,
+      machine_count: 1,
       cloud_instance_id: cloudInstance.id,
       cloud_instance_count: 1,
     })

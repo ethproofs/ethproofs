@@ -1,7 +1,7 @@
 import z from ".."
 
 import { CloudInstancesSchema } from "./cloud-instance"
-import { ClusterMachineSchema } from "./cluster-machine"
+import { MachineSchema } from "./machine"
 
 export const ClusterSchema = z.object({
   id: z.number().nullable(),
@@ -11,14 +11,12 @@ export const ClusterSchema = z.object({
   hardware: z.string().optional().nullable(),
   cycle_type: z.string().optional().nullable(),
   proof_type: z.string().optional().nullable(),
-  cluster_configuration: z.array(
+  machines: z.array(
     z.object({
-      cluster_machine_id: z.number(),
-      cluster_machine_count: z.number().int().positive(),
-      cluster_machine: ClusterMachineSchema,
-      cloud_instance_id: z.number(),
-      cloud_instance_count: z.number().int().positive(),
+      machine: MachineSchema,
+      machine_count: z.number().int().positive(),
       cloud_instance: CloudInstancesSchema,
+      cloud_instance_count: z.number().int().positive(),
     })
   ),
 })
@@ -55,7 +53,7 @@ export const createClusterSchema = baseClusterSchema.extend({
   configuration: z
     .array(
       z.object({
-        cluster_machine: ClusterMachineSchema.openapi({
+        machine: MachineSchema.openapi({
           description: "Physical hardware specifications of the machine",
           example: {
             cpu_model: "Intel(R) Xeon(R) CPU @ 2.20GHz",
@@ -70,7 +68,7 @@ export const createClusterSchema = baseClusterSchema.extend({
             network_between_machines: "10Gbps",
           },
         }),
-        cluster_machine_count: z.number().int().positive().openapi({
+        machine_count: z.number().int().positive().openapi({
           description: "Number of machines of this type",
           example: 1,
         }),
@@ -88,7 +86,7 @@ export const createClusterSchema = baseClusterSchema.extend({
 })
 
 export const singleMachineSchema = baseClusterSchema.extend({
-  cluster_machine: ClusterMachineSchema.openapi({
+  machine: MachineSchema.openapi({
     description: "Real hardware specifications",
     example: {
       cpu_model: "Intel(R) Xeon(R) CPU @ 2.20GHz",

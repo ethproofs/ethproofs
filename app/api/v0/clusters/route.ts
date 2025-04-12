@@ -1,8 +1,12 @@
 import { ZodError } from "zod"
 
 import { db } from "@/db"
-import { clusterConfigurations, clusterMachines, clusters } from "@/db/schema"
-import { tmp_renameClusterConfiguration } from "@/lib/clusters"
+import {
+  clusterMachines,
+  clusters,
+  clusterVersions,
+  machines,
+} from "@/db/schema"
 import { withAuth } from "@/lib/middleware/with-auth"
 import { createClusterSchema } from "@/lib/zod/schemas/cluster"
 
@@ -18,25 +22,27 @@ export const GET = withAuth(async ({ user }) => {
       },
       where: (cluster, { eq }) => eq(cluster.team_id, user.id),
       with: {
-        cc: {
+        versions: {
           columns: {
-            cloud_instance_id: true,
-            cloud_instance_count: true,
-            cluster_machine_id: true,
-            cluster_machine_count: true,
+            id: true,
           },
           with: {
-            ci: true,
-            cluster_machine: true,
+            cluster_machines: {
+              columns: {
+                id: true,
+              },
+              with: {
+                cloud_instance: true,
+                machine: true,
+              },
+            },
           },
         },
       },
     })
 
-    const renamedClusters = clusters.map(tmp_renameClusterConfiguration)
-
     return Response.json(
-      renamedClusters.map(({ index, ...cluster }) => ({
+      clusters.map(({ index, ...cluster }) => ({
         id: index,
         ...cluster,
       }))
@@ -109,7 +115,23 @@ export const POST = withAuth(async ({ request, user }) => {
       })
       .returning({ id: clusters.id, index: clusters.index })
 
-    // create cluster configuration
+    // create cluster version
+    const [clusterVersion] = await tx
+      .insert(clusterVersions)
+      .values({
+        cluster_id: cluster.id,
+        // TODO: remove this once we have a real version management system for users
+        version: "v0.1",
+      })
+      .returning({ id: clusterVersions.id })
+
+    // create machines
+    const createdMachines = await tx
+      .insert(machines)
+      .values(configuration.map(({ machine }) => machine))
+      .returning({ id: machines.id })
+
+    // map cloud instance names to ids
     const cloudInstanceByName = cloudInstanceIds.reduce(
       (acc, cloudInstance) => {
         acc[cloudInstance.instance_name] = cloudInstance.id
@@ -118,35 +140,13 @@ export const POST = withAuth(async ({ request, user }) => {
       {} as Record<string, number>
     )
 
-    // create cluster machines
-    const clusterMachineIds = await tx
-      .insert(clusterMachines)
-      .values(
-        configuration.map(({ cluster_machine }) => ({
-          cpu_model: cluster_machine.cpu_model,
-          cpu_cores: cluster_machine.cpu_cores,
-          gpu_models: cluster_machine.gpu_models,
-          gpu_count: cluster_machine.gpu_count,
-          memory_size_gb: cluster_machine.memory_size_gb,
-          memory_count: cluster_machine.memory_count,
-          memory_type: cluster_machine.memory_type,
-          storage_size_gb: cluster_machine.storage_size_gb,
-          total_tera_flops: cluster_machine.total_tera_flops,
-          network_between_machines: cluster_machine.network_between_machines,
-        }))
-      )
-      .returning({ id: clusterMachines.id })
-
     // create cluster configurations
-    await tx.insert(clusterConfigurations).values(
+    await tx.insert(clusterMachines).values(
       configuration.map(
-        (
-          { cloud_instance, cloud_instance_count, cluster_machine_count },
-          index
-        ) => ({
-          cluster_id: cluster.id,
-          cluster_machine_id: clusterMachineIds[index].id,
-          cluster_machine_count,
+        ({ cloud_instance, cloud_instance_count, machine_count }, index) => ({
+          cluster_version_id: clusterVersion.id,
+          machine_id: createdMachines[index].id,
+          machine_count,
           cloud_instance_id: cloudInstanceByName[cloud_instance],
           cloud_instance_count,
         })

@@ -1,6 +1,6 @@
 import z from "zod"
 
-export const ClusterMachineSchema = z.object({
+export const MachineSchema = z.object({
   cpu_model: z.string().openapi({
     description: "CPU model",
     example: "Intel(R) Xeon(R) CPU @ 2.20GHz",
@@ -43,4 +43,4 @@ export const ClusterMachineSchema = z.object({
   }),
 })
 
-export type ClusterMachine = z.infer<typeof ClusterMachineSchema>
+export type Machine = z.infer<typeof MachineSchema>
