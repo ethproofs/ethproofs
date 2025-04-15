@@ -13,6 +13,7 @@ CREATE TABLE "machines" (
 	"cpu_cores" integer,
 	"gpu_models" text[],
 	"gpu_count" integer[],
+  "gpu_memory_gb" integer[],
 	"memory_size_gb" integer[],
 	"memory_count" integer[],
 	"memory_type" text[],

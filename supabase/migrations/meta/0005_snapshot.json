@@ -1,5 +1,5 @@
 {
-  "id": "043a3c11-b0e3-4246-9a0f-3eb812c16022",
+  "id": "9614e51a-036d-4e51-8d65-4f0b15367133",
   "prevId": "6cfda2a6-a58f-4774-a24b-ad551b75693d",
   "version": "7",
   "dialect": "postgresql",
@@ -639,6 +639,12 @@
         },
         "gpu_count": {
           "name": "gpu_count",
+          "type": "integer[]",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "gpu_memory_gb": {
+          "name": "gpu_memory_gb",
           "type": "integer[]",
           "primaryKey": false,
           "notNull": false

@@ -17,6 +17,10 @@ export const MachineSchema = z.object({
     description: "Number of GPUs",
     example: [1, 1],
   }),
+  gpu_memory_gb: z.array(z.number()).openapi({
+    description: "GPU memory size in GB",
+    example: [24, 24],
+  }),
   memory_size_gb: z.array(z.number()).openapi({
     description: "Memory size in GB",
     example: [32, 32],

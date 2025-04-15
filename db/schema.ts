@@ -197,6 +197,7 @@ export const machines = pgTable(
     cpu_cores: integer(),
     gpu_models: text().array(),
     gpu_count: integer().array(),
+    gpu_memory_gb: integer().array(),
     memory_size_gb: integer().array(),
     memory_count: integer().array(),
     memory_type: text().array(),
