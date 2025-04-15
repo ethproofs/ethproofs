@@ -14,7 +14,7 @@ export default async function CloudInstancesPage() {
         <div className="flex flex-col gap-2">
           <p>
             This table helps you find the correct instance reference ID for use
-            in our <Link href="/api.html">API</Link>. Each row shows available
+            in our <Link href="/api">API</Link>. Each row shows available
             cloud instance types across different providers.
           </p>
           <p>
