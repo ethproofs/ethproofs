@@ -49,7 +49,8 @@ export const createClusterSchema = baseClusterSchema.extend({
     .array(
       z.object({
         cloud_instance: z.string().openapi({
-          description: "Cloud instance name",
+          description:
+            "Instance identifier for cloud provider. Visit [Cloud Instances](/docs/cloud-instances) to view all available instances and their exact names.",
           example: "c5.xlarge",
         }),
         cloud_instance_count: z.number().openapi({
@@ -63,7 +64,8 @@ export const createClusterSchema = baseClusterSchema.extend({
 
 export const singleMachineSchema = baseClusterSchema.extend({
   cloud_instance: z.string().openapi({
-    description: "Cloud instance name",
+    description:
+      "Instance identifier for cloud provider. Visit [Cloud Instances](/docs/cloud-instances) to view all available instances and their exact names.",
     example: "c5.xlarge",
   }),
 })

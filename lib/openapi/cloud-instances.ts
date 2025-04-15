@@ -11,6 +11,8 @@ export const cloudInstancesPaths: ZodOpenApiPathsObject = {
     get: {
       tags: ["Cloud instances"],
       summary: "List cloud instances",
+      description:
+        "Returns a list of available cloud instances across different providers. Filter results by provider using the query parameter. See [Cloud Instances](/docs/cloud-instances) for a visual table view and more details.",
       requestParams: {
         query: CloudInstancesQuerySchema,
       },

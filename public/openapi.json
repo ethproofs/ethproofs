@@ -85,7 +85,7 @@
                       "properties": {
                         "cloud_instance": {
                           "type": "string",
-                          "description": "Cloud instance name",
+                          "description": "Instance identifier for cloud provider. Visit [Cloud Instances](/docs/cloud-instances) to view all available instances and their exact names.",
                           "example": "c5.xlarge"
                         },
                         "cloud_instance_count": {
@@ -357,7 +357,7 @@
                   },
                   "cloud_instance": {
                     "type": "string",
-                    "description": "Cloud instance name",
+                    "description": "Instance identifier for cloud provider. Visit [Cloud Instances](/docs/cloud-instances) to view all available instances and their exact names.",
                     "example": "c5.xlarge"
                   }
                 },
@@ -649,6 +649,7 @@
           "Cloud instances"
         ],
         "summary": "List cloud instances",
+        "description": "Returns a list of available cloud instances across different providers. Filter results by provider using the query parameter. See [Cloud Instances](/docs/cloud-instances) for a visual table view and more details.",
         "parameters": [
           {
             "in": "query",
