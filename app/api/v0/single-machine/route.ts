@@ -36,7 +36,7 @@ export const POST = withAuth(async ({ request, user }) => {
     hardware,
     cycle_type,
     proof_type,
-    cloud_instance,
+    cloud_instance_name,
     machine,
   } = singleMachinePayload
 
@@ -47,7 +47,7 @@ export const POST = withAuth(async ({ request, user }) => {
       instance_name: true,
     },
     where: (cloudInstances, { eq }) =>
-      eq(cloudInstances.instance_name, cloud_instance),
+      eq(cloudInstances.instance_name, cloud_instance_name),
   })
 
   if (!cloudInstance) {

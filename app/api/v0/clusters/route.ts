@@ -94,7 +94,7 @@ export const POST = withAuth(async ({ request, user }) => {
     where: (cloudInstances, { inArray }) =>
       inArray(
         cloudInstances.instance_name,
-        configuration.map((config) => config.cloud_instance)
+        configuration.map((config) => config.cloud_instance_name)
       ),
   })
 
@@ -145,11 +145,14 @@ export const POST = withAuth(async ({ request, user }) => {
     // create cluster configurations
     await tx.insert(clusterMachines).values(
       configuration.map(
-        ({ cloud_instance, cloud_instance_count, machine_count }, index) => ({
+        (
+          { cloud_instance_name, cloud_instance_count, machine_count },
+          index
+        ) => ({
           cluster_version_id: clusterVersion.id,
           machine_id: createdMachines[index].id,
           machine_count,
-          cloud_instance_id: cloudInstanceByName[cloud_instance],
+          cloud_instance_id: cloudInstanceByName[cloud_instance_name],
           cloud_instance_count,
         })
       )

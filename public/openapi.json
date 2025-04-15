@@ -208,9 +208,9 @@
                           "description": "Number of machines of this type",
                           "example": 1
                         },
-                        "cloud_instance": {
+                        "cloud_instance_name": {
                           "type": "string",
-                          "description": "Instance identifier for cloud provider. Visit [Cloud Instances](/docs/cloud-instances) to view all available instances and their exact names.",
+                          "description": "The instance_name value of the cloud instance. Visit [Cloud Instances](/docs/cloud-instances) to view all available instances and their exact names.",
                           "example": "c5.xlarge"
                         },
                         "cloud_instance_count": {
@@ -223,7 +223,7 @@
                       "required": [
                         "machine",
                         "machine_count",
-                        "cloud_instance",
+                        "cloud_instance_name",
                         "cloud_instance_count"
                       ]
                     },
@@ -719,16 +719,16 @@
                     ],
                     "description": "Physical hardware specifications of the machine"
                   },
-                  "cloud_instance": {
+                  "cloud_instance_name": {
                     "type": "string",
-                    "description": "Instance identifier for cloud provider. Visit [Cloud Instances](/docs/cloud-instances) to view all available instances and their exact names.",
+                    "description": "The instance_name value of the cloud instance. Visit [Cloud Instances](/docs/cloud-instances) to view all available instances and their exact names.",
                     "example": "c5.xlarge"
                   }
                 },
                 "required": [
                   "nickname",
                   "machine",
-                  "cloud_instance"
+                  "cloud_instance_name"
                 ]
               }
             }
