@@ -717,7 +717,7 @@
                       "memory_count",
                       "memory_type"
                     ],
-                    "description": "Real hardware specifications"
+                    "description": "Physical hardware specifications of the machine"
                   },
                   "cloud_instance": {
                     "type": "string",

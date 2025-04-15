@@ -76,7 +76,7 @@ export const createClusterSchema = baseClusterSchema.extend({
 
 export const singleMachineSchema = baseClusterSchema.extend({
   machine: MachineSchema.openapi({
-    description: "Real hardware specifications",
+    description: "Physical hardware specifications of the machine",
   }),
   cloud_instance: z.string().openapi({
     description:
