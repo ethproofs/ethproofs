@@ -30,6 +30,8 @@ export const GET = withAuth(async ({ user }) => {
             cluster_machines: {
               columns: {
                 id: true,
+                machine_count: true,
+                cloud_instance_count: true,
               },
               with: {
                 cloud_instance: true,

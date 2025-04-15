@@ -84,23 +84,26 @@
                     "items": {
                       "type": "object",
                       "properties": {
-                        "cluster_machine": {
+                        "machine": {
                           "type": "object",
                           "properties": {
                             "cpu_model": {
                               "type": "string",
+                              "maxLength": 200,
                               "description": "CPU model",
                               "example": "Intel(R) Xeon(R) CPU @ 2.20GHz"
                             },
                             "cpu_cores": {
-                              "type": "number",
+                              "type": "integer",
+                              "exclusiveMinimum": 0,
                               "description": "Number of CPU cores",
                               "example": 2
                             },
                             "gpu_models": {
                               "type": "array",
                               "items": {
-                                "type": "string"
+                                "type": "string",
+                                "maxLength": 200
                               },
                               "description": "List of GPU models",
                               "example": [
@@ -111,7 +114,8 @@
                             "gpu_count": {
                               "type": "array",
                               "items": {
-                                "type": "number"
+                                "type": "integer",
+                                "exclusiveMinimum": 0
                               },
                               "description": "Number of GPUs",
                               "example": [
@@ -119,10 +123,23 @@
                                 1
                               ]
                             },
+                            "gpu_memory_gb": {
+                              "type": "array",
+                              "items": {
+                                "type": "integer",
+                                "exclusiveMinimum": 0
+                              },
+                              "description": "GPU memory size in GB",
+                              "example": [
+                                24,
+                                24
+                              ]
+                            },
                             "memory_size_gb": {
                               "type": "array",
                               "items": {
-                                "type": "number"
+                                "type": "integer",
+                                "exclusiveMinimum": 0
                               },
                               "description": "Memory size in GB",
                               "example": [
@@ -133,7 +150,8 @@
                             "memory_count": {
                               "type": "array",
                               "items": {
-                                "type": "number"
+                                "type": "integer",
+                                "exclusiveMinimum": 0
                               },
                               "description": "Number of memory modules",
                               "example": [
@@ -144,7 +162,8 @@
                             "memory_type": {
                               "type": "array",
                               "items": {
-                                "type": "string"
+                                "type": "string",
+                                "maxLength": 200
                               },
                               "description": "Memory type",
                               "example": [
@@ -153,19 +172,22 @@
                               ]
                             },
                             "storage_size_gb": {
-                              "type": "number",
+                              "type": "integer",
+                              "exclusiveMinimum": 0,
                               "description": "Storage size in GB",
                               "example": 1000
                             },
                             "total_tera_flops": {
-                              "type": "number",
+                              "type": "integer",
+                              "exclusiveMinimum": 0,
                               "description": "Total Tera Flops",
                               "example": 1000
                             },
                             "network_between_machines": {
                               "type": "string",
-                              "description": "Network configuration",
-                              "example": "10Gbps"
+                              "maxLength": 500,
+                              "description": "Network configuration details between machines in the cluster",
+                              "example": "Dual-port 100GbE NICs in mesh topology with RDMA enabled, primary and backup interconnects between all nodes"
                             }
                           },
                           "required": [
@@ -173,43 +195,14 @@
                             "cpu_cores",
                             "gpu_models",
                             "gpu_count",
+                            "gpu_memory_gb",
                             "memory_size_gb",
                             "memory_count",
-                            "memory_type",
-                            "storage_size_gb",
-                            "total_tera_flops",
-                            "network_between_machines"
+                            "memory_type"
                           ],
-                          "description": "Physical hardware specifications of the machine",
-                          "example": {
-                            "cpu_model": "Intel(R) Xeon(R) CPU @ 2.20GHz",
-                            "cpu_cores": 2,
-                            "gpu_models": [
-                              "RTX 4090",
-                              "RTX 4080"
-                            ],
-                            "gpu_count": [
-                              1,
-                              1
-                            ],
-                            "memory_size_gb": [
-                              32,
-                              32
-                            ],
-                            "memory_count": [
-                              8,
-                              8
-                            ],
-                            "memory_type": [
-                              "DDR5-4800 ECC",
-                              "DDR5-4800 ECC"
-                            ],
-                            "storage_size_gb": 1000,
-                            "total_tera_flops": 1000,
-                            "network_between_machines": "10Gbps"
-                          }
+                          "description": "Physical hardware specifications of the machine"
                         },
-                        "cluster_machine_count": {
+                        "machine_count": {
                           "type": "integer",
                           "exclusiveMinimum": 0,
                           "description": "Number of machines of this type",
@@ -228,8 +221,8 @@
                         }
                       },
                       "required": [
-                        "cluster_machine",
-                        "cluster_machine_count",
+                        "machine",
+                        "machine_count",
                         "cloud_instance",
                         "cloud_instance_count"
                       ]
@@ -328,35 +321,31 @@
                           "null"
                         ]
                       },
-                      "cluster_configuration": {
+                      "machines": {
                         "type": "array",
                         "items": {
                           "type": "object",
                           "properties": {
-                            "cluster_machine_id": {
-                              "type": "number"
-                            },
-                            "cluster_machine_count": {
-                              "type": "integer",
-                              "exclusiveMinimum": 0
-                            },
-                            "cluster_machine": {
+                            "machine": {
                               "type": "object",
                               "properties": {
                                 "cpu_model": {
                                   "type": "string",
+                                  "maxLength": 200,
                                   "description": "CPU model",
                                   "example": "Intel(R) Xeon(R) CPU @ 2.20GHz"
                                 },
                                 "cpu_cores": {
-                                  "type": "number",
+                                  "type": "integer",
+                                  "exclusiveMinimum": 0,
                                   "description": "Number of CPU cores",
                                   "example": 2
                                 },
                                 "gpu_models": {
                                   "type": "array",
                                   "items": {
-                                    "type": "string"
+                                    "type": "string",
+                                    "maxLength": 200
                                   },
                                   "description": "List of GPU models",
                                   "example": [
@@ -367,7 +356,8 @@
                                 "gpu_count": {
                                   "type": "array",
                                   "items": {
-                                    "type": "number"
+                                    "type": "integer",
+                                    "exclusiveMinimum": 0
                                   },
                                   "description": "Number of GPUs",
                                   "example": [
@@ -375,10 +365,23 @@
                                     1
                                   ]
                                 },
+                                "gpu_memory_gb": {
+                                  "type": "array",
+                                  "items": {
+                                    "type": "integer",
+                                    "exclusiveMinimum": 0
+                                  },
+                                  "description": "GPU memory size in GB",
+                                  "example": [
+                                    24,
+                                    24
+                                  ]
+                                },
                                 "memory_size_gb": {
                                   "type": "array",
                                   "items": {
-                                    "type": "number"
+                                    "type": "integer",
+                                    "exclusiveMinimum": 0
                                   },
                                   "description": "Memory size in GB",
                                   "example": [
@@ -389,7 +392,8 @@
                                 "memory_count": {
                                   "type": "array",
                                   "items": {
-                                    "type": "number"
+                                    "type": "integer",
+                                    "exclusiveMinimum": 0
                                   },
                                   "description": "Number of memory modules",
                                   "example": [
@@ -400,7 +404,8 @@
                                 "memory_type": {
                                   "type": "array",
                                   "items": {
-                                    "type": "string"
+                                    "type": "string",
+                                    "maxLength": 200
                                   },
                                   "description": "Memory type",
                                   "example": [
@@ -409,19 +414,22 @@
                                   ]
                                 },
                                 "storage_size_gb": {
-                                  "type": "number",
+                                  "type": "integer",
+                                  "exclusiveMinimum": 0,
                                   "description": "Storage size in GB",
                                   "example": 1000
                                 },
                                 "total_tera_flops": {
-                                  "type": "number",
+                                  "type": "integer",
+                                  "exclusiveMinimum": 0,
                                   "description": "Total Tera Flops",
                                   "example": 1000
                                 },
                                 "network_between_machines": {
                                   "type": "string",
-                                  "description": "Network configuration",
-                                  "example": "10Gbps"
+                                  "maxLength": 500,
+                                  "description": "Network configuration details between machines in the cluster",
+                                  "example": "Dual-port 100GbE NICs in mesh topology with RDMA enabled, primary and backup interconnects between all nodes"
                                 }
                               },
                               "required": [
@@ -429,18 +437,13 @@
                                 "cpu_cores",
                                 "gpu_models",
                                 "gpu_count",
+                                "gpu_memory_gb",
                                 "memory_size_gb",
                                 "memory_count",
-                                "memory_type",
-                                "storage_size_gb",
-                                "total_tera_flops",
-                                "network_between_machines"
+                                "memory_type"
                               ]
                             },
-                            "cloud_instance_id": {
-                              "type": "number"
-                            },
-                            "cloud_instance_count": {
+                            "machine_count": {
                               "type": "integer",
                               "exclusiveMinimum": 0
                             },
@@ -515,15 +518,17 @@
                                 "memory",
                                 "created_at"
                               ]
+                            },
+                            "cloud_instance_count": {
+                              "type": "integer",
+                              "exclusiveMinimum": 0
                             }
                           },
                           "required": [
-                            "cluster_machine_id",
-                            "cluster_machine_count",
-                            "cluster_machine",
-                            "cloud_instance_id",
-                            "cloud_instance_count",
-                            "cloud_instance"
+                            "machine",
+                            "machine_count",
+                            "cloud_instance",
+                            "cloud_instance_count"
                           ]
                         }
                       }
@@ -531,7 +536,7 @@
                     "required": [
                       "id",
                       "nickname",
-                      "cluster_configuration"
+                      "machines"
                     ]
                   }
                 }
@@ -596,23 +601,26 @@
                     "description": "Proof system used to generate proofs. (e.g., Groth16 or PlonK)",
                     "example": "Groth16"
                   },
-                  "cluster_machine": {
+                  "machine": {
                     "type": "object",
                     "properties": {
                       "cpu_model": {
                         "type": "string",
+                        "maxLength": 200,
                         "description": "CPU model",
                         "example": "Intel(R) Xeon(R) CPU @ 2.20GHz"
                       },
                       "cpu_cores": {
-                        "type": "number",
+                        "type": "integer",
+                        "exclusiveMinimum": 0,
                         "description": "Number of CPU cores",
                         "example": 2
                       },
                       "gpu_models": {
                         "type": "array",
                         "items": {
-                          "type": "string"
+                          "type": "string",
+                          "maxLength": 200
                         },
                         "description": "List of GPU models",
                         "example": [
@@ -623,7 +631,8 @@
                       "gpu_count": {
                         "type": "array",
                         "items": {
-                          "type": "number"
+                          "type": "integer",
+                          "exclusiveMinimum": 0
                         },
                         "description": "Number of GPUs",
                         "example": [
@@ -631,10 +640,23 @@
                           1
                         ]
                       },
+                      "gpu_memory_gb": {
+                        "type": "array",
+                        "items": {
+                          "type": "integer",
+                          "exclusiveMinimum": 0
+                        },
+                        "description": "GPU memory size in GB",
+                        "example": [
+                          24,
+                          24
+                        ]
+                      },
                       "memory_size_gb": {
                         "type": "array",
                         "items": {
-                          "type": "number"
+                          "type": "integer",
+                          "exclusiveMinimum": 0
                         },
                         "description": "Memory size in GB",
                         "example": [
@@ -645,7 +667,8 @@
                       "memory_count": {
                         "type": "array",
                         "items": {
-                          "type": "number"
+                          "type": "integer",
+                          "exclusiveMinimum": 0
                         },
                         "description": "Number of memory modules",
                         "example": [
@@ -656,7 +679,8 @@
                       "memory_type": {
                         "type": "array",
                         "items": {
-                          "type": "string"
+                          "type": "string",
+                          "maxLength": 200
                         },
                         "description": "Memory type",
                         "example": [
@@ -665,19 +689,22 @@
                         ]
                       },
                       "storage_size_gb": {
-                        "type": "number",
+                        "type": "integer",
+                        "exclusiveMinimum": 0,
                         "description": "Storage size in GB",
                         "example": 1000
                       },
                       "total_tera_flops": {
-                        "type": "number",
+                        "type": "integer",
+                        "exclusiveMinimum": 0,
                         "description": "Total Tera Flops",
                         "example": 1000
                       },
                       "network_between_machines": {
                         "type": "string",
-                        "description": "Network configuration",
-                        "example": "10Gbps"
+                        "maxLength": 500,
+                        "description": "Network configuration details between machines in the cluster",
+                        "example": "Dual-port 100GbE NICs in mesh topology with RDMA enabled, primary and backup interconnects between all nodes"
                       }
                     },
                     "required": [
@@ -685,41 +712,12 @@
                       "cpu_cores",
                       "gpu_models",
                       "gpu_count",
+                      "gpu_memory_gb",
                       "memory_size_gb",
                       "memory_count",
-                      "memory_type",
-                      "storage_size_gb",
-                      "total_tera_flops",
-                      "network_between_machines"
+                      "memory_type"
                     ],
-                    "description": "Real hardware specifications",
-                    "example": {
-                      "cpu_model": "Intel(R) Xeon(R) CPU @ 2.20GHz",
-                      "cpu_cores": 2,
-                      "gpu_models": [
-                        "RTX 4090",
-                        "RTX 4080"
-                      ],
-                      "gpu_count": [
-                        1,
-                        1
-                      ],
-                      "memory_size_gb": [
-                        32,
-                        32
-                      ],
-                      "memory_count": [
-                        8,
-                        8
-                      ],
-                      "memory_type": [
-                        "DDR5-4800 ECC",
-                        "DDR5-4800 ECC"
-                      ],
-                      "storage_size_gb": 1000,
-                      "total_tera_flops": 1000,
-                      "network_between_machines": "10Gbps"
-                    }
+                    "description": "Real hardware specifications"
                   },
                   "cloud_instance": {
                     "type": "string",
@@ -729,7 +727,7 @@
                 },
                 "required": [
                   "nickname",
-                  "cluster_machine",
+                  "machine",
                   "cloud_instance"
                 ]
               }

@@ -55,19 +55,6 @@ export const createClusterSchema = baseClusterSchema.extend({
       z.object({
         machine: MachineSchema.openapi({
           description: "Physical hardware specifications of the machine",
-          example: {
-            cpu_model: "Intel(R) Xeon(R) CPU @ 2.20GHz",
-            cpu_cores: 2,
-            gpu_models: ["RTX 4090", "RTX 4080"],
-            gpu_count: [1, 1],
-            gpu_memory_gb: [24, 24],
-            memory_size_gb: [32, 32],
-            memory_count: [8, 8],
-            memory_type: ["DDR5-4800 ECC", "DDR5-4800 ECC"],
-            storage_size_gb: 1000,
-            total_tera_flops: 1000,
-            network_between_machines: "10Gbps",
-          },
         }),
         machine_count: z.number().int().positive().openapi({
           description: "Number of machines of this type",
@@ -89,19 +76,6 @@ export const createClusterSchema = baseClusterSchema.extend({
 export const singleMachineSchema = baseClusterSchema.extend({
   machine: MachineSchema.openapi({
     description: "Real hardware specifications",
-    example: {
-      cpu_model: "Intel(R) Xeon(R) CPU @ 2.20GHz",
-      cpu_cores: 2,
-      gpu_models: ["RTX 4090", "RTX 4080"],
-      gpu_count: [1, 1],
-      gpu_memory_gb: [24, 24],
-      memory_size_gb: [32, 32],
-      memory_count: [8, 8],
-      memory_type: ["DDR5-4800 ECC", "DDR5-4800 ECC"],
-      storage_size_gb: 1000,
-      total_tera_flops: 1000,
-      network_between_machines: "10Gbps",
-    },
   }),
   cloud_instance: z.string().openapi({
     description: "Equivalent cloud instance name",
