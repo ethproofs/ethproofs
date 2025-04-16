@@ -79,6 +79,7 @@ export const POST = withAuth(async ({ request, user }) => {
   const {
     nickname,
     description,
+    zkvm_version_id,
     hardware,
     configuration,
     cycle_type,
@@ -114,8 +115,6 @@ export const POST = withAuth(async ({ request, user }) => {
         cycle_type,
         proof_type,
         team_id: user.id,
-        // TODO: remove this once we have a real zkvm version
-        zkvm_version_id: 1,
       })
       .returning({ id: clusters.id, index: clusters.index })
 
@@ -124,6 +123,7 @@ export const POST = withAuth(async ({ request, user }) => {
       .insert(clusterVersions)
       .values({
         cluster_id: cluster.id,
+        zkvm_version_id,
         // TODO: remove this once we have a real version management system for users
         version: "v0.1",
       })
