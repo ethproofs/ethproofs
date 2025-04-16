@@ -1,6 +1,7 @@
 import { sql } from "drizzle-orm"
 import {
   bigint,
+  boolean,
   check,
   customType,
   decimal,
@@ -363,6 +364,12 @@ export const zkvms = pgTable("zkvms", {
       onUpdate: "cascade",
     }),
   name: text().notNull(),
+  isa: text().notNull(),
+  repo_url: text().notNull(),
+  continuations: boolean().notNull().default(false),
+  parallelizable_proving: boolean().notNull().default(false),
+  precompiles: boolean().notNull().default(false),
+  frontend: text().notNull(),
   created_at: timestamp("created_at", {
     withTimezone: true,
     mode: "string",

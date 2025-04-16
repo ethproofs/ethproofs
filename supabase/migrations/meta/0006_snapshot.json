@@ -1,5 +1,5 @@
 {
-  "id": "ceae270d-11b4-4b2f-b35b-67181540e80e",
+  "id": "7a370aa8-d8c5-44db-9775-df7b9c87c765",
   "prevId": "9614e51a-036d-4e51-8d65-4f0b15367133",
   "version": "7",
   "dialect": "postgresql",
@@ -1357,6 +1357,45 @@
         },
         "name": {
           "name": "name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "isa": {
+          "name": "isa",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "repo_url": {
+          "name": "repo_url",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "continuations": {
+          "name": "continuations",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": false
+        },
+        "parallelizable_proving": {
+          "name": "parallelizable_proving",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": false
+        },
+        "precompiles": {
+          "name": "precompiles",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": false
+        },
+        "frontend": {
+          "name": "frontend",
           "type": "text",
           "primaryKey": false,
           "notNull": true

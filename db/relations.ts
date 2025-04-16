@@ -119,11 +119,12 @@ export const vendorsRelations = relations(vendors, ({ one }) => ({
   }),
 }))
 
-export const zkvmsRelations = relations(zkvms, ({ one }) => ({
+export const zkvmsRelations = relations(zkvms, ({ one, many }) => ({
   vendor: one(vendors, {
     fields: [zkvms.vendor_id],
     references: [vendors.id],
   }),
+  versions: many(zkvmVersions),
 }))
 
 export const zkvmVersionsRelations = relations(zkvmVersions, ({ one }) => ({
