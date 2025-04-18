@@ -57,7 +57,7 @@ export function AppSidebar() {
             <SidebarMenuItem className="">
               <DropdownMenu>
                 <DropdownMenuTrigger asChild>
-                  <SidebarMenuButton className="[&[data-state=open]>svg]:rotate-0 [&>svg]:rotate-180">
+                  <SidebarMenuButton className="[&>svg]:rotate-180 [&[data-state=open]>svg]:rotate-0">
                     <>
                       zkVMs
                       <ChevronUp className="ms-auto" />
