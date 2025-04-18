@@ -18,6 +18,8 @@
     --body: var(--gray-700);
     --body-secondary: var(--gray-400);
 
+    --sidebar: var(--teal-100);
+
     --border: var(--gray-200), 0.2;
   }
 
@@ -33,5 +35,8 @@
     --primary-visited: var(--green-600);
 
     --body: var(--gray-200);
+
+    --sidebar: var(--teal-900);
+
   }
 }

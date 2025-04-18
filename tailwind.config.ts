@@ -56,7 +56,9 @@ const config = {
           DEFAULT: "hsla(var(--body))",
           secondary: "hsla(var(--body-secondary))",
         },
-
+        sidebar: {
+          DEFAULT: "hsla(var(--sidebar))",
+        },
         border: "hsla(var(--border))",
       },
       borderRadius: {

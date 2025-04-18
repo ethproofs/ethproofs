@@ -40,7 +40,7 @@ export const BaseLink = forwardRef<HTMLAnchorElement, LinkProps>(function Link(
 
   if (isExternal) {
     return (
-      <a target="_blank" rel="noopener" {...commonProps}>
+      <a target="_blank" rel="noopener noreferrer" {...commonProps}>
         {children}
         <span className="sr-only">(opens in a new tab)</span>
         {!hideArrow && (
