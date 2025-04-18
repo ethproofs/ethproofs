@@ -207,10 +207,7 @@ export default async function Index() {
               }) => {
                 const isNewTeam = !avg_cost_per_proof || !avg_proving_time
                 return (
-                  <Card
-                    className="flex flex-1 flex-col gap-4"
-                    key={team_id}
-                  >
+                  <Card className="flex flex-1 flex-col gap-4" key={team_id}>
                     <div className="relative mx-auto flex h-20 w-full max-w-56 justify-center">
                       <TeamLogo
                         src={logo_url}
@@ -222,7 +219,7 @@ export default async function Index() {
                       />
                       <h3
                         className={cn(
-                          "absolute inset-0 inline-block text-center text-3xl min-w-[100px] truncate",
+                          "absolute inset-0 inline-block min-w-[100px] truncate text-center text-3xl",
                           logo_url && "sr-only"
                         )}
                       >

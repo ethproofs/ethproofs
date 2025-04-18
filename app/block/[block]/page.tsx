@@ -39,6 +39,7 @@ import {
 } from "@/components/ui/metric"
 import { Popover, PopoverContent } from "@/components/ui/popover"
 import { TooltipContentHeader } from "@/components/ui/tooltip"
+import VerifyButton from "@/components/VerifyButton/VerifyButton"
 
 import { cn } from "@/lib/utils"
 
@@ -454,7 +455,7 @@ export default async function BlockDetailsPage({
           return (
             <div
               className={cn(
-                "grid grid-flow-dense grid-cols-4 grid-rows-3",
+                "grid grid-flow-dense grid-cols-5 grid-rows-3",
                 "sm:grid-rows-2",
                 "md:grid-cols-6-auto md:grid-rows-1"
               )}
@@ -485,12 +486,20 @@ export default async function BlockDetailsPage({
                   "md:col-span-1 md:col-start-6 md:row-span-1 md:row-start-1"
                 )}
               >
-                <DownloadButton
-                  proof={proof}
-                  className="sm:max-md:w-40 lg:w-40"
-                  labelClass="hidden sm:inline-block md:hidden lg:inline-block"
-                  containerClass="flex-row-reverse md:flex-col-reverse"
-                />
+                <div className="flex items-center gap-2">
+                  <VerifyButton
+                    // proof={proof}
+                    className="sm:max-md:w-40 lg:w-40"
+                    labelClass="hidden sm:inline-block md:hidden lg:inline-block"
+                    containerClass="flex-row-reverse md:flex-col-reverse"
+                  />
+                  <DownloadButton
+                    proof={proof}
+                    className="sm:max-md:w-40 lg:w-40"
+                    labelClass="hidden sm:inline-block md:hidden lg:inline-block"
+                    containerClass="flex-row-reverse md:flex-col-reverse"
+                  />
+                </div>
               </div>
               <MetricBox
                 className={cn(
