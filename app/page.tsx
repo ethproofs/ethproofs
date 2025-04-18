@@ -36,6 +36,7 @@ import { getMetadata } from "@/lib/metadata"
 import { formatNumber, formatUsd } from "@/lib/number"
 import { getActiveProverCount } from "@/lib/teams"
 import { prettyMs } from "@/lib/time"
+import BlocksAndHashes from "@/public/images/blocks-and-hashes.svg"
 import HeroDark from "@/public/images/hero-background.png"
 
 export const metadata: Metadata = getMetadata()
@@ -99,66 +100,6 @@ export default async function Index() {
 
   return (
     <div className="flex w-full flex-1 flex-col items-center gap-20">
-      <div
-        className="absolute inset-0 -z-10 h-[14rem] md:max-xl:h-96 xl:h-[22rem]"
-        style={{ mask: "linear-gradient(180deg, white 80%, transparent)" }}
-      >
-        <Image
-          src={HeroDark}
-          style={{
-            mask: "radial-gradient(circle, white 60%, transparent 90%)",
-            objectPosition: "50% 35%", // Position around checkmark in image
-          }}
-          className={cn(
-            "mx-auto h-full w-full max-w-screen-2xl object-cover",
-            "opacity-80 contrast-[110%] hue-rotate-180 invert", // Light mode filters
-            "dark:opacity-100 dark:contrast-100 dark:hue-rotate-0 dark:invert-0" // Dark mode filter resets
-          )}
-          alt=""
-        />
-      </div>
-      <div className="sm:mt-18 mt-10 flex w-full flex-col items-center justify-between gap-4 p-3 md:mt-36 xl:mt-36">
-        <h1 className="w-full text-center font-mono font-semibold">
-          SNARKs that scale <span className="text-primary">Ethereum</span>
-        </h1>
-        <p className="max-w-2xl text-center text-2xl">
-          Progressing towards fully{" "}
-          <span className="text-primary">SNARKing the L1</span>
-        </p>
-        <p className="mb-4 max-w-2xl text-center text-lg">
-          Starting by proving 1-of-100 blocks and soon{" "}
-          <span className="text-primary">real time proving</span>
-        </p>
-        <div className="mx-auto grid w-full max-w-2xl grid-cols-[auto,auto,auto] gap-4">
-          {summaryItems.map(({ key, label, icon, value }) => (
-            <div
-              key={key}
-              className="row-span-3 grid grid-rows-subgrid gap-1 p-2"
-            >
-              {/* Row 1 - Metric icon and value */}
-              <div className="col-span-1 row-span-1 flex h-full flex-col items-center justify-center gap-x-2 md:flex-row">
-                <p className="font-mono text-2xl text-primary md:text-3xl lg:text-4xl">
-                  {icon}
-                </p>
-                <p className="h-auto text-nowrap text-center font-mono text-2xl text-primary md:text-3xl lg:text-4xl">
-                  {value}
-                </p>
-              </div>
-              {/* Row 2 - Metric label */}
-              <div>
-                <p className="text-center text-xs uppercase md:text-sm">
-                  {label}
-                </p>
-              </div>
-              {/* Row 3 - Metric time span */}
-              <p className="text-center text-xs font-bold uppercase text-body-secondary">
-                Last 30 days
-              </p>
-            </div>
-          ))}
-        </div>
-      </div>
-
       <section id="blocks" className="w-full scroll-m-20">
         <HydrationBoundary state={dehydrate(queryClient)}>
           <BlocksTable teams={teams} />
@@ -207,10 +148,7 @@ export default async function Index() {
               }) => {
                 const isNewTeam = !avg_cost_per_proof || !avg_proving_time
                 return (
-                  <Card
-                    className="flex flex-1 flex-col gap-4"
-                    key={team_id}
-                  >
+                  <Card className="flex flex-1 flex-col gap-4" key={team_id}>
                     <div className="relative mx-auto flex h-20 w-full max-w-56 justify-center">
                       <TeamLogo
                         src={logo_url}
@@ -222,7 +160,7 @@ export default async function Index() {
                       />
                       <h3
                         className={cn(
-                          "absolute inset-0 inline-block text-center text-3xl min-w-[100px] truncate",
+                          "absolute inset-0 inline-block min-w-[100px] truncate text-center text-3xl",
                           logo_url && "sr-only"
                         )}
                       >
