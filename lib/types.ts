@@ -3,8 +3,10 @@ import { type ReactNode } from "react"
 import {
   blocks,
   cloudInstances,
-  clusterConfigurations,
+  clusterMachines,
   clusters,
+  clusterVersions,
+  machines,
   proofs,
   teams,
   teamsSummary,
@@ -26,9 +28,24 @@ export type BlockBase = typeof blocks.$inferSelect
 export type ClusterBase = typeof clusters.$inferSelect
 
 /**
- * Represents a row in the cluster_configurations table.
+ * Represents a row in the cluster_versions table.
  */
-export type ClusterConfigBase = typeof clusterConfigurations.$inferSelect
+export type ClusterVersionBase = typeof clusterVersions.$inferSelect
+
+/**
+ * Represents a row in the cluster_machines table.
+ */
+export type ClusterMachineBase = typeof clusterMachines.$inferSelect
+
+/**
+ * Represents a row in the machines table.
+ */
+export type MachineBase = typeof machines.$inferSelect
+
+/**
+ * Represents a row in the cloud_instances table.
+ */
+export type CloudInstanceBase = typeof cloudInstances.$inferSelect
 
 /**
  * Represents a row in the proofs table.
@@ -45,36 +62,31 @@ export type Team = typeof teams.$inferSelect
  */
 export type TeamSummary = typeof teamsSummary.$inferSelect
 
-/**
- * Extensions for the ClusterConfig type, adding optional cloudInstance property.
- */
-export type ClusterConfigExtensions = {
-  cloud_instance?: CloudInstance | null
+export type ClusterVersionExtensions = {
+  cluster: ClusterBase
+  cluster_machines: (ClusterMachineBase & {
+    cloud_instance: CloudInstanceBase
+    machine: MachineBase
+  })[]
 }
-
-/**
- * Represents a cluster configuration, combining ClusterConfigBase with ClusterConfigExtensions.
- */
-export type ClusterConfig = ClusterConfigBase & ClusterConfigExtensions
 
 /**
  * Extensions for the Cluster type, adding optional clusterConfig property.
  */
-export type ClusterExtensions = {
-  cluster_configuration?: ClusterConfig[]
-}
+export type ClusterVersion = ClusterVersionBase & ClusterVersionExtensions
 
 /**
  * Represents a cluster, combining ClusterBase with ClusterExtensions.
  */
-export type Cluster = ClusterBase & ClusterExtensions
+export type Cluster = ClusterBase & {
+  cluster_version: ClusterVersion
+}
 
 /**
  * Extensions for the Proof type, adding optional block, cluster, and team properties.
  */
 export type ProofExtensions = {
   block?: BlockBase
-  cluster?: Cluster | null
   team?: Team
 }
 
@@ -82,6 +94,10 @@ export type ProofExtensions = {
  * Represents a proof, combining ProofBase with ProofExtensions.
  */
 export type Proof = ProofBase & ProofExtensions
+
+export type ProofWithCluster = Proof & {
+  cluster_version: ClusterVersion
+}
 
 /**
  * Represents an empty block, which is a partial BlockBase with a required block_number property.
@@ -91,7 +107,7 @@ export type EmptyBlock = Partial<BlockBase> & Pick<BlockBase, "block_number">
 /**
  * Extensions for the Block type, adding a proofs property which is an array of Proofs.
  */
-export type BlockExtensions = { proofs: Proof[] }
+export type BlockExtensions = { proofs: ProofWithCluster[] }
 
 /**
  * Represents a block, which can be either an EmptyBlock or BlockBase, combined with BlockExtensions.
@@ -134,5 +150,5 @@ export type Stats = {
   avgFormatted: string
   best: number
   bestFormatted: string
-  bestProof: Proof
+  bestProof: ProofWithCluster
 }

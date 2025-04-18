@@ -61,6 +61,168 @@ export const apiAuthTokens = pgTable(
   ]
 )
 
+export const blocks = pgTable(
+  "blocks",
+  {
+    block_number: bigint("block_number", { mode: "number" })
+      .primaryKey()
+      .notNull(),
+    timestamp: timestamp({ withTimezone: true, mode: "string" }).notNull(),
+    gas_used: bigint("gas_used", { mode: "number" }).notNull(),
+    transaction_count: smallint("transaction_count").notNull(),
+    hash: text().notNull(),
+    created_at: timestamp("created_at", {
+      withTimezone: true,
+      mode: "string",
+    })
+      .defaultNow()
+      .notNull(),
+  },
+  () => [
+    pgPolicy("Enable read access for all users", {
+      as: "permissive",
+      for: "select",
+      to: ["public"],
+      using: sql`true`,
+    }),
+    pgPolicy("Enable insert for users with an api key", {
+      as: "permissive",
+      for: "insert",
+      to: ["public"],
+    }),
+  ]
+)
+
+export const clusters = pgTable(
+  "clusters",
+  {
+    id: uuid().defaultRandom().primaryKey().notNull(),
+    index: smallint(),
+    nickname: text().notNull(),
+    team_id: uuid()
+      .notNull()
+      .references(() => teams.id, {
+        onDelete: "cascade",
+        onUpdate: "cascade",
+      }),
+    description: text(),
+    // DEPRECATED: use cluster_hardware table instead
+    hardware: text(),
+    cycle_type: varchar("cycle_type"),
+    proof_type: varchar("proof_type"),
+    created_at: timestamp("created_at", {
+      withTimezone: true,
+      mode: "string",
+    })
+      .defaultNow()
+      .notNull(),
+  },
+  () => [
+    pgPolicy("Enable read access for all users", {
+      as: "permissive",
+      for: "select",
+      to: ["public"],
+      using: sql`true`,
+    }),
+    pgPolicy("Enable insert for users with an api key", {
+      as: "permissive",
+      for: "insert",
+      to: ["public"],
+    }),
+  ]
+)
+
+export const clusterVersions = pgTable("cluster_versions", {
+  id: bigint({ mode: "number" }).primaryKey().generatedByDefaultAsIdentity(),
+  cluster_id: uuid("cluster_id")
+    .notNull()
+    .references(() => clusters.id, {
+      onDelete: "cascade",
+      onUpdate: "cascade",
+    }),
+  version: text().notNull(),
+  description: text(),
+  created_at: timestamp("created_at", {
+    withTimezone: true,
+    mode: "string",
+  })
+    .defaultNow()
+    .notNull(),
+})
+
+export const clusterMachines = pgTable(
+  "cluster_machines",
+  {
+    id: bigint({ mode: "number" }).primaryKey().generatedByDefaultAsIdentity(),
+    cluster_version_id: bigint("cluster_version_id", {
+      mode: "number",
+    })
+      .notNull()
+      .references(() => clusterVersions.id, {
+        onDelete: "cascade",
+        onUpdate: "cascade",
+      }),
+    machine_id: bigint("machine_id", { mode: "number" })
+      .notNull()
+      .references(() => machines.id, {
+        onDelete: "cascade",
+        onUpdate: "cascade",
+      }),
+    machine_count: smallint("machine_count").notNull(),
+    cloud_instance_id: bigint("cloud_instance_id", { mode: "number" })
+      .notNull()
+      .references(() => cloudInstances.id),
+    cloud_instance_count: smallint("cloud_instance_count").notNull(),
+  },
+  () => [
+    pgPolicy("Enable read access for all users", {
+      as: "permissive",
+      for: "select",
+      to: ["public"],
+      using: sql`true`,
+    }),
+    pgPolicy("Enable insert for users with an api key", {
+      as: "permissive",
+      for: "insert",
+      to: ["public"],
+    }),
+  ]
+)
+
+export const machines = pgTable(
+  "machines",
+  {
+    id: bigint({ mode: "number" }).primaryKey().generatedByDefaultAsIdentity(),
+    cpu_model: text(),
+    cpu_cores: integer(),
+    gpu_models: text().array(),
+    gpu_count: integer().array(),
+    gpu_memory_gb: integer().array(),
+    memory_size_gb: integer().array(),
+    memory_count: integer().array(),
+    memory_type: text().array(),
+    storage_size_gb: integer(),
+    total_tera_flops: integer(),
+    network_between_machines: text(),
+    created_at: timestamp("created_at", { withTimezone: true, mode: "string" })
+      .defaultNow()
+      .notNull(),
+  },
+  () => [
+    pgPolicy("Enable read access for all users", {
+      as: "permissive",
+      for: "select",
+      to: ["public"],
+      using: sql`true`,
+    }),
+    pgPolicy("Enable insert for users with an api key", {
+      as: "permissive",
+      for: "insert",
+      to: ["public"],
+    }),
+  ]
+)
+
 export const cloudInstances = pgTable(
   "cloud_instances",
   {
@@ -95,68 +257,6 @@ export const cloudInstances = pgTable(
       for: "select",
       to: ["public"],
       using: sql`true`,
-    }),
-  ]
-)
-
-export const blocks = pgTable(
-  "blocks",
-  {
-    block_number: bigint("block_number", { mode: "number" })
-      .primaryKey()
-      .notNull(),
-    timestamp: timestamp({ withTimezone: true, mode: "string" }).notNull(),
-    gas_used: bigint("gas_used", { mode: "number" }).notNull(),
-    transaction_count: smallint("transaction_count").notNull(),
-    hash: text().notNull(),
-    created_at: timestamp("created_at", {
-      withTimezone: true,
-      mode: "string",
-    })
-      .defaultNow()
-      .notNull(),
-  },
-  () => [
-    pgPolicy("Enable read access for all users", {
-      as: "permissive",
-      for: "select",
-      to: ["public"],
-      using: sql`true`,
-    }),
-    pgPolicy("Enable insert for users with an api key", {
-      as: "permissive",
-      for: "insert",
-      to: ["public"],
-    }),
-  ]
-)
-
-export const clusterConfigurations = pgTable(
-  "cluster_configurations",
-  {
-    id: bigint({ mode: "number" }).primaryKey().generatedByDefaultAsIdentity(),
-    cluster_id: uuid("cluster_id")
-      .notNull()
-      .references(() => clusters.id, {
-        onDelete: "cascade",
-        onUpdate: "cascade",
-      }),
-    cloud_instance_id: bigint("cloud_instance_id", { mode: "number" })
-      .notNull()
-      .references(() => cloudInstances.id),
-    cloud_instance_count: smallint("cloud_instance_count").notNull(),
-  },
-  () => [
-    pgPolicy("Enable read access for all users", {
-      as: "permissive",
-      for: "select",
-      to: ["public"],
-      using: sql`true`,
-    }),
-    pgPolicy("Enable insert for users with an api key", {
-      as: "permissive",
-      for: "insert",
-      to: ["public"],
     }),
   ]
 )
@@ -226,44 +326,6 @@ export const teams = pgTable(
   ]
 )
 
-export const clusters = pgTable(
-  "clusters",
-  {
-    id: uuid().defaultRandom().primaryKey().notNull(),
-    index: smallint(),
-    nickname: text().notNull(),
-    team_id: uuid()
-      .notNull()
-      .references(() => teams.id, {
-        onDelete: "cascade",
-        onUpdate: "cascade",
-      }),
-    description: text(),
-    hardware: text(),
-    cycle_type: varchar("cycle_type"),
-    proof_type: varchar("proof_type"),
-    created_at: timestamp("created_at", {
-      withTimezone: true,
-      mode: "string",
-    })
-      .defaultNow()
-      .notNull(),
-  },
-  () => [
-    pgPolicy("Enable read access for all users", {
-      as: "permissive",
-      for: "select",
-      to: ["public"],
-      using: sql`true`,
-    }),
-    pgPolicy("Enable insert for users with an api key", {
-      as: "permissive",
-      for: "insert",
-      to: ["public"],
-    }),
-  ]
-)
-
 export const programs = pgTable(
   "programs",
   {
@@ -297,6 +359,7 @@ export const proofs = pgTable(
       .references(() => blocks.block_number),
     proof_status: text("proof_status").notNull(),
     proving_cycles: bigint("proving_cycles", { mode: "number" }),
+    // TODO: drop this ref, will be replaced by cluster_version_id
     team_id: uuid()
       .notNull()
       .references(() => teams.id, {
@@ -321,9 +384,9 @@ export const proofs = pgTable(
       withTimezone: true,
       mode: "string",
     }),
-    cluster_id: uuid("cluster_id")
+    cluster_version_id: bigint("cluster_version_id", { mode: "number" })
       .notNull()
-      .references(() => clusters.id, {
+      .references(() => clusterVersions.id, {
         onDelete: "cascade",
         onUpdate: "cascade",
       }),
@@ -338,7 +401,10 @@ export const proofs = pgTable(
     size_bytes: bigint("size_bytes", { mode: "number" }),
   },
   (table) => [
-    unique("unique_block_cluster").on(table.block_number, table.cluster_id),
+    unique("unique_block_cluster_version").on(
+      table.block_number,
+      table.cluster_version_id
+    ),
     pgPolicy("Enable updates for users with an api key", {
       as: "permissive",
       for: "update",
@@ -371,12 +437,13 @@ export const recentSummary = pgView("recent_summary", {
   .as(
     sql`
     SELECT count(DISTINCT b.block_number) AS total_proven_blocks,
-      COALESCE(avg(cc.cloud_instance_count::double precision * c.hourly_price * p.proving_time::double precision / (1000.0 * 60::numeric * 60::numeric)::double precision), 0::numeric::double precision) AS avg_cost_per_proof,
+      COALESCE(avg(cm.cloud_instance_count::double precision * ci.hourly_price * p.proving_time::double precision / (1000.0 * 60::numeric * 60::numeric)::double precision), 0::numeric::double precision) AS avg_cost_per_proof,
       COALESCE(avg(p.proving_time), 0::numeric) AS avg_proving_time
     FROM blocks b
     INNER JOIN proofs p ON b.block_number = p.block_number AND p.proof_status = 'proved'::text
-    INNER JOIN cluster_configurations cc ON p.cluster_id = cc.cluster_id
-    INNER JOIN cloud_instances c ON cc.cloud_instance_id = c.id
+    INNER JOIN cluster_versions cv ON p.cluster_version_id = cv.id
+    INNER JOIN cluster_machines cm ON cv.id = cm.cluster_version_id
+    INNER JOIN cloud_instances ci ON cm.cloud_instance_id = ci.id
     WHERE b."timestamp" >= (now() - '30 days'::interval)`
   )
 
@@ -393,11 +460,12 @@ export const teamsSummary = pgView("teams_summary", {
     SELECT t.id as team_id,
       t.name as team_name,
       t.logo_url,
-      COALESCE(sum(cc.cloud_instance_count::double precision * c.hourly_price * (p.proving_time::numeric / (1000.0 * 60::numeric * 60::numeric))::double precision) / NULLIF(count(p.proof_id), 0)::double precision, 0::double precision) AS avg_cost_per_proof,
+      COALESCE(sum(cm.cloud_instance_count::double precision * ci.hourly_price * (p.proving_time::numeric / (1000.0 * 60::numeric * 60::numeric))::double precision) / NULLIF(count(p.proof_id), 0)::double precision, 0::double precision) AS avg_cost_per_proof,
       avg(p.proving_time) AS avg_proving_time
     FROM teams t 
     LEFT JOIN proofs p ON t.id = p.team_id AND p.proof_status = 'proved'::text 
-    LEFT JOIN cluster_configurations cc ON p.cluster_id = cc.cluster_id 
-    LEFT JOIN cloud_instances c ON cc.cloud_instance_id = c.id 
+    LEFT JOIN cluster_versions cv ON p.cluster_version_id = cv.id
+    LEFT JOIN cluster_machines cm ON cv.id = cm.cluster_version_id
+    LEFT JOIN cloud_instances ci ON cm.cloud_instance_id = ci.id 
     GROUP BY t.id`
   )

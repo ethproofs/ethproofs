@@ -7,7 +7,7 @@ import {
   QueryClient,
 } from "@tanstack/react-query"
 
-import type { Cluster, Metric, Proof } from "@/lib/types"
+import type { Metric, Proof } from "@/lib/types"
 
 import Null from "@/components/Null"
 import ProofStatus, { ProofStatusInfo } from "@/components/ProofStatus"
@@ -40,11 +40,12 @@ import { cn } from "@/lib/utils"
 
 import { AVERAGE_LABEL, DEFAULT_PAGE_STATE, SITE_NAME } from "@/lib/constants"
 
-import { db } from "@/db"
+import { getClustersByTeamId } from "@/lib/api/clusters"
 import {
   fetchTeamProofsPaginated,
   fetchTeamProofsPerStatusCount,
 } from "@/lib/api/proofs"
+import { getTeam } from "@/lib/api/teams"
 import { getMetadata } from "@/lib/metadata"
 import { formatNumber, formatUsd } from "@/lib/number"
 import {
@@ -64,12 +65,7 @@ export async function generateMetadata({
 }: ProverPageProps): Promise<Metadata> {
   const { teamId } = await params
 
-  const team = await db.query.teams.findFirst({
-    columns: {
-      name: true,
-    },
-    where: (teams, { eq }) => eq(teams.id, teamId),
-  })
+  const team = await getTeam(teamId)
 
   if (!team) return { title: `Prover not found - ${SITE_NAME}` }
 
@@ -79,13 +75,11 @@ export async function generateMetadata({
 export default async function ProverPage({ params }: ProverPageProps) {
   const { teamId } = await params
 
-  const team = await db.query.teams.findFirst({
-    where: (teams, { eq }) => eq(teams.id, teamId),
-  })
+  const team = await getTeam(teamId)
 
   if (!team) return notFound()
 
-  const proofsPerStatusCount = await fetchTeamProofsPerStatusCount(team.id)
+  const proofsPerStatusCount = await fetchTeamProofsPerStatusCount(teamId)
   const proofsPerStatusCountMap = proofsPerStatusCount.reduce(
     (acc, curr) => {
       acc[curr.proof_status] = curr.count
@@ -96,23 +90,15 @@ export default async function ProverPage({ params }: ProverPageProps) {
 
   // prefetch proofs for first page of table
   const queryClient = new QueryClient()
-  const response = await fetchTeamProofsPaginated(team.id, DEFAULT_PAGE_STATE)
+  const response = await fetchTeamProofsPaginated(teamId, DEFAULT_PAGE_STATE)
   await queryClient.prefetchQuery({
-    queryKey: ["proofs", team.id, DEFAULT_PAGE_STATE],
+    queryKey: ["proofs", teamId, DEFAULT_PAGE_STATE],
     queryFn: () => response,
   })
 
   const proofs = response.rows
 
-  const clusters = Object.values(
-    proofs.reduce((acc, curr) => {
-      if (!curr.cluster || !curr.cluster.index) return acc
-      return {
-        ...acc,
-        [curr.cluster.index]: curr.cluster,
-      }
-    }, {})
-  ) satisfies Cluster[]
+  const clusters = await getClustersByTeamId(teamId)
 
   const completedProofs = proofs.filter(isCompleted)
   const totalZkVMCycles = completedProofs.reduce(
@@ -129,7 +115,7 @@ export default async function ProverPage({ params }: ProverPageProps) {
 
   const avgCostPerMgas = totalProvingCosts / (totalGasProven / 1e6)
 
-  const avgProofProvingTime = getProofsAvgProvingTime(proofs as Proof[])
+  const avgProofProvingTime = getProofsAvgProvingTime(proofs)
 
   const performanceMetrics: Metric[] = [
     {

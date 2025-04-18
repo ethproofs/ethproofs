@@ -1,6 +1,12 @@
+import { ZodError } from "zod"
+
 import { db } from "@/db"
-import { clusterConfigurations, clusters } from "@/db/schema"
-import { tmp_renameClusterConfiguration } from "@/lib/clusters"
+import {
+  clusterMachines,
+  clusters,
+  clusterVersions,
+  machines,
+} from "@/db/schema"
 import { withAuth } from "@/lib/middleware/with-auth"
 import { createClusterSchema } from "@/lib/zod/schemas/cluster"
 
@@ -11,28 +17,34 @@ export const GET = withAuth(async ({ user }) => {
         index: true,
         nickname: true,
         description: true,
-        hardware: true,
         cycle_type: true,
         proof_type: true,
       },
       where: (cluster, { eq }) => eq(cluster.team_id, user.id),
       with: {
-        cc: {
+        versions: {
           columns: {
-            cloud_instance_id: true,
-            cloud_instance_count: true,
+            id: true,
           },
           with: {
-            ci: true,
+            cluster_machines: {
+              columns: {
+                id: true,
+                machine_count: true,
+                cloud_instance_count: true,
+              },
+              with: {
+                cloud_instance: true,
+                machine: true,
+              },
+            },
           },
         },
       },
     })
 
-    const renamedClusters = clusters.map(tmp_renameClusterConfiguration)
-
     return Response.json(
-      renamedClusters.map(({ index, ...cluster }) => ({
+      clusters.map(({ index, ...cluster }) => ({
         id: index,
         ...cluster,
       }))
@@ -52,6 +64,13 @@ export const POST = withAuth(async ({ request, user }) => {
     clusterPayload = createClusterSchema.parse(requestBody)
   } catch (error) {
     console.error("cluster payload invalid", error)
+
+    if (error instanceof ZodError) {
+      return new Response(error.message, {
+        status: 400,
+      })
+    }
+
     return new Response("Invalid payload", {
       status: 400,
     })
@@ -75,7 +94,7 @@ export const POST = withAuth(async ({ request, user }) => {
     where: (cloudInstances, { inArray }) =>
       inArray(
         cloudInstances.instance_name,
-        configuration.map((config) => config.cloud_instance)
+        configuration.map((config) => config.cloud_instance_name)
       ),
   })
 
@@ -98,7 +117,23 @@ export const POST = withAuth(async ({ request, user }) => {
       })
       .returning({ id: clusters.id, index: clusters.index })
 
-    // create cluster configuration
+    // create cluster version
+    const [clusterVersion] = await tx
+      .insert(clusterVersions)
+      .values({
+        cluster_id: cluster.id,
+        // TODO: remove this once we have a real version management system for users
+        version: "v0.1",
+      })
+      .returning({ id: clusterVersions.id })
+
+    // create machines
+    const createdMachines = await tx
+      .insert(machines)
+      .values(configuration.map(({ machine }) => machine))
+      .returning({ id: machines.id })
+
+    // map cloud instance names to ids
     const cloudInstanceByName = cloudInstanceIds.reduce(
       (acc, cloudInstance) => {
         acc[cloudInstance.instance_name] = cloudInstance.id
@@ -107,12 +142,20 @@ export const POST = withAuth(async ({ request, user }) => {
       {} as Record<string, number>
     )
 
-    await tx.insert(clusterConfigurations).values(
-      configuration.map(({ cloud_instance, cloud_instance_count }) => ({
-        cluster_id: cluster.id,
-        cloud_instance_id: cloudInstanceByName[cloud_instance],
-        cloud_instance_count,
-      }))
+    // create cluster configurations
+    await tx.insert(clusterMachines).values(
+      configuration.map(
+        (
+          { cloud_instance_name, cloud_instance_count, machine_count },
+          index
+        ) => ({
+          cluster_version_id: clusterVersion.id,
+          machine_id: createdMachines[index].id,
+          machine_count,
+          cloud_instance_id: cloudInstanceByName[cloud_instance_name],
+          cloud_instance_count,
+        })
+      )
     )
 
     clusterIndex = cluster.index
