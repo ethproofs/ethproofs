@@ -39,7 +39,7 @@ export function ZkvmsTable({
                 </TableCell>
               </TableRow>
               {zkvms.versions.map((version) => (
-                <TableRow key={version.version}>
+                <TableRow key={`${zkvms.id}-${version.version}`}>
                   <TableCell />
                   <TableCell className="border-l-2 border-r-2 border-primary bg-primary/5">
                     {version.id}
