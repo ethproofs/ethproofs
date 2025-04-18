@@ -56,7 +56,7 @@ const ThemeSwitch = () => {
   ]
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger className="group box-content flex h-3.5 w-fit items-center gap-2 rounded-full border border-primary px-2 py-1.5 text-primary [&[data-state=open]]:bg-background-highlight">
+      <DropdownMenuTrigger className="group box-content flex h-6 w-fit items-center gap-2 rounded-full border border-primary-dark px-2 py-1.5 text-primary-dark [&[data-state=open]]:bg-background-highlight">
         <ThemeIcon className="!text-body" />
         <ArrowDropdown className="transition-transform duration-100 group-[&[data-state=open]]:-scale-y-100" />
       </DropdownMenuTrigger>
