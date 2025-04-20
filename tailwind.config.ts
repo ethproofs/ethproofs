@@ -59,6 +59,14 @@ const config = {
         sidebar: {
           DEFAULT: "hsla(var(--sidebar))",
         },
+        chart: {
+          1: "hsla(var(--chart-1))",
+          2: "hsla(var(--chart-2))",
+          3: "hsla(var(--chart-3))",
+          4: "hsla(var(--chart-4))",
+          5: "hsla(var(--chart-5))",
+          border: "hsla(var(--chart-border))",
+        },
         border: "hsla(var(--border))",
       },
       borderRadius: {
