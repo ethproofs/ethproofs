@@ -8,6 +8,7 @@
     --background: var(--green-100);
     --background-highlight: var(--green-200);
     --background-active: var(--green-300);
+    --background-accent: var(--blue-200);
 
     --primary: var(--green-700);
     --primary-light: var(--green-600);
@@ -28,6 +29,10 @@
     --chart-4: 43 74% 66%;
     --chart-5: 27 87% 67%;
     --chart-border: var(--teal-200);
+
+    --level-best: 136 100% 38%; /* #1DC200 */
+    --level-middle: 54 100% 50%; /* #FFF200 */
+    --level-worst: 0 100% 38%; /* #C20000 */
   }
 
   /* Dark mode token declarations */
@@ -35,6 +40,7 @@
     --background: var(--blue-900);
     --background-highlight: var(--green-900);
     --background-active: var(--green-800);
+    --background-accent: var(--blue-800);
 
     --primary: var(--green-500);
     --primary-light: var(--green-400);

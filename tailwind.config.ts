@@ -44,6 +44,7 @@ const config = {
           DEFAULT: "hsla(var(--background))",
           highlight: "hsla(var(--background-highlight))",
           active: "hsla(var(--background-active))",
+          accent: "hsla(var(--background-accent))",
         },
         primary: {
           DEFAULT: "hsla(var(--primary))",
@@ -66,6 +67,11 @@ const config = {
           4: "hsla(var(--chart-4))",
           5: "hsla(var(--chart-5))",
           border: "hsla(var(--chart-border))",
+        },
+        level: {
+          best: "hsla(var(--level-best))",
+          middle: "hsla(var(--level-middle))",
+          worst: "hsla(var(--level-worst))",
         },
         border: "hsla(var(--border))",
       },

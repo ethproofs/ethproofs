@@ -152,3 +152,20 @@ export type Stats = {
   bestFormatted: string
   bestProof: ProofWithCluster
 }
+
+export type Level = "best" | "middle" | "worst"
+
+export type SliceDetails = {
+  level: Level
+}
+
+export type Slices = [
+  SliceDetails,
+  SliceDetails,
+  SliceDetails,
+  SliceDetails,
+  SliceDetails,
+  SliceDetails,
+  SliceDetails,
+  SliceDetails,
+]
