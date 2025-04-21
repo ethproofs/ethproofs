@@ -27,6 +27,7 @@ CREATE TABLE "zkvms" (
 	"parallelizable_proving" boolean DEFAULT false NOT NULL,
 	"precompiles" boolean DEFAULT false NOT NULL,
 	"frontend" text NOT NULL,
+	"is_open_source" boolean DEFAULT false NOT NULL,
 	"created_at" timestamp with time zone DEFAULT now() NOT NULL
 );
 ALTER TABLE "zkvms" ENABLE ROW LEVEL SECURITY;--> statement-breakpoint

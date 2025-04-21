@@ -1,5 +1,5 @@
 {
-  "id": "781a33a9-8342-43ea-aca5-072e9ebefdde",
+  "id": "60b389c9-35f3-422c-ac4a-d564ce6f28f3",
   "prevId": "9614e51a-036d-4e51-8d65-4f0b15367133",
   "version": "7",
   "dialect": "postgresql",
@@ -1405,6 +1405,13 @@
           "type": "text",
           "primaryKey": false,
           "notNull": true
+        },
+        "is_open_source": {
+          "name": "is_open_source",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": false
         },
         "created_at": {
           "name": "created_at",
