@@ -35,7 +35,7 @@ const Pizza = ({
   const sharedClasses = cn(
     "absolute origin-[50%_120%]",
     !disableEffects &&
-      "transition-all duration-200 hover:scale-[115%] hover:cursor-pointer hover:!opacity-100 hover:!saturate-100 group-hover:opacity-75 group-hover:saturate-0"
+      "transition-all hover:scale-[115%] hover:cursor-pointer hover:!opacity-100 hover:!saturate-100 group-hover:opacity-75 group-hover:saturate-[25%]"
   )
 
   const ROTATIONS = [
@@ -58,7 +58,7 @@ const Pizza = ({
   return (
     <div
       className={cn(
-        "bg-background-accent border-background-accent group relative box-content flex size-[0.94em] justify-center rounded-full border-[0.05em] shadow-lg",
+        "border-background-accent bg-background-accent group relative box-content flex size-[0.94em] justify-center rounded-full border-[0.05em] shadow-lg",
         className
       )}
       {...props}
