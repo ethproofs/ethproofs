@@ -1,6 +1,7 @@
 import type { Slices } from "@/lib/types"
 
 import { MetricBox, MetricInfo, MetricLabel } from "./ui/metric"
+import LevelMeter from "./LevelMeter"
 import Pizza from "./Pizza"
 
 // TODO: Replace with real data
@@ -17,8 +18,9 @@ export const DEMO_SLICES: Slices = [
 
 const ZkvmDetails = () => (
   <div className="grid grid-cols-[1fr,4fr,2fr,4fr,1fr] grid-rows-4 gap-8 bg-gradient-to-b from-background to-background-active p-8">
-    <div className="col-span-2 col-start-1 row-start-1 text-end">
+    <div className="col-span-2 col-start-1 row-start-1 flex-1 text-center">
       <MetricBox>
+        <LevelMeter bestThreshold={1} worstThreshold={16} unit="ms" value={1} />
         <MetricLabel>
           <MetricInfo label="verification times">
             TODO: Popover details
@@ -76,8 +78,14 @@ const ZkvmDetails = () => (
       </MetricBox>
     </div>
 
-    <div className="col-span-2 col-start-4 row-start-1 text-start">
+    <div className="col-span-2 col-start-4 row-start-1 flex-1 text-center">
       <MetricBox>
+        <LevelMeter
+          bestThreshold={5}
+          worstThreshold={1000}
+          unit="kB"
+          value={3}
+        />
         <MetricLabel>
           <MetricInfo label="proof size">TODO: Popover details</MetricInfo>
         </MetricLabel>
