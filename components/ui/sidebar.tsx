@@ -5,7 +5,7 @@
 import * as React from "react"
 import { cva, VariantProps } from "class-variance-authority"
 import { PanelLeft } from "lucide-react"
-import { Slot, SlotProps } from "@radix-ui/react-slot"
+import { Slot } from "@radix-ui/react-slot"
 
 import LightningBolt from "@/components/svgs/lightning-bolt.svg"
 import { Button } from "@/components/ui/button"

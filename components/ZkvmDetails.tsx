@@ -1,7 +1,7 @@
 import type { Slices } from "@/lib/types"
 
+import { MetricBox, MetricInfo, MetricLabel } from "./ui/metric"
 import Pizza from "./Pizza"
-import { MetricBox, MetricLabel, MetricInfo } from "./ui/metric"
 
 // TODO: Replace with real data
 export const DEMO_SLICES: Slices = [

@@ -1,16 +1,17 @@
-// TODO: PAss data as props
+// TODO: Pass data as props
 
-import Pizza from "./Pizza"
-import ZkvmDetails, { DEMO_SLICES } from "./ZkvmDetails"
+import { AccordionItemProps } from "@radix-ui/react-accordion"
+
+import SuccinctLogo from "@/components/svgs/succinct-logo.svg"
+
 import {
   Accordion,
   AccordionContent,
   AccordionItem,
   AccordionTrigger,
 } from "./ui/accordion"
-
-import SuccinctLogo from "@/components/svgs/succinct-logo.svg"
-import { AccordionItemProps } from "@radix-ui/react-accordion"
+import Pizza from "./Pizza"
+import ZkvmDetails, { DEMO_SLICES } from "./ZkvmDetails"
 
 const ZkvmAccordionItem = ({ value }: Pick<AccordionItemProps, "value">) => (
   <AccordionItem value={value} className="col-span-5 grid grid-cols-subgrid">
