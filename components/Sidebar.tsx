@@ -1,21 +1,18 @@
 import { Suspense } from "react"
-import { ChevronUp, User2 } from "lucide-react"
-import {
-  DropdownMenu,
-  DropdownMenuContent,
-  DropdownMenuItem,
-  DropdownMenuTrigger,
-} from "@radix-ui/react-dropdown-menu"
 
 import EthProofsLogo from "@/components/svgs/eth-proofs-logo.svg"
-import GitHub from "@/components/svgs/github.svg"
 import Heart from "@/components/svgs/heart.svg"
 
-import { SITE_NAME, SITE_REPO } from "@/lib/constants"
+import { SITE_REPO } from "@/lib/constants"
 
 import SearchInput from "./header/SearchInput"
 import ThemeSwitch from "./header/ThemeSwitch"
-import { ButtonLink } from "./ui/button"
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "./ui/accordion"
 import Link from "./ui/link"
 import {
   Sidebar,
@@ -25,9 +22,7 @@ import {
   SidebarGroupLabel,
   SidebarHeader,
   SidebarMenu,
-  SidebarMenuButton,
   SidebarMenuItem,
-  SidebarProvider,
 } from "./ui/sidebar"
 import { Skeleton } from "./ui/skeleton"
 
@@ -54,31 +49,20 @@ export function AppSidebar() {
           </SidebarGroup>
           <SidebarGroup className="">
             <SidebarGroupLabel className="">Explore</SidebarGroupLabel>
-            <SidebarMenuItem className="">
-              <DropdownMenu>
-                <DropdownMenuTrigger asChild>
-                  <SidebarMenuButton className="[&>svg]:rotate-180 [&[data-state=open]>svg]:rotate-0">
-                    <>
-                      zkVMs
-                      <ChevronUp className="ms-auto" />
-                    </>
-                  </SidebarMenuButton>
-                </DropdownMenuTrigger>
-                <DropdownMenuContent
-                  side="bottom"
-                  className="w-[--radix-popper-anchor-width]"
-                >
-                  <DropdownMenuItem>
-                    <span>Account</span>
-                  </DropdownMenuItem>
-                  <DropdownMenuItem>
-                    <span>Billing</span>
-                  </DropdownMenuItem>
-                  <DropdownMenuItem>
-                    <span>Sign out</span>
-                  </DropdownMenuItem>
-                </DropdownMenuContent>
-              </DropdownMenu>
+            <SidebarMenuItem className="[&>svg]:self-start">
+              <Accordion
+                type="single"
+                collapsible
+                className="w-full"
+                defaultValue="zkvms"
+              >
+                <AccordionItem className="border-none" value="zkvms">
+                  <AccordionTrigger className="py-0 text-base">
+                    zkVMs
+                  </AccordionTrigger>
+                  <AccordionContent>Hi</AccordionContent>
+                </AccordionItem>
+              </Accordion>
             </SidebarMenuItem>
             <SidebarMenuItem className="">provers</SidebarMenuItem>
             <SidebarMenuItem className="">blocks</SidebarMenuItem>
@@ -86,48 +70,14 @@ export function AppSidebar() {
           </SidebarGroup>
           <SidebarGroup className="">
             <SidebarGroupLabel className="">Learn</SidebarGroupLabel>
-            <SidebarMenuItem className="">Item 1</SidebarMenuItem>
-            <SidebarMenuItem className="">Item 2</SidebarMenuItem>
-            <SidebarMenuItem className="">Item 3</SidebarMenuItem>
+            <SidebarMenuItem className="">zkVMs and SNARKs</SidebarMenuItem>
+            <SidebarMenuItem className="">blocks</SidebarMenuItem>
+            <SidebarMenuItem className="">API</SidebarMenuItem>
+            <SidebarMenuItem className="">about Ethproofs</SidebarMenuItem>
           </SidebarGroup>
-          {/* <SidebarMenuItem>
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <SidebarMenuButton>
-                <User2 /> Username
-                <ChevronUp className="ml-auto" />
-                </SidebarMenuButton>
-              </DropdownMenuTrigger>
-              <DropdownMenuContent
-                side="top"
-                className="w-[--radix-popper-anchor-width]"
-              >
-                <DropdownMenuItem>
-                  <span>Account</span>
-                </DropdownMenuItem>
-                <DropdownMenuItem>
-                  <span>Billing</span>
-                </DropdownMenuItem>
-                <DropdownMenuItem>
-                  <span>Sign out</span>
-                </DropdownMenuItem>
-              </DropdownMenuContent>
-            </DropdownMenu>
-          </SidebarMenuItem> */}
         </SidebarMenu>
       </SidebarContent>
       <SidebarFooter className="mx-auto mt-16 flex max-w-prose flex-col items-center space-y-4">
-        {/* <footer className="mx-auto mt-16 flex max-w-prose flex-col items-center"> */}
-        {/* <ButtonLink
-            size="lg"
-            href={new URL(SITE_REPO, "https://github.com").toString()}
-            className="mb-12"
-          >
-            <GitHub className="size-6" />
-            <span>Contribute to {SITE_NAME}</span>
-          </ButtonLink>
-          */}
-
         <p className="mb-4 text-center">
           Built with{" "}
           <Heart className="mb-0.5 inline animate-heart-beat text-xl text-primary" />{" "}
