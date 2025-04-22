@@ -1,26 +1,22 @@
 import { asc, notIlike } from "drizzle-orm"
 import type { Metadata } from "next"
-import Image from "next/image"
 import {
   dehydrate,
   HydrationBoundary,
   QueryClient,
 } from "@tanstack/react-query"
 
-import type { SummaryItem } from "@/lib/types"
-
 import BlocksTable from "@/components/BlocksTable"
+import LineChartCard from "@/components/LineChartCard"
 import { metrics } from "@/components/Metrics"
 import Null from "@/components/Null"
-import { HidePunctuation } from "@/components/StylePunctuation"
-import Box from "@/components/svgs/box.svg"
-import Clock from "@/components/svgs/clock.svg"
-import DollarSign from "@/components/svgs/dollar-sign.svg"
+import Instructions from "@/components/svgs/instructions.svg"
 import ShieldCheck from "@/components/svgs/shield-check.svg"
 import TeamLogo from "@/components/TeamLogo"
 import { ButtonLink } from "@/components/ui/button"
-import { Card } from "@/components/ui/card"
+import { Card, CardHeader, CardTitle } from "@/components/ui/card"
 import { Divider } from "@/components/ui/divider"
+import ZkvmAccordion from "@/components/ZkvmAccordion"
 
 import { cn } from "@/lib/utils"
 
@@ -33,18 +29,14 @@ import {
 } from "@/db/schema"
 import { fetchBlocksPaginated } from "@/lib/api/blocks"
 import { getMetadata } from "@/lib/metadata"
-import { formatNumber, formatUsd } from "@/lib/number"
+import { formatUsd } from "@/lib/number"
 import { getActiveProverCount } from "@/lib/teams"
 import { prettyMs } from "@/lib/time"
-import BlocksAndHashes from "@/public/images/blocks-and-hashes.svg"
-import HeroDark from "@/public/images/hero-background.png"
 
 export const metadata: Metadata = getMetadata()
 
 export default async function Index() {
   const queryClient = new QueryClient()
-
-  const [recentSummary] = await db.select().from(recentSummaryView)
 
   const teamsSummary = await db
     .select()
@@ -60,46 +52,62 @@ export default async function Index() {
     queryFn: () => fetchBlocksPaginated(DEFAULT_PAGE_STATE),
   })
 
-  const summaryItems: SummaryItem[] = recentSummary
-    ? [
-        {
-          key: "proven-blocks",
-          label: "Proven blocks",
-          icon: <Box />,
-          value: (
-            <HidePunctuation>
-              {formatNumber(recentSummary.total_proven_blocks || 0)}
-            </HidePunctuation>
-          ),
-        },
-        {
-          key: "avg-cost-per-proof",
-          label: (
-            <>
-              {AVERAGE_LABEL} <metrics.costPerProof.Label />
-            </>
-          ),
-          icon: <DollarSign />,
-          value: formatNumber(recentSummary.avg_cost_per_proof || 0, {
-            minimumFractionDigits: 2,
-            maximumFractionDigits: 2,
-          }),
-        },
-        {
-          key: "avg-proving-time",
-          label: (
-            <>
-              {AVERAGE_LABEL} <metrics.provingTime.Label />
-            </>
-          ),
-          icon: <Clock />,
-          value: prettyMs(Number(recentSummary.avg_proving_time) || 0),
-        },
-      ]
-    : []
+  const demoZkVmSummary = [
+    {
+      label: "zkVMs",
+      value: "12",
+      icon: <ShieldCheck />,
+    },
+    {
+      label: "ISAs",
+      value: "5",
+      icon: <Instructions />,
+    },
+    {
+      label: "0000",
+      value: 0,
+    },
+  ]
 
   return (
-    <div className="flex w-full flex-1 flex-col items-center gap-20">
+    <div className="flex flex-1 flex-col items-center gap-20 px-20 md:w-[calc(100vw_-_var(--sidebar-width))]">
+      <div className="grid grid-cols-1 gap-8 md:grid-cols-2">
+        <div id="latency-kpi" className="w-full">
+          <LineChartCard title="latency" />
+        </div>
+        <div id="cost-kpi" className="w-full">
+          <LineChartCard title="cost" />
+        </div>
+      </div>
+
+      <Card className="w-full bg-white/10 dark:bg-black/10">
+        <CardHeader className="space-y-3">
+          <CardTitle className="text-2xl">zkVMs</CardTitle>
+          <div className="flex justify-around gap-8 py-4">
+            {demoZkVmSummary.map(({ label, value, icon }) => (
+              <div
+                key={label}
+                className="flex flex-1 flex-col items-center gap-2"
+              >
+                <div className="flex items-center gap-1">
+                  <div className="flex items-center gap-2 whitespace-nowrap text-4xl text-primary">
+                    {icon ? icon : null}
+                  </div>
+                  <div className="whitespace-nowrap text-4xl font-bold uppercase text-primary">
+                    {value}
+                  </div>
+                </div>
+                <div className="whitespace-nowrap text-sm font-bold uppercase text-body">
+                  {label}
+                </div>
+              </div>
+            ))}
+          </div>
+        </CardHeader>
+
+        <ZkvmAccordion />
+      </Card>
+
       <section id="blocks" className="w-full scroll-m-20">
         <HydrationBoundary state={dehydrate(queryClient)}>
           <BlocksTable teams={teams} />
