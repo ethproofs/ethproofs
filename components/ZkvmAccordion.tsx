@@ -10,6 +10,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "./ui/accordion"
+import { MetricBox, MetricInfo, MetricLabel } from "./ui/metric"
 import Pizza from "./Pizza"
 import ZkvmDetails, { DEMO_SLICES } from "./ZkvmDetails"
 
@@ -47,6 +48,26 @@ const ZkvmAccordion = () => (
     type="multiple"
     className="grid w-full grid-cols-[1fr_repeat(4,_auto)]"
   >
+    <div className="col-span-5 grid grid-cols-subgrid text-center">
+      <MetricBox className="col-start-2">
+        <MetricLabel>
+          <MetricInfo label="Version">TODO: Popover details</MetricInfo>
+        </MetricLabel>
+      </MetricBox>
+      <MetricBox className="col-start-3">
+        <MetricLabel>
+          <MetricInfo label="ISA">
+            Instruction set architecture<br />
+            TODO: Popover details
+          </MetricInfo>
+        </MetricLabel>
+      </MetricBox>
+      <MetricBox className="col-start-4">
+        <MetricLabel>
+          <MetricInfo label="Used by">TODO: Popover details</MetricInfo>
+        </MetricLabel>
+      </MetricBox>
+    </div>
     {Array.from({ length: 12 }, (_, i) => (
       <ZkvmAccordionItem key={i} value={"item-" + i} />
     ))}
