@@ -23,7 +23,7 @@
     "api:docs": "tsx scripts/generate-openapi.ts & npx @redocly/cli build-docs public/openapi.json --output=public/api.html"
   },
   "dependencies": {
-    "@radix-ui/react-accordion": "^1.2.5",
+    "@radix-ui/react-accordion": "1.1.1",
     "@radix-ui/react-dialog": "^1.1.2",
     "@radix-ui/react-dropdown-menu": "^2.1.2",
     "@radix-ui/react-popover": "^1.1.2",
