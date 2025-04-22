@@ -58,7 +58,7 @@ const Pizza = ({
   return (
     <div
       className={cn(
-        "group relative box-content flex size-[0.94em] justify-center rounded-full border-[0.05em] border-background-accent bg-background-accent shadow-lg",
+        "border-background-accent bg-background-accent group relative box-content flex size-[0.94em] justify-center rounded-full border-[0.05em] shadow-lg",
         className
       )}
       {...props}
