@@ -5,6 +5,7 @@ import {
   apiAuthTokens,
   blocks,
   cloudInstances,
+  cloudProviders,
   clusterMachines,
   clusters,
   clusterVersions,
@@ -81,8 +82,12 @@ export const machinesRelations = relations(machines, ({ many }) => ({
 
 export const cloudInstancesRelations = relations(
   cloudInstances,
-  ({ many }) => ({
+  ({ one, many }) => ({
     cluster_machines: many(clusterMachines),
+    provider: one(cloudProviders, {
+      fields: [cloudInstances.provider_id],
+      references: [cloudProviders.id],
+    }),
   })
 )
 
