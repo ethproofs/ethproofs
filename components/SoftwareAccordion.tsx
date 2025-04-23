@@ -19,7 +19,7 @@ const SoftwareAccordionItem = ({
   value,
 }: Pick<AccordionItemProps, "value">) => (
   <AccordionItem value={value} className="col-span-5 grid grid-cols-subgrid">
-    <div className="col-span-5 grid grid-cols-subgrid items-center gap-12 border-b">
+    <div className="col-span-5 grid grid-cols-subgrid items-center gap-12 border-b hover:bg-primary/5 dark:hover:bg-primary/10">
       <div className="col-start-1 flex items-center gap-3">
         <Link href="/zkvm/#TODO-zkvm-id" className="hover:underline">
           <span className="block font-mono text-2xl text-primary">SP1</span>

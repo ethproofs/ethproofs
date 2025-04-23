@@ -31,7 +31,7 @@ const ProverAccordionItem = ({
   clusterDetails,
 }: ProverAccordionItemProps) => (
   <AccordionItem value={value} className="col-span-6 grid grid-cols-subgrid">
-    <div className="col-span-6 grid grid-cols-subgrid items-center gap-12 border-b px-6 py-4">
+    <div className="col-span-6 grid grid-cols-subgrid items-center gap-12 border-b px-6 py-4 hover:bg-primary/5 dark:hover:bg-primary/10">
       {/* TODO: Update to match design */}
       <div className="col-start-1 flex flex-col gap-1">
         <Link
