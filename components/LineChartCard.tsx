@@ -5,6 +5,7 @@ import { CartesianGrid, Line, LineChart, XAxis } from "recharts"
 
 import type { DayRange } from "@/lib/types"
 
+import ArrowDropdown from "@/components/svgs/arrow-dropdown.svg"
 import {
   Card,
   CardContent,
@@ -20,6 +21,12 @@ import {
   ChartTooltip,
   ChartTooltipContent,
 } from "@/components/ui/chart"
+import {
+  DropdownMenu,
+  DropdownMenuCheckboxItem,
+  DropdownMenuContent,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu"
 
 import { cn } from "@/lib/utils"
 
@@ -54,6 +61,8 @@ const chartConfig = {
   },
 } satisfies ChartConfig
 
+type Calculation = "avg" | "median"
+
 // TODO: Pass full data as props: 1 year of data, type/formatting of data, title
 type LineChartProps = {
   title: string
@@ -61,8 +70,18 @@ type LineChartProps = {
 
 const LineChartCard = ({ title }: LineChartProps) => {
   const [dayRange, setDayRange] = React.useState<DayRange>(7)
+  const [lineVisibility, setLineVisibility] = React.useState<{
+    [key in Calculation]: boolean
+  }>({
+    avg: true,
+    median: true,
+  })
 
   const setTimeRangeValue = (value: DayRange) => () => setDayRange(value)
+
+  const toggleLineVisibility = (key: Calculation) => {
+    setLineVisibility((prev) => ({ ...prev, [key]: !prev[key] }))
+  }
 
   const filteredData = chartData.filter((item) => {
     const date = new Date(item.date)
@@ -75,11 +94,13 @@ const LineChartCard = ({ title }: LineChartProps) => {
   return (
     <Card className="border-1 relative space-y-4 overflow-hidden dark:bg-black/10 md:space-y-4">
       <CardHeader className="flex flex-col gap-4 space-y-0 py-5">
-        <CardTitle className="font-normal">{title}</CardTitle>
+        <CardTitle className="font-normal">
+          {title} per {dayRange} days
+        </CardTitle>
         <div className="flex">
           <div className="flex flex-1 flex-col items-center border-e text-center">
             <span className="block text-sm font-bold uppercase">avg</span>
-            <span className="block font-mono text-2xl text-primary">
+            <span className="block font-mono text-2xl font-semibold text-primary">
               {new Intl.NumberFormat("en-US", {
                 style: "currency",
                 currency: "USD",
@@ -88,7 +109,7 @@ const LineChartCard = ({ title }: LineChartProps) => {
           </div>
           <div className="flex flex-1 flex-col items-center text-center">
             <span className="block text-sm font-bold uppercase">median</span>
-            <span className="block font-mono text-2xl text-primary">
+            <span className="block font-mono text-2xl font-semibold text-primary">
               {new Intl.NumberFormat("en-US", {
                 style: "currency",
                 currency: "USD",
@@ -143,20 +164,24 @@ const LineChartCard = ({ title }: LineChartProps) => {
                 />
               }
             />
-            <Line
-              dataKey="avg"
-              type="monotone"
-              stroke="hsla(var(--chart-1))"
-              strokeWidth={2}
-              dot
-            />
-            <Line
-              dataKey="median"
-              type="monotone"
-              stroke="hsla(var(--chart-2))"
-              strokeWidth={2}
-              dot
-            />
+            {lineVisibility.avg && (
+              <Line
+                dataKey="avg"
+                type="monotone"
+                stroke="hsla(var(--chart-1))"
+                strokeWidth={2}
+                dot
+              />
+            )}
+            {lineVisibility.median && (
+              <Line
+                dataKey="median"
+                type="monotone"
+                stroke="hsla(var(--chart-2))"
+                strokeWidth={2}
+                dot
+              />
+            )}
             <ChartLegend
               content={<ChartLegendContent />}
               className="font-sans text-xs"
@@ -164,8 +189,33 @@ const LineChartCard = ({ title }: LineChartProps) => {
           </LineChart>
         </ChartContainer>
       </CardContent>
-      <CardFooter>
-        <div className="flex w-fit flex-wrap items-center justify-center gap-x-1 gap-y-2 rounded-full bg-background-highlight px-1 py-1 mx-auto">
+      <CardFooter className="gap-4">
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button className="group flex h-6 w-fit items-center gap-2 rounded-full border bg-background-highlight px-2 py-1.5 text-sm text-body hover:bg-primary-light hover:text-background [&[data-state=open]]:bg-primary-light [&[data-state=open]]:text-background">
+              Options
+              <ArrowDropdown className="transition-transform duration-100 group-[&[data-state=open]]:-scale-y-100" />
+            </Button>
+          </DropdownMenuTrigger>
+
+          <DropdownMenuContent>
+            <DropdownMenuCheckboxItem
+              className="text-primary"
+              checked={lineVisibility.avg}
+              onCheckedChange={() => toggleLineVisibility("avg")}
+            >
+              Average
+            </DropdownMenuCheckboxItem>
+            <DropdownMenuCheckboxItem
+              checked={lineVisibility.median}
+              onCheckedChange={() => toggleLineVisibility("median")}
+            >
+              Median
+            </DropdownMenuCheckboxItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+
+        <div className="mx-auto flex w-fit flex-wrap items-center justify-center gap-x-1 gap-y-2 rounded-full bg-background-highlight px-1 py-1">
           {CHART_RANGES.map((range) => (
             <Button
               key={range}
