@@ -6,7 +6,7 @@ import {
   QueryClient,
 } from "@tanstack/react-query"
 
-import { SummaryItem } from "@/lib/types"
+import type { ClusterDetails, SummaryItem } from "@/lib/types"
 
 import BlocksTable from "@/components/BlocksTable"
 import KPIs from "@/components/KPIs"
@@ -119,6 +119,86 @@ export default async function Index() {
     },
   ]
 
+  const demoProverMachineData: ClusterDetails[] = [
+    {
+      gpuCount: 2,
+      clusterName: "Cluster A",
+      machines: [
+        { machineName: "Machine A1", cpuCount: 4, gpuRam: "8GB" },
+        { machineName: "Machine A2", cpuCount: 8, gpuRam: "16GB" },
+      ],
+    },
+    {
+      gpuCount: 8,
+      clusterName: "Cluster B",
+      machines: [
+        { machineName: "Machine B1", cpuCount: 16, gpuRam: "32GB" },
+        { machineName: "Machine B2", cpuCount: 8, gpuRam: "24GB" },
+      ],
+    },
+    {
+      gpuCount: 8,
+      clusterName: "Cluster C",
+      machines: [
+        { machineName: "Machine C1", cpuCount: 4, gpuRam: "12GB" },
+        { machineName: "Machine C2", cpuCount: 6, gpuRam: "16GB" },
+      ],
+    },
+    {
+      gpuCount: 4,
+      clusterName: "Cluster D",
+      machines: [
+        { machineName: "Machine D1", cpuCount: 2, gpuRam: "4GB" },
+        { machineName: "Machine D2", cpuCount: 4, gpuRam: "8GB" },
+      ],
+    },
+    {
+      gpuCount: 1,
+      clusterName: "Cluster E",
+      machines: [{ machineName: "Machine E1", cpuCount: 1, gpuRam: "2GB" }],
+    },
+    {
+      gpuCount: 16,
+      clusterName: "Cluster F",
+      machines: [
+        { machineName: "Machine F1", cpuCount: 32, gpuRam: "64GB" },
+        { machineName: "Machine F2", cpuCount: 16, gpuRam: "48GB" },
+      ],
+    },
+    {
+      gpuCount: 32,
+      clusterName: "Cluster G",
+      machines: [
+        { machineName: "Machine G1", cpuCount: 64, gpuRam: "128GB" },
+        { machineName: "Machine G2", cpuCount: 32, gpuRam: "96GB" },
+      ],
+    },
+    {
+      gpuCount: 8,
+      clusterName: "Cluster H",
+      machines: [
+        { machineName: "Machine H1", cpuCount: 8, gpuRam: "16GB" },
+        { machineName: "Machine H2", cpuCount: 8, gpuRam: "16GB" },
+      ],
+    },
+    {
+      gpuCount: 8,
+      clusterName: "Cluster I",
+      machines: [
+        { machineName: "Machine I1", cpuCount: 12, gpuRam: "24GB" },
+        { machineName: "Machine I2", cpuCount: 16, gpuRam: "32GB" },
+      ],
+    },
+    {
+      gpuCount: 4,
+      clusterName: "Cluster J",
+      machines: [
+        { machineName: "Machine J1", cpuCount: 4, gpuRam: "8GB" },
+        { machineName: "Machine J2", cpuCount: 6, gpuRam: "12GB" },
+      ],
+    },
+  ]
+
   return (
     <div className="flex flex-1 flex-col items-center gap-20 px-20 md:w-[calc(100vw_-_var(--sidebar-width))]">
       <section
@@ -156,13 +236,13 @@ export default async function Index() {
           <MachineTabs
             singleContent={
               <>
-                <ProverDetails />
+                <ProverDetails data={demoProverMachineData} />
                 TODO: Single machine provers list
               </>
             }
             multiContent={
               <>
-                <ProverDetails />
+                <ProverDetails data={demoProverMachineData} />
                 TODO: Multi-machine provers list
               </>
             }

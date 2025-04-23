@@ -1,21 +1,13 @@
+import type { ClusterDetails } from "@/lib/types"
+
 import { cn } from "@/lib/utils"
 
-const DUMMY_DATA: number[] = [2, 8, 8, 4, 1, 16, 32, 8, 8, 4]
+import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover"
 
-// TODO: Accept details as props
-type ClusterDetails = {
-  gpuCount: number
-  clusterName: string
-  machine: {
-    machineName: string
-    cpuCount: number
-    gpuRam: string
-  }[]
+type ProverDetailsProps = React.ComponentProps<"div"> & {
+  data: ClusterDetails[]
 }
 
-type ProverDetailsProps = React.ComponentProps<"div"> &{
-  data?: ClusterDetails[]
-}
 const ProverDetails = ({ data, className }: ProverDetailsProps) => {
   const COLORS: string[] = [
     "bg-primary/[2%]",
@@ -33,12 +25,46 @@ const ProverDetails = ({ data, className }: ProverDetailsProps) => {
     return COLORS[index]
   }
 
-  const dummyFull = [...DUMMY_DATA, ...Array(100 - DUMMY_DATA.length).fill(0)]
-
   return (
-    <div className={cn("grid grid-rows-5 gap-2", className)} style={{ gridAutoFlow: "column" }}>
-      {dummyFull.map((value, index) => (
-        <div key={index} className={cn("size-8 rounded-[4px]", getColor(value))} />
+    <div
+      className={cn("grid w-fit grid-rows-5 gap-1", className)}
+      style={{ gridAutoFlow: "column" }}
+    >
+      {data.map(({ clusterName, gpuCount, machines }, index) => (
+        <Popover key={index}>
+          <PopoverTrigger>
+            <div className={cn("size-6 rounded-[4px]", getColor(gpuCount))} />
+          </PopoverTrigger>
+          <PopoverContent className="flex flex-col gap-y-3 p-4">
+            <span className="block text-center font-mono text-lg uppercase text-body">
+              {clusterName}
+            </span>
+            {machines.map(({ machineName, cpuCount, gpuRam }, idx) => (
+              <div
+                key={machineName + idx}
+                className="flex flex-col items-center"
+              >
+                <span className="text-center font-mono text-lg text-primary">
+                  {machineName}
+                </span>
+                <div className="flex gap-x-3 text-center text-sm">
+                  <div className="flex min-w-24 flex-1 flex-col items-center">
+                    <span className="block text-nowrap text-body-secondary">
+                      CPU cores
+                    </span>
+                    <span className="block">{cpuCount}</span>
+                  </div>
+                  <div className="flex min-w-24 flex-1 flex-col items-center">
+                    <span className="block text-nowrap text-body-secondary">
+                      GPU RAM
+                    </span>
+                    <span className="block">{gpuRam}</span>
+                  </div>
+                </div>
+              </div>
+            ))}
+          </PopoverContent>
+        </Popover>
       ))}
     </div>
   )

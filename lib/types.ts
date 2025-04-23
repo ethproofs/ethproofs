@@ -169,3 +169,13 @@ export type Slices = [
   SliceDetails,
   SliceDetails,
 ]
+
+export type ClusterDetails = {
+  gpuCount: number
+  clusterName: string
+  machines: {
+    machineName: string
+    cpuCount: number
+    gpuRam: string
+  }[]
+}
