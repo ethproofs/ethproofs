@@ -7,8 +7,6 @@ import { type AccordionItemProps } from "@radix-ui/react-accordion"
 
 import type { ClusterDetails, ProverAccordionDetails } from "@/lib/types"
 
-import SuccinctLogo from "@/components/svgs/succinct-logo.svg"
-
 import { cn } from "@/lib/utils"
 
 import {
@@ -22,6 +20,8 @@ import { MetricBox, MetricInfo, MetricLabel } from "./ui/metric"
 import HardwareGrid, { GRID_CELL_BG_SPECTRUM } from "./HardwareGrid"
 
 import { prettyMs } from "@/lib/time"
+import Link from "./ui/link"
+import Image from "next/image"
 
 type ProverAccordionItemProps = Pick<AccordionItemProps, "value"> & {
   clusterDetails: ClusterDetails[]
@@ -34,9 +34,26 @@ const ProverAccordionItem = ({
     <div className="col-span-6 grid grid-cols-subgrid items-center gap-12 border-b px-6 py-4">
       {/* TODO: Update to match design */}
       <div className="col-start-1 flex flex-col gap-1">
-        <SuccinctLogo />
+        <Link
+          href="/prover/#TODO-prover-id"
+          className="-m-1 w-fit rounded p-1 hover:bg-primary/10"
+        >
+          <Image
+            src="https://ndjfbkojyebmdbckigbe.supabase.co/storage/v1/object/public/public-assets/succinct-logo-new.svg"
+            alt="Succinct logo"
+            height={16}
+            width={16}
+            style={{ height: "1rem", width: "auto" }}
+            className="dark:invert"
+          />
+        </Link>
         <div>
-          <span className="text-sm text-primary">SP1 | </span>
+          <span className="text-sm text-primary">
+            <Link href="/zkvm/#TODO-zkvm-id" className="hover:underline">
+              SP1
+            </Link>{" "}
+            |{" "}
+          </span>
           <span className="text-sm">Cluster name</span>
         </div>
       </div>
