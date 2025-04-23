@@ -12,6 +12,7 @@ import BlocksTable from "@/components/BlocksTable"
 import KPIs from "@/components/KPIs"
 import LineChartCard from "@/components/LineChartCard"
 import MachineTabs from "@/components/MachineTabs"
+import ProverDetails from "@/components/ProverDetails"
 import Box from "@/components/svgs/box.svg"
 import BoxDashed from "@/components/svgs/box-dashed.svg"
 import Instructions from "@/components/svgs/instructions.svg"
@@ -106,7 +107,7 @@ export default async function Index() {
       key: "proving-count",
       label: "proving",
       value: 124,
-      icon: <Box className="text-body-secondary" />,
+      icon: <Box className="text-body-secondary" strokeWidth="1" />,
     },
     {
       key: "recent-proving-count",
@@ -114,7 +115,7 @@ export default async function Index() {
       value: new Intl.NumberFormat("en-US", {
         notation: "compact",
       }).format(2147),
-      icon: <Box className="text-primary" />,
+      icon: <Box className="text-primary" strokeWidth="1" />,
     },
   ]
 
@@ -153,8 +154,18 @@ export default async function Index() {
           </CardHeader>
 
           <MachineTabs
-            singleContent={<>TODO: Single machine provers list</>}
-            multiContent={<>TODO: Multi-machine provers list</>}
+            singleContent={
+              <>
+                <ProverDetails />
+                TODO: Single machine provers list
+              </>
+            }
+            multiContent={
+              <>
+                <ProverDetails />
+                TODO: Multi-machine provers list
+              </>
+            }
           />
         </Card>
       </section>
