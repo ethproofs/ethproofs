@@ -1,6 +1,6 @@
 // TODO: Pass data as props
 
-import { AccordionItemProps } from "@radix-ui/react-accordion"
+import { type AccordionItemProps } from "@radix-ui/react-accordion"
 
 import SuccinctLogo from "@/components/svgs/succinct-logo.svg"
 
@@ -57,7 +57,8 @@ const ZkvmAccordion = () => (
       <MetricBox className="col-start-3">
         <MetricLabel>
           <MetricInfo label="ISA">
-            Instruction set architecture<br />
+            Instruction set architecture
+            <br />
             TODO: Popover details
           </MetricInfo>
         </MetricLabel>

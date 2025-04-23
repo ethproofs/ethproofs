@@ -12,7 +12,7 @@ import BlocksTable from "@/components/BlocksTable"
 import KPIs from "@/components/KPIs"
 import LineChartCard from "@/components/LineChartCard"
 import MachineTabs from "@/components/MachineTabs"
-import ProverDetails from "@/components/ProverDetails"
+import ProverAccordion from "@/components/ProverAccordion"
 import Box from "@/components/svgs/box.svg"
 import BoxDashed from "@/components/svgs/box-dashed.svg"
 import Instructions from "@/components/svgs/instructions.svg"
@@ -119,7 +119,7 @@ export default async function Index() {
     },
   ]
 
-  const demoProverMachineData: ClusterDetails[] = [
+  const demoClusterDetails: ClusterDetails[] = [
     {
       gpuCount: 2,
       clusterName: "Cluster A",
@@ -199,6 +199,10 @@ export default async function Index() {
     },
   ]
 
+  const demoProverAccordionDetails = Array(9).fill({
+    clusterDetails: demoClusterDetails,
+  })
+
   return (
     <div className="flex flex-1 flex-col items-center gap-20 px-20 md:w-[calc(100vw_-_var(--sidebar-width))]">
       <section
@@ -236,13 +240,13 @@ export default async function Index() {
           <MachineTabs
             singleContent={
               <>
-                <ProverDetails data={demoProverMachineData} />
+                <ProverAccordion provers={demoProverAccordionDetails} />
                 TODO: Single machine provers list
               </>
             }
             multiContent={
               <>
-                <ProverDetails data={demoProverMachineData} />
+                <ProverAccordion provers={demoProverAccordionDetails} />
                 TODO: Multi-machine provers list
               </>
             }

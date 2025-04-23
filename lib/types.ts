@@ -179,3 +179,8 @@ export type ClusterDetails = {
     gpuRam: string
   }[]
 }
+
+export type ProverAccordionDetails = {
+  clusterDetails: ClusterDetails[]
+  proverName?: string
+}
