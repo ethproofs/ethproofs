@@ -75,8 +75,16 @@ export default function RootLayout({
         <Providers>
           <AppSidebar />
 
-          <div className="flex max-w-screen-2xl flex-col gap-16">
-            <div className="relative flex h-40 w-full flex-col items-center justify-between gap-4 p-0 md:p-16">
+          <div className="relative flex max-w-screen-2xl flex-col gap-16 overflow-x-hidden">
+            <BlocksAndHashes className="absolute end-[-20rem] top-[-4rem] z-[-1] hue-rotate-180 invert dark:hue-rotate-0 dark:invert-0 max-md:hidden" />
+
+            <div
+              className="flex h-40 w-full flex-col items-center justify-between gap-4 p-0 md:p-16"
+              style={{
+                backgroundImage:
+                  "radial-gradient(ellipse 40% 80% at 50% -4rem, hsla(var(--primary)) 0%, transparent 100%)",
+              }}
+            >
               <header
                 id="mobile-header"
                 className={cn(
@@ -191,16 +199,16 @@ export default function RootLayout({
                 </Drawer>
               </header>
 
-              <div
-                className="absolute inset-0 opacity-75 dark:opacity-100"
+              <h1
+                className="me-20 w-full max-w-[50vw] text-center font-mono text-3xl font-semibold"
                 style={{
-                  background:
-                    "radial-gradient(ellipse 40% 80% at 50% -4rem, hsla(var(--primary)) 0%, transparent 100%)",
+                  textShadow: `
+                0 0 3rem hsla(var(--background-modal)),
+                0 0 2rem hsla(var(--background-modal)),
+                0 0 1rem hsla(var(--background-modal)),
+                0 0 1rem hsla(var(--background-modal))`,
                 }}
-              />
-              <BlocksAndHashes className="pointer-events-none absolute end-[-20rem] top-[-4rem] hue-rotate-180 invert dark:hue-rotate-0 dark:invert-0 max-md:hidden" />
-
-              <h1 className="z-0 me-20 w-full max-w-[50vw] text-center font-mono text-3xl font-semibold">
+              >
                 Building a fully SNARKed{" "}
                 <span className="text-primary">Ethereum</span>
               </h1>
