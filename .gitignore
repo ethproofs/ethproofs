@@ -40,3 +40,7 @@ sitemap*.xml
 
 # Robots.txt
 robots.txt
+
+# cursor
+.cursorrules
+.cursor
