@@ -7,12 +7,6 @@ import { SITE_REPO } from "@/lib/constants"
 
 import SearchInput from "./header/SearchInput"
 import ThemeSwitch from "./header/ThemeSwitch"
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from "./ui/accordion"
 import Link from "./ui/link"
 import {
   Sidebar,
@@ -49,21 +43,7 @@ export function AppSidebar() {
           </SidebarGroup>
           <SidebarGroup className="">
             <SidebarGroupLabel className="">Explore</SidebarGroupLabel>
-            <SidebarMenuItem className="[&>svg]:self-start">
-              <Accordion
-                type="single"
-                collapsible
-                className="w-full"
-                defaultValue="zkvms"
-              >
-                <AccordionItem className="border-none" value="zkvms">
-                  <AccordionTrigger className="py-0 text-base">
-                    zkVMs
-                  </AccordionTrigger>
-                  <AccordionContent>Hi</AccordionContent>
-                </AccordionItem>
-              </Accordion>
-            </SidebarMenuItem>
+            <SidebarMenuItem className="">zkVMs</SidebarMenuItem>
             <SidebarMenuItem className="">provers</SidebarMenuItem>
             <SidebarMenuItem className="">blocks</SidebarMenuItem>
             <SidebarMenuItem className="">killers</SidebarMenuItem>
