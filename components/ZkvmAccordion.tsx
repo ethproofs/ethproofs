@@ -1,8 +1,7 @@
-// TODO: Pass data as props
+// TODO: Pass real data as props
 
+import Image from "next/image"
 import { type AccordionItemProps } from "@radix-ui/react-accordion"
-
-import SuccinctLogo from "@/components/svgs/succinct-logo.svg"
 
 import {
   Accordion,
@@ -11,6 +10,7 @@ import {
   AccordionTrigger,
 } from "./ui/accordion"
 import { ButtonLink } from "./ui/button"
+import Link from "./ui/link"
 import { MetricBox, MetricInfo, MetricLabel } from "./ui/metric"
 import Pizza from "./Pizza"
 import ZkvmDetails, { DEMO_SLICES } from "./ZkvmDetails"
@@ -19,11 +19,25 @@ const ZkvmAccordionItem = ({ value }: Pick<AccordionItemProps, "value">) => (
   <AccordionItem value={value} className="col-span-5 grid grid-cols-subgrid">
     <div className="col-span-5 grid grid-cols-subgrid items-center gap-12 border-b">
       <div className="col-start-1 flex items-center gap-3">
-        <span className="block font-mono text-2xl text-primary">SP1</span>
+        <Link href="/zkvm/#TODO-zkvm-id" className="hover:underline">
+          <span className="block font-mono text-2xl text-primary">SP1</span>
+        </Link>
         <span className="block font-mono text-sm italic text-body-secondary">
           by
         </span>
-        <SuccinctLogo />
+        <Link
+          href="/prover/#TODO-prover-id"
+          className="-m-1 rounded p-1 hover:bg-primary/10"
+        >
+          <Image
+            src="https://ndjfbkojyebmdbckigbe.supabase.co/storage/v1/object/public/public-assets/succinct-logo-new.svg"
+            alt="Succinct logo"
+            height={16}
+            width={16}
+            style={{ height: "1rem", width: "auto" }}
+            className="dark:invert"
+          />
+        </Link>
       </div>
       <div id="version" className="col-start-2">
         4.20
