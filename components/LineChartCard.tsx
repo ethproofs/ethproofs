@@ -165,7 +165,7 @@ const LineChartCard = ({ title }: LineChartProps) => {
         </ChartContainer>
       </CardContent>
       <CardFooter>
-        <div className="flex w-fit flex-wrap items-center justify-center gap-x-1 gap-y-2 rounded-full bg-background-highlight px-1 py-1">
+        <div className="flex w-fit flex-wrap items-center justify-center gap-x-1 gap-y-2 rounded-full bg-background-highlight px-1 py-1 mx-auto">
           {CHART_RANGES.map((range) => (
             <Button
               key={range}
