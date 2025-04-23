@@ -75,10 +75,10 @@ const LineChartCard = ({ title }: LineChartProps) => {
   return (
     <Card className="border-1 relative space-y-4 overflow-hidden dark:bg-black/10 md:space-y-4">
       <CardHeader className="flex flex-col gap-4 space-y-0 py-5">
-        <CardTitle>{title}</CardTitle>
+        <CardTitle className="font-normal">{title}</CardTitle>
         <div className="flex">
           <div className="flex flex-1 flex-col items-center border-e text-center">
-            <span className="block font-sans text-sm uppercase">avg</span>
+            <span className="block text-sm font-bold uppercase">avg</span>
             <span className="block font-mono text-2xl text-primary">
               {new Intl.NumberFormat("en-US", {
                 style: "currency",
@@ -87,7 +87,7 @@ const LineChartCard = ({ title }: LineChartProps) => {
             </span>
           </div>
           <div className="flex flex-1 flex-col items-center text-center">
-            <span className="block font-sans text-sm uppercase">median</span>
+            <span className="block text-sm font-bold uppercase">median</span>
             <span className="block font-mono text-2xl text-primary">
               {new Intl.NumberFormat("en-US", {
                 style: "currency",
