@@ -61,12 +61,15 @@ const ThemeSwitch = () => {
         <ArrowDropdown className="transition-transform duration-100 group-[&[data-state=open]]:-scale-y-100" />
       </DropdownMenuTrigger>
 
-      <DropdownMenuContent>
+      <DropdownMenuContent className="space-y-0 p-0">
         {items.map((item) => (
           <DropdownMenuItem
             key={item.id}
             onClick={() => setTheme(item.id)}
-            className={cn(theme === item.id && "bg-background-active")}
+            className={cn(
+              "rounded-none",
+              theme === item.id && "bg-background-active"
+            )}
           >
             <div className="flex items-center gap-2 p-2.5">
               <item.icon />
