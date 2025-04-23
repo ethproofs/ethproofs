@@ -9,6 +9,7 @@
     --background-highlight: var(--green-200);
     --background-active: var(--green-300);
     --background-accent: var(--blue-200);
+    --background-modal: var(--green-50);
 
     --primary: var(--green-700);
     --primary-light: var(--green-600);
@@ -41,6 +42,7 @@
     --background-highlight: var(--green-900);
     --background-active: var(--green-800);
     --background-accent: var(--blue-800);
+    --background-modal: var(--green-950);
 
     --primary: var(--green-500);
     --primary-light: var(--green-400);

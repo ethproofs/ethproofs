@@ -45,6 +45,7 @@ const config = {
           highlight: "hsla(var(--background-highlight))",
           active: "hsla(var(--background-active))",
           accent: "hsla(var(--background-accent))",
+          modal: "hsla(var(--background-modal))",
         },
         primary: {
           DEFAULT: "hsla(var(--primary))",
