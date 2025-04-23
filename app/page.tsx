@@ -304,7 +304,7 @@ export default async function Index() {
     <div className="flex flex-1 flex-col items-center gap-20 px-20 md:w-[calc(100vw_-_var(--sidebar-width))]">
       <section
         id="kpis"
-        className="grid w-full max-w-screen-lg scroll-m-20 grid-cols-1 gap-8 md:grid-cols-2"
+        className="grid w-full max-w-screen-xl scroll-m-20 grid-cols-1 gap-8 md:grid-cols-2"
       >
         <div id="latency-kpi" className="w-full">
           <LineChartCard title="latency" />
@@ -314,7 +314,7 @@ export default async function Index() {
         </div>
       </section>
 
-      <section id="zkvms" className="w-full max-w-screen-lg scroll-m-20">
+      <section id="zkvms" className="w-full max-w-screen-xl scroll-m-20">
         <Card className="bg-white/10 dark:bg-black/10">
           <CardHeader className="space-y-3">
             <CardTitle className="text-2xl">zkVMs</CardTitle>
@@ -326,7 +326,7 @@ export default async function Index() {
         </Card>
       </section>
 
-      <section id="provers" className="w-full max-w-screen-lg scroll-m-20">
+      <section id="provers" className="w-full max-w-screen-xl scroll-m-20">
         <Card className="bg-white/10 !p-0 !pb-6 dark:bg-black/10 md:!pb-8">
           <CardHeader className="space-y-3 p-6 pb-0 md:px-12 md:pt-8">
             <CardTitle className="text-2xl">provers</CardTitle>
@@ -351,7 +351,7 @@ export default async function Index() {
         </Card>
       </section>
 
-      <section id="blocks" className="w-full max-w-screen-lg scroll-m-20">
+      <section id="blocks" className="w-full max-w-screen-xl scroll-m-20">
         <Card className="bg-white/10 !p-0 !pb-6 dark:bg-black/10 md:!pb-8">
           <CardHeader className="space-y-3 p-6 pb-0 md:px-12 md:pt-8">
             <CardTitle className="text-2xl">latest blocks</CardTitle>
