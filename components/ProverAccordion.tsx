@@ -18,19 +18,9 @@ import {
   AccordionTrigger,
 } from "./ui/accordion"
 import { MetricBox, MetricInfo, MetricLabel } from "./ui/metric"
-import ProverDetails from "./ProverDetails"
+import HardwareGrid, { GRID_CELL_BG_SPECTRUM } from "./HardwareGrid"
 
 import { prettyMs } from "@/lib/time"
-
-export const PRIMARY_SPECTRUM_BG_COLORS: string[] = [
-  "bg-primary/[2%]",
-  "bg-primary/10",
-  "bg-primary/20",
-  "bg-primary/40",
-  "bg-primary/60",
-  "bg-primary/80",
-  "bg-primary/100",
-]
 
 type ProverAccordionItemProps = Pick<AccordionItemProps, "value"> & {
   clusterDetails: ClusterDetails[]
@@ -144,20 +134,20 @@ const ProverAccordionItem = ({
         </div>
 
         <div className="flex flex-1 flex-col space-y-4 overflow-x-hidden">
-          <ProverDetails data={clusterDetails} />
-          <div className="flex gap-3 self-end">
-            <span className="me-8">GPUs</span>
+          <HardwareGrid data={clusterDetails} />
+          <div className="flex items-center gap-3 self-end">
+            <span className="me-4">GPUs</span>
             {Array(6)
               .fill(0)
               .map((_, i) => (
                 <Fragment key={i}>
-                  <span>{2 ** i}</span>
+                  <span className="-me-1">{2 ** i}</span>
                   <div
                     key={i}
                     className={cn(
                       "size-4 rounded-[4px]",
-                      PRIMARY_SPECTRUM_BG_COLORS[
-                        i % PRIMARY_SPECTRUM_BG_COLORS.length
+                      GRID_CELL_BG_SPECTRUM[
+                        (i + 1) % GRID_CELL_BG_SPECTRUM.length
                       ]
                     )}
                   />

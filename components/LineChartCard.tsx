@@ -219,7 +219,7 @@ const LineChartCard = ({ title }: LineChartProps) => {
           </DropdownMenuContent>
         </DropdownMenu>
 
-        <div className="mx-auto flex w-fit flex-wrap items-center justify-center gap-x-1 gap-y-2 rounded-full bg-background-highlight px-1 py-1">
+        <div className="mx-auto flex w-fit flex-wrap items-center justify-center gap-x-1 gap-y-2 rounded-xl bg-background-highlight px-1 py-1">
           {CHART_RANGES.map((range) => (
             <Button
               key={range}
