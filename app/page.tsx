@@ -13,21 +13,21 @@ import KPIs from "@/components/KPIs"
 import LineChartCard from "@/components/LineChartCard"
 import MachineTabs from "@/components/MachineTabs"
 import ProverAccordion from "@/components/ProverAccordion"
+import SoftwareAccordion from "@/components/SoftwareAccordion"
 import Box from "@/components/svgs/box.svg"
 import BoxDashed from "@/components/svgs/box-dashed.svg"
 import Instructions from "@/components/svgs/instructions.svg"
 import ShieldCheck from "@/components/svgs/shield-check.svg"
 import { Card, CardHeader, CardTitle } from "@/components/ui/card"
-import SoftwareAccordion from "@/components/SoftwareAccordion"
 
 import { DEFAULT_PAGE_STATE } from "@/lib/constants"
 
 import { db } from "@/db"
 import { teamsSummary as teamsSummaryView } from "@/db/schema"
 import { fetchBlocksPaginated } from "@/lib/api/blocks"
+import { demoProverAccordionDetails } from "@/lib/dummy-data"
 import { getMetadata } from "@/lib/metadata"
 import { prettyMs } from "@/lib/time"
-import { demoProverAccordionDetails } from "@/lib/dummy-data"
 
 export const metadata: Metadata = getMetadata()
 

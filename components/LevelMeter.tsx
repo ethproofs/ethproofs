@@ -51,9 +51,9 @@ const LevelMeter = ({
         data-label="colored-meter"
         className="col-span-6 grid h-1.5 grid-cols-subgrid overflow-hidden rounded-full"
       >
-        <div className="bg-level-worst col-span-2 col-start-1 row-start-1" />
-        <div className="bg-level-middle col-span-2 col-start-3 row-start-1" />
-        <div className="bg-level-best col-span-2 col-start-5 row-start-1" />
+        <div className="col-span-2 col-start-1 row-start-1 bg-level-worst" />
+        <div className="col-span-2 col-start-3 row-start-1 bg-level-middle" />
+        <div className="col-span-2 col-start-5 row-start-1 bg-level-best" />
       </div>
 
       <div

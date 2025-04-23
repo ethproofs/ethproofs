@@ -2,6 +2,7 @@
 
 import { Fragment } from "react"
 import { X as RedX } from "lucide-react"
+import Image from "next/image"
 import prettyBytes from "pretty-bytes"
 import { type AccordionItemProps } from "@radix-ui/react-accordion"
 
@@ -16,12 +17,11 @@ import {
   AccordionTrigger,
 } from "./ui/accordion"
 import { ButtonLink } from "./ui/button"
+import Link from "./ui/link"
 import { MetricBox, MetricInfo, MetricLabel } from "./ui/metric"
 import HardwareGrid, { GRID_CELL_BG_SPECTRUM } from "./HardwareGrid"
 
 import { prettyMs } from "@/lib/time"
-import Link from "./ui/link"
-import Image from "next/image"
 
 type ProverAccordionItemProps = Pick<AccordionItemProps, "value"> & {
   clusterDetails: ClusterDetails[]
