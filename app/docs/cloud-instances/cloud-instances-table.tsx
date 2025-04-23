@@ -2,7 +2,7 @@
 
 import { useState } from "react"
 
-import { CloudInstance } from "@/lib/types"
+import { CloudInstance, CloudProvider } from "@/lib/types"
 
 import {
   Select,
@@ -21,17 +21,19 @@ import {
 } from "@/components/ui/table"
 
 export function CloudInstancesTable({
+  providers,
   instances,
 }: {
-  instances: CloudInstance[]
+  providers: CloudProvider[]
+  instances: (CloudInstance & { provider: CloudProvider })[]
 }) {
-  const [provider, setProvider] = useState<string>("vastai")
+  const [provider, setProvider] = useState<string>(providers[0].name)
 
   const filteredInstances = instances.filter(
-    (instance) => instance.provider === provider
+    (instance) => instance.provider.name === provider
   )
 
-  const snapshotDate = filteredInstances[0].snapshot_date
+  const snapshotDate = filteredInstances?.[0]?.snapshot_date
 
   return (
     <div className="flex flex-col gap-8">
@@ -41,8 +43,11 @@ export function CloudInstancesTable({
             <SelectValue placeholder="Select a provider" />
           </SelectTrigger>
           <SelectContent>
-            <SelectItem value="aws">AWS</SelectItem>
-            <SelectItem value="vastai">Vast.ai</SelectItem>
+            {providers.map((provider) => (
+              <SelectItem key={provider.id} value={provider.name}>
+                {provider.display_name}
+              </SelectItem>
+            ))}
           </SelectContent>
         </Select>
 
@@ -69,6 +74,7 @@ export function CloudInstancesTable({
             <TableHead>Disk Name</TableHead>
             <TableHead>Disk Space</TableHead>
             <TableHead>Region</TableHead>
+            <TableHead>Price (USD/hr)</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>
@@ -84,6 +90,7 @@ export function CloudInstancesTable({
               <TableCell>{instance.disk_name}</TableCell>
               <TableCell>{instance.disk_space}</TableCell>
               <TableCell>{instance.region}</TableCell>
+              <TableCell>{instance.hourly_price}</TableCell>
             </TableRow>
           ))}
         </TableBody>

@@ -1,20 +1,21 @@
 import { and, eq, SQL } from "drizzle-orm"
 import { unstable_cache as cache } from "next/cache"
 
-import { CloudInstance } from "../types"
-
 import { db } from "@/db"
-import { cloudInstances } from "@/db/schema"
+import { cloudProviders } from "@/db/schema"
 
 export const getInstances = cache(
-  async (provider?: CloudInstance["provider"]) => {
+  async (provider?: string) => {
     const filters: SQL[] = []
     if (provider) {
-      filters.push(eq(cloudInstances.provider, provider))
+      filters.push(eq(cloudProviders.name, provider))
     }
 
     const data = await db.query.cloudInstances.findMany({
       where: and(...filters),
+      with: {
+        provider: true,
+      },
     })
 
     return data
