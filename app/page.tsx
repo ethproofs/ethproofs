@@ -230,8 +230,8 @@ export default async function Index() {
       </section>
 
       <section id="provers" className="w-full max-w-screen-lg scroll-m-20">
-        <Card className="bg-white/10 dark:bg-black/10">
-          <CardHeader className="space-y-3">
+        <Card className="bg-white/10 !p-0 !pb-6 dark:bg-black/10 md:!pb-8">
+          <CardHeader className="space-y-3 p-6 pb-0 md:px-12 md:pt-8">
             <CardTitle className="text-2xl">provers</CardTitle>
 
             <KPIs items={demoProversSummary} />
@@ -255,8 +255,8 @@ export default async function Index() {
       </section>
 
       <section id="blocks" className="w-full max-w-screen-lg scroll-m-20">
-        <Card className="bg-white/10 dark:bg-black/10">
-          <CardHeader className="space-y-3">
+        <Card className="bg-white/10 !p-0 !pb-6 dark:bg-black/10 md:!pb-8">
+          <CardHeader className="space-y-3 p-6 pb-0 md:px-12 md:pt-8">
             <CardTitle className="text-2xl">latest blocks</CardTitle>
 
             <KPIs items={demoBlocksSummary} />
@@ -265,9 +265,11 @@ export default async function Index() {
           <MachineTabs
             singleContent={<>TODO: Single machine blocks list</>}
             multiContent={
-              <HydrationBoundary state={dehydrate(queryClient)}>
-                <BlocksTable teams={teams} />
-              </HydrationBoundary>
+              <div className="ps-6">
+                <HydrationBoundary state={dehydrate(queryClient)}>
+                  <BlocksTable teams={teams} />
+                </HydrationBoundary>
+              </div>
             }
           />
         </Card>
