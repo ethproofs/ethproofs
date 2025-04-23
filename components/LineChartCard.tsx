@@ -25,6 +25,7 @@ import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
   DropdownMenuContent,
+  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 
@@ -61,7 +62,8 @@ const chartConfig = {
   },
 } satisfies ChartConfig
 
-type Calculation = "avg" | "median"
+// TODO: Add individual teams
+type LineKey = "avg" | "median"
 
 // TODO: Pass full data as props: 1 year of data, type/formatting of data, title
 type LineChartProps = {
@@ -71,7 +73,7 @@ type LineChartProps = {
 const LineChartCard = ({ title }: LineChartProps) => {
   const [dayRange, setDayRange] = React.useState<DayRange>(7)
   const [lineVisibility, setLineVisibility] = React.useState<{
-    [key in Calculation]: boolean
+    [key in LineKey]: boolean
   }>({
     avg: true,
     median: true,
@@ -79,7 +81,7 @@ const LineChartCard = ({ title }: LineChartProps) => {
 
   const setTimeRangeValue = (value: DayRange) => () => setDayRange(value)
 
-  const toggleLineVisibility = (key: Calculation) => {
+  const toggleLineVisibility = (key: LineKey) => {
     setLineVisibility((prev) => ({ ...prev, [key]: !prev[key] }))
   }
 
@@ -212,6 +214,8 @@ const LineChartCard = ({ title }: LineChartProps) => {
             >
               Median
             </DropdownMenuCheckboxItem>
+            {/* <DropdownMenuSeparator /> */}
+            {/* // TODO: Add individual teams */}
           </DropdownMenuContent>
         </DropdownMenu>
 
