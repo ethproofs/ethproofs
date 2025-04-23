@@ -1,5 +1,7 @@
 import { type ReactNode } from "react"
 
+import { CHART_RANGES } from "./constants"
+
 import {
   blocks,
   cloudInstances,
@@ -184,3 +186,5 @@ export type ProverAccordionDetails = {
   clusterDetails: ClusterDetails[]
   proverName?: string
 }
+
+export type DayRange = (typeof CHART_RANGES)[number]

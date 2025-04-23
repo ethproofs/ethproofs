@@ -3,6 +3,8 @@
 import * as React from "react"
 import { CartesianGrid, Line, LineChart, XAxis } from "recharts"
 
+import type { DayRange } from "@/lib/types"
+
 import {
   Card,
   CardContent,
@@ -20,6 +22,8 @@ import {
 } from "@/components/ui/chart"
 
 import { cn } from "@/lib/utils"
+
+import { CHART_RANGES } from "@/lib/constants"
 
 import { Button } from "./ui/button"
 
@@ -54,8 +58,6 @@ const chartConfig = {
 type LineChartProps = {
   title: string
 }
-
-type DayRange = 7 | 30 | 90 | 365
 
 const LineChartCard = ({ title }: LineChartProps) => {
   const [dayRange, setDayRange] = React.useState<DayRange>(7)
@@ -164,46 +166,19 @@ const LineChartCard = ({ title }: LineChartProps) => {
       </CardContent>
       <CardFooter>
         <div className="flex w-fit flex-nowrap items-center gap-x-1 rounded-full bg-background-highlight px-1 py-1">
-          <Button
-            onClick={setTimeRangeValue(7)}
-            className={cn(
-              "text-nowrap rounded-full px-2 py-0 font-sans text-xs font-bold uppercase text-body-secondary",
-              dayRange === 7 && "bg-background-active text-primary"
-            )}
-            variant="ghost"
-          >
-            7 days
-          </Button>
-          <Button
-            onClick={setTimeRangeValue(30)}
-            className={cn(
-              "text-nowrap rounded-full px-2 py-0 font-sans text-xs font-bold uppercase text-body-secondary",
-              dayRange === 30 && "bg-background-active text-primary"
-            )}
-            variant="ghost"
-          >
-            30 days
-          </Button>
-          <Button
-            onClick={setTimeRangeValue(90)}
-            className={cn(
-              "text-nowrap rounded-full px-2 py-0 font-sans text-xs font-bold uppercase text-body-secondary",
-              dayRange === 90 && "bg-background-active text-primary"
-            )}
-            variant="ghost"
-          >
-            90 days
-          </Button>
-          <Button
-            onClick={setTimeRangeValue(365)}
-            className={cn(
-              "text-nowrap rounded-full px-2 py-0 font-sans text-xs font-bold uppercase text-body-secondary",
-              dayRange === 365 && "bg-background-active text-primary"
-            )}
-            variant="ghost"
-          >
-            365 days
-          </Button>
+          {CHART_RANGES.map((range) => (
+            <Button
+              key={range}
+              onClick={setTimeRangeValue(range)}
+              className={cn(
+                "text-nowrap rounded-full px-2 py-0 font-sans text-xs font-bold uppercase text-body-secondary",
+                dayRange === range && "bg-background-active text-primary"
+              )}
+              variant="ghost"
+            >
+              {range} days
+            </Button>
+          ))}
         </div>
       </CardFooter>
     </Card>
