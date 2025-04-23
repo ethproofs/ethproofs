@@ -178,7 +178,8 @@ export type ClusterDetails = {
   machines: {
     machineName: string
     cpuCount: number
-    gpuRam: string
+    gpuRam: number // bytes
+    cpuRam: number // bytes
   }[]
 }
 

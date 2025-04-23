@@ -1,11 +1,15 @@
 // TODO: Pass data as props
 
+import { Fragment } from "react"
 import { X as RedX } from "lucide-react"
+import prettyBytes from "pretty-bytes"
 import { type AccordionItemProps } from "@radix-ui/react-accordion"
 
 import type { ClusterDetails, ProverAccordionDetails } from "@/lib/types"
 
 import SuccinctLogo from "@/components/svgs/succinct-logo.svg"
+
+import { cn } from "@/lib/utils"
 
 import {
   Accordion,
@@ -17,6 +21,16 @@ import { MetricBox, MetricInfo, MetricLabel } from "./ui/metric"
 import ProverDetails from "./ProverDetails"
 
 import { prettyMs } from "@/lib/time"
+
+export const PRIMARY_SPECTRUM_BG_COLORS: string[] = [
+  "bg-primary/[2%]",
+  "bg-primary/10",
+  "bg-primary/20",
+  "bg-primary/40",
+  "bg-primary/60",
+  "bg-primary/80",
+  "bg-primary/100",
+]
 
 type ProverAccordionItemProps = Pick<AccordionItemProps, "value"> & {
   clusterDetails: ClusterDetails[]
@@ -57,7 +71,101 @@ const ProverAccordionItem = ({
       <AccordionTrigger className="col-start-6 my-2 h-fit gap-2 rounded-full border-2 border-primary-border bg-background-highlight p-0.5 text-primary [&>svg]:size-6" />
     </div>
     <AccordionContent className="col-span-full border-b px-0 py-4">
-      <ProverDetails data={clusterDetails} />
+      <div className="flex items-center gap-x-20">
+        <div className="flex flex-col items-center gap-y-6 p-4 text-center">
+          <div className="flex w-fit flex-col items-center text-nowrap px-2 text-center">
+            <span className="block text-nowrap text-sm text-body-secondary">
+              total machines
+            </span>
+            <span className="block font-mono text-2xl text-body">
+              {clusterDetails.length}
+            </span>
+          </div>
+          <div className="grid grid-cols-2 place-items-center gap-x-3 gap-y-4 text-center">
+            <div className="flex w-full flex-col items-center text-nowrap text-center">
+              <span className="block text-sm text-body-secondary">GPUs</span>
+              <span className="block font-mono text-2xl text-body">
+                {clusterDetails.reduce((acc, curr) => acc + curr.gpuCount, 0)}
+              </span>
+            </div>
+            <div className="flex w-full flex-col items-center text-nowrap text-center">
+              <span className="block text-sm text-body-secondary">GPU RAM</span>
+              <span className="block font-mono text-2xl text-body">
+                {prettyBytes(
+                  clusterDetails.reduce(
+                    (acc, curr) =>
+                      acc +
+                      curr.machines.reduce(
+                        (machineAcc, machine) =>
+                          machineAcc + Number(machine.gpuRam),
+                        0
+                      ),
+                    0
+                  )
+                )}
+              </span>
+            </div>
+            <div className="flex flex-col items-center text-nowrap text-center">
+              <span className="block text-sm text-body-secondary">
+                CPU cores
+              </span>
+              <span className="block font-mono text-2xl text-body">
+                {clusterDetails.reduce(
+                  (acc, curr) =>
+                    acc +
+                    curr.machines.reduce(
+                      (machineAcc, machine) =>
+                        machineAcc + Number(machine.cpuCount),
+                      0
+                    ),
+                  0
+                )}
+              </span>
+            </div>
+            <div className="flex flex-col items-center text-nowrap text-center">
+              <span className="block text-sm text-body-secondary">CPU RAM</span>
+              <span className="block font-mono text-2xl text-body">
+                {/* TODO: Add then replace with **CPU** RAM */}
+                {prettyBytes(
+                  clusterDetails.reduce(
+                    (acc, curr) =>
+                      acc +
+                      curr.machines.reduce(
+                        (machineAcc, machine) =>
+                          machineAcc + Number(machine.gpuRam),
+                        0
+                      ),
+                    0
+                  )
+                )}
+              </span>
+            </div>
+          </div>
+        </div>
+
+        <div className="flex flex-1 flex-col space-y-4 overflow-x-hidden">
+          <ProverDetails data={clusterDetails} />
+          <div className="flex gap-3 self-end">
+            <span className="me-8">GPUs</span>
+            {Array(6)
+              .fill(0)
+              .map((_, i) => (
+                <Fragment key={i}>
+                  <span>{2 ** i}</span>
+                  <div
+                    key={i}
+                    className={cn(
+                      "size-4 rounded-[4px]",
+                      PRIMARY_SPECTRUM_BG_COLORS[
+                        i % PRIMARY_SPECTRUM_BG_COLORS.length
+                      ]
+                    )}
+                  />
+                </Fragment>
+              ))}
+          </div>
+        </div>
+      </div>
     </AccordionContent>
   </AccordionItem>
 )

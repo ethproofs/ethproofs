@@ -3,26 +3,17 @@ import type { ClusterDetails } from "@/lib/types"
 import { cn } from "@/lib/utils"
 
 import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover"
+import { PRIMARY_SPECTRUM_BG_COLORS } from "./ProverAccordion"
 
 type ProverDetailsProps = React.ComponentProps<"div"> & {
   data: ClusterDetails[]
 }
 
 const ProverDetails = ({ data, className }: ProverDetailsProps) => {
-  const COLORS: string[] = [
-    "bg-primary/[2%]",
-    "bg-primary/10",
-    "bg-primary/20",
-    "bg-primary/40",
-    "bg-primary/60",
-    "bg-primary/80",
-    "bg-primary/100",
-  ]
-
   const getColor = (value: number) => {
     const index =
       value >= 2 ? Math.floor(Math.log2(value)) + 1 : value === 1 ? 1 : 0
-    return COLORS[index]
+    return PRIMARY_SPECTRUM_BG_COLORS[index]
   }
 
   return (
@@ -49,16 +40,16 @@ const ProverDetails = ({ data, className }: ProverDetailsProps) => {
                 </span>
                 <div className="flex gap-x-3 text-center text-sm">
                   <div className="flex min-w-24 flex-1 flex-col items-center">
-                    <span className="block text-nowrap text-body-secondary">
+                    <div className="text-nowrap text-body-secondary">
                       CPU cores
-                    </span>
-                    <span className="block">{cpuCount}</span>
+                    </div>
+                    <div className="">{cpuCount}</div>
                   </div>
                   <div className="flex min-w-24 flex-1 flex-col items-center">
-                    <span className="block text-nowrap text-body-secondary">
+                    <div className="text-nowrap text-body-secondary">
                       GPU RAM
-                    </span>
-                    <span className="block">{gpuRam}</span>
+                    </div>
+                    <div className="">{gpuRam}</div>
                   </div>
                 </div>
               </div>
@@ -66,6 +57,11 @@ const ProverDetails = ({ data, className }: ProverDetailsProps) => {
           </PopoverContent>
         </Popover>
       ))}
+      {Array(128 - data.length)
+        .fill(0)
+        .map((_, i) => (
+          <div key={i} className={cn("size-6 rounded-[4px]", getColor(0))} />
+        ))}
     </div>
   )
 }
