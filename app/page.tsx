@@ -6,7 +6,7 @@ import {
   QueryClient,
 } from "@tanstack/react-query"
 
-import type { ClusterDetails, SummaryItem } from "@/lib/types"
+import type { SummaryItem } from "@/lib/types"
 
 import BlocksTable from "@/components/BlocksTable"
 import KPIs from "@/components/KPIs"
@@ -27,6 +27,7 @@ import { teamsSummary as teamsSummaryView } from "@/db/schema"
 import { fetchBlocksPaginated } from "@/lib/api/blocks"
 import { getMetadata } from "@/lib/metadata"
 import { prettyMs } from "@/lib/time"
+import { demoProverAccordionDetails } from "@/lib/dummy-data"
 
 export const metadata: Metadata = getMetadata()
 
@@ -119,256 +120,106 @@ export default async function Index() {
     },
   ]
 
-  const demoClusterDetails: ClusterDetails[] = [
-    {
-      gpuCount: 2,
-      clusterName: "Cluster A",
-      machines: [
-        {
-          machineName: "Machine A1",
-          cpuCount: 4,
-          gpuRam: 8 * 2 ** 30,
-          cpuRam: 8 * 2 ** 30,
-        },
-        {
-          machineName: "Machine A2",
-          cpuCount: 8,
-          gpuRam: 16 * 2 ** 30,
-          cpuRam: 16 * 2 ** 30,
-        },
-      ],
-    },
-    {
-      gpuCount: 8,
-      clusterName: "Cluster B",
-      machines: [
-        {
-          machineName: "Machine B1",
-          cpuCount: 16,
-          gpuRam: 32 * 2 ** 30,
-          cpuRam: 32 * 2 ** 30,
-        },
-        {
-          machineName: "Machine B2",
-          cpuCount: 8,
-          gpuRam: 24 * 2 ** 30,
-          cpuRam: 24 * 2 ** 30,
-        },
-      ],
-    },
-    {
-      gpuCount: 8,
-      clusterName: "Cluster C",
-      machines: [
-        {
-          machineName: "Machine C1",
-          cpuCount: 4,
-          gpuRam: 12 * 2 ** 30,
-          cpuRam: 12 * 2 ** 30,
-        },
-        {
-          machineName: "Machine C2",
-          cpuCount: 6,
-          gpuRam: 16 * 2 ** 30,
-          cpuRam: 16 * 2 ** 30,
-        },
-      ],
-    },
-    {
-      gpuCount: 4,
-      clusterName: "Cluster D",
-      machines: [
-        {
-          machineName: "Machine D1",
-          cpuCount: 2,
-          gpuRam: 4 * 2 ** 30,
-          cpuRam: 4 * 2 ** 30,
-        },
-        {
-          machineName: "Machine D2",
-          cpuCount: 4,
-          gpuRam: 8 * 2 ** 30,
-          cpuRam: 8 * 2 ** 30,
-        },
-      ],
-    },
-    {
-      gpuCount: 1,
-      clusterName: "Cluster E",
-      machines: [
-        {
-          machineName: "Machine E1",
-          cpuCount: 1,
-          gpuRam: 2 * 2 ** 30,
-          cpuRam: 2 * 2 ** 30,
-        },
-      ],
-    },
-    {
-      gpuCount: 16,
-      clusterName: "Cluster F",
-      machines: [
-        {
-          machineName: "Machine F1",
-          cpuCount: 32,
-          gpuRam: 64 * 2 ** 30,
-          cpuRam: 64 * 2 ** 30,
-        },
-        {
-          machineName: "Machine F2",
-          cpuCount: 16,
-          gpuRam: 48 * 2 ** 30,
-          cpuRam: 48 * 2 ** 30,
-        },
-      ],
-    },
-    {
-      gpuCount: 32,
-      clusterName: "Cluster G",
-      machines: [
-        {
-          machineName: "Machine G1",
-          cpuCount: 64,
-          gpuRam: 128 * 2 ** 30,
-          cpuRam: 128 * 2 ** 30,
-        },
-        {
-          machineName: "Machine G2",
-          cpuCount: 32,
-          gpuRam: 96 * 2 ** 30,
-          cpuRam: 96 * 2 ** 30,
-        },
-      ],
-    },
-    {
-      gpuCount: 8,
-      clusterName: "Cluster H",
-      machines: [
-        {
-          machineName: "Machine H1",
-          cpuCount: 8,
-          gpuRam: 16 * 2 ** 30,
-          cpuRam: 16 * 2 ** 30,
-        },
-        {
-          machineName: "Machine H2",
-          cpuCount: 8,
-          gpuRam: 16 * 2 ** 30,
-          cpuRam: 16 * 2 ** 30,
-        },
-      ],
-    },
-    {
-      gpuCount: 8,
-      clusterName: "Cluster I",
-      machines: [
-        {
-          machineName: "Machine I1",
-          cpuCount: 12,
-          gpuRam: 24 * 2 ** 30,
-          cpuRam: 24 * 2 ** 30,
-        },
-        {
-          machineName: "Machine I2",
-          cpuCount: 16,
-          gpuRam: 32 * 2 ** 30,
-          cpuRam: 32 * 2 ** 30,
-        },
-      ],
-    },
-    {
-      gpuCount: 4,
-      clusterName: "Cluster J",
-      machines: [
-        {
-          machineName: "Machine J1",
-          cpuCount: 4,
-          gpuRam: 8 * 2 ** 30,
-          cpuRam: 8 * 2 ** 30,
-        },
-        {
-          machineName: "Machine J2",
-          cpuCount: 6,
-          gpuRam: 12 * 2 ** 30,
-          cpuRam: 12 * 2 ** 30,
-        },
-      ],
-    },
-  ]
-
-  const demoProverAccordionDetails = Array(9).fill({
-    clusterDetails: demoClusterDetails,
-  })
-
   return (
-    <div className="flex flex-1 flex-col items-center gap-20 px-20 md:w-[calc(100vw_-_var(--sidebar-width))]">
-      <section
-        id="kpis"
-        className="grid w-full max-w-screen-xl scroll-m-20 grid-cols-1 gap-8 md:grid-cols-2"
+    <>
+      <div className="absolute top-16 w-full space-y-12 px-6 text-center font-mono font-semibold sm:px-8 md:px-12 lg:px-16 xl:px-20">
+        <h1
+          className="text-3xl"
+          style={{
+            textShadow: `
+          0 0 3rem hsla(var(--background-modal)),
+          0 0 2rem hsla(var(--background-modal)),
+          0 0 1rem hsla(var(--background-modal)),
+          0 0 1rem hsla(var(--background-modal))`,
+          }}
+        >
+          Building a fully SNARKed{" "}
+          <span className="text-primary">Ethereum</span>
+        </h1>
+      </div>
+
+      {/* <h1
+        className="absolute top-16 me-20 w-full max-w-[50vw] text-center font-mono text-3xl font-semibold"
+        style={{
+          textShadow: `
+                0 0 3rem hsla(var(--background-modal)),
+                0 0 2rem hsla(var(--background-modal)),
+                0 0 1rem hsla(var(--background-modal)),
+                0 0 1rem hsla(var(--background-modal))`,
+        }}
       >
-        <div id="latency-kpi" className="w-full">
-          <LineChartCard title="latency" />
-        </div>
-        <div id="cost-kpi" className="w-full">
-          <LineChartCard title="cost" />
-        </div>
-      </section>
+        Building a fully SNARKed <span className="text-primary">Ethereum</span>
+      </h1> */}
 
-      <section id="zkvms" className="w-full max-w-screen-xl scroll-m-20">
-        <Card className="bg-white/10 dark:bg-black/10">
-          <CardHeader className="space-y-3">
-            <CardTitle className="text-2xl">zkVMs</CardTitle>
+      <div className="flex flex-1 flex-col items-center gap-20 px-6 sm:px-8 md:w-[calc(100vw_-_var(--sidebar-width))] md:px-12 lg:px-16 xl:px-20">
+        <section
+          id="kpis"
+          className="grid w-full max-w-screen-xl scroll-m-20 grid-cols-1 gap-8 md:grid-cols-2"
+        >
+          <div id="latency-kpi" className="w-full">
+            <LineChartCard title="latency" />
+          </div>
+          <div id="cost-kpi" className="w-full">
+            <LineChartCard title="cost" />
+          </div>
+        </section>
 
-            <KPIs items={demoSoftwareSummary} />
-          </CardHeader>
+        <section id="zkvms" className="w-full max-w-screen-xl scroll-m-20">
+          <Card className="bg-white/10 dark:bg-black/10">
+            <CardHeader className="space-y-3">
+              <CardTitle className="text-2xl">zkVMs</CardTitle>
 
-          <SoftwareAccordion />
-        </Card>
-      </section>
+              <KPIs items={demoSoftwareSummary} />
+            </CardHeader>
 
-      <section id="provers" className="w-full max-w-screen-xl scroll-m-20">
-        <Card className="bg-white/10 !p-0 !pb-6 dark:bg-black/10 md:!pb-8">
-          <CardHeader className="space-y-3 p-6 pb-0 md:px-12 md:pt-8">
-            <CardTitle className="text-2xl">provers</CardTitle>
+            <SoftwareAccordion />
+          </Card>
+        </section>
 
-            <KPIs items={demoProversSummary} />
-          </CardHeader>
+        <section id="provers" className="w-full max-w-screen-xl scroll-m-20">
+          <Card className="bg-white/10 !p-0 !pb-6 dark:bg-black/10 md:!pb-8">
+            <CardHeader className="space-y-3 p-6 pb-0 md:px-12 md:pt-8">
+              <CardTitle className="text-2xl">provers</CardTitle>
 
-          <MachineTabs
-            singleContent={
-              <>
-                <ProverAccordion provers={demoProverAccordionDetails} />
-                TODO: Single machine provers list
-              </>
-            }
-            multiContent={
-              <>
-                <ProverAccordion provers={demoProverAccordionDetails} />
-                TODO: Multi-machine provers list
-              </>
-            }
-          />
-        </Card>
-      </section>
+              <KPIs items={demoProversSummary} />
+            </CardHeader>
 
-      <section id="blocks" className="w-full max-w-screen-xl scroll-m-20">
-        <Card className="bg-white/10 !p-0 !pb-6 dark:bg-black/10 md:!pb-8">
-          <CardHeader className="space-y-3 p-6 pb-0 md:px-12 md:pt-8">
-            <CardTitle className="text-2xl">latest blocks</CardTitle>
+            <MachineTabs
+              singleContent={
+                <>
+                  <ProverAccordion provers={demoProverAccordionDetails} />
+                  TODO: Single machine provers list
+                </>
+              }
+              multiContent={
+                <>
+                  <ProverAccordion provers={demoProverAccordionDetails} />
+                  TODO: Multi-machine provers list
+                </>
+              }
+            />
+          </Card>
+        </section>
 
-            <KPIs items={demoBlocksSummary} />
-          </CardHeader>
+        <section id="blocks" className="w-full max-w-screen-xl scroll-m-20">
+          <Card className="bg-white/10 !p-0 !pb-6 dark:bg-black/10 md:!pb-8">
+            <CardHeader className="space-y-3 p-6 pb-0 md:px-12 md:pt-8">
+              <CardTitle className="text-2xl">latest blocks</CardTitle>
 
-          <MachineTabs
-            singleContent={<>TODO: Single machine blocks list</>}
-            multiContent={
-              <HydrationBoundary state={dehydrate(queryClient)}>
-                <BlocksTable teams={teams} className="px-6" />
-              </HydrationBoundary>
-            }
-          />
-        </Card>
-      </section>
-    </div>
+              <KPIs items={demoBlocksSummary} />
+            </CardHeader>
+
+            <MachineTabs
+              singleContent={<>TODO: Single machine blocks list</>}
+              multiContent={
+                <HydrationBoundary state={dehydrate(queryClient)}>
+                  <BlocksTable teams={teams} className="px-6" />
+                </HydrationBoundary>
+              }
+            />
+          </Card>
+        </section>
+      </div>
+    </>
   )
 }

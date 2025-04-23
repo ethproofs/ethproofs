@@ -198,20 +198,6 @@ export default function RootLayout({
                   </DrawerContent>
                 </Drawer>
               </header>
-
-              <h1
-                className="me-20 w-full max-w-[50vw] text-center font-mono text-3xl font-semibold"
-                style={{
-                  textShadow: `
-                0 0 3rem hsla(var(--background-modal)),
-                0 0 2rem hsla(var(--background-modal)),
-                0 0 1rem hsla(var(--background-modal)),
-                0 0 1rem hsla(var(--background-modal))`,
-                }}
-              >
-                Building a fully SNARKed{" "}
-                <span className="text-primary">Ethereum</span>
-              </h1>
             </div>
 
             <main className="min-h-[50vh]">{children}</main>
