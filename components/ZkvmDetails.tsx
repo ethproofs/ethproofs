@@ -17,7 +17,7 @@ export const DEMO_SLICES: Slices = [
 ]
 
 const ZkvmDetails = () => (
-  <div className="grid grid-cols-[1fr,4fr,2fr,4fr,1fr] gap-8 bg-gradient-to-b from-background to-background-active p-8">
+  <div className="grid grid-cols-[1fr,4fr,2fr,4fr,1fr] gap-8 p-8">
     <div className="col-span-2 col-start-1 row-start-1 flex-1 text-center">
       <MetricBox>
         <LevelMeter bestThreshold={1} worstThreshold={16} unit="ms" value={2} />

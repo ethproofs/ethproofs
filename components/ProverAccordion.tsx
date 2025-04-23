@@ -17,6 +17,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "./ui/accordion"
+import { ButtonLink } from "./ui/button"
 import { MetricBox, MetricInfo, MetricLabel } from "./ui/metric"
 import HardwareGrid, { GRID_CELL_BG_SPECTRUM } from "./HardwareGrid"
 
@@ -155,6 +156,12 @@ const ProverAccordionItem = ({
               ))}
           </div>
         </div>
+      </div>
+
+      <div className="grid place-items-center">
+        <ButtonLink variant="outline" href="/prover/#TODO-team-id">
+          See all details
+        </ButtonLink>
       </div>
     </AccordionContent>
   </AccordionItem>

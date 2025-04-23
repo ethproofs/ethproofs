@@ -10,6 +10,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "./ui/accordion"
+import { ButtonLink } from "./ui/button"
 import { MetricBox, MetricInfo, MetricLabel } from "./ui/metric"
 import Pizza from "./Pizza"
 import ZkvmDetails, { DEMO_SLICES } from "./ZkvmDetails"
@@ -38,8 +39,27 @@ const ZkvmAccordionItem = ({ value }: Pick<AccordionItemProps, "value">) => (
         <Pizza slices={DEMO_SLICES} disableEffects />
       </AccordionTrigger>
     </div>
-    <AccordionContent className="col-span-full border-b p-0">
+    <AccordionContent className="col-span-full border-b bg-gradient-to-b from-background to-background-active p-0">
       <ZkvmDetails />
+
+      <div className="flex justify-center gap-16 p-8 pt-0">
+        <ButtonLink variant="outline" href="/zkvm/#TODO-zkvm-id">
+          See all details
+        </ButtonLink>
+        <div>
+          <span className="text-xs italic text-body-secondary">
+            Last updated
+          </span>{" "}
+          <span className="text-xs uppercase text-body">
+            {/* // TODO: Get and use last updated date */}
+            {new Intl.DateTimeFormat("en-US", {
+              month: "short",
+              day: "2-digit",
+              year: "numeric",
+            }).format(Date.now())}
+          </span>
+        </div>
+      </div>
     </AccordionContent>
   </AccordionItem>
 )
