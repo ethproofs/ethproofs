@@ -362,11 +362,9 @@ export default async function Index() {
           <MachineTabs
             singleContent={<>TODO: Single machine blocks list</>}
             multiContent={
-              <div className="ps-6">
-                <HydrationBoundary state={dehydrate(queryClient)}>
-                  <BlocksTable teams={teams} />
-                </HydrationBoundary>
-              </div>
+              <HydrationBoundary state={dehydrate(queryClient)}>
+                <BlocksTable teams={teams} className="px-6" />
+              </HydrationBoundary>
             }
           />
         </Card>
