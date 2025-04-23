@@ -13,9 +13,11 @@ import { ButtonLink } from "./ui/button"
 import Link from "./ui/link"
 import { MetricBox, MetricInfo, MetricLabel } from "./ui/metric"
 import Pizza from "./Pizza"
-import ZkvmDetails, { DEMO_SLICES } from "./ZkvmDetails"
+import SoftwareDetails, { DEMO_SLICES } from "./SoftwareDetails"
 
-const ZkvmAccordionItem = ({ value }: Pick<AccordionItemProps, "value">) => (
+const SoftwareAccordionItem = ({
+  value,
+}: Pick<AccordionItemProps, "value">) => (
   <AccordionItem value={value} className="col-span-5 grid grid-cols-subgrid">
     <div className="col-span-5 grid grid-cols-subgrid items-center gap-12 border-b">
       <div className="col-start-1 flex items-center gap-3">
@@ -54,7 +56,7 @@ const ZkvmAccordionItem = ({ value }: Pick<AccordionItemProps, "value">) => (
       </AccordionTrigger>
     </div>
     <AccordionContent className="col-span-full border-b bg-gradient-to-b from-background to-background-active p-0">
-      <ZkvmDetails />
+      <SoftwareDetails />
 
       <div className="flex justify-center gap-16 p-8 pt-0">
         <ButtonLink variant="outline" href="/zkvm/#TODO-zkvm-id">
@@ -77,7 +79,7 @@ const ZkvmAccordionItem = ({ value }: Pick<AccordionItemProps, "value">) => (
     </AccordionContent>
   </AccordionItem>
 )
-const ZkvmAccordion = () => (
+const SoftwareAccordion = () => (
   <Accordion
     type="multiple"
     className="grid w-full grid-cols-[1fr_repeat(4,_auto)]"
@@ -104,11 +106,11 @@ const ZkvmAccordion = () => (
       </MetricBox>
     </div>
     {Array.from({ length: 12 }, (_, i) => (
-      <ZkvmAccordionItem key={i} value={"item-" + i} />
+      <SoftwareAccordionItem key={i} value={"item-" + i} />
     ))}
   </Accordion>
 )
 
-ZkvmAccordion.displayName = "ZkvmAccordion"
+SoftwareAccordion.displayName = "SoftwareAccordion"
 
-export default ZkvmAccordion
+export default SoftwareAccordion

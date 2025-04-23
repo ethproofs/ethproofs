@@ -16,7 +16,7 @@ export const DEMO_SLICES: Slices = [
   { level: "middle" },
 ]
 
-const ZkvmDetails = () => (
+const SoftwareDetails = () => (
   <div className="grid grid-cols-[1fr,4fr,2fr,4fr,1fr] gap-8 p-8">
     <div className="col-span-2 col-start-1 row-start-1 flex-1 text-center">
       <MetricBox>
@@ -121,6 +121,6 @@ const ZkvmDetails = () => (
   </div>
 )
 
-ZkvmDetails.displayName = "ZkvmDetails"
+SoftwareDetails.displayName = "SoftwareDetails"
 
-export default ZkvmDetails
+export default SoftwareDetails

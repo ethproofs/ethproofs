@@ -18,7 +18,7 @@ import BoxDashed from "@/components/svgs/box-dashed.svg"
 import Instructions from "@/components/svgs/instructions.svg"
 import ShieldCheck from "@/components/svgs/shield-check.svg"
 import { Card, CardHeader, CardTitle } from "@/components/ui/card"
-import ZkvmAccordion from "@/components/ZkvmAccordion"
+import SoftwareAccordion from "@/components/SoftwareAccordion"
 
 import { DEFAULT_PAGE_STATE } from "@/lib/constants"
 
@@ -48,7 +48,7 @@ export default async function Index() {
   })
 
   // TODO: Use real data
-  const demoZkVmSummary: SummaryItem[] = [
+  const demoSoftwareSummary: SummaryItem[] = [
     {
       key: "zkvms",
       label: "zkVMs",
@@ -319,10 +319,10 @@ export default async function Index() {
           <CardHeader className="space-y-3">
             <CardTitle className="text-2xl">zkVMs</CardTitle>
 
-            <KPIs items={demoZkVmSummary} />
+            <KPIs items={demoSoftwareSummary} />
           </CardHeader>
 
-          <ZkvmAccordion />
+          <SoftwareAccordion />
         </Card>
       </section>
 
