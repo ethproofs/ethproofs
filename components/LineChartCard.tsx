@@ -25,7 +25,6 @@ import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
   DropdownMenuContent,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 
@@ -85,13 +84,15 @@ const LineChartCard = ({ title }: LineChartProps) => {
     setLineVisibility((prev) => ({ ...prev, [key]: !prev[key] }))
   }
 
-  const filteredData = chartData.filter((item) => {
-    const date = new Date(item.date)
-    const referenceDate = new Date()
-    const startDate = new Date(referenceDate)
-    startDate.setDate(startDate.getDate() - dayRange - 1)
-    return date >= startDate
-  })
+  const filteredData = chartData
+    .filter((item) => {
+      const date = new Date(item.date)
+      const referenceDate = new Date()
+      const startDate = new Date(referenceDate)
+      startDate.setDate(startDate.getDate() - dayRange - 1)
+      return date >= startDate
+    })
+    .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
 
   return (
     <Card className="border-1 relative space-y-4 overflow-hidden dark:bg-black/10 md:space-y-4">
