@@ -2,8 +2,6 @@ import { eq, sql } from "drizzle-orm"
 import { count } from "drizzle-orm"
 import { PaginationState } from "@tanstack/react-table"
 
-import { tmp_renameClusterConfiguration } from "../clusters"
-
 import { db } from "@/db"
 import { proofs } from "@/db/schema"
 
@@ -14,11 +12,13 @@ export const fetchTeamProofsPaginated = async (
   const proofsRows = await db.query.proofs.findMany({
     with: {
       block: true,
-      cluster: {
+      cluster_version: {
         with: {
-          cc: {
+          cluster: true,
+          cluster_machines: {
             with: {
-              ci: true,
+              cloud_instance: true,
+              machine: true,
             },
           },
         },
@@ -35,13 +35,8 @@ export const fetchTeamProofsPaginated = async (
     .from(proofs)
     .where(eq(proofs.team_id, teamId))
 
-  const renamedProofs = proofsRows.map((proof) => ({
-    ...proof,
-    cluster: tmp_renameClusterConfiguration(proof.cluster),
-  }))
-
   return {
-    rows: renamedProofs,
+    rows: proofsRows,
     rowCount: rowCount.count,
   }
 }

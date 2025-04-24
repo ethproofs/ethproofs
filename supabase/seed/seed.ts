@@ -1,7 +1,7 @@
 import { copycat, faker } from "@snaplet/copycat"
-import { createSeedClient, teamsScalars } from "@snaplet/seed"
+import { createSeedClient } from "@snaplet/seed"
 
-const proverProfiles: Partial<teamsScalars>[] = [
+const vendorsProfiles = [
   {
     name: "Succinct",
     logo_url:
@@ -20,31 +20,149 @@ const proverProfiles: Partial<teamsScalars>[] = [
   },
 ]
 
-const getRandomHexString = (minBytes: number, maxBytes: number) => {
-  const minLength = minBytes * 2 // Each byte is represented by 2 hex characters
-  const maxLength = maxBytes * 2
-  const length =
-    Math.floor(Math.random() * (maxLength - minLength + 1)) + minLength
-  return Array(length)
-    .fill(0)
-    .map(() => Math.floor(Math.random() * 16).toString(16))
-    .join("")
-}
+const proversProfiles = [
+  {
+    name: "Succinct",
+    logo_url:
+      "https://ibkqxhjnroghhtfyualc.supabase.co/storage/v1/object/public/public-assets/succinct-logo.svg",
+    website_url: "https://succinct.xyz",
+    twitter_handle: "succinctlabs",
+    github_org: "succinctlabs",
+  },
+  {
+    name: "Snarkify",
+    logo_url:
+      "https://ibkqxhjnroghhtfyualc.supabase.co/storage/v1/object/public/public-assets/snarkify-logo.svg",
+    website_url: "https://snarkify.xyz",
+    twitter_handle: "snarkify",
+    github_org: "snarkify",
+  },
+  {
+    name: "zkm",
+    logo_url:
+      "https://ibkqxhjnroghhtfyualc.supabase.co/storage/v1/object/public/public-assets/zkm-logo.svg",
+    website_url: "https://zkm.xyz",
+    twitter_handle: "zkm",
+    github_org: "zkm",
+  },
+]
+
+const zkvmsData = [
+  {
+    name: "cairo",
+    isa: "Cairo",
+    continuations: false,
+    parallelizable_proving: false,
+    precompiles: true,
+    frontend: "Cairo",
+    repo_url: "https://github.com/lambdaclass/cairo-vm",
+  },
+  {
+    name: "ceno",
+    isa: "RISC-V",
+    continuations: false,
+    parallelizable_proving: false,
+    precompiles: true,
+    frontend: "Rust",
+    repo_url: "https://github.com/scroll-tech/ceno",
+  },
+  {
+    name: "eigen zkvm",
+    isa: "RISC-V",
+    continuations: true,
+    parallelizable_proving: true,
+    precompiles: true,
+    frontend: "Circom, PIL",
+    repo_url: "https://github.com/0xEigenLabs/eigen-zkvm",
+  },
+  {
+    name: "jolt",
+    isa: "RISC-V",
+    continuations: false,
+    parallelizable_proving: false,
+    precompiles: false,
+    frontend: "Rust",
+    repo_url: "https://github.com/a16z/jolt",
+  },
+  {
+    name: "miden",
+    isa: "MASM(Miden Assembly)",
+    continuations: false,
+    parallelizable_proving: false,
+    precompiles: true,
+    frontend: "Rust, Wasm",
+    repo_url: "https://github.com/0xPolygonMiden/miden-vm",
+  },
+]
 
 const main = async () => {
   const seed = await createSeedClient({ dryRun: true })
 
+  // create users for each vendors & provers profile
   const { users } = await seed.users((x) =>
-    x(2, ({ index }) => ({
-      aud: "authenticated",
-      role: "authenticated",
-      email: `${proverProfiles[index].github_org}@test.com`,
-      raw_user_meta_data: {
-        first_name: copycat.firstName(index),
-        last_name: copycat.lastName(index),
-      },
-      encrypted_password: "password",
-    }))
+    x([...vendorsProfiles, ...proversProfiles].length, ({ index }) => {
+      const profile =
+        index < vendorsProfiles.length
+          ? vendorsProfiles[index]
+          : proversProfiles[index - vendorsProfiles.length]
+      return {
+        email: `${profile.name.toLowerCase()}@${
+          index < vendorsProfiles.length ? "vendor" : "prover"
+        }.com`,
+        name: profile.name,
+        aud: "authenticated",
+        role: "authenticated",
+        raw_user_meta_data: {
+          first_name: copycat.firstName(index),
+          last_name: copycat.lastName(index),
+        },
+        encrypted_password: "password",
+      }
+    })
+  )
+
+  // add vendors
+  const { vendors } = await seed.vendors(
+    (x) =>
+      x(vendorsProfiles.length, ({ index }) => ({
+        name: vendorsProfiles[index].name,
+        logo_url: vendorsProfiles[index].logo_url,
+        website_url: vendorsProfiles[index].website_url,
+        twitter_handle: vendorsProfiles[index].twitter_handle,
+        github_org: vendorsProfiles[index].github_org,
+      })),
+    {
+      connect: { users: users },
+    }
+  )
+
+  // add zkvms
+  const { zkvms } = await seed.zkvms(
+    (x) =>
+      x(zkvmsData.length, ({ index }) => ({
+        name: zkvmsData[index].name,
+        isa: zkvmsData[index].isa,
+        frontend_url: zkvmsData[index].frontend,
+        repo_url: zkvmsData[index].repo_url,
+        continuations: zkvmsData[index].continuations,
+        parallelizable_proving: zkvmsData[index].parallelizable_proving,
+        precompiles: zkvmsData[index].precompiles,
+      })),
+    {
+      connect: { vendors },
+    }
+  )
+
+  // add zkvm_versions, set 2 versions for each zkvm
+  const { zkvm_versions } = await seed.zkvm_versions(
+    (x) =>
+      x(2 * zkvmsData.length, ({ index }) => ({
+        version: `0.${index}.${index}`,
+        description: "Initial version",
+      })),
+    {
+      connect: { zkvms },
+    }
   )
 
   await seed.api_auth_tokens((x) =>
@@ -62,16 +180,18 @@ const main = async () => {
     }))
   )
 
-  const { aws_instance_pricing } = await seed.aws_instance_pricing((x) =>
+  const { cloud_instances } = await seed.cloud_instances((x) =>
     x(3, ({ index }) => ({
-      instance_type: ["t3.medium", "t3.large", "t3.xlarge"][index],
+      instance_name: ["t3.medium", "t3.large", "t3.xlarge"][index],
+      provider: "aws",
       hourly_price: [0.0416, 0.0832, 0.1664][index],
+      region: ["us-east-1", "us-east-2", "us-west-1"][index],
     }))
   )
 
   for (const user of users) {
-    const userIndex = users.indexOf(user)
-    const profile = proverProfiles[userIndex]
+    // const userIndex = users.indexOf(user)
+    // const profile = proverProfiles[userIndex]
 
     // add team for user
     // const { teams } = await seed.teams(
@@ -101,12 +221,33 @@ const main = async () => {
       }
     )
 
-    await seed.cluster_configurations(
+    const { cluster_versions } = await seed.cluster_versions(
       (x) =>
-        x(5, ({ seed }) => ({
-          instance_count: copycat.int(seed, { min: 1, max: 10 }),
+        x(2, ({ index }) => ({
+          version: `v0.${index}`,
+          description: "Initial version",
         })),
-      { connect: { clusters, aws_instance_pricing } }
+      { connect: { clusters, zkvm_versions, teams: [{ id: user.id }] } }
+    )
+
+    const { machines } = await seed.machines((x) =>
+      x(5, ({ seed }) => ({
+        cpu_cores: copycat.int(seed, { min: 1, max: 10 }),
+        cpu_model: faker.lorem.word(),
+        gpu_count: [copycat.int(seed, { min: 0, max: 10 })],
+        gpu_models: [faker.lorem.word()],
+        memory_gb: copycat.int(seed, { min: 1, max: 10 }),
+        storage_gb: copycat.int(seed, { min: 1, max: 10 }),
+      }))
+    )
+
+    await seed.cluster_machines(
+      (x) =>
+        x(2, ({ seed }) => ({
+          instance_count: copycat.int(seed, { min: 1, max: 10 }),
+          machine_count: copycat.int(seed, { min: 1, max: 10 }),
+        })),
+      { connect: { machines, cluster_versions, cloud_instances } }
     )
 
     const { proofs } = await seed.proofs(
@@ -123,19 +264,8 @@ const main = async () => {
             copycat.int(seed, { min: 2 ** 15, max: 2 ** 23 }),
           team_id: user.id,
         })),
-      { connect: { blocks, clusters } }
+      { connect: { blocks, cluster_versions } }
     )
-
-    for (const { proof_id, proof_status } of proofs) {
-      if (proof_status !== "proved") continue
-
-      await seed.proof_binaries((x) =>
-        x(1, () => ({
-          proof_id,
-          proof_binary: Buffer.from(getRandomHexString(500, 4200)),
-        }))
-      )
-    }
   }
 
   process.exit()

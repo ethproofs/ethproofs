@@ -47,7 +47,6 @@ import { AVERAGE_LABEL } from "@/lib/constants"
 import { db } from "@/db"
 import { timestampToEpoch, timestampToSlot } from "@/lib/beaconchain"
 import { getBlockValueType } from "@/lib/blocks"
-import { tmp_renameClusterConfiguration } from "@/lib/clusters"
 import { getMetadata } from "@/lib/metadata"
 import { formatNumber, formatUsd } from "@/lib/number"
 import {
@@ -95,16 +94,18 @@ export default async function BlockDetailsPage({
   const blockValueType = getBlockValueType(blockNumber)
   if (!blockValueType) throw new Error()
 
-  const blockRaw = await db.query.blocks.findFirst({
+  const block = await db.query.blocks.findFirst({
     with: {
       proofs: {
         with: {
           team: true,
-          cluster: {
+          cluster_version: {
             with: {
-              cc: {
+              cluster: true,
+              cluster_machines: {
                 with: {
-                  ci: true,
+                  machine: true,
+                  cloud_instance: true,
                 },
               },
             },
@@ -115,15 +116,7 @@ export default async function BlockDetailsPage({
     where: (blocks, { eq }) => eq(blocks[blockValueType], blockNumber),
   })
 
-  if (!blockRaw) notFound()
-
-  const block = {
-    ...blockRaw,
-    proofs: blockRaw.proofs.map((proof) => ({
-      ...proof,
-      cluster: tmp_renameClusterConfiguration(proof.cluster),
-    })),
-  }
+  if (!block) notFound()
 
   const { timestamp, block_number, gas_used, proofs, hash } = block
 
@@ -428,7 +421,7 @@ export default async function BlockDetailsPage({
 
         {proofs.sort(sortProofsStatusAndTimes).map((proof) => {
           const {
-            cluster,
+            cluster_version,
             proof_id,
             proving_time,
             proved_timestamp,
@@ -449,7 +442,8 @@ export default async function BlockDetailsPage({
 
           const provingCost = getProvingCost(proof)
 
-          const clusterConfigs = cluster?.cluster_configuration
+          const cluster = cluster_version?.cluster
+          const machines = cluster_version?.cluster_machines
 
           return (
             <div
@@ -615,7 +609,7 @@ export default async function BlockDetailsPage({
                       <PopoverTrigger className="flex items-center gap-2">
                         {formatUsd(provingCost)} <Cpu />
                       </PopoverTrigger>
-                      {cluster && clusterConfigs && (
+                      {cluster && machines && (
                         <PopoverContent>
                           <TooltipContentHeader>
                             {cluster.nickname}
@@ -640,7 +634,7 @@ export default async function BlockDetailsPage({
                           </TooltipContentHeader>
 
                           <div className="w-fit space-y-4">
-                            {clusterConfigs.map(
+                            {machines.map(
                               ({
                                 cloud_instance_count,
                                 cloud_instance_id,

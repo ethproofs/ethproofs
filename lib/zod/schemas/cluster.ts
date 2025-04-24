@@ -1,19 +1,22 @@
 import z from ".."
 
 import { CloudInstancesSchema } from "./cloud-instance"
+import { MachineSchema } from "./machine"
 
 export const ClusterSchema = z.object({
   id: z.number().nullable(),
   nickname: z.string(),
   description: z.string().optional().nullable(),
+  // DEPRECATED
   hardware: z.string().optional().nullable(),
   cycle_type: z.string().optional().nullable(),
   proof_type: z.string().optional().nullable(),
-  cluster_configuration: z.array(
+  machines: z.array(
     z.object({
-      cloud_instance_id: z.number(),
-      cloud_instance_count: z.number(),
-      cloud_instance: CloudInstancesSchema.nullable(),
+      machine: MachineSchema,
+      machine_count: z.number().int().positive(),
+      cloud_instance: CloudInstancesSchema,
+      cloud_instance_count: z.number().int().positive(),
     })
   ),
 })
@@ -29,9 +32,16 @@ const baseClusterSchema = z.object({
     description: "Description of the cluster",
     example: "Primary RISC-V prover",
   }),
+  zkvm_version_id: z.number().int().positive().openapi({
+    description:
+      "ID of the zkVM version. Visit [ZKVMs](/docs/zkvms) to view all available zkVMs and their IDs.",
+    example: 1,
+  }),
   hardware: z.string().max(200).optional().openapi({
-    description: "Technical specifications",
+    description:
+      "Technical specifications. Use `configuration.cluster_machine` field instead.",
     example: "RISC-V Prover",
+    deprecated: true,
   }),
   cycle_type: z.string().max(50).optional().openapi({
     description: "Type of cycle",
@@ -48,12 +58,20 @@ export const createClusterSchema = baseClusterSchema.extend({
   configuration: z
     .array(
       z.object({
-        cloud_instance: z.string().openapi({
-          description: "Cloud instance name",
+        machine: MachineSchema.openapi({
+          description: "Physical hardware specifications of the machine",
+        }),
+        machine_count: z.number().int().positive().openapi({
+          description: "Number of machines of this type",
+          example: 1,
+        }),
+        cloud_instance_name: z.string().openapi({
+          description:
+            "The instance_name value of the cloud instance. Visit [Cloud Instances](/docs/cloud-instances) to view all available instances and their exact names.",
           example: "c5.xlarge",
         }),
-        cloud_instance_count: z.number().openapi({
-          description: "Number of instances of this type",
+        cloud_instance_count: z.number().int().positive().openapi({
+          description: "Number of equivalent cloud instances",
           example: 10,
         }),
       })
@@ -62,8 +80,12 @@ export const createClusterSchema = baseClusterSchema.extend({
 })
 
 export const singleMachineSchema = baseClusterSchema.extend({
-  cloud_instance: z.string().openapi({
-    description: "Cloud instance name",
+  machine: MachineSchema.openapi({
+    description: "Physical hardware specifications of the machine",
+  }),
+  cloud_instance_name: z.string().openapi({
+    description:
+      "The instance_name value of the cloud instance. Visit [Cloud Instances](/docs/cloud-instances) to view all available instances and their exact names.",
     example: "c5.xlarge",
   }),
 })

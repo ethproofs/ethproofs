@@ -1,6 +1,6 @@
 import { formatUsd } from "./number"
 import { getTime, prettyMs } from "./time"
-import type { Cluster, Proof, Stats } from "./types"
+import type { ClusterVersion, Proof, ProofWithCluster, Stats } from "./types"
 
 // Filters
 
@@ -10,7 +10,8 @@ import type { Cluster, Proof, Stats } from "./types"
  * @param proof - The proof object to check.
  * @returns `true` if the proof's status is "proved", otherwise `false`.
  */
-export const isCompleted = (proof: Proof) => proof.proof_status === "proved"
+export const isCompleted = (proof: Pick<Proof, "proof_status">) =>
+  proof.proof_status === "proved"
 
 /**
  * Checks if the cost information is available for a given proof.
@@ -19,9 +20,9 @@ export const isCompleted = (proof: Proof) => proof.proof_status === "proved"
  * @param {Proof} p - The proof object to check.
  * @returns {boolean} `true` if information to calculate costs are available, otherwise `false`.
  */
-export const hasCostInfo = (p: Proof) => {
-  if (!p.proving_time || !p.cluster?.cluster_configuration) return false
-  return p.cluster.cluster_configuration.some(
+export const hasCostInfo = (p: ProofWithCluster) => {
+  if (!p.proving_time || !p.cluster_version) return false
+  return p.cluster_version.cluster_machines.some(
     (config) =>
       !!config.cloud_instance?.hourly_price && !!config.cloud_instance_count
   )
@@ -81,8 +82,8 @@ export const getProofsAvgTimeToProof = (proofs: Proof[]) => {
 }
 
 export const getProofBestProvingTime = (
-  proofs: Proof[] | undefined
-): Proof | null => {
+  proofs: ProofWithCluster[] | undefined
+): ProofWithCluster | null => {
   if (!proofs || !proofs.length) return null
 
   const availableProofs = proofs.filter(isCompleted).filter(hasProvingTime)
@@ -117,9 +118,8 @@ export const getProofBestTimeToProof = (proofs: Proof[]): Proof | null => {
  * @param configs - An array of cluster configurations.
  * @returns The total hourly price for the cluster.
  */
-export const getClusterHourlyPrice = (cluster: Cluster): number | null => {
-  if (!cluster.cluster_configuration) return null
-  return cluster.cluster_configuration.reduce((acc, config) => {
+export const getClusterHourlyPrice = (cluster: ClusterVersion): number => {
+  return cluster.cluster_machines.reduce((acc, config) => {
     const { cloud_instance_count, cloud_instance } = config
     if (!cloud_instance?.hourly_price || !cloud_instance_count) return acc
     return acc + cloud_instance_count * cloud_instance.hourly_price
@@ -135,14 +135,12 @@ export const getClusterHourlyPrice = (cluster: Cluster): number | null => {
  * @example clusterHourlyPrice(USD/hr) * proving_time(ms) / 1e3(ms/s) / 60(s/min) / 60(min/hr) = provingCost(USD)
  * @returns The calculated proving cost in USD, as a number.
  */
-export const getProvingCost = (proof: Proof): number | null => {
-  const { proving_time, cluster } = proof
+export const getProvingCost = (proof: ProofWithCluster): number | null => {
+  const { proving_time, cluster_version } = proof
 
-  if (!proving_time || !cluster) return null
+  if (!proving_time || !cluster_version) return null
 
-  const clusterHourlyPrice = getClusterHourlyPrice(cluster)
-
-  if (!clusterHourlyPrice) return null
+  const clusterHourlyPrice = getClusterHourlyPrice(cluster_version)
 
   return (proving_time * clusterHourlyPrice) / 1e3 / 60 / 60
 }
@@ -153,7 +151,7 @@ export const getProvingCost = (proof: Proof): number | null => {
  * @param proofs - An array of Proof objects.
  * @returns The total proving cost as a number (USD).
  */
-export const getSumProvingCost = (proofs: Proof[]): number => {
+export const getSumProvingCost = (proofs: ProofWithCluster[]): number => {
   const availableProofs = proofs.filter(isCompleted).filter(hasCostInfo)
 
   if (!availableProofs.length) return 0
@@ -171,7 +169,7 @@ export const getSumProvingCost = (proofs: Proof[]): number => {
  * @param {Proof[]} proofs - An array of proof objects.
  * @returns {number} - The average proving cost (USD) of the proofs.
  */
-export const getAvgCostPerProof = (proofs: Proof[]): number => {
+export const getAvgCostPerProof = (proofs: ProofWithCluster[]): number => {
   const availableProofs = proofs.filter(isCompleted).filter(hasCostInfo)
 
   if (!availableProofs.length) return 0
@@ -189,7 +187,7 @@ export const getCostPerMgas = (cost: number, gasUsed: number): number => {
 const getSumProvingCycles = (proofs: Proof[]): number =>
   proofs.reduce((acc, { proving_cycles }) => acc + (proving_cycles || 0), 0)
 
-export const getAvgCostPerMegaCycle = (proofs: Proof[]): number => {
+export const getAvgCostPerMegaCycle = (proofs: ProofWithCluster[]): number => {
   return getSumProvingCost(proofs) / getSumProvingCycles(proofs)
 }
 
@@ -198,16 +196,12 @@ export const getAvgCostPerTx = (
   transactionCount: number
 ): number => avgProofCost / transactionCount
 
-export const getProofBestProvingCost = (proofs: Proof[]): Proof | null => {
-  const availableProofs = proofs.filter(isCompleted).filter(hasCostInfo)
-
-  if (!availableProofs.length) return null
-
-  return availableProofs.reduce((a, b) => {
+export const getProofBestProvingCost = (proofs: ProofWithCluster[]) => {
+  return proofs.reduce((a, b) => {
     const costA = getProvingCost(a) || Infinity
     const costB = getProvingCost(b) || Infinity
     return costA < costB ? a : b
-  }, availableProofs[0])
+  }, proofs[0])
 }
 
 const getMsTotalTTP = (completedProofTime: number, blockTimestamp: string) =>
@@ -252,7 +246,7 @@ export const sortProofsStatusAndTimes = (a: Proof, b: Proof) => {
 // Statistics exporters: avg (with formatting), best (with formatting), best proof (team info)
 
 export const getCostPerProofStats = (
-  proofs: Proof[] | undefined
+  proofs: ProofWithCluster[] | undefined
 ): Stats | null => {
   if (!proofs || !proofs.length) return null
 
@@ -262,9 +256,9 @@ export const getCostPerProofStats = (
 
   const avg = getAvgCostPerProof(availableProofs)
 
-  const bestProof = getProofBestProvingCost(availableProofs) as Proof
+  const bestProof = getProofBestProvingCost(availableProofs)
 
-  const best = getProvingCost(bestProof) as number
+  const best = getProvingCost(bestProof)!
 
   return {
     avg,
@@ -276,7 +270,7 @@ export const getCostPerProofStats = (
 }
 
 export const getCostPerMgasStats = (
-  proofs: Proof[] | undefined,
+  proofs: ProofWithCluster[] | undefined,
   gasUsed: number | undefined
 ): Stats | null => {
   if (!proofs || !proofs.length || !gasUsed) return null
@@ -300,7 +294,7 @@ export const getCostPerMgasStats = (
 }
 
 export const getProvingTimeStats = (
-  proofs: Proof[] | undefined
+  proofs: ProofWithCluster[] | undefined
 ): Stats | null => {
   if (!proofs || !proofs.length) return null
 
@@ -332,7 +326,7 @@ export const getProvingTimeStats = (
 }
 
 export const getTotalTTPStats = (
-  proofs: Proof[],
+  proofs: ProofWithCluster[],
   timestamp: string
 ): Stats | null => {
   if (!proofs.length) return null

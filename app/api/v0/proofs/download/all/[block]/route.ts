@@ -14,14 +14,18 @@ export async function GET(
     columns: {
       block_number: true,
       proof_id: true,
-      cluster_id: true,
       team_id: true,
     },
     with: {
-      cluster: {
-        columns: {
-          proof_type: true,
-          cycle_type: true,
+      cluster_version: {
+        with: {
+          cluster: {
+            columns: {
+              id: true,
+              proof_type: true,
+              cycle_type: true,
+            },
+          },
         },
       },
     },
@@ -41,8 +45,12 @@ export async function GET(
   for (const proofRow of proofRows) {
     const team = await getTeam(proofRow.team_id)
 
-    const { proof_type, cycle_type } = proofRow.cluster
-    const teamName = team?.name ? team.name : proofRow.cluster_id.split("-")[0]
+    const {
+      id: cluster_id,
+      proof_type,
+      cycle_type,
+    } = proofRow.cluster_version.cluster
+    const teamName = team?.name ? team.name : cluster_id.split("-")[0]
     const filename = `block_${block}_${proof_type}_${cycle_type}_${teamName}.txt`
 
     const blob = await downloadProofBinary(filename)
