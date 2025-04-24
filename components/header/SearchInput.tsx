@@ -59,7 +59,7 @@ const SearchInput = ({
 
   return (
     <div className={cn("relative z-0 w-full", className)}>
-      <div className="absolute -inset-px -z-10 rounded-full bg-gradient-to-l from-primary via-primary/10 to-[25%] peer-focus:hidden"></div>
+      <div className="absolute -inset-px -z-10 rounded-full bg-gradient-to-l from-primary via-primary/10 peer-focus:hidden"></div>
       <Input
         ref={inputRef}
         type="search"
