@@ -34,8 +34,6 @@ const bytea = customType<{
 
 export const keyMode = pgEnum("key_mode", ["read", "write", "all", "upload"])
 
-export const providerType = pgEnum("provider", ["aws", "vastai"])
-
 export const apiAuthTokens = pgTable(
   "api_auth_tokens",
   {
@@ -230,11 +228,25 @@ export const machines = pgTable(
   ]
 )
 
+export const cloudProviders = pgTable("cloud_providers", {
+  id: bigint({ mode: "number" }).primaryKey().generatedByDefaultAsIdentity(),
+  name: text("name").notNull().unique(),
+  display_name: text("display_name").notNull(),
+  created_at: timestamp("created_at", { withTimezone: true, mode: "string" })
+    .defaultNow()
+    .notNull(),
+})
+
 export const cloudInstances = pgTable(
   "cloud_instances",
   {
     id: bigint({ mode: "number" }).primaryKey().generatedByDefaultAsIdentity(),
-    provider: providerType().notNull().default("aws"),
+    provider_id: bigint("provider_id", { mode: "number" })
+      .notNull()
+      .references(() => cloudProviders.id, {
+        onDelete: "cascade",
+        onUpdate: "cascade",
+      }),
     instance_name: text("instance_name").notNull().unique(), // Instance name or machine ID
     region: text("region").notNull(), // Region or geolocation
     hourly_price: real("hourly_price").notNull(),

@@ -3,6 +3,7 @@ import { type ReactNode } from "react"
 import {
   blocks,
   cloudInstances,
+  cloudProviders,
   clusterMachines,
   clusters,
   clusterVersions,
@@ -19,6 +20,11 @@ import {
  * Represents a row in the cloud_instances table.
  */
 export type CloudInstance = typeof cloudInstances.$inferSelect
+
+/**
+ * Represents a row in the cloud_providers table.
+ */
+export type CloudProvider = typeof cloudProviders.$inferSelect
 
 /**
  * Represents a row in the blocks table.
