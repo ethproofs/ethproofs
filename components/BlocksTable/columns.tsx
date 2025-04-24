@@ -3,7 +3,7 @@
 import Link from "next/link"
 import { ColumnDef } from "@tanstack/react-table"
 
-import type { Block, Proof } from "@/lib/types"
+import type { Block, Proof, ProofWithCluster } from "@/lib/types"
 
 import { ColumnHeader } from "@/components/ColumnHeader"
 import { metrics } from "@/components/Metrics"
@@ -134,7 +134,7 @@ export const columns: ColumnDef<Block>[] = [
       </ColumnHeader>
     ),
     cell: ({ cell }) => {
-      const proofs = cell.getValue() as Proof[]
+      const proofs = cell.getValue() as ProofWithCluster[]
 
       const stats = getCostPerProofStats(proofs)
 
@@ -172,7 +172,7 @@ export const columns: ColumnDef<Block>[] = [
       </ColumnHeader>
     ),
     cell: ({ cell }) => {
-      const proofs = cell.getValue() as Proof[]
+      const proofs = cell.getValue() as ProofWithCluster[]
 
       const stats = getProvingTimeStats(proofs)
 
@@ -197,7 +197,7 @@ export const columns: ColumnDef<Block>[] = [
       </ColumnHeader>
     ),
     cell: ({ cell, row }) => {
-      const proofs = cell.getValue() as Proof[]
+      const proofs = cell.getValue() as ProofWithCluster[]
       const timestamp = row.original.timestamp
 
       if (!timestamp) return <Null />

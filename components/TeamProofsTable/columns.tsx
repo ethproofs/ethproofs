@@ -3,7 +3,13 @@
 import Link from "next/link"
 import { ColumnDef } from "@tanstack/react-table"
 
-import type { Block, Cluster, Proof } from "@/lib/types"
+import type {
+  Block,
+  Cluster,
+  ClusterVersion,
+  Proof,
+  ProofWithCluster,
+} from "@/lib/types"
 
 import { ColumnHeader } from "@/components/ColumnHeader"
 import DownloadButton from "@/components/DownloadButton"
@@ -19,7 +25,7 @@ import { formatNumber, formatUsd } from "@/lib/number"
 import { getProvingCost, hasCostInfo, isCompleted } from "@/lib/proofs"
 import { prettyMs } from "@/lib/time"
 
-export const columns: ColumnDef<Proof>[] = [
+export const columns: ColumnDef<ProofWithCluster>[] = [
   // Block (time since)
   {
     id: "block_number",
@@ -57,14 +63,15 @@ export const columns: ColumnDef<Proof>[] = [
   },
   // Cluster (cycle type)
   {
-    accessorKey: "cluster",
+    accessorKey: "cluster_version",
     header: () => (
       <ColumnHeader label={<metrics.cluster.Label />}>
         <metrics.cluster.Details />
       </ColumnHeader>
     ),
     cell: ({ cell }) => {
-      const cluster = cell.getValue() as Cluster
+      const clusterVersion = cell.getValue() as ClusterVersion
+      const cluster = clusterVersion.cluster
 
       // TODO: Add Equivalents for cluster_id by it's instance_type_id (inside cluster_configurations)
 
