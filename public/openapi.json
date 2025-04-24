@@ -60,6 +60,12 @@
                     "description": "Description of the cluster",
                     "example": "Primary RISC-V prover"
                   },
+                  "zkvm_version_id": {
+                    "type": "integer",
+                    "exclusiveMinimum": 0,
+                    "description": "ID of the zkVM version. Visit [ZKVMs](/docs/zkvms) to view all available zkVMs and their IDs.",
+                    "example": 1
+                  },
                   "hardware": {
                     "type": "string",
                     "maxLength": 200,
@@ -232,6 +238,7 @@
                 },
                 "required": [
                   "nickname",
+                  "zkvm_version_id",
                   "configuration"
                 ]
               }
@@ -582,6 +589,12 @@
                     "description": "Description of the cluster",
                     "example": "Primary RISC-V prover"
                   },
+                  "zkvm_version_id": {
+                    "type": "integer",
+                    "exclusiveMinimum": 0,
+                    "description": "ID of the zkVM version. Visit [ZKVMs](/docs/zkvms) to view all available zkVMs and their IDs.",
+                    "example": 1
+                  },
                   "hardware": {
                     "type": "string",
                     "maxLength": 200,
@@ -727,6 +740,7 @@
                 },
                 "required": [
                   "nickname",
+                  "zkvm_version_id",
                   "machine",
                   "cloud_instance_name"
                 ]

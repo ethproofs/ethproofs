@@ -5,6 +5,7 @@ import { CHART_RANGES } from "./constants"
 import {
   blocks,
   cloudInstances,
+  cloudProviders,
   clusterMachines,
   clusters,
   clusterVersions,
@@ -12,12 +13,20 @@ import {
   proofs,
   teams,
   teamsSummary,
+  vendors,
+  zkvms,
+  zkvmVersions,
 } from "@/db/schema"
 
 /**
  * Represents a row in the cloud_instances table.
  */
 export type CloudInstance = typeof cloudInstances.$inferSelect
+
+/**
+ * Represents a row in the cloud_providers table.
+ */
+export type CloudProvider = typeof cloudProviders.$inferSelect
 
 /**
  * Represents a row in the blocks table.
@@ -58,6 +67,21 @@ export type ProofBase = typeof proofs.$inferSelect
  * Represents a row in the teams table.
  */
 export type Team = typeof teams.$inferSelect
+
+/**
+ * Represents a row in the vendors table.
+ */
+export type Vendor = typeof vendors.$inferSelect
+
+/**
+ * Represents a row in the zkvms table.
+ */
+export type Zkvm = typeof zkvms.$inferSelect
+
+/**
+ * Represents a row in the zkvm_versions table.
+ */
+export type ZkvmVersion = typeof zkvmVersions.$inferSelect
 
 /**
  * Represents a row in the teams_summary view.

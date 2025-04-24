@@ -3,8 +3,10 @@ import Link from "@/components/ui/link"
 import { CloudInstancesTable } from "./cloud-instances-table"
 
 import { getInstances } from "@/lib/api/cloud-instances"
+import { getProviders } from "@/lib/api/cloud-providers"
 
 export default async function CloudInstancesPage() {
+  const providers = await getProviders()
   const instances = await getInstances()
 
   return (
@@ -25,7 +27,7 @@ export default async function CloudInstancesPage() {
         </div>
       </div>
 
-      <CloudInstancesTable instances={instances} />
+      <CloudInstancesTable providers={providers} instances={instances} />
     </div>
   )
 }

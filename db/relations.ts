@@ -5,6 +5,7 @@ import {
   apiAuthTokens,
   blocks,
   cloudInstances,
+  cloudProviders,
   clusterMachines,
   clusters,
   clusterVersions,
@@ -13,6 +14,9 @@ import {
   proofs,
   recursiveRootProofs,
   teams,
+  vendors,
+  zkvms,
+  zkvmVersions,
 } from "./schema"
 
 export const apiAuthTokensRelations = relations(apiAuthTokens, ({ one }) => ({
@@ -45,6 +49,10 @@ export const clusterVersionsRelations = relations(
       fields: [clusterVersions.cluster_id],
       references: [clusters.id],
     }),
+    zkvm_version: one(zkvmVersions, {
+      fields: [clusterVersions.zkvm_version_id],
+      references: [zkvmVersions.id],
+    }),
     cluster_machines: many(clusterMachines),
     proofs: many(proofs),
   })
@@ -74,8 +82,12 @@ export const machinesRelations = relations(machines, ({ many }) => ({
 
 export const cloudInstancesRelations = relations(
   cloudInstances,
-  ({ many }) => ({
+  ({ one, many }) => ({
     cluster_machines: many(clusterMachines),
+    provider: one(cloudProviders, {
+      fields: [cloudInstances.provider_id],
+      references: [cloudProviders.id],
+    }),
   })
 )
 
@@ -102,6 +114,28 @@ export const teamsRelations = relations(teams, ({ one }) => ({
   user: one(authUsers, {
     fields: [teams.id],
     references: [authUsers.id],
+  }),
+}))
+
+export const vendorsRelations = relations(vendors, ({ one }) => ({
+  user: one(authUsers, {
+    fields: [vendors.user_id],
+    references: [authUsers.id],
+  }),
+}))
+
+export const zkvmsRelations = relations(zkvms, ({ one, many }) => ({
+  vendor: one(vendors, {
+    fields: [zkvms.vendor_id],
+    references: [vendors.id],
+  }),
+  versions: many(zkvmVersions),
+}))
+
+export const zkvmVersionsRelations = relations(zkvmVersions, ({ one }) => ({
+  zkvm: one(zkvms, {
+    fields: [zkvmVersions.zkvm_id],
+    references: [zkvms.id],
   }),
 }))
 

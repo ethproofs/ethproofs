@@ -1,6 +1,7 @@
 import { sql } from "drizzle-orm"
 import {
   bigint,
+  boolean,
   check,
   customType,
   decimal,
@@ -32,8 +33,6 @@ const bytea = customType<{
 })
 
 export const keyMode = pgEnum("key_mode", ["read", "write", "all", "upload"])
-
-export const providerType = pgEnum("provider", ["aws", "vastai"])
 
 export const apiAuthTokens = pgTable(
   "api_auth_tokens",
@@ -140,6 +139,12 @@ export const clusterVersions = pgTable("cluster_versions", {
       onDelete: "cascade",
       onUpdate: "cascade",
     }),
+  zkvm_version_id: bigint({ mode: "number" })
+    .notNull()
+    .references(() => zkvmVersions.id, {
+      onDelete: "cascade",
+      onUpdate: "cascade",
+    }),
   version: text().notNull(),
   description: text(),
   created_at: timestamp("created_at", {
@@ -223,11 +228,25 @@ export const machines = pgTable(
   ]
 )
 
+export const cloudProviders = pgTable("cloud_providers", {
+  id: bigint({ mode: "number" }).primaryKey().generatedByDefaultAsIdentity(),
+  name: text("name").notNull().unique(),
+  display_name: text("display_name").notNull(),
+  created_at: timestamp("created_at", { withTimezone: true, mode: "string" })
+    .defaultNow()
+    .notNull(),
+})
+
 export const cloudInstances = pgTable(
   "cloud_instances",
   {
     id: bigint({ mode: "number" }).primaryKey().generatedByDefaultAsIdentity(),
-    provider: providerType().notNull().default("aws"),
+    provider_id: bigint("provider_id", { mode: "number" })
+      .notNull()
+      .references(() => cloudProviders.id, {
+        onDelete: "cascade",
+        onUpdate: "cascade",
+      }),
     instance_name: text("instance_name").notNull().unique(), // Instance name or machine ID
     region: text("region").notNull(), // Region or geolocation
     hourly_price: real("hourly_price").notNull(),
@@ -294,6 +313,7 @@ export const recursiveRootProofs = pgTable(
   ]
 )
 
+// TODO: rename to provers
 export const teams = pgTable(
   "teams",
   {
@@ -325,6 +345,71 @@ export const teams = pgTable(
     }),
   ]
 )
+
+export const vendors = pgTable("vendors", {
+  id: uuid().defaultRandom().primaryKey().notNull(),
+  user_id: uuid()
+    .notNull()
+    .references(() => authUsers.id, {
+      onDelete: "cascade",
+      onUpdate: "cascade",
+    }),
+  name: text().notNull(),
+  github_org: text("github_org"),
+  logo_url: text("logo_url"),
+  twitter_handle: text("twitter_handle"),
+  website_url: text("website_url"),
+  created_at: timestamp("created_at", {
+    withTimezone: true,
+    mode: "string",
+  })
+    .defaultNow()
+    .notNull(),
+})
+
+export const zkvms = pgTable("zkvms", {
+  id: bigint({ mode: "number" }).primaryKey().generatedByDefaultAsIdentity(),
+  vendor_id: uuid()
+    .notNull()
+    .references(() => vendors.id, {
+      onDelete: "cascade",
+      onUpdate: "cascade",
+    }),
+  name: text().notNull(),
+  isa: text().notNull(),
+  repo_url: text().notNull(),
+  continuations: boolean().notNull().default(false),
+  parallelizable_proving: boolean().notNull().default(false),
+  precompiles: boolean().notNull().default(false),
+  frontend: text().notNull(),
+  created_at: timestamp("created_at", {
+    withTimezone: true,
+    mode: "string",
+  })
+    .defaultNow()
+    .notNull(),
+})
+
+export const zkvmVersions = pgTable("zkvm_versions", {
+  id: bigint({ mode: "number" }).primaryKey().generatedByDefaultAsIdentity(),
+  zkvm_id: bigint({ mode: "number" })
+    .notNull()
+    .references(() => zkvms.id, {
+      onDelete: "cascade",
+      onUpdate: "cascade",
+    }),
+  version: text().notNull(),
+  release_date: timestamp("release_date", {
+    withTimezone: true,
+    mode: "string",
+  }),
+  created_at: timestamp("created_at", {
+    withTimezone: true,
+    mode: "string",
+  })
+    .defaultNow()
+    .notNull(),
+})
 
 export const programs = pgTable(
   "programs",

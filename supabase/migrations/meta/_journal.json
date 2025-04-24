@@ -43,6 +43,20 @@
       "when": 1744724023680,
       "tag": "0005_cluster-machines",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1744975634194,
+      "tag": "0006_vendor-zkvms",
+      "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1745410207150,
+      "tag": "0007_cloud-providers",
+      "breakpoints": true
     }
   ]
 }

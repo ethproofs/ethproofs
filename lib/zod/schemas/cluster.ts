@@ -32,6 +32,11 @@ const baseClusterSchema = z.object({
     description: "Description of the cluster",
     example: "Primary RISC-V prover",
   }),
+  zkvm_version_id: z.number().int().positive().openapi({
+    description:
+      "ID of the zkVM version. Visit [ZKVMs](/docs/zkvms) to view all available zkVMs and their IDs.",
+    example: 1,
+  }),
   hardware: z.string().max(200).optional().openapi({
     description:
       "Technical specifications. Use `configuration.cluster_machine` field instead.",
