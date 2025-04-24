@@ -1034,11 +1034,7 @@
             "in": "query",
             "name": "provider",
             "schema": {
-              "type": "string",
-              "enum": [
-                "aws",
-                "vastai"
-              ]
+              "type": "string"
             }
           }
         ],
