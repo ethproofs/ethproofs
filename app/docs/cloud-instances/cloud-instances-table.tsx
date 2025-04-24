@@ -74,7 +74,7 @@ export function CloudInstancesTable({
         <TableBody>
           {filteredInstances.map((instance) => (
             <TableRow key={instance.id}>
-              <TableCell className="text-primary-light">
+              <TableCell className="border-l-2 border-r-2 border-primary bg-primary/5">
                 {instance.instance_name}
               </TableCell>
               <TableCell>{instance.cpu_name}</TableCell>
