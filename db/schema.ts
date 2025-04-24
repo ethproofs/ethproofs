@@ -370,7 +370,6 @@ export const zkvms = pgTable("zkvms", {
   parallelizable_proving: boolean().notNull().default(false),
   precompiles: boolean().notNull().default(false),
   frontend: text().notNull(),
-  is_open_source: boolean().notNull().default(false),
   created_at: timestamp("created_at", {
     withTimezone: true,
     mode: "string",
