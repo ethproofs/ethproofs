@@ -23,3 +23,137 @@ CREATE TABLE "prover_daily_stats" (
 );
 ALTER TABLE "prover_daily_stats" ENABLE ROW LEVEL SECURITY;--> statement-breakpoint
 ALTER TABLE "prover_daily_stats" ADD CONSTRAINT "prover_daily_stats_team_id_teams_id_fk" FOREIGN KEY ("team_id") REFERENCES "public"."teams"("id") ON DELETE cascade ON UPDATE cascade;--> statement-breakpoint
+
+-- Function to update proofs_daily_stats table
+CREATE OR REPLACE FUNCTION update_proofs_daily_stats()
+RETURNS TRIGGER AS $$
+DECLARE
+  proof_date DATE;
+BEGIN
+  -- Get the date for the updated/inserted proof 
+  -- (using the proved timestamp if available, otherwise we abort)
+  IF NEW.proved_timestamp IS NOT NULL THEN
+    proof_date := DATE(NEW.proved_timestamp);
+  ELSE
+    RAISE EXCEPTION 'Proved timestamp is not available for proof %', NEW.proof_id;
+  END IF;
+  
+  -- Create or update entry in proofs_daily_stats for this date
+  INSERT INTO proofs_daily_stats (
+    date,
+    avg_cost,
+    median_cost,
+    avg_latency,
+    median_latency,
+    total_proofs
+  )
+  SELECT 
+    proof_date,
+    -- Calculate average cost
+    COALESCE(AVG(cm.cloud_instance_count::double precision * ci.hourly_price * (p.proving_time::numeric / (1000.0 * 60::numeric * 60::numeric))::double precision), 0),
+    -- Calculate median cost (using percentile_cont)
+    COALESCE(PERCENTILE_CONT(0.5) WITHIN GROUP (ORDER BY cm.cloud_instance_count::double precision * ci.hourly_price * (p.proving_time::numeric / (1000.0 * 60::numeric * 60::numeric))::double precision), 0),
+    -- Calculate average latency
+    COALESCE(AVG(p.proving_time)::integer, 0),
+    -- Calculate median latency
+    COALESCE(PERCENTILE_CONT(0.5) WITHIN GROUP (ORDER BY p.proving_time)::integer, 0),
+    -- Count total proofs for the day
+    COUNT(p.proof_id)
+  FROM 
+    proofs p
+    JOIN cluster_versions cv ON p.cluster_version_id = cv.id
+    JOIN cluster_machines cm ON cv.id = cm.cluster_version_id
+    JOIN cloud_instances ci ON cm.cloud_instance_id = ci.id
+  WHERE 
+    p.proof_status = 'proved'
+    AND DATE(p.proved_timestamp) = proof_date
+  GROUP BY
+    DATE(p.proved_timestamp)
+  ON CONFLICT (date) DO UPDATE SET
+    avg_cost = EXCLUDED.avg_cost,
+    median_cost = EXCLUDED.median_cost,
+    avg_latency = EXCLUDED.avg_latency,
+    median_latency = EXCLUDED.median_latency,
+    total_proofs = EXCLUDED.total_proofs;
+  
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+-- Function to update prover_daily_stats table
+CREATE OR REPLACE FUNCTION update_prover_daily_stats()
+RETURNS TRIGGER AS $$
+DECLARE
+  proof_date DATE;
+BEGIN
+  -- Get the date for the updated/inserted proof
+  -- (using the proved timestamp if available, otherwise we abort)
+  IF NEW.proved_timestamp IS NOT NULL THEN
+    proof_date := DATE(NEW.proved_timestamp);
+  ELSE
+    RAISE EXCEPTION 'Proved timestamp is not available for proof %', NEW.proof_id;
+  END IF;
+  
+  -- Create or update entry in prover_daily_stats for this prover (team) and date
+  INSERT INTO prover_daily_stats (
+    date,
+    team_id,
+    avg_cost,
+    median_cost,
+    avg_latency,
+    median_latency,
+    total_proofs
+  )
+  SELECT 
+    proof_date,
+    p.team_id,
+    -- Calculate average cost
+    COALESCE(AVG(cm.cloud_instance_count::double precision * ci.hourly_price * (p.proving_time::numeric / (1000.0 * 60::numeric * 60::numeric))::double precision), 0),
+    -- Calculate median cost
+    COALESCE(PERCENTILE_CONT(0.5) WITHIN GROUP (ORDER BY cm.cloud_instance_count::double precision * ci.hourly_price * (p.proving_time::numeric / (1000.0 * 60::numeric * 60::numeric))::double precision), 0),
+    -- Calculate average latency
+    COALESCE(AVG(p.proving_time)::integer, 0),
+    -- Calculate median latency
+    COALESCE(PERCENTILE_CONT(0.5) WITHIN GROUP (ORDER BY p.proving_time)::integer, 0),
+    -- Count total proofs for the day/team
+    COUNT(p.proof_id)
+  FROM 
+    proofs p
+    JOIN cluster_versions cv ON p.cluster_version_id = cv.id
+    JOIN cluster_machines cm ON cv.id = cm.cluster_version_id
+    JOIN cloud_instances ci ON cm.cloud_instance_id = ci.id
+  WHERE 
+    p.proof_status = 'proved'
+    AND DATE(p.proved_timestamp) = proof_date
+    AND p.team_id = NEW.team_id
+  GROUP BY
+    DATE(p.proved_timestamp),
+    p.team_id
+  ON CONFLICT (date, team_id) DO UPDATE SET
+    avg_cost = EXCLUDED.avg_cost,
+    median_cost = EXCLUDED.median_cost,
+    avg_latency = EXCLUDED.avg_latency,
+    median_latency = EXCLUDED.median_latency,
+    total_proofs = EXCLUDED.total_proofs;
+  
+  RETURN NEW;
+END;
+$$ LANGUAGE plpgsql;
+
+-- Create triggers
+DROP TRIGGER IF EXISTS trigger_update_proofs_daily_stats ON proofs;
+DROP TRIGGER IF EXISTS trigger_update_prover_daily_stats ON proofs;
+
+CREATE TRIGGER trigger_update_proofs_daily_stats
+AFTER INSERT OR UPDATE OF proof_status
+ON proofs
+FOR EACH ROW
+WHEN (NEW.proof_status = 'proved')
+EXECUTE FUNCTION update_proofs_daily_stats();
+
+CREATE TRIGGER trigger_update_prover_daily_stats
+AFTER INSERT OR UPDATE OF proof_status
+ON proofs
+FOR EACH ROW
+WHEN (NEW.proof_status = 'proved')
+EXECUTE FUNCTION update_prover_daily_stats();
