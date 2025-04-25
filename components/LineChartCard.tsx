@@ -66,11 +66,17 @@ const chartConfig = {
 type LineKey = "avg" | "median"
 
 // TODO: Pass full data as props: 1 year of data, type/formatting of data, title
-type LineChartProps = {
+type LineChartProps = React.HTMLAttributes<HTMLDivElement> & {
   title: string
+  hideKPIs?: boolean
 }
 
-const LineChartCard = ({ title }: LineChartProps) => {
+const LineChartCard = ({
+  title,
+  hideKPIs,
+  className,
+  ...props
+}: LineChartProps) => {
   const [dayRange, setDayRange] = React.useState<DayRange>(7)
   const [lineVisibility, setLineVisibility] = React.useState<{
     [key in LineKey]: boolean
@@ -94,31 +100,39 @@ const LineChartCard = ({ title }: LineChartProps) => {
   })
 
   return (
-    <Card className="border-1 relative space-y-4 overflow-hidden dark:bg-black/10 md:space-y-4">
+    <Card
+      className={cn(
+        "border-1 relative space-y-4 overflow-hidden dark:bg-black/10 md:space-y-4",
+        className
+      )}
+      {...props}
+    >
       <CardHeader className="flex flex-col gap-4 space-y-0 py-5">
         <CardTitle className="font-normal">
           {title} per {dayRange} days
         </CardTitle>
-        <div className="flex">
-          <div className="flex flex-1 flex-col items-center border-e text-center">
-            <span className="block text-sm font-bold uppercase">avg</span>
-            <span className="block font-mono text-2xl font-semibold text-primary">
-              {new Intl.NumberFormat("en-US", {
-                style: "currency",
-                currency: "USD",
-              }).format(0.1)}
-            </span>
+        {!hideKPIs && (
+          <div className="flex">
+            <div className="flex flex-1 flex-col items-center border-e text-center">
+              <span className="block text-sm font-bold uppercase">avg</span>
+              <span className="block font-mono text-2xl font-semibold text-primary">
+                {new Intl.NumberFormat("en-US", {
+                  style: "currency",
+                  currency: "USD",
+                }).format(0.1)}
+              </span>
+            </div>
+            <div className="flex flex-1 flex-col items-center text-center">
+              <span className="block text-sm font-bold uppercase">median</span>
+              <span className="block font-mono text-2xl font-semibold text-primary">
+                {new Intl.NumberFormat("en-US", {
+                  style: "currency",
+                  currency: "USD",
+                }).format(0.25)}
+              </span>
+            </div>
           </div>
-          <div className="flex flex-1 flex-col items-center text-center">
-            <span className="block text-sm font-bold uppercase">median</span>
-            <span className="block font-mono text-2xl font-semibold text-primary">
-              {new Intl.NumberFormat("en-US", {
-                style: "currency",
-                currency: "USD",
-              }).format(0.25)}
-            </span>
-          </div>
-        </div>
+        )}
       </CardHeader>
       <CardContent>
         <ChartContainer
