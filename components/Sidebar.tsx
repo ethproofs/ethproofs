@@ -1,7 +1,12 @@
 import { Suspense } from "react"
 
+import Bomb from "@/components/svgs/bomb.svg"
+import Box from "@/components/svgs/box.svg"
 import EthProofsLogo from "@/components/svgs/eth-proofs-logo.svg"
 import Heart from "@/components/svgs/heart.svg"
+import LightningBolt from "@/components/svgs/lightning-bolt.svg"
+import ProofCheck from "@/components/svgs/proof-check.svg"
+import TrendUpChart from "@/components/svgs/trend-up-chart.svg"
 
 import { SITE_REPO } from "@/lib/constants"
 
@@ -40,22 +45,37 @@ export function AppSidebar() {
           <SidebarGroup className="">
             <SidebarGroupLabel className="">Home</SidebarGroupLabel>
             <Link href="/" className="text-body hover:text-primary">
-              <SidebarMenuItem>Dashboard</SidebarMenuItem>
+              <SidebarMenuItem>
+                <TrendUpChart className="size-6" />
+                Dashboard
+              </SidebarMenuItem>
             </Link>
           </SidebarGroup>
           <SidebarGroup>
             <SidebarGroupLabel>Explore</SidebarGroupLabel>
             <Link href="/zkvms" className="text-body hover:text-primary">
-              <SidebarMenuItem>zkVMs</SidebarMenuItem>
+              <SidebarMenuItem>
+                <LightningBolt className="size-6" />
+                zkVMs
+              </SidebarMenuItem>
             </Link>
             <Link href="/provers" className="text-body hover:text-primary">
-              <SidebarMenuItem>provers</SidebarMenuItem>
+              <SidebarMenuItem>
+                <ProofCheck className="size-6" />
+                provers
+              </SidebarMenuItem>
             </Link>
             <Link href="/blocks" className="text-body hover:text-primary">
-              <SidebarMenuItem>blocks</SidebarMenuItem>
+              <SidebarMenuItem>
+                <Box className="size-6" strokeWidth="1" />
+                blocks
+              </SidebarMenuItem>
             </Link>
             <Link href="/killers" className="text-body hover:text-primary">
-              <SidebarMenuItem>killers</SidebarMenuItem>
+              <SidebarMenuItem>
+                <Bomb className="size-6" />
+                killers
+              </SidebarMenuItem>
             </Link>
           </SidebarGroup>
           <SidebarGroup>

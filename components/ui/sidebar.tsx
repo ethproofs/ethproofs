@@ -5,7 +5,6 @@ import { cva, VariantProps } from "class-variance-authority"
 import { PanelLeft } from "lucide-react"
 import { Slot } from "@radix-ui/react-slot"
 
-import LightningBolt from "@/components/svgs/lightning-bolt.svg"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Separator } from "@/components/ui/separator"
@@ -519,7 +518,6 @@ const SidebarMenuItem = React.forwardRef<
     )}
     {...props}
   >
-    <LightningBolt className="self//-start text-sidebar-foreground size-6" />
     {children}
   </li>
 ))
