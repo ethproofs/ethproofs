@@ -1,6 +1,8 @@
-import { fetchProofsDailyStats } from "@/lib/api/stats"
-import LineChartCard, { type ChartData } from "./LineChartCard"
 import { CHART_RANGES } from "@/lib/constants"
+
+import LineChartCard, { type ChartData } from "./LineChartCard"
+
+import { fetchProofsDailyStats } from "@/lib/api/stats"
 
 const ProofsStats = async () => {
   const dailyData = await fetchProofsDailyStats(Math.max(...CHART_RANGES))

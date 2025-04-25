@@ -4,6 +4,7 @@ import * as React from "react"
 import { CartesianGrid, Line, LineChart, XAxis } from "recharts"
 
 import type { DayRange } from "@/lib/types"
+
 import ArrowDropdown from "@/components/svgs/arrow-dropdown.svg"
 import {
   Card,
@@ -30,10 +31,11 @@ import {
 import { cn } from "@/lib/utils"
 
 import { CHART_RANGES } from "@/lib/constants"
-import { prettyMs } from "@/lib/time"
 
 import { Button } from "./ui/button"
+
 import { formatUsd } from "@/lib/number"
+import { prettyMs } from "@/lib/time"
 
 const chartConfig = {
   avg: {

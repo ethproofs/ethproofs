@@ -1,3 +1,4 @@
+import { Suspense } from "react"
 import { asc, notIlike } from "drizzle-orm"
 import type { Metadata } from "next"
 import {
@@ -11,6 +12,7 @@ import type { SummaryItem } from "@/lib/types"
 import BlocksTable from "@/components/BlocksTable"
 import KPIs from "@/components/KPIs"
 import MachineTabs from "@/components/MachineTabs"
+import ProofsStats from "@/components/ProofsStats"
 import ProverAccordion from "@/components/ProverAccordion"
 import SoftwareAccordion from "@/components/SoftwareAccordion"
 import Box from "@/components/svgs/box.svg"
@@ -18,7 +20,6 @@ import BoxDashed from "@/components/svgs/box-dashed.svg"
 import Instructions from "@/components/svgs/instructions.svg"
 import ShieldCheck from "@/components/svgs/shield-check.svg"
 import { Card, CardHeader, CardTitle } from "@/components/ui/card"
-import ProofsStats from "@/components/ProofsStats"
 
 import { DEFAULT_PAGE_STATE } from "@/lib/constants"
 
@@ -28,7 +29,6 @@ import { fetchBlocksPaginated } from "@/lib/api/blocks"
 import { demoProverAccordionDetails } from "@/lib/dummy-data"
 import { getMetadata } from "@/lib/metadata"
 import { prettyMs } from "@/lib/time"
-import { Suspense } from "react"
 
 export const metadata: Metadata = getMetadata()
 
