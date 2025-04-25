@@ -554,3 +554,47 @@ export const teamsSummary = pgView("teams_summary", {
     LEFT JOIN cloud_instances ci ON cm.cloud_instance_id = ci.id 
     GROUP BY t.id`
   )
+
+// Tables for aggregated data and charts
+
+// Daily aggregated metrics for proofs
+export const proofsDailyStats = pgTable(
+  "proofs_daily_stats",
+  {
+    id: bigint({ mode: "number" }).primaryKey().generatedByDefaultAsIdentity(),
+    date: timestamp("date", { withTimezone: true, mode: "string" }).notNull(),
+
+    // Overall metrics
+    avg_cost: doublePrecision("avg_cost").notNull(),
+    median_cost: doublePrecision("median_cost").notNull(),
+    avg_latency: integer("avg_latency").notNull(), // in milliseconds
+    median_latency: integer("median_latency").notNull(), // in milliseconds
+    total_proofs: integer("total_proofs").notNull(),
+  },
+  (table) => [unique("proofs_daily_stats_date_key").on(table.date)]
+)
+
+// Daily aggregated metrics per prover
+export const proverDailyStats = pgTable(
+  "prover_daily_stats",
+  {
+    id: bigint({ mode: "number" }).primaryKey().generatedByDefaultAsIdentity(),
+    date: timestamp("date", { withTimezone: true, mode: "string" }).notNull(),
+    team_id: uuid()
+      .notNull()
+      .references(() => teams.id, {
+        onDelete: "cascade",
+        onUpdate: "cascade",
+      }),
+
+    // Metrics
+    avg_cost: doublePrecision("avg_cost").notNull(),
+    median_cost: doublePrecision("median_cost").notNull(),
+    avg_latency: integer("avg_latency").notNull(), // in milliseconds
+    median_latency: integer("median_latency").notNull(), // in milliseconds
+    total_proofs: integer("total_proofs").notNull(),
+  },
+  (table) => [
+    unique("prover_daily_stats_date_team_key").on(table.date, table.team_id),
+  ]
+)
