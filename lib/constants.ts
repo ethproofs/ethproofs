@@ -33,4 +33,4 @@ export const isNetlifyProduction = process.env.CONTEXT === "production"
 export const PROOF_BINARY_BUCKET = "proof_binaries"
 export const PUBLIC_ASSETS_BUCKET = "public-assets"
 
-export const CHART_RANGES = [7, 30, 90, 365] as const
+export const CHART_RANGES = [7, 30, 90] as const

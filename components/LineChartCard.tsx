@@ -4,7 +4,6 @@ import * as React from "react"
 import { CartesianGrid, Line, LineChart, XAxis } from "recharts"
 
 import type { DayRange } from "@/lib/types"
-
 import ArrowDropdown from "@/components/svgs/arrow-dropdown.svg"
 import {
   Card,
@@ -25,31 +24,16 @@ import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
   DropdownMenuContent,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 
 import { cn } from "@/lib/utils"
 
 import { CHART_RANGES } from "@/lib/constants"
+import { prettyMs } from "@/lib/time"
 
 import { Button } from "./ui/button"
-
-// TODO: Use real data
-const chartData = Array(400)
-  .fill(0)
-  .map((_, i) => {
-    const randAdjust1 = Math.random() - 0.5
-    const randAdjust2 = Math.random() - 0.5
-    const date = new Date()
-    date.setDate(date.getDate() - i)
-
-    return {
-      date: date.toISOString().split("T")[0],
-      avg: i + randAdjust1,
-      median: i + randAdjust2,
-    }
-  })
+import { formatUsd } from "@/lib/number"
 
 const chartConfig = {
   avg: {
@@ -62,16 +46,56 @@ const chartConfig = {
   },
 } satisfies ChartConfig
 
-// TODO: Add individual teams
 type LineKey = "avg" | "median"
 
-// TODO: Pass full data as props: 1 year of data, type/formatting of data, title
-type LineChartProps = {
-  title: string
+type ChartFormat = "currency" | "ms"
+
+export type ChartData = {
+  date: string
+  avg: number
+  median: number
 }
 
-const LineChartCard = ({ title }: LineChartProps) => {
-  const [dayRange, setDayRange] = React.useState<DayRange>(7)
+type ChartCardProps = {
+  title: string
+  format: "currency" | "ms"
+  data: ChartData[]
+  initialDayRange?: DayRange
+}
+
+const formatValue = (value: number | string, format: ChartFormat) => {
+  const numValue = typeof value === "string" ? parseFloat(value) : value
+
+  if (isNaN(numValue)) {
+    return "-"
+  }
+
+  if (format === "currency") {
+    return formatUsd(numValue)
+  }
+
+  if (format === "ms") {
+    return prettyMs(numValue)
+  }
+}
+
+// TODO: to be removed
+const getLatestValues = (data: ChartData[]) => {
+  if (!data.length) {
+    return { avg: 0, median: 0 }
+  }
+
+  // data is sorted by date asc
+  return data[data.length - 1]
+}
+
+const LineChartCard = ({
+  title,
+  format,
+  data,
+  initialDayRange = CHART_RANGES[0],
+}: ChartCardProps) => {
+  const [dayRange, setDayRange] = React.useState<DayRange>(initialDayRange)
   const [lineVisibility, setLineVisibility] = React.useState<{
     [key in LineKey]: boolean
   }>({
@@ -81,11 +105,13 @@ const LineChartCard = ({ title }: LineChartProps) => {
 
   const setTimeRangeValue = (value: DayRange) => () => setDayRange(value)
 
+  const latestValues = getLatestValues(data)
+
   const toggleLineVisibility = (key: LineKey) => {
     setLineVisibility((prev) => ({ ...prev, [key]: !prev[key] }))
   }
 
-  const filteredData = chartData.filter((item) => {
+  const filteredData = data.filter((item) => {
     const date = new Date(item.date)
     const referenceDate = new Date()
     const startDate = new Date(referenceDate)
@@ -95,27 +121,21 @@ const LineChartCard = ({ title }: LineChartProps) => {
 
   return (
     <Card className="border-1 relative space-y-4 overflow-hidden dark:bg-black/10 md:space-y-4">
-      <CardHeader className="flex flex-col gap-4 space-y-0 py-5">
-        <CardTitle className="font-normal">
-          {title} per {dayRange} days
-        </CardTitle>
+      <CardHeader className="flex flex-col gap-6 space-y-0 py-5">
+        <CardTitle className="text-lg font-normal">{title}</CardTitle>
         <div className="flex">
           <div className="flex flex-1 flex-col items-center border-e text-center">
             <span className="block text-sm font-bold uppercase">avg</span>
-            <span className="block font-mono text-2xl font-semibold text-primary">
-              {new Intl.NumberFormat("en-US", {
-                style: "currency",
-                currency: "USD",
-              }).format(0.1)}
+            <span className="block font-mono text-3xl text-primary">
+              {/* TODO: replace this with total avg once we have the data */}
+              {formatValue(latestValues.avg, format)}
             </span>
           </div>
           <div className="flex flex-1 flex-col items-center text-center">
             <span className="block text-sm font-bold uppercase">median</span>
-            <span className="block font-mono text-2xl font-semibold text-primary">
-              {new Intl.NumberFormat("en-US", {
-                style: "currency",
-                currency: "USD",
-              }).format(0.25)}
+            <span className="block font-mono text-3xl text-primary">
+              {/* TODO: replace this with total median once we have the data */}
+              {formatValue(latestValues.median, format)}
             </span>
           </div>
         </div>
@@ -172,7 +192,7 @@ const LineChartCard = ({ title }: LineChartProps) => {
                 type="monotone"
                 stroke="hsla(var(--chart-1))"
                 strokeWidth={2}
-                dot
+                dot={false}
               />
             )}
             {lineVisibility.median && (
@@ -181,7 +201,7 @@ const LineChartCard = ({ title }: LineChartProps) => {
                 type="monotone"
                 stroke="hsla(var(--chart-2))"
                 strokeWidth={2}
-                dot
+                dot={false}
               />
             )}
             <ChartLegend

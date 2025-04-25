@@ -10,7 +10,6 @@ import type { SummaryItem } from "@/lib/types"
 
 import BlocksTable from "@/components/BlocksTable"
 import KPIs from "@/components/KPIs"
-import LineChartCard from "@/components/LineChartCard"
 import MachineTabs from "@/components/MachineTabs"
 import ProverAccordion from "@/components/ProverAccordion"
 import SoftwareAccordion from "@/components/SoftwareAccordion"
@@ -19,6 +18,7 @@ import BoxDashed from "@/components/svgs/box-dashed.svg"
 import Instructions from "@/components/svgs/instructions.svg"
 import ShieldCheck from "@/components/svgs/shield-check.svg"
 import { Card, CardHeader, CardTitle } from "@/components/ui/card"
+import ProofsStats from "@/components/ProofsStats"
 
 import { DEFAULT_PAGE_STATE } from "@/lib/constants"
 
@@ -28,6 +28,7 @@ import { fetchBlocksPaginated } from "@/lib/api/blocks"
 import { demoProverAccordionDetails } from "@/lib/dummy-data"
 import { getMetadata } from "@/lib/metadata"
 import { prettyMs } from "@/lib/time"
+import { Suspense } from "react"
 
 export const metadata: Metadata = getMetadata()
 
@@ -152,17 +153,10 @@ export default async function Index() {
       </h1> */}
 
       <div className="flex flex-1 flex-col items-center gap-20 px-6 sm:px-8 md:w-[calc(100vw_-_var(--sidebar-width))] md:px-12 lg:px-16 xl:px-20">
-        <section
-          id="kpis"
-          className="grid w-full max-w-screen-xl scroll-m-20 grid-cols-1 gap-8 md:grid-cols-2"
-        >
-          <div id="latency-kpi" className="w-full">
-            <LineChartCard title="latency" />
-          </div>
-          <div id="cost-kpi" className="w-full">
-            <LineChartCard title="cost" />
-          </div>
-        </section>
+        {/* TODO: add loading state component */}
+        <Suspense fallback={<div>Loading...</div>}>
+          <ProofsStats />
+        </Suspense>
 
         <section id="zkvms" className="w-full max-w-screen-xl scroll-m-20">
           <Card className="bg-white/10 dark:bg-black/10">

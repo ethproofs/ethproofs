@@ -11,6 +11,8 @@ import {
   clusterVersions,
   machines,
   proofs,
+  proofsDailyStats,
+  proverDailyStats,
   teams,
   teamsSummary,
   vendors,
@@ -87,6 +89,16 @@ export type ZkvmVersion = typeof zkvmVersions.$inferSelect
  * Represents a row in the teams_summary view.
  */
 export type TeamSummary = typeof teamsSummary.$inferSelect
+
+/**
+ * Represents a row in the proofs_daily_stats table.
+ */
+export type ProofsDailyStats = typeof proofsDailyStats.$inferSelect
+
+/**
+ * Represents a row in the prover_daily_stats table.
+ */
+export type ProverDailyStats = typeof proverDailyStats.$inferSelect
 
 export type ClusterVersionExtensions = {
   cluster: ClusterBase
