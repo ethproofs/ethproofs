@@ -1,5 +1,3 @@
-// TODO: Fix or remove Comp slot usage
-
 "use client"
 
 import * as React from "react"
@@ -445,12 +443,12 @@ SidebarGroup.displayName = "SidebarGroup"
 
 const SidebarGroupLabel = React.forwardRef<
   HTMLDivElement,
-  React.ComponentProps<"div"> & { asChild?: boolean }
+  React.ComponentPropsWithoutRef<"div"> & { asChild?: boolean }
 >(({ className, asChild = false, ...props }, ref) => {
-  // const Comp = asChild ? Slot : "div"
+  const Comp = asChild ? Slot : "div"
 
   return (
-    <div
+    <Comp
       ref={ref}
       data-sidebar="group-label"
       className={cn(
@@ -466,12 +464,12 @@ SidebarGroupLabel.displayName = "SidebarGroupLabel"
 
 const SidebarGroupAction = React.forwardRef<
   HTMLButtonElement,
-  React.ComponentProps<"button"> & { asChild?: boolean }
+  React.ComponentPropsWithoutRef<"button"> & { asChild?: boolean }
 >(({ className, asChild = false, ...props }, ref) => {
-  // const Comp = asChild ? Slot : "button"
+  const Comp = asChild ? Slot : "button"
 
   return (
-    <button
+    <Comp
       ref={ref}
       data-sidebar="group-action"
       className={cn(
@@ -556,7 +554,7 @@ const sidebarMenuButtonVariants = cva(
 
 const SidebarMenuButton = React.forwardRef<
   HTMLButtonElement,
-  React.ComponentProps<"button"> & {
+  React.ComponentPropsWithoutRef<"button"> & {
     asChild?: boolean
     isActive?: boolean
     tooltip?: string | React.ComponentProps<typeof TooltipContent>
@@ -564,7 +562,7 @@ const SidebarMenuButton = React.forwardRef<
 >(
   (
     {
-      // asChild = false,
+      asChild = false,
       isActive = false,
       variant = "default",
       size = "default",
@@ -574,11 +572,11 @@ const SidebarMenuButton = React.forwardRef<
     },
     ref
   ) => {
-    // const Comp = asChild ? Slot : "button"
+    const Comp = asChild ? Slot : "button"
     const { isMobile, state } = useSidebar()
 
     const button = (
-      <button
+      <Comp
         ref={ref}
         data-sidebar="menu-button"
         data-size={size}
@@ -615,15 +613,15 @@ SidebarMenuButton.displayName = "SidebarMenuButton"
 
 const SidebarMenuAction = React.forwardRef<
   HTMLButtonElement,
-  React.ComponentProps<"button"> & {
+  React.ComponentPropsWithoutRef<"button"> & {
     asChild?: boolean
     showOnHover?: boolean
   }
 >(({ className, asChild = false, showOnHover = false, ...props }, ref) => {
-  // const Comp = asChild ? Slot : "button"
+  const Comp = asChild ? Slot : "button"
 
   return (
-    <button
+    <Comp
       ref={ref}
       data-sidebar="menu-action"
       className={cn(
