@@ -8,7 +8,7 @@ import { db } from "@/db"
  * @param days - Number of days to include (e.g., 7, 30, 90, 365)
  */
 export async function fetchProofsDailyStats(days: number) {
-  const endDate = startOfDay(new Date())
+  const endDate = new Date()
   const startDate = startOfDay(addDays(endDate, -days))
 
   return db.query.proofsDailyStats.findMany({
@@ -27,7 +27,7 @@ export async function fetchProofsDailyStats(days: number) {
  * @param days - Number of days to include (e.g., 7, 30, 90, 365)
  */
 export async function fetchProverDailyStats(teamId: string, days: number) {
-  const endDate = startOfDay(new Date())
+  const endDate = new Date()
   const startDate = startOfDay(addDays(endDate, -days))
 
   return db.query.proverDailyStats.findMany({
