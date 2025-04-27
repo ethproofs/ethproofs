@@ -48,7 +48,7 @@ const ProofsStats = ({ recentSummary }: { recentSummary: RecentSummary }) => {
           data={costData}
           isLoading={isLoading}
           totalAvg={formatUsd(recentSummary.avg_cost_per_proof ?? 0)}
-          totalMedian={formatUsd(recentSummary.avg_cost_per_proof ?? 0)}
+          totalMedian={formatUsd(recentSummary.median_cost_per_proof ?? 0)}
         />
       </div>
       <div className="w-full">
@@ -58,7 +58,7 @@ const ProofsStats = ({ recentSummary }: { recentSummary: RecentSummary }) => {
           data={latencyData}
           isLoading={isLoading}
           totalAvg={prettyMs(Number(recentSummary.avg_proving_time ?? 0))}
-          totalMedian={prettyMs(Number(recentSummary.avg_proving_time ?? 0))}
+          totalMedian={prettyMs(Number(recentSummary.median_proving_time ?? 0))}
         />
       </div>
     </section>

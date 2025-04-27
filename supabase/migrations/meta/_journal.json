@@ -64,6 +64,13 @@
       "when": 1745752695001,
       "tag": "0008_proof-stats",
       "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "7",
+      "when": 1745756169542,
+      "tag": "0009_add-median-recent-summary",
+      "breakpoints": true
     }
   ]
 }
