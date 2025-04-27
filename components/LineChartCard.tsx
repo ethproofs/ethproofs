@@ -59,8 +59,9 @@ type ChartCardProps = {
   data: ChartData[]
   initialDayRange?: DayRange
   isLoading?: boolean
-  totalAvg: string | number
-  totalMedian: string | number
+  totalAvg: number
+  totalMedian: number
+  formatValue?: (value: number | string | (number | string)[]) => string
 }
 
 const filterData = (data: ChartData[], dayRange: DayRange) => {
@@ -80,6 +81,7 @@ const LineChartCard = ({
   isLoading = false,
   totalAvg,
   totalMedian,
+  formatValue,
 }: ChartCardProps) => {
   const [dayRange, setDayRange] = React.useState<DayRange>(initialDayRange)
   const [lineVisibility, setLineVisibility] = React.useState<{
@@ -105,13 +107,13 @@ const LineChartCard = ({
           <div className="flex flex-1 flex-col items-center border-e text-center">
             <span className="block text-sm font-bold uppercase">avg</span>
             <span className="block font-mono text-3xl text-primary">
-              {totalAvg}
+              {formatValue ? formatValue(totalAvg) : totalAvg}
             </span>
           </div>
           <div className="flex flex-1 flex-col items-center text-center">
             <span className="block text-sm font-bold uppercase">median</span>
             <span className="block font-mono text-3xl text-primary">
-              {totalMedian}
+              {formatValue ? formatValue(totalMedian) : totalMedian}
             </span>
           </div>
         </div>
@@ -166,6 +168,7 @@ const LineChartCard = ({
                         year: "numeric",
                       })
                     }}
+                    valueFormatter={formatValue}
                   />
                 }
               />

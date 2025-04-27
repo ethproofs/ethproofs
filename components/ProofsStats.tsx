@@ -47,8 +47,9 @@ const ProofsStats = ({ recentSummary }: { recentSummary: RecentSummary }) => {
           format="currency"
           data={costData}
           isLoading={isLoading}
-          totalAvg={formatUsd(recentSummary.avg_cost_per_proof ?? 0)}
-          totalMedian={formatUsd(recentSummary.median_cost_per_proof ?? 0)}
+          totalAvg={recentSummary.avg_cost_per_proof ?? 0}
+          totalMedian={recentSummary.median_cost_per_proof ?? 0}
+          formatValue={(value) => formatUsd(Number(value))}
         />
       </div>
       <div className="w-full">
@@ -57,8 +58,9 @@ const ProofsStats = ({ recentSummary }: { recentSummary: RecentSummary }) => {
           format="ms"
           data={latencyData}
           isLoading={isLoading}
-          totalAvg={prettyMs(Number(recentSummary.avg_proving_time ?? 0))}
-          totalMedian={prettyMs(Number(recentSummary.median_proving_time ?? 0))}
+          totalAvg={Number(recentSummary.avg_proving_time ?? 0)}
+          totalMedian={Number(recentSummary.median_proving_time ?? 0)}
+          formatValue={(value) => prettyMs(Number(value))}
         />
       </div>
     </section>
