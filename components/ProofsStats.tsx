@@ -13,7 +13,7 @@ const ProofsStats = () => {
     queryKey: ["proofs-daily-stats"],
     queryFn: async () => {
       const response = await fetch(
-        `/api/stats/proofs/daily?range=${Math.max(...CHART_RANGES)}`
+        `/api/stats/proofs/daily?days=${Math.max(...CHART_RANGES)}`
       )
       return response.json()
     },
