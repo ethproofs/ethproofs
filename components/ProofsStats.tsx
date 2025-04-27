@@ -2,13 +2,16 @@
 
 import { useQuery } from "@tanstack/react-query"
 
-import { ProofsDailyStats } from "@/lib/types"
+import { ProofsDailyStats, RecentSummary } from "@/lib/types"
 
 import { CHART_RANGES } from "@/lib/constants"
 
 import LineChartCard, { type ChartData } from "./LineChartCard"
 
-const ProofsStats = () => {
+import { formatUsd } from "@/lib/number"
+import { prettyMs } from "@/lib/time"
+
+const ProofsStats = ({ recentSummary }: { recentSummary: RecentSummary }) => {
   const { data: dailyData, isLoading } = useQuery<ProofsDailyStats[]>({
     queryKey: ["proofs-daily-stats"],
     queryFn: async () => {
@@ -44,6 +47,8 @@ const ProofsStats = () => {
           format="currency"
           data={costData}
           isLoading={isLoading}
+          totalAvg={formatUsd(recentSummary.avg_cost_per_proof ?? 0)}
+          totalMedian={formatUsd(recentSummary.avg_cost_per_proof ?? 0)}
         />
       </div>
       <div className="w-full">
@@ -52,6 +57,8 @@ const ProofsStats = () => {
           format="ms"
           data={latencyData}
           isLoading={isLoading}
+          totalAvg={prettyMs(Number(recentSummary.avg_proving_time ?? 0))}
+          totalMedian={prettyMs(Number(recentSummary.avg_proving_time ?? 0))}
         />
       </div>
     </section>

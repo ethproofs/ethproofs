@@ -13,6 +13,7 @@ import {
   proofs,
   proofsDailyStats,
   proverDailyStats,
+  recentSummary,
   teams,
   teamsSummary,
   vendors,
@@ -94,6 +95,11 @@ export type TeamSummary = typeof teamsSummary.$inferSelect
  * Represents a row in the proofs_daily_stats table.
  */
 export type ProofsDailyStats = typeof proofsDailyStats.$inferSelect
+
+/**
+ * Represents a row in the recent_summary view.
+ */
+export type RecentSummary = typeof recentSummary.$inferSelect
 
 /**
  * Represents a row in the prover_daily_stats table.

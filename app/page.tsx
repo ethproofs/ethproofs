@@ -23,7 +23,10 @@ import { Card, CardHeader, CardTitle } from "@/components/ui/card"
 import { DEFAULT_PAGE_STATE } from "@/lib/constants"
 
 import { db } from "@/db"
-import { teamsSummary as teamsSummaryView } from "@/db/schema"
+import {
+  recentSummary as recentSummaryView,
+  teamsSummary as teamsSummaryView,
+} from "@/db/schema"
 import { fetchBlocksPaginated } from "@/lib/api/blocks"
 import { demoProverAccordionDetails } from "@/lib/dummy-data"
 import { getMetadata } from "@/lib/metadata"
@@ -40,6 +43,8 @@ export default async function Index() {
     // hide test teams from the provers list
     .where(notIlike(teamsSummaryView.team_name, "%test%"))
     .orderBy(asc(teamsSummaryView.avg_proving_time))
+
+  const [recentSummary] = await db.select().from(recentSummaryView).limit(1)
 
   const teams = await db.query.teams.findMany()
 
@@ -152,7 +157,7 @@ export default async function Index() {
       </h1> */}
 
       <div className="flex flex-1 flex-col items-center gap-20 px-6 sm:px-8 md:w-[calc(100vw_-_var(--sidebar-width))] md:px-12 lg:px-16 xl:px-20">
-        <ProofsStats />
+        <ProofsStats recentSummary={recentSummary} />
 
         <section id="zkvms" className="w-full max-w-screen-xl scroll-m-20">
           <Card className="bg-white/10 dark:bg-black/10">

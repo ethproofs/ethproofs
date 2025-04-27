@@ -34,9 +34,6 @@ import { CHART_RANGES } from "@/lib/constants"
 
 import { Button } from "./ui/button"
 
-import { formatUsd } from "@/lib/number"
-import { prettyMs } from "@/lib/time"
-
 const chartConfig = {
   avg: {
     label: "avg",
@@ -50,8 +47,6 @@ const chartConfig = {
 
 type LineKey = "avg" | "median"
 
-type ChartFormat = "currency" | "ms"
-
 export type ChartData = {
   date: string
   avg: number
@@ -64,32 +59,8 @@ type ChartCardProps = {
   data: ChartData[]
   initialDayRange?: DayRange
   isLoading?: boolean
-}
-
-const formatValue = (value: number | string, format: ChartFormat) => {
-  const numValue = typeof value === "string" ? parseFloat(value) : value
-
-  if (isNaN(numValue)) {
-    return "-"
-  }
-
-  if (format === "currency") {
-    return formatUsd(numValue)
-  }
-
-  if (format === "ms") {
-    return prettyMs(numValue)
-  }
-}
-
-// TODO: to be removed
-const getLatestValues = (data: ChartData[]) => {
-  if (!data.length) {
-    return { avg: 0, median: 0 }
-  }
-
-  // data is sorted by date asc
-  return data[data.length - 1]
+  totalAvg: string | number
+  totalMedian: string | number
 }
 
 const filterData = (data: ChartData[], dayRange: DayRange) => {
@@ -104,10 +75,11 @@ const filterData = (data: ChartData[], dayRange: DayRange) => {
 
 const LineChartCard = ({
   title,
-  format,
   data,
   initialDayRange = CHART_RANGES[0],
   isLoading = false,
+  totalAvg,
+  totalMedian,
 }: ChartCardProps) => {
   const [dayRange, setDayRange] = React.useState<DayRange>(initialDayRange)
   const [lineVisibility, setLineVisibility] = React.useState<{
@@ -119,7 +91,6 @@ const LineChartCard = ({
 
   const setTimeRangeValue = (value: DayRange) => () => setDayRange(value)
 
-  const latestValues = getLatestValues(data)
   const filteredData = filterData(data, dayRange)
 
   const toggleLineVisibility = (key: LineKey) => {
@@ -134,15 +105,13 @@ const LineChartCard = ({
           <div className="flex flex-1 flex-col items-center border-e text-center">
             <span className="block text-sm font-bold uppercase">avg</span>
             <span className="block font-mono text-3xl text-primary">
-              {/* TODO: replace this with total avg once we have the data */}
-              {formatValue(latestValues.avg, format)}
+              {totalAvg}
             </span>
           </div>
           <div className="flex flex-1 flex-col items-center text-center">
             <span className="block text-sm font-bold uppercase">median</span>
             <span className="block font-mono text-3xl text-primary">
-              {/* TODO: replace this with total median once we have the data */}
-              {formatValue(latestValues.median, format)}
+              {totalMedian}
             </span>
           </div>
         </div>
