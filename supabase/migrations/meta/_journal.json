@@ -61,8 +61,8 @@
     {
       "idx": 8,
       "version": "7",
-      "when": 1745579777823,
-      "tag": "0008_stats",
+      "when": 1745752695001,
+      "tag": "0008_proof-stats",
       "breakpoints": true
     }
   ]
