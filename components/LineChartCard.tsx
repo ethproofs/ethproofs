@@ -37,11 +37,9 @@ import { Button } from "./ui/button"
 const chartConfig = {
   avg: {
     label: "avg",
-    color: "hsl(var(--chart-1))",
   },
   median: {
     label: "median",
-    color: "hsl(var(--chart-2))",
   },
 } satisfies ChartConfig
 
@@ -176,7 +174,7 @@ const LineChartCard = ({
                 <Line
                   dataKey="avg"
                   type="monotone"
-                  stroke="hsla(var(--chart-1))"
+                  stroke="hsla(var(--chart-2))"
                   strokeWidth={2}
                   dot={false}
                 />
@@ -185,7 +183,7 @@ const LineChartCard = ({
                 <Line
                   dataKey="median"
                   type="monotone"
-                  stroke="hsla(var(--chart-2))"
+                  stroke="hsla(var(--chart-3))"
                   strokeWidth={2}
                   dot={false}
                 />
