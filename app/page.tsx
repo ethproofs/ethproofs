@@ -1,4 +1,3 @@
-import { Suspense } from "react"
 import { asc, notIlike } from "drizzle-orm"
 import type { Metadata } from "next"
 import {
@@ -153,10 +152,7 @@ export default async function Index() {
       </h1> */}
 
       <div className="flex flex-1 flex-col items-center gap-20 px-6 sm:px-8 md:w-[calc(100vw_-_var(--sidebar-width))] md:px-12 lg:px-16 xl:px-20">
-        {/* TODO: add loading state component */}
-        <Suspense fallback={<div>Loading...</div>}>
-          <ProofsStats />
-        </Suspense>
+        <ProofsStats />
 
         <section id="zkvms" className="w-full max-w-screen-xl scroll-m-20">
           <Card className="bg-white/10 dark:bg-black/10">

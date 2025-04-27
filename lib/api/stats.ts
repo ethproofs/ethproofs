@@ -7,7 +7,7 @@ import { db } from "@/db"
  * Fetches daily proof statistics for a specified date range
  * @param days - Number of days to include (e.g., 7, 30, 90, 365)
  */
-export async function fetchProofsDailyStats(days: number) {
+export const fetchProofsDailyStats = async (days: number) => {
   const endDate = new Date()
   const startDate = startOfDay(addDays(endDate, -days))
 
@@ -26,7 +26,7 @@ export async function fetchProofsDailyStats(days: number) {
  * @param teamId - Team ID
  * @param days - Number of days to include (e.g., 7, 30, 90, 365)
  */
-export async function fetchProverDailyStats(teamId: string, days: number) {
+export const fetchProverDailyStats = async (teamId: string, days: number) => {
   const endDate = new Date()
   const startDate = startOfDay(addDays(endDate, -days))
 

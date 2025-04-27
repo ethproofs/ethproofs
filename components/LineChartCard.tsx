@@ -63,6 +63,7 @@ type ChartCardProps = {
   format: "currency" | "ms"
   data: ChartData[]
   initialDayRange?: DayRange
+  isLoading?: boolean
 }
 
 const formatValue = (value: number | string, format: ChartFormat) => {
@@ -91,11 +92,22 @@ const getLatestValues = (data: ChartData[]) => {
   return data[data.length - 1]
 }
 
+const filterData = (data: ChartData[], dayRange: DayRange) => {
+  return data.filter((item) => {
+    const date = new Date(item.date)
+    const referenceDate = new Date()
+    const startDate = new Date(referenceDate)
+    startDate.setDate(startDate.getDate() - dayRange - 1)
+    return date >= startDate
+  })
+}
+
 const LineChartCard = ({
   title,
   format,
   data,
   initialDayRange = CHART_RANGES[0],
+  isLoading = false,
 }: ChartCardProps) => {
   const [dayRange, setDayRange] = React.useState<DayRange>(initialDayRange)
   const [lineVisibility, setLineVisibility] = React.useState<{
@@ -108,18 +120,11 @@ const LineChartCard = ({
   const setTimeRangeValue = (value: DayRange) => () => setDayRange(value)
 
   const latestValues = getLatestValues(data)
+  const filteredData = filterData(data, dayRange)
 
   const toggleLineVisibility = (key: LineKey) => {
     setLineVisibility((prev) => ({ ...prev, [key]: !prev[key] }))
   }
-
-  const filteredData = data.filter((item) => {
-    const date = new Date(item.date)
-    const referenceDate = new Date()
-    const startDate = new Date(referenceDate)
-    startDate.setDate(startDate.getDate() - dayRange - 1)
-    return date >= startDate
-  })
 
   return (
     <Card className="border-1 relative space-y-4 overflow-hidden dark:bg-black/10 md:space-y-4">
@@ -142,76 +147,84 @@ const LineChartCard = ({
           </div>
         </div>
       </CardHeader>
-      <CardContent>
-        <ChartContainer
-          config={chartConfig}
-          className="aspect-auto h-[250px] w-full"
-        >
-          <LineChart
-            accessibilityLayer
-            data={filteredData}
-            margin={{
-              left: 12,
-              right: 12,
-            }}
+      <CardContent className="relative">
+        {isLoading ? (
+          <div className="aspect-auto h-[250px] w-full">
+            <div className="absolute inset-0 flex h-[calc(250px-60px)] w-full items-center justify-center">
+              <div className="h-10 w-10 animate-spin rounded-full border-b-2 border-t-2 border-primary" />
+            </div>
+          </div>
+        ) : (
+          <ChartContainer
+            config={chartConfig}
+            className="aspect-auto h-[250px] w-full"
           >
-            <CartesianGrid
-              vertical={false}
-              horizontal
-              stroke="hsla(var(--chart-border))"
-            />
-            <XAxis
-              dataKey="date"
-              tickLine
-              axisLine
-              tickMargin={8}
-              minTickGap={32}
-              tickFormatter={(value) => {
-                const date = new Date(value)
-                return date.toLocaleDateString("en-US", {
-                  month: "short",
-                  day: "numeric",
-                })
+            <LineChart
+              accessibilityLayer
+              data={filteredData}
+              margin={{
+                left: 12,
+                right: 12,
               }}
-            />
-            <ChartTooltip
-              content={
-                <ChartTooltipContent
-                  className="w-[150px]"
-                  labelFormatter={(value) => {
-                    return new Date(value).toLocaleDateString("en-US", {
-                      month: "short",
-                      day: "numeric",
-                      year: "numeric",
-                    })
-                  }}
+            >
+              <CartesianGrid
+                vertical={false}
+                horizontal
+                stroke="hsla(var(--chart-border))"
+              />
+              <XAxis
+                dataKey="date"
+                tickLine
+                axisLine
+                tickMargin={8}
+                minTickGap={32}
+                tickFormatter={(value) => {
+                  const date = new Date(value)
+                  return date.toLocaleDateString("en-US", {
+                    month: "short",
+                    day: "numeric",
+                  })
+                }}
+              />
+              <ChartTooltip
+                content={
+                  <ChartTooltipContent
+                    className="w-[150px]"
+                    labelFormatter={(value) => {
+                      return new Date(value).toLocaleDateString("en-US", {
+                        month: "short",
+                        day: "numeric",
+                        year: "numeric",
+                      })
+                    }}
+                  />
+                }
+              />
+              {lineVisibility.avg && (
+                <Line
+                  dataKey="avg"
+                  type="monotone"
+                  stroke="hsla(var(--chart-1))"
+                  strokeWidth={2}
+                  dot={false}
                 />
-              }
-            />
-            {lineVisibility.avg && (
-              <Line
-                dataKey="avg"
-                type="monotone"
-                stroke="hsla(var(--chart-1))"
-                strokeWidth={2}
-                dot={false}
+              )}
+              {lineVisibility.median && (
+                <Line
+                  dataKey="median"
+                  type="monotone"
+                  stroke="hsla(var(--chart-2))"
+                  strokeWidth={2}
+                  dot={false}
+                />
+              )}
+              <ChartLegend
+                content={<ChartLegendContent />}
+                className="font-sans text-xs"
               />
-            )}
-            {lineVisibility.median && (
-              <Line
-                dataKey="median"
-                type="monotone"
-                stroke="hsla(var(--chart-2))"
-                strokeWidth={2}
-                dot={false}
-              />
-            )}
-            <ChartLegend
-              content={<ChartLegendContent />}
-              className="font-sans text-xs"
-            />
-          </LineChart>
-        </ChartContainer>
+            </LineChart>
+          </ChartContainer>
+        )}
       </CardContent>
       <CardFooter className="gap-4">
         <DropdownMenu>
