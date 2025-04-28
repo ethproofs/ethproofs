@@ -1,7 +1,7 @@
-import { desc } from "drizzle-orm"
+import { and, count, desc, eq, exists } from "drizzle-orm"
 
 import { db } from "@/db"
-import { clusterVersions } from "@/db/schema"
+import { clusterMachines, clusterVersions, proofs } from "@/db/schema"
 
 export const getCluster = async (id: string) => {
   const cluster = await db.query.clusters.findFirst({
@@ -35,4 +35,30 @@ export const getClustersByTeamId = async (teamId: string) => {
   })
 
   return clusters
+}
+
+// Those machines that at least have 1 proof submitted with status "proved"
+export const getActiveMachineCount = async () => {
+  const [machineCount] = await db
+    .select({ count: count() })
+    .from(clusterMachines)
+    .where(
+      exists(
+        db
+          .select()
+          .from(proofs)
+          .innerJoin(
+            clusterVersions,
+            eq(proofs.cluster_version_id, clusterVersions.id)
+          )
+          .where(
+            and(
+              eq(clusterMachines.cluster_version_id, clusterVersions.id),
+              eq(proofs.proof_status, "proved")
+            )
+          )
+      )
+    )
+
+  return machineCount.count
 }
