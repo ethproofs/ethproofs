@@ -65,11 +65,11 @@ const chartConfig = {
 type LineKey = "avg" | "median"
 
 // TODO: Pass full data as props: 1 year of data, type/formatting of data, title
-type LineChartProps = {
+type LineChartProps = React.HTMLAttributes<HTMLDivElement> & {
   title: string
 }
 
-const LineChartCard = ({ title }: LineChartProps) => {
+const LineChartCard = ({ title, className }: LineChartProps) => {
   const [dayRange, setDayRange] = React.useState<DayRange>(7)
   const [lineVisibility, setLineVisibility] = React.useState<{
     [key in LineKey]: boolean
@@ -95,7 +95,12 @@ const LineChartCard = ({ title }: LineChartProps) => {
     .sort((a, b) => new Date(a.date).getTime() - new Date(b.date).getTime())
 
   return (
-    <Card className="border-1 relative space-y-4 overflow-hidden dark:bg-black/10 md:space-y-4">
+    <Card
+      className={cn(
+        "border-1 relative space-y-4 overflow-hidden dark:bg-black/10 md:space-y-4",
+        className
+      )}
+    >
       <CardHeader className="flex flex-col gap-4 space-y-0 py-5">
         <CardTitle className="font-normal">
           {title} per {dayRange} days
