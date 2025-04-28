@@ -225,7 +225,7 @@ export type ClusterDetails = {
   }[]
 }
 
-export type ProverAccordionDetails = {
+export type ClusterAccordionDetails = {
   clusterDetails: ClusterDetails[]
   proverName?: string
 }

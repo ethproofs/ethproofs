@@ -6,9 +6,9 @@ import Instructions from "@/components/svgs/instructions.svg"
 import ShieldCheck from "@/components/svgs/shield-check.svg"
 
 import { Card, CardHeader, CardTitle } from "./ui/card"
+import ClusterAccordion from "./ClusterAccordion"
 import KPIs from "./KPIs"
 import MachineTabs from "./MachineTabs"
-import ProverAccordion from "./ProverAccordion"
 
 import { db } from "@/db"
 import { teamsSummary as teamsSummaryView } from "@/db/schema"
@@ -61,14 +61,12 @@ const ProversSection = async () => {
       <MachineTabs
         singleContent={
           <>
-            <ProverAccordion provers={demoProverAccordionDetails} />
-            TODO: Single machine provers list
+            <ClusterAccordion clusters={demoProverAccordionDetails} />
           </>
         }
         multiContent={
           <>
-            <ProverAccordion provers={demoProverAccordionDetails} />
-            TODO: Multi-machine provers list
+            <ClusterAccordion clusters={demoProverAccordionDetails} />
           </>
         }
       />

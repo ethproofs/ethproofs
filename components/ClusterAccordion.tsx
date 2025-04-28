@@ -6,7 +6,7 @@ import Image from "next/image"
 import prettyBytes from "pretty-bytes"
 import { type AccordionItemProps } from "@radix-ui/react-accordion"
 
-import type { ClusterDetails, ProverAccordionDetails } from "@/lib/types"
+import type { ClusterAccordionDetails, ClusterDetails } from "@/lib/types"
 
 import { cn } from "@/lib/utils"
 
@@ -23,13 +23,13 @@ import HardwareGrid, { GRID_CELL_BG_SPECTRUM } from "./HardwareGrid"
 
 import { prettyMs } from "@/lib/time"
 
-type ProverAccordionItemProps = Pick<AccordionItemProps, "value"> & {
+type ClusterAccordionItemProps = Pick<AccordionItemProps, "value"> & {
   clusterDetails: ClusterDetails[]
 }
-const ProverAccordionItem = ({
+const ClusterAccordionItem = ({
   value,
   clusterDetails,
-}: ProverAccordionItemProps) => (
+}: ClusterAccordionItemProps) => (
   <AccordionItem value={value} className="col-span-6 grid grid-cols-subgrid">
     <div className="col-span-6 grid grid-cols-subgrid items-center gap-12 border-b px-6 py-4 hover:bg-primary/5 dark:hover:bg-primary/10">
       {/* TODO: Update to match design */}
@@ -184,10 +184,10 @@ const ProverAccordionItem = ({
   </AccordionItem>
 )
 
-type ProverAccordionProps = {
-  provers: ProverAccordionDetails[]
+type ClusterAccordionProps = {
+  clusters: ClusterAccordionDetails[]
 }
-const ProverAccordion = ({ provers }: ProverAccordionProps) => (
+const ClusterAccordion = ({ clusters }: ClusterAccordionProps) => (
   <Accordion
     type="multiple"
     className="grid w-full grid-cols-[1fr_repeat(5,_auto)] md:px-6"
@@ -219,15 +219,15 @@ const ProverAccordion = ({ provers }: ProverAccordionProps) => (
       </MetricBox>
     </div>
     {Array.from({ length: 9 }, (_, i) => (
-      <ProverAccordionItem
+      <ClusterAccordionItem
         key={i}
         value={"item-" + i}
-        clusterDetails={provers[0].clusterDetails}
+        clusterDetails={clusters[0].clusterDetails}
       />
     ))}
   </Accordion>
 )
 
-ProverAccordion.displayName = "ProverAccordion"
+ClusterAccordion.displayName = "ClusterAccordion"
 
-export default ProverAccordion
+export default ClusterAccordion
