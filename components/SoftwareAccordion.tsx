@@ -1,7 +1,7 @@
-// TODO: Pass real data as props
-
 import Image from "next/image"
 import { type AccordionItemProps } from "@radix-ui/react-accordion"
+
+import { Vendor, Zkvm, ZkvmVersion } from "@/lib/types"
 
 import {
   Accordion,
@@ -12,17 +12,30 @@ import {
 import { ButtonLink } from "./ui/button"
 import Link from "./ui/link"
 import { MetricBox, MetricInfo, MetricLabel } from "./ui/metric"
+import { Progress } from "./ui/progress"
 import Pizza from "./Pizza"
 import SoftwareDetails, { DEMO_SLICES } from "./SoftwareDetails"
 
+import { getZkvmsWithUsage } from "@/lib/zkvms"
+
 const SoftwareAccordionItem = ({
   value,
-}: Pick<AccordionItemProps, "value">) => (
+  zkvm,
+}: Pick<AccordionItemProps, "value"> & {
+  zkvm: Zkvm & {
+    versions: ZkvmVersion[]
+    vendor: Vendor
+    totalClusters: number
+    zkvmClusters: number
+  }
+}) => (
   <AccordionItem value={value} className="col-span-5 grid grid-cols-subgrid">
     <div className="col-span-5 grid grid-cols-subgrid items-center gap-12 border-b hover:bg-primary/5 dark:hover:bg-primary/10">
       <div className="col-start-1 flex items-center gap-3">
         <Link href="/zkvm/#TODO-zkvm-id" className="hover:underline">
-          <span className="block font-mono text-2xl text-primary">SP1</span>
+          <span className="block font-mono text-2xl text-primary">
+            {zkvm.name}
+          </span>
         </Link>
         <span className="block font-mono text-sm italic text-body-secondary">
           by
@@ -32,7 +45,8 @@ const SoftwareAccordionItem = ({
           className="-m-1 rounded p-1 hover:bg-primary/10"
         >
           <Image
-            src="https://ndjfbkojyebmdbckigbe.supabase.co/storage/v1/object/public/public-assets/succinct-logo-new.svg"
+            // TODO: add fallback logo
+            src={zkvm.vendor.logo_url ?? ""}
             alt="Succinct logo"
             height={16}
             width={16}
@@ -42,13 +56,20 @@ const SoftwareAccordionItem = ({
         </Link>
       </div>
       <div id="version" className="col-start-2">
-        4.20
+        {zkvm.versions[0].version}
       </div>
       <div id="isa" className="col-start-3">
-        name
+        {zkvm.isa}
       </div>
-      <div id="used-by" className="col-start-4">
-        5/<span className="text-xs">12</span>
+      <div id="used-by" className="relative col-start-4 min-w-16">
+        <div className="w-full text-center">
+          {zkvm.zkvmClusters}/
+          <span className="text-xs">{zkvm.totalClusters}</span>
+        </div>
+        <Progress
+          value={(zkvm.zkvmClusters / zkvm.totalClusters) * 100}
+          className="absolute -bottom-1 left-0 h-[2px] w-full"
+        />
       </div>
 
       <AccordionTrigger className="col-start-5 my-2 h-fit gap-2 rounded-full border-2 border-primary-border bg-background-highlight p-0.5 text-primary [&>svg]:size-6">
@@ -79,37 +100,45 @@ const SoftwareAccordionItem = ({
     </AccordionContent>
   </AccordionItem>
 )
-const SoftwareAccordion = () => (
-  <Accordion
-    type="multiple"
-    className="grid w-full grid-cols-[1fr_repeat(4,_auto)]"
-  >
-    <div className="col-span-5 grid grid-cols-subgrid text-center">
-      <MetricBox className="col-start-2">
-        <MetricLabel>
-          <MetricInfo label="Version">TODO: Popover details</MetricInfo>
-        </MetricLabel>
-      </MetricBox>
-      <MetricBox className="col-start-3">
-        <MetricLabel>
-          <MetricInfo label="ISA">
-            Instruction set architecture
-            <br />
-            TODO: Popover details
-          </MetricInfo>
-        </MetricLabel>
-      </MetricBox>
-      <MetricBox className="col-start-4">
-        <MetricLabel>
-          <MetricInfo label="Used by">TODO: Popover details</MetricInfo>
-        </MetricLabel>
-      </MetricBox>
-    </div>
-    {Array.from({ length: 12 }, (_, i) => (
-      <SoftwareAccordionItem key={i} value={"item-" + i} />
-    ))}
-  </Accordion>
-)
+const SoftwareAccordion = async () => {
+  const zkvms = await getZkvmsWithUsage()
+
+  return (
+    <Accordion
+      type="multiple"
+      className="grid w-full grid-cols-[1fr_repeat(4,_auto)]"
+    >
+      <div className="col-span-5 grid grid-cols-subgrid text-center">
+        <MetricBox className="col-start-2">
+          <MetricLabel>
+            <MetricInfo label="Version">TODO: Popover details</MetricInfo>
+          </MetricLabel>
+        </MetricBox>
+        <MetricBox className="col-start-3">
+          <MetricLabel>
+            <MetricInfo label="ISA">
+              Instruction set architecture
+              <br />
+              TODO: Popover details
+            </MetricInfo>
+          </MetricLabel>
+        </MetricBox>
+        <MetricBox className="col-start-4">
+          <MetricLabel>
+            <MetricInfo label="Used by">TODO: Popover details</MetricInfo>
+          </MetricLabel>
+        </MetricBox>
+      </div>
+      {zkvms.map((zkvm) => (
+        <SoftwareAccordionItem
+          key={zkvm.id}
+          value={"item-" + zkvm.id}
+          zkvm={zkvm}
+        />
+      ))}
+    </Accordion>
+  )
+}
 
 SoftwareAccordion.displayName = "SoftwareAccordion"
 

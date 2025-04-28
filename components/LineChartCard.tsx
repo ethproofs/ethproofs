@@ -98,7 +98,7 @@ const LineChartCard = ({
   }
 
   return (
-    <Card className="border-1 relative space-y-4 overflow-hidden dark:bg-black/10 md:space-y-4">
+    <Card className="relative space-y-4 overflow-hidden md:space-y-4">
       <CardHeader className="flex flex-col gap-6 space-y-0 py-5">
         <CardTitle className="text-lg font-normal">{title}</CardTitle>
         <div className="flex">
