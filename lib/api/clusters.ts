@@ -1,7 +1,14 @@
-import { and, count, desc, eq, exists } from "drizzle-orm"
+import { and, count, desc, eq, exists, gt, sql } from "drizzle-orm"
 
 import { db } from "@/db"
-import { clusterMachines, clusterVersions, proofs } from "@/db/schema"
+import {
+  clusterMachines,
+  clusters,
+  clusterVersions,
+  proofs,
+  zkvms,
+  zkvmVersions,
+} from "@/db/schema"
 
 export const getCluster = async (id: string) => {
   const cluster = await db.query.clusters.findFirst({
@@ -35,6 +42,40 @@ export const getClustersByTeamId = async (teamId: string) => {
   })
 
   return clusters
+}
+
+export const getActiveClusterCountByZkvmId = async () => {
+  const thirtyDaysAgo = sql`NOW() - INTERVAL '30 days'`
+
+  const result = await db
+    .select({
+      zkvm_id: zkvms.id,
+      active_clusters: sql<number>`CAST(COUNT(DISTINCT ${clusters.id}) AS int)`,
+    })
+    .from(zkvms)
+    .leftJoin(zkvmVersions, eq(zkvms.id, zkvmVersions.zkvm_id))
+    .leftJoin(
+      clusterVersions,
+      eq(zkvmVersions.id, clusterVersions.zkvm_version_id)
+    )
+    .leftJoin(clusters, eq(clusterVersions.cluster_id, clusters.id))
+    .where(
+      exists(
+        db
+          .select()
+          .from(proofs)
+          .where(
+            and(
+              eq(proofs.cluster_version_id, clusterVersions.id),
+              eq(proofs.proof_status, "proved"),
+              gt(proofs.created_at, thirtyDaysAgo)
+            )
+          )
+      )
+    )
+    .groupBy(zkvms.id)
+
+  return result
 }
 
 // Those machines that at least have 1 proof submitted with status "proved"

@@ -26,7 +26,7 @@ const SoftwareAccordionItem = ({
     versions: ZkvmVersion[]
     vendor: Vendor
     totalClusters: number
-    zkvmClusters: number
+    activeClusters: number
   }
 }) => (
   <AccordionItem value={value} className="col-span-5 grid grid-cols-subgrid">
@@ -63,11 +63,11 @@ const SoftwareAccordionItem = ({
       </div>
       <div id="used-by" className="relative col-start-4 min-w-16">
         <div className="w-full text-center">
-          {zkvm.zkvmClusters}/
+          {zkvm.activeClusters}/
           <span className="text-xs">{zkvm.totalClusters}</span>
         </div>
         <Progress
-          value={(zkvm.zkvmClusters / zkvm.totalClusters) * 100}
+          value={(zkvm.activeClusters / zkvm.totalClusters) * 100}
           className="absolute -bottom-1 left-0 h-[2px] w-full"
         />
       </div>
