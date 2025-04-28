@@ -51,7 +51,7 @@ export type ChartData = {
   median: number
 }
 
-type ChartCardProps = {
+type ChartCardProps = React.HTMLAttributes<HTMLDivElement> & {
   title: string
   format: "currency" | "ms"
   data: ChartData[]
@@ -73,6 +73,7 @@ const filterData = (data: ChartData[], dayRange: DayRange) => {
 }
 
 const LineChartCard = ({
+  className,
   title,
   data,
   initialDayRange = CHART_RANGES[0],
@@ -98,7 +99,12 @@ const LineChartCard = ({
   }
 
   return (
-    <Card className="border-1 relative space-y-4 overflow-hidden dark:bg-black/10 md:space-y-4">
+    <Card
+      className={cn(
+        "border-1 relative space-y-4 overflow-hidden dark:bg-black/10 md:space-y-4",
+        className
+      )}
+    >
       <CardHeader className="flex flex-col gap-6 space-y-0 py-5">
         <CardTitle className="text-lg font-normal">{title}</CardTitle>
         <div className="flex">
