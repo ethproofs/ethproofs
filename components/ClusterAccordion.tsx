@@ -6,7 +6,7 @@ import Image from "next/image"
 import prettyBytes from "pretty-bytes"
 import { type AccordionItemProps } from "@radix-ui/react-accordion"
 
-import type { ClusterAccordionDetails, ClusterDetails } from "@/lib/types"
+import type { ClusterDetails } from "@/lib/types"
 
 import { cn } from "@/lib/utils"
 
@@ -21,10 +21,11 @@ import Link from "./ui/link"
 import { MetricBox, MetricInfo, MetricLabel } from "./ui/metric"
 import HardwareGrid, { GRID_CELL_BG_SPECTRUM } from "./HardwareGrid"
 
+import { formatUsd } from "@/lib/number"
 import { prettyMs } from "@/lib/time"
 
 type ClusterAccordionItemProps = Pick<AccordionItemProps, "value"> & {
-  clusterDetails: ClusterDetails[]
+  clusterDetails: ClusterDetails
 }
 const ClusterAccordionItem = ({
   value,
@@ -38,42 +39,45 @@ const ClusterAccordionItem = ({
           href="/prover/#TODO-prover-id"
           className="-m-1 w-fit rounded p-1 hover:bg-primary/10"
         >
-          <Image
-            src="https://ndjfbkojyebmdbckigbe.supabase.co/storage/v1/object/public/public-assets/succinct-logo-new.svg"
-            alt="Succinct logo"
-            height={16}
-            width={16}
-            style={{ height: "1rem", width: "auto" }}
-            className="dark:invert"
-          />
+          {clusterDetails.proverLogo ? (
+            <Image
+              src={clusterDetails.proverLogo}
+              alt="Prover logo"
+              height={16}
+              width={16}
+              style={{ height: "1rem", width: "auto" }}
+              className="dark:invert"
+            />
+          ) : (
+            <div className="flex items-center gap-1">
+              <div className="size-4 rounded-full bg-primary-border" />
+              {clusterDetails.proverName}
+            </div>
+          )}
         </Link>
         <div>
           <span className="text-sm text-primary">
             <Link href="/zkvm/#TODO-zkvm-id" className="hover:underline">
-              SP1
+              {clusterDetails.zkvmName}
             </Link>{" "}
             |{" "}
           </span>
-          <span className="text-sm">Cluster name</span>
+          <span className="text-sm">{clusterDetails.clusterName}</span>
         </div>
       </div>
       <div id="version" className="col-start-2 flex justify-center">
         <RedX className="text-level-worst" strokeLinecap="square" />
       </div>
       <div id="version" className="col-start-3">
-        {new Intl.NumberFormat("en-US", {
-          style: "currency",
-          currency: "USD",
-          minimumSignificantDigits: 2,
-        }).format(0.00031)}
+        {formatUsd(clusterDetails.avgCost)}
       </div>
       <div id="isa" className="col-start-4">
-        {prettyMs(164_000)}
+        {prettyMs(clusterDetails.avgTime)}
       </div>
       <div id="used-by" className="col-start-5">
         {new Intl.NumberFormat("en-US", {
           style: "percent",
-        }).format(0.69)}
+        }).format(clusterDetails.efficiency)}
       </div>
 
       <AccordionTrigger className="col-start-6 my-2 h-fit gap-2 rounded-full border-2 border-primary-border bg-background-highlight p-0.5 text-primary [&>svg]:size-6" />
@@ -86,28 +90,22 @@ const ClusterAccordionItem = ({
               total machines
             </span>
             <span className="block font-mono text-2xl text-body">
-              {clusterDetails.length}
+              {clusterDetails.machines.length}
             </span>
           </div>
           <div className="grid grid-cols-2 place-items-center gap-x-3 gap-y-4 text-center">
             <div className="flex w-full flex-col items-center text-nowrap text-center">
               <span className="block text-sm text-body-secondary">GPUs</span>
               <span className="block font-mono text-2xl text-body">
-                {clusterDetails.reduce((acc, curr) => acc + curr.gpuCount, 0)}
+                {clusterDetails.gpuCount}
               </span>
             </div>
             <div className="flex w-full flex-col items-center text-nowrap text-center">
               <span className="block text-sm text-body-secondary">GPU RAM</span>
               <span className="block font-mono text-2xl text-body">
                 {prettyBytes(
-                  clusterDetails.reduce(
-                    (acc, curr) =>
-                      acc +
-                      curr.machines.reduce(
-                        (machineAcc, machine) =>
-                          machineAcc + Number(machine.gpuRam),
-                        0
-                      ),
+                  clusterDetails.machines.reduce(
+                    (acc, curr) => acc + curr.gpuRam,
                     0
                   )
                 )}
@@ -118,14 +116,8 @@ const ClusterAccordionItem = ({
                 CPU cores
               </span>
               <span className="block font-mono text-2xl text-body">
-                {clusterDetails.reduce(
-                  (acc, curr) =>
-                    acc +
-                    curr.machines.reduce(
-                      (machineAcc, machine) =>
-                        machineAcc + Number(machine.cpuCount),
-                      0
-                    ),
+                {clusterDetails.machines.reduce(
+                  (acc, curr) => acc + curr.cpuCount,
                   0
                 )}
               </span>
@@ -135,14 +127,8 @@ const ClusterAccordionItem = ({
               <span className="block font-mono text-2xl text-body">
                 {/* TODO: Add then replace with **CPU** RAM */}
                 {prettyBytes(
-                  clusterDetails.reduce(
-                    (acc, curr) =>
-                      acc +
-                      curr.machines.reduce(
-                        (machineAcc, machine) =>
-                          machineAcc + Number(machine.gpuRam),
-                        0
-                      ),
+                  clusterDetails.machines.reduce(
+                    (acc, curr) => acc + curr.cpuRam,
                     0
                   )
                 )}
@@ -152,7 +138,7 @@ const ClusterAccordionItem = ({
         </div>
 
         <div className="flex flex-1 flex-col space-y-4 overflow-x-hidden">
-          <HardwareGrid data={clusterDetails} />
+          <HardwareGrid cluster={clusterDetails} />
           <div className="flex items-center gap-3 self-end">
             <span className="me-4">GPUs</span>
             {Array(6)
@@ -185,7 +171,7 @@ const ClusterAccordionItem = ({
 )
 
 type ClusterAccordionProps = {
-  clusters: ClusterAccordionDetails[]
+  clusters: ClusterDetails[]
 }
 const ClusterAccordion = ({ clusters }: ClusterAccordionProps) => (
   <Accordion
@@ -218,11 +204,11 @@ const ClusterAccordion = ({ clusters }: ClusterAccordionProps) => (
         </MetricLabel>
       </MetricBox>
     </div>
-    {Array.from({ length: 9 }, (_, i) => (
+    {clusters.map((cluster, i) => (
       <ClusterAccordionItem
         key={i}
         value={"item-" + i}
-        clusterDetails={clusters[0].clusterDetails}
+        clusterDetails={cluster}
       />
     ))}
   </Accordion>

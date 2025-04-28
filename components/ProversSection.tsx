@@ -1,4 +1,4 @@
-import { asc, notIlike } from "drizzle-orm"
+import { notIlike } from "drizzle-orm"
 
 import { SummaryItem } from "@/lib/types"
 
@@ -12,8 +12,7 @@ import MachineTabs from "./MachineTabs"
 
 import { db } from "@/db"
 import { teamsSummary as teamsSummaryView } from "@/db/schema"
-import { getActiveMachineCount } from "@/lib/api/clusters"
-import { demoProverAccordionDetails } from "@/lib/dummy-data"
+import { getActiveClusters, getActiveMachineCount } from "@/lib/api/clusters"
 
 const ProversSection = async () => {
   const teamsSummary = await db
@@ -21,9 +20,10 @@ const ProversSection = async () => {
     .from(teamsSummaryView)
     // hide test teams from the provers list
     .where(notIlike(teamsSummaryView.team_name, "%test%"))
-    .orderBy(asc(teamsSummaryView.avg_proving_time))
 
   const machineCount = await getActiveMachineCount()
+
+  const activeClusters = await getActiveClusters()
 
   const proversSummary: SummaryItem[] = [
     {
@@ -50,6 +50,24 @@ const ProversSection = async () => {
     },
   ]
 
+  const clusters = activeClusters.map((cluster) => {
+    const team = teamsSummary.find((team) => team.team_id === cluster.teamId)
+
+    return {
+      clusterName: cluster.nickname,
+      proverName: cluster.teamName,
+      proverLogo: cluster.teamLogoUrl,
+      zkvmName: cluster.zkvmName,
+      // isOpenSource: cluster.versions[0].zkvm_version.zkvm.is_open_source,
+      isOpenSource: false,
+      avgCost: team?.avg_cost_per_proof ?? 0,
+      avgTime: Number(team?.avg_proving_time ?? 0),
+      efficiency: 0,
+      gpuCount: 0,
+      machines: [],
+    }
+  })
+
   return (
     <Card className="!p-0 !pb-6 md:!pb-8">
       <CardHeader className="space-y-3 p-6 pb-0 md:px-12 md:pt-8">
@@ -61,12 +79,12 @@ const ProversSection = async () => {
       <MachineTabs
         singleContent={
           <>
-            <ClusterAccordion clusters={demoProverAccordionDetails} />
+            <ClusterAccordion clusters={clusters} />
           </>
         }
         multiContent={
           <>
-            <ClusterAccordion clusters={demoProverAccordionDetails} />
+            <ClusterAccordion clusters={clusters} />
           </>
         }
       />

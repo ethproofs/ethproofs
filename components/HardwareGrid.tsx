@@ -15,10 +15,10 @@ export const GRID_CELL_BG_SPECTRUM: string[] = [
 ]
 
 type ProverDetailsProps = React.ComponentProps<"div"> & {
-  data: ClusterDetails[]
+  cluster: ClusterDetails
 }
 
-const HardwareGrid = ({ data, className }: ProverDetailsProps) => {
+const HardwareGrid = ({ cluster, className }: ProverDetailsProps) => {
   const getColor = (value: number) => {
     const index =
       value >= 2 ? Math.floor(Math.log2(value)) + 1 : value === 1 ? 1 : 0
@@ -30,7 +30,7 @@ const HardwareGrid = ({ data, className }: ProverDetailsProps) => {
       className={cn("grid w-fit grid-rows-5 gap-1", className)}
       style={{ gridAutoFlow: "column" }}
     >
-      {data.map(({ clusterName, gpuCount, machines }, index) => (
+      {/* {cluster.map(({ clusterName, gpuCount, machines }, index) => (
         <Popover key={index}>
           <PopoverTrigger>
             <div className={cn("size-6 rounded-[4px]", getColor(gpuCount))} />
@@ -70,7 +70,7 @@ const HardwareGrid = ({ data, className }: ProverDetailsProps) => {
         .fill(0)
         .map((_, i) => (
           <div key={i} className={cn("size-6 rounded-[4px]", getColor(0))} />
-        ))}
+        ))} */}
     </div>
   )
 }

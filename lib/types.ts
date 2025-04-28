@@ -215,19 +215,21 @@ export type Slices = [
 ]
 
 export type ClusterDetails = {
-  gpuCount: number
   clusterName: string
+  proverName: string
+  proverLogo?: string | null
+  zkvmName: string
+  isOpenSource: boolean
+  avgCost: number
+  avgTime: number
+  efficiency: number
+  gpuCount: number
   machines: {
     machineName: string
     cpuCount: number
     gpuRam: number // bytes
     cpuRam: number // bytes
   }[]
-}
-
-export type ClusterAccordionDetails = {
-  clusterDetails: ClusterDetails[]
-  proverName?: string
 }
 
 export type DayRange = (typeof CHART_RANGES)[number]
