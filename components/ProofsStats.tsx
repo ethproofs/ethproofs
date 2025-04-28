@@ -41,28 +41,26 @@ const ProofsStats = ({ recentSummary }: { recentSummary: RecentSummary }) => {
 
   return (
     <section className="grid w-full max-w-screen-xl scroll-m-20 grid-cols-1 gap-8 md:grid-cols-2">
-      <div className="w-full">
-        <LineChartCard
-          title="cost"
-          format="currency"
-          data={costData}
-          isLoading={isLoading}
-          totalAvg={recentSummary.avg_cost_per_proof ?? 0}
-          totalMedian={recentSummary.median_cost_per_proof ?? 0}
-          formatValue={(value) => formatUsd(Number(value))}
-        />
-      </div>
-      <div className="w-full">
-        <LineChartCard
-          title="latency"
-          format="ms"
-          data={latencyData}
-          isLoading={isLoading}
-          totalAvg={Number(recentSummary.avg_proving_time ?? 0)}
-          totalMedian={Number(recentSummary.median_proving_time ?? 0)}
-          formatValue={(value) => prettyMs(Number(value))}
-        />
-      </div>
+      <LineChartCard
+        className="w-full"
+        title="cost"
+        format="currency"
+        data={costData}
+        isLoading={isLoading}
+        totalAvg={recentSummary.avg_cost_per_proof ?? 0}
+        totalMedian={recentSummary.median_cost_per_proof ?? 0}
+        formatValue={(value) => formatUsd(Number(value))}
+      />
+      <LineChartCard
+        className="w-full"
+        title="latency"
+        format="ms"
+        data={latencyData}
+        isLoading={isLoading}
+        totalAvg={Number(recentSummary.avg_proving_time ?? 0)}
+        totalMedian={Number(recentSummary.median_proving_time ?? 0)}
+        formatValue={(value) => prettyMs(Number(value))}
+      />
     </section>
   )
 }
