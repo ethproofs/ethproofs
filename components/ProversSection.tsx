@@ -48,8 +48,7 @@ const ProversSection = async () => {
       proverName: cluster.teamName,
       proverLogo: cluster.teamLogoUrl,
       zkvmName: cluster.zkvmName,
-      // TODO: Add isOpenSource to clusters
-      isOpenSource: false,
+      isOpenSource: cluster.isOpenSource,
       avgCost: team?.avg_cost_per_proof ?? 0,
       avgTime: Number(team?.avg_proving_time ?? 0),
       machines: cluster.machines.map((machine) => ({

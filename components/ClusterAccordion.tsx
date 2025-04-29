@@ -1,7 +1,7 @@
 // TODO: Pass data as props
 
 import { Fragment } from "react"
-import { X as RedX } from "lucide-react"
+import { Check, X as RedX } from "lucide-react"
 import Image from "next/image"
 import { type AccordionItemProps } from "@radix-ui/react-accordion"
 
@@ -65,7 +65,11 @@ const ClusterAccordionItem = ({
         </div>
       </div>
       <div id="version" className="col-start-2 flex justify-center">
-        <RedX className="text-level-worst" strokeLinecap="square" />
+        {clusterDetails.isOpenSource ? (
+          <Check className="text-level-best" strokeLinecap="square" />
+        ) : (
+          <RedX className="text-level-worst" strokeLinecap="square" />
+        )}
       </div>
       <div id="version" className="col-start-3">
         {formatUsd(clusterDetails.avgCost)}
