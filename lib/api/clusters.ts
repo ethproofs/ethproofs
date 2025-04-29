@@ -42,7 +42,6 @@ export const getClusters = async () => {
 export const getActiveClusters = async () => {
   const thirtyDaysAgo = sql`NOW() - INTERVAL '30 days'`
 
-  // First, get all the raw rows
   const rawRows = await db
     .select({
       // Cluster info
@@ -73,9 +72,7 @@ export const getActiveClusters = async () => {
     })
     .from(clusters)
     .innerJoin(teams, eq(clusters.team_id, teams.id))
-    // Join with cluster versions
     .innerJoin(clusterVersions, eq(clusters.id, clusterVersions.cluster_id))
-    // Continue with other joins
     .innerJoin(
       zkvmVersions,
       eq(clusterVersions.zkvm_version_id, zkvmVersions.id)

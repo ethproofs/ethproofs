@@ -1,3 +1,4 @@
+import { Suspense } from "react"
 import type { Metadata } from "next"
 import {
   dehydrate,
@@ -123,7 +124,9 @@ export default async function Index() {
         </section>
 
         <section id="provers" className="w-full max-w-screen-xl scroll-m-20">
-          <ProversSection />
+          <Suspense fallback={null}>
+            <ProversSection />
+          </Suspense>
         </section>
 
         <section id="blocks" className="w-full max-w-screen-xl scroll-m-20">

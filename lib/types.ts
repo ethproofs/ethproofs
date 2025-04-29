@@ -223,12 +223,13 @@ export type ClusterDetails = {
   avgCost: number
   avgTime: number
   efficiency: number
-  gpuCount: number
   machines: {
-    machineName: string
+    cpuModel: string
+    gpuCount: number
     cpuCount: number
     gpuRam: number // bytes
     cpuRam: number // bytes
+    count: number
   }[]
 }
 
