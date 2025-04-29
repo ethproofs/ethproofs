@@ -31,7 +31,7 @@ const ClusterAccordionItem = ({
   clusterDetails,
 }: ClusterAccordionItemProps) => (
   <AccordionItem value={value} className="col-span-6 grid grid-cols-subgrid">
-    <div className="col-span-6 grid grid-cols-subgrid items-center gap-12 border-b px-6 py-4 hover:bg-primary/5 dark:hover:bg-primary/10">
+    <div className="col-span-6 grid grid-cols-subgrid items-center gap-12 px-6 py-4 hover:bg-primary/5 dark:hover:bg-primary/10">
       {/* TODO: Update to match design */}
       <div className="col-start-1 flex flex-col gap-1">
         <Link
@@ -80,14 +80,14 @@ const ClusterAccordionItem = ({
 
       <AccordionTrigger className="col-start-6 my-2 h-fit gap-2 rounded-full border-2 border-primary-border bg-background-highlight p-0.5 text-primary [&>svg]:size-6" />
     </div>
-    <AccordionContent className="col-span-full border-b px-0 py-4">
+    <AccordionContent className="col-span-full flex flex-col gap-12 p-6">
       <div className="flex items-center gap-x-20">
-        <div className="flex flex-col items-center gap-y-6 p-4 text-center">
+        <div className="flex flex-col items-center gap-y-6 text-center">
           <div className="flex w-fit flex-col items-center text-nowrap px-2 text-center">
             <span className="block text-nowrap text-sm text-body-secondary">
               total machines
             </span>
-            <span className="block font-mono text-2xl text-body">
+            <span className="block font-mono text-2xl font-bold text-body">
               {clusterDetails.machines.reduce(
                 (acc, curr) => acc + curr.count,
                 0
@@ -97,7 +97,7 @@ const ClusterAccordionItem = ({
           <div className="grid grid-cols-2 place-items-center gap-x-3 gap-y-4 text-center">
             <div className="flex w-full flex-col items-center text-nowrap text-center">
               <span className="block text-sm text-body-secondary">GPUs</span>
-              <span className="block font-mono text-2xl text-body">
+              <span className="block font-mono text-xl text-body">
                 {clusterDetails.machines.reduce(
                   (acc, curr) => acc + curr.gpuCount,
                   0
@@ -106,7 +106,7 @@ const ClusterAccordionItem = ({
             </div>
             <div className="flex w-full flex-col items-center text-nowrap text-center">
               <span className="block text-sm text-body-secondary">GPU RAM</span>
-              <span className="block font-mono text-2xl text-body">
+              <span className="block font-mono text-xl text-body">
                 {clusterDetails.machines.reduce(
                   (acc, curr) => acc + curr.gpuRam,
                   0
@@ -118,7 +118,7 @@ const ClusterAccordionItem = ({
               <span className="block text-sm text-body-secondary">
                 CPU cores
               </span>
-              <span className="block font-mono text-2xl text-body">
+              <span className="block font-mono text-xl text-body">
                 {clusterDetails.machines.reduce(
                   (acc, curr) => acc + curr.cpuCount,
                   0
@@ -127,8 +127,7 @@ const ClusterAccordionItem = ({
             </div>
             <div className="flex flex-col items-center text-nowrap text-center">
               <span className="block text-sm text-body-secondary">CPU RAM</span>
-              <span className="block font-mono text-2xl text-body">
-                {/* TODO: Add then replace with **CPU** RAM */}
+              <span className="block font-mono text-xl text-body">
                 {clusterDetails.machines.reduce(
                   (acc, curr) => acc + curr.cpuRam,
                   0
