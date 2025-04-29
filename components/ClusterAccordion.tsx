@@ -73,11 +73,6 @@ const ClusterAccordionItem = ({
       <div id="isa" className="col-start-4">
         {prettyMs(clusterDetails.avgTime)}
       </div>
-      <div id="used-by" className="col-start-5">
-        {new Intl.NumberFormat("en-US", {
-          style: "percent",
-        }).format(clusterDetails.efficiency)}
-      </div>
 
       <AccordionTrigger className="col-start-6 my-2 h-fit gap-2 rounded-full border-2 border-primary-border bg-background-highlight p-0.5 text-primary [&>svg]:size-6" />
     </div>
@@ -199,11 +194,6 @@ const ClusterAccordion = ({ clusters }: ClusterAccordionProps) => (
       <MetricBox className="col-start-4">
         <MetricLabel>
           <MetricInfo label="avg time">TODO: Popover details</MetricInfo>
-        </MetricLabel>
-      </MetricBox>
-      <MetricBox className="col-start-5">
-        <MetricLabel>
-          <MetricInfo label="efficiency">TODO: Popover details</MetricInfo>
         </MetricLabel>
       </MetricBox>
     </div>

@@ -58,12 +58,6 @@ export default async function Index() {
       value: zkvmsStats.isas.length,
       icon: <Instructions />,
     },
-    {
-      key: "count",
-      label: "0000",
-      value: 0,
-      icon: <></>,
-    },
   ]
 
   // TODO: Use real data

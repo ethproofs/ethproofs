@@ -38,16 +38,6 @@ const ProversSection = async () => {
       value: machineCount,
       icon: <Instructions />,
     },
-    {
-      key: "annual-proving-costs",
-      label: "annual proving costs",
-      value: new Intl.NumberFormat("en-US", {
-        style: "currency",
-        currency: "USD",
-        notation: "compact",
-      }).format(100_000),
-      icon: <></>,
-    },
   ]
 
   const clusters = activeClusters.map((cluster) => {
@@ -62,8 +52,6 @@ const ProversSection = async () => {
       isOpenSource: false,
       avgCost: team?.avg_cost_per_proof ?? 0,
       avgTime: Number(team?.avg_proving_time ?? 0),
-      // TODO: Add efficiency calculation
-      efficiency: 0,
       machines: cluster.machines.map((machine) => ({
         cpuModel: machine.cpuModel ?? "",
         gpuCount: machine.gpuCount?.reduce((sum, count) => sum + count, 0) ?? 0,

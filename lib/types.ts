@@ -222,7 +222,6 @@ export type ClusterDetails = {
   isOpenSource: boolean
   avgCost: number
   avgTime: number
-  efficiency: number
   machines: {
     cpuModel: string
     gpuCount: number
