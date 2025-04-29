@@ -45,66 +45,94 @@ export function AppSidebar() {
         <SidebarMenu className="gap-y-10 px-6">
           <SidebarGroup className="">
             <SidebarGroupLabel className="">Home</SidebarGroupLabel>
-            <Link href="/" className="text-body hover:text-primary">
-              <SidebarMenuItem>
+            <SidebarMenuItem>
+              <Link
+                href="/"
+                className="inline-flex text-body hover:text-primary [&>svg]:me-2"
+              >
                 <TrendUpChart className="size-6" />
                 Dashboard
-              </SidebarMenuItem>
-            </Link>
+              </Link>
+            </SidebarMenuItem>
           </SidebarGroup>
           <SidebarGroup>
             <SidebarGroupLabel>Explore</SidebarGroupLabel>
-            <Link href="/zkvms" className="text-body hover:text-primary">
-              <SidebarMenuItem>
+            <SidebarMenuItem>
+              <Link
+                href="/zkvms"
+                className="inline-flex text-body hover:text-primary [&>svg]:me-2"
+              >
                 <LightningBolt className="size-6" />
                 zkVMs
-              </SidebarMenuItem>
-            </Link>
-            <Link href="/provers" className="text-body hover:text-primary">
-              <SidebarMenuItem>
+              </Link>
+            </SidebarMenuItem>
+            <SidebarMenuItem>
+              <Link
+                href="/provers"
+                className="inline-flex text-body hover:text-primary [&>svg]:me-2"
+              >
                 <ProofCheck className="size-6" />
                 provers
-              </SidebarMenuItem>
-            </Link>
-            <Link href="/blocks" className="text-body hover:text-primary">
-              <SidebarMenuItem>
+              </Link>
+            </SidebarMenuItem>
+            <SidebarMenuItem>
+              <Link
+                href="/blocks"
+                className="inline-flex text-body hover:text-primary [&>svg]:me-2"
+              >
                 <Box className="size-6" strokeWidth="1" />
                 blocks
-              </SidebarMenuItem>
-            </Link>
-            <Link href="/killers" className="text-body hover:text-primary">
-              <SidebarMenuItem>
+              </Link>
+            </SidebarMenuItem>
+            <SidebarMenuItem>
+              <Link
+                href="/killers"
+                className="inline-flex text-body hover:text-primary [&>svg]:me-2"
+              >
                 <Bomb className="size-6" />
                 killers
-              </SidebarMenuItem>
-            </Link>
+              </Link>
+            </SidebarMenuItem>
           </SidebarGroup>
           <SidebarGroup>
             <SidebarGroupLabel>Learn</SidebarGroupLabel>
-            <Link href="/learn" className="text-body hover:text-primary">
-              <SidebarMenuItem>
+            <SidebarMenuItem>
+              <Link
+                href="/learn"
+                className="inline-flex text-body hover:text-primary [&>svg]:me-2"
+              >
                 <Document className="size-6" />
                 zkVMs and SNARKs
-              </SidebarMenuItem>
-            </Link>
-            <Link href="/#?" className="text-body hover:text-primary">
-              <SidebarMenuItem>
+              </Link>
+            </SidebarMenuItem>
+            <SidebarMenuItem>
+              <Link
+                href="/#TODO?"
+                className="inline-flex text-body hover:text-primary [&>svg]:me-2"
+              >
                 <Document className="size-6" />
                 about
-              </SidebarMenuItem>
-            </Link>
-            <Link href="/#?" className="text-body hover:text-primary">
-              <SidebarMenuItem>
-                <Document className="size-6" />
+              </Link>
+            </SidebarMenuItem>
+            <SidebarMenuItem>
+              <Link
+                // TODO: Remove /en/ when https://github.com/ethereum/ethereum-org-website/issues/15337 is fixed
+                href="https://ethereum.org/en/developers/docs/blocks"
+                className="inline-flex text-body hover:text-primary [&>.external-arrow]:m-0 [&>.external-arrow]:my-auto [&>.external-arrow]:ms-1 [&>svg]:me-2"
+              >
+                <Document className="size-6 self-center" />
                 blocks
-              </SidebarMenuItem>
-            </Link>
-            <Link href="/api.html" className="text-body hover:text-primary">
-              <SidebarMenuItem>
+              </Link>
+            </SidebarMenuItem>
+            <SidebarMenuItem>
+              <Link
+                href="/api.html"
+                className="inline-flex text-body hover:text-primary [&>svg]:me-2"
+              >
                 <Document className="size-6" />
                 API
-              </SidebarMenuItem>
-            </Link>
+              </Link>
+            </SidebarMenuItem>
           </SidebarGroup>
         </SidebarMenu>
       </SidebarContent>
