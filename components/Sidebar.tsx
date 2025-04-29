@@ -1,7 +1,13 @@
 import { Suspense } from "react"
 
+import Bomb from "@/components/svgs/bomb.svg"
+import Box from "@/components/svgs/box.svg"
+import Document from "@/components/svgs/document.svg"
 import EthProofsLogo from "@/components/svgs/eth-proofs-logo.svg"
 import Heart from "@/components/svgs/heart.svg"
+import LightningBolt from "@/components/svgs/lightning-bolt.svg"
+import ProofCheck from "@/components/svgs/proof-check.svg"
+import TrendUpChart from "@/components/svgs/trend-up-chart.svg"
 
 import { SITE_REPO } from "@/lib/constants"
 
@@ -36,24 +42,97 @@ export function AppSidebar() {
         <SearchInput className="max-md:hidden" placeholder="Search by block" />
       </SidebarHeader>
       <SidebarContent>
-        <SidebarMenu className="space-y-10 px-6">
+        <SidebarMenu className="gap-y-10 px-6">
           <SidebarGroup className="">
             <SidebarGroupLabel className="">Home</SidebarGroupLabel>
-            <SidebarMenuItem className="">Dashboard</SidebarMenuItem>
+            <SidebarMenuItem>
+              <Link
+                href="/"
+                className="inline-flex text-body hover:text-primary [&>svg]:me-2"
+              >
+                <TrendUpChart className="size-6" />
+                Dashboard
+              </Link>
+            </SidebarMenuItem>
           </SidebarGroup>
-          <SidebarGroup className="">
-            <SidebarGroupLabel className="">Explore</SidebarGroupLabel>
-            <SidebarMenuItem className="">zkVMs</SidebarMenuItem>
-            <SidebarMenuItem className="">provers</SidebarMenuItem>
-            <SidebarMenuItem className="">blocks</SidebarMenuItem>
-            <SidebarMenuItem className="">killers</SidebarMenuItem>
+          <SidebarGroup>
+            <SidebarGroupLabel>Explore</SidebarGroupLabel>
+            <SidebarMenuItem>
+              <Link
+                href="/zkvms"
+                className="inline-flex text-body hover:text-primary [&>svg]:me-2"
+              >
+                <LightningBolt className="size-6" />
+                zkVMs
+              </Link>
+            </SidebarMenuItem>
+            <SidebarMenuItem>
+              <Link
+                href="/provers"
+                className="inline-flex text-body hover:text-primary [&>svg]:me-2"
+              >
+                <ProofCheck className="size-6" />
+                provers
+              </Link>
+            </SidebarMenuItem>
+            <SidebarMenuItem>
+              <Link
+                href="/blocks"
+                className="inline-flex text-body hover:text-primary [&>svg]:me-2"
+              >
+                <Box className="size-6" strokeWidth="1" />
+                blocks
+              </Link>
+            </SidebarMenuItem>
+            <SidebarMenuItem>
+              <Link
+                href="/killers"
+                className="inline-flex text-body hover:text-primary [&>svg]:me-2"
+              >
+                <Bomb className="size-6" />
+                killers
+              </Link>
+            </SidebarMenuItem>
           </SidebarGroup>
-          <SidebarGroup className="">
-            <SidebarGroupLabel className="">Learn</SidebarGroupLabel>
-            <SidebarMenuItem className="">zkVMs and SNARKs</SidebarMenuItem>
-            <SidebarMenuItem className="">blocks</SidebarMenuItem>
-            <SidebarMenuItem className="">API</SidebarMenuItem>
-            <SidebarMenuItem className="">about Ethproofs</SidebarMenuItem>
+          <SidebarGroup>
+            <SidebarGroupLabel>Learn</SidebarGroupLabel>
+            <SidebarMenuItem>
+              <Link
+                href="/learn"
+                className="inline-flex text-body hover:text-primary [&>svg]:me-2"
+              >
+                <Document className="size-6" />
+                zkVMs and SNARKs
+              </Link>
+            </SidebarMenuItem>
+            <SidebarMenuItem>
+              <Link
+                href="/#TODO?"
+                className="inline-flex text-body hover:text-primary [&>svg]:me-2"
+              >
+                <Document className="size-6" />
+                about
+              </Link>
+            </SidebarMenuItem>
+            <SidebarMenuItem>
+              <Link
+                // TODO: Remove /en/ when https://github.com/ethereum/ethereum-org-website/issues/15337 is fixed
+                href="https://ethereum.org/en/developers/docs/blocks"
+                className="inline-flex text-body hover:text-primary [&>.external-arrow]:m-0 [&>.external-arrow]:my-auto [&>.external-arrow]:ms-1 [&>svg]:me-2"
+              >
+                <Document className="size-6 self-center" />
+                blocks
+              </Link>
+            </SidebarMenuItem>
+            <SidebarMenuItem>
+              <Link
+                href="/api.html"
+                className="inline-flex text-body hover:text-primary [&>svg]:me-2"
+              >
+                <Document className="size-6" />
+                API
+              </Link>
+            </SidebarMenuItem>
           </SidebarGroup>
         </SidebarMenu>
       </SidebarContent>

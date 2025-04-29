@@ -10,8 +10,8 @@ import type { SummaryItem } from "@/lib/types"
 
 import BlocksTable from "@/components/BlocksTable"
 import KPIs from "@/components/KPIs"
-import LineChartCard from "@/components/LineChartCard"
 import MachineTabs from "@/components/MachineTabs"
+import ProofsStats from "@/components/ProofsStats"
 import ProverAccordion from "@/components/ProverAccordion"
 import SoftwareAccordion from "@/components/SoftwareAccordion"
 import Box from "@/components/svgs/box.svg"
@@ -23,7 +23,10 @@ import { Card, CardHeader, CardTitle } from "@/components/ui/card"
 import { DEFAULT_PAGE_STATE } from "@/lib/constants"
 
 import { db } from "@/db"
-import { teamsSummary as teamsSummaryView } from "@/db/schema"
+import {
+  recentSummary as recentSummaryView,
+  teamsSummary as teamsSummaryView,
+} from "@/db/schema"
 import { fetchBlocksPaginated } from "@/lib/api/blocks"
 import { demoProverAccordionDetails } from "@/lib/dummy-data"
 import { getMetadata } from "@/lib/metadata"
@@ -41,6 +44,8 @@ export default async function Index() {
     .where(notIlike(teamsSummaryView.team_name, "%test%"))
     .orderBy(asc(teamsSummaryView.avg_proving_time))
 
+  const [recentSummary] = await db.select().from(recentSummaryView).limit(1)
+
   const teams = await db.query.teams.findMany()
 
   await queryClient.prefetchQuery({
@@ -54,19 +59,16 @@ export default async function Index() {
       key: "zkvms",
       label: "zkVMs",
       value: 12,
-      icon: <ShieldCheck />,
     },
     {
       key: "isas",
       label: "ISAs",
       value: 5,
-      icon: <Instructions />,
     },
     {
       key: "count",
       label: "0000",
       value: 0,
-      icon: <></>,
     },
   ]
 
@@ -76,13 +78,11 @@ export default async function Index() {
       key: "provers",
       label: "provers",
       value: 9,
-      icon: <ShieldCheck />,
     },
     {
       key: "proving-machines",
       label: "proving machines",
       value: 124,
-      icon: <Instructions />,
     },
     {
       key: "annual-proving-costs",
@@ -92,7 +92,6 @@ export default async function Index() {
         currency: "USD",
         notation: "compact",
       }).format(100_000),
-      icon: <></>,
     },
   ]
 
@@ -102,13 +101,11 @@ export default async function Index() {
       key: "proof-time",
       label: "since last proof",
       value: prettyMs(94_000), // TODO: Calculate
-      icon: <BoxDashed className="text-body-secondary" />,
     },
     {
       key: "proving-count",
       label: "proving",
       value: 124,
-      icon: <Box className="text-body-secondary" strokeWidth="1" />,
     },
     {
       key: "recent-proving-count",
@@ -116,7 +113,6 @@ export default async function Index() {
       value: new Intl.NumberFormat("en-US", {
         notation: "compact",
       }).format(2147),
-      icon: <Box className="text-primary" strokeWidth="1" />,
     },
   ]
 
@@ -138,31 +134,8 @@ export default async function Index() {
         </h1>
       </div>
 
-      {/* <h1
-        className="absolute top-16 me-20 w-full max-w-[50vw] text-center font-mono text-3xl font-semibold"
-        style={{
-          textShadow: `
-                0 0 3rem hsla(var(--background-modal)),
-                0 0 2rem hsla(var(--background-modal)),
-                0 0 1rem hsla(var(--background-modal)),
-                0 0 1rem hsla(var(--background-modal))`,
-        }}
-      >
-        Building a fully SNARKed <span className="text-primary">Ethereum</span>
-      </h1> */}
-
       <div className="flex flex-1 flex-col items-center gap-20 px-6 sm:px-8 md:w-[calc(100vw_-_var(--sidebar-width))] md:px-12 lg:px-16 xl:px-20">
-        <section
-          id="kpis"
-          className="grid w-full max-w-screen-xl scroll-m-20 grid-cols-1 gap-8 md:grid-cols-2"
-        >
-          <div id="latency-kpi" className="w-full">
-            <LineChartCard title="latency" />
-          </div>
-          <div id="cost-kpi" className="w-full">
-            <LineChartCard title="cost" />
-          </div>
-        </section>
+        <ProofsStats recentSummary={recentSummary} />
 
         <section id="zkvms" className="w-full max-w-screen-xl scroll-m-20">
           <Card className="bg-white/10 dark:bg-black/10">

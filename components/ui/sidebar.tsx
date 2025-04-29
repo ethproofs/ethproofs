@@ -1,5 +1,3 @@
-// TODO: Fix or remove Comp slot usage
-
 "use client"
 
 import * as React from "react"
@@ -7,7 +5,6 @@ import { cva, VariantProps } from "class-variance-authority"
 import { PanelLeft } from "lucide-react"
 import { Slot } from "@radix-ui/react-slot"
 
-import LightningBolt from "@/components/svgs/lightning-bolt.svg"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 import { Separator } from "@/components/ui/separator"
@@ -30,8 +27,6 @@ import { cn } from "@/lib/utils"
 
 import { useIsMobile } from "@/hooks/use-mobile"
 
-const SIDEBAR_COOKIE_NAME = "sidebar_state"
-const SIDEBAR_COOKIE_MAX_AGE = 60 * 60 * 24 * 7
 const SIDEBAR_WIDTH = "16rem"
 const SIDEBAR_WIDTH_MOBILE = "18rem"
 const SIDEBAR_WIDTH_ICON = "3rem"
@@ -93,9 +88,6 @@ const SidebarProvider = React.forwardRef<
         } else {
           _setOpen(openState)
         }
-
-        // This sets the cookie to keep the sidebar state.
-        document.cookie = `${SIDEBAR_COOKIE_NAME}=${openState}; path=/; max-age=${SIDEBAR_COOKIE_MAX_AGE}`
       },
       [setOpenProp, open]
     )
@@ -445,12 +437,12 @@ SidebarGroup.displayName = "SidebarGroup"
 
 const SidebarGroupLabel = React.forwardRef<
   HTMLDivElement,
-  React.ComponentProps<"div"> & { asChild?: boolean }
+  React.ComponentPropsWithoutRef<"div"> & { asChild?: boolean }
 >(({ className, asChild = false, ...props }, ref) => {
-  // const Comp = asChild ? Slot : "div"
+  const Comp = asChild ? Slot : "div"
 
   return (
-    <div
+    <Comp
       ref={ref}
       data-sidebar="group-label"
       className={cn(
@@ -466,12 +458,12 @@ SidebarGroupLabel.displayName = "SidebarGroupLabel"
 
 const SidebarGroupAction = React.forwardRef<
   HTMLButtonElement,
-  React.ComponentProps<"button"> & { asChild?: boolean }
+  React.ComponentPropsWithoutRef<"button"> & { asChild?: boolean }
 >(({ className, asChild = false, ...props }, ref) => {
-  // const Comp = asChild ? Slot : "button"
+  const Comp = asChild ? Slot : "button"
 
   return (
-    <button
+    <Comp
       ref={ref}
       data-sidebar="group-action"
       className={cn(
@@ -526,7 +518,6 @@ const SidebarMenuItem = React.forwardRef<
     )}
     {...props}
   >
-    <LightningBolt className="self//-start text-sidebar-foreground size-6" />
     {children}
   </li>
 ))
@@ -556,7 +547,7 @@ const sidebarMenuButtonVariants = cva(
 
 const SidebarMenuButton = React.forwardRef<
   HTMLButtonElement,
-  React.ComponentProps<"button"> & {
+  React.ComponentPropsWithoutRef<"button"> & {
     asChild?: boolean
     isActive?: boolean
     tooltip?: string | React.ComponentProps<typeof TooltipContent>
@@ -564,7 +555,7 @@ const SidebarMenuButton = React.forwardRef<
 >(
   (
     {
-      // asChild = false,
+      asChild = false,
       isActive = false,
       variant = "default",
       size = "default",
@@ -574,11 +565,11 @@ const SidebarMenuButton = React.forwardRef<
     },
     ref
   ) => {
-    // const Comp = asChild ? Slot : "button"
+    const Comp = asChild ? Slot : "button"
     const { isMobile, state } = useSidebar()
 
     const button = (
-      <button
+      <Comp
         ref={ref}
         data-sidebar="menu-button"
         data-size={size}
@@ -615,15 +606,15 @@ SidebarMenuButton.displayName = "SidebarMenuButton"
 
 const SidebarMenuAction = React.forwardRef<
   HTMLButtonElement,
-  React.ComponentProps<"button"> & {
+  React.ComponentPropsWithoutRef<"button"> & {
     asChild?: boolean
     showOnHover?: boolean
   }
 >(({ className, asChild = false, showOnHover = false, ...props }, ref) => {
-  // const Comp = asChild ? Slot : "button"
+  const Comp = asChild ? Slot : "button"
 
   return (
-    <button
+    <Comp
       ref={ref}
       data-sidebar="menu-action"
       className={cn(

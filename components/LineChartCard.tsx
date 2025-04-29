@@ -25,7 +25,6 @@ import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
   DropdownMenuContent,
-  DropdownMenuSeparator,
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 
@@ -35,49 +34,57 @@ import { CHART_RANGES } from "@/lib/constants"
 
 import { Button } from "./ui/button"
 
-// TODO: Use real data
-const chartData = Array(400)
-  .fill(0)
-  .map((_, i) => {
-    const randAdjust1 = Math.random() - 0.5
-    const randAdjust2 = Math.random() - 0.5
-    const date = new Date()
-    date.setDate(date.getDate() - i)
-
-    return {
-      date: date.toISOString().split("T")[0],
-      avg: i + randAdjust1,
-      median: i + randAdjust2,
-    }
-  })
-
 const chartConfig = {
   avg: {
     label: "avg",
-    color: "hsl(var(--chart-1))",
   },
   median: {
     label: "median",
-    color: "hsl(var(--chart-2))",
   },
 } satisfies ChartConfig
 
-// TODO: Add individual teams
 type LineKey = "avg" | "median"
 
-// TODO: Pass full data as props: 1 year of data, type/formatting of data, title
-type LineChartProps = React.HTMLAttributes<HTMLDivElement> & {
+export type ChartData = {
+  date: string
+  avg: number
+  median: number
+}
+
+type ChartCardProps = React.HTMLAttributes<HTMLDivElement> & {
   title: string
+  format: "currency" | "ms"
+  data: ChartData[]
+  initialDayRange?: DayRange
+  isLoading?: boolean
+  totalAvg: number
+  totalMedian: number
+  formatValue?: (value: number | string | (number | string)[]) => string
   hideKPIs?: boolean
 }
 
+const filterData = (data: ChartData[], dayRange: DayRange) => {
+  return data.filter((item) => {
+    const date = new Date(item.date)
+    const referenceDate = new Date()
+    const startDate = new Date(referenceDate)
+    startDate.setDate(startDate.getDate() - dayRange - 1)
+    return date >= startDate
+  })
+}
+
 const LineChartCard = ({
-  title,
-  hideKPIs,
   className,
-  ...props
-}: LineChartProps) => {
-  const [dayRange, setDayRange] = React.useState<DayRange>(7)
+  title,
+  data,
+  initialDayRange = CHART_RANGES[0],
+  isLoading = false,
+  totalAvg,
+  totalMedian,
+  formatValue,
+  hideKPIs,
+}: ChartCardProps) => {
+  const [dayRange, setDayRange] = React.useState<DayRange>(initialDayRange)
   const [lineVisibility, setLineVisibility] = React.useState<{
     [key in LineKey]: boolean
   }>({
@@ -87,17 +94,11 @@ const LineChartCard = ({
 
   const setTimeRangeValue = (value: DayRange) => () => setDayRange(value)
 
+  const filteredData = filterData(data, dayRange)
+
   const toggleLineVisibility = (key: LineKey) => {
     setLineVisibility((prev) => ({ ...prev, [key]: !prev[key] }))
   }
-
-  const filteredData = chartData.filter((item) => {
-    const date = new Date(item.date)
-    const referenceDate = new Date()
-    const startDate = new Date(referenceDate)
-    startDate.setDate(startDate.getDate() - dayRange - 1)
-    return date >= startDate
-  })
 
   return (
     <Card
@@ -105,105 +106,105 @@ const LineChartCard = ({
         "border-1 relative space-y-4 overflow-hidden dark:bg-black/10 md:space-y-4",
         className
       )}
-      {...props}
     >
-      <CardHeader className="flex flex-col gap-4 space-y-0 py-5">
-        <CardTitle className="font-normal">
-          {title} per {dayRange} days
-        </CardTitle>
+      <CardHeader className="flex flex-col gap-6 space-y-0 py-5">
+        <CardTitle className="text-lg font-normal">{title}</CardTitle>
         {!hideKPIs && (
           <div className="flex">
             <div className="flex flex-1 flex-col items-center border-e text-center">
               <span className="block text-sm font-bold uppercase">avg</span>
-              <span className="block font-mono text-2xl font-semibold text-primary">
-                {new Intl.NumberFormat("en-US", {
-                  style: "currency",
-                  currency: "USD",
-                }).format(0.1)}
+              <span className="block font-mono text-3xl text-primary">
+                {formatValue ? formatValue(totalAvg) : totalAvg}
               </span>
             </div>
             <div className="flex flex-1 flex-col items-center text-center">
               <span className="block text-sm font-bold uppercase">median</span>
-              <span className="block font-mono text-2xl font-semibold text-primary">
-                {new Intl.NumberFormat("en-US", {
-                  style: "currency",
-                  currency: "USD",
-                }).format(0.25)}
+              <span className="block font-mono text-3xl text-primary">
+                {formatValue ? formatValue(totalMedian) : totalMedian}
               </span>
             </div>
           </div>
-        )}
+        )}{" "}
       </CardHeader>
-      <CardContent>
-        <ChartContainer
-          config={chartConfig}
-          className="aspect-auto h-[250px] w-full"
-        >
-          <LineChart
-            accessibilityLayer
-            data={filteredData}
-            margin={{
-              left: 12,
-              right: 12,
-            }}
+      <CardContent className="relative">
+        {isLoading ? (
+          <div className="aspect-auto h-[250px] w-full">
+            <div className="absolute inset-0 flex h-[calc(250px-60px)] w-full items-center justify-center">
+              <div className="h-10 w-10 animate-spin rounded-full border-b-2 border-t-2 border-primary" />
+            </div>
+          </div>
+        ) : (
+          <ChartContainer
+            config={chartConfig}
+            className="aspect-auto h-[250px] w-full"
           >
-            <CartesianGrid
-              vertical={false}
-              horizontal
-              stroke="hsla(var(--chart-border))"
-            />
-            <XAxis
-              dataKey="date"
-              tickLine
-              axisLine
-              tickMargin={8}
-              minTickGap={32}
-              tickFormatter={(value) => {
-                const date = new Date(value)
-                return date.toLocaleDateString("en-US", {
-                  month: "short",
-                  day: "numeric",
-                })
+            <LineChart
+              accessibilityLayer
+              data={filteredData}
+              margin={{
+                left: 12,
+                right: 12,
               }}
-            />
-            <ChartTooltip
-              content={
-                <ChartTooltipContent
-                  className="w-[150px]"
-                  labelFormatter={(value) => {
-                    return new Date(value).toLocaleDateString("en-US", {
-                      month: "short",
-                      day: "numeric",
-                      year: "numeric",
-                    })
-                  }}
+            >
+              <CartesianGrid
+                vertical={false}
+                horizontal
+                stroke="hsla(var(--chart-border))"
+              />
+              <XAxis
+                dataKey="date"
+                tickLine
+                axisLine
+                tickMargin={8}
+                minTickGap={32}
+                tickFormatter={(value) => {
+                  const date = new Date(value)
+                  return date.toLocaleDateString("en-US", {
+                    month: "short",
+                    day: "numeric",
+                  })
+                }}
+              />
+              <ChartTooltip
+                content={
+                  <ChartTooltipContent
+                    className="w-[150px]"
+                    labelFormatter={(value) => {
+                      return new Date(value).toLocaleDateString("en-US", {
+                        month: "short",
+                        day: "numeric",
+                        year: "numeric",
+                      })
+                    }}
+                    valueFormatter={formatValue}
+                  />
+                }
+              />
+              {lineVisibility.avg && (
+                <Line
+                  dataKey="avg"
+                  type="monotone"
+                  stroke="hsla(var(--chart-2))"
+                  strokeWidth={2}
+                  dot={false}
                 />
-              }
-            />
-            {lineVisibility.avg && (
-              <Line
-                dataKey="avg"
-                type="monotone"
-                stroke="hsla(var(--chart-1))"
-                strokeWidth={2}
-                dot
+              )}
+              {lineVisibility.median && (
+                <Line
+                  dataKey="median"
+                  type="monotone"
+                  stroke="hsla(var(--chart-3))"
+                  strokeWidth={2}
+                  dot={false}
+                />
+              )}
+              <ChartLegend
+                content={<ChartLegendContent />}
+                className="font-sans text-xs"
               />
-            )}
-            {lineVisibility.median && (
-              <Line
-                dataKey="median"
-                type="monotone"
-                stroke="hsla(var(--chart-2))"
-                strokeWidth={2}
-                dot
-              />
-            )}
-            <ChartLegend
-              content={<ChartLegendContent />}
-              className="font-sans text-xs"
-            />
-          </LineChart>
-        </ChartContainer>
+            </LineChart>
+          </ChartContainer>
+        )}
       </CardContent>
       <CardFooter className="gap-4">
         <DropdownMenu>
