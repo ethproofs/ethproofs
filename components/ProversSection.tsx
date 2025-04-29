@@ -81,12 +81,23 @@ const ProversSection = async () => {
       <MachineTabs
         singleContent={
           <>
-            <ClusterAccordion clusters={clusters} />
+            <ClusterAccordion
+              clusters={clusters.filter(
+                (cluster) =>
+                  cluster.machines.length === 1 &&
+                  cluster.machines[0].count === 1
+              )}
+            />
           </>
         }
         multiContent={
           <>
-            <ClusterAccordion clusters={clusters} />
+            <ClusterAccordion
+              clusters={clusters.filter(
+                (cluster) =>
+                  cluster.machines.length > 1 || cluster.machines[0].count > 1
+              )}
+            />
           </>
         }
       />
