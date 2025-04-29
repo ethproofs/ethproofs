@@ -39,8 +39,8 @@ export default async function Index() {
   const teams = await db.query.teams.findMany()
 
   await queryClient.prefetchQuery({
-    queryKey: ["blocks", DEFAULT_PAGE_STATE],
-    queryFn: () => fetchBlocksPaginated(DEFAULT_PAGE_STATE),
+    queryKey: ["blocks", "single", DEFAULT_PAGE_STATE],
+    queryFn: () => fetchBlocksPaginated(DEFAULT_PAGE_STATE, "single"),
   })
 
   const zkvmsStats = await getZkvmsStats()
@@ -131,14 +131,24 @@ export default async function Index() {
               <KPIs items={demoBlocksSummary} />
             </CardHeader>
 
-            <MachineTabs
-              singleContent={<>TODO: Single machine blocks list</>}
-              multiContent={
-                <HydrationBoundary state={dehydrate(queryClient)}>
-                  <BlocksTable teams={teams} className="px-6" />
-                </HydrationBoundary>
-              }
-            />
+            <HydrationBoundary state={dehydrate(queryClient)}>
+              <MachineTabs
+                singleContent={
+                  <BlocksTable
+                    teams={teams}
+                    machineType="single"
+                    className="px-6"
+                  />
+                }
+                multiContent={
+                  <BlocksTable
+                    teams={teams}
+                    machineType="multi"
+                    className="px-6"
+                  />
+                }
+              />
+            </HydrationBoundary>
           </Card>
         </section>
       </div>

@@ -110,6 +110,7 @@ export const clusters = pgTable(
     cycle_type: varchar("cycle_type"),
     proof_type: varchar("proof_type"),
     is_open_source: boolean().notNull().default(false),
+    is_multi_machine: boolean().notNull().default(false),
     created_at: timestamp("created_at", {
       withTimezone: true,
       mode: "string",

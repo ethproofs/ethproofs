@@ -85,6 +85,13 @@
       "when": 1745941611632,
       "tag": "0011_cluster-summary",
       "breakpoints": true
+    },
+    {
+      "idx": 12,
+      "version": "7",
+      "when": 1745950118998,
+      "tag": "0012_cluster-multi-machine",
+      "breakpoints": true
     }
   ]
 }
