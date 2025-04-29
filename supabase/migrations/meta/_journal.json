@@ -78,6 +78,13 @@
       "when": 1745938460958,
       "tag": "0010_cluster-is-open-source",
       "breakpoints": true
+    },
+    {
+      "idx": 11,
+      "version": "7",
+      "when": 1745941611632,
+      "tag": "0011_cluster-summary",
+      "breakpoints": true
     }
   ]
 }

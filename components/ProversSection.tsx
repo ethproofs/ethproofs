@@ -11,7 +11,10 @@ import KPIs from "./KPIs"
 import MachineTabs from "./MachineTabs"
 
 import { db } from "@/db"
-import { teamsSummary as teamsSummaryView } from "@/db/schema"
+import {
+  clusterSummary as clusterSummaryView,
+  teamsSummary as teamsSummaryView,
+} from "@/db/schema"
 import { getActiveClusters, getActiveMachineCount } from "@/lib/api/clusters"
 
 const ProversSection = async () => {
@@ -20,6 +23,8 @@ const ProversSection = async () => {
     .from(teamsSummaryView)
     // hide test teams from the provers list
     .where(notIlike(teamsSummaryView.team_name, "%test%"))
+
+  const clusterSummary = await db.select().from(clusterSummaryView)
 
   const machineCount = await getActiveMachineCount()
 
@@ -41,7 +46,9 @@ const ProversSection = async () => {
   ]
 
   const clusters = activeClusters.map((cluster) => {
-    const team = teamsSummary.find((team) => team.team_id === cluster.teamId)
+    const stats = clusterSummary.find(
+      (summary) => summary.cluster_id === cluster.id
+    )
 
     return {
       clusterName: cluster.nickname,
@@ -49,8 +56,8 @@ const ProversSection = async () => {
       proverLogo: cluster.teamLogoUrl,
       zkvmName: cluster.zkvmName,
       isOpenSource: cluster.isOpenSource,
-      avgCost: team?.avg_cost_per_proof ?? 0,
-      avgTime: Number(team?.avg_proving_time ?? 0),
+      avgCost: stats?.avg_cost_per_proof ?? 0,
+      avgTime: Number(stats?.avg_proving_time ?? 0),
       machines: cluster.machines.map((machine) => ({
         cpuModel: machine.cpuModel ?? "",
         gpuCount: machine.gpuCount?.reduce((sum, count) => sum + count, 0) ?? 0,
