@@ -44,12 +44,16 @@ export default async function Index() {
         </h1>
       </div>
       <div className="flex flex-1 flex-col items-center gap-20 px-6 sm:px-8 md:w-[calc(100vw_-_var(--sidebar-width))] md:px-12 lg:px-16 xl:px-20">
-        <section id="kpis" className="w-full max-w-screen-xl scroll-m-20">
+        <section id="chart" className="w-full max-w-screen-xl scroll-m-20">
           <LineChartCard
             id="cost-chart"
             className="w-full"
             title="cost"
             hideKPIs
+            format="currency"
+            data={[]}
+            totalAvg={0}
+            totalMedian={0}
           />
         </section>
 

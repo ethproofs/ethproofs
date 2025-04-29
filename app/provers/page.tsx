@@ -34,6 +34,10 @@ export default async function Index() {
             className="w-full"
             title="cost"
             hideKPIs
+            format="currency"
+            data={[]}
+            totalAvg={0}
+            totalMedian={0}
           />
         </section>
 
