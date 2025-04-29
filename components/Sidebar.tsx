@@ -2,6 +2,7 @@ import { Suspense } from "react"
 
 import Bomb from "@/components/svgs/bomb.svg"
 import Box from "@/components/svgs/box.svg"
+import Document from "@/components/svgs/document.svg"
 import EthProofsLogo from "@/components/svgs/eth-proofs-logo.svg"
 import Heart from "@/components/svgs/heart.svg"
 import LightningBolt from "@/components/svgs/lightning-bolt.svg"
@@ -81,16 +82,28 @@ export function AppSidebar() {
           <SidebarGroup>
             <SidebarGroupLabel>Learn</SidebarGroupLabel>
             <Link href="/learn" className="text-body hover:text-primary">
-              <SidebarMenuItem>zkVMs and SNARKs</SidebarMenuItem>
+              <SidebarMenuItem>
+                <Document className="size-6" />
+                zkVMs and SNARKs
+              </SidebarMenuItem>
             </Link>
             <Link href="/#?" className="text-body hover:text-primary">
-              <SidebarMenuItem>blocks</SidebarMenuItem>
+              <SidebarMenuItem>
+                <Document className="size-6" />
+                about
+              </SidebarMenuItem>
+            </Link>
+            <Link href="/#?" className="text-body hover:text-primary">
+              <SidebarMenuItem>
+                <Document className="size-6" />
+                blocks
+              </SidebarMenuItem>
             </Link>
             <Link href="/api.html" className="text-body hover:text-primary">
-              <SidebarMenuItem>API</SidebarMenuItem>
-            </Link>
-            <Link href="/#?" className="text-body hover:text-primary">
-              <SidebarMenuItem>about Ethproofs</SidebarMenuItem>
+              <SidebarMenuItem>
+                <Document className="size-6" />
+                API
+              </SidebarMenuItem>
             </Link>
           </SidebarGroup>
         </SidebarMenu>
