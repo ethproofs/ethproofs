@@ -1,6 +1,6 @@
 import { ChevronRight } from "lucide-react"
 
-import type { ClusterBase } from "@/lib/types"
+import type { Cluster, ClusterBase } from "@/lib/types"
 
 import { cn } from "@/lib/utils"
 
@@ -8,7 +8,7 @@ import { ButtonLink } from "./ui/button"
 import Link from "./ui/link"
 import { MetricBox, MetricInfo, MetricLabel } from "./ui/metric"
 
-type ClusterRowItemProps = { cluster: ClusterBase }
+type ClusterRowItemProps = { cluster: ClusterBase | Cluster }
 
 const ClusterRowItem = ({ cluster }: ClusterRowItemProps) => (
   <div className="col-span-full row-span-2 grid grid-cols-subgrid grid-rows-subgrid border-b border-primary-border">
