@@ -5,6 +5,7 @@ import { SummaryItem } from "@/lib/types"
 import Instructions from "@/components/svgs/instructions.svg"
 import ShieldCheck from "@/components/svgs/shield-check.svg"
 
+import { ButtonLink } from "./ui/button"
 import { Card, CardHeader, CardTitle } from "./ui/card"
 import ClusterAccordion from "./ClusterAccordion"
 import KPIs from "./KPIs"
@@ -101,6 +102,12 @@ const ProversSection = async () => {
           </>
         }
       />
+
+      <div className="flex justify-center">
+        <ButtonLink variant="outline" href="/provers">
+          See all
+        </ButtonLink>
+      </div>
     </Card>
   )
 }
