@@ -205,8 +205,8 @@ importers:
         specifier: ^9.0.1
         version: 9.1.0(@types/react@18.2.48)(react@18.2.0)
       supabase:
-        specifier: ^1.204.3
-        version: 1.226.4
+        specifier: ^2.22.6
+        version: 2.22.6
       tailwindcss:
         specifier: 3.4.1
         version: 3.4.1
@@ -5291,8 +5291,8 @@ packages:
     engines: {node: '>=16 || 14 >=14.17'}
     hasBin: true
 
-  supabase@1.226.4:
-    resolution: {integrity: sha512-qEzoagrqZs5T7sAlfZzehX3PJ13cSBrJVs2vrh6xC+B0VI0wgOBw2gCNRcsOMJMpSr0V1l0XueCiFBWPm2U03w==}
+  supabase@2.22.6:
+    resolution: {integrity: sha512-W/A5JlKqrp0pxSaFRYwlWpk+aCql9xUp1ZeLVarRVtqsT6QPLqLsLPIwES0005lQKS3QBbdWDgYThEStPM1kxQ==}
     engines: {npm: '>=8'}
     hasBin: true
 
@@ -11162,7 +11162,7 @@ snapshots:
       pirates: 4.0.7
       ts-interface-checker: 0.1.13
 
-  supabase@1.226.4:
+  supabase@2.22.6:
     dependencies:
       bin-links: 5.0.0
       https-proxy-agent: 7.0.6
