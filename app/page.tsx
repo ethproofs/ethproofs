@@ -1,30 +1,23 @@
 import { Suspense } from "react"
 import type { Metadata } from "next"
-import {
-  dehydrate,
-  HydrationBoundary,
-  QueryClient,
-} from "@tanstack/react-query"
 
 import type { SummaryItem } from "@/lib/types"
 
-import BlocksTable from "@/components/BlocksTable"
 import KPIs from "@/components/KPIs"
 import MachineTabs from "@/components/MachineTabs"
 import ProofsStats from "@/components/ProofsStats"
 import ProversSection from "@/components/ProversSection"
+import SimpleBlockTable from "@/components/SimpleBlockTable"
 import SoftwareAccordion from "@/components/SoftwareAccordion"
 import Box from "@/components/svgs/box.svg"
 import BoxDashed from "@/components/svgs/box-dashed.svg"
 import Instructions from "@/components/svgs/instructions.svg"
 import ShieldCheck from "@/components/svgs/shield-check.svg"
+import { ButtonLink } from "@/components/ui/button"
 import { Card, CardHeader, CardTitle } from "@/components/ui/card"
-
-import { DEFAULT_PAGE_STATE } from "@/lib/constants"
 
 import { db } from "@/db"
 import { recentSummary as recentSummaryView } from "@/db/schema"
-import { fetchBlocksPaginated } from "@/lib/api/blocks"
 import { getMetadata } from "@/lib/metadata"
 import { prettyMs } from "@/lib/time"
 import { getZkvmsStats } from "@/lib/zkvms"
@@ -32,16 +25,7 @@ import { getZkvmsStats } from "@/lib/zkvms"
 export const metadata: Metadata = getMetadata()
 
 export default async function Index() {
-  const queryClient = new QueryClient()
-
   const [recentSummary] = await db.select().from(recentSummaryView).limit(1)
-
-  const teams = await db.query.teams.findMany()
-
-  await queryClient.prefetchQuery({
-    queryKey: ["blocks", "single", DEFAULT_PAGE_STATE],
-    queryFn: () => fetchBlocksPaginated(DEFAULT_PAGE_STATE, "single"),
-  })
 
   const zkvmsStats = await getZkvmsStats()
 
@@ -131,24 +115,22 @@ export default async function Index() {
               <KPIs items={demoBlocksSummary} />
             </CardHeader>
 
-            <HydrationBoundary state={dehydrate(queryClient)}>
+            <Suspense fallback={null}>
               <MachineTabs
                 singleContent={
-                  <BlocksTable
-                    teams={teams}
-                    machineType="single"
-                    className="px-6"
-                  />
+                  <SimpleBlockTable machineType="single" className="px-6" />
                 }
                 multiContent={
-                  <BlocksTable
-                    teams={teams}
-                    machineType="multi"
-                    className="px-6"
-                  />
+                  <SimpleBlockTable machineType="multi" className="px-6" />
                 }
               />
-            </HydrationBoundary>
+            </Suspense>
+
+            <div className="flex justify-center">
+              <ButtonLink variant="outline" href="/blocks">
+                See all
+              </ButtonLink>
+            </div>
           </Card>
         </section>
       </div>

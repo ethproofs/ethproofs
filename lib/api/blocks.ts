@@ -20,6 +20,7 @@ export const fetchBlocksPaginated = async (
               cluster_machines: {
                 with: {
                   cloud_instance: true,
+                  machine: true,
                 },
               },
             },

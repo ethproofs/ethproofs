@@ -12,3 +12,8 @@ export const getTeam = cache(
   },
   ["team"]
 )
+
+export const getTeams = cache(async () => {
+  const teams = await db.query.teams.findMany()
+  return teams
+})
