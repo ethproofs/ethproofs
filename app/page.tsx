@@ -6,14 +6,13 @@ import ProofsStats from "@/components/ProofsStats"
 import ProversSection from "@/components/ProversSection"
 import ZkvmsSection from "@/components/ZkvmsSection"
 
-import { db } from "@/db"
-import { recentSummary as recentSummaryView } from "@/db/schema"
+import { getRecentSummary } from "@/lib/api/stats"
 import { getMetadata } from "@/lib/metadata"
 
 export const metadata: Metadata = getMetadata()
 
 export default async function Index() {
-  const [recentSummary] = await db.select().from(recentSummaryView).limit(1)
+  const recentSummary = await getRecentSummary()
 
   return (
     <>

@@ -2,6 +2,7 @@ import { addDays, startOfDay } from "date-fns"
 import { asc } from "drizzle-orm"
 
 import { db } from "@/db"
+import { recentSummary as recentSummaryView } from "@/db/schema"
 
 /**
  * Fetches daily proof statistics for a specified date range
@@ -39,4 +40,10 @@ export const fetchProverDailyStats = async (teamId: string, days: number) => {
       ),
     orderBy: (stats) => [asc(stats.date)],
   })
+}
+
+export const getRecentSummary = async () => {
+  const [recentSummary] = await db.select().from(recentSummaryView).limit(1)
+
+  return recentSummary
 }
