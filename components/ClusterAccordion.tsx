@@ -79,7 +79,9 @@ const ClusterAccordionItem = ({
         {prettyMs(clusterDetails.avgTime)}
       </div>
 
-      <AccordionTrigger className="col-start-6 my-2 h-fit gap-2 rounded-full border-2 border-primary-border bg-background-highlight p-0.5 text-primary [&>svg]:size-6" />
+      <AccordionTrigger className="col-start-6 my-2 h-fit gap-2 rounded-full border-2 border-primary-border bg-background-highlight p-0.5 text-primary [&>svg]:size-6">
+        <span className="sr-only">Toggle details</span>
+      </AccordionTrigger>
     </div>
     <AccordionContent className="relative col-span-full flex flex-col gap-12 p-6">
       <div className="flex items-center gap-x-20">

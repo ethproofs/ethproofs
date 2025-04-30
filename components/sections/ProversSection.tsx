@@ -57,6 +57,7 @@ const ProversSection = async () => {
       zkvmId: cluster.zkvm.id,
       zkvmName: cluster.zkvm.name,
       isOpenSource: cluster.isOpenSource,
+      isMultiMachine: cluster.isMultiMachine,
       avgCost: stats?.avg_cost_per_proof ?? 0,
       avgTime: Number(stats?.avg_proving_time ?? 0),
       machines: cluster.machines.map((machine) => ({
@@ -70,6 +71,14 @@ const ProversSection = async () => {
     }
   })
 
+  const singleMachineClusters = clusters.filter(
+    (cluster) => !cluster.isMultiMachine
+  )
+
+  const multiMachineClusters = clusters.filter(
+    (cluster) => cluster.isMultiMachine
+  )
+
   return (
     <Card className="!p-0 !pb-6 md:!pb-8">
       <CardHeader className="space-y-3 p-6 pb-0 md:px-12 md:pt-8">
@@ -79,27 +88,8 @@ const ProversSection = async () => {
       </CardHeader>
 
       <MachineTabs
-        singleContent={
-          <>
-            <ClusterAccordion
-              clusters={clusters.filter(
-                (cluster) =>
-                  cluster.machines.length === 1 &&
-                  cluster.machines[0].count === 1
-              )}
-            />
-          </>
-        }
-        multiContent={
-          <>
-            <ClusterAccordion
-              clusters={clusters.filter(
-                (cluster) =>
-                  cluster.machines.length > 1 || cluster.machines[0].count > 1
-              )}
-            />
-          </>
-        }
+        singleContent={<ClusterAccordion clusters={singleMachineClusters} />}
+        multiContent={<ClusterAccordion clusters={multiMachineClusters} />}
       />
 
       <div className="flex justify-center">

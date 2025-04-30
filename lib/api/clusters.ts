@@ -49,6 +49,7 @@ export const getActiveClusters = async () => {
       nickname: clusters.nickname,
       description: clusters.description,
       isOpenSource: clusters.is_open_source,
+      isMultiMachine: clusters.is_multi_machine,
       createdAt: clusters.created_at,
       clusterVersionDate: clusterVersions.created_at,
 
@@ -108,6 +109,7 @@ export const getActiveClusters = async () => {
       nickname: string
       description: string | null
       isOpenSource: boolean
+      isMultiMachine: boolean
       version: {
         createdAt: string
       }
@@ -143,6 +145,7 @@ export const getActiveClusters = async () => {
         nickname: row.nickname,
         description: row.description,
         isOpenSource: row.isOpenSource,
+        isMultiMachine: row.isMultiMachine,
         version: {
           createdAt: row.clusterVersionDate,
         },

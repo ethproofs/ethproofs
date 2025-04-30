@@ -223,6 +223,7 @@ export type ClusterDetails = {
   zkvmId: number
   zkvmName: string
   isOpenSource: boolean
+  isMultiMachine: boolean
   avgCost: number
   avgTime: number
   machines: {
