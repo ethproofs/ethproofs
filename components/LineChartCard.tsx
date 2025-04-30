@@ -60,6 +60,7 @@ type ChartCardProps = React.HTMLAttributes<HTMLDivElement> & {
   totalAvg: number
   totalMedian: number
   formatValue?: (value: number | string | (number | string)[]) => string
+  hideKPIs?: boolean
 }
 
 const filterData = (data: ChartData[], dayRange: DayRange) => {
@@ -81,6 +82,7 @@ const LineChartCard = ({
   totalAvg,
   totalMedian,
   formatValue,
+  hideKPIs,
 }: ChartCardProps) => {
   const [dayRange, setDayRange] = React.useState<DayRange>(initialDayRange)
   const [lineVisibility, setLineVisibility] = React.useState<{
@@ -107,20 +109,22 @@ const LineChartCard = ({
     >
       <CardHeader className="flex flex-col gap-6 space-y-0 py-5">
         <CardTitle className="text-lg font-normal">{title}</CardTitle>
-        <div className="flex">
-          <div className="flex flex-1 flex-col items-center border-e text-center">
-            <span className="block text-sm font-bold uppercase">avg</span>
-            <span className="block font-mono text-3xl text-primary">
-              {formatValue ? formatValue(totalAvg) : totalAvg}
-            </span>
+        {!hideKPIs && (
+          <div className="flex">
+            <div className="flex flex-1 flex-col items-center border-e text-center">
+              <span className="block text-sm font-bold uppercase">avg</span>
+              <span className="block font-mono text-3xl text-primary">
+                {formatValue ? formatValue(totalAvg) : totalAvg}
+              </span>
+            </div>
+            <div className="flex flex-1 flex-col items-center text-center">
+              <span className="block text-sm font-bold uppercase">median</span>
+              <span className="block font-mono text-3xl text-primary">
+                {formatValue ? formatValue(totalMedian) : totalMedian}
+              </span>
+            </div>
           </div>
-          <div className="flex flex-1 flex-col items-center text-center">
-            <span className="block text-sm font-bold uppercase">median</span>
-            <span className="block font-mono text-3xl text-primary">
-              {formatValue ? formatValue(totalMedian) : totalMedian}
-            </span>
-          </div>
-        </div>
+        )}{" "}
       </CardHeader>
       <CardContent className="relative">
         {isLoading ? (

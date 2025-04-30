@@ -66,7 +66,7 @@ const HeroItemLabel = React.forwardRef<
   <div
     ref={ref}
     className={cn(
-      "flex items-center gap-1 lowercase text-body-secondary",
+      "flex items-center gap-1 text-body-secondary",
       className
     )}
     {...props}

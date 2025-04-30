@@ -1,3 +1,4 @@
+import { Box } from "lucide-react"
 import type { Metadata } from "next"
 import Link from "next/link"
 import { notFound } from "next/navigation"
@@ -13,7 +14,6 @@ import Null from "@/components/Null"
 import ProofStatus, { ProofStatusInfo } from "@/components/ProofStatus"
 import { HidePunctuation } from "@/components/StylePunctuation"
 import BookOpen from "@/components/svgs/book-open.svg"
-import Box from "@/components/svgs/box.svg"
 import Clock from "@/components/svgs/clock.svg"
 import Cpu from "@/components/svgs/cpu.svg"
 import DollarSign from "@/components/svgs/dollar-sign.svg"
@@ -300,65 +300,55 @@ export default async function BlockDetailsPage({
 
   return (
     <div className="space-y-20">
-      <HeroSection>
-        <HeroTitle>
-          <Box strokeWidth="1" className="shrink-0 text-6xl text-primary" />
+      <HeroTitle className="mx-auto max-w-[18rem] items-center gap-4">
+        <Box strokeWidth="1" className="size-[4.5rem] shrink-0 text-primary" />
+        <div className="truncate">
           <h1 className="font-mono">
-            <p className="text-sm font-normal md:text-lg">Block Height</p>
+            <p className="font-sans text-sm font-normal text-body-secondary">
+              Block Height
+            </p>
             <p className="text-3xl font-semibold tracking-wide">
               <HidePunctuation>{formatNumber(block_number)}</HidePunctuation>
             </p>
           </h1>
-        </HeroTitle>
-
-        <HeroDivider />
-
-        <HeroBody>
-          <HeroItem>
-            <HeroItemLabel>
-              <Clock /> Timestamp
-            </HeroItemLabel>
-            <Timestamp>{timestamp}</Timestamp>
-          </HeroItem>
-
-          <div className="grid grid-cols-3 gap-6">
-            <HeroItem>
-              <HeroItemLabel>
-                <Cpu /> Gas used
-              </HeroItemLabel>
-              <HidePunctuation>{formatNumber(gas_used)}</HidePunctuation>
-            </HeroItem>
-
-            <HeroItem>
-              <HeroItemLabel>
-                <Layers /> Slot
-              </HeroItemLabel>
-              <HidePunctuation>
-                {formatNumber(timestampToSlot(timestamp))}
-              </HidePunctuation>
-            </HeroItem>
-
-            <HeroItem>
-              <HeroItemLabel>
-                <BookOpen /> Epoch
-              </HeroItemLabel>
-              <HidePunctuation>
-                {formatNumber(timestampToEpoch(timestamp))}
-              </HidePunctuation>
-            </HeroItem>
-          </div>
-
-          <HeroItem>
-            <HeroItemLabel>
-              <Hash /> Hash
-            </HeroItemLabel>
-            <div className="flex gap-2">
-              <div className="truncate">{hash}</div>
-              <CopyButton message={hash} />
+          <div className="flex gap-2">
+            <div className="truncate font-sans text-sm font-normal text-body-secondary">
+              {hash}
             </div>
-          </HeroItem>
-        </HeroBody>
-      </HeroSection>
+            <CopyButton message={hash} />
+          </div>
+        </div>
+      </HeroTitle>
+
+      <div className="mx-auto grid w-fit grid-cols-2 gap-x-8 gap-y-4 px-6 md:grid-cols-[auto,auto,auto,auto]">
+        <HeroItem className="row-span-2 grid grid-rows-subgrid place-items-center gap-y-1">
+          <HeroItemLabel>
+            <Clock /> Timestamp
+          </HeroItemLabel>
+          <Timestamp>{timestamp}</Timestamp>
+        </HeroItem>
+
+        <HeroItem className="row-span-2 grid grid-rows-subgrid place-items-center gap-y-1">
+          <HeroItemLabel>
+            <Cpu /> Gas used
+          </HeroItemLabel>
+          {gas_used}
+        </HeroItem>
+
+        <HeroItem className="row-span-2 grid grid-rows-subgrid place-items-center gap-y-1">
+          <HeroItemLabel>
+            <Layers /> Slot
+          </HeroItemLabel>
+          {timestampToSlot(timestamp)}
+        </HeroItem>
+
+        <HeroItem className="row-span-2 grid grid-rows-subgrid place-items-center gap-y-1">
+          <HeroItemLabel>
+            <BookOpen /> Epoch
+          </HeroItemLabel>
+          {timestampToEpoch(timestamp)}
+        </HeroItem>
+      </div>
 
       <div className="space-y-8">
         <section>
