@@ -31,6 +31,7 @@ import { fetchBlocksPaginated } from "@/lib/api/blocks"
 import { demoProverAccordionDetails } from "@/lib/dummy-data"
 import { getMetadata } from "@/lib/metadata"
 import { prettyMs } from "@/lib/time"
+import { getZkvmsStats } from "@/lib/zkvms"
 
 export const metadata: Metadata = getMetadata()
 
