@@ -56,7 +56,7 @@ import {
 import { prettyMs } from "@/lib/time"
 import { getHost, getTwitterHandle } from "@/lib/url"
 
-type ProverPageProps = {
+export type ProverPageProps = {
   params: Promise<{ teamId: string }>
 }
 
@@ -65,19 +65,25 @@ export async function generateMetadata({
 }: ProverPageProps): Promise<Metadata> {
   const { teamId } = await params
 
-  const team = await getTeam(teamId)
-
-  if (!team) return { title: `Prover not found - ${SITE_NAME}` }
-
-  return getMetadata({ title: `${team.name}` })
+  try {
+    const team = await getTeam(teamId)
+    if (!team) throw new Error()
+    return getMetadata({ title: `${team.name}` })
+  } catch {
+    return { title: `Prover not found - ${SITE_NAME}` }
+  }
 }
 
 export default async function ProverPage({ params }: ProverPageProps) {
   const { teamId } = await params
 
-  const team = await getTeam(teamId)
-
-  if (!team) return notFound()
+  let team: Team | undefined
+  try {
+    team = await getTeam(teamId)
+    if (!team) throw new Error()
+  } catch {
+    return notFound()
+  }
 
   const proofsPerStatusCount = await fetchTeamProofsPerStatusCount(teamId)
   const proofsPerStatusCountMap = proofsPerStatusCount.reduce(
