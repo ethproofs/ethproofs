@@ -1,3 +1,10 @@
+import {
+  addDays,
+  differenceInMilliseconds,
+  startOfDay,
+  startOfYesterday,
+} from "date-fns"
+
 import { SummaryItem } from "@/lib/types"
 
 import Box from "@/components/svgs/box.svg"
@@ -9,21 +16,41 @@ import KPIs from "./KPIs"
 import MachineTabs from "./MachineTabs"
 import SimpleBlockTable from "./SimpleBlockTable"
 
+import { fetchProofsPerStatusCount, lastProvedProof } from "@/lib/api/proofs"
 import { prettyMs } from "@/lib/time"
 
 const BlocksSection = async () => {
+  const lastProof = await lastProvedProof()
+  const proofsPerStatusCount = await fetchProofsPerStatusCount(
+    startOfYesterday(),
+    new Date()
+  )
+  const recentProofsPerStatusCount = await fetchProofsPerStatusCount(
+    startOfDay(addDays(new Date(), -30)),
+    new Date()
+  )
+
+  const provingCount = proofsPerStatusCount.find(
+    (proof) => proof.proof_status === "proving"
+  )
+  const recentProvedCount = recentProofsPerStatusCount.find(
+    (proof) => proof.proof_status === "proved"
+  )
+
   // TODO: Use real data
   const demoBlocksSummary: SummaryItem[] = [
     {
       key: "proof-time",
       label: "since last proof",
-      value: prettyMs(94_000), // TODO: Calculate
+      value: lastProof?.created_at
+        ? prettyMs(differenceInMilliseconds(new Date(), lastProof?.created_at))
+        : "N/A",
       icon: <BoxDashed className="text-body-secondary" />,
     },
     {
       key: "proving-count",
       label: "proving",
-      value: 124,
+      value: provingCount?.count ?? 0,
       icon: <Box className="text-body-secondary" strokeWidth="1" />,
     },
     {
@@ -31,7 +58,7 @@ const BlocksSection = async () => {
       label: "proven in last 30 days",
       value: new Intl.NumberFormat("en-US", {
         notation: "compact",
-      }).format(2147),
+      }).format(recentProvedCount?.count ?? 0),
       icon: <Box className="text-primary" strokeWidth="1" />,
     },
   ]
