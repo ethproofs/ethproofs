@@ -1,6 +1,7 @@
 "use client"
 
 import * as React from "react"
+import { useMemo } from "react"
 import { CartesianGrid, Line, LineChart, XAxis } from "recharts"
 
 import type { DayRange } from "@/lib/types"
@@ -94,7 +95,10 @@ const LineChartCard = ({
 
   const setTimeRangeValue = (value: DayRange) => () => setDayRange(value)
 
-  const filteredData = filterData(data, dayRange)
+  const filteredData = useMemo(
+    () => filterData(data, dayRange),
+    [data, dayRange]
+  )
 
   const toggleLineVisibility = (key: LineKey) => {
     setLineVisibility((prev) => ({ ...prev, [key]: !prev[key] }))
