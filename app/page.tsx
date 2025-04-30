@@ -31,7 +31,6 @@ import { fetchBlocksPaginated } from "@/lib/api/blocks"
 import { demoProverAccordionDetails } from "@/lib/dummy-data"
 import { getMetadata } from "@/lib/metadata"
 import { prettyMs } from "@/lib/time"
-import { getZkvmsStats } from "@/lib/zkvms"
 
 export const metadata: Metadata = getMetadata()
 
@@ -61,19 +60,16 @@ export default async function Index() {
       key: "zkvms",
       label: "zkVMs",
       value: zkvmsStats.count,
-      icon: <ShieldCheck />,
     },
     {
       key: "isas",
       label: "ISAs",
       value: zkvmsStats.isas.length,
-      icon: <Instructions />,
     },
     {
       key: "count",
       label: "0000",
       value: 0,
-      icon: <></>,
     },
   ]
 
@@ -83,13 +79,11 @@ export default async function Index() {
       key: "provers",
       label: "provers",
       value: 9,
-      icon: <ShieldCheck />,
     },
     {
       key: "proving-machines",
       label: "proving machines",
       value: 124,
-      icon: <Instructions />,
     },
     {
       key: "annual-proving-costs",
@@ -99,7 +93,6 @@ export default async function Index() {
         currency: "USD",
         notation: "compact",
       }).format(100_000),
-      icon: <></>,
     },
   ]
 
@@ -109,13 +102,11 @@ export default async function Index() {
       key: "proof-time",
       label: "since last proof",
       value: prettyMs(94_000), // TODO: Calculate
-      icon: <BoxDashed className="text-body-secondary" />,
     },
     {
       key: "proving-count",
       label: "proving",
       value: 124,
-      icon: <Box className="text-body-secondary" strokeWidth="1" />,
     },
     {
       key: "recent-proving-count",
@@ -123,7 +114,6 @@ export default async function Index() {
       value: new Intl.NumberFormat("en-US", {
         notation: "compact",
       }).format(2147),
-      icon: <Box className="text-primary" strokeWidth="1" />,
     },
   ]
 
