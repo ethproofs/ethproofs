@@ -7,14 +7,11 @@ import {
 
 import { SummaryItem } from "@/lib/types"
 
-import Box from "@/components/svgs/box.svg"
-import BoxDashed from "@/components/svgs/box-dashed.svg"
-
-import { ButtonLink } from "./ui/button"
-import { Card, CardHeader, CardTitle } from "./ui/card"
-import KPIs from "./KPIs"
-import MachineTabs from "./MachineTabs"
-import SimpleBlockTable from "./SimpleBlockTable"
+import KPIs from "../KPIs"
+import MachineTabs from "../MachineTabs"
+import SimpleBlockTable from "../SimpleBlockTable"
+import { ButtonLink } from "../ui/button"
+import { Card, CardHeader, CardTitle } from "../ui/card"
 
 import { fetchProofsPerStatusCount, lastProvedProof } from "@/lib/api/proofs"
 import { prettyMs } from "@/lib/time"
@@ -37,7 +34,6 @@ const BlocksSection = async () => {
     (proof) => proof.proof_status === "proved"
   )
 
-  // TODO: Use real data
   const demoBlocksSummary: SummaryItem[] = [
     {
       key: "proof-time",

@@ -1,9 +1,9 @@
 import { SummaryItem } from "@/lib/types"
 
-import { ButtonLink } from "./ui/button"
-import { Card, CardHeader, CardTitle } from "./ui/card"
-import KPIs from "./KPIs"
-import SoftwareAccordion from "./SoftwareAccordion"
+import KPIs from "../KPIs"
+import SoftwareAccordion from "../SoftwareAccordion"
+import { ButtonLink } from "../ui/button"
+import { Card, CardHeader, CardTitle } from "../ui/card"
 
 import { getZkvmsStats } from "@/lib/zkvms"
 

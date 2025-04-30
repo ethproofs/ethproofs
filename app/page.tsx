@@ -1,10 +1,10 @@
 import { Suspense } from "react"
 import type { Metadata } from "next"
 
-import BlocksSection from "@/components/BlocksSection"
 import ProofsStats from "@/components/ProofsStats"
-import ProversSection from "@/components/ProversSection"
-import ZkvmsSection from "@/components/ZkvmsSection"
+import BlocksSection from "@/components/sections/BlocksSection"
+import ProversSection from "@/components/sections/ProversSection"
+import ZkvmsSection from "@/components/sections/ZkvmsSection"
 
 import { getRecentSummary } from "@/lib/api/stats"
 import { getMetadata } from "@/lib/metadata"

@@ -2,14 +2,11 @@ import { notIlike } from "drizzle-orm"
 
 import { SummaryItem } from "@/lib/types"
 
-import Instructions from "@/components/svgs/instructions.svg"
-import ShieldCheck from "@/components/svgs/shield-check.svg"
-
-import { ButtonLink } from "./ui/button"
-import { Card, CardHeader, CardTitle } from "./ui/card"
-import ClusterAccordion from "./ClusterAccordion"
-import KPIs from "./KPIs"
-import MachineTabs from "./MachineTabs"
+import ClusterAccordion from "../ClusterAccordion"
+import KPIs from "../KPIs"
+import MachineTabs from "../MachineTabs"
+import { ButtonLink } from "../ui/button"
+import { Card, CardHeader, CardTitle } from "../ui/card"
 
 import { db } from "@/db"
 import {
