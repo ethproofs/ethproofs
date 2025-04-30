@@ -83,7 +83,7 @@ const ClusterAccordionItem = ({
 
       <AccordionTrigger className="col-start-6 my-2 h-fit gap-2 rounded-full border-2 border-primary-border bg-background-highlight p-0.5 text-primary [&>svg]:size-6" />
     </div>
-    <AccordionContent className="col-span-full flex flex-col gap-12 p-6">
+    <AccordionContent className="relative col-span-full flex flex-col gap-12 p-6">
       <div className="flex items-center gap-x-20">
         <div className="flex flex-col items-center gap-y-6 text-center">
           <div className="flex w-fit flex-col items-center text-nowrap px-2 text-center">
@@ -172,6 +172,17 @@ const ClusterAccordionItem = ({
         >
           See all details
         </ButtonLink>
+      </div>
+
+      <div className="absolute bottom-6 right-6">
+        <span className="text-xs italic text-body-secondary">Last updated</span>{" "}
+        <span className="text-xs uppercase text-body">
+          {new Intl.DateTimeFormat("en-US", {
+            month: "short",
+            day: "2-digit",
+            year: "numeric",
+          }).format(new Date(clusterDetails.clusterVersionDate))}
+        </span>
       </div>
     </AccordionContent>
   </AccordionItem>

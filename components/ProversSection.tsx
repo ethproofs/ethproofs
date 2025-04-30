@@ -53,6 +53,7 @@ const ProversSection = async () => {
 
     return {
       clusterName: cluster.nickname,
+      clusterVersionDate: cluster.clusterVersionDate,
       proverId: cluster.teamId,
       proverName: cluster.teamName,
       proverLogo: cluster.teamLogoUrl,

@@ -216,6 +216,7 @@ export type Slices = [
 
 export type ClusterDetails = {
   clusterName: string
+  clusterVersionDate: string
   proverId: string
   proverName: string
   proverLogo?: string | null

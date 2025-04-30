@@ -50,6 +50,7 @@ export const getActiveClusters = async () => {
       description: clusters.description,
       isOpenSource: clusters.is_open_source,
       createdAt: clusters.created_at,
+      clusterVersionDate: clusterVersions.created_at,
 
       // Team info
       teamId: teams.id,
@@ -135,6 +136,7 @@ export const getActiveClusters = async () => {
         description: row.description,
         isOpenSource: row.isOpenSource,
         createdAt: row.createdAt,
+        clusterVersionDate: row.clusterVersionDate,
         teamId: row.teamId,
         teamName: row.teamName,
         teamLogoUrl: row.teamLogoUrl,
