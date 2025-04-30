@@ -40,7 +40,7 @@ export const getClusters = async () => {
 }
 
 export const getActiveClusters = async () => {
-  const thirtyDaysAgo = sql`NOW() - INTERVAL '30 days'`
+  const sevenDaysAgo = sql`NOW() - INTERVAL '7 days'`
 
   const rawRows = await db
     .select({
@@ -95,7 +95,7 @@ export const getActiveClusters = async () => {
             and(
               eq(proofs.cluster_version_id, clusterVersions.id),
               eq(proofs.proof_status, "proved"),
-              gt(proofs.proved_timestamp, thirtyDaysAgo)
+              gt(proofs.proved_timestamp, sevenDaysAgo)
             )
           )
       )
@@ -177,7 +177,7 @@ export const getClustersByTeamId = async (teamId: string) => {
 }
 
 export const getActiveClusterCountByZkvmId = async () => {
-  const thirtyDaysAgo = sql`NOW() - INTERVAL '30 days'`
+  const sevenDaysAgo = sql`NOW() - INTERVAL '7 days'`
 
   const result = await db
     .select({
@@ -200,7 +200,7 @@ export const getActiveClusterCountByZkvmId = async () => {
             and(
               eq(proofs.cluster_version_id, clusterVersions.id),
               eq(proofs.proof_status, "proved"),
-              gt(proofs.created_at, thirtyDaysAgo)
+              gt(proofs.created_at, sevenDaysAgo)
             )
           )
       )
