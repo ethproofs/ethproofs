@@ -53,8 +53,10 @@ const ProversSection = async () => {
 
     return {
       clusterName: cluster.nickname,
+      proverId: cluster.teamId,
       proverName: cluster.teamName,
       proverLogo: cluster.teamLogoUrl,
+      zkvmId: cluster.zkvmId,
       zkvmName: cluster.zkvmName,
       isOpenSource: cluster.isOpenSource,
       avgCost: stats?.avg_cost_per_proof ?? 0,

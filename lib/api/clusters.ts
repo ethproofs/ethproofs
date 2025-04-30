@@ -57,6 +57,7 @@ export const getActiveClusters = async () => {
       teamLogoUrl: teams.logo_url,
 
       // ZKVM info
+      zkvmId: zkvms.id,
       zkvmName: zkvms.name,
       zkvmIsa: zkvms.isa,
       zkvmVersion: zkvmVersions.version,
@@ -137,6 +138,7 @@ export const getActiveClusters = async () => {
         teamId: row.teamId,
         teamName: row.teamName,
         teamLogoUrl: row.teamLogoUrl,
+        zkvmId: row.zkvmId,
         zkvmName: row.zkvmName,
         zkvmIsa: row.zkvmIsa,
         zkvmVersion: row.zkvmVersion,

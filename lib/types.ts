@@ -216,8 +216,10 @@ export type Slices = [
 
 export type ClusterDetails = {
   clusterName: string
+  proverId: string
   proverName: string
   proverLogo?: string | null
+  zkvmId: number
   zkvmName: string
   isOpenSource: boolean
   avgCost: number

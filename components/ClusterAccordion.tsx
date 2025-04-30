@@ -35,7 +35,7 @@ const ClusterAccordionItem = ({
       {/* TODO: Update to match design */}
       <div className="col-start-1 flex flex-col gap-1">
         <Link
-          href="/prover/#TODO-prover-id"
+          href={`/prover/${clusterDetails.proverId}`}
           className="-m-1 w-fit rounded p-1 hover:bg-primary/10"
         >
           {clusterDetails.proverLogo ? (
@@ -56,7 +56,10 @@ const ClusterAccordionItem = ({
         </Link>
         <div>
           <span className="text-sm text-primary">
-            <Link href="/zkvm/#TODO-zkvm-id" className="hover:underline">
+            <Link
+              href={`/zkvms/${clusterDetails.zkvmId}`}
+              className="hover:underline"
+            >
               {clusterDetails.zkvmName}
             </Link>{" "}
             |{" "}
@@ -163,7 +166,10 @@ const ClusterAccordionItem = ({
       </div>
 
       <div className="grid place-items-center">
-        <ButtonLink variant="outline" href="/prover/#TODO-team-id">
+        <ButtonLink
+          variant="outline"
+          href={`/prover/${clusterDetails.proverId}`}
+        >
           See all details
         </ButtonLink>
       </div>
