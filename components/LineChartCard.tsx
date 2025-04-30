@@ -103,7 +103,7 @@ const LineChartCard = ({
   return (
     <Card
       className={cn(
-        "border-1 relative space-y-4 overflow-hidden dark:bg-black/10 md:space-y-4",
+        "border-1 relative space-y-4 overflow-hidden md:space-y-4",
         className
       )}
     >

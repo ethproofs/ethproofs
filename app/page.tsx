@@ -31,6 +31,7 @@ import { fetchBlocksPaginated } from "@/lib/api/blocks"
 import { demoProverAccordionDetails } from "@/lib/dummy-data"
 import { getMetadata } from "@/lib/metadata"
 import { prettyMs } from "@/lib/time"
+import { getZkvmsStats } from "@/lib/zkvms"
 
 export const metadata: Metadata = getMetadata()
 
@@ -53,17 +54,18 @@ export default async function Index() {
     queryFn: () => fetchBlocksPaginated(DEFAULT_PAGE_STATE),
   })
 
-  // TODO: Use real data
-  const demoSoftwareSummary: SummaryItem[] = [
+  const zkvmsStats = await getZkvmsStats()
+
+  const zkvmsSummary: SummaryItem[] = [
     {
       key: "zkvms",
       label: "zkVMs",
-      value: 12,
+      value: zkvmsStats.count,
     },
     {
       key: "isas",
       label: "ISAs",
-      value: 5,
+      value: zkvmsStats.isas.length,
     },
     {
       key: "count",
@@ -138,11 +140,11 @@ export default async function Index() {
         <ProofsStats recentSummary={recentSummary} />
 
         <section id="zkvms" className="w-full max-w-screen-xl scroll-m-20">
-          <Card className="bg-white/10 dark:bg-black/10">
+          <Card>
             <CardHeader className="space-y-3">
               <CardTitle className="text-2xl">zkVMs</CardTitle>
 
-              <KPIs items={demoSoftwareSummary} />
+              <KPIs items={zkvmsSummary} />
             </CardHeader>
 
             <SoftwareAccordion />
@@ -150,7 +152,7 @@ export default async function Index() {
         </section>
 
         <section id="provers" className="w-full max-w-screen-xl scroll-m-20">
-          <Card className="bg-white/10 !p-0 !pb-6 dark:bg-black/10 md:!pb-8">
+          <Card className="!p-0 !pb-6 md:!pb-8">
             <CardHeader className="space-y-3 p-6 pb-0 md:px-12 md:pt-8">
               <CardTitle className="text-2xl">provers</CardTitle>
 
@@ -175,7 +177,7 @@ export default async function Index() {
         </section>
 
         <section id="blocks" className="w-full max-w-screen-xl scroll-m-20">
-          <Card className="bg-white/10 !p-0 !pb-6 dark:bg-black/10 md:!pb-8">
+          <Card className="!p-0 !pb-6 md:!pb-8">
             <CardHeader className="space-y-3 p-6 pb-0 md:px-12 md:pt-8">
               <CardTitle className="text-2xl">latest blocks</CardTitle>
 

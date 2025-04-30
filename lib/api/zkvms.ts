@@ -1,11 +1,17 @@
-import { db } from "@/db"
+import { desc } from "drizzle-orm"
 
-export async function getZkvms() {
+import { db } from "@/db"
+import { zkvmVersions } from "@/db/schema"
+
+export async function getZkvms({ limit }: { limit?: number } = {}) {
   const zkvms = await db.query.zkvms.findMany({
     with: {
-      versions: true,
+      versions: {
+        orderBy: desc(zkvmVersions.release_date),
+      },
       vendor: true,
     },
+    limit,
   })
   return zkvms
 }
