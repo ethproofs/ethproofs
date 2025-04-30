@@ -1,5 +1,3 @@
-// TODO: Pass data as props
-
 import { Fragment } from "react"
 import { Check, X as RedX } from "lucide-react"
 import Image from "next/image"
@@ -7,7 +5,7 @@ import { type AccordionItemProps } from "@radix-ui/react-accordion"
 
 import type { ClusterDetails } from "@/lib/types"
 
-import { cn } from "@/lib/utils"
+import { cn, sumArray } from "@/lib/utils"
 
 import {
   Accordion,
@@ -91,30 +89,20 @@ const ClusterAccordionItem = ({
               total machines
             </span>
             <span className="block font-mono text-2xl font-bold text-body">
-              {clusterDetails.machines.reduce(
-                (acc, curr) => acc + curr.count,
-                0
-              )}
+              {sumArray(clusterDetails.machines.map((m) => m.count))}
             </span>
           </div>
           <div className="grid grid-cols-2 place-items-center gap-x-3 gap-y-4 text-center">
             <div className="flex w-full flex-col items-center text-nowrap text-center">
               <span className="block text-sm text-body-secondary">GPUs</span>
               <span className="block font-mono text-xl text-body">
-                {clusterDetails.machines.reduce(
-                  (acc, curr) => acc + curr.gpuCount,
-                  0
-                )}
+                {sumArray(clusterDetails.machines.map((m) => m.gpuCount))}
               </span>
             </div>
             <div className="flex w-full flex-col items-center text-nowrap text-center">
               <span className="block text-sm text-body-secondary">GPU RAM</span>
               <span className="block font-mono text-xl text-body">
-                {clusterDetails.machines.reduce(
-                  (acc, curr) => acc + curr.gpuRam,
-                  0
-                )}{" "}
-                GB
+                {sumArray(clusterDetails.machines.map((m) => m.gpuRam))} GB
               </span>
             </div>
             <div className="flex flex-col items-center text-nowrap text-center">
@@ -122,20 +110,13 @@ const ClusterAccordionItem = ({
                 CPU cores
               </span>
               <span className="block font-mono text-xl text-body">
-                {clusterDetails.machines.reduce(
-                  (acc, curr) => acc + curr.cpuCount,
-                  0
-                )}
+                {sumArray(clusterDetails.machines.map((m) => m.cpuCount))}
               </span>
             </div>
             <div className="flex flex-col items-center text-nowrap text-center">
               <span className="block text-sm text-body-secondary">CPU RAM</span>
               <span className="block font-mono text-xl text-body">
-                {clusterDetails.machines.reduce(
-                  (acc, curr) => acc + curr.cpuRam,
-                  0
-                )}{" "}
-                GB
+                {sumArray(clusterDetails.machines.map((m) => m.cpuRam))} GB
               </span>
             </div>
           </div>

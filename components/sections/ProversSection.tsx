@@ -2,6 +2,8 @@ import { notIlike } from "drizzle-orm"
 
 import { SummaryItem } from "@/lib/types"
 
+import { sumArray } from "@/lib/utils"
+
 import ClusterAccordion from "../ClusterAccordion"
 import KPIs from "../KPIs"
 import MachineTabs from "../MachineTabs"
@@ -48,22 +50,21 @@ const ProversSection = async () => {
 
     return {
       clusterName: cluster.nickname,
-      clusterVersionDate: cluster.clusterVersionDate,
-      proverId: cluster.teamId,
-      proverName: cluster.teamName,
-      proverLogo: cluster.teamLogoUrl,
-      zkvmId: cluster.zkvmId,
-      zkvmName: cluster.zkvmName,
+      clusterVersionDate: cluster.version.createdAt,
+      proverId: cluster.team.id,
+      proverName: cluster.team.name,
+      proverLogo: cluster.team.logoUrl,
+      zkvmId: cluster.zkvm.id,
+      zkvmName: cluster.zkvm.name,
       isOpenSource: cluster.isOpenSource,
       avgCost: stats?.avg_cost_per_proof ?? 0,
       avgTime: Number(stats?.avg_proving_time ?? 0),
       machines: cluster.machines.map((machine) => ({
         cpuModel: machine.cpuModel ?? "",
-        gpuCount: machine.gpuCount?.reduce((sum, count) => sum + count, 0) ?? 0,
+        gpuCount: sumArray(machine.gpuCount),
         cpuCount: machine.cpuCores ?? 0,
-        gpuRam: machine.gpuCount?.reduce((sum, count) => sum + count, 0) ?? 0,
-        cpuRam:
-          machine.memoryCount?.reduce((sum, count) => sum + count, 0) ?? 0,
+        gpuRam: sumArray(machine.gpuCount),
+        cpuRam: sumArray(machine.memoryCount),
         count: machine.count ?? 1,
       })),
     }

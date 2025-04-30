@@ -103,17 +103,25 @@ export const getActiveClusters = async () => {
 
   const clusterMap = new Map<
     string,
-    Omit<
-      (typeof rawRows)[number],
-      | "machineId"
-      | "cpuModel"
-      | "cpuCores"
-      | "gpuModels"
-      | "gpuCount"
-      | "memorySizeGb"
-      | "memoryCount"
-      | "machineCount"
-    > & {
+    {
+      id: string
+      nickname: string
+      description: string | null
+      isOpenSource: boolean
+      version: {
+        createdAt: string
+      }
+      team: {
+        id: string
+        name: string
+        logoUrl: string | null
+      }
+      zkvm: {
+        id: number
+        name: string
+        isa: string
+        version: string
+      }
       machines: Array<{
         id: NonNullable<(typeof rawRows)[number]["machineId"]>
         cpuModel: (typeof rawRows)[number]["cpuModel"]
@@ -135,15 +143,20 @@ export const getActiveClusters = async () => {
         nickname: row.nickname,
         description: row.description,
         isOpenSource: row.isOpenSource,
-        createdAt: row.createdAt,
-        clusterVersionDate: row.clusterVersionDate,
-        teamId: row.teamId,
-        teamName: row.teamName,
-        teamLogoUrl: row.teamLogoUrl,
-        zkvmId: row.zkvmId,
-        zkvmName: row.zkvmName,
-        zkvmIsa: row.zkvmIsa,
-        zkvmVersion: row.zkvmVersion,
+        version: {
+          createdAt: row.clusterVersionDate,
+        },
+        team: {
+          id: row.teamId,
+          name: row.teamName,
+          logoUrl: row.teamLogoUrl,
+        },
+        zkvm: {
+          id: row.zkvmId,
+          name: row.zkvmName,
+          isa: row.zkvmIsa,
+          version: row.zkvmVersion,
+        },
         machines: [],
       })
     }
