@@ -45,13 +45,11 @@ const BlocksSection = async () => {
       value: lastProof?.created_at
         ? prettyMs(differenceInMilliseconds(new Date(), lastProof?.created_at))
         : "N/A",
-      icon: <BoxDashed className="text-body-secondary" />,
     },
     {
       key: "proving-count",
       label: "proving",
       value: provingCount?.count ?? 0,
-      icon: <Box className="text-body-secondary" strokeWidth="1" />,
     },
     {
       key: "recent-proving-count",
@@ -59,7 +57,6 @@ const BlocksSection = async () => {
       value: new Intl.NumberFormat("en-US", {
         notation: "compact",
       }).format(recentProvedCount?.count ?? 0),
-      icon: <Box className="text-primary" strokeWidth="1" />,
     },
   ]
 

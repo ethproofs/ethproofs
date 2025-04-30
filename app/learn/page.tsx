@@ -1,16 +1,12 @@
 import fs from "fs"
 
 import matter from "gray-matter"
-import Image from "next/image"
 
 import { MarkdownProvider } from "@/components/Markdown/Provider"
-
-import { cn } from "@/lib/utils"
 
 import { LEARN_CONTENT_MD } from "@/lib/constants"
 
 import { getMetadata } from "@/lib/metadata"
-import HeroDark from "@/public/images/learn-hero-background.png"
 
 export const metadata = getMetadata({ title: "Learn" })
 
@@ -22,38 +18,27 @@ export default function LearnPage() {
   const { content } = matter(contentMarkdown)
 
   return (
-    <div className="space-y-16">
-      <div
-        className="absolute inset-0 -z-10 h-[24rem] md:max-xl:h-96 xl:h-[22rem]"
-        style={{ mask: "linear-gradient(180deg, white 80%, transparent)" }}
-      >
-        <Image
-          src={HeroDark}
+    <>
+      <div className="absolute top-16 w-full space-y-12 px-6 text-center font-mono font-semibold sm:px-8 md:px-12 lg:px-16 xl:px-20">
+        <h1
+          className="text-3xl"
           style={{
-            mask: "radial-gradient(circle, white 60%, transparent 90%)",
-            objectPosition: "50% 40%", // Position center of boxes
+            textShadow: `
+              0 0 3rem hsla(var(--background-modal)),
+              0 0 2rem hsla(var(--background-modal)),
+              0 0 1rem hsla(var(--background-modal)),
+              0 0 1rem hsla(var(--background-modal))`,
           }}
-          className={cn(
-            "mx-auto h-full w-full max-w-screen-2xl object-cover",
-            "opacity-80 contrast-[110%] hue-rotate-180 invert", // Light mode filters
-            "dark:opacity-100 dark:contrast-100 dark:hue-rotate-0 dark:invert-0" // Dark mode filter resets
-          )}
-          alt=""
-          priority
-        />
-      </div>
-      <div className="!mt-36 flex w-full flex-col items-center justify-between gap-4 p-3">
-        <h1 className="w-full text-center font-mono font-semibold">
-          Learn <span className="text-primary">&</span> resources
+        >
+          learn <span className="text-primary">&</span> resources
         </h1>
-        <p className="max-w-2xl text-center text-lg">
-          How zkEVM Transforms Smart Contracts with Zero-Knowledge Proofs
-        </p>
       </div>
 
-      <div className="mx-auto max-w-screen-md space-y-8 md:mt-16 lg:mt-32 xl:mt-48">
-        <MarkdownProvider>{content}</MarkdownProvider>
+      <div className="w-screen md:w-[calc(100vw_-_var(--sidebar-width))]">
+        <div className="mx-auto max-w-screen-md space-y-8 px-8 md:px-12">
+          <MarkdownProvider>{content}</MarkdownProvider>
+        </div>
       </div>
-    </div>
+    </>
   )
 }

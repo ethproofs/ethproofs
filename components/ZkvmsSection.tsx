@@ -1,8 +1,5 @@
 import { SummaryItem } from "@/lib/types"
 
-import Instructions from "@/components/svgs/instructions.svg"
-import ShieldCheck from "@/components/svgs/shield-check.svg"
-
 import { ButtonLink } from "./ui/button"
 import { Card, CardHeader, CardTitle } from "./ui/card"
 import KPIs from "./KPIs"
@@ -18,13 +15,11 @@ const ZkvmsSection = async () => {
       key: "zkvms",
       label: "zkVMs",
       value: zkvmsStats.count,
-      icon: <ShieldCheck />,
     },
     {
       key: "isas",
       label: "ISAs",
       value: zkvmsStats.isas.length,
-      icon: <Instructions />,
     },
   ]
 

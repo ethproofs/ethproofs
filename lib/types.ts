@@ -181,8 +181,8 @@ export type Metric = {
 export type SummaryItem = {
   key: string
   label: ReactNode
-  icon: ReactNode
   value: ReactNode
+  icon?: ReactNode
 }
 
 /**

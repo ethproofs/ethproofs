@@ -36,13 +36,11 @@ const ProversSection = async () => {
       key: "provers",
       label: "provers",
       value: teamsSummary.length,
-      icon: <ShieldCheck />,
     },
     {
       key: "proving-machines",
       label: "proving machines",
       value: machineCount,
-      icon: <Instructions />,
     },
   ]
 

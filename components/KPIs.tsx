@@ -1,24 +1,22 @@
-import { SummaryItem } from "@/lib/types"
+import type { SummaryItem } from "@/lib/types"
 
-export const KPI = ({
-  item: { icon, value, label },
-}: {
-  item: SummaryItem
-}) => (
+export const KPI = ({ item }: { item: SummaryItem }) => (
   <div className="row-span-2 grid grid-rows-subgrid gap-1 p-2">
     {/* Row 1 - Metric icon and value */}
     <div className="col-span-1 row-span-1 flex h-full flex-col items-center justify-center gap-x-2 md:flex-row">
-      <p className="whitespace-nowrap font-mono text-2xl font-medium text-primary md:text-3xl lg:text-4xl">
-        {icon}
-      </p>
+      {item.icon && (
+        <p className="whitespace-nowrap font-mono text-2xl font-medium text-primary md:text-3xl lg:text-4xl">
+          {item.icon}
+        </p>
+      )}
       <p className="h-auto whitespace-nowrap text-nowrap text-center font-mono text-2xl font-medium text-primary md:text-3xl lg:text-4xl">
-        {value}
+        {item.value}
       </p>
     </div>
     {/* Row 2 - Metric label */}
     <div>
       <p className="whitespace-nowrap text-center text-sm font-medium">
-        {label}
+        {item.label}
       </p>
     </div>
   </div>
