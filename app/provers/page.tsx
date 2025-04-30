@@ -1,10 +1,10 @@
 import type { Metadata } from "next"
 
+import ClusterAccordion from "@/components/ClusterAccordion"
 import LineChartCard from "@/components/LineChartCard"
 import MachineTabs from "@/components/MachineTabs"
-import ProverAccordion from "@/components/ProverAccordion"
 
-import { demoProverAccordionDetails } from "@/lib/dummy-data"
+import { demoClusterDetails } from "@/lib/dummy-data"
 import { getMetadata } from "@/lib/metadata"
 
 export const metadata: Metadata = getMetadata()
@@ -43,12 +43,8 @@ export default async function Index() {
 
         <section className="w-full max-w-screen-xl scroll-m-20">
           <MachineTabs
-            singleContent={
-              <ProverAccordion provers={demoProverAccordionDetails} />
-            }
-            multiContent={
-              <ProverAccordion provers={demoProverAccordionDetails} />
-            }
+            singleContent={<ClusterAccordion clusters={demoClusterDetails} />}
+            multiContent={<ClusterAccordion clusters={demoClusterDetails} />}
           />
         </section>
       </div>

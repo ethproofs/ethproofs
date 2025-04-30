@@ -61,12 +61,20 @@ export default async function Index() {
           <MachineTabs
             singleContent={
               <HydrationBoundary state={dehydrate(queryClient)}>
-                <BlocksTable teams={teams} className="px-6" />
+                <BlocksTable
+                  teams={teams}
+                  className="px-6"
+                  machineType="single"
+                />
               </HydrationBoundary>
             }
             multiContent={
               <HydrationBoundary state={dehydrate(queryClient)}>
-                <BlocksTable teams={teams} className="px-6" />
+                <BlocksTable
+                  teams={teams}
+                  className="px-6"
+                  machineType="multi"
+                />
               </HydrationBoundary>
             }
           />

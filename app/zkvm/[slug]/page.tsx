@@ -3,13 +3,13 @@ import type { Metadata } from "next"
 import Image from "next/image"
 import Link from "next/link"
 
-import ProverAccordion from "@/components/ProverAccordion"
+import ClusterAccordion from "@/components/ClusterAccordion"
 import SoftwareDetails from "@/components/SoftwareDetails"
 import GitHub from "@/components/svgs/github.svg"
 
 import { cn } from "@/lib/utils"
 
-import { demoProverAccordionDetails } from "@/lib/dummy-data"
+import { demoClusterDetails } from "@/lib/dummy-data"
 import { getMetadata } from "@/lib/metadata"
 
 type ZkvmDetailsPageProps = {
@@ -126,7 +126,7 @@ export default async function ZkvmDetailsPage({
           active clusters using SP1: 5 / 12
         </h2>
         <div className="-me-6 overflow-x-auto pe-6">
-          <ProverAccordion provers={demoProverAccordionDetails} />
+          <ClusterAccordion clusters={demoClusterDetails} />
         </div>
       </div>
     </>
