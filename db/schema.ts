@@ -518,6 +518,93 @@ export const proofs = pgTable(
   ]
 )
 
+// Severity level enum for performance and security metrics
+export const severityLevel = pgEnum("severity_level", [
+  "red",
+  "yellow",
+  "green",
+])
+
+export const zkvmPerformanceMetrics = pgTable(
+  "zkvm_performance_metrics",
+  {
+    id: bigint("id", { mode: "number" })
+      .primaryKey()
+      .generatedByDefaultAsIdentity(),
+    zkvm_id: bigint("zkvm_id", { mode: "number" })
+      .notNull()
+      .references(() => zkvms.id, {
+        onDelete: "cascade",
+        onUpdate: "cascade",
+      }),
+    size_bytes: bigint("size_bytes", { mode: "number" }).notNull(),
+    verification_ms: integer("verification_ms").notNull(),
+    created_at: timestamp("created_at", { withTimezone: true, mode: "string" })
+      .defaultNow()
+      .notNull(),
+    updated_at: timestamp("updated_at", { withTimezone: true, mode: "string" })
+      .defaultNow()
+      .notNull(),
+  },
+  () => [
+    pgPolicy("Enable read access for all users", {
+      as: "permissive",
+      for: "select",
+      to: ["public"],
+      using: sql`true`,
+    }),
+    pgPolicy("Enable insert for users with an api key", {
+      as: "permissive",
+      for: "insert",
+      to: ["public"],
+    }),
+  ]
+)
+
+export const zkvmSecurityMetrics = pgTable(
+  "zkvm_security_metrics",
+  {
+    id: bigint("id", { mode: "number" })
+      .primaryKey()
+      .generatedByDefaultAsIdentity(),
+    zkvm_id: bigint("zkvm_id", { mode: "number" })
+      .notNull()
+      .references(() => zkvms.id, {
+        onDelete: "cascade",
+        onUpdate: "cascade",
+      }),
+    protocol_soundness: severityLevel("protocol_soundness").notNull(),
+    implementation_soundness: severityLevel(
+      "implementation_soundness"
+    ).notNull(),
+    evm_stf_bytecode: severityLevel("evm_stf_bytecode").notNull(),
+    quantum_security: severityLevel("quantum_security").notNull(),
+    security_target_bits: integer("security_target_bits").notNull(),
+    max_bounty_amount: bigint("max_bounty_amount", {
+      mode: "number",
+    }).notNull(),
+    created_at: timestamp("created_at", { withTimezone: true, mode: "string" })
+      .defaultNow()
+      .notNull(),
+    updated_at: timestamp("updated_at", { withTimezone: true, mode: "string" })
+      .defaultNow()
+      .notNull(),
+  },
+  () => [
+    pgPolicy("Enable read access for all users", {
+      as: "permissive",
+      for: "select",
+      to: ["public"],
+      using: sql`true`,
+    }),
+    pgPolicy("Enable insert for users with an api key", {
+      as: "permissive",
+      for: "insert",
+      to: ["public"],
+    }),
+  ]
+)
+
 export const recentSummary = pgView("recent_summary", {
   total_proven_blocks: bigint("total_proven_blocks", { mode: "number" }),
   avg_cost_per_proof: doublePrecision("avg_cost_per_proof"),
