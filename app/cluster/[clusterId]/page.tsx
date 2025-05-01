@@ -6,6 +6,7 @@ import { notFound } from "next/navigation"
 import { Cluster } from "@/lib/types"
 
 import Link from "@/components/ui/link"
+import { MetricBox, MetricInfo, MetricLabel } from "@/components/ui/metric"
 
 import { getCluster } from "@/lib/api/clusters"
 import { getTeam } from "@/lib/api/teams"
@@ -138,6 +139,31 @@ export default async function ClusterDetailsPage({
           here
         </Link>
       </aside>
+
+      <div className="!mt-16 flex w-full flex-wrap justify-evenly gap-x-8 border-b">
+        <div className="flex flex-col items-center gap-1 p-4">
+          <div className="font-sans text-sm text-body-secondary">zkVM</div>
+          <div className="font-mono text-lg text-primary">SP1!</div>
+        </div>
+        <div className="flex flex-col items-center gap-1 p-4">
+          <MetricBox className="py-0">
+            <MetricLabel>
+              <MetricInfo label="ISA">
+                Instruction Set Architecture
+                <br />
+                TODO: Popover details
+              </MetricInfo>
+            </MetricLabel>
+          </MetricBox>
+          <div className="font-mono text-lg text-primary">RISC-V!</div>
+        </div>
+        <div className="flex flex-col items-center gap-1 p-4">
+          <div className="font-sans text-sm text-body-secondary">
+            proof type
+          </div>
+          <div className="font-mono text-lg text-primary">hash-based</div>
+        </div>
+      </div>
     </div>
   )
 }
