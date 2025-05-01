@@ -27,9 +27,11 @@ export async function generateMetadata({
 }: ZkvmDetailsPageProps): Promise<Metadata> {
   const { slug } = await params
 
-  const zkvm = await getZkvm({ slug })
-
-  if (!zkvm) {
+  let zkvm: Awaited<ReturnType<typeof getZkvm>>
+  try {
+    zkvm = await getZkvm({ slug })
+    if (!zkvm) throw new Error()
+  } catch {
     return getMetadata({ title: "zkVM not found" })
   }
 
@@ -43,9 +45,11 @@ export default async function ZkvmDetailsPage({
 }: ZkvmDetailsPageProps) {
   const slug = (await params).slug
 
-  const zkvm = await getZkvmWithUsage({ slug })
-
-  if (!zkvm) {
+  let zkvm: Awaited<ReturnType<typeof getZkvmWithUsage>>
+  try {
+    zkvm = await getZkvmWithUsage({ slug })
+    if (!zkvm) throw new Error()
+  } catch {
     return notFound()
   }
 
