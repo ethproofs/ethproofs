@@ -11,8 +11,8 @@ import MachineTabs from "@/components/MachineTabs"
 
 import { DEFAULT_PAGE_STATE } from "@/lib/constants"
 
-import { db } from "@/db"
 import { fetchBlocksPaginated } from "@/lib/api/blocks"
+import { getTeams } from "@/lib/api/teams"
 import { getMetadata } from "@/lib/metadata"
 
 export const metadata: Metadata = getMetadata()
@@ -20,11 +20,16 @@ export const metadata: Metadata = getMetadata()
 export default async function Index() {
   const queryClient = new QueryClient()
 
-  const teams = await db.query.teams.findMany()
+  const teams = await getTeams()
 
   await queryClient.prefetchQuery({
-    queryKey: ["blocks", DEFAULT_PAGE_STATE],
-    queryFn: () => fetchBlocksPaginated(DEFAULT_PAGE_STATE),
+    queryKey: ["blocks", "single", DEFAULT_PAGE_STATE],
+    queryFn: () => fetchBlocksPaginated(DEFAULT_PAGE_STATE, "single"),
+  })
+
+  await queryClient.prefetchQuery({
+    queryKey: ["blocks", "multi", DEFAULT_PAGE_STATE],
+    queryFn: () => fetchBlocksPaginated(DEFAULT_PAGE_STATE, "multi"),
   })
 
   return (
