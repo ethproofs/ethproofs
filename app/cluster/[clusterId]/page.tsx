@@ -1,10 +1,14 @@
 import { Check, X as RedX } from "lucide-react"
 import type { Metadata } from "next"
+import Image from "next/image"
 import { notFound } from "next/navigation"
 
 import { Cluster } from "@/lib/types"
 
+import Link from "@/components/ui/link"
+
 import { getCluster } from "@/lib/api/clusters"
+import { getTeam } from "@/lib/api/teams"
 import { getMetadata } from "@/lib/metadata"
 import { prettyMs } from "@/lib/time"
 
@@ -17,9 +21,9 @@ export async function generateMetadata({
 }: ClusterDetailsPageProps): Promise<Metadata> {
   const { clusterId } = await params
 
-  let cluster: Cluster | undefined
+  let cluster: Awaited<ReturnType<typeof getCluster>>
   try {
-    cluster = (await getCluster(clusterId)) as Cluster
+    cluster = await getCluster(clusterId)
     if (!cluster) throw new Error()
   } catch {
     return getMetadata({
@@ -37,19 +41,27 @@ export default async function ClusterDetailsPage({
 }: ClusterDetailsPageProps) {
   const { clusterId } = await params
 
-  let cluster: Cluster | undefined
+  let cluster: Awaited<ReturnType<typeof getCluster>>
   try {
-    cluster = (await getCluster(clusterId)) as Cluster
+    cluster = await getCluster(clusterId)
     if (!cluster) throw new Error()
   } catch {
     return notFound()
   }
 
+  let team: Awaited<ReturnType<typeof getTeam>>
+  try {
+    team = await getTeam(cluster.team_id)
+    if (!team) throw new Error()
+  } catch {
+    console.warn("Failed to fetch team for cluster", clusterId)
+  }
+
   return (
-    <div className="-mt-52 px-6 sm:px-8 md:px-12 lg:px-16 xl:px-20">
-      <div id="hero-section" className="flex flex-col items-center gap-2 p-20">
+    <div className="-mt-52 w-full space-y-8 px-6 sm:px-8 md:w-[calc(100vw_-_var(--sidebar-width))] md:px-12 lg:px-16 xl:px-20">
+      <div id="hero-section" className="flex flex-col items-center gap-2 pt-20">
         <h1
-          className="text-3xl font-semibold"
+          className="font-mono text-4xl font-semibold"
           style={{
             textShadow: `
               0 0 3rem hsla(var(--background-modal)),
@@ -65,9 +77,24 @@ export default async function ClusterDetailsPage({
           {/* // TODO: Differentiate single vs multi */}
           single machine cluster
         </div>
+        {team && (
+          <div className="mx-auto mt-4 flex w-full max-w-lg justify-center border-t border-primary p-6">
+            {team.logo_url ? (
+              <Image
+                src={team.logo_url}
+                alt={`${team.name} logo`}
+                width={100}
+                height={100}
+                className="dark:invert"
+              />
+            ) : (
+              <div className="text-xl">{team.name}</div>
+            )}
+          </div>
+        )}
       </div>
 
-      <div className="relative flex flex-wrap rounded-[1.25rem] bg-background p-6">
+      <div className="relative mx-auto flex w-fit flex-wrap justify-evenly gap-x-8 rounded-[1.25rem] bg-background p-6">
         <div className="absolute -inset-px z-[-2] rounded-[calc(1.25rem_+_1px)] bg-gradient-to-tl from-primary to-primary/10" />
         <div className="absolute -inset-px z-[-1] rounded-[1.25rem] bg-black/10" />
         <div className="flex flex-col items-center gap-3 p-4">
@@ -101,6 +128,16 @@ export default async function ClusterDetailsPage({
           </div>
         </div>
       </div>
+
+      <aside className="flex items-center justify-center gap-2 rounded bg-background-accent px-6 py-4 text-center">
+        download the binary
+        <Link
+          href="/zkvk/TODO"
+          className="text-//primary-light hover:underline"
+        >
+          here
+        </Link>
+      </aside>
     </div>
   )
 }
