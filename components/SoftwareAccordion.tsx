@@ -16,6 +16,7 @@ import { Progress } from "./ui/progress"
 import Pizza from "./Pizza"
 import SoftwareDetails, { DEMO_SLICES } from "./SoftwareDetails"
 
+import { formatShortDate } from "@/lib/date"
 import { getZkvmsWithUsage } from "@/lib/zkvms"
 
 const SoftwareAccordionItem = ({
@@ -89,11 +90,7 @@ const SoftwareAccordionItem = ({
           </span>{" "}
           <span className="text-xs uppercase text-body">
             {/* // TODO: Get and use last updated date */}
-            {new Intl.DateTimeFormat("en-US", {
-              month: "short",
-              day: "2-digit",
-              year: "numeric",
-            }).format(Date.now())}
+            {formatShortDate(new Date())}
           </span>
         </div>
       </div>

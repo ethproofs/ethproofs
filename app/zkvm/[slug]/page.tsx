@@ -11,6 +11,7 @@ import GitHub from "@/components/svgs/github.svg"
 import { cn } from "@/lib/utils"
 
 import { getZkvmBySlug } from "@/lib/api/zkvms"
+import { formatShortDate } from "@/lib/date"
 import { demoClusterDetails } from "@/lib/dummy-data"
 import { getMetadata } from "@/lib/metadata"
 
@@ -98,14 +99,7 @@ export default async function ZkvmDetailsPage({
           <div className="text-body-secondary">release date</div>
           <div className="uppercase">
             {zkvm.versions[0].release_date
-              ? new Date(zkvm.versions[0].release_date).toLocaleDateString(
-                  "en-US",
-                  {
-                    month: "short",
-                    day: "2-digit",
-                    year: "numeric",
-                  }
-                )
+              ? formatShortDate(new Date(zkvm.versions[0].release_date))
               : "N/A"}
           </div>
         </div>
