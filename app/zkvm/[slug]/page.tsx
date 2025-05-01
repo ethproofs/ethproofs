@@ -2,6 +2,7 @@ import { Box } from "lucide-react"
 import type { Metadata } from "next"
 import Image from "next/image"
 import Link from "next/link"
+import { notFound } from "next/navigation"
 
 import ClusterAccordion from "@/components/ClusterAccordion"
 import SoftwareDetails from "@/components/SoftwareDetails"
@@ -9,6 +10,7 @@ import GitHub from "@/components/svgs/github.svg"
 
 import { cn } from "@/lib/utils"
 
+import { getZkvmBySlug } from "@/lib/api/zkvms"
 import { demoClusterDetails } from "@/lib/dummy-data"
 import { getMetadata } from "@/lib/metadata"
 
@@ -21,9 +23,14 @@ export async function generateMetadata({
 }: ZkvmDetailsPageProps): Promise<Metadata> {
   const { slug } = await params
 
-  // TODO: Confirm slug is human readable
+  const zkvm = await getZkvmBySlug(slug)
+
+  if (!zkvm) {
+    return getMetadata({ title: "zkVM not found" })
+  }
+
   return getMetadata({
-    title: `zmVM ${slug}`,
+    title: `zkVM ${zkvm.name}`,
   })
 }
 
@@ -32,11 +39,11 @@ export default async function ZkvmDetailsPage({
 }: ZkvmDetailsPageProps) {
   const slug = (await params).slug
 
-  const zkvm = decodeURIComponent(slug) // TODO: Confirm/fetch zkvm name from slug
+  const zkvm = await getZkvmBySlug(slug)
 
-  if (!zkvm) throw new Error()
-
-  // TODO: Fetch details for zkVM
+  if (!zkvm) {
+    return notFound()
+  }
 
   return (
     <>
@@ -51,7 +58,7 @@ export default async function ZkvmDetailsPage({
               0 0 1rem hsla(var(--background-modal))`,
           }}
         >
-          {zkvm}
+          {zkvm.name}
         </h1>
 
         <div className="flex items-center justify-center gap-3">
@@ -59,18 +66,19 @@ export default async function ZkvmDetailsPage({
             by
           </span>
           <Link
-            href="/prover/succinct#TODO-prover-id"
+            href={`/prover/${zkvm.vendor.slug}`}
             className="inline-block rounded p-1 hover:bg-primary/10"
           >
             <Image
-              src="https://ndjfbkojyebmdbckigbe.supabase.co/storage/v1/object/public/public-assets/succinct-logo-new.svg"
-              alt="Succinct logo"
+              // TODO: Add fallback image
+              src={zkvm.vendor.logo_url ?? ""}
+              alt={`${zkvm.vendor.name} logo`}
               height={16}
               width={16}
               style={{ height: "1.5rem", width: "auto" }}
               className="dark:invert"
             />
-            <span className="sr-only">Succinct</span>
+            <span className="sr-only">{zkvm.vendor.name}</span>
           </Link>
         </div>
       </div>
@@ -84,26 +92,34 @@ export default async function ZkvmDetailsPage({
       >
         <div className="row-span-2 grid grid-cols-subgrid place-items-center gap-y-1 text-nowrap">
           <div className="text-body-secondary">latest version</div>
-          <div className="">4.17</div>
+          <div className="">{zkvm.versions[0].version}</div>
         </div>
         <div className="row-span-2 grid grid-cols-subgrid place-items-center gap-y-1 text-nowrap">
           <div className="text-body-secondary">release date</div>
           <div className="uppercase">
-            {new Date(Date.now()).toLocaleDateString("en-US", {
-              month: "short",
-              day: "2-digit",
-              year: "numeric",
-            })}
+            {zkvm.versions[0].release_date
+              ? new Date(zkvm.versions[0].release_date).toLocaleDateString(
+                  "en-US",
+                  {
+                    month: "short",
+                    day: "2-digit",
+                    year: "numeric",
+                  }
+                )
+              : "N/A"}
           </div>
         </div>
         <div className="row-span-2 grid grid-cols-subgrid place-items-center gap-y-1 text-nowrap">
           <div className="text-body-secondary">ISA</div>
-          <div className="uppercase">RISC-V</div>
+          <div className="uppercase">{zkvm.isa}</div>
         </div>
         <div className="row-span-2 grid grid-cols-subgrid place-items-center gap-y-1 text-nowrap">
           <div className="text-body-secondary">official repository</div>
           <div className="flex items-center gap-2">
-            <GitHub className="text-2xl" /> succinctlabs/SP1
+            <GitHub className="text-2xl" />{" "}
+            <Link href={zkvm.repo_url} className="hover:underline">
+              {new URL(zkvm.repo_url).pathname.replace(/^\//, "")}
+            </Link>
           </div>
         </div>
       </div>
