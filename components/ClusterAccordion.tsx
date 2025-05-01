@@ -7,6 +7,7 @@ import type { ClusterDetails } from "@/lib/types"
 
 import { cn, sumArray } from "@/lib/utils"
 
+import { getBoxIndexColor } from "./HardwareGrid/utils"
 import {
   Accordion,
   AccordionContent,
@@ -16,7 +17,7 @@ import {
 import { ButtonLink } from "./ui/button"
 import Link from "./ui/link"
 import { MetricBox, MetricInfo, MetricLabel } from "./ui/metric"
-import HardwareGrid, { GRID_CELL_BG_SPECTRUM } from "./HardwareGrid"
+import HardwareGrid from "./HardwareGrid"
 
 import { formatUsd } from "@/lib/number"
 import { prettyMs } from "@/lib/time"
@@ -145,12 +146,7 @@ const ClusterAccordionItem = ({
                   <span className="-me-1">{2 ** i}</span>
                   <div
                     key={i}
-                    className={cn(
-                      "size-4 rounded-[4px]",
-                      GRID_CELL_BG_SPECTRUM[
-                        (i + 1) % GRID_CELL_BG_SPECTRUM.length
-                      ]
-                    )}
+                    className={cn("size-4 rounded-[4px]", getBoxIndexColor(i))}
                   />
                 </Fragment>
               ))}

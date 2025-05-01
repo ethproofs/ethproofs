@@ -66,6 +66,7 @@ const ProversSection = async () => {
         name: cluster.zkvm.name,
       },
       machines: cluster.machines.map((machine) => ({
+        id: machine.id,
         cpuModel: machine.cpuModel ?? "",
         gpuCount: sumArray(machine.gpuCount),
         cpuCount: machine.cpuCores ?? 0,
