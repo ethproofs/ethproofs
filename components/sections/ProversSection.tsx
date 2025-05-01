@@ -68,10 +68,11 @@ const ProversSection = async () => {
       machines: cluster.machines.map((machine) => ({
         id: machine.id,
         cpuModel: machine.cpuModel ?? "",
-        gpuCount: sumArray(machine.gpuCount),
         cpuCount: machine.cpuCores ?? 0,
-        gpuRam: sumArray(machine.gpuRam),
         cpuRam: sumArray(machine.memorySizeGb),
+        gpuCount: machine.gpuCount ?? [],
+        gpuModels: machine.gpuModels ?? [],
+        gpuRam: machine.gpuRam ?? [],
         count: machine.count ?? 1,
       })),
     }

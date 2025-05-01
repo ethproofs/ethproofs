@@ -100,7 +100,9 @@ const ClusterAccordionItem = ({
               <span className="block text-sm text-body-secondary">GPUs</span>
               <span className="block font-mono text-xl text-body">
                 {sumArray(
-                  clusterDetails.machines.map((m) => m.gpuCount * m.count)
+                  clusterDetails.machines.map(
+                    (m) => sumArray(m.gpuCount) * m.count
+                  )
                 )}
               </span>
             </div>
@@ -108,7 +110,9 @@ const ClusterAccordionItem = ({
               <span className="block text-sm text-body-secondary">GPU RAM</span>
               <span className="block font-mono text-xl text-body">
                 {sumArray(
-                  clusterDetails.machines.map((m) => m.gpuRam * m.count)
+                  clusterDetails.machines.map(
+                    (m) => sumArray(m.gpuRam) * m.count
+                  )
                 )}{" "}
                 GB
               </span>

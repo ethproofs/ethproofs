@@ -2,7 +2,7 @@ import { useMemo } from "react"
 
 import type { ClusterDetails } from "@/lib/types"
 
-import { cn } from "@/lib/utils"
+import { cn, sumArray } from "@/lib/utils"
 
 import MachineBox from "./MachineBox"
 import { getBoxColor } from "./utils"
@@ -13,7 +13,8 @@ type ClusterDetailsProps = React.ComponentProps<"div"> & {
 
 const HardwareGrid = ({ cluster, className }: ClusterDetailsProps) => {
   const totalGpuCount = useMemo(
-    () => cluster.machines.reduce((acc, curr) => acc + curr.gpuCount, 0),
+    () =>
+      cluster.machines.reduce((acc, curr) => acc + sumArray(curr.gpuCount), 0),
     [cluster.machines]
   )
 
@@ -36,7 +37,6 @@ const HardwareGrid = ({ cluster, className }: ClusterDetailsProps) => {
             <MachineBox
               key={uniqueKey}
               className={getBoxColor(totalGpuCount)}
-              name={cluster.name}
               machine={machine}
             />
           )

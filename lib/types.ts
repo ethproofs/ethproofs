@@ -234,10 +234,11 @@ export type ClusterDetails = {
   machines: {
     id: number
     cpuModel: string
-    gpuCount: number
     cpuCount: number
-    gpuRam: number // gb
     cpuRam: number // gb
+    gpuCount: number[]
+    gpuModels: string[]
+    gpuRam: number[] // gb
     count: number
   }[]
 }
