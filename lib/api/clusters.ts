@@ -1,7 +1,15 @@
-import { desc } from "drizzle-orm"
+import { desc, eq } from "drizzle-orm"
+
+import type { Cluster } from "../types"
 
 import { db } from "@/db"
-import { clusterVersions } from "@/db/schema"
+import {
+  cloudInstances,
+  clusterMachines,
+  clusters,
+  clusterVersions,
+  machines,
+} from "@/db/schema"
 
 export const getCluster = async (id: string) => {
   const cluster = await db.query.clusters.findFirst({
@@ -35,4 +43,12 @@ export const getClustersByTeamId = async (teamId: string) => {
   })
 
   return clusters
+}
+
+export const getClusterById = async (clusterId: string) => {
+  const cluster = await db.query.clusters.findFirst({
+    where: (clusters, { eq }) => eq(clusters.id, clusterId),
+  })
+
+  return cluster
 }
