@@ -1,7 +1,6 @@
 import type { Metadata } from "next"
 
 import LineChartCard from "@/components/LineChartCard"
-import MachineTabs from "@/components/MachineTabs"
 import SoftwareAccordion from "@/components/SoftwareAccordion"
 
 import { getMetadata } from "@/lib/metadata"
@@ -40,10 +39,7 @@ export default async function Index() {
         </section>
 
         <section className="w-full max-w-screen-xl scroll-m-20">
-          <MachineTabs
-            singleContent={<SoftwareAccordion />}
-            multiContent={<SoftwareAccordion />}
-          />
+          <SoftwareAccordion />
         </section>
       </div>
     </>
