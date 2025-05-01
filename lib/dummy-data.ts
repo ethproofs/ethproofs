@@ -5,7 +5,7 @@ const commonDetails = {
   team: {
     id: "1",
     name: "Team A",
-    logoUrl: "https://example.com/logo.png",
+    logoUrl: "",
   },
   zkvm: {
     id: 1,
