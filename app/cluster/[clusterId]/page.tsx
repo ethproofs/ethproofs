@@ -4,7 +4,7 @@ import { notFound } from "next/navigation"
 
 import { Cluster } from "@/lib/types"
 
-import { getClusterById } from "@/lib/api/clusters"
+import { getCluster } from "@/lib/api/clusters"
 import { getMetadata } from "@/lib/metadata"
 import { prettyMs } from "@/lib/time"
 
@@ -19,7 +19,7 @@ export async function generateMetadata({
 
   let cluster: Cluster | undefined
   try {
-    cluster = (await getClusterById(clusterId)) as Cluster
+    cluster = (await getCluster(clusterId)) as Cluster
     if (!cluster) throw new Error()
   } catch {
     return getMetadata({
@@ -39,7 +39,7 @@ export default async function ClusterDetailsPage({
 
   let cluster: Cluster | undefined
   try {
-    cluster = (await getClusterById(clusterId)) as Cluster
+    cluster = (await getCluster(clusterId)) as Cluster
     if (!cluster) throw new Error()
   } catch {
     return notFound()

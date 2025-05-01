@@ -26,13 +26,13 @@ const SoftwareAccordionItem = ({
     versions: ZkvmVersion[]
     vendor: Vendor
     totalClusters: number
-    zkvmClusters: number
+    activeClusters: number
   }
 }) => (
   <AccordionItem value={value} className="col-span-5 grid grid-cols-subgrid">
     <div className="col-span-5 grid grid-cols-subgrid items-center gap-12 border-b hover:bg-primary/5 dark:hover:bg-primary/10">
       <div className="col-start-1 flex items-center gap-3">
-        <Link href="/zkvm/#TODO-zkvm-id" className="hover:underline">
+        <Link href={`/zkvm/${zkvm.id}`} className="hover:underline">
           <span className="block font-mono text-2xl text-primary">
             {zkvm.name}
           </span>
@@ -41,7 +41,7 @@ const SoftwareAccordionItem = ({
           by
         </span>
         <Link
-          href="/prover/#TODO-prover-id"
+          href={`/prover/${zkvm.vendor.id}`}
           className="-m-1 rounded p-1 hover:bg-primary/10"
         >
           <Image
@@ -63,11 +63,11 @@ const SoftwareAccordionItem = ({
       </div>
       <div id="used-by" className="relative col-start-4 min-w-16">
         <div className="w-full text-center">
-          {zkvm.zkvmClusters}/
+          {zkvm.activeClusters}/
           <span className="text-xs">{zkvm.totalClusters}</span>
         </div>
         <Progress
-          value={(zkvm.zkvmClusters / zkvm.totalClusters) * 100}
+          value={(zkvm.activeClusters / zkvm.totalClusters) * 100}
           className="absolute -bottom-1 left-0 h-[2px] w-full"
         />
       </div>
@@ -80,7 +80,7 @@ const SoftwareAccordionItem = ({
       <SoftwareDetails />
 
       <div className="flex justify-center gap-16 p-8 pt-0">
-        <ButtonLink variant="outline" href="/zkvm/#TODO-zkvm-id">
+        <ButtonLink variant="outline" href={`/zkvm/${zkvm.id}`}>
           See all details
         </ButtonLink>
         <div>

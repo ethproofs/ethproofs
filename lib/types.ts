@@ -215,19 +215,32 @@ export type Slices = [
 ]
 
 export type ClusterDetails = {
-  gpuCount: number
-  clusterName: string
+  id: string
+  name: string
+  versionDate: string
+  isOpenSource: boolean
+  isMultiMachine: boolean
+  avgCost: number
+  avgTime: number
+  team: {
+    id: string
+    name: string
+    logoUrl?: string | null
+  }
+  zkvm: {
+    id: number
+    name: string
+  }
   machines: {
-    machineName: string
+    id: number
+    cpuModel: string
     cpuCount: number
-    gpuRam: number // bytes
-    cpuRam: number // bytes
+    cpuRam: number // gb
+    gpuCount: number[]
+    gpuModels: string[]
+    gpuRam: number[] // gb
+    count: number
   }[]
-}
-
-export type ProverAccordionDetails = {
-  clusterDetails: ClusterDetails[]
-  proverName?: string
 }
 
 export type DayRange = (typeof CHART_RANGES)[number]

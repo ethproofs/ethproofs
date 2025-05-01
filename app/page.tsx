@@ -1,122 +1,18 @@
-import { asc, notIlike } from "drizzle-orm"
+import { Suspense } from "react"
 import type { Metadata } from "next"
-import {
-  dehydrate,
-  HydrationBoundary,
-  QueryClient,
-} from "@tanstack/react-query"
 
-import type { SummaryItem } from "@/lib/types"
-
-import BlocksTable from "@/components/BlocksTable"
-import KPIs from "@/components/KPIs"
-import MachineTabs from "@/components/MachineTabs"
 import ProofsStats from "@/components/ProofsStats"
-import ProverAccordion from "@/components/ProverAccordion"
-import SoftwareAccordion from "@/components/SoftwareAccordion"
-import Box from "@/components/svgs/box.svg"
-import BoxDashed from "@/components/svgs/box-dashed.svg"
-import Instructions from "@/components/svgs/instructions.svg"
-import ShieldCheck from "@/components/svgs/shield-check.svg"
-import { Card, CardHeader, CardTitle } from "@/components/ui/card"
+import BlocksSection from "@/components/sections/BlocksSection"
+import ProversSection from "@/components/sections/ProversSection"
+import ZkvmsSection from "@/components/sections/ZkvmsSection"
 
-import { DEFAULT_PAGE_STATE } from "@/lib/constants"
-
-import { db } from "@/db"
-import {
-  recentSummary as recentSummaryView,
-  teamsSummary as teamsSummaryView,
-} from "@/db/schema"
-import { fetchBlocksPaginated } from "@/lib/api/blocks"
-import { demoProverAccordionDetails } from "@/lib/dummy-data"
+import { getRecentSummary } from "@/lib/api/stats"
 import { getMetadata } from "@/lib/metadata"
-import { prettyMs } from "@/lib/time"
-import { getZkvmsStats } from "@/lib/zkvms"
 
 export const metadata: Metadata = getMetadata()
 
 export default async function Index() {
-  const queryClient = new QueryClient()
-
-  const teamsSummary = await db
-    .select()
-    .from(teamsSummaryView)
-    // hide test teams from the provers list
-    .where(notIlike(teamsSummaryView.team_name, "%test%"))
-    .orderBy(asc(teamsSummaryView.avg_proving_time))
-
-  const [recentSummary] = await db.select().from(recentSummaryView).limit(1)
-
-  const teams = await db.query.teams.findMany()
-
-  await queryClient.prefetchQuery({
-    queryKey: ["blocks", DEFAULT_PAGE_STATE],
-    queryFn: () => fetchBlocksPaginated(DEFAULT_PAGE_STATE),
-  })
-
-  const zkvmsStats = await getZkvmsStats()
-
-  const zkvmsSummary: SummaryItem[] = [
-    {
-      key: "zkvms",
-      label: "zkVMs",
-      value: zkvmsStats.count,
-    },
-    {
-      key: "isas",
-      label: "ISAs",
-      value: zkvmsStats.isas.length,
-    },
-    {
-      key: "count",
-      label: "0000",
-      value: 0,
-    },
-  ]
-
-  // TODO: Use real data
-  const demoProversSummary: SummaryItem[] = [
-    {
-      key: "provers",
-      label: "provers",
-      value: 9,
-    },
-    {
-      key: "proving-machines",
-      label: "proving machines",
-      value: 124,
-    },
-    {
-      key: "annual-proving-costs",
-      label: "annual proving costs",
-      value: new Intl.NumberFormat("en-US", {
-        style: "currency",
-        currency: "USD",
-        notation: "compact",
-      }).format(100_000),
-    },
-  ]
-
-  // TODO: Use real data
-  const demoBlocksSummary: SummaryItem[] = [
-    {
-      key: "proof-time",
-      label: "since last proof",
-      value: prettyMs(94_000), // TODO: Calculate
-    },
-    {
-      key: "proving-count",
-      label: "proving",
-      value: 124,
-    },
-    {
-      key: "recent-proving-count",
-      label: "proven in last 30 days",
-      value: new Intl.NumberFormat("en-US", {
-        notation: "compact",
-      }).format(2147),
-    },
-  ]
+  const recentSummary = await getRecentSummary()
 
   return (
     <>
@@ -140,59 +36,21 @@ export default async function Index() {
         <ProofsStats recentSummary={recentSummary} />
 
         <section id="zkvms" className="w-full max-w-screen-xl scroll-m-20">
-          <Card>
-            <CardHeader className="space-y-3">
-              <CardTitle className="text-2xl">zkVMs</CardTitle>
-
-              <KPIs items={zkvmsSummary} />
-            </CardHeader>
-
-            <SoftwareAccordion />
-          </Card>
+          <Suspense fallback={null}>
+            <ZkvmsSection />
+          </Suspense>
         </section>
 
         <section id="provers" className="w-full max-w-screen-xl scroll-m-20">
-          <Card className="!p-0 !pb-6 md:!pb-8">
-            <CardHeader className="space-y-3 p-6 pb-0 md:px-12 md:pt-8">
-              <CardTitle className="text-2xl">provers</CardTitle>
-
-              <KPIs items={demoProversSummary} />
-            </CardHeader>
-
-            <MachineTabs
-              singleContent={
-                <>
-                  <ProverAccordion provers={demoProverAccordionDetails} />
-                  TODO: Single machine provers list
-                </>
-              }
-              multiContent={
-                <>
-                  <ProverAccordion provers={demoProverAccordionDetails} />
-                  TODO: Multi-machine provers list
-                </>
-              }
-            />
-          </Card>
+          <Suspense fallback={null}>
+            <ProversSection />
+          </Suspense>
         </section>
 
         <section id="blocks" className="w-full max-w-screen-xl scroll-m-20">
-          <Card className="!p-0 !pb-6 md:!pb-8">
-            <CardHeader className="space-y-3 p-6 pb-0 md:px-12 md:pt-8">
-              <CardTitle className="text-2xl">latest blocks</CardTitle>
-
-              <KPIs items={demoBlocksSummary} />
-            </CardHeader>
-
-            <MachineTabs
-              singleContent={<>TODO: Single machine blocks list</>}
-              multiContent={
-                <HydrationBoundary state={dehydrate(queryClient)}>
-                  <BlocksTable teams={teams} className="px-6" />
-                </HydrationBoundary>
-              }
-            />
-          </Card>
+          <Suspense fallback={null}>
+            <BlocksSection />
+          </Suspense>
         </section>
       </div>
     </>
