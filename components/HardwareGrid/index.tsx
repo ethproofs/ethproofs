@@ -27,7 +27,7 @@ const HardwareGrid = ({ cluster, className }: ClusterDetailsProps) => {
       className={cn("grid w-fit grid-rows-5 gap-1", className)}
       style={{ gridAutoFlow: "column" }}
     >
-      {/* Create machine cells */}
+      {/* Machine cells */}
       {cluster.machines.map((machine) =>
         // Create array of indices for the count of this machine type
         [...Array(machine.count)].map((_, countIdx) => {
@@ -35,9 +35,9 @@ const HardwareGrid = ({ cluster, className }: ClusterDetailsProps) => {
           return (
             <MachineBox
               key={uniqueKey}
+              className={getBoxColor(totalGpuCount)}
               name={cluster.name}
-              machines={cluster.machines}
-              totalGpuCount={totalGpuCount}
+              machine={machine}
             />
           )
         })
