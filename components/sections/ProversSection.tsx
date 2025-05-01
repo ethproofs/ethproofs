@@ -49,23 +49,28 @@ const ProversSection = async () => {
     )
 
     return {
-      clusterName: cluster.nickname,
-      clusterVersionDate: cluster.version.createdAt,
-      proverId: cluster.team.id,
-      proverName: cluster.team.name,
-      proverLogo: cluster.team.logoUrl,
-      zkvmId: cluster.zkvm.id,
-      zkvmName: cluster.zkvm.name,
+      id: cluster.id,
+      name: cluster.nickname,
+      versionDate: cluster.version.createdAt,
       isOpenSource: cluster.isOpenSource,
       isMultiMachine: cluster.isMultiMachine,
       avgCost: stats?.avg_cost_per_proof ?? 0,
       avgTime: Number(stats?.avg_proving_time ?? 0),
+      team: {
+        id: cluster.team.id,
+        name: cluster.team.name,
+        logoUrl: cluster.team.logoUrl,
+      },
+      zkvm: {
+        id: cluster.zkvm.id,
+        name: cluster.zkvm.name,
+      },
       machines: cluster.machines.map((machine) => ({
         cpuModel: machine.cpuModel ?? "",
         gpuCount: sumArray(machine.gpuCount),
         cpuCount: machine.cpuCores ?? 0,
-        gpuRam: sumArray(machine.gpuCount),
-        cpuRam: sumArray(machine.memoryCount),
+        gpuRam: sumArray(machine.gpuRam),
+        cpuRam: sumArray(machine.memorySizeGb),
         count: machine.count ?? 1,
       })),
     }

@@ -215,17 +215,22 @@ export type Slices = [
 ]
 
 export type ClusterDetails = {
-  clusterName: string
-  clusterVersionDate: string
-  proverId: string
-  proverName: string
-  proverLogo?: string | null
-  zkvmId: number
-  zkvmName: string
+  id: string
+  name: string
+  versionDate: string
   isOpenSource: boolean
   isMultiMachine: boolean
   avgCost: number
   avgTime: number
+  team: {
+    id: string
+    name: string
+    logoUrl?: string | null
+  }
+  zkvm: {
+    id: number
+    name: string
+  }
   machines: {
     cpuModel: string
     gpuCount: number

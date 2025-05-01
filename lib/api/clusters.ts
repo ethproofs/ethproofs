@@ -70,6 +70,7 @@ export const getActiveClusters = async () => {
       cpuCores: machines.cpu_cores,
       gpuModels: machines.gpu_models,
       gpuCount: machines.gpu_count,
+      gpuRam: machines.gpu_memory_gb,
       memorySizeGb: machines.memory_size_gb,
       memoryCount: machines.memory_count,
       machineCount: clusterMachines.machine_count,
@@ -130,6 +131,7 @@ export const getActiveClusters = async () => {
         cpuCores: (typeof rawRows)[number]["cpuCores"]
         gpuModels: (typeof rawRows)[number]["gpuModels"]
         gpuCount: (typeof rawRows)[number]["gpuCount"]
+        gpuRam: (typeof rawRows)[number]["gpuRam"]
         memorySizeGb: (typeof rawRows)[number]["memorySizeGb"]
         memoryCount: (typeof rawRows)[number]["memoryCount"]
         count: (typeof rawRows)[number]["machineCount"]
@@ -174,6 +176,7 @@ export const getActiveClusters = async () => {
         cpuCores: row.cpuCores,
         gpuModels: row.gpuModels,
         gpuCount: row.gpuCount,
+        gpuRam: row.gpuRam,
         memorySizeGb: row.memorySizeGb,
         memoryCount: row.memoryCount,
         count: row.machineCount ?? 1,

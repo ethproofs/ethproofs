@@ -33,12 +33,12 @@ const ClusterAccordionItem = ({
       {/* TODO: Update to match design */}
       <div className="col-start-1 flex flex-col gap-1">
         <Link
-          href={`/prover/${clusterDetails.proverId}`}
+          href={`/prover/${clusterDetails.team.id}`}
           className="-m-1 w-fit rounded p-1 hover:bg-primary/10"
         >
-          {clusterDetails.proverLogo ? (
+          {clusterDetails.team.logoUrl ? (
             <Image
-              src={clusterDetails.proverLogo}
+              src={clusterDetails.team.logoUrl}
               alt="Prover logo"
               height={16}
               width={16}
@@ -48,21 +48,21 @@ const ClusterAccordionItem = ({
           ) : (
             <div className="flex items-center gap-1">
               <div className="size-4 rounded-full bg-primary-border" />
-              {clusterDetails.proverName}
+              {clusterDetails.team.name}
             </div>
           )}
         </Link>
         <div>
           <span className="text-sm text-primary">
             <Link
-              href={`/zkvms/${clusterDetails.zkvmId}`}
+              href={`/zkvms/${clusterDetails.zkvm.id}`}
               className="hover:underline"
             >
-              {clusterDetails.zkvmName}
+              {clusterDetails.zkvm.name}
             </Link>{" "}
             |{" "}
           </span>
-          <span className="text-sm">{clusterDetails.clusterName}</span>
+          <span className="text-sm">{clusterDetails.name}</span>
         </div>
       </div>
       <div id="version" className="col-start-2 flex justify-center">
@@ -98,13 +98,18 @@ const ClusterAccordionItem = ({
             <div className="flex w-full flex-col items-center text-nowrap text-center">
               <span className="block text-sm text-body-secondary">GPUs</span>
               <span className="block font-mono text-xl text-body">
-                {sumArray(clusterDetails.machines.map((m) => m.gpuCount))}
+                {sumArray(
+                  clusterDetails.machines.map((m) => m.gpuCount * m.count)
+                )}
               </span>
             </div>
             <div className="flex w-full flex-col items-center text-nowrap text-center">
               <span className="block text-sm text-body-secondary">GPU RAM</span>
               <span className="block font-mono text-xl text-body">
-                {sumArray(clusterDetails.machines.map((m) => m.gpuRam))} GB
+                {sumArray(
+                  clusterDetails.machines.map((m) => m.gpuRam * m.count)
+                )}{" "}
+                GB
               </span>
             </div>
             <div className="flex flex-col items-center text-nowrap text-center">
@@ -112,13 +117,18 @@ const ClusterAccordionItem = ({
                 CPU cores
               </span>
               <span className="block font-mono text-xl text-body">
-                {sumArray(clusterDetails.machines.map((m) => m.cpuCount))}
+                {sumArray(
+                  clusterDetails.machines.map((m) => m.cpuCount * m.count)
+                )}
               </span>
             </div>
             <div className="flex flex-col items-center text-nowrap text-center">
               <span className="block text-sm text-body-secondary">CPU RAM</span>
               <span className="block font-mono text-xl text-body">
-                {sumArray(clusterDetails.machines.map((m) => m.cpuRam))} GB
+                {sumArray(
+                  clusterDetails.machines.map((m) => m.cpuRam * m.count)
+                )}{" "}
+                GB
               </span>
             </div>
           </div>
@@ -149,10 +159,7 @@ const ClusterAccordionItem = ({
       </div>
 
       <div className="grid place-items-center">
-        <ButtonLink
-          variant="outline"
-          href={`/prover/${clusterDetails.proverId}`}
-        >
+        <ButtonLink variant="outline" href={`/cluster/${clusterDetails.id}`}>
           See all details
         </ButtonLink>
       </div>
@@ -164,7 +171,7 @@ const ClusterAccordionItem = ({
             month: "short",
             day: "2-digit",
             year: "numeric",
-          }).format(new Date(clusterDetails.clusterVersionDate))}
+          }).format(new Date(clusterDetails.versionDate))}
         </span>
       </div>
     </AccordionContent>

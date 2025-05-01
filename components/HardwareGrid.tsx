@@ -48,7 +48,7 @@ const HardwareGrid = ({ cluster, className }: ProverDetailsProps) => {
             </PopoverTrigger>
             <PopoverContent className="flex flex-col gap-y-3 p-4">
               <span className="block text-center font-mono text-lg uppercase text-body">
-                {cluster.clusterName}
+                {cluster.name}
               </span>
               {cluster.machines.map(({ cpuModel, cpuCount, gpuRam }, idx) => (
                 <div
