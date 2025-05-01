@@ -6,6 +6,9 @@ export default async function NotFound() {
     <NotFoundTemplate
       icon={<ProofCircle className="inline text-primary" />}
       label="Prover"
-    />
+      href="/provers"
+    >
+      View all provers
+    </NotFoundTemplate>
   )
 }
