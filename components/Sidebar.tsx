@@ -2,9 +2,12 @@ import { Suspense } from "react"
 
 import Bomb from "@/components/svgs/bomb.svg"
 import Box from "@/components/svgs/box.svg"
+import Bug from "@/components/svgs/bug.svg"
 import Document from "@/components/svgs/document.svg"
 import EthProofsLogo from "@/components/svgs/eth-proofs-logo.svg"
+import GitHub from "@/components/svgs/github.svg"
 import Heart from "@/components/svgs/heart.svg"
+import HexTarget from "@/components/svgs/hex-target.svg"
 import LightningBolt from "@/components/svgs/lightning-bolt.svg"
 import ProofCheck from "@/components/svgs/proof-check.svg"
 import TrendUpChart from "@/components/svgs/trend-up-chart.svg"
@@ -29,7 +32,7 @@ import { Skeleton } from "./ui/skeleton"
 export function AppSidebar() {
   return (
     <Sidebar>
-      <SidebarHeader className="my-11 space-y-10 px-6">
+      <SidebarHeader className="mb-4 mt-11 space-y-10 px-6">
         <div className="flex items-end justify-between gap-4">
           <Link href="/">
             <EthProofsLogo className="text-[2.625rem] text-body" />
@@ -42,16 +45,16 @@ export function AppSidebar() {
         <SearchInput className="max-md:hidden" placeholder="Search by block" />
       </SidebarHeader>
       <SidebarContent>
-        <SidebarMenu className="gap-y-10 px-6">
+        <SidebarMenu className="gap-y-10 p-6">
           <SidebarGroup className="">
             <SidebarGroupLabel className="">Home</SidebarGroupLabel>
             <SidebarMenuItem>
               <Link
                 href="/"
-                className="inline-flex text-body hover:text-primary [&>svg]:me-2"
+                className="inline-flex text-body hover:text-primary [&>svg:first-child]:me-2 [&>svg:first-child]:size-6"
               >
-                <TrendUpChart className="size-6" />
-                Dashboard
+                <TrendUpChart />
+                dashboard
               </Link>
             </SidebarMenuItem>
           </SidebarGroup>
@@ -60,36 +63,36 @@ export function AppSidebar() {
             <SidebarMenuItem>
               <Link
                 href="/zkvms"
-                className="inline-flex text-body hover:text-primary [&>svg]:me-2"
+                className="inline-flex text-body hover:text-primary [&>svg:first-child]:me-2 [&>svg:first-child]:size-6"
               >
-                <LightningBolt className="size-6" />
+                <LightningBolt />
                 zkVMs
               </Link>
             </SidebarMenuItem>
             <SidebarMenuItem>
               <Link
                 href="/provers"
-                className="inline-flex text-body hover:text-primary [&>svg]:me-2"
+                className="inline-flex text-body hover:text-primary [&>svg:first-child]:me-2 [&>svg:first-child]:size-6"
               >
-                <ProofCheck className="size-6" />
+                <ProofCheck />
                 provers
               </Link>
             </SidebarMenuItem>
             <SidebarMenuItem>
               <Link
                 href="/blocks"
-                className="inline-flex text-body hover:text-primary [&>svg]:me-2"
+                className="inline-flex text-body hover:text-primary [&>svg:first-child]:me-2 [&>svg:first-child]:size-6"
               >
-                <Box className="size-6" strokeWidth="1" />
+                <Box strokeWidth="1" />
                 blocks
               </Link>
             </SidebarMenuItem>
             <SidebarMenuItem>
               <Link
                 href="/killers"
-                className="inline-flex text-body hover:text-primary [&>svg]:me-2"
+                className="inline-flex text-body hover:text-primary [&>svg:first-child]:me-2 [&>svg:first-child]:size-6"
               >
-                <Bomb className="size-6" />
+                <Bomb />
                 killers
               </Link>
             </SidebarMenuItem>
@@ -99,44 +102,51 @@ export function AppSidebar() {
             <SidebarMenuItem>
               <Link
                 href="/learn"
-                className="inline-flex text-body hover:text-primary [&>svg]:me-2"
+                className="inline-flex text-body hover:text-primary [&>svg:first-child]:me-2 [&>svg:first-child]:size-6"
               >
-                <Document className="size-6" />
-                zkVMs and SNARKs
-              </Link>
-            </SidebarMenuItem>
-            <SidebarMenuItem>
-              <Link
-                href="/#TODO?"
-                className="inline-flex text-body hover:text-primary [&>svg]:me-2"
-              >
-                <Document className="size-6" />
-                about
-              </Link>
-            </SidebarMenuItem>
-            <SidebarMenuItem>
-              <Link
-                // TODO: Remove /en/ when https://github.com/ethereum/ethereum-org-website/issues/15337 is fixed
-                href="https://ethereum.org/en/developers/docs/blocks"
-                className="inline-flex text-body hover:text-primary [&>.external-arrow]:m-0 [&>.external-arrow]:my-auto [&>.external-arrow]:ms-1 [&>svg]:me-2"
-              >
-                <Document className="size-6 self-center" />
-                blocks
+                <Document />
+                learn
               </Link>
             </SidebarMenuItem>
             <SidebarMenuItem>
               <Link
                 href="/api.html"
-                className="inline-flex text-body hover:text-primary [&>svg]:me-2"
+                className="inline-flex text-body hover:text-primary [&>svg:first-child]:me-2 [&>svg:first-child]:size-6"
               >
-                <Document className="size-6" />
+                <HexTarget />
                 API
+              </Link>
+            </SidebarMenuItem>
+          </SidebarGroup>
+          <SidebarGroup>
+            <SidebarGroupLabel>Contribute</SidebarGroupLabel>
+            <SidebarMenuItem>
+              <Link
+                href={new URL(SITE_REPO, "https://github.com").toString()}
+                className="inline-flex text-body hover:text-primary [&>svg:first-child]:me-2 [&>svg:first-child]:size-6"
+                hideArrow
+              >
+                <GitHub className="p-1" />
+                build Ethproofs
+              </Link>
+            </SidebarMenuItem>
+            <SidebarMenuItem>
+              <Link
+                href={new URL(
+                  SITE_REPO + "/issues/new/choose/",
+                  "https://github.com"
+                ).toString()}
+                className="inline-flex text-body hover:text-primary [&>svg:first-child]:me-2 [&>svg:first-child]:size-6"
+                hideArrow
+              >
+                <Bug />
+                spot a bug?
               </Link>
             </SidebarMenuItem>
           </SidebarGroup>
         </SidebarMenu>
       </SidebarContent>
-      <SidebarFooter className="mx-auto mt-16 flex max-w-prose flex-col items-center space-y-4">
+      <SidebarFooter className="mx-auto mb-4 mt-8 flex max-w-prose flex-col items-center space-y-4">
         <p className="mb-4 text-center">
           Built with{" "}
           <Heart className="mb-0.5 inline animate-heart-beat text-xl text-primary" />{" "}
@@ -153,18 +163,6 @@ export function AppSidebar() {
         <p className="text-center text-lg text-primary">
           Public goods are good
         </p>
-
-        <Link
-          href={new URL(
-            SITE_REPO + "/issues/new/choose/",
-            "https://github.com"
-          ).toString()}
-          className="text-center font-body text-body-secondary"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Spot a bug? Report it here
-        </Link>
       </SidebarFooter>
     </Sidebar>
   )
