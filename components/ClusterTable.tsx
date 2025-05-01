@@ -8,6 +8,8 @@ import { ButtonLink } from "./ui/button"
 import Link from "./ui/link"
 import { MetricBox, MetricInfo, MetricLabel } from "./ui/metric"
 
+import { formatShortDate } from "@/lib/date"
+
 type ClusterRowItemProps = { cluster: ClusterBase | Cluster }
 
 const ClusterRowItem = ({ cluster }: ClusterRowItemProps) => (
@@ -17,10 +19,7 @@ const ClusterRowItem = ({ cluster }: ClusterRowItemProps) => (
       <div className="mt-auto text-xs">
         <span className="italic text-body-secondary">updated</span>{" "}
         <span className="uppercase">
-          {new Intl.DateTimeFormat("en-US", {
-            month: "short",
-            day: "2-digit",
-          }).format(new Date(cluster.created_at).getTime())}
+          {formatShortDate(new Date(cluster.created_at))}
         </span>
       </div>
     </div>

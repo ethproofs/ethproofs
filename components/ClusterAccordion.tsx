@@ -19,6 +19,7 @@ import Link from "./ui/link"
 import { MetricBox, MetricInfo, MetricLabel } from "./ui/metric"
 import HardwareGrid from "./HardwareGrid"
 
+import { formatShortDate } from "@/lib/date"
 import { formatUsd } from "@/lib/number"
 import { prettyMs } from "@/lib/time"
 
@@ -167,11 +168,7 @@ const ClusterAccordionItem = ({
       <div className="absolute bottom-6 right-6">
         <span className="text-xs italic text-body-secondary">Last updated</span>{" "}
         <span className="text-xs uppercase text-body">
-          {new Intl.DateTimeFormat("en-US", {
-            month: "short",
-            day: "2-digit",
-            year: "numeric",
-          }).format(new Date(clusterDetails.versionDate))}
+          {formatShortDate(new Date(clusterDetails.versionDate))}
         </span>
       </div>
     </AccordionContent>

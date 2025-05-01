@@ -2,6 +2,7 @@ import { Box } from "lucide-react"
 import type { Metadata } from "next"
 import Image from "next/image"
 import Link from "next/link"
+import { notFound } from "next/navigation"
 
 import ClusterAccordion from "@/components/ClusterAccordion"
 import SoftwareDetails from "@/components/SoftwareDetails"
@@ -9,8 +10,13 @@ import GitHub from "@/components/svgs/github.svg"
 
 import { cn } from "@/lib/utils"
 
-import { demoClusterDetails } from "@/lib/dummy-data"
+import { getActiveClusters } from "@/lib/api/clusters"
+import { getClusterSummary } from "@/lib/api/stats"
+import { getZkvm } from "@/lib/api/zkvms"
+import { transformClusters } from "@/lib/clusters"
+import { formatShortDate } from "@/lib/date"
 import { getMetadata } from "@/lib/metadata"
+import { getZkvmWithUsage } from "@/lib/zkvms"
 
 type ZkvmDetailsPageProps = {
   params: Promise<{ slug: string }>
@@ -21,9 +27,16 @@ export async function generateMetadata({
 }: ZkvmDetailsPageProps): Promise<Metadata> {
   const { slug } = await params
 
-  // TODO: Confirm slug is human readable
+  let zkvm: Awaited<ReturnType<typeof getZkvm>>
+  try {
+    zkvm = await getZkvm({ slug })
+    if (!zkvm) throw new Error()
+  } catch {
+    return getMetadata({ title: "zkVM not found" })
+  }
+
   return getMetadata({
-    title: `zmVM ${slug}`,
+    title: `zkVM ${zkvm.name}`,
   })
 }
 
@@ -32,11 +45,17 @@ export default async function ZkvmDetailsPage({
 }: ZkvmDetailsPageProps) {
   const slug = (await params).slug
 
-  const zkvm = decodeURIComponent(slug) // TODO: Confirm/fetch zkvm name from slug
+  let zkvm: Awaited<ReturnType<typeof getZkvmWithUsage>>
+  try {
+    zkvm = await getZkvmWithUsage({ slug })
+    if (!zkvm) throw new Error()
+  } catch {
+    return notFound()
+  }
 
-  if (!zkvm) throw new Error()
-
-  // TODO: Fetch details for zkVM
+  const activeClusters = await getActiveClusters()
+  const clusterSummary = await getClusterSummary()
+  const clusters = transformClusters(activeClusters, clusterSummary)
 
   return (
     <>
@@ -51,7 +70,7 @@ export default async function ZkvmDetailsPage({
               0 0 1rem hsla(var(--background-modal))`,
           }}
         >
-          {zkvm}
+          {zkvm.name}
         </h1>
 
         <div className="flex items-center justify-center gap-3">
@@ -59,18 +78,19 @@ export default async function ZkvmDetailsPage({
             by
           </span>
           <Link
-            href="/prover/succinct#TODO-prover-id"
+            href={`/prover/${zkvm.vendor.slug}`}
             className="inline-block rounded p-1 hover:bg-primary/10"
           >
             <Image
-              src="https://ndjfbkojyebmdbckigbe.supabase.co/storage/v1/object/public/public-assets/succinct-logo-new.svg"
-              alt="Succinct logo"
+              // TODO: Add fallback image
+              src={zkvm.vendor.logo_url ?? ""}
+              alt={`${zkvm.vendor.name} logo`}
               height={16}
               width={16}
               style={{ height: "1.5rem", width: "auto" }}
               className="dark:invert"
             />
-            <span className="sr-only">Succinct</span>
+            <span className="sr-only">{zkvm.vendor.name}</span>
           </Link>
         </div>
       </div>
@@ -84,26 +104,27 @@ export default async function ZkvmDetailsPage({
       >
         <div className="row-span-2 grid grid-cols-subgrid place-items-center gap-y-1 text-nowrap">
           <div className="text-body-secondary">latest version</div>
-          <div className="">4.17</div>
+          <div className="">{zkvm.versions[0].version}</div>
         </div>
         <div className="row-span-2 grid grid-cols-subgrid place-items-center gap-y-1 text-nowrap">
           <div className="text-body-secondary">release date</div>
           <div className="uppercase">
-            {new Date(Date.now()).toLocaleDateString("en-US", {
-              month: "short",
-              day: "2-digit",
-              year: "numeric",
-            })}
+            {zkvm.versions[0].release_date
+              ? formatShortDate(new Date(zkvm.versions[0].release_date))
+              : "N/A"}
           </div>
         </div>
         <div className="row-span-2 grid grid-cols-subgrid place-items-center gap-y-1 text-nowrap">
           <div className="text-body-secondary">ISA</div>
-          <div className="uppercase">RISC-V</div>
+          <div className="uppercase">{zkvm.isa}</div>
         </div>
         <div className="row-span-2 grid grid-cols-subgrid place-items-center gap-y-1 text-nowrap">
           <div className="text-body-secondary">official repository</div>
           <div className="flex items-center gap-2">
-            <GitHub className="text-2xl" /> succinctlabs/SP1
+            <GitHub className="text-2xl" />{" "}
+            <Link href={zkvm.repo_url} className="hover:underline">
+              {new URL(zkvm.repo_url).pathname.replace(/^\//, "")}
+            </Link>
           </div>
         </div>
       </div>
@@ -123,10 +144,11 @@ export default async function ZkvmDetailsPage({
       <div className="mx-6 mt-40 max-w-full gap-x-20 md:mx-auto md:w-[calc(100vw_-_var(--sidebar-width))] md:px-[5vw]">
         <h2 className="flex items-center gap-2 font-mono text-lg font-normal text-primary">
           <Box className="size-11 text-primary" strokeWidth="1" />
-          active clusters using SP1: 5 / 12
+          active clusters using {zkvm.name}: {zkvm.activeClusters} /{" "}
+          {zkvm.totalClusters}
         </h2>
         <div className="-me-6 overflow-x-auto pe-6">
-          <ClusterAccordion clusters={demoClusterDetails} />
+          <ClusterAccordion clusters={clusters} />
         </div>
       </div>
     </>
