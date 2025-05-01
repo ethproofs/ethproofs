@@ -3,10 +3,13 @@ import type { Metadata } from "next"
 import Image from "next/image"
 import { notFound } from "next/navigation"
 
-import { Cluster } from "@/lib/types"
+import { ClusterDetails } from "@/lib/types"
 
+// import ClusterMachineSummary from "@/components/ClusterMachineSummary"
 import Link from "@/components/ui/link"
+import MachineDetails from "@/components/ui/MachineDetails"
 import { MetricBox, MetricInfo, MetricLabel } from "@/components/ui/metric"
+import { Skeleton } from "@/components/ui/skeleton"
 
 import { getCluster } from "@/lib/api/clusters"
 import { getTeam } from "@/lib/api/teams"
@@ -57,6 +60,69 @@ export default async function ClusterDetailsPage({
   } catch {
     console.warn("Failed to fetch team for cluster", clusterId)
   }
+
+  const demoMachines: ClusterDetails["machines"] = [
+    {
+      id: 1,
+      cpuModel: "SeePeeYou",
+      cpuCount: 1,
+      cpuRam: 64, // gb
+      gpuCount: [4, 8],
+      gpuModels: ["hello", "world"],
+      gpuRam: [64, 128], // gb
+      count: 2,
+    },
+    {
+      id: 2,
+      cpuModel: "SeePeeYou2",
+      cpuCount: 2,
+      cpuRam: 64, // gb
+      gpuCount: [4, 8],
+      gpuModels: ["hello", "world"],
+      gpuRam: [64, 128], // gb
+      count: 32,
+    },
+    {
+      id: 3,
+      cpuModel: "SeePeeYou3",
+      cpuCount: 3,
+      cpuRam: 64, // gb
+      gpuCount: [4, 8],
+      gpuModels: ["hello", "world"],
+      gpuRam: [64, 128], // gb
+      count: 16,
+    },
+    {
+      id: 4,
+      cpuModel: "SeePeeYou",
+      cpuCount: 4,
+      cpuRam: 64, // gb
+      gpuCount: [4, 8],
+      gpuModels: ["hello", "world"],
+      gpuRam: [64, 128], // gb
+      count: 2,
+    },
+    {
+      id: 5,
+      cpuModel: "SeePeeYou2",
+      cpuCount: 5,
+      cpuRam: 64, // gb
+      gpuCount: [4, 8],
+      gpuModels: ["hello", "world"],
+      gpuRam: [64, 128], // gb
+      count: 4,
+    },
+    {
+      id: 6,
+      cpuModel: "SeePeeYou3",
+      cpuCount: 6,
+      cpuRam: 64, // gb
+      gpuCount: [4, 8],
+      gpuModels: ["hello", "world"],
+      gpuRam: [64, 128], // gb
+      count: 8,
+    },
+  ]
 
   return (
     <div className="-mt-52 w-full space-y-8 px-6 sm:px-8 md:w-[calc(100vw_-_var(--sidebar-width))] md:px-12 lg:px-16 xl:px-20">
@@ -163,6 +229,53 @@ export default async function ClusterDetailsPage({
           </div>
           <div className="font-mono text-lg text-primary">hash-based</div>
         </div>
+      </div>
+
+      {/* <div className="flex gap-20"> */}
+      <div className="grid grid-cols-[repeat(auto-fit,_minmax(200px,_1fr))] gap-8">
+        {/* // TODO: Re-enable when clusterDetails available for single cluster */}
+        {/* <ClusterMachineSummary clusterDetails={clusterDetails} /> */}
+        <Skeleton className="me-16 h-80 w-48 rounded-2xl opacity-10" />
+
+        {demoMachines
+          .sort((a, b) => b.count - a.count)
+          .map((machine) => (
+            <div key={machine.id}>
+              <MachineDetails
+                machine={machine}
+                className="z-0 rounded-2xl border border-primary-border bg-background"
+              />
+              {/* // TODO: Fix extra space in layout from stacked card effect */}
+              {Array.from({ length: machine.count - 1 }).map((_, i) => (
+                <div
+                  key={i}
+                  className="relative h-6 rounded-b-2xl border border-primary-border border-t-transparent"
+                  style={{ bottom: `${i + 1}rem` }}
+                />
+              ))}
+              <div
+                className="relative h-6"
+                style={{ bottom: `${machine.count - 1.5}rem` }}
+              >
+                <MetricBox className="py-0">
+                  <MetricLabel>
+                    <MetricInfo
+                      label={`${machine.count} machines @ ${new Intl.NumberFormat(
+                        "en-US",
+                        {
+                          style: "currency",
+                          currency: "USD",
+                          minimumSignificantDigits: 2,
+                        }
+                      ).format(0.61)}/h`}
+                    >
+                      TODO: Popover details
+                    </MetricInfo>
+                  </MetricLabel>
+                </MetricBox>
+              </div>
+            </div>
+          ))}
       </div>
     </div>
   )
