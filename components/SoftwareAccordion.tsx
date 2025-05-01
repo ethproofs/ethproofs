@@ -32,7 +32,7 @@ const SoftwareAccordionItem = ({
   <AccordionItem value={value} className="col-span-5 grid grid-cols-subgrid">
     <div className="col-span-5 grid grid-cols-subgrid items-center gap-12 border-b hover:bg-primary/5 dark:hover:bg-primary/10">
       <div className="col-start-1 flex items-center gap-3">
-        <Link href={`/zkvms/${zkvm.id}`} className="hover:underline">
+        <Link href={`/zkvm/${zkvm.id}`} className="hover:underline">
           <span className="block font-mono text-2xl text-primary">
             {zkvm.name}
           </span>
@@ -80,7 +80,7 @@ const SoftwareAccordionItem = ({
       <SoftwareDetails />
 
       <div className="flex justify-center gap-16 p-8 pt-0">
-        <ButtonLink variant="outline" href={`/zkvms/${zkvm.id}`}>
+        <ButtonLink variant="outline" href={`/zkvm/${zkvm.id}`}>
           See all details
         </ButtonLink>
         <div>

@@ -56,7 +56,7 @@ const ClusterAccordionItem = ({
         <div>
           <span className="text-sm text-primary">
             <Link
-              href={`/zkvms/${clusterDetails.zkvm.id}`}
+              href={`/zkvm/${clusterDetails.zkvm.id}`}
               className="hover:underline"
             >
               {clusterDetails.zkvm.name}
