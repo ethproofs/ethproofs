@@ -1,8 +1,8 @@
-import { desc } from "drizzle-orm"
+import { desc, eq } from "drizzle-orm"
 import { unstable_cache as cache } from "next/cache"
 
 import { db } from "@/db"
-import { zkvmVersions } from "@/db/schema"
+import { zkvms, zkvmVersions } from "@/db/schema"
 
 export async function getZkvms({ limit }: { limit?: number } = {}) {
   const zkvms = await db.query.zkvms.findMany({
@@ -17,15 +17,27 @@ export async function getZkvms({ limit }: { limit?: number } = {}) {
   return zkvms
 }
 
-export const getZkvmBySlug = cache(async (slug: string) => {
-  const zkvm = await db.query.zkvms.findFirst({
-    where: (zkvms, { eq }) => eq(zkvms.slug, slug),
-    with: {
-      versions: {
-        orderBy: desc(zkvmVersions.release_date),
+export const getZkvm = cache(
+  async ({ id, slug }: { id?: number; slug?: string }) => {
+    const filter = id
+      ? eq(zkvms.id, id)
+      : slug
+        ? eq(zkvms.slug, slug)
+        : undefined
+
+    if (!filter) {
+      throw new Error("Either id or slug must be provided")
+    }
+
+    const zkvm = await db.query.zkvms.findFirst({
+      where: () => filter,
+      with: {
+        versions: {
+          orderBy: desc(zkvmVersions.release_date),
+        },
+        vendor: true,
       },
-      vendor: true,
-    },
-  })
-  return zkvm
-})
+    })
+    return zkvm
+  }
+)

@@ -1,5 +1,5 @@
 import { getActiveClusterCountByZkvmId } from "@/lib/api/clusters"
-import { getZkvms } from "@/lib/api/zkvms"
+import { getZkvm, getZkvms } from "@/lib/api/zkvms"
 
 export const getZkvmsStats = async () => {
   const zkvms = await getZkvms()
@@ -30,4 +30,34 @@ export const getZkvmsWithUsage = async () => {
     return { ...zkvm, totalClusters, activeClusters }
   })
   return zkvmsWithUsage
+}
+
+export const getZkvmWithUsage = async ({
+  id,
+  slug,
+}: {
+  id?: number
+  slug?: string
+}) => {
+  const zkvm = await getZkvm({ id, slug })
+
+  if (!zkvm) {
+    return null
+  }
+
+  const clusterCount = await getActiveClusterCountByZkvmId()
+
+  const totalClusters = clusterCount.reduce(
+    (acc, curr) => acc + curr.active_clusters,
+    0
+  )
+
+  const activeClusters =
+    clusterCount.find((c) => c.zkvm_id === zkvm.id)?.active_clusters || 0
+
+  return {
+    ...zkvm,
+    totalClusters,
+    activeClusters,
+  }
 }

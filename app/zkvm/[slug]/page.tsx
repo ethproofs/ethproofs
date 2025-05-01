@@ -10,10 +10,13 @@ import GitHub from "@/components/svgs/github.svg"
 
 import { cn } from "@/lib/utils"
 
-import { getZkvmBySlug } from "@/lib/api/zkvms"
+import { getActiveClusters } from "@/lib/api/clusters"
+import { getClusterSummary } from "@/lib/api/stats"
+import { getZkvm } from "@/lib/api/zkvms"
+import { transformClusters } from "@/lib/clusters"
 import { formatShortDate } from "@/lib/date"
-import { demoClusterDetails } from "@/lib/dummy-data"
 import { getMetadata } from "@/lib/metadata"
+import { getZkvmWithUsage } from "@/lib/zkvms"
 
 type ZkvmDetailsPageProps = {
   params: Promise<{ slug: string }>
@@ -24,7 +27,7 @@ export async function generateMetadata({
 }: ZkvmDetailsPageProps): Promise<Metadata> {
   const { slug } = await params
 
-  const zkvm = await getZkvmBySlug(slug)
+  const zkvm = await getZkvm({ slug })
 
   if (!zkvm) {
     return getMetadata({ title: "zkVM not found" })
@@ -40,11 +43,15 @@ export default async function ZkvmDetailsPage({
 }: ZkvmDetailsPageProps) {
   const slug = (await params).slug
 
-  const zkvm = await getZkvmBySlug(slug)
+  const zkvm = await getZkvmWithUsage({ slug })
 
   if (!zkvm) {
     return notFound()
   }
+
+  const activeClusters = await getActiveClusters()
+  const clusterSummary = await getClusterSummary()
+  const clusters = transformClusters(activeClusters, clusterSummary)
 
   return (
     <>
@@ -133,10 +140,11 @@ export default async function ZkvmDetailsPage({
       <div className="mx-6 mt-40 max-w-full gap-x-20 md:mx-auto md:w-[calc(100vw_-_var(--sidebar-width))] md:px-[5vw]">
         <h2 className="flex items-center gap-2 font-mono text-lg font-normal text-primary">
           <Box className="size-11 text-primary" strokeWidth="1" />
-          active clusters using SP1: 5 / 12
+          active clusters using {zkvm.name}: {zkvm.activeClusters} /{" "}
+          {zkvm.totalClusters}
         </h2>
         <div className="-me-6 overflow-x-auto pe-6">
-          <ClusterAccordion clusters={demoClusterDetails} />
+          <ClusterAccordion clusters={clusters} />
         </div>
       </div>
     </>
