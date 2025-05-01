@@ -4,12 +4,27 @@ import ClusterAccordion from "@/components/ClusterAccordion"
 import LineChartCard from "@/components/LineChartCard"
 import MachineTabs from "@/components/MachineTabs"
 
-import { demoClusterDetails } from "@/lib/dummy-data"
+import { getActiveClusters } from "@/lib/api/clusters"
+import { getClusterSummary } from "@/lib/api/stats"
+import { transformClusters } from "@/lib/clusters"
 import { getMetadata } from "@/lib/metadata"
 
 export const metadata: Metadata = getMetadata()
 
-export default async function Index() {
+export default async function Provers() {
+  const clusterSummary = await getClusterSummary()
+  const activeClusters = await getActiveClusters()
+
+  const clusters = transformClusters(activeClusters, clusterSummary)
+
+  const singleMachineClusters = clusters.filter(
+    (cluster) => !cluster.isMultiMachine
+  )
+
+  const multiMachineClusters = clusters.filter(
+    (cluster) => cluster.isMultiMachine
+  )
+
   return (
     <>
       <div className="absolute top-16 w-full space-y-12 px-6 text-center font-mono font-semibold sm:px-8 md:px-12 lg:px-16 xl:px-20">
@@ -43,8 +58,10 @@ export default async function Index() {
 
         <section className="w-full max-w-screen-xl scroll-m-20">
           <MachineTabs
-            singleContent={<ClusterAccordion clusters={demoClusterDetails} />}
-            multiContent={<ClusterAccordion clusters={demoClusterDetails} />}
+            singleContent={
+              <ClusterAccordion clusters={singleMachineClusters} />
+            }
+            multiContent={<ClusterAccordion clusters={multiMachineClusters} />}
           />
         </section>
       </div>

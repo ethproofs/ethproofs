@@ -1,5 +1,7 @@
 import { and, count, desc, eq, exists, gt, sql } from "drizzle-orm"
 
+import { type ActiveCluster } from "../clusters"
+
 import { db } from "@/db"
 import {
   clusterMachines,
@@ -103,41 +105,7 @@ export const getActiveClusters = async () => {
       )
     )
 
-  const clusterMap = new Map<
-    string,
-    {
-      id: string
-      nickname: string
-      description: string | null
-      isOpenSource: boolean
-      isMultiMachine: boolean
-      version: {
-        createdAt: string
-      }
-      team: {
-        id: string
-        name: string
-        logoUrl: string | null
-      }
-      zkvm: {
-        id: number
-        name: string
-        isa: string
-        version: string
-      }
-      machines: Array<{
-        id: NonNullable<(typeof rawRows)[number]["machineId"]>
-        cpuModel: (typeof rawRows)[number]["cpuModel"]
-        cpuCores: (typeof rawRows)[number]["cpuCores"]
-        gpuModels: (typeof rawRows)[number]["gpuModels"]
-        gpuCount: (typeof rawRows)[number]["gpuCount"]
-        gpuRam: (typeof rawRows)[number]["gpuRam"]
-        memorySizeGb: (typeof rawRows)[number]["memorySizeGb"]
-        memoryCount: (typeof rawRows)[number]["memoryCount"]
-        count: (typeof rawRows)[number]["machineCount"]
-      }>
-    }
-  >()
+  const clusterMap = new Map<string, ActiveCluster>()
 
   for (const row of rawRows) {
     if (!clusterMap.has(row.id)) {
