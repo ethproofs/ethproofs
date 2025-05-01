@@ -5,7 +5,7 @@ import { type AccordionItemProps } from "@radix-ui/react-accordion"
 
 import type { ClusterDetails } from "@/lib/types"
 
-import { cn, sumArray } from "@/lib/utils"
+import { cn } from "@/lib/utils"
 
 import { getBoxIndexColor } from "./HardwareGrid/utils"
 import {
@@ -17,6 +17,7 @@ import {
 import { ButtonLink } from "./ui/button"
 import Link from "./ui/link"
 import { MetricBox, MetricInfo, MetricLabel } from "./ui/metric"
+import ClusterMachineSummary from "./ClusterMachineSummary"
 import HardwareGrid from "./HardwareGrid"
 
 import { formatShortDate } from "@/lib/date"
@@ -87,58 +88,7 @@ const ClusterAccordionItem = ({
     </div>
     <AccordionContent className="relative col-span-full flex flex-col gap-12 p-6">
       <div className="flex items-center gap-x-20">
-        <div className="flex flex-col items-center gap-y-6 text-center">
-          <div className="flex w-fit flex-col items-center text-nowrap px-2 text-center">
-            <span className="block text-nowrap text-sm text-body-secondary">
-              total machines
-            </span>
-            <span className="block font-mono text-2xl font-bold text-body">
-              {sumArray(clusterDetails.machines.map((m) => m.count))}
-            </span>
-          </div>
-          <div className="grid grid-cols-2 place-items-center gap-x-3 gap-y-4 text-center">
-            <div className="flex w-full flex-col items-center text-nowrap text-center">
-              <span className="block text-sm text-body-secondary">GPUs</span>
-              <span className="block font-mono text-xl text-body">
-                {sumArray(
-                  clusterDetails.machines.map(
-                    (m) => sumArray(m.gpuCount) * m.count
-                  )
-                )}
-              </span>
-            </div>
-            <div className="flex w-full flex-col items-center text-nowrap text-center">
-              <span className="block text-sm text-body-secondary">GPU RAM</span>
-              <span className="block font-mono text-xl text-body">
-                {sumArray(
-                  clusterDetails.machines.map(
-                    (m) => sumArray(m.gpuRam) * m.count
-                  )
-                )}{" "}
-                GB
-              </span>
-            </div>
-            <div className="flex flex-col items-center text-nowrap text-center">
-              <span className="block text-sm text-body-secondary">
-                CPU cores
-              </span>
-              <span className="block font-mono text-xl text-body">
-                {sumArray(
-                  clusterDetails.machines.map((m) => m.cpuCount * m.count)
-                )}
-              </span>
-            </div>
-            <div className="flex flex-col items-center text-nowrap text-center">
-              <span className="block text-sm text-body-secondary">CPU RAM</span>
-              <span className="block font-mono text-xl text-body">
-                {sumArray(
-                  clusterDetails.machines.map((m) => m.cpuRam * m.count)
-                )}{" "}
-                GB
-              </span>
-            </div>
-          </div>
-        </div>
+        <ClusterMachineSummary clusterDetails={clusterDetails} />
 
         <div className="flex flex-1 flex-col space-y-4 overflow-x-hidden">
           <HardwareGrid cluster={clusterDetails} />
