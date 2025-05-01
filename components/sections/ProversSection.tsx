@@ -1,5 +1,3 @@
-import { notIlike } from "drizzle-orm"
-
 import { SummaryItem } from "@/lib/types"
 
 import { sumArray } from "@/lib/utils"
@@ -10,21 +8,13 @@ import MachineTabs from "../MachineTabs"
 import { ButtonLink } from "../ui/button"
 import { Card, CardHeader, CardTitle } from "../ui/card"
 
-import { db } from "@/db"
-import {
-  clusterSummary as clusterSummaryView,
-  teamsSummary as teamsSummaryView,
-} from "@/db/schema"
 import { getActiveClusters, getActiveMachineCount } from "@/lib/api/clusters"
+import { getClusterSummary, getTeamsSummary } from "@/lib/api/stats"
 
 const ProversSection = async () => {
-  const teamsSummary = await db
-    .select()
-    .from(teamsSummaryView)
-    // hide test teams from the provers list
-    .where(notIlike(teamsSummaryView.team_name, "%test%"))
+  const teamsSummary = await getTeamsSummary()
 
-  const clusterSummary = await db.select().from(clusterSummaryView)
+  const clusterSummary = await getClusterSummary()
 
   const machineCount = await getActiveMachineCount()
 

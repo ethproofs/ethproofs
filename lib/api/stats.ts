@@ -1,8 +1,12 @@
 import { addDays, startOfDay } from "date-fns"
-import { asc } from "drizzle-orm"
+import { asc, notIlike } from "drizzle-orm"
 
 import { db } from "@/db"
-import { recentSummary as recentSummaryView } from "@/db/schema"
+import {
+  clusterSummary as clusterSummaryView,
+  recentSummary as recentSummaryView,
+  teamsSummary as teamsSummaryView,
+} from "@/db/schema"
 
 /**
  * Fetches daily proof statistics for a specified date range
@@ -46,4 +50,20 @@ export const getRecentSummary = async () => {
   const [recentSummary] = await db.select().from(recentSummaryView).limit(1)
 
   return recentSummary
+}
+
+export const getClusterSummary = async () => {
+  const clusterSummary = await db.select().from(clusterSummaryView)
+
+  return clusterSummary
+}
+
+export const getTeamsSummary = async () => {
+  const teamsSummary = await db
+    .select()
+    .from(teamsSummaryView)
+    // hide test teams from the provers list
+    .where(notIlike(teamsSummaryView.team_name, "%test%"))
+
+  return teamsSummary
 }
