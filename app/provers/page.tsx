@@ -4,10 +4,9 @@ import ClusterAccordion from "@/components/ClusterAccordion"
 import LineChartCard from "@/components/LineChartCard"
 import MachineTabs from "@/components/MachineTabs"
 
-import { sumArray } from "@/lib/utils"
-
 import { getActiveClusters } from "@/lib/api/clusters"
 import { getClusterSummary } from "@/lib/api/stats"
+import { transformClusters } from "@/lib/clusters"
 import { getMetadata } from "@/lib/metadata"
 
 export const metadata: Metadata = getMetadata()
@@ -16,40 +15,8 @@ export default async function Provers() {
   const clusterSummary = await getClusterSummary()
   const activeClusters = await getActiveClusters()
 
-  const clusters = activeClusters.map((cluster) => {
-    const stats = clusterSummary.find(
-      (summary) => summary.cluster_id === cluster.id
-    )
+  const clusters = transformClusters(activeClusters, clusterSummary)
 
-    return {
-      id: cluster.id,
-      name: cluster.nickname,
-      versionDate: cluster.version.createdAt,
-      isOpenSource: cluster.isOpenSource,
-      isMultiMachine: cluster.isMultiMachine,
-      avgCost: stats?.avg_cost_per_proof ?? 0,
-      avgTime: Number(stats?.avg_proving_time ?? 0),
-      team: {
-        id: cluster.team.id,
-        name: cluster.team.name,
-        logoUrl: cluster.team.logoUrl,
-      },
-      zkvm: {
-        id: cluster.zkvm.id,
-        name: cluster.zkvm.name,
-      },
-      machines: cluster.machines.map((machine) => ({
-        id: machine.id,
-        cpuModel: machine.cpuModel ?? "",
-        cpuCount: machine.cpuCores ?? 0,
-        cpuRam: sumArray(machine.memorySizeGb),
-        gpuCount: machine.gpuCount ?? [],
-        gpuModels: machine.gpuModels ?? [],
-        gpuRam: machine.gpuRam ?? [],
-        count: machine.count ?? 1,
-      })),
-    }
-  })
   const singleMachineClusters = clusters.filter(
     (cluster) => !cluster.isMultiMachine
   )

@@ -1,7 +1,5 @@
 import { SummaryItem } from "@/lib/types"
 
-import { sumArray } from "@/lib/utils"
-
 import ClusterAccordion from "../ClusterAccordion"
 import KPIs from "../KPIs"
 import MachineTabs from "../MachineTabs"
@@ -10,14 +8,12 @@ import { Card, CardHeader, CardTitle } from "../ui/card"
 
 import { getActiveClusters, getActiveMachineCount } from "@/lib/api/clusters"
 import { getClusterSummary, getTeamsSummary } from "@/lib/api/stats"
+import { transformClusters } from "@/lib/clusters"
 
 const ProversSection = async () => {
   const teamsSummary = await getTeamsSummary()
-
   const clusterSummary = await getClusterSummary()
-
   const machineCount = await getActiveMachineCount()
-
   const activeClusters = await getActiveClusters()
 
   const proversSummary: SummaryItem[] = [
@@ -33,40 +29,7 @@ const ProversSection = async () => {
     },
   ]
 
-  const clusters = activeClusters.map((cluster) => {
-    const stats = clusterSummary.find(
-      (summary) => summary.cluster_id === cluster.id
-    )
-
-    return {
-      id: cluster.id,
-      name: cluster.nickname,
-      versionDate: cluster.version.createdAt,
-      isOpenSource: cluster.isOpenSource,
-      isMultiMachine: cluster.isMultiMachine,
-      avgCost: stats?.avg_cost_per_proof ?? 0,
-      avgTime: Number(stats?.avg_proving_time ?? 0),
-      team: {
-        id: cluster.team.id,
-        name: cluster.team.name,
-        logoUrl: cluster.team.logoUrl,
-      },
-      zkvm: {
-        id: cluster.zkvm.id,
-        name: cluster.zkvm.name,
-      },
-      machines: cluster.machines.map((machine) => ({
-        id: machine.id,
-        cpuModel: machine.cpuModel ?? "",
-        cpuCount: machine.cpuCores ?? 0,
-        cpuRam: sumArray(machine.memorySizeGb),
-        gpuCount: machine.gpuCount ?? [],
-        gpuModels: machine.gpuModels ?? [],
-        gpuRam: machine.gpuRam ?? [],
-        count: machine.count ?? 1,
-      })),
-    }
-  })
+  const clusters = transformClusters(activeClusters, clusterSummary)
 
   const singleMachineClusters = clusters.filter(
     (cluster) => !cluster.isMultiMachine
