@@ -1,5 +1,5 @@
 {
-  "id": "e246d3fe-3337-4386-bb31-8fe9e15ec917",
+  "id": "e479c5dc-8c3a-4240-858e-48430df0347c",
   "prevId": "60a704d1-305c-43f1-a74e-93f0c4cc6383",
   "version": "7",
   "dialect": "postgresql",
@@ -1616,7 +1616,15 @@
         }
       },
       "compositePrimaryKeys": {},
-      "uniqueConstraints": {},
+      "uniqueConstraints": {
+        "zkvm_performance_metrics_zkvm_id_unique": {
+          "name": "zkvm_performance_metrics_zkvm_id_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "zkvm_id"
+          ]
+        }
+      },
       "policies": {
         "Enable read access for all users": {
           "name": "Enable read access for all users",
@@ -1737,7 +1745,15 @@
         }
       },
       "compositePrimaryKeys": {},
-      "uniqueConstraints": {},
+      "uniqueConstraints": {
+        "zkvm_security_metrics_zkvm_id_unique": {
+          "name": "zkvm_security_metrics_zkvm_id_unique",
+          "nullsNotDistinct": false,
+          "columns": [
+            "zkvm_id"
+          ]
+        }
+      },
       "policies": {
         "Enable read access for all users": {
           "name": "Enable read access for all users",

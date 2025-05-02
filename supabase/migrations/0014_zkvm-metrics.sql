@@ -5,7 +5,8 @@ CREATE TABLE "zkvm_performance_metrics" (
 	"size_bytes" bigint NOT NULL,
 	"verification_ms" integer NOT NULL,
 	"created_at" timestamp with time zone DEFAULT now() NOT NULL,
-	"updated_at" timestamp with time zone DEFAULT now() NOT NULL
+	"updated_at" timestamp with time zone DEFAULT now() NOT NULL,
+	CONSTRAINT "zkvm_performance_metrics_zkvm_id_unique" UNIQUE("zkvm_id")
 );
 --> statement-breakpoint
 ALTER TABLE "zkvm_performance_metrics" ENABLE ROW LEVEL SECURITY;--> statement-breakpoint
@@ -20,7 +21,8 @@ CREATE TABLE "zkvm_security_metrics" (
 	"max_bounty_amount" bigint NOT NULL,
 	"trusted_setup" boolean DEFAULT false NOT NULL,
 	"created_at" timestamp with time zone DEFAULT now() NOT NULL,
-	"updated_at" timestamp with time zone DEFAULT now() NOT NULL
+	"updated_at" timestamp with time zone DEFAULT now() NOT NULL,
+	CONSTRAINT "zkvm_security_metrics_zkvm_id_unique" UNIQUE("zkvm_id")
 );
 --> statement-breakpoint
 ALTER TABLE "zkvm_security_metrics" ENABLE ROW LEVEL SECURITY;--> statement-breakpoint

@@ -536,7 +536,8 @@ export const zkvmPerformanceMetrics = pgTable(
       .references(() => zkvms.id, {
         onDelete: "cascade",
         onUpdate: "cascade",
-      }),
+      })
+      .unique(),
     size_bytes: bigint("size_bytes", { mode: "number" }).notNull(),
     verification_ms: integer("verification_ms").notNull(),
     created_at: timestamp("created_at", { withTimezone: true, mode: "string" })
@@ -567,7 +568,8 @@ export const zkvmSecurityMetrics = pgTable(
       .references(() => zkvms.id, {
         onDelete: "cascade",
         onUpdate: "cascade",
-      }),
+      })
+      .unique(),
     protocol_soundness: severityLevel("protocol_soundness").notNull(),
     implementation_soundness: severityLevel(
       "implementation_soundness"
