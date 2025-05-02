@@ -1,0 +1,169 @@
+import { Fragment } from "react"
+import { Check, X as RedX } from "lucide-react"
+import Image from "next/image"
+import { type AccordionItemProps } from "@radix-ui/react-accordion"
+
+import type { ClusterDetails } from "@/lib/types"
+
+import { cn } from "@/lib/utils"
+
+import { getBoxIndexColor } from "./HardwareGrid/utils"
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "./ui/accordion"
+import { ButtonLink } from "./ui/button"
+import Link from "./ui/link"
+import { MetricBox, MetricInfo, MetricLabel } from "./ui/metric"
+import ClusterMachineSummary from "./ClusterMachineSummary"
+import HardwareGrid from "./HardwareGrid"
+
+import { formatShortDate } from "@/lib/date"
+import { formatUsd } from "@/lib/number"
+import { prettyMs } from "@/lib/time"
+
+type ClusterAccordionItemProps = Pick<AccordionItemProps, "value"> & {
+  clusterDetails: ClusterDetails
+}
+const ClusterAccordionItem = ({
+  value,
+  clusterDetails,
+}: ClusterAccordionItemProps) => (
+  <AccordionItem value={value} className="col-span-6 grid grid-cols-subgrid">
+    <div className="col-span-6 grid grid-cols-subgrid items-center gap-12 px-6 py-4 hover:bg-primary/5 dark:hover:bg-primary/10">
+      {/* TODO: Update to match design */}
+      <div className="col-start-1 flex flex-col gap-1">
+        <Link
+          href={`/prover/${clusterDetails.team.id}`}
+          className="-m-1 w-fit rounded p-1 hover:bg-primary/10"
+        >
+          {clusterDetails.team.logoUrl ? (
+            <Image
+              src={clusterDetails.team.logoUrl}
+              alt="Prover logo"
+              height={16}
+              width={16}
+              style={{ height: "1rem", width: "auto" }}
+              className="dark:invert"
+            />
+          ) : (
+            <div className="flex items-center gap-1">
+              <div className="size-4 rounded-full bg-primary-border" />
+              {clusterDetails.team.name}
+            </div>
+          )}
+        </Link>
+        <div>
+          <span className="text-sm text-primary">
+            <Link
+              href={`/zkvm/${clusterDetails.zkvm.id}`}
+              className="hover:underline"
+            >
+              {clusterDetails.zkvm.name}
+            </Link>{" "}
+            |{" "}
+          </span>
+          <span className="text-sm">{clusterDetails.name}</span>
+        </div>
+      </div>
+      <div id="version" className="col-start-2 flex justify-center">
+        {clusterDetails.isOpenSource ? (
+          <Check className="text-level-best" strokeLinecap="square" />
+        ) : (
+          <RedX className="text-level-worst" strokeLinecap="square" />
+        )}
+      </div>
+      <div id="version" className="col-start-3">
+        {formatUsd(clusterDetails.avgCost)}
+      </div>
+      <div id="isa" className="col-start-4">
+        {prettyMs(clusterDetails.avgTime)}
+      </div>
+
+      <AccordionTrigger className="col-start-6 my-2 h-fit gap-2 rounded-full border-2 border-primary-border bg-background-highlight p-0.5 text-primary [&>svg]:size-6">
+        <span className="sr-only">Toggle details</span>
+      </AccordionTrigger>
+    </div>
+    <AccordionContent className="relative col-span-full flex flex-col gap-12 p-6">
+      <div className="flex items-center gap-x-20">
+        <ClusterMachineSummary clusterDetails={clusterDetails} />
+
+        <div className="flex flex-1 flex-col space-y-4 overflow-x-hidden">
+          <HardwareGrid cluster={clusterDetails} />
+          <div className="flex items-center gap-3 self-end">
+            <span className="me-4">GPUs</span>
+            {Array(6)
+              .fill(0)
+              .map((_, i) => (
+                <Fragment key={i}>
+                  <span className="-me-1">{2 ** i}</span>
+                  <div
+                    key={i}
+                    className={cn("size-4 rounded-[4px]", getBoxIndexColor(i))}
+                  />
+                </Fragment>
+              ))}
+          </div>
+        </div>
+      </div>
+
+      <div className="grid place-items-center">
+        <ButtonLink variant="outline" href={`/cluster/${clusterDetails.id}`}>
+          See all details
+        </ButtonLink>
+      </div>
+
+      <div className="absolute bottom-6 right-6">
+        <span className="text-xs italic text-body-secondary">Last updated</span>{" "}
+        <span className="text-xs uppercase text-body">
+          {formatShortDate(new Date(clusterDetails.versionDate))}
+        </span>
+      </div>
+    </AccordionContent>
+  </AccordionItem>
+)
+
+type ClusterAccordionProps = {
+  clusters: ClusterDetails[]
+}
+const ClusterAccordion = ({ clusters }: ClusterAccordionProps) => (
+  <Accordion
+    type="multiple"
+    className="grid w-full grid-cols-[1fr_repeat(5,_auto)] md:px-6"
+  >
+    <div className="col-span-6 grid grid-cols-subgrid text-center">
+      <MetricBox className="col-start-2">
+        <MetricLabel>
+          <MetricInfo label="open source">TODO: Popover details</MetricInfo>
+        </MetricLabel>
+      </MetricBox>
+      <MetricBox className="col-start-3">
+        <MetricLabel>
+          <MetricInfo label="avg cost">
+            Instruction set architecture
+            <br />
+            TODO: Popover details
+          </MetricInfo>
+        </MetricLabel>
+      </MetricBox>
+      <MetricBox className="col-start-4">
+        <MetricLabel>
+          <MetricInfo label="avg time">TODO: Popover details</MetricInfo>
+        </MetricLabel>
+      </MetricBox>
+    </div>
+    {clusters.map((cluster, i) => (
+      <ClusterAccordionItem
+        key={i}
+        value={"item-" + i}
+        clusterDetails={cluster}
+      />
+    ))}
+  </Accordion>
+)
+
+ClusterAccordion.displayName = "ClusterAccordion"
+
+export default ClusterAccordion

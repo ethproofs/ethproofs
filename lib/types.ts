@@ -1,19 +1,35 @@
 import { type ReactNode } from "react"
 
+import { CHART_RANGES } from "./constants"
+
 import {
   blocks,
   cloudInstances,
-  clusterConfigurations,
+  cloudProviders,
+  clusterMachines,
   clusters,
+  clusterVersions,
+  machines,
   proofs,
+  proofsDailyStats,
+  proverDailyStats,
+  recentSummary,
   teams,
   teamsSummary,
+  vendors,
+  zkvms,
+  zkvmVersions,
 } from "@/db/schema"
 
 /**
  * Represents a row in the cloud_instances table.
  */
 export type CloudInstance = typeof cloudInstances.$inferSelect
+
+/**
+ * Represents a row in the cloud_providers table.
+ */
+export type CloudProvider = typeof cloudProviders.$inferSelect
 
 /**
  * Represents a row in the blocks table.
@@ -26,9 +42,24 @@ export type BlockBase = typeof blocks.$inferSelect
 export type ClusterBase = typeof clusters.$inferSelect
 
 /**
- * Represents a row in the cluster_configurations table.
+ * Represents a row in the cluster_versions table.
  */
-export type ClusterConfigBase = typeof clusterConfigurations.$inferSelect
+export type ClusterVersionBase = typeof clusterVersions.$inferSelect
+
+/**
+ * Represents a row in the cluster_machines table.
+ */
+export type ClusterMachineBase = typeof clusterMachines.$inferSelect
+
+/**
+ * Represents a row in the machines table.
+ */
+export type MachineBase = typeof machines.$inferSelect
+
+/**
+ * Represents a row in the cloud_instances table.
+ */
+export type CloudInstanceBase = typeof cloudInstances.$inferSelect
 
 /**
  * Represents a row in the proofs table.
@@ -41,40 +72,65 @@ export type ProofBase = typeof proofs.$inferSelect
 export type Team = typeof teams.$inferSelect
 
 /**
+ * Represents a row in the vendors table.
+ */
+export type Vendor = typeof vendors.$inferSelect
+
+/**
+ * Represents a row in the zkvms table.
+ */
+export type Zkvm = typeof zkvms.$inferSelect
+
+/**
+ * Represents a row in the zkvm_versions table.
+ */
+export type ZkvmVersion = typeof zkvmVersions.$inferSelect
+
+/**
  * Represents a row in the teams_summary view.
  */
 export type TeamSummary = typeof teamsSummary.$inferSelect
 
 /**
- * Extensions for the ClusterConfig type, adding optional cloudInstance property.
+ * Represents a row in the proofs_daily_stats table.
  */
-export type ClusterConfigExtensions = {
-  cloud_instance?: CloudInstance | null
-}
+export type ProofsDailyStats = typeof proofsDailyStats.$inferSelect
 
 /**
- * Represents a cluster configuration, combining ClusterConfigBase with ClusterConfigExtensions.
+ * Represents a row in the recent_summary view.
  */
-export type ClusterConfig = ClusterConfigBase & ClusterConfigExtensions
+export type RecentSummary = typeof recentSummary.$inferSelect
+
+/**
+ * Represents a row in the prover_daily_stats table.
+ */
+export type ProverDailyStats = typeof proverDailyStats.$inferSelect
+
+export type ClusterVersionExtensions = {
+  cluster: ClusterBase
+  cluster_machines: (ClusterMachineBase & {
+    cloud_instance: CloudInstanceBase
+    machine: MachineBase
+  })[]
+}
 
 /**
  * Extensions for the Cluster type, adding optional clusterConfig property.
  */
-export type ClusterExtensions = {
-  cluster_configuration?: ClusterConfig[]
-}
+export type ClusterVersion = ClusterVersionBase & ClusterVersionExtensions
 
 /**
  * Represents a cluster, combining ClusterBase with ClusterExtensions.
  */
-export type Cluster = ClusterBase & ClusterExtensions
+export type Cluster = ClusterBase & {
+  cluster_version: ClusterVersion
+}
 
 /**
  * Extensions for the Proof type, adding optional block, cluster, and team properties.
  */
 export type ProofExtensions = {
   block?: BlockBase
-  cluster?: Cluster | null
   team?: Team
 }
 
@@ -82,6 +138,10 @@ export type ProofExtensions = {
  * Represents a proof, combining ProofBase with ProofExtensions.
  */
 export type Proof = ProofBase & ProofExtensions
+
+export type ProofWithCluster = Proof & {
+  cluster_version: ClusterVersion
+}
 
 /**
  * Represents an empty block, which is a partial BlockBase with a required block_number property.
@@ -91,7 +151,7 @@ export type EmptyBlock = Partial<BlockBase> & Pick<BlockBase, "block_number">
 /**
  * Extensions for the Block type, adding a proofs property which is an array of Proofs.
  */
-export type BlockExtensions = { proofs: Proof[] }
+export type BlockExtensions = { proofs: ProofWithCluster[] }
 
 /**
  * Represents a block, which can be either an EmptyBlock or BlockBase, combined with BlockExtensions.
@@ -121,8 +181,8 @@ export type Metric = {
 export type SummaryItem = {
   key: string
   label: ReactNode
-  icon: ReactNode
   value: ReactNode
+  icon?: ReactNode
 }
 
 /**
@@ -134,5 +194,53 @@ export type Stats = {
   avgFormatted: string
   best: number
   bestFormatted: string
-  bestProof: Proof
+  bestProof: ProofWithCluster
 }
+
+export type Level = "best" | "middle" | "worst"
+
+export type SliceDetails = {
+  level: Level
+}
+
+export type Slices = [
+  SliceDetails,
+  SliceDetails,
+  SliceDetails,
+  SliceDetails,
+  SliceDetails,
+  SliceDetails,
+  SliceDetails,
+  SliceDetails,
+]
+
+export type ClusterDetails = {
+  id: string
+  name: string
+  versionDate: string
+  isOpenSource: boolean
+  isMultiMachine: boolean
+  avgCost: number
+  avgTime: number
+  team: {
+    id: string
+    name: string
+    logoUrl?: string | null
+  }
+  zkvm: {
+    id: number
+    name: string
+  }
+  machines: {
+    id: number
+    cpuModel: string
+    cpuCount: number
+    cpuRam: number // gb
+    gpuCount: number[]
+    gpuModels: string[]
+    gpuRam: number[] // gb
+    count: number
+  }[]
+}
+
+export type DayRange = (typeof CHART_RANGES)[number]

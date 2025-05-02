@@ -3,7 +3,7 @@
 import Link from "next/link"
 import { ColumnDef } from "@tanstack/react-table"
 
-import type { Block, Proof } from "@/lib/types"
+import type { Block, Proof, ProofWithCluster } from "@/lib/types"
 
 import { ColumnHeader } from "@/components/ColumnHeader"
 import { metrics } from "@/components/Metrics"
@@ -63,10 +63,10 @@ export const columns: ColumnDef<Block>[] = [
         : "pending"
 
       return (
-        <div className="text-start">
+        <div className="text-center">
           <Link
             href={`/block/${blockNumber}`}
-            className="text-lg tracking-wide hover:text-primary-light hover:underline"
+            className="text-lg tracking-wide text-primary hover:text-primary-light hover:underline"
           >
             <HidePunctuation>{formatNumber(blockNumber)}</HidePunctuation>
           </Link>
@@ -115,10 +115,7 @@ export const columns: ColumnDef<Block>[] = [
           <HidePunctuation>{formatted}</HidePunctuation>
           <Progress
             value={percentGasUsage}
-            className={cn(
-              percentGasUsage < 50 && "[&>div]:bg-primary-light",
-              "mx-auto my-2 h-1 max-w-32"
-            )}
+            className="mx-auto my-2 h-1.5 max-w-32"
           />
         </>
       )
@@ -134,7 +131,7 @@ export const columns: ColumnDef<Block>[] = [
       </ColumnHeader>
     ),
     cell: ({ cell }) => {
-      const proofs = cell.getValue() as Proof[]
+      const proofs = cell.getValue() as ProofWithCluster[]
 
       const stats = getCostPerProofStats(proofs)
 
@@ -172,7 +169,7 @@ export const columns: ColumnDef<Block>[] = [
       </ColumnHeader>
     ),
     cell: ({ cell }) => {
-      const proofs = cell.getValue() as Proof[]
+      const proofs = cell.getValue() as ProofWithCluster[]
 
       const stats = getProvingTimeStats(proofs)
 
@@ -197,7 +194,7 @@ export const columns: ColumnDef<Block>[] = [
       </ColumnHeader>
     ),
     cell: ({ cell, row }) => {
-      const proofs = cell.getValue() as Proof[]
+      const proofs = cell.getValue() as ProofWithCluster[]
       const timestamp = row.original.timestamp
 
       if (!timestamp) return <Null />
@@ -228,7 +225,7 @@ export const columns: ColumnDef<Block>[] = [
             href={`/block/${blockNumber}`}
             variant="outline"
             size="icon"
-            className="ms-auto"
+            className="ms-auto h-auto p-1.5 text-lg"
           >
             <ArrowRight />
           </ButtonLink>

@@ -1,15 +1,8 @@
-import type { Proof } from "@/lib/types"
+import type { ProofWithCluster } from "@/lib/types"
 
-const ClusterDetails = ({ proof }: { proof: Proof }) => {
-  const { cluster_id, cluster } = proof
-
-  if (!cluster)
-    return (
-      <span className="block text-lg font-semibold">
-        Cluster {cluster_id.split("-")[0]}
-      </span>
-    )
-
+const ClusterDetails = ({ proof }: { proof: ProofWithCluster }) => {
+  const { cluster_version } = proof
+  const { cluster } = cluster_version
   const { description, hardware, nickname } = cluster
 
   return (

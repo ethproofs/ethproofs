@@ -14,17 +14,19 @@ import { Input } from "@/components/ui/input"
 
 import { cn } from "@/lib/utils"
 
-import { useContainerQuery } from "@/hooks/useContainerQuery"
 import useSearchKeyboardShortcuts from "@/hooks/useSearchKeyboardShortcuts"
 
 const DEBOUNCE = 250 // ms delay before querying database
 const PLACEHOLDER = "Search by block number or hash"
-const k = 6.5
 
 const SearchInput = ({
   className,
   onSubmit,
-}: React.HTMLAttributes<HTMLInputElement> & { onSubmit?: () => void }) => {
+  placeholder = PLACEHOLDER,
+}: React.HTMLAttributes<HTMLInputElement> & {
+  onSubmit?: () => void
+  placeholder?: string
+}) => {
   const router = useRouter()
   const [query, setQuery] = useState("")
   const [deferredQuery] = useDebounceValue(query, DEBOUNCE)
@@ -55,19 +57,18 @@ const SearchInput = ({
 
   const { inputRef } = useSearchKeyboardShortcuts()
 
-  const { isLarge, containerRef } = useContainerQuery(PLACEHOLDER.length * k)
-
-  const placeholder = isLarge ? PLACEHOLDER : PLACEHOLDER.split(" ")[0]
-
   return (
-    <div ref={containerRef} className={cn("relative z-0 w-full", className)}>
+    <div className={cn("relative z-0 w-full", className)}>
+      <div className="absolute -inset-px -z-10 rounded-full bg-gradient-to-l from-primary via-primary/10 peer-focus:hidden"></div>
       <Input
         ref={inputRef}
         type="search"
         onChange={(e) => setQuery(e.target.value)}
         placeholder={placeholder}
         value={query}
+        className="peer z-0 border border-transparent px-4 py-1.5"
       />
+
       <div
         className={cn(
           "pointer-events-none absolute inset-y-0 end-0 flex items-center pe-4 lg:m-0",
@@ -76,8 +77,9 @@ const SearchInput = ({
       >
         <Magnifier className="text-primary" />
       </div>
+
       {!!query.length && (
-        <div className="absolute inset-x-0 top-0 -z-10 flex h-fit flex-col rounded-b-2xl rounded-t-3xl border border-primary bg-background bg-gradient-to-b from-white/[0.06] to-white/[0.12] px-2 pb-2 pt-[3.5rem] lg:m-0">
+        <div className="absolute inset-x-0 top-0 -z-10 flex h-fit flex-col rounded-b-2xl rounded-t-3xl bg-background bg-gradient-to-b from-white/[0.06] to-white/[0.12] px-2 pb-2 pt-[3.5rem] lg:m-0">
           {blockMatch ? (
             <Link
               href={`/block/${blockMatch[isHash(query) ? "hash" : "block_number"]}`}

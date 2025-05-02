@@ -90,6 +90,21 @@ export const POST = withAuth(async ({ request, user, timestamp }) => {
     return new Response("Cluster not found", { status: 404 })
   }
 
+  // get the last cluster_version_id from cluster_id
+  const clusterVersion = await db.query.clusterVersions.findFirst({
+    columns: {
+      id: true,
+    },
+    where: (clusterVersions, { eq }) =>
+      eq(clusterVersions.cluster_id, cluster.id),
+    orderBy: (clusterVersions, { desc }) => [desc(clusterVersions.created_at)],
+  })
+
+  if (!clusterVersion) {
+    console.error("cluster version not found", cluster_id)
+    return new Response("Cluster version not found", { status: 404 })
+  }
+
   // create or get program id if it exists
   let programId: number | undefined
   if (verifier_id) {
@@ -138,7 +153,7 @@ export const POST = withAuth(async ({ request, user, timestamp }) => {
   const dataToInsert = {
     ...restProofPayload,
     block_number,
-    cluster_id: cluster.id,
+    cluster_version_id: clusterVersion.id,
     program_id: programId,
     proof_status: "proved",
     proved_timestamp: timestamp,
@@ -154,7 +169,7 @@ export const POST = withAuth(async ({ request, user, timestamp }) => {
         .insert(proofs)
         .values(dataToInsert)
         .onConflictDoUpdate({
-          target: [proofs.block_number, proofs.cluster_id],
+          target: [proofs.block_number, proofs.cluster_version_id],
           set: {
             ...dataToInsert,
           },

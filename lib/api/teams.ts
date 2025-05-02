@@ -5,10 +5,6 @@ import { db } from "@/db"
 export const getTeam = cache(
   async (id: string) => {
     const team = await db.query.teams.findFirst({
-      columns: {
-        name: true,
-        storage_quota_bytes: true,
-      },
       where: (teams, { eq }) => eq(teams.id, id),
     })
 
@@ -16,3 +12,15 @@ export const getTeam = cache(
   },
   ["team"]
 )
+
+export const getTeams = cache(async () => {
+  const teams = await db.query.teams.findMany()
+  return teams
+})
+
+export const getTeamBySlug = cache(async (slug: string) => {
+  const team = await db.query.teams.findFirst({
+    where: (teams, { eq }) => eq(teams.slug, slug),
+  })
+  return team
+})

@@ -11,8 +11,18 @@ export async function GET(
   const proofRow = await db.query.proofs.findFirst({
     columns: {
       block_number: true,
-      cluster_id: true,
       team_id: true,
+    },
+    with: {
+      cluster_version: {
+        with: {
+          cluster: {
+            columns: {
+              id: true,
+            },
+          },
+        },
+      },
     },
     where: (proofs, { and, eq }) =>
       and(eq(proofs.proof_id, Number(id)), eq(proofs.proof_status, "proved")),
@@ -24,7 +34,9 @@ export async function GET(
 
   const team = await getTeam(proofRow.team_id)
 
-  const teamName = team?.name ? team.name : proofRow.cluster_id.split("-")[0]
+  const teamName = team?.name
+    ? team.name
+    : proofRow.cluster_version.cluster.id.split("-")[0]
   const filename = `${proofRow.block_number}_${teamName}_${id}.txt`
 
   const data = await getProofBinary(filename)
