@@ -1,8 +1,10 @@
 import {
   getZkvmPerformanceMetrics,
+  getZkvmPerformanceMetricsByZkvmId,
   getZkvmSecurityMetrics,
+  getZkvmSecurityMetricsByZkvmId,
 } from "./api/metrics"
-import { SeverityLevel } from "./types"
+import { SeverityLevel, ZkvmMetrics } from "./types"
 
 const protocolLabels: Record<SeverityLevel, string> = {
   red: "not fully audited",
@@ -69,7 +71,7 @@ export const thresholds: Record<string, MetricThresholds> = {
   },
 }
 
-export const getMetricLabel = (
+export const getZkvmMetricLabel = (
   severity: SeverityLevel,
   metricType: string
 ): string => {
@@ -93,7 +95,7 @@ export const getMetricLabel = (
   }
 }
 
-export const getMetricSeverity = (value: number, metric: string) => {
+export const getZkvmMetricSeverity = (value: number, metric: string) => {
   let severity: SeverityLevel = "red"
 
   // Handle numeric metrics
@@ -116,7 +118,38 @@ export const getMetricSeverity = (value: number, metric: string) => {
   return severity
 }
 
-export const getZkvmMetrics = async () => {
+export const getZkvmMetricSeverityLevels = (metrics: ZkvmMetrics) => {
+  // Get the severity levels for each numeric metric
+  const proofSizeSeverity = getZkvmMetricSeverity(
+    metrics.size_bytes,
+    "size_bytes"
+  )
+  const verificationTimeSeverity = getZkvmMetricSeverity(
+    metrics.verification_ms,
+    "verification_ms"
+  )
+  const maxBountyAmountSeverity = getZkvmMetricSeverity(
+    metrics.max_bounty_amount,
+    "max_bounty_amount"
+  )
+  const securityTargetSeverity = getZkvmMetricSeverity(
+    metrics.security_target_bits,
+    "security_target_bits"
+  )
+
+  return [
+    proofSizeSeverity,
+    securityTargetSeverity,
+    metrics.quantum_security,
+    maxBountyAmountSeverity,
+    metrics.evm_stf_bytecode,
+    metrics.implementation_soundness,
+    metrics.protocol_soundness,
+    verificationTimeSeverity,
+  ]
+}
+
+export const getZkvmsMetrics = async () => {
   const securityMetrics = await getZkvmSecurityMetrics()
   const performanceMetrics = await getZkvmPerformanceMetrics()
 
@@ -138,4 +171,18 @@ export const getZkvmMetrics = async () => {
   }
 
   return Object.fromEntries(metricsByZkvmId)
+}
+
+export const getZkvmMetrics = async (zkvmId: number) => {
+  const securityMetrics = await getZkvmSecurityMetricsByZkvmId(zkvmId)
+  const performanceMetrics = await getZkvmPerformanceMetricsByZkvmId(zkvmId)
+
+  if (!securityMetrics || !performanceMetrics) {
+    throw new Error("No metrics found for zkvm")
+  }
+
+  return {
+    ...securityMetrics,
+    ...performanceMetrics,
+  }
 }

@@ -10,7 +10,7 @@ import LevelMeter from "./LevelMeter"
 import Pizza from "./Pizza"
 
 import { thresholds } from "@/lib/metrics"
-import { getMetricLabel } from "@/lib/metrics"
+import { getZkvmMetricLabel } from "@/lib/metrics"
 
 type Props = {
   metrics: Omit<ZkvmMetrics, "security_target_bits" | "max_bounty_amount"> & {
@@ -47,7 +47,10 @@ const SoftwareDetails = ({ metrics, severityLevels }: Props) => {
             </MetricInfo>
           </MetricLabel>
           <div className="text-center font-sans text-base">
-            {getMetricLabel(metrics.protocol_soundness, "protocol_soundness")}
+            {getZkvmMetricLabel(
+              metrics.protocol_soundness,
+              "protocol_soundness"
+            )}
           </div>
         </MetricBox>
       </div>
@@ -63,7 +66,7 @@ const SoftwareDetails = ({ metrics, severityLevels }: Props) => {
             </MetricInfo>
           </MetricLabel>
           <div className="text-center font-sans text-base">
-            {getMetricLabel(
+            {getZkvmMetricLabel(
               metrics.implementation_soundness,
               "implementation_soundness"
             )}
@@ -79,7 +82,7 @@ const SoftwareDetails = ({ metrics, severityLevels }: Props) => {
             </MetricInfo>
           </MetricLabel>
           <div className="text-center font-sans text-base">
-            {getMetricLabel(metrics.evm_stf_bytecode, "evm_stf_bytecode")}
+            {getZkvmMetricLabel(metrics.evm_stf_bytecode, "evm_stf_bytecode")}
           </div>
         </MetricBox>
       </div>
@@ -110,7 +113,7 @@ const SoftwareDetails = ({ metrics, severityLevels }: Props) => {
             </MetricInfo>
           </MetricLabel>
           <div className="text-center font-sans text-base">
-            {getMetricLabel(
+            {getZkvmMetricLabel(
               metrics.security_target_bits,
               "security_target_bits"
             )}
@@ -124,7 +127,7 @@ const SoftwareDetails = ({ metrics, severityLevels }: Props) => {
             <MetricInfo label="quantum">TODO: Popover details</MetricInfo>
           </MetricLabel>
           <div className="text-center font-sans text-base">
-            {getMetricLabel(metrics.quantum_security, "quantum_security")}
+            {getZkvmMetricLabel(metrics.quantum_security, "quantum_security")}
           </div>
         </MetricBox>
       </div>
@@ -135,7 +138,7 @@ const SoftwareDetails = ({ metrics, severityLevels }: Props) => {
             <MetricInfo label="bounties">TODO: Popover details</MetricInfo>
           </MetricLabel>
           <div className="text-center font-sans text-base">
-            {getMetricLabel(metrics.max_bounty_amount, "max_bounty_amount")}
+            {getZkvmMetricLabel(metrics.max_bounty_amount, "max_bounty_amount")}
           </div>
         </MetricBox>
       </div>

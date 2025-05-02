@@ -16,6 +16,7 @@ import { getZkvm } from "@/lib/api/zkvms"
 import { transformClusters } from "@/lib/clusters"
 import { formatShortDate } from "@/lib/date"
 import { getMetadata } from "@/lib/metadata"
+import { getZkvmMetrics, getZkvmMetricSeverityLevels } from "@/lib/metrics"
 import { getZkvmWithUsage } from "@/lib/zkvms"
 
 type ZkvmDetailsPageProps = {
@@ -56,6 +57,9 @@ export default async function ZkvmDetailsPage({
   const activeClusters = await getActiveClusters()
   const clusterSummary = await getClusterSummary()
   const clusters = transformClusters(activeClusters, clusterSummary)
+
+  const zkvmMetrics = await getZkvmMetrics(zkvm.id)
+  const severityLevels = getZkvmMetricSeverityLevels(zkvmMetrics)
 
   return (
     <>
@@ -137,7 +141,14 @@ export default async function ZkvmDetailsPage({
         )}
       >
         <h2 className="sr-only">zkVM software details</h2>
-        <SoftwareDetails />
+        <SoftwareDetails
+          metrics={{
+            ...zkvmMetrics,
+            security_target_bits: severityLevels[0],
+            max_bounty_amount: severityLevels[3],
+          }}
+          severityLevels={severityLevels}
+        />
       </div>
 
       {/* // TODO: Fill in with fetched data */}

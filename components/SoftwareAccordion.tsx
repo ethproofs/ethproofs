@@ -1,17 +1,7 @@
 import Image from "next/image"
 import { type AccordionItemProps } from "@radix-ui/react-accordion"
 
-import {
-  SeverityLevel,
-  Slices,
-  Vendor,
-  Zkvm,
-  ZkvmMetric,
-  ZkvmMetrics,
-  ZkvmPerformanceMetric,
-  ZkvmSecurityMetric,
-  ZkvmVersion,
-} from "@/lib/types"
+import { Slices, Vendor, Zkvm, ZkvmMetrics, ZkvmVersion } from "@/lib/types"
 
 import {
   Accordion,
@@ -27,7 +17,7 @@ import Pizza from "./Pizza"
 import SoftwareDetails from "./SoftwareDetails"
 
 import { formatShortDate } from "@/lib/date"
-import { getMetricSeverity, getZkvmMetrics } from "@/lib/metrics"
+import { getZkvmMetricSeverityLevels, getZkvmsMetrics } from "@/lib/metrics"
 import { getZkvmsWithUsage } from "@/lib/zkvms"
 
 const SoftwareAccordionItem = ({
@@ -43,31 +33,7 @@ const SoftwareAccordionItem = ({
   }
   metrics: ZkvmMetrics
 }) => {
-  // Get the severity levels for each numeric metric
-  const proofSizeSeverity = getMetricSeverity(metrics.size_bytes, "size_bytes")
-  const verificationTimeSeverity = getMetricSeverity(
-    metrics.verification_ms,
-    "verification_ms"
-  )
-  const maxBountyAmountSeverity = getMetricSeverity(
-    metrics.max_bounty_amount,
-    "max_bounty_amount"
-  )
-  const securityTargetSeverity = getMetricSeverity(
-    metrics.security_target_bits,
-    "security_target_bits"
-  )
-
-  const severityLevels = [
-    proofSizeSeverity,
-    securityTargetSeverity,
-    metrics.quantum_security,
-    maxBountyAmountSeverity,
-    metrics.evm_stf_bytecode,
-    metrics.implementation_soundness,
-    metrics.protocol_soundness,
-    verificationTimeSeverity,
-  ]
+  const severityLevels = getZkvmMetricSeverityLevels(metrics)
 
   return (
     <AccordionItem value={value} className="col-span-5 grid grid-cols-subgrid">
@@ -124,8 +90,8 @@ const SoftwareAccordionItem = ({
         <SoftwareDetails
           metrics={{
             ...metrics,
-            security_target_bits: securityTargetSeverity,
-            max_bounty_amount: maxBountyAmountSeverity,
+            security_target_bits: severityLevels[0],
+            max_bounty_amount: severityLevels[3],
           }}
           severityLevels={severityLevels}
         />
@@ -150,7 +116,7 @@ const SoftwareAccordionItem = ({
 
 const SoftwareAccordion = async () => {
   const zkvms = await getZkvmsWithUsage()
-  const metricsByZkvmId = await getZkvmMetrics()
+  const metricsByZkvmId = await getZkvmsMetrics()
 
   return (
     <Accordion
