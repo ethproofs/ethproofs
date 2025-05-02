@@ -249,6 +249,7 @@ export type ClusterDetails = {
   zkvm: {
     id: number
     name: string
+    slug: string
   }
   machines: {
     id: number

@@ -39,7 +39,7 @@ const SoftwareAccordionItem = ({
     <AccordionItem value={value} className="col-span-5 grid grid-cols-subgrid">
       <div className="col-span-5 grid grid-cols-subgrid items-center gap-12 border-b hover:bg-primary/5 dark:hover:bg-primary/10">
         <div className="col-start-1 flex items-center gap-3">
-          <Link href={`/zkvm/${zkvm.id}`} className="hover:underline">
+          <Link href={`/zkvm/${zkvm.slug}`} className="hover:underline">
             <span className="block font-mono text-2xl text-primary">
               {zkvm.name}
             </span>
@@ -48,7 +48,7 @@ const SoftwareAccordionItem = ({
             by
           </span>
           <Link
-            href={`/prover/${zkvm.vendor.id}`}
+            href={`/prover/${zkvm.vendor.user_id}`}
             className="-m-1 rounded p-1 hover:bg-primary/10"
           >
             <Image
@@ -100,7 +100,7 @@ const SoftwareAccordionItem = ({
           severityLevels={severityLevels}
         />
         <div className="flex justify-center gap-16 p-8 pt-0">
-          <ButtonLink variant="outline" href={`/zkvm/${zkvm.id}`}>
+          <ButtonLink variant="outline" href={`/zkvm/${zkvm.slug}`}>
             See all details
           </ButtonLink>
           <div>
