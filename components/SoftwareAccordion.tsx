@@ -1,7 +1,7 @@
 import Image from "next/image"
 import { type AccordionItemProps } from "@radix-ui/react-accordion"
 
-import { Vendor, Zkvm, ZkvmVersion } from "@/lib/types"
+import { Slices, Vendor, Zkvm, ZkvmMetrics, ZkvmVersion } from "@/lib/types"
 
 import {
   Accordion,
@@ -14,14 +14,16 @@ import Link from "./ui/link"
 import { MetricBox, MetricInfo, MetricLabel } from "./ui/metric"
 import { Progress } from "./ui/progress"
 import Pizza from "./Pizza"
-import SoftwareDetails, { DEMO_SLICES } from "./SoftwareDetails"
+import SoftwareDetails from "./SoftwareDetails"
 
 import { formatShortDate } from "@/lib/date"
+import { getZkvmMetricSeverityLevels, getZkvmsMetrics } from "@/lib/metrics"
 import { getZkvmsWithUsage } from "@/lib/zkvms"
 
 const SoftwareAccordionItem = ({
   value,
   zkvm,
+  metrics,
 }: Pick<AccordionItemProps, "value"> & {
   zkvm: Zkvm & {
     versions: ZkvmVersion[]
@@ -29,76 +31,96 @@ const SoftwareAccordionItem = ({
     totalClusters: number
     activeClusters: number
   }
-}) => (
-  <AccordionItem value={value} className="col-span-5 grid grid-cols-subgrid">
-    <div className="col-span-5 grid grid-cols-subgrid items-center gap-12 border-b hover:bg-primary/5 dark:hover:bg-primary/10">
-      <div className="col-start-1 flex items-center gap-3">
-        <Link href={`/zkvm/${zkvm.id}`} className="hover:underline">
-          <span className="block font-mono text-2xl text-primary">
-            {zkvm.name}
+  metrics: ZkvmMetrics
+}) => {
+  const severityLevels = getZkvmMetricSeverityLevels(metrics)
+
+  return (
+    <AccordionItem value={value} className="col-span-5 grid grid-cols-subgrid">
+      <div className="col-span-5 grid grid-cols-subgrid items-center gap-12 border-b hover:bg-primary/5 dark:hover:bg-primary/10">
+        <div className="col-start-1 flex items-center gap-3">
+          <Link href={`/zkvm/${zkvm.slug}`} className="hover:underline">
+            <span className="block font-mono text-2xl text-primary">
+              {zkvm.name}
+            </span>
+          </Link>
+          <span className="block font-mono text-sm italic text-body-secondary">
+            by
           </span>
-        </Link>
-        <span className="block font-mono text-sm italic text-body-secondary">
-          by
-        </span>
-        <Link
-          href={`/prover/${zkvm.vendor.id}`}
-          className="-m-1 rounded p-1 hover:bg-primary/10"
-        >
-          <Image
-            // TODO: add fallback logo
-            src={zkvm.vendor.logo_url ?? ""}
-            alt="Succinct logo"
-            height={16}
-            width={16}
-            style={{ height: "1rem", width: "auto" }}
-            className="dark:invert"
+          <Link
+            href={`/prover/${zkvm.vendor.user_id}`}
+            className="-m-1 rounded p-1 hover:bg-primary/10"
+          >
+            <Image
+              // TODO: add fallback logo
+              src={zkvm.vendor.logo_url ?? ""}
+              alt="Succinct logo"
+              height={16}
+              width={16}
+              style={{ height: "1rem", width: "auto" }}
+              className="dark:invert"
+            />
+          </Link>
+        </div>
+        <div id="version" className="col-start-2">
+          {zkvm.versions[0].version}
+        </div>
+        <div id="isa" className="col-start-3">
+          {zkvm.isa}
+        </div>
+        <div id="used-by" className="relative col-start-4 min-w-16">
+          <div className="w-full text-center">
+            {zkvm.activeClusters}/
+            <span className="text-xs">{zkvm.totalClusters}</span>
+          </div>
+          <Progress
+            value={(zkvm.activeClusters / zkvm.totalClusters) * 100}
+            className="absolute -bottom-1 left-0 h-[2px] w-full"
           />
-        </Link>
-      </div>
-      <div id="version" className="col-start-2">
-        {zkvm.versions[0].version}
-      </div>
-      <div id="isa" className="col-start-3">
-        {zkvm.isa}
-      </div>
-      <div id="used-by" className="relative col-start-4 min-w-16">
-        <div className="w-full text-center">
-          {zkvm.activeClusters}/
-          <span className="text-xs">{zkvm.totalClusters}</span>
         </div>
-        <Progress
-          value={(zkvm.activeClusters / zkvm.totalClusters) * 100}
-          className="absolute -bottom-1 left-0 h-[2px] w-full"
+
+        <AccordionTrigger className="col-start-5 my-2 h-fit gap-2 rounded-full border-2 border-primary-border bg-background-highlight p-0.5 text-primary [&>svg]:size-6">
+          <Pizza
+            slices={severityLevels.map((level) => ({ level })) as Slices}
+            disableEffects
+          />
+        </AccordionTrigger>
+      </div>
+      <AccordionContent className="col-span-full border-b bg-gradient-to-b from-background to-background-active p-0">
+        <SoftwareDetails
+          numericMetrics={{
+            verification_ms: metrics.verification_ms,
+            size_bytes: metrics.size_bytes,
+          }}
+          categoricalMetrics={{
+            ...metrics,
+            security_target_bits: severityLevels[0],
+            max_bounty_amount: severityLevels[3],
+          }}
+          severityLevels={severityLevels}
         />
-      </div>
-
-      <AccordionTrigger className="col-start-5 my-2 h-fit gap-2 rounded-full border-2 border-primary-border bg-background-highlight p-0.5 text-primary [&>svg]:size-6">
-        <Pizza slices={DEMO_SLICES} disableEffects />
-      </AccordionTrigger>
-    </div>
-    <AccordionContent className="col-span-full border-b bg-gradient-to-b from-background to-background-active p-0">
-      <SoftwareDetails />
-
-      <div className="flex justify-center gap-16 p-8 pt-0">
-        <ButtonLink variant="outline" href={`/zkvm/${zkvm.id}`}>
-          See all details
-        </ButtonLink>
-        <div>
-          <span className="text-xs italic text-body-secondary">
-            Last updated
-          </span>{" "}
-          <span className="text-xs uppercase text-body">
-            {/* // TODO: Get and use last updated date */}
-            {formatShortDate(new Date())}
-          </span>
+        <div className="flex justify-center gap-16 p-8 pt-0">
+          <ButtonLink variant="outline" href={`/zkvm/${zkvm.slug}`}>
+            See all details
+          </ButtonLink>
+          <div>
+            <span className="text-xs italic text-body-secondary">
+              Last updated
+            </span>{" "}
+            <span className="text-xs uppercase text-body">
+              {/* // TODO: Get and use last updated date */}
+              {formatShortDate(new Date())}
+            </span>
+          </div>
         </div>
-      </div>
-    </AccordionContent>
-  </AccordionItem>
-)
+      </AccordionContent>
+    </AccordionItem>
+  )
+}
+
 const SoftwareAccordion = async () => {
   const zkvms = await getZkvmsWithUsage()
+  const metricsByZkvmId = await getZkvmsMetrics()
 
   return (
     <Accordion
@@ -131,6 +153,7 @@ const SoftwareAccordion = async () => {
           key={zkvm.id}
           value={"item-" + zkvm.id}
           zkvm={zkvm}
+          metrics={metricsByZkvmId[zkvm.id]}
         />
       ))}
     </Accordion>

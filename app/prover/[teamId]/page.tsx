@@ -1,9 +1,8 @@
 import { type Metadata } from "next"
 import Image from "next/image"
 import { notFound } from "next/navigation"
-import { QueryClient } from "@tanstack/react-query"
 
-import type { Team } from "@/lib/types"
+import type { Team, Zkvm } from "@/lib/types"
 
 import ClusterTable from "@/components/ClusterTable"
 import MachineTabs from "@/components/MachineTabs"
@@ -12,18 +11,19 @@ import Globe from "@/components/svgs/globe.svg"
 import TwitterLogo from "@/components/svgs/x-logo.svg"
 import { HeroBody, HeroItem, HeroItemLabel } from "@/components/ui/hero"
 import Link from "@/components/ui/link"
+import VendorsAside from "@/components/VendorsAside"
 
 import { cn } from "@/lib/utils"
 
-import { DEFAULT_PAGE_STATE, SITE_NAME } from "@/lib/constants"
+import { SITE_NAME } from "@/lib/constants"
 
-import { getClustersByTeamId } from "@/lib/api/clusters"
-import {
-  fetchTeamProofsPaginated,
-  fetchTeamProofsPerStatusCount,
-} from "@/lib/api/proofs"
+import { getActiveClusters } from "@/lib/api/clusters"
+import { getTeamSummary } from "@/lib/api/stats"
 import { getTeam } from "@/lib/api/teams"
+import { getVendorByUserId } from "@/lib/api/vendor"
+import { getZkvmsByVendorId } from "@/lib/api/zkvms"
 import { getMetadata } from "@/lib/metadata"
+import { formatUsd } from "@/lib/number"
 import { prettyMs } from "@/lib/time"
 import { getHost, getTwitterHandle } from "@/lib/url"
 
@@ -56,94 +56,25 @@ export default async function ProverPage({ params }: ProverPageProps) {
     return notFound()
   }
 
-  const proofsPerStatusCount = await fetchTeamProofsPerStatusCount(teamId)
-  const proofsPerStatusCountMap = proofsPerStatusCount.reduce(
-    (acc, curr) => {
-      acc[curr.proof_status] = curr.count
-      return acc
-    },
-    {} as Record<string, number>
+  const teamSummary = await getTeamSummary(teamId)
+
+  const vendor = await getVendorByUserId(team.id)
+  const isVendor = !!vendor
+
+  let zkvms: Zkvm[] | undefined
+  if (isVendor) {
+    zkvms = await getZkvmsByVendorId(vendor.id)
+  }
+
+  const clusters = await getActiveClusters({ teamId })
+
+  const singleMachineClusters = clusters.filter(
+    (cluster) => !cluster.isMultiMachine
   )
 
-  // prefetch proofs for first page of table
-  const queryClient = new QueryClient()
-  const response = await fetchTeamProofsPaginated(teamId, DEFAULT_PAGE_STATE)
-  await queryClient.prefetchQuery({
-    queryKey: ["proofs", teamId, DEFAULT_PAGE_STATE],
-    queryFn: () => response,
-  })
-
-  const proofs = response.rows
-
-  const clusters = await getClustersByTeamId(teamId)
-
-  // TODO: Remove commented code if not needed:
-  // const completedProofs = proofs.filter(isCompleted)
-  // const totalZkVMCycles = completedProofs.reduce(
-  //   (acc, proof) => acc + (proof.proving_cycles ?? 0),
-  //   0
-  // )
-  // const totalGasProven = completedProofs.reduce(
-  //   (acc, proof) => acc + (proof.block?.gas_used ?? 0),
-  //   0
-  // )
-  // const avgZkVMCyclesPerMgas = totalZkVMCycles / (totalGasProven / 1e6)
-
-  // const totalProvingCosts = getSumProvingCost(completedProofs)
-
-  // const avgCostPerMgas = totalProvingCosts / (totalGasProven / 1e6)
-
-  // const avgProofProvingTime = getProofsAvgProvingTime(proofs)
-
-  // const performanceMetrics: Metric[] = [
-  //   {
-  //     key: "total-proofs",
-  //     label: "Total proofs",
-  //     description: <ProofStatusInfo title="total proofs" />,
-  //     value: <ProofStatus statusCount={proofsPerStatusCountMap} />,
-  //   },
-  //   {
-  //     key: "avg-zkvm-cycles-per-mgas",
-  //     label: (
-  //       <div>
-  //         <span className="normal-case">{team.name}</span> {AVERAGE_LABEL} zk
-  //         <span className="uppercase">VM</span> cycles per{" "}
-  //         <span className="uppercase">M</span>gas
-  //       </div>
-  //     ),
-  //     description:
-  //       "The average number of zkVM cycles required to prove a million gas units",
-  //     value:
-  //       avgZkVMCyclesPerMgas > 0 ? (
-  //         formatNumber(avgZkVMCyclesPerMgas)
-  //       ) : (
-  //         <Null />
-  //       ),
-  //   },
-  //   {
-  //     key: "avg-cost-per-mgas",
-  //     label: (
-  //       <div>
-  //         <span className="normal-case">{team.name}</span> {AVERAGE_LABEL} cost
-  //         per <span className="uppercase">M</span>gas
-  //       </div>
-  //     ),
-  //     description: "The average cost incurred for proving a million gas units",
-  //     value: avgCostPerMgas > 0 ? formatUsd(avgCostPerMgas) : <Null />,
-  //   },
-  //   {
-  //     key: "avg-proving-time",
-  //     label: `${AVERAGE_LABEL} proving time`,
-  //     description:
-  //       "The average amount of time taken to generate a proof using any proving instance",
-  //     value:
-  //       avgProofProvingTime && avgProofProvingTime > 0 ? (
-  //         prettyMs(avgProofProvingTime)
-  //       ) : (
-  //         <Null />
-  //       ),
-  //   },
-  // ]
+  const multiMachineClusters = clusters.filter(
+    (cluster) => cluster.isMultiMachine
+  )
 
   return (
     <div className="px-6 sm:px-8 md:px-12 lg:px-16 xl:px-20">
@@ -225,7 +156,7 @@ export default async function ProverPage({ params }: ProverPageProps) {
                   proofs
                 </div>
                 <div className="text-center font-mono text-2xl font-semibold text-primary">
-                  {proofs.length}
+                  {teamSummary.total_proofs_multi}
                 </div>
               </div>
               <div className="row-span-2 grid grid-rows-subgrid gap-y-0.5 p-4">
@@ -233,11 +164,7 @@ export default async function ProverPage({ params }: ProverPageProps) {
                   avg cost
                 </div>
                 <div className="text-center font-mono text-2xl font-semibold text-primary">
-                  {new Intl.NumberFormat("en-US", {
-                    style: "currency",
-                    currency: "USD",
-                    minimumSignificantDigits: 2,
-                  }).format(0.0069)}
+                  {formatUsd(teamSummary.avg_cost_per_proof_multi ?? 0)}
                 </div>
               </div>
               <div className="row-span-2 grid grid-rows-subgrid gap-y-0.5 p-4">
@@ -245,7 +172,7 @@ export default async function ProverPage({ params }: ProverPageProps) {
                   avg time
                 </div>
                 <div className="text-center font-mono text-2xl font-semibold text-primary">
-                  {prettyMs(69_000)}
+                  {prettyMs(Number(teamSummary.avg_proving_time_multi ?? 0))}
                 </div>
               </div>
             </div>
@@ -260,7 +187,7 @@ export default async function ProverPage({ params }: ProverPageProps) {
                   proofs
                 </div>
                 <div className="text-center font-mono text-2xl font-semibold text-primary">
-                  {proofs.length}
+                  {teamSummary.total_proofs_single}
                 </div>
               </div>
               <div className="row-span-2 grid grid-rows-subgrid gap-y-0.5 p-4">
@@ -268,11 +195,7 @@ export default async function ProverPage({ params }: ProverPageProps) {
                   avg cost
                 </div>
                 <div className="text-center font-mono text-2xl font-semibold text-primary">
-                  {new Intl.NumberFormat("en-US", {
-                    style: "currency",
-                    currency: "USD",
-                    minimumSignificantDigits: 2,
-                  }).format(0.0042)}
+                  {formatUsd(teamSummary.avg_cost_per_proof_single ?? 0)}
                 </div>
               </div>
               <div className="row-span-2 grid grid-rows-subgrid gap-y-0.5 p-4">
@@ -280,39 +203,18 @@ export default async function ProverPage({ params }: ProverPageProps) {
                   avg time
                 </div>
                 <div className="text-center font-mono text-2xl font-semibold text-primary">
-                  {prettyMs(42_000)}
+                  {prettyMs(Number(teamSummary.avg_proving_time_single ?? 0))}
                 </div>
               </div>
             </div>
           </div>
         </div>
 
-        {/* // TODO: Add conditional for this aside; hide if team not developing any zkVM software */}
-        <aside className="flex items-center justify-center gap-2 rounded bg-primary-dark px-6 py-4 text-center text-white">
-          {team.logo_url && (
-            <Image
-              src={team.logo_url}
-              alt={`${team.name} logo`}
-              height={48}
-              width={48}
-              style={{ height: "1.5rem", width: "auto" }}
-              className="inline-block invert"
-            />
-          )}
-          <span className={cn(team.logo_url && "sr-only")}>{team.name}</span>
-          is also the team behind the zkVM{" "}
-          <Link
-            href="/zkvk/TODO"
-            className="text-primary-light hover:underline"
-          >
-            SP1
-          </Link>
-        </aside>
+        {isVendor && zkvms && <VendorsAside team={team} zkvms={zkvms} />}
 
         <MachineTabs
-          // TODO: Separate multi vs single machine data
-          singleContent={<ClusterTable clusters={clusters} />}
-          multiContent={<ClusterTable clusters={clusters} />}
+          singleContent={<ClusterTable clusters={singleMachineClusters} />}
+          multiContent={<ClusterTable clusters={multiMachineClusters} />}
         />
       </div>
     </div>

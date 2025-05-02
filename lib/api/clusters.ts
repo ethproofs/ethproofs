@@ -41,7 +41,8 @@ export const getClusters = async () => {
   return clusters
 }
 
-export const getActiveClusters = async () => {
+export const getActiveClusters = async (filters?: { teamId?: string }) => {
+  const { teamId } = filters ?? {}
   const sevenDaysAgo = sql`NOW() - INTERVAL '7 days'`
 
   const rawRows = await db
@@ -52,6 +53,7 @@ export const getActiveClusters = async () => {
       description: clusters.description,
       isOpenSource: clusters.is_open_source,
       isMultiMachine: clusters.is_multi_machine,
+      proofType: clusters.proof_type,
       createdAt: clusters.created_at,
       clusterVersionDate: clusterVersions.created_at,
 
@@ -63,6 +65,7 @@ export const getActiveClusters = async () => {
       // ZKVM info
       zkvmId: zkvms.id,
       zkvmName: zkvms.name,
+      zkvmSlug: zkvms.slug,
       zkvmIsa: zkvms.isa,
       zkvmVersion: zkvmVersions.version,
 
@@ -91,17 +94,20 @@ export const getActiveClusters = async () => {
     )
     .leftJoin(machines, eq(clusterMachines.machine_id, machines.id))
     .where(
-      exists(
-        db
-          .select()
-          .from(proofs)
-          .where(
-            and(
-              eq(proofs.cluster_version_id, clusterVersions.id),
-              eq(proofs.proof_status, "proved"),
-              gt(proofs.proved_timestamp, sevenDaysAgo)
+      and(
+        exists(
+          db
+            .select()
+            .from(proofs)
+            .where(
+              and(
+                eq(proofs.cluster_version_id, clusterVersions.id),
+                eq(proofs.proof_status, "proved"),
+                gt(proofs.proved_timestamp, sevenDaysAgo)
+              )
             )
-          )
+        ),
+        teamId ? eq(clusters.team_id, teamId) : undefined
       )
     )
 
@@ -116,6 +122,7 @@ export const getActiveClusters = async () => {
         description: row.description,
         isOpenSource: row.isOpenSource,
         isMultiMachine: row.isMultiMachine,
+        proofType: row.proofType,
         version: {
           createdAt: row.clusterVersionDate,
         },
@@ -129,6 +136,7 @@ export const getActiveClusters = async () => {
           name: row.zkvmName,
           isa: row.zkvmIsa,
           version: row.zkvmVersion,
+          slug: row.zkvmSlug,
         },
         machines: [],
       })

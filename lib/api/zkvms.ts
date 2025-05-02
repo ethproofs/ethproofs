@@ -41,3 +41,10 @@ export const getZkvm = cache(
     return zkvm
   }
 )
+
+export const getZkvmsByVendorId = async (vendorId: string) => {
+  const zkvms = await db.query.zkvms.findMany({
+    where: (zkvms, { eq }) => eq(zkvms.vendor_id, vendorId),
+  })
+  return zkvms
+}
