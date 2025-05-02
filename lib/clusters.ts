@@ -37,6 +37,7 @@ export interface ActiveCluster {
   description: string | null
   isOpenSource: boolean
   isMultiMachine: boolean
+  proofType: string | null
   version: {
     createdAt: string
   }

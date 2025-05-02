@@ -17,7 +17,7 @@ import { cn } from "@/lib/utils"
 
 import { DEFAULT_PAGE_STATE, SITE_NAME } from "@/lib/constants"
 
-import { getClustersByTeamId } from "@/lib/api/clusters"
+import { getActiveClusters } from "@/lib/api/clusters"
 import {
   fetchTeamProofsPaginated,
   fetchTeamProofsPerStatusCount,
@@ -75,7 +75,15 @@ export default async function ProverPage({ params }: ProverPageProps) {
 
   const proofs = response.rows
 
-  const clusters = await getClustersByTeamId(teamId)
+  const clusters = await getActiveClusters({ teamId })
+
+  const singleMachineClusters = clusters.filter(
+    (cluster) => !cluster.isMultiMachine
+  )
+
+  const multiMachineClusters = clusters.filter(
+    (cluster) => cluster.isMultiMachine
+  )
 
   // TODO: Remove commented code if not needed:
   // const completedProofs = proofs.filter(isCompleted)
@@ -310,9 +318,8 @@ export default async function ProverPage({ params }: ProverPageProps) {
         </aside>
 
         <MachineTabs
-          // TODO: Separate multi vs single machine data
-          singleContent={<ClusterTable clusters={clusters} />}
-          multiContent={<ClusterTable clusters={clusters} />}
+          singleContent={<ClusterTable clusters={singleMachineClusters} />}
+          multiContent={<ClusterTable clusters={multiMachineClusters} />}
         />
       </div>
     </div>

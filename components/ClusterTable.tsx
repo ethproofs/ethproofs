@@ -1,16 +1,15 @@
 import { ChevronRight } from "lucide-react"
 
-import type { Cluster, ClusterBase } from "@/lib/types"
-
 import { cn } from "@/lib/utils"
 
 import { ButtonLink } from "./ui/button"
 import Link from "./ui/link"
 import { MetricBox, MetricInfo, MetricLabel } from "./ui/metric"
 
+import { ActiveCluster } from "@/lib/clusters"
 import { formatShortDate } from "@/lib/date"
 
-type ClusterRowItemProps = { cluster: ClusterBase | Cluster }
+type ClusterRowItemProps = { cluster: ActiveCluster }
 
 const ClusterRowItem = ({ cluster }: ClusterRowItemProps) => (
   <div className="col-span-full row-span-2 grid grid-cols-subgrid grid-rows-subgrid border-b border-primary-border">
@@ -19,7 +18,7 @@ const ClusterRowItem = ({ cluster }: ClusterRowItemProps) => (
       <div className="mt-auto text-xs">
         <span className="italic text-body-secondary">updated</span>{" "}
         <span className="uppercase">
-          {formatShortDate(new Date(cluster.created_at))}
+          {formatShortDate(new Date(cluster.version.createdAt))}
         </span>
       </div>
     </div>
@@ -29,7 +28,7 @@ const ClusterRowItem = ({ cluster }: ClusterRowItemProps) => (
           <MetricInfo label="zkVM">TODO: Popover details</MetricInfo>
         </MetricLabel>
       </MetricBox>
-      <Link href={`/zkvm/TODO-get-name-and-link`}>SP1</Link>
+      <Link href={`/zkvm/${cluster.zkvm.slug}`}>{cluster.zkvm.name}</Link>
     </div>
     <div className="row-span-2 grid grid-cols-1 grid-rows-subgrid px-6 py-4 text-center">
       <MetricBox className="py-0">
@@ -41,7 +40,7 @@ const ClusterRowItem = ({ cluster }: ClusterRowItemProps) => (
           </MetricInfo>
         </MetricLabel>
       </MetricBox>
-      <div className="">{cluster.cycle_type}</div>
+      <div className="">{cluster.zkvm.isa}</div>
     </div>
     <div className="row-span-2 grid grid-cols-1 grid-rows-subgrid px-6 py-4 text-center">
       <MetricBox className="py-0">
@@ -49,7 +48,7 @@ const ClusterRowItem = ({ cluster }: ClusterRowItemProps) => (
           <MetricInfo label="proof type">TODO: Popover details</MetricInfo>
         </MetricLabel>
       </MetricBox>
-      <div className="">{cluster.proof_type}</div>
+      <div className="">{cluster.proofType}</div>
     </div>
     <div className="row-span-2 grid grid-cols-1 place-items-center px-6 py-4">
       <ButtonLink
@@ -65,7 +64,7 @@ const ClusterRowItem = ({ cluster }: ClusterRowItemProps) => (
 )
 
 type ClusterTableProps = React.HTMLAttributes<HTMLDivElement> & {
-  clusters: ClusterBase[]
+  clusters: ActiveCluster[]
 }
 
 const ClusterTable = ({ className, clusters, ...props }: ClusterTableProps) => (
