@@ -99,6 +99,13 @@
       "when": 1746104720272,
       "tag": "0013_zkvm-team-vendor-slug",
       "breakpoints": true
+    },
+    {
+      "idx": 14,
+      "version": "7",
+      "when": 1746183416328,
+      "tag": "0014_zkvm-metrics",
+      "breakpoints": true
     }
   ]
 }

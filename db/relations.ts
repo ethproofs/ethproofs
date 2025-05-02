@@ -15,7 +15,9 @@ import {
   recursiveRootProofs,
   teams,
   vendors,
+  zkvmPerformanceMetrics,
   zkvms,
+  zkvmSecurityMetrics,
   zkvmVersions,
 } from "./schema"
 
@@ -130,6 +132,14 @@ export const zkvmsRelations = relations(zkvms, ({ one, many }) => ({
     references: [vendors.id],
   }),
   versions: many(zkvmVersions),
+  security_metrics: one(zkvmSecurityMetrics, {
+    fields: [zkvms.id],
+    references: [zkvmSecurityMetrics.zkvm_id],
+  }),
+  performance_metrics: one(zkvmPerformanceMetrics, {
+    fields: [zkvms.id],
+    references: [zkvmPerformanceMetrics.zkvm_id],
+  }),
 }))
 
 export const zkvmVersionsRelations = relations(zkvmVersions, ({ one }) => ({

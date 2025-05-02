@@ -16,6 +16,7 @@ import { getZkvm } from "@/lib/api/zkvms"
 import { transformClusters } from "@/lib/clusters"
 import { formatShortDate } from "@/lib/date"
 import { getMetadata } from "@/lib/metadata"
+import { getZkvmMetrics, getZkvmMetricSeverityLevels } from "@/lib/metrics"
 import { getZkvmWithUsage } from "@/lib/zkvms"
 
 type ZkvmDetailsPageProps = {
@@ -56,6 +57,9 @@ export default async function ZkvmDetailsPage({
   const activeClusters = await getActiveClusters()
   const clusterSummary = await getClusterSummary()
   const clusters = transformClusters(activeClusters, clusterSummary)
+
+  const zkvmMetrics = await getZkvmMetrics(zkvm.id)
+  const severityLevels = getZkvmMetricSeverityLevels(zkvmMetrics)
 
   return (
     <>
@@ -137,10 +141,20 @@ export default async function ZkvmDetailsPage({
         )}
       >
         <h2 className="sr-only">zkVM software details</h2>
-        <SoftwareDetails />
+        <SoftwareDetails
+          numericMetrics={{
+            verification_ms: zkvmMetrics.verification_ms,
+            size_bytes: zkvmMetrics.size_bytes,
+          }}
+          categoricalMetrics={{
+            ...zkvmMetrics,
+            security_target_bits: severityLevels[0],
+            max_bounty_amount: severityLevels[3],
+          }}
+          severityLevels={severityLevels}
+        />
       </div>
 
-      {/* // TODO: Fill in with fetched data */}
       <div className="mx-6 mt-40 max-w-full gap-x-20 md:mx-auto md:w-[calc(100vw_-_var(--sidebar-width))] md:px-[5vw]">
         <h2 className="flex items-center gap-2 font-mono text-lg font-normal text-primary">
           <Box className="size-11 text-primary" strokeWidth="1" />
