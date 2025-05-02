@@ -50,9 +50,9 @@ const Pizza = ({
   ] as const
 
   const COLORS: { [key in Level]: string } = {
-    best: "text-level-best",
-    middle: "text-level-middle",
-    worst: "text-level-worst",
+    green: "text-level-best",
+    yellow: "text-level-middle",
+    red: "text-level-worst",
   }
 
   return (

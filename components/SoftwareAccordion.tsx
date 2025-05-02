@@ -1,7 +1,13 @@
 import Image from "next/image"
 import { type AccordionItemProps } from "@radix-ui/react-accordion"
 
-import { Vendor, Zkvm, ZkvmVersion } from "@/lib/types"
+import {
+  Vendor,
+  Zkvm,
+  ZkvmPerformanceMetric,
+  ZkvmSecurityMetric,
+  ZkvmVersion,
+} from "@/lib/types"
 
 import {
   Accordion,
@@ -14,14 +20,16 @@ import Link from "./ui/link"
 import { MetricBox, MetricInfo, MetricLabel } from "./ui/metric"
 import { Progress } from "./ui/progress"
 import Pizza from "./Pizza"
-import SoftwareDetails, { DEMO_SLICES } from "./SoftwareDetails"
+import SoftwareDetails from "./SoftwareDetails"
 
 import { formatShortDate } from "@/lib/date"
+import { getZkvmMetrics } from "@/lib/metrics"
 import { getZkvmsWithUsage } from "@/lib/zkvms"
 
 const SoftwareAccordionItem = ({
   value,
   zkvm,
+  metrics,
 }: Pick<AccordionItemProps, "value"> & {
   zkvm: Zkvm & {
     versions: ZkvmVersion[]
@@ -29,6 +37,7 @@ const SoftwareAccordionItem = ({
     totalClusters: number
     activeClusters: number
   }
+  metrics: ZkvmSecurityMetric & ZkvmPerformanceMetric
 }) => (
   <AccordionItem value={value} className="col-span-5 grid grid-cols-subgrid">
     <div className="col-span-5 grid grid-cols-subgrid items-center gap-12 border-b hover:bg-primary/5 dark:hover:bg-primary/10">
@@ -74,11 +83,11 @@ const SoftwareAccordionItem = ({
       </div>
 
       <AccordionTrigger className="col-start-5 my-2 h-fit gap-2 rounded-full border-2 border-primary-border bg-background-highlight p-0.5 text-primary [&>svg]:size-6">
-        <Pizza slices={DEMO_SLICES} disableEffects />
+        <Pizza slices={[]} disableEffects />
       </AccordionTrigger>
     </div>
     <AccordionContent className="col-span-full border-b bg-gradient-to-b from-background to-background-active p-0">
-      <SoftwareDetails />
+      <SoftwareDetails metrics={metrics} />
 
       <div className="flex justify-center gap-16 p-8 pt-0">
         <ButtonLink variant="outline" href={`/zkvms/${zkvm.id}`}>
@@ -97,8 +106,10 @@ const SoftwareAccordionItem = ({
     </AccordionContent>
   </AccordionItem>
 )
+
 const SoftwareAccordion = async () => {
   const zkvms = await getZkvmsWithUsage()
+  const metricsByZkvmId = await getZkvmMetrics()
 
   return (
     <Accordion
@@ -131,6 +142,7 @@ const SoftwareAccordion = async () => {
           key={zkvm.id}
           value={"item-" + zkvm.id}
           zkvm={zkvm}
+          metrics={metricsByZkvmId[zkvm.id]}
         />
       ))}
     </Accordion>

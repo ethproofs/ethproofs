@@ -14,10 +14,13 @@ import {
   proofsDailyStats,
   proverDailyStats,
   recentSummary,
+  severityLevel,
   teams,
   teamsSummary,
   vendors,
+  zkvmPerformanceMetrics,
   zkvms,
+  zkvmSecurityMetrics,
   zkvmVersions,
 } from "@/db/schema"
 
@@ -105,6 +108,18 @@ export type RecentSummary = typeof recentSummary.$inferSelect
  * Represents a row in the prover_daily_stats table.
  */
 export type ProverDailyStats = typeof proverDailyStats.$inferSelect
+
+/**
+ * Represents a row in the zkvm_security_metrics table.
+ */
+export type ZkvmSecurityMetric = typeof zkvmSecurityMetrics.$inferSelect
+
+/**
+ * Represents a row in the zkvm_performance_metrics table.
+ */
+export type ZkvmPerformanceMetric = typeof zkvmPerformanceMetrics.$inferSelect
+
+export type SeverityLevel = (typeof severityLevel.enumValues)[number]
 
 export type ClusterVersionExtensions = {
   cluster: ClusterBase
@@ -197,7 +212,7 @@ export type Stats = {
   bestProof: ProofWithCluster
 }
 
-export type Level = "best" | "middle" | "worst"
+export type Level = "green" | "yellow" | "red"
 
 export type SliceDetails = {
   level: Level
