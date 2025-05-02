@@ -553,11 +553,6 @@ export const zkvmPerformanceMetrics = pgTable(
       to: ["public"],
       using: sql`true`,
     }),
-    pgPolicy("Enable insert for users with an api key", {
-      as: "permissive",
-      for: "insert",
-      to: ["public"],
-    }),
   ]
 )
 
@@ -597,11 +592,6 @@ export const zkvmSecurityMetrics = pgTable(
       for: "select",
       to: ["public"],
       using: sql`true`,
-    }),
-    pgPolicy("Enable insert for users with an api key", {
-      as: "permissive",
-      for: "insert",
-      to: ["public"],
     }),
   ]
 )

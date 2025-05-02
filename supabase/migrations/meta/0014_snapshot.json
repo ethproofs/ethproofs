@@ -1,5 +1,5 @@
 {
-  "id": "3b46bc89-47b2-457f-8872-5b3d3bae3746",
+  "id": "e246d3fe-3337-4386-bb31-8fe9e15ec917",
   "prevId": "60a704d1-305c-43f1-a74e-93f0c4cc6383",
   "version": "7",
   "dialect": "postgresql",
@@ -1626,14 +1626,6 @@
             "public"
           ],
           "using": "true"
-        },
-        "Enable insert for users with an api key": {
-          "name": "Enable insert for users with an api key",
-          "as": "PERMISSIVE",
-          "for": "INSERT",
-          "to": [
-            "public"
-          ]
         }
       },
       "checkConstraints": {},
@@ -1755,14 +1747,6 @@
             "public"
           ],
           "using": "true"
-        },
-        "Enable insert for users with an api key": {
-          "name": "Enable insert for users with an api key",
-          "as": "PERMISSIVE",
-          "for": "INSERT",
-          "to": [
-            "public"
-          ]
         }
       },
       "checkConstraints": {},

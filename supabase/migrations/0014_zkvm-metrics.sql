@@ -27,6 +27,4 @@ ALTER TABLE "zkvm_security_metrics" ENABLE ROW LEVEL SECURITY;--> statement-brea
 ALTER TABLE "zkvm_performance_metrics" ADD CONSTRAINT "zkvm_performance_metrics_zkvm_id_zkvms_id_fk" FOREIGN KEY ("zkvm_id") REFERENCES "public"."zkvms"("id") ON DELETE cascade ON UPDATE cascade;--> statement-breakpoint
 ALTER TABLE "zkvm_security_metrics" ADD CONSTRAINT "zkvm_security_metrics_zkvm_id_zkvms_id_fk" FOREIGN KEY ("zkvm_id") REFERENCES "public"."zkvms"("id") ON DELETE cascade ON UPDATE cascade;--> statement-breakpoint
 CREATE POLICY "Enable read access for all users" ON "zkvm_performance_metrics" AS PERMISSIVE FOR SELECT TO public USING (true);--> statement-breakpoint
-CREATE POLICY "Enable insert for users with an api key" ON "zkvm_performance_metrics" AS PERMISSIVE FOR INSERT TO public;--> statement-breakpoint
-CREATE POLICY "Enable read access for all users" ON "zkvm_security_metrics" AS PERMISSIVE FOR SELECT TO public USING (true);--> statement-breakpoint
-CREATE POLICY "Enable insert for users with an api key" ON "zkvm_security_metrics" AS PERMISSIVE FOR INSERT TO public;
+CREATE POLICY "Enable read access for all users" ON "zkvm_security_metrics" AS PERMISSIVE FOR SELECT TO public USING (true);
