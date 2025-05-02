@@ -15,7 +15,7 @@ type PizzaProps = React.ComponentProps<"div"> & {
  *
  * @param {PizzaProps} props - The properties for the Pizza component.
  * @param {Array<{ level: Level }>} props.slices - An array of slice objects, each containing a `level` property
- * indicating the slice's level (e.g., "best", "middle", "worst").
+ * indicating the slice's level (e.g., "green", "yellow", "red").
  * @param {boolean} [props.disableEffects] - If true, disables hover effects on the slices.
  * @param {string} [props.className] - Additional CSS class names to apply to the pizza container.
  * @param {object} [props.props] - Additional props to spread onto the root container element.
