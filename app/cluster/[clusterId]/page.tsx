@@ -77,9 +77,9 @@ export default async function ClusterDetailsPage({
       cpuModel: "SeePeeYou2",
       cpuCount: 2,
       cpuRam: 64, // gb
-      gpuCount: [4, 8],
-      gpuModels: ["hello", "world"],
-      gpuRam: [64, 128], // gb
+      gpuCount: [4, 8, 16],
+      gpuModels: ["hello", "world", "hola"],
+      gpuRam: [64, 128, 256], // gb
       count: 32,
     },
     {
@@ -231,51 +231,52 @@ export default async function ClusterDetailsPage({
         </div>
       </div>
 
-      {/* <div className="flex gap-20"> */}
-      <div className="grid grid-cols-[repeat(auto-fit,_minmax(200px,_1fr))] gap-8">
+      <div className="flex max-w-full">
         {/* // TODO: Re-enable when clusterDetails available for single cluster */}
         {/* <ClusterMachineSummary clusterDetails={clusterDetails} /> */}
-        <Skeleton className="me-16 h-80 w-48 rounded-2xl opacity-10" />
+        <div className="opacity-10">
+          <Skeleton className="me-16 h-80 min-w-48 rounded-2xl" />
+        </div>
 
-        {demoMachines
-          .sort((a, b) => b.count - a.count)
-          .map((machine) => (
-            <div key={machine.id}>
-              <MachineDetails
-                machine={machine}
-                className="z-0 rounded-2xl border border-primary-border bg-background"
-              />
-              {/* // TODO: Fix extra space in layout from stacked card effect */}
-              {Array.from({ length: machine.count - 1 }).map((_, i) => (
-                <div
-                  key={i}
-                  className="relative h-6 rounded-b-2xl border border-primary-border border-t-transparent"
-                  style={{ bottom: `${i + 1}rem` }}
-                />
-              ))}
+        <div className="flex gap-8 overflow-x-auto overflow-y-visible">
+          {demoMachines
+            .sort((a, b) => b.count - a.count)
+            .map((machine) => (
               <div
-                className="relative h-6"
-                style={{ bottom: `${machine.count - 1.5}rem` }}
+                key={machine.id}
+                className="relative flex flex-col justify-end -space-y-4"
               >
-                <MetricBox className="py-0">
-                  <MetricLabel>
-                    <MetricInfo
-                      label={`${machine.count} machines @ ${new Intl.NumberFormat(
-                        "en-US",
-                        {
-                          style: "currency",
-                          currency: "USD",
-                          minimumSignificantDigits: 2,
-                        }
-                      ).format(0.61)}/h`}
-                    >
-                      TODO: Popover details
-                    </MetricInfo>
-                  </MetricLabel>
-                </MetricBox>
+                <MachineDetails
+                  machine={machine}
+                  className="rounded-2xl border border-primary-border bg-background px-8"
+                />
+                {Array.from({ length: machine.count - 1 }).map((_, i) => (
+                  <div
+                    key={i}
+                    className="h-6 rounded-b-2xl border border-primary-border border-t-transparent"
+                  />
+                ))}
+                <div className="!mt-2 inline-flex justify-center">
+                  <MetricBox className="py-0">
+                    <MetricLabel>
+                      <MetricInfo
+                        label={`${machine.count} machines @ ${new Intl.NumberFormat(
+                          "en-US",
+                          {
+                            style: "currency",
+                            currency: "USD",
+                            minimumSignificantDigits: 2,
+                          }
+                        ).format(0.61)}/h`}
+                      >
+                        TODO: Popover details
+                      </MetricInfo>
+                    </MetricLabel>
+                  </MetricBox>
+                </div>
               </div>
-            </div>
-          ))}
+            ))}
+        </div>
       </div>
     </div>
   )
