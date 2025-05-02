@@ -142,7 +142,11 @@ export default async function ZkvmDetailsPage({
       >
         <h2 className="sr-only">zkVM software details</h2>
         <SoftwareDetails
-          metrics={{
+          numericMetrics={{
+            verification_ms: zkvmMetrics.verification_ms,
+            size_bytes: zkvmMetrics.size_bytes,
+          }}
+          categoricalMetrics={{
             ...zkvmMetrics,
             security_target_bits: severityLevels[0],
             max_bounty_amount: severityLevels[3],

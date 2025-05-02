@@ -88,7 +88,11 @@ const SoftwareAccordionItem = ({
       </div>
       <AccordionContent className="col-span-full border-b bg-gradient-to-b from-background to-background-active p-0">
         <SoftwareDetails
-          metrics={{
+          numericMetrics={{
+            verification_ms: metrics.verification_ms,
+            size_bytes: metrics.size_bytes,
+          }}
+          categoricalMetrics={{
             ...metrics,
             security_target_bits: severityLevels[0],
             max_bounty_amount: severityLevels[3],
