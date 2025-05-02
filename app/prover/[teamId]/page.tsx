@@ -18,10 +18,12 @@ import { cn } from "@/lib/utils"
 import { SITE_NAME } from "@/lib/constants"
 
 import { getActiveClusters } from "@/lib/api/clusters"
+import { getTeamSummary } from "@/lib/api/stats"
 import { getTeam } from "@/lib/api/teams"
 import { getVendorByUserId } from "@/lib/api/vendor"
 import { getZkvmsByVendorId } from "@/lib/api/zkvms"
 import { getMetadata } from "@/lib/metadata"
+import { formatUsd } from "@/lib/number"
 import { prettyMs } from "@/lib/time"
 import { getHost, getTwitterHandle } from "@/lib/url"
 
@@ -53,6 +55,8 @@ export default async function ProverPage({ params }: ProverPageProps) {
   } catch {
     return notFound()
   }
+
+  const teamSummary = await getTeamSummary(teamId)
 
   const vendor = await getVendorByUserId(team.id)
   const isVendor = !!vendor
@@ -152,7 +156,7 @@ export default async function ProverPage({ params }: ProverPageProps) {
                   proofs
                 </div>
                 <div className="text-center font-mono text-2xl font-semibold text-primary">
-                  {/* {proofs.length} */}
+                  {teamSummary.total_proofs_multi}
                 </div>
               </div>
               <div className="row-span-2 grid grid-rows-subgrid gap-y-0.5 p-4">
@@ -160,11 +164,7 @@ export default async function ProverPage({ params }: ProverPageProps) {
                   avg cost
                 </div>
                 <div className="text-center font-mono text-2xl font-semibold text-primary">
-                  {new Intl.NumberFormat("en-US", {
-                    style: "currency",
-                    currency: "USD",
-                    minimumSignificantDigits: 2,
-                  }).format(0.0069)}
+                  {formatUsd(teamSummary.avg_cost_per_proof_multi ?? 0)}
                 </div>
               </div>
               <div className="row-span-2 grid grid-rows-subgrid gap-y-0.5 p-4">
@@ -172,7 +172,7 @@ export default async function ProverPage({ params }: ProverPageProps) {
                   avg time
                 </div>
                 <div className="text-center font-mono text-2xl font-semibold text-primary">
-                  {prettyMs(69_000)}
+                  {prettyMs(Number(teamSummary.avg_proving_time_multi ?? 0))}
                 </div>
               </div>
             </div>
@@ -187,7 +187,7 @@ export default async function ProverPage({ params }: ProverPageProps) {
                   proofs
                 </div>
                 <div className="text-center font-mono text-2xl font-semibold text-primary">
-                  {/* {proofs.length} */}
+                  {teamSummary.total_proofs_single}
                 </div>
               </div>
               <div className="row-span-2 grid grid-rows-subgrid gap-y-0.5 p-4">
@@ -195,11 +195,7 @@ export default async function ProverPage({ params }: ProverPageProps) {
                   avg cost
                 </div>
                 <div className="text-center font-mono text-2xl font-semibold text-primary">
-                  {new Intl.NumberFormat("en-US", {
-                    style: "currency",
-                    currency: "USD",
-                    minimumSignificantDigits: 2,
-                  }).format(0.0042)}
+                  {formatUsd(teamSummary.avg_cost_per_proof_single ?? 0)}
                 </div>
               </div>
               <div className="row-span-2 grid grid-rows-subgrid gap-y-0.5 p-4">
@@ -207,7 +203,7 @@ export default async function ProverPage({ params }: ProverPageProps) {
                   avg time
                 </div>
                 <div className="text-center font-mono text-2xl font-semibold text-primary">
-                  {prettyMs(42_000)}
+                  {prettyMs(Number(teamSummary.avg_proving_time_single ?? 0))}
                 </div>
               </div>
             </div>

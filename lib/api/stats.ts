@@ -1,5 +1,5 @@
 import { addDays, startOfDay } from "date-fns"
-import { asc, notIlike } from "drizzle-orm"
+import { and, asc, eq, notIlike } from "drizzle-orm"
 
 import { db } from "@/db"
 import {
@@ -67,4 +67,20 @@ export const getTeamsSummary = async () => {
     .orderBy(asc(teamsSummaryView.avg_proving_time))
 
   return teamsSummary
+}
+
+export const getTeamSummary = async (teamId: string) => {
+  const [teamSummary] = await db
+    .select()
+    .from(teamsSummaryView)
+    .where(
+      and(
+        eq(teamsSummaryView.team_id, teamId),
+        // hide test teams from the provers list
+        notIlike(teamsSummaryView.team_name, "%test%")
+      )
+    )
+    .limit(1)
+
+  return teamSummary
 }
