@@ -1,4 +1,3 @@
-import { asc, notIlike } from "drizzle-orm"
 import type { Metadata } from "next"
 
 import { metrics } from "@/components/Metrics"
@@ -11,8 +10,7 @@ import { cn } from "@/lib/utils"
 
 import { AVERAGE_LABEL } from "@/lib/constants"
 
-import { db } from "@/db"
-import { teamsSummary as teamsSummaryView } from "@/db/schema"
+import { getTeamsSummary } from "@/lib/api/stats"
 import { getMetadata } from "@/lib/metadata"
 import { formatUsd } from "@/lib/number"
 import { prettyMs } from "@/lib/time"
@@ -20,12 +18,7 @@ import { prettyMs } from "@/lib/time"
 export const metadata: Metadata = getMetadata()
 
 export default async function TeamsPage() {
-  const teamsSummary = await db
-    .select()
-    .from(teamsSummaryView)
-    // hide test teams from the provers list
-    .where(notIlike(teamsSummaryView.team_name, "%test%"))
-    .orderBy(asc(teamsSummaryView.avg_proving_time))
+  const teamsSummary = await getTeamsSummary()
 
   return (
     <div className="w-full max-w-screen-xl px-6 sm:px-8 md:px-12 lg:w-[calc(100vw_-_var(--sidebar-width))] lg:px-16 xl:px-20">
