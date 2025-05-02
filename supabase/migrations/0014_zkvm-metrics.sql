@@ -18,6 +18,7 @@ CREATE TABLE "zkvm_security_metrics" (
 	"quantum_security" "severity_level" NOT NULL,
 	"security_target_bits" integer NOT NULL,
 	"max_bounty_amount" bigint NOT NULL,
+	"trusted_setup" boolean DEFAULT false NOT NULL,
 	"created_at" timestamp with time zone DEFAULT now() NOT NULL,
 	"updated_at" timestamp with time zone DEFAULT now() NOT NULL
 );

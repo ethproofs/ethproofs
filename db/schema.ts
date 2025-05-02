@@ -583,6 +583,7 @@ export const zkvmSecurityMetrics = pgTable(
     max_bounty_amount: bigint("max_bounty_amount", {
       mode: "number",
     }).notNull(),
+    trusted_setup: boolean("trusted_setup").notNull().default(false),
     created_at: timestamp("created_at", { withTimezone: true, mode: "string" })
       .defaultNow()
       .notNull(),

@@ -1,5 +1,5 @@
 {
-  "id": "2acd8b6e-cee0-4294-a096-0a8372602b93",
+  "id": "3b46bc89-47b2-457f-8872-5b3d3bae3746",
   "prevId": "60a704d1-305c-43f1-a74e-93f0c4cc6383",
   "version": "7",
   "dialect": "postgresql",
@@ -1705,6 +1705,13 @@
           "type": "bigint",
           "primaryKey": false,
           "notNull": true
+        },
+        "trusted_setup": {
+          "name": "trusted_setup",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": false
         },
         "created_at": {
           "name": "created_at",

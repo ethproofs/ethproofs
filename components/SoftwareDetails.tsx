@@ -145,7 +145,9 @@ const SoftwareDetails = ({ metrics, severityLevels }: Props) => {
           <MetricLabel>
             <MetricInfo label="trusted setup">TODO: Popover details</MetricInfo>
           </MetricLabel>
-          <div className="text-center font-sans text-base">trusted setup</div>
+          <div className="text-nowrap text-center font-sans text-base">
+            {metrics.trusted_setup ? "trusted setup" : "no trusted setup"}
+          </div>
         </MetricBox>
       </div>
     </div>
