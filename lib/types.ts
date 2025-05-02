@@ -121,6 +121,10 @@ export type ZkvmPerformanceMetric = typeof zkvmPerformanceMetrics.$inferSelect
 
 export type SeverityLevel = (typeof severityLevel.enumValues)[number]
 
+export type ZkvmMetrics = ZkvmSecurityMetric & ZkvmPerformanceMetric
+
+export type ZkvmMetric = keyof ZkvmMetrics
+
 export type ClusterVersionExtensions = {
   cluster: ClusterBase
   cluster_machines: (ClusterMachineBase & {

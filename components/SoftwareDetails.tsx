@@ -1,35 +1,26 @@
-import type { ZkvmPerformanceMetric, ZkvmSecurityMetric } from "@/lib/types"
+import type {
+  SeverityLevel,
+  Slices,
+  ZkvmMetric,
+  ZkvmMetrics,
+} from "@/lib/types"
 
 import { MetricBox, MetricInfo, MetricLabel } from "./ui/metric"
 import LevelMeter from "./LevelMeter"
 import Pizza from "./Pizza"
 
-import { getMetricSeverity, thresholds } from "@/lib/metrics"
+import { thresholds } from "@/lib/metrics"
 import { getMetricLabel } from "@/lib/metrics"
 
-const SoftwareDetails = ({
-  metrics,
-}: {
-  metrics: ZkvmSecurityMetric & ZkvmPerformanceMetric
-}) => {
-  // Get the severity levels for each numeric metric
-  const proofSizeSeverity = getMetricSeverity(metrics.size_bytes, "size_bytes")
+type Props = {
+  metrics: Omit<ZkvmMetrics, "security_target_bits" | "max_bounty_amount"> & {
+    security_target_bits: SeverityLevel
+    max_bounty_amount: SeverityLevel
+  }
+  severityLevels: SeverityLevel[]
+}
 
-  const verificationTimeSeverity = getMetricSeverity(
-    metrics.verification_ms,
-    "verification_ms"
-  )
-
-  const maxBountyAmountSeverity = getMetricSeverity(
-    metrics.max_bounty_amount,
-    "max_bounty_amount"
-  )
-
-  const securityTargetSeverity = getMetricSeverity(
-    metrics.security_target_bits,
-    "security_target_bits"
-  )
-
+const SoftwareDetails = ({ metrics, severityLevels }: Props) => {
   return (
     <div className="grid grid-cols-[1fr,4fr,2fr,4fr,1fr] gap-8 p-8">
       <div className="col-span-2 col-start-1 row-start-1 flex-1 text-center">
@@ -94,18 +85,7 @@ const SoftwareDetails = ({
       </div>
 
       <div className="col-start-3 row-span-3 row-start-2 text-[10rem]">
-        <Pizza
-          slices={[
-            { level: proofSizeSeverity },
-            { level: securityTargetSeverity },
-            { level: metrics.quantum_security },
-            { level: maxBountyAmountSeverity },
-            { level: metrics.evm_stf_bytecode },
-            { level: metrics.implementation_soundness },
-            { level: metrics.protocol_soundness },
-            { level: verificationTimeSeverity },
-          ]}
-        />
+        <Pizza slices={severityLevels.map((level) => ({ level })) as Slices} />
       </div>
 
       <div className="col-span-2 col-start-4 row-start-1 flex-1 text-center">
@@ -130,7 +110,10 @@ const SoftwareDetails = ({
             </MetricInfo>
           </MetricLabel>
           <div className="text-center font-sans text-base">
-            {getMetricLabel(securityTargetSeverity, "security_target_bits")}
+            {getMetricLabel(
+              metrics.security_target_bits,
+              "security_target_bits"
+            )}
           </div>
         </MetricBox>
       </div>
@@ -152,7 +135,7 @@ const SoftwareDetails = ({
             <MetricInfo label="bounties">TODO: Popover details</MetricInfo>
           </MetricLabel>
           <div className="text-center font-sans text-base">
-            {getMetricLabel(maxBountyAmountSeverity, "max_bounty_amount")}
+            {getMetricLabel(metrics.max_bounty_amount, "max_bounty_amount")}
           </div>
         </MetricBox>
       </div>
