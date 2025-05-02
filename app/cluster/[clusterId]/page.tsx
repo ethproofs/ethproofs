@@ -1,10 +1,14 @@
-import { Check, X as RedX } from "lucide-react"
+import { Box, Check, Download, X as RedX } from "lucide-react"
 import type { Metadata } from "next"
 import Image from "next/image"
 import { notFound } from "next/navigation"
+import prettyBytes from "pretty-bytes"
 
 import { ClusterDetails } from "@/lib/types"
 
+import DownloadButton from "@/components/DownloadButton"
+import CalendarCheck from "@/components/svgs/calendar-check.svg"
+import { Button } from "@/components/ui/button"
 // import ClusterMachineSummary from "@/components/ClusterMachineSummary"
 import Link from "@/components/ui/link"
 import MachineDetails from "@/components/ui/MachineDetails"
@@ -13,6 +17,7 @@ import { Skeleton } from "@/components/ui/skeleton"
 
 import { getCluster } from "@/lib/api/clusters"
 import { getTeam } from "@/lib/api/teams"
+import { formatTimeAgo } from "@/lib/date"
 import { getMetadata } from "@/lib/metadata"
 import { prettyMs } from "@/lib/time"
 
@@ -231,7 +236,7 @@ export default async function ClusterDetailsPage({
         </div>
       </div>
 
-      <div className="flex max-w-full">
+      <section className="flex max-w-full">
         {/* // TODO: Re-enable when clusterDetails available for single cluster */}
         {/* <ClusterMachineSummary clusterDetails={clusterDetails} /> */}
         <div className="opacity-10">
@@ -277,7 +282,147 @@ export default async function ClusterDetailsPage({
               </div>
             ))}
         </div>
-      </div>
+      </section>
+
+      {/* // TODO: Mobile responsiveness */}
+      <section className="flex max-w-full flex-col">
+        <div className="flex items-center gap-2 px-6">
+          <Box strokeWidth="1" className="size-11" />
+          <div className="font-mono text-xl">latest proofs</div>
+        </div>
+        {/* // TODO: Replace with latest proof data */}
+        {Array.from({ length: 6 }).map((_, i) => (
+          <div
+            key={i}
+            className="grid grid-cols-[1fr_repeat(4,_auto)] gap-x-6 border-b border-primary-border p-6"
+          >
+            <div className="col-start-1 row-span-2 grid grid-cols-1 grid-rows-subgrid">
+              <div className="font-mono text-lg text-primary">222566340</div>
+              <div className="font-sans text-xs text-body-secondary">
+                {formatTimeAgo(new Date(Date.now() - 1000 * 60 * 6))}
+              </div>
+            </div>
+            <div className="col-start-2 row-span-2 grid grid-cols-1 grid-rows-subgrid place-items-center">
+              <div className="font-mono text-sm">
+                proving: {prettyMs(204_000)}
+              </div>
+              <div className="font-sans text-xs text-body-secondary">
+                total to proof: {prettyMs(350_000)}
+              </div>
+            </div>
+            <div className="col-start-3 row-span-2 grid grid-cols-1 grid-rows-subgrid place-items-center">
+              <div className="font-mono text-sm">
+                per proof:{" "}
+                {new Intl.NumberFormat("en-US", {
+                  style: "currency",
+                  currency: "USD",
+                  minimumSignificantDigits: 2,
+                  maximumSignificantDigits: 3,
+                }).format(0.0556)}
+              </div>
+              <div className="font-sans text-xs text-body-secondary">
+                per Mgas:{" "}
+                {new Intl.NumberFormat("en-US", {
+                  style: "currency",
+                  currency: "USD",
+                  minimumSignificantDigits: 2,
+                  maximumSignificantDigits: 3,
+                }).format(0.0024)}
+              </div>
+            </div>
+            <div className="col-start-4 row-span-2 grid grid-cols-1 grid-rows-subgrid place-items-center">
+              <div className="REMOVE inline-flex h-8 w-32 justify-center rounded-full border border-primary opacity-10">
+                download
+              </div>
+              {/* // TODO: Re-enable and pass proof when available */}
+              {/* <DownloadButton proof={undefined} /> */}
+              <div className="font-sans text-xs text-body-secondary">
+                ({prettyBytes(3_500_000)})
+              </div>
+            </div>
+            <div className="col-start-5 row-span-2 grid grid-cols-1 grid-rows-subgrid place-items-center">
+              <Button disabled variant="solid" className="w-full p-0">
+                <CalendarCheck className="text-lg" />
+                verify
+              </Button>
+              <div className="font-sans text-xs text-body-secondary">
+                in-browser verification
+              </div>
+            </div>
+          </div>
+        ))}
+      </section>
+
+      {/* TODO: Mobile responsiveness */}
+      <section className="flex max-w-full flex-col">
+        <div className="flex items-center gap-2 px-6">
+          <Box strokeWidth="1" className="size-11" />
+          <div className="font-mono text-xl">killer-block proofs</div>
+        </div>
+        {/* // TODO: Replace with killer-block proofs data */}
+        {Array.from({ length: 6 }).map((_, i) => (
+          <div
+            key={i}
+            className="grid grid-cols-[1fr_repeat(4,_auto)] gap-x-6 border-b border-primary-border p-6"
+          >
+            <div className="col-start-1 row-span-2 grid grid-cols-1 grid-rows-subgrid">
+              <div className="font-mono text-lg text-primary">222566340</div>
+              <div className="font-sans text-xs text-body-secondary">
+                {formatTimeAgo(new Date(Date.now() - 1000 * 60 * 6))}
+              </div>
+            </div>
+            <div className="col-start-2 row-span-2 grid grid-cols-1 grid-rows-subgrid place-items-center">
+              <div className="font-mono text-sm">
+                proving: {prettyMs(204_000)}
+              </div>
+              <div className="font-sans text-xs text-body-secondary">
+                total to proof: {prettyMs(350_000)}
+              </div>
+            </div>
+            <div className="col-start-3 row-span-2 grid grid-cols-1 grid-rows-subgrid place-items-center">
+              <div className="font-mono text-sm">
+                per proof:{" "}
+                {new Intl.NumberFormat("en-US", {
+                  style: "currency",
+                  currency: "USD",
+                  minimumSignificantDigits: 2,
+                  maximumSignificantDigits: 3,
+                }).format(0.0556)}
+              </div>
+              <div className="font-sans text-xs text-body-secondary">
+                per Mgas:{" "}
+                {new Intl.NumberFormat("en-US", {
+                  style: "currency",
+                  currency: "USD",
+                  minimumSignificantDigits: 2,
+                  maximumSignificantDigits: 3,
+                }).format(0.0024)}
+              </div>
+            </div>
+            <div className="col-start-4 row-span-2 grid grid-cols-1 grid-rows-subgrid place-items-center">
+              <div className="REMOVE opacity-10">
+                <Skeleton className="h-8 w-32 rounded-full border border-primary">
+                  download TODO
+                </Skeleton>
+              </div>
+              {/* // TODO: Re-enable and pass proof when available */}
+              {/* <DownloadButton proof={undefined} /> */}
+              <div className="font-sans text-xs text-body-secondary">
+                ({prettyBytes(3_500_000)})
+              </div>
+            </div>
+            <div className="col-start-5 row-span-2 grid grid-cols-1 grid-rows-subgrid place-items-center">
+              <Button disabled variant="solid" className="w-full p-0">
+                <CalendarCheck className="text-lg" />
+                verify
+              </Button>
+              <div className="font-sans text-xs text-body-secondary">
+                in-browser verification
+              </div>
+            </div>
+          </div>
+        ))}
+      </section>
     </div>
   )
 }
