@@ -50,6 +50,7 @@ export interface ActiveCluster {
     name: string
     isa: string
     version: string
+    slug: string
   }
   machines: Array<{
     id: number
@@ -93,6 +94,7 @@ export function transformClusters(
       zkvm: {
         id: cluster.zkvm.id,
         name: cluster.zkvm.name,
+        slug: cluster.zkvm.slug,
       },
       machines: cluster.machines.map((machine) => ({
         id: Number(machine.id),

@@ -63,6 +63,7 @@ export const getActiveClusters = async () => {
       // ZKVM info
       zkvmId: zkvms.id,
       zkvmName: zkvms.name,
+      zkvmSlug: zkvms.slug,
       zkvmIsa: zkvms.isa,
       zkvmVersion: zkvmVersions.version,
 
@@ -129,6 +130,7 @@ export const getActiveClusters = async () => {
           name: row.zkvmName,
           isa: row.zkvmIsa,
           version: row.zkvmVersion,
+          slug: row.zkvmSlug,
         },
         machines: [],
       })
