@@ -64,6 +64,7 @@ export const getTeamsSummary = async () => {
     .from(teamsSummaryView)
     // hide test teams from the provers list
     .where(notIlike(teamsSummaryView.team_name, "%test%"))
+    .orderBy(asc(teamsSummaryView.avg_proving_time))
 
   return teamsSummary
 }
