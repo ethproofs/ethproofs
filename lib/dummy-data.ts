@@ -289,4 +289,10 @@ export const demoClusterDetails: ClusterDetails[] = [
       },
     ],
   },
-]
+].map((cluster, idx) => ({
+  ...cluster,
+  zkvm: {
+    ...cluster.zkvm,
+    slug: "zk" + idx,
+  },
+}))
