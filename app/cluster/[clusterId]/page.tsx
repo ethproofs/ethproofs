@@ -7,7 +7,6 @@ import prettyBytes from "pretty-bytes"
 import ClusterMachineSummary from "@/components/ClusterMachineSummary"
 import CalendarCheck from "@/components/svgs/calendar-check.svg"
 import { Button } from "@/components/ui/button"
-// import ClusterMachineSummary from "@/components/ClusterMachineSummary"
 import Link from "@/components/ui/link"
 import MachineDetails from "@/components/ui/MachineDetails"
 import { MetricBox, MetricInfo, MetricLabel } from "@/components/ui/metric"
@@ -209,14 +208,9 @@ export default async function ClusterDetailsPage({
                   <MetricBox className="py-0">
                     <MetricLabel>
                       <MetricInfo
-                        label={`${clusterMachine.machine_count} machines @ ${new Intl.NumberFormat(
-                          "en-US",
-                          {
-                            style: "currency",
-                            currency: "USD",
-                            minimumSignificantDigits: 2,
-                          }
-                        ).format(0.61)}/h`}
+                        label={`${clusterMachine.machine_count} machines @ ${formatUsd(
+                          clusterMachine.cloud_instance.hourly_price
+                        )}/h`}
                       >
                         TODO: Popover details
                       </MetricInfo>

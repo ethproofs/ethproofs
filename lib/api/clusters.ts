@@ -26,6 +26,11 @@ export const getCluster = async (id: string) => {
           cluster_machines: {
             with: {
               machine: true,
+              cloud_instance: {
+                with: {
+                  provider: true,
+                },
+              },
             },
           },
         },
