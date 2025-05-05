@@ -72,19 +72,8 @@ export default async function ZkvmDetailsPage({
 
   return (
     <>
-      <div className="absolute top-16 w-full space-y-4 px-6 text-center font-mono sm:px-8 md:px-12 lg:px-16 xl:px-20">
-        <h1
-          className="text-3xl font-semibold"
-          style={{
-            textShadow: `
-              0 0 3rem hsla(var(--background-modal)),
-              0 0 2rem hsla(var(--background-modal)),
-              0 0 1rem hsla(var(--background-modal)),
-              0 0 1rem hsla(var(--background-modal))`,
-          }}
-        >
-          {zkvm.name}
-        </h1>
+      <div className="absolute top-0 h-40 w-full space-y-4 px-6 pt-24 text-center font-mono md:px-8">
+        <h1 className="text-shadow text-3xl font-semibold">{zkvm.name}</h1>
 
         <div className="flex items-center justify-center gap-3">
           <span className="inline-block font-mono italic text-body-secondary">
@@ -111,7 +100,7 @@ export default async function ZkvmDetailsPage({
       <div
         className={cn(
           "mb-20 grid grid-cols-1 gap-y-8 max-sm:gap-y-4 sm:grid-cols-2 lg:grid-cols-4",
-          "w-fit md:w-[calc(100vw_-_var(--sidebar-width))]",
+          "w-fit md:w-full",
           "mx-auto gap-x-20 md:px-24"
         )}
       >
@@ -145,8 +134,7 @@ export default async function ZkvmDetailsPage({
       <div
         className={cn(
           "bg-gradient-to-b from-background to-background-active",
-          "w-fit md:w-[calc(100vw_-_var(--sidebar-width))]",
-          "mx-auto gap-x-20 md:px-24"
+          "-mx-6 px-12 md:-mx-8 md:px-24"
         )}
       >
         <h2 className="sr-only">zkVM software details</h2>
@@ -164,7 +152,7 @@ export default async function ZkvmDetailsPage({
         />
       </div>
 
-      <div className="mx-6 mt-40 max-w-full gap-x-20 md:mx-auto md:w-[calc(100vw_-_var(--sidebar-width))] md:px-[5vw]">
+      <div className="mx-6 mt-40 max-w-full gap-x-20 px-6 md:mx-auto md:px-8">
         <h2 className="flex items-center gap-2 font-mono text-lg font-normal text-primary">
           <Box className="size-11 text-primary" strokeWidth="1" />
           active clusters using {zkvm.name}: {zkvm.activeClusters} /{" "}

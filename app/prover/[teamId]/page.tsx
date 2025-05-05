@@ -77,18 +77,9 @@ export default async function ProverPage({ params }: ProverPageProps) {
   )
 
   return (
-    <div className="px-6 sm:px-8 md:px-12 lg:px-16 xl:px-20">
+    <div className="-mt-40 px-6 md:px-8">
       <div id="hero-section">
-        <h1
-          className="font-serif text-4xl font-semibold"
-          style={{
-            textShadow: `
-              0 0 3rem hsla(var(--background-modal)),
-              0 0 2rem hsla(var(--background-modal)),
-              0 0 1rem hsla(var(--background-modal)),
-              0 0 1rem hsla(var(--background-modal))`,
-          }}
-        >
+        <h1 className="text-shadow font-serif text-4xl font-semibold">
           {team.logo_url && (
             <Image
               src={team.logo_url}
@@ -102,7 +93,7 @@ export default async function ProverPage({ params }: ProverPageProps) {
           <span className={cn(team.logo_url && "sr-only")}>{team.name}</span>
         </h1>
 
-        <HeroBody className="mx-auto mt-0 w-fit gap-x-6 border-t border-primary px-12 py-6">
+        <HeroBody className="mx-auto mt-0 flex w-fit flex-wrap justify-center gap-x-6 border-t border-primary px-12 py-6">
           {team.website_url && (
             <HeroItem className="hover:underline">
               <Link hideArrow className="text-body" href={team.website_url}>

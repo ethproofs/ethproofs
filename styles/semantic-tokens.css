@@ -17,6 +17,12 @@
     --primary-visited: var(--green-600);
     --primary-border: var(--green-800);
 
+    --light-source-color: var(--primary);
+    --light-source-intensity: 0.75;
+    --light-source-secondary-intensity: 0.15;
+    --light-source-spread: 60%;
+    --light-source-secondary-spread: 90%;
+
     --body: var(--gray-700);
     --body-secondary: var(--gray-400);
 
@@ -48,6 +54,12 @@
     --primary-light: var(--green-400);
     --primary-dark: var(--green-700);
     --primary-visited: var(--green-600);
+
+    --light-source-color: var(--primary);
+    --light-source-intensity: 0.6;
+    --light-source-secondary-intensity: 0.1;
+    --light-source-spread: 60%;
+    --light-source-secondary-spread: 75%;
 
     --body: var(--gray-200);
 

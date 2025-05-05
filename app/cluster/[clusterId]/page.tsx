@@ -71,18 +71,9 @@ export default async function ClusterDetailsPage({
   const latestProofs = await fetchProvedProofsByClusterId(clusterId)
 
   return (
-    <div className="-mt-52 w-full space-y-8 px-6 sm:px-8 md:w-[calc(100vw_-_var(--sidebar-width))] md:px-12 lg:px-16 xl:px-20">
-      <div id="hero-section" className="flex flex-col items-center gap-2 pt-20">
-        <h1
-          className="font-mono text-4xl font-semibold"
-          style={{
-            textShadow: `
-              0 0 3rem hsla(var(--background-modal)),
-              0 0 2rem hsla(var(--background-modal)),
-              0 0 1rem hsla(var(--background-modal)),
-              0 0 1rem hsla(var(--background-modal))`,
-          }}
-        >
+    <div className="-mt-40 space-y-8 px-6 md:px-8">
+      <div id="hero-section" className="flex flex-col items-center gap-2">
+        <h1 className="text-shadow font-mono text-4xl font-semibold">
           {cluster.nickname}
         </h1>
 
@@ -303,7 +294,7 @@ export default async function ClusterDetailsPage({
         })}
       </section>
 
-      {/* TODO: Mobile responsiveness */}
+      {/* // TODO: Mobile responsiveness */}
       <section className="flex max-w-full flex-col">
         <div className="flex items-center gap-2 px-6">
           <Box strokeWidth="1" className="size-11" />

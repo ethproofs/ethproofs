@@ -299,7 +299,7 @@ export default async function BlockDetailsPage({
   ]
 
   return (
-    <div className="space-y-20">
+    <div className="-mt-40 space-y-20 px-6 md:px-8">
       <HeroTitle className="mx-auto max-w-[18rem] items-center gap-4">
         <Box strokeWidth="1" className="size-[4.5rem] shrink-0 text-primary" />
         <div className="truncate">
