@@ -3,7 +3,7 @@ import type { Metadata } from "next"
 
 import ProofsStats from "@/components/ProofsStats"
 import BlocksSection from "@/components/sections/BlocksSection"
-import ProversSection from "@/components/sections/ProversSection"
+import ProverTeamsSection from "@/components/sections/ProvingTeamsSection"
 import ZkvmsSection from "@/components/sections/ZkvmsSection"
 
 import { getRecentSummary } from "@/lib/api/stats"
@@ -34,7 +34,7 @@ export default async function Index() {
 
         <section id="provers" className="w-full max-w-screen-xl scroll-m-20">
           <Suspense fallback={null}>
-            <ProversSection />
+            <ProverTeamsSection />
           </Suspense>
         </section>
 

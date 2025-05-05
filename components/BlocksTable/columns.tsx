@@ -65,7 +65,7 @@ export const columns: ColumnDef<Block>[] = [
       return (
         <div className="text-center">
           <Link
-            href={`/block/${blockNumber}`}
+            href={`/blocks/${blockNumber}`}
             className="text-lg tracking-wide text-primary hover:text-primary-light hover:underline"
           >
             <HidePunctuation>{formatNumber(blockNumber)}</HidePunctuation>
@@ -222,7 +222,7 @@ export const columns: ColumnDef<Block>[] = [
       return (
         <div className="flex h-12 items-center">
           <ButtonLink
-            href={`/block/${blockNumber}`}
+            href={`/blocks/${blockNumber}`}
             variant="outline"
             size="icon"
             className="ms-auto h-auto p-1.5 text-lg"

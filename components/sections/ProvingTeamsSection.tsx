@@ -9,7 +9,7 @@ import { Card, CardHeader, CardTitle } from "../ui/card"
 import { getActiveClusters, getActiveMachineCount } from "@/lib/api/clusters"
 import { getClusterSummary, getTeamsSummary } from "@/lib/api/stats"
 
-const ProversSection = async () => {
+const ProverTeamsSection = async () => {
   const teamsSummary = await getTeamsSummary()
   const clusterSummary = await getClusterSummary()
   const machineCount = await getActiveMachineCount()
@@ -62,7 +62,7 @@ const ProversSection = async () => {
       />
 
       <div className="flex justify-center">
-        <ButtonLink variant="outline" href="/provers">
+        <ButtonLink variant="outline" href="/teams">
           See all
         </ButtonLink>
       </div>
@@ -70,4 +70,4 @@ const ProversSection = async () => {
   )
 }
 
-export default ProversSection
+export default ProverTeamsSection

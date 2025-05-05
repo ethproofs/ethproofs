@@ -16,7 +16,7 @@ import { getMetadata } from "@/lib/metadata"
 
 export const metadata: Metadata = getMetadata()
 
-export default async function Index() {
+export default async function BlocksPage() {
   const queryClient = new QueryClient()
 
   const teams = await getTeams()

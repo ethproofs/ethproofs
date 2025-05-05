@@ -23,9 +23,7 @@ export default async function TeamsPage() {
   return (
     <>
       <div className="absolute top-0 h-40 w-full space-y-12 px-6 pt-24 text-center font-mono font-semibold md:px-8">
-        <h1 className="text-shadow text-3xl">
-          teams teams teams teams teams teams teams teams
-        </h1>
+        <h1 className="text-shadow text-3xl">proving teams</h1>
         <div>All the teams with proving machines</div>
       </div>
       <div className="grid gap-y-12 px-6 md:grid-cols-[repeat(2,_auto)] md:gap-x-12 md:px-8 xl:gap-x-32">
@@ -89,7 +87,7 @@ export default async function TeamsPage() {
                           </div>
                         </div>
                         <ButtonLink
-                          href={`/prover/${team_id}`}
+                          href={`/teams/${team_id}`}
                           variant="outline"
                         >
                           + details for {team_name}
