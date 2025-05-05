@@ -131,7 +131,7 @@ type ClusterAccordionProps = {
 const ClusterAccordion = ({ clusters }: ClusterAccordionProps) => (
   <Accordion
     type="multiple"
-    className="grid w-full grid-cols-[1fr_repeat(5,_auto)] md:px-6"
+    className="grid w-full grid-cols-[1fr_repeat(5,_auto)]"
   >
     <div className="col-span-6 grid grid-cols-subgrid text-center">
       <MetricBox className="col-start-2">

@@ -6,7 +6,6 @@ import {
 } from "@tanstack/react-query"
 
 import BlocksTable from "@/components/BlocksTable"
-import LineChartCard from "@/components/LineChartCard"
 import MachineTabs from "@/components/MachineTabs"
 
 import { DEFAULT_PAGE_STATE } from "@/lib/constants"
@@ -34,22 +33,11 @@ export default async function Index() {
 
   return (
     <>
-      <div className="absolute top-16 w-full space-y-12 px-6 text-center font-mono font-semibold sm:px-8 md:px-12 lg:px-16 xl:px-20">
-        <h1
-          className="text-3xl"
-          style={{
-            textShadow: `
-              0 0 3rem hsla(var(--background-modal)),
-              0 0 2rem hsla(var(--background-modal)),
-              0 0 1rem hsla(var(--background-modal)),
-              0 0 1rem hsla(var(--background-modal))`,
-          }}
-        >
-          blocks
-        </h1>
+      <div className="absolute top-0 h-40 w-full space-y-12 px-6 pt-24 text-center font-mono font-semibold">
+        <h1 className="text-shadow text-3xl">blocks</h1>
       </div>
-      <div className="flex flex-1 flex-col items-center gap-20 px-6 sm:px-8 md:w-[calc(100vw_-_var(--sidebar-width))] md:px-12 lg:px-16 xl:px-20">
-        <section id="chart" className="w-full max-w-screen-xl scroll-m-20">
+      <div className="flex flex-1 flex-col items-center gap-20">
+        {/* <section id="chart" className="w-full max-w-screen-xl scroll-m-20">
           <LineChartCard
             id="cost-chart"
             className="w-full"
@@ -60,7 +48,7 @@ export default async function Index() {
             totalAvg={0}
             totalMedian={0}
           />
-        </section>
+        </section> */}
 
         <section className="w-full max-w-screen-xl scroll-m-20">
           <MachineTabs
