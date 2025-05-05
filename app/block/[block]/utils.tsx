@@ -15,12 +15,6 @@ type Props = {
 }
 
 export const getAvailabilityMetrics = (stats: Props) => [
-  //   {
-  //     key: "status-of-proofs",
-  //     label: "Status of proofs",
-  //     description: <ProofStatusInfo />,
-  //     value: <ProofStatus statusCount={proofsPerStatusCount} />,
-  //   },
   {
     key: "fastest-proving-time",
     label: (

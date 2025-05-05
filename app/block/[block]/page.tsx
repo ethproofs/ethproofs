@@ -1,51 +1,29 @@
 import { Box } from "lucide-react"
 import type { Metadata } from "next"
-import Link from "next/link"
 import { notFound } from "next/navigation"
-import { PopoverTrigger } from "@radix-ui/react-popover"
-
-import type { Metric } from "@/lib/types"
 
 import CopyButton from "@/components/CopyButton"
 import DownloadAllButton from "@/components/DownloadAllButton"
-import DownloadButton from "@/components/DownloadButton"
 import MachineTabs from "@/components/MachineTabs"
-import { metrics } from "@/components/Metrics"
-import Null from "@/components/Null"
 import ProofList from "@/components/ProofList"
-import ProofStatus, { ProofStatusInfo } from "@/components/ProofStatus"
+import ProofStatus from "@/components/ProofStatus"
 import { HidePunctuation } from "@/components/StylePunctuation"
 import BookOpen from "@/components/svgs/book-open.svg"
 import Clock from "@/components/svgs/clock.svg"
 import Cpu from "@/components/svgs/cpu.svg"
 import DollarSign from "@/components/svgs/dollar-sign.svg"
-import Hash from "@/components/svgs/hash.svg"
 import Layers from "@/components/svgs/layers.svg"
 import ProofCircle from "@/components/svgs/proof-circle.svg"
 import Timer from "@/components/svgs/timer.svg"
 import Timestamp from "@/components/Timestamp"
 import { Card, CardHeader, CardTitle } from "@/components/ui/card"
-import {
-  HeroBody,
-  HeroDivider,
-  HeroItem,
-  HeroItemLabel,
-  HeroSection,
-  HeroTitle,
-} from "@/components/ui/hero"
-import * as Info from "@/components/ui/info"
+import { HeroItem, HeroItemLabel, HeroTitle } from "@/components/ui/hero"
 import {
   MetricBox,
   MetricInfo,
   MetricLabel,
   MetricValue,
 } from "@/components/ui/metric"
-import { Popover, PopoverContent } from "@/components/ui/popover"
-import { TooltipContentHeader } from "@/components/ui/tooltip"
-
-import { cn } from "@/lib/utils"
-
-import { AVERAGE_LABEL } from "@/lib/constants"
 
 import { getAvailabilityMetrics, getBlockFeeMetrics } from "./utils"
 
@@ -54,17 +32,13 @@ import { fetchBlock } from "@/lib/api/blocks"
 import { timestampToEpoch, timestampToSlot } from "@/lib/beaconchain"
 import { getBlockValueType, isBlockHash } from "@/lib/blocks"
 import { getMetadata } from "@/lib/metadata"
-import { formatNumber, formatUsd } from "@/lib/number"
+import { formatNumber } from "@/lib/number"
 import {
   getCostPerMgasStats,
   getCostPerProofStats,
   getProofsPerStatusCount,
-  getProvingCost,
   getProvingTimeStats,
   getTotalTTPStats,
-  hasProvedTimestamp,
-  isCompleted,
-  sortProofsStatusAndTimes,
 } from "@/lib/proofs"
 
 type BlockDetailsPageProps = {
@@ -197,10 +171,25 @@ export default async function BlockDetailsPage({
 
       <div className="flex flex-row gap-8">
         <Card className="flex-1">
-          <CardHeader>
+          <CardHeader className="flex flex-row justify-between space-y-0">
             <CardTitle>
-              <Timer /> Proof availability
+              <div className="flex items-center gap-2">
+                <Timer /> Proof availability
+              </div>
             </CardTitle>
+
+            <div>
+              <MetricBox>
+                <MetricLabel>
+                  <MetricInfo label="Status of proofs">
+                    TODO: Add proof status info
+                  </MetricInfo>
+                </MetricLabel>
+                <MetricValue className="font-normal">
+                  <ProofStatus statusCount={proofsPerStatusCount} />
+                </MetricValue>
+              </MetricBox>
+            </div>
           </CardHeader>
 
           <div className="grid grid-cols-2 gap-x-8 sm:grid-cols-[repeat(5,auto)] sm:grid-rows-[auto,auto] md:flex md:flex-wrap">
@@ -243,7 +232,9 @@ export default async function BlockDetailsPage({
         <Card className="flex-1">
           <CardHeader>
             <CardTitle>
-              <DollarSign /> Proof costs
+              <div className="flex items-center gap-2">
+                <DollarSign /> Proof costs
+              </div>
             </CardTitle>
           </CardHeader>
 
