@@ -6,7 +6,7 @@ import { getMetadata } from "@/lib/metadata"
 
 export const metadata: Metadata = getMetadata()
 
-export default async function Index() {
+export default async function ZkvmsPage() {
   return (
     <>
       <div className="absolute top-0 h-40 w-full space-y-12 px-6 pt-24 text-center font-mono font-semibold md:px-8">

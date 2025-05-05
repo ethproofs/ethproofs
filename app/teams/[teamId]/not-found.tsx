@@ -5,10 +5,10 @@ export default async function NotFound() {
   return (
     <NotFoundTemplate
       icon={<ProofCircle className="inline text-primary" />}
-      label="Prover"
-      href="/provers"
+      label="Teams"
+      href="/teams"
     >
-      View all provers
+      View all proving teams
     </NotFoundTemplate>
   )
 }

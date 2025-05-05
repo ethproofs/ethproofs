@@ -50,7 +50,7 @@ const SearchInput = ({
 
   useEventListener("keydown", (e) => {
     if (e.key !== "Enter" || !blockMatch) return
-    const path = `/block/${blockMatch[isHash(query) ? "hash" : "block_number"]}`
+    const path = `/blocks/${blockMatch[isHash(query) ? "hash" : "block_number"]}`
     handleSubmit()
     router.push(path)
   })
@@ -82,7 +82,7 @@ const SearchInput = ({
         <div className="absolute inset-x-0 top-0 -z-10 flex h-fit flex-col rounded-b-2xl rounded-t-3xl bg-background bg-gradient-to-b from-white/[0.06] to-white/[0.12] px-2 pb-2 pt-[3.5rem] lg:m-0">
           {blockMatch ? (
             <Link
-              href={`/block/${blockMatch[isHash(query) ? "hash" : "block_number"]}`}
+              href={`/blocks/${blockMatch[isHash(query) ? "hash" : "block_number"]}`}
               className="rounded-lg border border-primary-light bg-background-active p-2"
               onClick={handleSubmit}
             >

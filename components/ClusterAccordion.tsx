@@ -36,13 +36,13 @@ const ClusterAccordionItem = ({
       {/* TODO: Update to match design */}
       <div className="col-start-1 flex flex-col gap-1">
         <Link
-          href={`/prover/${clusterDetails.team.id}`}
+          href={`/teams/${clusterDetails.team.id}`}
           className="-m-1 w-fit rounded p-1 hover:bg-primary/10"
         >
           {clusterDetails.team.logoUrl ? (
             <Image
               src={clusterDetails.team.logoUrl}
-              alt="Prover logo"
+              alt="Proving team logo"
               height={16}
               width={16}
               style={{ height: "1rem", width: "auto" }}
@@ -58,7 +58,7 @@ const ClusterAccordionItem = ({
         <div>
           <span className="text-sm text-primary">
             <Link
-              href={`/zkvm/${clusterDetails.zkvm.slug}`}
+              href={`/zkvms/${clusterDetails.zkvm.slug}`}
               className="hover:underline"
             >
               {clusterDetails.zkvm.name}
@@ -110,7 +110,7 @@ const ClusterAccordionItem = ({
       </div>
 
       <div className="grid place-items-center">
-        <ButtonLink variant="outline" href={`/cluster/${clusterDetails.id}`}>
+        <ButtonLink variant="outline" href={`/clusters/${clusterDetails.id}`}>
           See all details
         </ButtonLink>
       </div>

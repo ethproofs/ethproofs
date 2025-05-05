@@ -33,7 +33,7 @@ const VendorAside = ({ team, zkvm }: { team: Team; zkvm: Zkvm }) => {
         <span className={cn(team.logo_url && "sr-only")}>{team.name}</span>
         is also the team behind the zkVM{" "}
         <Link
-          href={`/zkvm/${zkvm.slug}`}
+          href={`/zkvms/${zkvm.slug}`}
           className="text-primary-light hover:underline"
         >
           {zkvm.name}

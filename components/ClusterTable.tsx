@@ -28,7 +28,7 @@ const ClusterRowItem = ({ cluster }: ClusterRowItemProps) => (
           <MetricInfo label="zkVM">TODO: Popover details</MetricInfo>
         </MetricLabel>
       </MetricBox>
-      <Link href={`/zkvm/${cluster.zkvm.slug}`}>{cluster.zkvm.name}</Link>
+      <Link href={`/zkvms/${cluster.zkvm.slug}`}>{cluster.zkvm.name}</Link>
     </div>
     <div className="row-span-2 grid grid-cols-1 grid-rows-subgrid px-6 py-4 text-center">
       <MetricBox className="py-0">
@@ -55,7 +55,7 @@ const ClusterRowItem = ({ cluster }: ClusterRowItemProps) => (
         size="icon"
         variant="outline"
         className="h-fit bg-background-highlight p-1"
-        href={`/cluster/${cluster.id}`}
+        href={`/clusters/${cluster.id}`}
       >
         <ChevronRight />
       </ButtonLink>
