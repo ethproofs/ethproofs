@@ -195,7 +195,7 @@ export default async function BlockDetailsPage({
           <div className="grid grid-cols-2 gap-x-8 sm:grid-cols-[repeat(5,auto)] sm:grid-rows-[auto,auto] md:flex md:flex-wrap">
             {multiMachineMetrics.map(({ key, label, description, value }) => (
               <MetricBox
-                key={key}
+                key={"multi-" + key}
                 className="row-span-2 grid grid-rows-subgrid"
               >
                 <MetricLabel className="flex items-stretch lowercase">
@@ -213,7 +213,7 @@ export default async function BlockDetailsPage({
           <div className="grid grid-cols-2 gap-x-8 sm:grid-cols-[repeat(5,auto)] sm:grid-rows-[auto,auto] md:flex md:flex-wrap">
             {singleMachineMetrics.map(({ key, label, description, value }) => (
               <MetricBox
-                key={key}
+                key={"single-" + key}
                 className="row-span-2 grid grid-rows-subgrid"
               >
                 <MetricLabel className="flex items-stretch lowercase">
