@@ -1,15 +1,11 @@
 import { and, count, desc, eq, exists, gt, sql } from "drizzle-orm"
 
-import { type ActiveCluster } from "../clusters"
-
 import { db } from "@/db"
 import {
   clusterMachines,
   clusters,
   clusterVersions,
-  machines,
   proofs,
-  teams,
   zkvms,
   zkvmVersions,
 } from "@/db/schema"
@@ -17,6 +13,24 @@ import {
 export const getCluster = async (id: string) => {
   const cluster = await db.query.clusters.findFirst({
     where: (clusters, { eq }) => eq(clusters.id, id),
+    with: {
+      team: true,
+      versions: {
+        orderBy: desc(clusterVersions.created_at),
+        with: {
+          zkvm_version: {
+            with: {
+              zkvm: true,
+            },
+          },
+          cluster_machines: {
+            with: {
+              machine: true,
+            },
+          },
+        },
+      },
+    },
   })
 
   return cluster
@@ -34,10 +48,16 @@ export const getClusters = async () => {
               zkvm: true,
             },
           },
+          cluster_machines: {
+            with: {
+              machine: true,
+            },
+          },
         },
       },
     },
   })
+
   return clusters
 }
 
@@ -45,122 +65,46 @@ export const getActiveClusters = async (filters?: { teamId?: string }) => {
   const { teamId } = filters ?? {}
   const sevenDaysAgo = sql`NOW() - INTERVAL '7 days'`
 
-  const rawRows = await db
-    .select({
-      // Cluster info
-      id: clusters.id,
-      nickname: clusters.nickname,
-      description: clusters.description,
-      isOpenSource: clusters.is_open_source,
-      isMultiMachine: clusters.is_multi_machine,
-      proofType: clusters.proof_type,
-      createdAt: clusters.created_at,
-      clusterVersionDate: clusterVersions.created_at,
-
-      // Team info
-      teamId: teams.id,
-      teamName: teams.name,
-      teamLogoUrl: teams.logo_url,
-
-      // ZKVM info
-      zkvmId: zkvms.id,
-      zkvmName: zkvms.name,
-      zkvmSlug: zkvms.slug,
-      zkvmIsa: zkvms.isa,
-      zkvmVersion: zkvmVersions.version,
-
-      // Machine info
-      machineId: machines.id,
-      cpuModel: machines.cpu_model,
-      cpuCores: machines.cpu_cores,
-      gpuModels: machines.gpu_models,
-      gpuCount: machines.gpu_count,
-      gpuRam: machines.gpu_memory_gb,
-      memorySizeGb: machines.memory_size_gb,
-      memoryCount: machines.memory_count,
-      machineCount: clusterMachines.machine_count,
-    })
-    .from(clusters)
-    .innerJoin(teams, eq(clusters.team_id, teams.id))
-    .innerJoin(clusterVersions, eq(clusters.id, clusterVersions.cluster_id))
-    .innerJoin(
-      zkvmVersions,
-      eq(clusterVersions.zkvm_version_id, zkvmVersions.id)
-    )
-    .innerJoin(zkvms, eq(zkvmVersions.zkvm_id, zkvms.id))
-    .leftJoin(
-      clusterMachines,
-      eq(clusterVersions.id, clusterMachines.cluster_version_id)
-    )
-    .leftJoin(machines, eq(clusterMachines.machine_id, machines.id))
-    .where(
+  return db.query.clusters.findMany({
+    where: (clusters, { and }) =>
       and(
         exists(
           db
             .select()
             .from(proofs)
+            .innerJoin(
+              clusterVersions,
+              eq(proofs.cluster_version_id, clusterVersions.id)
+            )
             .where(
               and(
-                eq(proofs.cluster_version_id, clusterVersions.id),
+                eq(clusterVersions.cluster_id, clusters.id),
                 eq(proofs.proof_status, "proved"),
                 gt(proofs.proved_timestamp, sevenDaysAgo)
               )
             )
         ),
         teamId ? eq(clusters.team_id, teamId) : undefined
-      )
-    )
-
-  const clusterMap = new Map<string, ActiveCluster>()
-
-  for (const row of rawRows) {
-    if (!clusterMap.has(row.id)) {
-      // Create new cluster entry
-      clusterMap.set(row.id, {
-        id: row.id,
-        nickname: row.nickname,
-        description: row.description,
-        isOpenSource: row.isOpenSource,
-        isMultiMachine: row.isMultiMachine,
-        proofType: row.proofType,
-        version: {
-          createdAt: row.clusterVersionDate,
+      ),
+    with: {
+      team: true,
+      versions: {
+        orderBy: desc(clusterVersions.created_at),
+        with: {
+          zkvm_version: {
+            with: {
+              zkvm: true,
+            },
+          },
+          cluster_machines: {
+            with: {
+              machine: true,
+            },
+          },
         },
-        team: {
-          id: row.teamId,
-          name: row.teamName,
-          logoUrl: row.teamLogoUrl,
-        },
-        zkvm: {
-          id: row.zkvmId,
-          name: row.zkvmName,
-          isa: row.zkvmIsa,
-          version: row.zkvmVersion,
-          slug: row.zkvmSlug,
-        },
-        machines: [],
-      })
-    }
-
-    const cluster = clusterMap.get(row.id)!
-
-    // Add machine if it exists
-    if (row.machineId) {
-      cluster.machines.push({
-        id: row.machineId,
-        cpuModel: row.cpuModel,
-        cpuCores: row.cpuCores,
-        gpuModels: row.gpuModels,
-        gpuCount: row.gpuCount,
-        gpuRam: row.gpuRam,
-        memorySizeGb: row.memorySizeGb,
-        memoryCount: row.memoryCount,
-        count: row.machineCount ?? 1,
-      })
-    }
-  }
-
-  return Array.from(clusterMap.values())
+      },
+    },
+  })
 }
 
 export const getClustersByTeamId = async (teamId: string) => {

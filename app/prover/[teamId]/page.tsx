@@ -69,11 +69,11 @@ export default async function ProverPage({ params }: ProverPageProps) {
   const clusters = await getActiveClusters({ teamId })
 
   const singleMachineClusters = clusters.filter(
-    (cluster) => !cluster.isMultiMachine
+    (cluster) => !cluster.is_multi_machine
   )
 
   const multiMachineClusters = clusters.filter(
-    (cluster) => cluster.isMultiMachine
+    (cluster) => cluster.is_multi_machine
   )
 
   return (

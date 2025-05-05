@@ -3,7 +3,15 @@ import { Check, X as RedX } from "lucide-react"
 import Image from "next/image"
 import { type AccordionItemProps } from "@radix-ui/react-accordion"
 
-import type { ClusterDetails } from "@/lib/types"
+import type {
+  ClusterBase,
+  ClusterMachineBase,
+  ClusterVersionBase,
+  MachineBase,
+  Team,
+  Zkvm,
+  ZkvmVersion,
+} from "@/lib/types"
 
 import { cn } from "@/lib/utils"
 
@@ -24,8 +32,24 @@ import { formatShortDate } from "@/lib/date"
 import { formatUsd } from "@/lib/number"
 import { prettyMs } from "@/lib/time"
 
+export type ClusterWithRelations = ClusterBase & {
+  team: Team
+  versions: Array<
+    ClusterVersionBase & {
+      zkvm_version: ZkvmVersion & {
+        zkvm: Zkvm
+      }
+      cluster_machines: Array<
+        ClusterMachineBase & {
+          machine: MachineBase
+        }
+      >
+    }
+  >
+}
+
 type ClusterAccordionItemProps = Pick<AccordionItemProps, "value"> & {
-  clusterDetails: ClusterDetails
+  clusterDetails: ClusterWithRelations & { avg_cost: number; avg_time: number }
 }
 const ClusterAccordionItem = ({
   value,
@@ -39,9 +63,9 @@ const ClusterAccordionItem = ({
           href={`/prover/${clusterDetails.team.id}`}
           className="-m-1 w-fit rounded p-1 hover:bg-primary/10"
         >
-          {clusterDetails.team.logoUrl ? (
+          {clusterDetails.team.logo_url ? (
             <Image
-              src={clusterDetails.team.logoUrl}
+              src={clusterDetails.team.logo_url}
               alt="Prover logo"
               height={16}
               width={16}
@@ -58,28 +82,30 @@ const ClusterAccordionItem = ({
         <div>
           <span className="text-sm text-primary">
             <Link
-              href={`/zkvm/${clusterDetails.zkvm.slug}`}
+              href={`/zkvm/${clusterDetails.versions[0].zkvm_version.zkvm.slug}`}
               className="hover:underline"
             >
-              {clusterDetails.zkvm.name}
+              {clusterDetails.versions[0].zkvm_version.zkvm.name}
             </Link>{" "}
             |{" "}
           </span>
-          <span className="text-sm">{clusterDetails.name}</span>
+          <span className="text-sm">
+            {clusterDetails.versions[0].zkvm_version.zkvm.name}
+          </span>
         </div>
       </div>
       <div id="version" className="col-start-2 flex justify-center">
-        {clusterDetails.isOpenSource ? (
+        {clusterDetails.is_open_source ? (
           <Check className="text-level-best" strokeLinecap="square" />
         ) : (
           <RedX className="text-level-worst" strokeLinecap="square" />
         )}
       </div>
       <div id="version" className="col-start-3">
-        {formatUsd(clusterDetails.avgCost)}
+        {formatUsd(clusterDetails.avg_cost)}
       </div>
       <div id="isa" className="col-start-4">
-        {prettyMs(clusterDetails.avgTime)}
+        {prettyMs(clusterDetails.avg_time)}
       </div>
 
       <AccordionTrigger className="col-start-6 my-2 h-fit gap-2 rounded-full border-2 border-primary-border bg-background-highlight p-0.5 text-primary [&>svg]:size-6">
@@ -88,10 +114,14 @@ const ClusterAccordionItem = ({
     </div>
     <AccordionContent className="relative col-span-full flex flex-col gap-12 p-6">
       <div className="flex items-center gap-x-20">
-        <ClusterMachineSummary clusterDetails={clusterDetails} />
+        <ClusterMachineSummary
+          machines={clusterDetails.versions[0].cluster_machines}
+        />
 
         <div className="flex flex-1 flex-col space-y-4 overflow-x-hidden">
-          <HardwareGrid cluster={clusterDetails} />
+          <HardwareGrid
+            clusterMachines={clusterDetails.versions[0].cluster_machines}
+          />
           <div className="flex items-center gap-3 self-end">
             <span className="me-4">GPUs</span>
             {Array(6)
@@ -118,7 +148,7 @@ const ClusterAccordionItem = ({
       <div className="absolute bottom-6 right-6">
         <span className="text-xs italic text-body-secondary">Last updated</span>{" "}
         <span className="text-xs uppercase text-body">
-          {formatShortDate(new Date(clusterDetails.versionDate))}
+          {formatShortDate(new Date(clusterDetails.versions[0].created_at))}
         </span>
       </div>
     </AccordionContent>
@@ -126,7 +156,7 @@ const ClusterAccordionItem = ({
 )
 
 type ClusterAccordionProps = {
-  clusters: ClusterDetails[]
+  clusters: (ClusterWithRelations & { avg_cost: number; avg_time: number })[]
 }
 const ClusterAccordion = ({ clusters }: ClusterAccordionProps) => (
   <Accordion

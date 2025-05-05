@@ -1,12 +1,10 @@
-import { Box, Check, Download, X as RedX } from "lucide-react"
+import { Box, Check, X as RedX } from "lucide-react"
 import type { Metadata } from "next"
 import Image from "next/image"
 import { notFound } from "next/navigation"
 import prettyBytes from "pretty-bytes"
 
-import { ClusterDetails } from "@/lib/types"
-
-import DownloadButton from "@/components/DownloadButton"
+import ClusterMachineSummary from "@/components/ClusterMachineSummary"
 import CalendarCheck from "@/components/svgs/calendar-check.svg"
 import { Button } from "@/components/ui/button"
 // import ClusterMachineSummary from "@/components/ClusterMachineSummary"
@@ -16,9 +14,10 @@ import { MetricBox, MetricInfo, MetricLabel } from "@/components/ui/metric"
 import { Skeleton } from "@/components/ui/skeleton"
 
 import { getCluster } from "@/lib/api/clusters"
-import { getTeam } from "@/lib/api/teams"
+import { getClusterSummaryById } from "@/lib/api/stats"
 import { formatTimeAgo } from "@/lib/date"
 import { getMetadata } from "@/lib/metadata"
+import { formatUsd } from "@/lib/number"
 import { prettyMs } from "@/lib/time"
 
 export type ClusterDetailsPageProps = {
@@ -58,76 +57,12 @@ export default async function ClusterDetailsPage({
     return notFound()
   }
 
-  let team: Awaited<ReturnType<typeof getTeam>>
-  try {
-    team = await getTeam(cluster.team_id)
-    if (!team) throw new Error()
-  } catch {
-    console.warn("Failed to fetch team for cluster", clusterId)
-  }
+  const team = cluster.team
+  const zkvm = cluster.versions[0].zkvm_version.zkvm
 
-  const demoMachines: ClusterDetails["machines"] = [
-    {
-      id: 1,
-      cpuModel: "SeePeeYou",
-      cpuCount: 1,
-      cpuRam: 64, // gb
-      gpuCount: [4, 8],
-      gpuModels: ["hello", "world"],
-      gpuRam: [64, 128], // gb
-      count: 2,
-    },
-    {
-      id: 2,
-      cpuModel: "SeePeeYou2",
-      cpuCount: 2,
-      cpuRam: 64, // gb
-      gpuCount: [4, 8, 16],
-      gpuModels: ["hello", "world", "hola"],
-      gpuRam: [64, 128, 256], // gb
-      count: 32,
-    },
-    {
-      id: 3,
-      cpuModel: "SeePeeYou3",
-      cpuCount: 3,
-      cpuRam: 64, // gb
-      gpuCount: [4, 8],
-      gpuModels: ["hello", "world"],
-      gpuRam: [64, 128], // gb
-      count: 16,
-    },
-    {
-      id: 4,
-      cpuModel: "SeePeeYou",
-      cpuCount: 4,
-      cpuRam: 64, // gb
-      gpuCount: [4, 8],
-      gpuModels: ["hello", "world"],
-      gpuRam: [64, 128], // gb
-      count: 2,
-    },
-    {
-      id: 5,
-      cpuModel: "SeePeeYou2",
-      cpuCount: 5,
-      cpuRam: 64, // gb
-      gpuCount: [4, 8],
-      gpuModels: ["hello", "world"],
-      gpuRam: [64, 128], // gb
-      count: 4,
-    },
-    {
-      id: 6,
-      cpuModel: "SeePeeYou3",
-      cpuCount: 6,
-      cpuRam: 64, // gb
-      gpuCount: [4, 8],
-      gpuModels: ["hello", "world"],
-      gpuRam: [64, 128], // gb
-      count: 8,
-    },
-  ]
+  const clusterSummary = await getClusterSummaryById(clusterId)
+
+  const clusterMachines = cluster.versions[0].cluster_machines
 
   return (
     <div className="-mt-52 w-full space-y-8 px-6 sm:px-8 md:w-[calc(100vw_-_var(--sidebar-width))] md:px-12 lg:px-16 xl:px-20">
@@ -146,8 +81,9 @@ export default async function ClusterDetailsPage({
         </h1>
 
         <div className="text-center font-sans text-sm">
-          {/* // TODO: Differentiate single vs multi */}
-          single machine cluster
+          {cluster.is_multi_machine
+            ? "multi-machine cluster"
+            : "single machine cluster"}
         </div>
         {team && (
           <div className="mx-auto mt-4 flex w-full max-w-lg justify-center border-t border-primary p-6">
@@ -171,42 +107,48 @@ export default async function ClusterDetailsPage({
         <div className="absolute -inset-px z-[-1] rounded-[1.25rem] bg-black/10" />
         <div className="flex flex-col items-center gap-3 p-4">
           <div className="font-sans text-sm font-semibold">open source</div>
-          <RedX className="text-level-worst" strokeLinecap="square" />
+          {cluster.is_open_source ? (
+            <Check
+              className="text-level-best"
+              strokeLinejoin="miter"
+              strokeLinecap="square"
+            />
+          ) : (
+            <RedX className="text-level-worst" strokeLinecap="square" />
+          )}
         </div>
         <div className="flex flex-col items-center gap-3 p-4">
           <div className="font-sans text-sm font-semibold">
             binary available
           </div>
-          <Check
-            className="text-level-best"
+          {/* TODO: Add binary to schema */}
+          {/* {cluster.is_binary_available ? (
+            <Check
+              className="text-level-best"
             strokeLinejoin="miter"
-            strokeLinecap="square"
-          />
+              strokeLinecap="square"
+            />
+          ) : (
+            <RedX className="text-level-worst" strokeLinecap="square" />
+          )} */}
         </div>
         <div className="flex flex-col items-center gap-3 p-4">
           <div className="font-sans text-sm font-semibold">avg cost</div>
           <div className="font-mono text-xl font-semibold text-primary">
-            {new Intl.NumberFormat("en-US", {
-              style: "currency",
-              currency: "USD",
-              minimumSignificantDigits: 2,
-            }).format(0.0056)}
+            {formatUsd(clusterSummary.avg_cost_per_proof ?? 0)}
           </div>
         </div>
         <div className="flex flex-col items-center gap-3 p-4">
           <div className="font-sans text-sm font-semibold">avg time</div>
           <div className="font-mono text-xl font-semibold text-primary">
-            {prettyMs(277_000)}
+            {prettyMs(Number(clusterSummary.avg_proving_time ?? 0))}
           </div>
         </div>
       </div>
 
       <aside className="flex items-center justify-center gap-2 rounded bg-background-accent px-6 py-4 text-center">
         download the binary
-        <Link
-          href="/zkvk/TODO"
-          className="text-//primary-light hover:underline"
-        >
+        <Link href="/TODO" className="text-primary-light hover:underline">
           here
         </Link>
       </aside>
@@ -214,7 +156,7 @@ export default async function ClusterDetailsPage({
       <div className="!mt-16 flex w-full flex-wrap justify-evenly gap-x-8 border-b">
         <div className="flex flex-col items-center gap-1 p-4">
           <div className="font-sans text-sm text-body-secondary">zkVM</div>
-          <div className="font-mono text-lg text-primary">SP1!</div>
+          <div className="font-mono text-lg text-primary">{zkvm.name}</div>
         </div>
         <div className="flex flex-col items-center gap-1 p-4">
           <MetricBox className="py-0">
@@ -226,46 +168,48 @@ export default async function ClusterDetailsPage({
               </MetricInfo>
             </MetricLabel>
           </MetricBox>
-          <div className="font-mono text-lg text-primary">RISC-V!</div>
+          <div className="font-mono text-lg text-primary">{zkvm.isa}</div>
         </div>
         <div className="flex flex-col items-center gap-1 p-4">
           <div className="font-sans text-sm text-body-secondary">
             proof type
           </div>
-          <div className="font-mono text-lg text-primary">hash-based</div>
+          <div className="font-mono text-lg text-primary">
+            {cluster.proof_type}
+          </div>
         </div>
       </div>
 
       <section className="flex max-w-full">
-        {/* // TODO: Re-enable when clusterDetails available for single cluster */}
-        {/* <ClusterMachineSummary clusterDetails={clusterDetails} /> */}
-        <div className="opacity-10">
-          <Skeleton className="me-16 h-80 min-w-48 rounded-2xl" />
-        </div>
+        <ClusterMachineSummary
+          machines={cluster.versions[0].cluster_machines}
+        />
 
         <div className="flex gap-8 overflow-x-auto overflow-y-visible">
-          {demoMachines
-            .sort((a, b) => b.count - a.count)
-            .map((machine) => (
+          {clusterMachines
+            .sort((a, b) => b.machine_count - a.machine_count)
+            .map((clusterMachine) => (
               <div
-                key={machine.id}
+                key={clusterMachine.id}
                 className="relative flex flex-col justify-end -space-y-4"
               >
                 <MachineDetails
-                  machine={machine}
+                  machine={clusterMachine.machine}
                   className="rounded-2xl border border-primary-border bg-background px-8"
                 />
-                {Array.from({ length: machine.count - 1 }).map((_, i) => (
-                  <div
-                    key={i}
-                    className="h-6 rounded-b-2xl border border-primary-border border-t-transparent"
-                  />
-                ))}
+                {Array.from({ length: clusterMachine.machine_count - 1 }).map(
+                  (_, i) => (
+                    <div
+                      key={i}
+                      className="h-6 rounded-b-2xl border border-primary-border border-t-transparent"
+                    />
+                  )
+                )}
                 <div className="!mt-2 inline-flex justify-center">
                   <MetricBox className="py-0">
                     <MetricLabel>
                       <MetricInfo
-                        label={`${machine.count} machines @ ${new Intl.NumberFormat(
+                        label={`${clusterMachine.machine_count} machines @ ${new Intl.NumberFormat(
                           "en-US",
                           {
                             style: "currency",
