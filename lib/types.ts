@@ -233,34 +233,4 @@ export type Slices = [
   SliceDetails,
 ]
 
-export type ClusterDetails = {
-  id: string
-  name: string
-  versionDate: string
-  isOpenSource: boolean
-  isMultiMachine: boolean
-  avgCost: number
-  avgTime: number
-  team: {
-    id: string
-    name: string
-    logoUrl?: string | null
-  }
-  zkvm: {
-    id: number
-    name: string
-    slug: string
-  }
-  machines: {
-    id: number
-    cpuModel: string
-    cpuCount: number
-    cpuRam: number // gb
-    gpuCount: number[]
-    gpuModels: string[]
-    gpuRam: number[] // gb
-    count: number
-  }[]
-}
-
 export type DayRange = (typeof CHART_RANGES)[number]

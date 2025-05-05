@@ -5,7 +5,6 @@ import MachineTabs from "@/components/MachineTabs"
 
 import { getActiveClusters } from "@/lib/api/clusters"
 import { getClusterSummary } from "@/lib/api/stats"
-import { transformClusters } from "@/lib/clusters"
 import { getMetadata } from "@/lib/metadata"
 
 export const metadata: Metadata = getMetadata()
@@ -14,14 +13,24 @@ export default async function Provers() {
   const clusterSummary = await getClusterSummary()
   const activeClusters = await getActiveClusters()
 
-  const clusters = transformClusters(activeClusters, clusterSummary)
+  const clusters = activeClusters.map((cluster) => {
+    const stats = clusterSummary.find(
+      (summary) => summary.cluster_id === cluster.id
+    )
+
+    return {
+      ...cluster,
+      avg_cost: stats?.avg_cost_per_proof ?? 0,
+      avg_time: Number(stats?.avg_proving_time ?? 0),
+    }
+  })
 
   const singleMachineClusters = clusters.filter(
-    (cluster) => !cluster.isMultiMachine
+    (cluster) => !cluster.is_multi_machine
   )
 
   const multiMachineClusters = clusters.filter(
-    (cluster) => cluster.isMultiMachine
+    (cluster) => cluster.is_multi_machine
   )
 
   return (
