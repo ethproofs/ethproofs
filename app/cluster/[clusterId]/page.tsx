@@ -1,3 +1,4 @@
+import { differenceInMilliseconds } from "date-fns"
 import { Box, Check, X as RedX } from "lucide-react"
 import type { Metadata } from "next"
 import Image from "next/image"
@@ -5,6 +6,8 @@ import { notFound } from "next/navigation"
 import prettyBytes from "pretty-bytes"
 
 import ClusterMachineSummary from "@/components/ClusterMachineSummary"
+import DownloadButton from "@/components/DownloadButton"
+import Null from "@/components/Null"
 import CalendarCheck from "@/components/svgs/calendar-check.svg"
 import { Button } from "@/components/ui/button"
 import Link from "@/components/ui/link"
@@ -13,10 +16,12 @@ import { MetricBox, MetricInfo, MetricLabel } from "@/components/ui/metric"
 import { Skeleton } from "@/components/ui/skeleton"
 
 import { getCluster } from "@/lib/api/clusters"
+import { fetchProvedProofsByClusterId } from "@/lib/api/proofs"
 import { getClusterSummaryById } from "@/lib/api/stats"
 import { formatTimeAgo } from "@/lib/date"
 import { getMetadata } from "@/lib/metadata"
 import { formatUsd } from "@/lib/number"
+import { getProvingCost } from "@/lib/proofs"
 import { prettyMs } from "@/lib/time"
 
 export type ClusterDetailsPageProps = {
@@ -62,6 +67,8 @@ export default async function ClusterDetailsPage({
   const clusterSummary = await getClusterSummaryById(clusterId)
 
   const clusterMachines = cluster.versions[0].cluster_machines
+
+  const latestProofs = await fetchProvedProofsByClusterId(clusterId)
 
   return (
     <div className="-mt-52 w-full space-y-8 px-6 sm:px-8 md:w-[calc(100vw_-_var(--sidebar-width))] md:px-12 lg:px-16 xl:px-20">
@@ -228,67 +235,72 @@ export default async function ClusterDetailsPage({
           <Box strokeWidth="1" className="size-11" />
           <div className="font-mono text-xl">latest proofs</div>
         </div>
-        {/* // TODO: Replace with latest proof data */}
-        {Array.from({ length: 6 }).map((_, i) => (
-          <div
-            key={i}
-            className="grid grid-cols-[1fr_repeat(4,_auto)] gap-x-6 border-b border-primary-border p-6"
-          >
-            <div className="col-start-1 row-span-2 grid grid-cols-1 grid-rows-subgrid">
-              <div className="font-mono text-lg text-primary">222566340</div>
-              <div className="font-sans text-xs text-body-secondary">
-                {formatTimeAgo(new Date(Date.now() - 1000 * 60 * 6))}
+        {latestProofs.map((proof, i) => {
+          const costPerProof = getProvingCost(proof)
+          const costPerMgas = costPerProof
+            ? costPerProof / (proof.block.gas_used / 1e6)
+            : null
+
+          return (
+            <div
+              key={i}
+              className="grid grid-cols-[1fr_repeat(4,_auto)] gap-x-6 border-b border-primary-border p-6"
+            >
+              <div className="col-start-1 row-span-2 grid grid-cols-1 grid-rows-subgrid">
+                <div className="font-mono text-lg text-primary">
+                  {proof.block_number}
+                </div>
+                <div className="font-sans text-xs text-body-secondary">
+                  {proof.proved_timestamp ? (
+                    formatTimeAgo(proof.proved_timestamp)
+                  ) : (
+                    <Null />
+                  )}
+                </div>
+              </div>
+              <div className="col-start-2 row-span-2 grid grid-cols-1 grid-rows-subgrid place-items-center">
+                <div className="font-mono text-sm">
+                  proving:{" "}
+                  {proof.proving_time ? prettyMs(proof.proving_time) : <Null />}
+                </div>
+                <div className="font-sans text-xs text-body-secondary">
+                  total to proof:{" "}
+                  {proof.proved_timestamp ? (
+                    prettyMs(
+                      differenceInMilliseconds(
+                        new Date(proof.proved_timestamp),
+                        new Date(proof.block.timestamp)
+                      )
+                    )
+                  ) : (
+                    <Null />
+                  )}
+                </div>
+              </div>
+              <div className="col-start-3 row-span-2 grid grid-cols-1 grid-rows-subgrid place-items-center">
+                <div className="font-mono text-sm">
+                  per proof: {costPerProof ? formatUsd(costPerProof) : <Null />}
+                </div>
+                <div className="font-sans text-xs text-body-secondary">
+                  per Mgas: {costPerMgas ? formatUsd(costPerMgas) : <Null />}
+                </div>
+              </div>
+              <DownloadButton
+                proof={proof}
+                containerClass="col-start-4 row-span-2 grid grid-cols-1 grid-rows-subgrid place-items-center"
+              />
+              <div className="col-start-5 row-span-2 grid grid-cols-1 grid-rows-subgrid place-items-center">
+                <Button disabled variant="solid" className="w-full p-0">
+                  <CalendarCheck className="text-lg" />
+                  verify
+                </Button>
+                <div className="font-sans text-xs text-body-secondary">
+                  in-browser verification
+                </div>
               </div>
             </div>
-            <div className="col-start-2 row-span-2 grid grid-cols-1 grid-rows-subgrid place-items-center">
-              <div className="font-mono text-sm">
-                proving: {prettyMs(204_000)}
-              </div>
-              <div className="font-sans text-xs text-body-secondary">
-                total to proof: {prettyMs(350_000)}
-              </div>
-            </div>
-            <div className="col-start-3 row-span-2 grid grid-cols-1 grid-rows-subgrid place-items-center">
-              <div className="font-mono text-sm">
-                per proof:{" "}
-                {new Intl.NumberFormat("en-US", {
-                  style: "currency",
-                  currency: "USD",
-                  minimumSignificantDigits: 2,
-                  maximumSignificantDigits: 3,
-                }).format(0.0556)}
-              </div>
-              <div className="font-sans text-xs text-body-secondary">
-                per Mgas:{" "}
-                {new Intl.NumberFormat("en-US", {
-                  style: "currency",
-                  currency: "USD",
-                  minimumSignificantDigits: 2,
-                  maximumSignificantDigits: 3,
-                }).format(0.0024)}
-              </div>
-            </div>
-            <div className="col-start-4 row-span-2 grid grid-cols-1 grid-rows-subgrid place-items-center">
-              <div className="REMOVE inline-flex h-8 w-32 justify-center rounded-full border border-primary opacity-10">
-                download
-              </div>
-              {/* // TODO: Re-enable and pass proof when available */}
-              {/* <DownloadButton proof={undefined} /> */}
-              <div className="font-sans text-xs text-body-secondary">
-                ({prettyBytes(3_500_000)})
-              </div>
-            </div>
-            <div className="col-start-5 row-span-2 grid grid-cols-1 grid-rows-subgrid place-items-center">
-              <Button disabled variant="solid" className="w-full p-0">
-                <CalendarCheck className="text-lg" />
-                verify
-              </Button>
-              <div className="font-sans text-xs text-body-secondary">
-                in-browser verification
-              </div>
-            </div>
-          </div>
-        ))}
+          )
+        })}
       </section>
 
       {/* TODO: Mobile responsiveness */}

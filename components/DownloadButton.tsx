@@ -37,7 +37,7 @@ const DownloadButton = ({
     labelClass
   )
 
-  const sizingClassName = "h-8 gap-2 self-center text-2xl"
+  const sizingClassName = "gap-2 self-center"
 
   if (proof_status === "proved")
     return (
@@ -45,16 +45,15 @@ const DownloadButton = ({
         <Button
           variant="outline"
           className={cn(sizingClassName, className)}
-          size="icon"
           asChild
         >
           <a href={`/api/v0/proofs/download/${proof_id}`} download>
-            <ArrowDown />
-            <span className={labelClassName}>Download proof</span>
+            <ArrowDown className="size-4" />
+            <span className={labelClassName}>download</span>
           </a>
         </Button>
         <span className="text-xs text-body-secondary">
-          {size_bytes ? prettyBytes(size_bytes) : ""}
+          ({size_bytes ? prettyBytes(size_bytes) : ""})
         </span>
       </div>
     )
@@ -63,7 +62,7 @@ const DownloadButton = ({
     return (
       <Popover>
         <PopoverTrigger>
-          <Button size="icon" variant="outline" asChild>
+          <Button variant="outline" asChild>
             <div
               className={cn(sizingClassName, fakeButtonClassName, className)}
             >
@@ -84,7 +83,7 @@ const DownloadButton = ({
     return (
       <Popover>
         <PopoverTrigger>
-          <Button size="icon" variant="outline" asChild>
+          <Button variant="outline" asChild>
             <div
               className={cn(sizingClassName, fakeButtonClassName, className)}
             >
