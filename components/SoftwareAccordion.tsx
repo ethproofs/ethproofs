@@ -37,7 +37,7 @@ const SoftwareAccordionItem = ({
 
   return (
     <AccordionItem value={value} className="col-span-5 grid grid-cols-subgrid">
-      <div className="col-span-5 grid grid-cols-subgrid items-center gap-12 border-b hover:bg-primary/5 dark:hover:bg-primary/10">
+      <div className="col-span-5 grid grid-cols-subgrid items-center gap-12 border-b hover:bg-primary/5 dark:hover:bg-primary/10 px-6">
         <div className="col-start-1 flex items-center gap-3">
           <Link href={`/zkvm/${zkvm.slug}`} className="hover:underline">
             <span className="block font-mono text-2xl text-primary">
