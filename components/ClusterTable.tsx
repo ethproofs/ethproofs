@@ -5,11 +5,11 @@ import { cn } from "@/lib/utils"
 import { ButtonLink } from "./ui/button"
 import Link from "./ui/link"
 import { MetricBox, MetricInfo, MetricLabel } from "./ui/metric"
+import { ClusterWithRelations } from "./ClusterAccordion"
 
-import { ActiveCluster } from "@/lib/clusters"
 import { formatShortDate } from "@/lib/date"
 
-type ClusterRowItemProps = { cluster: ActiveCluster }
+type ClusterRowItemProps = { cluster: ClusterWithRelations }
 
 const ClusterRowItem = ({ cluster }: ClusterRowItemProps) => (
   <div className="col-span-full row-span-2 grid grid-cols-subgrid grid-rows-subgrid border-b border-primary-border">
@@ -18,7 +18,7 @@ const ClusterRowItem = ({ cluster }: ClusterRowItemProps) => (
       <div className="mt-auto text-xs">
         <span className="italic text-body-secondary">updated</span>{" "}
         <span className="uppercase">
-          {formatShortDate(new Date(cluster.version.createdAt))}
+          {formatShortDate(new Date(cluster.versions[0].created_at))}
         </span>
       </div>
     </div>
@@ -28,7 +28,9 @@ const ClusterRowItem = ({ cluster }: ClusterRowItemProps) => (
           <MetricInfo label="zkVM">TODO: Popover details</MetricInfo>
         </MetricLabel>
       </MetricBox>
-      <Link href={`/zkvm/${cluster.zkvm.slug}`}>{cluster.zkvm.name}</Link>
+      <Link href={`/zkvms/${cluster.versions[0].zkvm_version.zkvm.slug}`}>
+        {cluster.versions[0].zkvm_version.zkvm.name}
+      </Link>
     </div>
     <div className="row-span-2 grid grid-cols-1 grid-rows-subgrid px-6 py-4 text-center">
       <MetricBox className="py-0">
@@ -40,7 +42,7 @@ const ClusterRowItem = ({ cluster }: ClusterRowItemProps) => (
           </MetricInfo>
         </MetricLabel>
       </MetricBox>
-      <div className="">{cluster.zkvm.isa}</div>
+      <div className="">{cluster.versions[0].zkvm_version.zkvm.isa}</div>
     </div>
     <div className="row-span-2 grid grid-cols-1 grid-rows-subgrid px-6 py-4 text-center">
       <MetricBox className="py-0">
@@ -48,14 +50,14 @@ const ClusterRowItem = ({ cluster }: ClusterRowItemProps) => (
           <MetricInfo label="proof type">TODO: Popover details</MetricInfo>
         </MetricLabel>
       </MetricBox>
-      <div className="">{cluster.proofType}</div>
+      <div className="">{cluster.proof_type}</div>
     </div>
     <div className="row-span-2 grid grid-cols-1 place-items-center px-6 py-4">
       <ButtonLink
         size="icon"
         variant="outline"
         className="h-fit bg-background-highlight p-1"
-        href={`/cluster/${cluster.id}`}
+        href={`/clusters/${cluster.id}`}
       >
         <ChevronRight />
       </ButtonLink>
@@ -64,7 +66,7 @@ const ClusterRowItem = ({ cluster }: ClusterRowItemProps) => (
 )
 
 type ClusterTableProps = React.HTMLAttributes<HTMLDivElement> & {
-  clusters: ActiveCluster[]
+  clusters: ClusterWithRelations[]
 }
 
 const ClusterTable = ({ className, clusters, ...props }: ClusterTableProps) => (

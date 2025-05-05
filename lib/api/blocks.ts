@@ -80,3 +80,44 @@ export const fetchBlocksPaginated = async (
     rowCount: rowCount.count,
   }
 }
+
+export const fetchBlock = async ({
+  blockNumber,
+  hash,
+}: {
+  blockNumber?: number
+  hash?: string
+}) => {
+  const block = await db.query.blocks.findFirst({
+    with: {
+      proofs: {
+        with: {
+          team: true,
+          cluster_version: {
+            with: {
+              cluster: true,
+              cluster_machines: {
+                with: {
+                  machine: true,
+                  cloud_instance: true,
+                },
+              },
+              zkvm_version: {
+                with: {
+                  zkvm: true,
+                },
+              },
+            },
+          },
+        },
+      },
+    },
+    where: (blocks, { eq, or }) =>
+      or(
+        blockNumber ? eq(blocks.block_number, blockNumber) : undefined,
+        hash ? eq(blocks.hash, hash) : undefined
+      ),
+  })
+
+  return block
+}

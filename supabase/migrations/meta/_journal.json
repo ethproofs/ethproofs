@@ -113,6 +113,13 @@
       "when": 1746192359710,
       "tag": "0015_team-clusters-stats",
       "breakpoints": true
+    },
+    {
+      "idx": 16,
+      "version": "7",
+      "when": 1746449818345,
+      "tag": "0016_cluster-software-link",
+      "breakpoints": true
     }
   ]
 }

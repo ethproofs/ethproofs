@@ -8,9 +8,8 @@ import { Card, CardHeader, CardTitle } from "../ui/card"
 
 import { getActiveClusters, getActiveMachineCount } from "@/lib/api/clusters"
 import { getClusterSummary, getTeamsSummary } from "@/lib/api/stats"
-import { transformClusters } from "@/lib/clusters"
 
-const ProversSection = async () => {
+const ProverTeamsSection = async () => {
   const teamsSummary = await getTeamsSummary()
   const clusterSummary = await getClusterSummary()
   const machineCount = await getActiveMachineCount()
@@ -29,14 +28,24 @@ const ProversSection = async () => {
     },
   ]
 
-  const clusters = transformClusters(activeClusters, clusterSummary)
+  const clusters = activeClusters.map((cluster) => {
+    const stats = clusterSummary.find(
+      (summary) => summary.cluster_id === cluster.id
+    )
+
+    return {
+      ...cluster,
+      avg_cost: stats?.avg_cost_per_proof ?? 0,
+      avg_time: Number(stats?.avg_proving_time ?? 0),
+    }
+  })
 
   const singleMachineClusters = clusters.filter(
-    (cluster) => !cluster.isMultiMachine
+    (cluster) => !cluster.is_multi_machine
   )
 
   const multiMachineClusters = clusters.filter(
-    (cluster) => cluster.isMultiMachine
+    (cluster) => cluster.is_multi_machine
   )
 
   return (
@@ -53,7 +62,7 @@ const ProversSection = async () => {
       />
 
       <div className="flex justify-center">
-        <ButtonLink variant="outline" href="/provers">
+        <ButtonLink variant="outline" href="/teams">
           See all
         </ButtonLink>
       </div>
@@ -61,4 +70,4 @@ const ProversSection = async () => {
   )
 }
 
-export default ProversSection
+export default ProverTeamsSection

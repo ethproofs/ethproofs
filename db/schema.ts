@@ -111,6 +111,7 @@ export const clusters = pgTable(
     proof_type: varchar("proof_type"),
     is_open_source: boolean().notNull().default(false),
     is_multi_machine: boolean().notNull().default(false),
+    software_link: text(),
     created_at: timestamp("created_at", {
       withTimezone: true,
       mode: "string",

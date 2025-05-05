@@ -1,9 +1,9 @@
-import { and, eq, gte, lte, sql } from "drizzle-orm"
+import { and, eq, gte, inArray, lte, sql } from "drizzle-orm"
 import { count } from "drizzle-orm"
 import { PaginationState } from "@tanstack/react-table"
 
 import { db } from "@/db"
-import { proofs } from "@/db/schema"
+import { clusterVersions, proofs } from "@/db/schema"
 
 export const fetchTeamProofsPaginated = async (
   teamId: string,
@@ -76,6 +76,43 @@ export const lastProvedProof = async () => {
   const lastProvedProof = await db.query.proofs.findFirst({
     where: (proofs, { eq }) => eq(proofs.proof_status, "proved"),
     orderBy: (proofs, { desc }) => [desc(proofs.created_at)],
+  })
+
+  return lastProvedProof
+}
+
+export const fetchProvedProofsByClusterId = async (
+  clusterId: string,
+  { limit = 10 }: { limit?: number } = {}
+) => {
+  const lastProvedProof = await db.query.proofs.findMany({
+    with: {
+      block: true,
+      cluster_version: {
+        with: {
+          cluster: true,
+          cluster_machines: {
+            with: {
+              cloud_instance: true,
+              machine: true,
+            },
+          },
+        },
+      },
+    },
+    where: (proofs, { eq, and, inArray }) =>
+      and(
+        eq(proofs.proof_status, "proved"),
+        inArray(
+          proofs.cluster_version_id,
+          db
+            .select({ id: clusterVersions.id })
+            .from(clusterVersions)
+            .where(eq(clusterVersions.cluster_id, clusterId))
+        )
+      ),
+    orderBy: (proofs, { desc }) => [desc(proofs.created_at)],
+    limit,
   })
 
   return lastProvedProof

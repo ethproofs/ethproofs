@@ -1,9 +1,9 @@
 import { redirect } from "next/navigation"
 
-import type { ProverPageProps } from "@/app/prover/[teamId]/page"
+import type { TeamDetailsPageProps } from "@/app/teams/[teamId]/page"
 
-export default async function ProverPage({ params }: ProverPageProps) {
+export default async function RedirectPage({ params }: TeamDetailsPageProps) {
   const { teamId } = await params
 
-  redirect("/prover/" + teamId)
+  redirect("/teams/" + teamId)
 }

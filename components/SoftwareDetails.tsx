@@ -5,6 +5,8 @@ import type {
   ZkvmMetrics,
 } from "@/lib/types"
 
+import { cn } from "@/lib/utils"
+
 import { MetricBox, MetricInfo, MetricLabel } from "./ui/metric"
 import LevelMeter from "./LevelMeter"
 import Pizza from "./Pizza"
@@ -29,15 +31,22 @@ type Props = {
   numericMetrics: NumericMetrics
   categoricalMetrics: CategoricalMetrics
   severityLevels: SeverityLevel[]
+  className?: string
 }
 
 const SoftwareDetails = ({
   numericMetrics,
   categoricalMetrics,
   severityLevels,
+  className,
 }: Props) => {
   return (
-    <div className="grid grid-cols-[1fr,4fr,2fr,4fr,1fr] gap-8 p-8">
+    <div
+      className={cn(
+        "grid grid-cols-[2fr,2fr,2fr,2fr,2fr] gap-8 p-8",
+        className
+      )}
+    >
       <div className="col-span-2 col-start-1 row-start-1 flex-1 text-center">
         <MetricBox>
           <LevelMeter
@@ -105,7 +114,7 @@ const SoftwareDetails = ({
         </MetricBox>
       </div>
 
-      <div className="col-start-3 row-span-3 row-start-2 text-[10rem]">
+      <div className="col-start-3 row-span-3 row-start-2 flex flex-col items-center text-[10rem]">
         <Pizza slices={severityLevels.map((level) => ({ level })) as Slices} />
       </div>
 

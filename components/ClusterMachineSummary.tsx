@@ -1,12 +1,15 @@
-import type { ClusterDetails } from "@/lib/types"
+import { ClusterMachineBase, MachineBase } from "@/lib/types"
 
 import { cn, sumArray } from "@/lib/utils"
 
 type ClusterMachineSummaryProps = React.HTMLAttributes<HTMLDivElement> & {
-  clusterDetails: ClusterDetails
+  machines: (ClusterMachineBase & {
+    machine: MachineBase
+  })[]
 }
+
 const ClusterMachineSummary = ({
-  clusterDetails,
+  machines,
   className,
   ...props
 }: ClusterMachineSummaryProps) => (
@@ -19,7 +22,7 @@ const ClusterMachineSummary = ({
         total machines
       </span>
       <span className="block font-mono text-2xl font-bold text-body">
-        {sumArray(clusterDetails.machines.map((m) => m.count))}
+        {sumArray(machines.map((m) => m.machine_count))}
       </span>
     </div>
     <div className="grid grid-cols-2 place-items-center gap-x-3 gap-y-4 text-center">
@@ -27,7 +30,7 @@ const ClusterMachineSummary = ({
         <span className="block text-sm text-body-secondary">GPUs</span>
         <span className="block font-mono text-xl text-body">
           {sumArray(
-            clusterDetails.machines.map((m) => sumArray(m.gpuCount) * m.count)
+            machines.map((m) => sumArray(m.machine.gpu_count) * m.machine_count)
           )}
         </span>
       </div>
@@ -35,7 +38,9 @@ const ClusterMachineSummary = ({
         <span className="block text-sm text-body-secondary">GPU RAM</span>
         <span className="block font-mono text-xl text-body">
           {sumArray(
-            clusterDetails.machines.map((m) => sumArray(m.gpuRam) * m.count)
+            machines.map(
+              (m) => sumArray(m.machine.gpu_memory_gb) * m.machine_count
+            )
           )}{" "}
           GB
         </span>
@@ -43,13 +48,20 @@ const ClusterMachineSummary = ({
       <div className="flex flex-col items-center text-nowrap text-center">
         <span className="block text-sm text-body-secondary">CPU cores</span>
         <span className="block font-mono text-xl text-body">
-          {sumArray(clusterDetails.machines.map((m) => m.cpuCount * m.count))}
+          {sumArray(
+            machines.map((m) => (m.machine.cpu_cores ?? 0) * m.machine_count)
+          )}
         </span>
       </div>
       <div className="flex flex-col items-center text-nowrap text-center">
         <span className="block text-sm text-body-secondary">CPU RAM</span>
         <span className="block font-mono text-xl text-body">
-          {sumArray(clusterDetails.machines.map((m) => m.cpuRam * m.count))} GB
+          {sumArray(
+            machines.map(
+              (m) => sumArray(m.machine.memory_size_gb) * m.machine_count
+            )
+          )}{" "}
+          GB
         </span>
       </div>
     </div>
