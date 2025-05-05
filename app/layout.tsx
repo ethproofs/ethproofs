@@ -3,6 +3,7 @@ import Script from "next/script"
 
 import MobileSearchInput from "@/components/header/MobileSearchInput"
 import ThemeSwitch from "@/components/header/ThemeSwitch"
+import LampEffect from "@/components/LampEffect"
 import { AppSidebar } from "@/components/Sidebar"
 import EthProofsLogo from "@/components/svgs/eth-proofs-logo.svg"
 import GitHub from "@/components/svgs/github.svg"
@@ -74,6 +75,8 @@ export default function RootLayout({
           <AppSidebar />
 
           <div className="relative flex w-full flex-col gap-16 overflow-x-hidden md:w-[calc(100vw_-_var(--sidebar-width))]">
+            <LampEffect />
+
             <div
               className={cn(
                 "bg-[url('/images/blocks-and-hashes.svg')] bg-no-repeat",
