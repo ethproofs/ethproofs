@@ -28,8 +28,6 @@ import Providers from "./providers"
 
 import "../styles/globals.css"
 
-import BlocksAndHashes from "@/public/images/blocks-and-hashes.svg"
-
 export default function RootLayout({
   children,
 }: {
@@ -75,16 +73,19 @@ export default function RootLayout({
         <Providers>
           <AppSidebar />
 
-          <div className="relative flex max-w-screen-2xl flex-col gap-16 overflow-x-hidden">
-            <BlocksAndHashes className="absolute end-[-20rem] top-[-4rem] z-[-1] hue-rotate-180 invert dark:hue-rotate-0 dark:invert-0 max-md:hidden" />
-
+          <div className="relative flex w-full flex-col gap-16 overflow-x-hidden md:w-[calc(100vw_-_var(--sidebar-width))]">
             <div
-              className="flex h-40 w-full flex-col items-center justify-between gap-4 p-0 md:p-16"
-              style={{
-                backgroundImage:
-                  "radial-gradient(ellipse 40% 80% at 50% -4rem, hsla(var(--primary)) 0%, transparent 100%)",
-              }}
-            >
+              className={cn(
+                "bg-[url('/images/blocks-and-hashes.svg')] bg-no-repeat",
+                "absolute h-80 w-screen",
+                "opacity-75 hue-rotate-180 invert dark:opacity-100 dark:hue-rotate-0 dark:invert-0 max-md:hidden"
+              )}
+              style={{ backgroundPosition: "100% -6rem" }}
+            />
+
+            <div className="absolute top-0 z-[-1] h-[50vh] w-full bg-gradient-to-b from-background to-background/0" />
+
+            <div className="flex h-40 w-full flex-col items-center justify-between gap-4 p-0 md:p-16">
               <header
                 id="mobile-header"
                 className={cn(
