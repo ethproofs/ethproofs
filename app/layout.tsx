@@ -80,13 +80,13 @@ export default function RootLayout({
             <div
               className={cn(
                 "bg-[url('/images/blocks-and-hashes.svg')] bg-no-repeat",
-                "absolute h-80 w-screen",
+                "pointer-events-none absolute h-80 w-screen",
                 "opacity-75 hue-rotate-180 invert dark:opacity-100 dark:hue-rotate-0 dark:invert-0 max-md:hidden"
               )}
               style={{ backgroundPosition: "100% -6rem" }}
             />
 
-            <div className="absolute top-0 z-[-1] h-[50vh] w-full bg-gradient-to-b from-background to-background/0" />
+            <div className="pointer-events-none absolute top-0 -z-10 h-[50vh] w-full bg-gradient-to-b from-background to-background/0" />
 
             <div className="flex h-40 w-full flex-col items-center justify-between gap-4 p-0 md:p-16">
               <header
