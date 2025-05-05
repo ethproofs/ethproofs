@@ -102,6 +102,11 @@ export const fetchBlock = async ({
                   cloud_instance: true,
                 },
               },
+              zkvm_version: {
+                with: {
+                  zkvm: true,
+                },
+              },
             },
           },
         },

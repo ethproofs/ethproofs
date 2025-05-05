@@ -1,4 +1,11 @@
-import { BlockBase, ProofWithCluster } from "@/lib/types"
+import {
+  BlockBase,
+  ClusterVersion,
+  ProofBase,
+  Team,
+  Zkvm,
+  ZkvmVersion,
+} from "@/lib/types"
 
 import Cpu from "@/components/svgs/cpu.svg"
 import * as Info from "@/components/ui/info"
@@ -23,7 +30,14 @@ import { getProvingCost, hasProvedTimestamp, isCompleted } from "@/lib/proofs"
 import { prettyMs } from "@/lib/time"
 
 type ProofRowProps = {
-  proof: ProofWithCluster
+  proof: ProofBase & {
+    team: Team
+    cluster_version: ClusterVersion & {
+      zkvm_version: ZkvmVersion & {
+        zkvm: Zkvm
+      }
+    }
+  }
   block: BlockBase
 }
 
@@ -50,8 +64,9 @@ const ProofRow = ({ proof, block }: ProofRowProps) => {
 
   const provingCost = getProvingCost(proof)
 
-  const cluster = cluster_version?.cluster
-  const machines = cluster_version?.cluster_machines
+  const cluster = cluster_version.cluster
+  const machines = cluster_version.cluster_machines
+  const zkvm = cluster_version.zkvm_version.zkvm
 
   return (
     <div
@@ -70,14 +85,19 @@ const ProofRow = ({ proof, block }: ProofRowProps) => {
           "md:col-span-1 md:col-start-1 md:row-span-1 md:row-start-1"
         )}
       >
-        {team?.name && (
-          <Link
-            href={"/prover/" + team?.id}
-            className="text-2xl hover:text-primary-light hover:underline"
-          >
-            {team.name}
-          </Link>
-        )}
+        <div className="flex flex-col gap-2">
+          {team?.name && (
+            <Link
+              href={"/prover/" + team?.id}
+              className="text-2xl hover:text-primary-light hover:underline"
+            >
+              {team.name}
+            </Link>
+          )}
+          {zkvm.name && (
+            <span className="text-sm text-primary-light">{zkvm.name}</span>
+          )}
+        </div>
       </div>
       <div
         className={cn(
