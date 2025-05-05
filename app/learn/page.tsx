@@ -19,7 +19,7 @@ export default function LearnPage() {
 
   return (
     <>
-      <div className="absolute top-16 w-full space-y-12 px-6 text-center font-mono font-semibold sm:px-8 md:px-12 lg:px-16 xl:px-20">
+      <div className="absolute top-0 h-40 w-full space-y-12 px-6 pt-24 text-center font-mono font-semibold">
         <h1
           className="text-3xl"
           style={{
@@ -34,10 +34,8 @@ export default function LearnPage() {
         </h1>
       </div>
 
-      <div className="w-screen md:w-[calc(100vw_-_var(--sidebar-width))]">
-        <div className="mx-auto max-w-screen-md space-y-8 px-8 md:px-12">
-          <MarkdownProvider>{content}</MarkdownProvider>
-        </div>
+      <div className="mx-auto max-w-screen-md space-y-8 px-6 md:px-8">
+        <MarkdownProvider>{content}</MarkdownProvider>
       </div>
     </>
   )

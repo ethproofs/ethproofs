@@ -130,8 +130,8 @@ export default async function ClusterDetailsPage({
   ]
 
   return (
-    <div className="-mt-52 w-full space-y-8 px-6 sm:px-8 md:w-[calc(100vw_-_var(--sidebar-width))] md:px-12 lg:px-16 xl:px-20">
-      <div id="hero-section" className="flex flex-col items-center gap-2 pt-20">
+    <div className="-mt-40 space-y-8 px-6 md:px-8">
+      <div id="hero-section" className="flex flex-col items-center gap-2">
         <h1
           className="font-mono text-4xl font-semibold"
           style={{
@@ -353,7 +353,7 @@ export default async function ClusterDetailsPage({
         ))}
       </section>
 
-      {/* TODO: Mobile responsiveness */}
+      {/* // TODO: Mobile responsiveness */}
       <section className="flex max-w-full flex-col">
         <div className="flex items-center gap-2 px-6">
           <Box strokeWidth="1" className="size-11" />

@@ -21,8 +21,8 @@ export default async function TeamsPage() {
   const teamsSummary = await getTeamsSummary()
 
   return (
-    <div className="w-full max-w-screen-xl px-6 sm:px-8 md:px-12 lg:w-[calc(100vw_-_var(--sidebar-width))] lg:px-16 xl:px-20">
-      <div className="absolute inset-x-0 top-16 space-y-12 text-center font-mono font-semibold">
+    <>
+      <div className="absolute top-0 h-40 w-full space-y-12 px-6 pt-24 text-center font-mono font-semibold md:px-8">
         <h1
           className="text-3xl"
           style={{
@@ -33,11 +33,11 @@ export default async function TeamsPage() {
               0 0 1rem hsla(var(--background-modal))`,
           }}
         >
-          teams
+          teams teams teams teams teams teams teams teams
         </h1>
         <div>All the teams with proving machines</div>
       </div>
-      <div className="md://grid-cols-[repeat(auto-fill,minmax(24rem,1fr))] mx-auto grid w-full gap-y-12 md:grid-cols-[repeat(2,_auto)] md:gap-x-12 xl:gap-x-32">
+      <div className="grid gap-y-12 px-6 md:grid-cols-[repeat(2,_auto)] md:gap-x-12 md:px-8 xl:gap-x-32">
         {teamsSummary &&
           teamsSummary.map(
             ({
@@ -111,6 +111,6 @@ export default async function TeamsPage() {
             }
           )}
       </div>
-    </div>
+    </>
   )
 }
