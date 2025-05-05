@@ -64,7 +64,6 @@ const ClusterAccordionItem = ({
   return (
     <AccordionItem value={value} className="col-span-6 grid grid-cols-subgrid">
       <div className="col-span-6 grid grid-cols-subgrid items-center gap-12 px-6 py-4 hover:bg-primary/5 dark:hover:bg-primary/10">
-        {/* TODO: Update to match design */}
         <div className="col-start-1 flex flex-col gap-1">
           <Link
             href={`/prover/${clusterDetails.team.id}`}
@@ -106,8 +105,15 @@ const ClusterAccordionItem = ({
             <RedX className="text-level-worst" strokeLinecap="square" />
           )}
         </div>
-        <div className="col-start-3">{formatUsd(clusterDetails.avg_cost)}</div>
-        <div className="col-start-4">{prettyMs(clusterDetails.avg_time)}</div>
+        <div className="col-start-3 flex justify-center">
+          {clusterDetails.software_link ? (
+            <Check className="text-level-best" strokeLinecap="square" />
+          ) : (
+            <RedX className="text-level-worst" strokeLinecap="square" />
+          )}
+        </div>
+        <div className="col-start-4">{formatUsd(clusterDetails.avg_cost)}</div>
+        <div className="col-start-5">{prettyMs(clusterDetails.avg_time)}</div>
 
         <AccordionTrigger className="col-start-6 my-2 h-fit gap-2 rounded-full border-2 border-primary-border bg-background-highlight p-0.5 text-primary [&>svg]:size-6">
           <span className="sr-only">Toggle details</span>
@@ -174,6 +180,13 @@ const ClusterAccordion = ({ clusters }: ClusterAccordionProps) => (
       </MetricBox>
       <MetricBox className="col-start-3">
         <MetricLabel>
+          <MetricInfo label="binary available">
+            TODO: Popover details
+          </MetricInfo>
+        </MetricLabel>
+      </MetricBox>
+      <MetricBox className="col-start-4">
+        <MetricLabel>
           <MetricInfo label="avg cost">
             Instruction set architecture
             <br />
@@ -181,7 +194,7 @@ const ClusterAccordion = ({ clusters }: ClusterAccordionProps) => (
           </MetricInfo>
         </MetricLabel>
       </MetricBox>
-      <MetricBox className="col-start-4">
+      <MetricBox className="col-start-5">
         <MetricLabel>
           <MetricInfo label="avg time">TODO: Popover details</MetricInfo>
         </MetricLabel>

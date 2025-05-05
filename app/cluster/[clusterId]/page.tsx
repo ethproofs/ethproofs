@@ -118,16 +118,15 @@ export default async function ClusterDetailsPage({
           <div className="font-sans text-sm font-semibold">
             binary available
           </div>
-          {/* TODO: Add binary to schema */}
-          {/* {cluster.is_binary_available ? (
+          {cluster.software_link ? (
             <Check
               className="text-level-best"
-            strokeLinejoin="miter"
+              strokeLinejoin="miter"
               strokeLinecap="square"
             />
           ) : (
             <RedX className="text-level-worst" strokeLinecap="square" />
-          )} */}
+          )}
         </div>
         <div className="flex flex-col items-center gap-3 p-4">
           <div className="font-sans text-sm font-semibold">avg cost</div>
@@ -143,12 +142,17 @@ export default async function ClusterDetailsPage({
         </div>
       </div>
 
-      <aside className="flex items-center justify-center gap-2 rounded bg-background-accent px-6 py-4 text-center">
-        download the binary
-        <Link href="/TODO" className="text-primary-light hover:underline">
-          here
-        </Link>
-      </aside>
+      {cluster.software_link && (
+        <aside className="flex items-center justify-center gap-2 rounded bg-background-accent px-6 py-4 text-center">
+          download the binary
+          <Link
+            href={cluster.software_link}
+            className="text-primary-light hover:underline"
+          >
+            here
+          </Link>
+        </aside>
+      )}
 
       <div className="!mt-16 flex w-full flex-wrap justify-evenly gap-x-8 border-b">
         <div className="flex flex-col items-center gap-1 p-4">
