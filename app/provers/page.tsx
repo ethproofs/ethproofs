@@ -27,18 +27,7 @@ export default async function Provers() {
   return (
     <>
       <div className="absolute top-0 h-40 w-full space-y-12 px-6 pt-24 text-center font-mono font-semibold">
-        <h1
-          className="text-3xl"
-          style={{
-            textShadow: `
-              0 0 3rem hsla(var(--background-modal)),
-              0 0 2rem hsla(var(--background-modal)),
-              0 0 1rem hsla(var(--background-modal)),
-              0 0 1rem hsla(var(--background-modal))`,
-          }}
-        >
-          provers
-        </h1>
+        <h1 className="text-shadow text-3xl">provers</h1>
         <div>Clusters or single machines</div>
       </div>
 

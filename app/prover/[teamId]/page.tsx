@@ -79,16 +79,7 @@ export default async function ProverPage({ params }: ProverPageProps) {
   return (
     <div className="-mt-40 px-6 md:px-8">
       <div id="hero-section">
-        <h1
-          className="font-serif text-4xl font-semibold"
-          style={{
-            textShadow: `
-              0 0 3rem hsla(var(--background-modal)),
-              0 0 2rem hsla(var(--background-modal)),
-              0 0 1rem hsla(var(--background-modal)),
-              0 0 1rem hsla(var(--background-modal))`,
-          }}
-        >
+        <h1 className="text-shadow font-serif text-4xl font-semibold">
           {team.logo_url && (
             <Image
               src={team.logo_url}

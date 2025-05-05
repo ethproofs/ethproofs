@@ -64,18 +64,7 @@ export default async function ZkvmDetailsPage({
   return (
     <>
       <div className="absolute top-0 h-40 w-full space-y-4 px-6 pt-24 text-center font-mono md:px-8">
-        <h1
-          className="text-3xl font-semibold"
-          style={{
-            textShadow: `
-              0 0 3rem hsla(var(--background-modal)),
-              0 0 2rem hsla(var(--background-modal)),
-              0 0 1rem hsla(var(--background-modal)),
-              0 0 1rem hsla(var(--background-modal))`,
-          }}
-        >
-          {zkvm.name}
-        </h1>
+        <h1 className="text-shadow text-3xl font-semibold">{zkvm.name}</h1>
 
         <div className="flex items-center justify-center gap-3">
           <span className="inline-block font-mono italic text-body-secondary">

@@ -10,18 +10,7 @@ export default async function Index() {
   return (
     <>
       <div className="absolute top-0 h-40 w-full space-y-12 px-6 pt-24 text-center font-mono font-semibold md:px-8">
-        <h1
-          className="text-3xl"
-          style={{
-            textShadow: `
-              0 0 3rem hsla(var(--background-modal)),
-              0 0 2rem hsla(var(--background-modal)),
-              0 0 1rem hsla(var(--background-modal)),
-              0 0 1rem hsla(var(--background-modal))`,
-          }}
-        >
-          zkVMs
-        </h1>
+        <h1 className="text-shadow text-3xl">zkVMs</h1>
       </div>
 
       <div className="flex flex-1 flex-col items-center gap-20 px-6 md:px-8">
