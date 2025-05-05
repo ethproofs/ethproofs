@@ -89,9 +89,7 @@ const ClusterAccordionItem = ({
             </Link>{" "}
             |{" "}
           </span>
-          <span className="text-sm">
-            {clusterDetails.versions[0].zkvm_version.zkvm.name}
-          </span>
+          <span className="text-sm">{clusterDetails.nickname}</span>
         </div>
       </div>
       <div className="col-start-2 flex justify-center">
