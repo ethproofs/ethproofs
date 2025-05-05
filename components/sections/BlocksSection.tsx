@@ -34,7 +34,7 @@ const BlocksSection = async () => {
     (proof) => proof.proof_status === "proved"
   )
 
-  const demoBlocksSummary: SummaryItem[] = [
+  const blocksSummary: SummaryItem[] = [
     {
       key: "proof-time",
       label: "since last proof",
@@ -61,7 +61,7 @@ const BlocksSection = async () => {
       <CardHeader className="space-y-3 p-6 pb-0 md:px-12 md:pt-8">
         <CardTitle className="text-2xl">latest blocks</CardTitle>
 
-        <KPIs items={demoBlocksSummary} />
+        <KPIs items={blocksSummary} />
       </CardHeader>
 
       <MachineTabs
