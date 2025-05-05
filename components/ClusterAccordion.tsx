@@ -94,19 +94,15 @@ const ClusterAccordionItem = ({
           </span>
         </div>
       </div>
-      <div id="version" className="col-start-2 flex justify-center">
+      <div className="col-start-2 flex justify-center">
         {clusterDetails.is_open_source ? (
           <Check className="text-level-best" strokeLinecap="square" />
         ) : (
           <RedX className="text-level-worst" strokeLinecap="square" />
         )}
       </div>
-      <div id="version" className="col-start-3">
-        {formatUsd(clusterDetails.avg_cost)}
-      </div>
-      <div id="isa" className="col-start-4">
-        {prettyMs(clusterDetails.avg_time)}
-      </div>
+      <div className="col-start-3">{formatUsd(clusterDetails.avg_cost)}</div>
+      <div className="col-start-4">{prettyMs(clusterDetails.avg_time)}</div>
 
       <AccordionTrigger className="col-start-6 my-2 h-fit gap-2 rounded-full border-2 border-primary-border bg-background-highlight p-0.5 text-primary [&>svg]:size-6">
         <span className="sr-only">Toggle details</span>
