@@ -58,6 +58,16 @@ export const getClusterSummary = async () => {
   return clusterSummary
 }
 
+export const getClusterSummaryById = async (id: string) => {
+  const [clusterSummary] = await db
+    .select()
+    .from(clusterSummaryView)
+    .where(eq(clusterSummaryView.cluster_id, id))
+    .limit(1)
+
+  return clusterSummary
+}
+
 export const getTeamsSummary = async () => {
   const teamsSummary = await db
     .select()

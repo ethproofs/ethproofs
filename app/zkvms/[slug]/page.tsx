@@ -1,19 +1,18 @@
 import { Box } from "lucide-react"
-import type { Metadata } from "next"
+import { Metadata } from "next"
 import Image from "next/image"
-import Link from "next/link"
 import { notFound } from "next/navigation"
 
 import ClusterAccordion from "@/components/ClusterAccordion"
 import SoftwareDetails from "@/components/SoftwareDetails"
 import GitHub from "@/components/svgs/github.svg"
+import Link from "@/components/ui/link"
 
 import { cn } from "@/lib/utils"
 
 import { getActiveClusters } from "@/lib/api/clusters"
 import { getClusterSummary } from "@/lib/api/stats"
 import { getZkvm } from "@/lib/api/zkvms"
-import { transformClusters } from "@/lib/clusters"
 import { formatShortDate } from "@/lib/date"
 import { getMetadata } from "@/lib/metadata"
 import { getZkvmMetrics, getZkvmMetricSeverityLevels } from "@/lib/metrics"
@@ -56,7 +55,17 @@ export default async function ZkvmDetailsPage({
 
   const activeClusters = await getActiveClusters()
   const clusterSummary = await getClusterSummary()
-  const clusters = transformClusters(activeClusters, clusterSummary)
+  const clusters = activeClusters.map((cluster) => {
+    const stats = clusterSummary.find(
+      (summary) => summary.cluster_id === cluster.id
+    )
+
+    return {
+      ...cluster,
+      avg_cost: stats?.avg_cost_per_proof ?? 0,
+      avg_time: Number(stats?.avg_proving_time ?? 0),
+    }
+  })
 
   const zkvmMetrics = await getZkvmMetrics(zkvm.id)
   const severityLevels = getZkvmMetricSeverityLevels(zkvmMetrics)

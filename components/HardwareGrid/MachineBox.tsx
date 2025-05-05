@@ -1,4 +1,4 @@
-import { ClusterDetails } from "@/lib/types"
+import { MachineBase } from "@/lib/types"
 
 import { cn } from "@/lib/utils"
 
@@ -9,7 +9,7 @@ const MachineBox = ({
   machine,
   className,
 }: {
-  machine: ClusterDetails["machines"][number]
+  machine: MachineBase
   className?: string
 }) => {
   return (

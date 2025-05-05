@@ -1,26 +1,32 @@
 import { useMemo } from "react"
 
-import type { ClusterDetails } from "@/lib/types"
+import { ClusterMachineBase } from "@/lib/types"
+import { MachineBase } from "@/lib/types"
 
 import { cn, sumArray } from "@/lib/utils"
 
 import MachineBox from "./MachineBox"
 import { getBoxColor } from "./utils"
 
-type ClusterDetailsProps = React.ComponentProps<"div"> & {
-  cluster: ClusterDetails
+type HardwareGridProps = React.ComponentProps<"div"> & {
+  clusterMachines: (ClusterMachineBase & {
+    machine: MachineBase
+  })[]
 }
 
-const HardwareGrid = ({ cluster, className }: ClusterDetailsProps) => {
+const HardwareGrid = ({ clusterMachines, className }: HardwareGridProps) => {
   const totalGpuCount = useMemo(
     () =>
-      cluster.machines.reduce((acc, curr) => acc + sumArray(curr.gpuCount), 0),
-    [cluster.machines]
+      clusterMachines.reduce(
+        (acc, curr) => acc + sumArray(curr.machine.gpu_count),
+        0
+      ),
+    [clusterMachines]
   )
 
   const totalMachineCount = useMemo(
-    () => cluster.machines.reduce((acc, curr) => acc + curr.count, 0),
-    [cluster.machines]
+    () => clusterMachines.reduce((acc, curr) => acc + curr.machine_count, 0),
+    [clusterMachines]
   )
 
   return (
@@ -29,15 +35,15 @@ const HardwareGrid = ({ cluster, className }: ClusterDetailsProps) => {
       style={{ gridAutoFlow: "column" }}
     >
       {/* Machine cells */}
-      {cluster.machines.map((machine) =>
+      {clusterMachines.map((clusterMachine) =>
         // Create array of indices for the count of this machine type
-        [...Array(machine.count)].map((_, countIdx) => {
-          const uniqueKey = `machine-${machine.id}-${countIdx}`
+        [...Array(clusterMachine.machine_count)].map((_, countIdx) => {
+          const uniqueKey = `machine-${clusterMachine.id}-${countIdx}`
           return (
             <MachineBox
               key={uniqueKey}
               className={getBoxColor(totalGpuCount)}
-              machine={machine}
+              machine={clusterMachine.machine}
             />
           )
         })
