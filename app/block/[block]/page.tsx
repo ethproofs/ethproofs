@@ -22,6 +22,7 @@ import Layers from "@/components/svgs/layers.svg"
 import ProofCircle from "@/components/svgs/proof-circle.svg"
 import Timer from "@/components/svgs/timer.svg"
 import Timestamp from "@/components/Timestamp"
+import { Card, CardHeader, CardTitle } from "@/components/ui/card"
 import {
   HeroBody,
   HeroDivider,
@@ -45,8 +46,9 @@ import { cn } from "@/lib/utils"
 import { AVERAGE_LABEL } from "@/lib/constants"
 
 import { db } from "@/db"
+import { fetchBlock } from "@/lib/api/blocks"
 import { timestampToEpoch, timestampToSlot } from "@/lib/beaconchain"
-import { getBlockValueType } from "@/lib/blocks"
+import { getBlockValueType, isBlockHash } from "@/lib/blocks"
 import { getMetadata } from "@/lib/metadata"
 import { formatNumber, formatUsd } from "@/lib/number"
 import {
@@ -91,46 +93,48 @@ export default async function BlockDetailsPage({
 }: BlockDetailsPageProps) {
   const blockNumber = (await params).block
 
-  const blockValueType = getBlockValueType(blockNumber)
-  if (!blockValueType) throw new Error()
+  if (isNaN(+blockNumber)) throw new Error()
 
-  const block = await db.query.blocks.findFirst({
-    with: {
-      proofs: {
-        with: {
-          team: true,
-          cluster_version: {
-            with: {
-              cluster: true,
-              cluster_machines: {
-                with: {
-                  machine: true,
-                  cloud_instance: true,
-                },
-              },
-            },
-          },
-        },
-      },
-    },
-    where: (blocks, { eq }) => eq(blocks[blockValueType], blockNumber),
-  })
-
+  const block = await fetchBlock(
+    isBlockHash(blockNumber)
+      ? {
+          hash: blockNumber,
+        }
+      : {
+          blockNumber: +blockNumber,
+        }
+  )
   if (!block) notFound()
 
   const { timestamp, block_number, gas_used, proofs, hash } = block
 
   const proofsPerStatusCount = getProofsPerStatusCount(proofs)
 
-  const costPerProofStats = getCostPerProofStats(proofs)
+  const singleMachineProofs = proofs.filter(
+    (proof) => !proof.cluster_version?.cluster.is_multi_machine
+  )
 
-  const costPerMgasStats = getCostPerMgasStats(proofs, gas_used)
+  const multiMachineProofs = proofs.filter(
+    (proof) => proof.cluster_version?.cluster.is_multi_machine
+  )
 
-  const provingTimeStats = getProvingTimeStats(proofs)
+  // single machine stats
+  const singleMachineStats = {
+    costPerProofStats: getCostPerProofStats(singleMachineProofs),
+    costPerMgasStats: getCostPerMgasStats(singleMachineProofs, gas_used),
+    provingTimeStats: getProvingTimeStats(singleMachineProofs),
+    totalTTPStats: getTotalTTPStats(singleMachineProofs, timestamp),
+  }
 
-  const totalTTPStats = getTotalTTPStats(proofs, timestamp)
+  // multi machine stats
+  const multiMachineStats = {
+    costPerProofStats: getCostPerProofStats(multiMachineProofs),
+    costPerMgasStats: getCostPerMgasStats(multiMachineProofs, gas_used),
+    provingTimeStats: getProvingTimeStats(multiMachineProofs),
+    totalTTPStats: getTotalTTPStats(multiMachineProofs, timestamp),
+  }
 
-  const availabilityMetrics: Metric[] = [
+  const availabilityMetrics = (stats: typeof singleMachineStats) => [
     {
       key: "status-of-proofs",
       label: "Status of proofs",
@@ -157,7 +161,7 @@ export default async function BlockDetailsPage({
           </Info.Description>
         </>
       ),
-      value: provingTimeStats?.bestFormatted ?? <Null />,
+      value: stats.provingTimeStats?.bestFormatted ?? <Null />,
     },
     {
       key: "avg-proving-time",
@@ -174,7 +178,7 @@ export default async function BlockDetailsPage({
           <metrics.provingTime.Details average />
         </>
       ),
-      value: provingTimeStats?.avgFormatted ?? <Null />,
+      value: stats.provingTimeStats?.avgFormatted ?? <Null />,
     },
     {
       key: "fastest-total-ttp",
@@ -199,7 +203,7 @@ export default async function BlockDetailsPage({
           </Info.Description>
         </>
       ),
-      value: totalTTPStats?.bestFormatted ?? <Null />,
+      value: stats.totalTTPStats?.bestFormatted ?? <Null />,
     },
     {
       key: "avg-total-ttp",
@@ -223,11 +227,11 @@ export default async function BlockDetailsPage({
           </Info.Description>
         </>
       ),
-      value: totalTTPStats?.avgFormatted ?? <Null />,
+      value: stats.totalTTPStats?.avgFormatted ?? <Null />,
     },
   ]
 
-  const blockFeeMetrics: Metric[] = [
+  const blockFeeMetrics = (stats: typeof singleMachineStats) => [
     {
       key: "cheapest-cost-per-proof",
       label: (
@@ -243,7 +247,7 @@ export default async function BlockDetailsPage({
           <metrics.costPerProof.Details />
         </>
       ),
-      value: costPerProofStats?.bestFormatted ?? <Null />,
+      value: stats.costPerProofStats?.bestFormatted ?? <Null />,
     },
     {
       key: "avg-cost-per-proof",
@@ -260,7 +264,7 @@ export default async function BlockDetailsPage({
           <metrics.costPerProof.Details average />
         </>
       ),
-      value: costPerProofStats?.avgFormatted ?? <Null />,
+      value: stats.costPerProofStats?.avgFormatted ?? <Null />,
     },
     {
       key: "cheapest-cost-per-mgas",
@@ -277,7 +281,7 @@ export default async function BlockDetailsPage({
           <metrics.costPerMgas.Details />
         </>
       ),
-      value: costPerMgasStats?.bestFormatted ?? <Null />,
+      value: stats.costPerMgasStats?.bestFormatted ?? <Null />,
     },
     {
       key: "avg-cost-per-mgas",
@@ -294,9 +298,15 @@ export default async function BlockDetailsPage({
           <metrics.costPerMgas.Details />
         </>
       ),
-      value: costPerMgasStats?.avgFormatted ?? <Null />,
+      value: stats.costPerMgasStats?.avgFormatted ?? <Null />,
     },
   ]
+
+  const singleMachineMetrics = availabilityMetrics(singleMachineStats)
+  const multiMachineMetrics = availabilityMetrics(multiMachineStats)
+
+  const singleMachineBlockFeeMetrics = blockFeeMetrics(singleMachineStats)
+  const multiMachineBlockFeeMetrics = blockFeeMetrics(multiMachineStats)
 
   return (
     <div className="-mt-40 space-y-20 px-6 md:px-8">
@@ -350,13 +360,16 @@ export default async function BlockDetailsPage({
         </HeroItem>
       </div>
 
-      <div className="space-y-8">
-        <section>
-          <h2 className="flex items-center gap-2 text-lg font-normal text-primary">
-            <Timer /> Proof availability
-          </h2>
+      <div className="flex flex-row gap-8">
+        <Card className="flex-1">
+          <CardHeader>
+            <CardTitle>
+              <Timer /> Proof availability
+            </CardTitle>
+          </CardHeader>
+
           <div className="grid grid-cols-2 gap-x-8 sm:grid-cols-[repeat(5,auto)] sm:grid-rows-[auto,auto] md:flex md:flex-wrap">
-            {availabilityMetrics.map(({ key, label, description, value }) => (
+            {multiMachineMetrics.map(({ key, label, description, value }) => (
               <MetricBox
                 key={key}
                 className="row-span-2 grid grid-rows-subgrid"
@@ -372,21 +385,16 @@ export default async function BlockDetailsPage({
               </MetricBox>
             ))}
           </div>
-        </section>
 
-        <section>
-          <h2 className="flex items-center gap-2 text-lg font-normal text-primary">
-            <DollarSign /> Proof costs
-          </h2>
-          <div className="grid grid-cols-2 gap-x-8 sm:flex sm:flex-wrap">
-            {blockFeeMetrics.map(({ key, label, description, value }) => (
+          <div className="grid grid-cols-2 gap-x-8 sm:grid-cols-[repeat(5,auto)] sm:grid-rows-[auto,auto] md:flex md:flex-wrap">
+            {singleMachineMetrics.map(({ key, label, description, value }) => (
               <MetricBox
                 key={key}
                 className="row-span-2 grid grid-rows-subgrid"
               >
-                <MetricLabel>
+                <MetricLabel className="flex items-stretch lowercase">
                   <MetricInfo
-                    label={<span className="lowercase">{label}</span>}
+                    label={<span className="h-full lowercase">{label}</span>}
                   >
                     {description}
                   </MetricInfo>
@@ -395,7 +403,55 @@ export default async function BlockDetailsPage({
               </MetricBox>
             ))}
           </div>
-        </section>
+        </Card>
+
+        <Card className="flex-1">
+          <CardHeader>
+            <CardTitle>
+              <DollarSign /> Proof costs
+            </CardTitle>
+          </CardHeader>
+
+          <div className="grid grid-cols-2 gap-x-8 sm:flex sm:flex-wrap">
+            {multiMachineBlockFeeMetrics.map(
+              ({ key, label, description, value }) => (
+                <MetricBox
+                  key={key}
+                  className="row-span-2 grid grid-rows-subgrid"
+                >
+                  <MetricLabel>
+                    <MetricInfo
+                      label={<span className="lowercase">{label}</span>}
+                    >
+                      {description}
+                    </MetricInfo>
+                  </MetricLabel>
+                  <MetricValue className="font-normal">{value}</MetricValue>
+                </MetricBox>
+              )
+            )}
+          </div>
+
+          <div className="grid grid-cols-2 gap-x-8 sm:flex sm:flex-wrap">
+            {singleMachineBlockFeeMetrics.map(
+              ({ key, label, description, value }) => (
+                <MetricBox
+                  key={key}
+                  className="row-span-2 grid grid-rows-subgrid"
+                >
+                  <MetricLabel>
+                    <MetricInfo
+                      label={<span className="lowercase">{label}</span>}
+                    >
+                      {description}
+                    </MetricInfo>
+                  </MetricLabel>
+                  <MetricValue className="font-normal">{value}</MetricValue>
+                </MetricBox>
+              )
+            )}
+          </div>
+        </Card>
       </div>
 
       <section>

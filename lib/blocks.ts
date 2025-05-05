@@ -35,9 +35,13 @@ export const getBlockValueType = (
 ): keyof Pick<Block, "hash" | "block_number"> | null => {
   if (isNaN(+block)) return null
 
-  if (/^0x[0-9a-fA-F]{64}$/.test(block)) return "hash"
+  if (isBlockHash(block)) return "hash"
 
   return "block_number"
+}
+
+export const isBlockHash = (block: string) => {
+  return /^0x[0-9a-fA-F]{64}$/.test(block)
 }
 
 export const mergeBlocksWithTeams = (blocks: Block[], teams: Team[]) => {
