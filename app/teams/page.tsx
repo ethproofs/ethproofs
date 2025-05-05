@@ -26,7 +26,8 @@ export default async function TeamsPage() {
         <h1 className="text-shadow text-3xl">proving teams</h1>
         <div>All the teams with proving machines</div>
       </div>
-      <div className="grid gap-y-12 px-6 md:grid-cols-[repeat(2,_auto)] md:gap-x-12 md:px-8 xl:gap-x-32">
+
+      <div className="mx-auto grid max-w-screen-xl gap-y-12 px-6 md:gap-x-12 md:px-8 lg:grid-cols-[repeat(2,_auto)] xl:gap-x-32">
         {teamsSummary &&
           teamsSummary.map(
             ({

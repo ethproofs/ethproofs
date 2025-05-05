@@ -23,22 +23,22 @@ export default async function Index() {
         </h1>
       </div>
 
-      <div className="flex flex-1 flex-col items-center gap-20 px-6 md:px-8">
+      <div className="mx-auto flex max-w-screen-xl flex-col items-center gap-20 px-6 md:px-8 [&>section]:w-full">
         <ProofsStats recentSummary={recentSummary} />
 
-        <section id="zkvms" className="w-full max-w-screen-xl scroll-m-20">
+        <section id="zkvms">
           <Suspense fallback={null}>
             <ZkvmsSection />
           </Suspense>
         </section>
 
-        <section id="provers" className="w-full max-w-screen-xl scroll-m-20">
+        <section id="provers">
           <Suspense fallback={null}>
             <ProverTeamsSection />
           </Suspense>
         </section>
 
-        <section id="blocks" className="w-full max-w-screen-xl scroll-m-20">
+        <section id="blocks">
           <Suspense fallback={null}>
             <BlocksSection />
           </Suspense>
