@@ -46,7 +46,7 @@ export function AppSidebar() {
         <SearchInput className="max-md:hidden" placeholder="Search by block" />
       </SidebarHeader>
       <SidebarContent>
-        <SidebarMenu className="gap-y-10 p-6">
+        <SidebarMenu className="gap-y-2 px-6 py-1">
           <SidebarGroup className="">
             <SidebarGroupLabel className="">Home</SidebarGroupLabel>
             <SidebarMenuItem>
