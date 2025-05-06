@@ -66,6 +66,7 @@ export const POST = withAuth(async ({ request, user }) => {
         hardware,
         cycle_type,
         proof_type,
+        is_multi_machine: false,
         team_id: user.id,
       })
       .returning({ id: clusters.id, index: clusters.index })
