@@ -513,7 +513,7 @@ const SidebarMenuItem = React.forwardRef<
     ref={ref}
     data-sidebar="menu-item"
     className={cn(
-      "group/menu-item relative flex items-center gap-2 px-1 py-2",
+      "group/menu-item relative flex items-center gap-2 px-1 py-1",
       className
     )}
     {...props}

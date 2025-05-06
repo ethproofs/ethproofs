@@ -36,8 +36,8 @@ export default async function ClustersPage() {
   return (
     <>
       <div className="absolute top-0 h-40 w-full space-y-12 px-6 pt-24 text-center font-mono font-semibold">
-        <h1 className="text-shadow text-3xl">provers</h1>
-        <div>Clusters or single machines</div>
+        <h1 className="text-shadow text-3xl">clusters</h1>
+        <div>Multi or single machine clusters</div>
       </div>
 
       <div className="mx-auto mt-20 flex max-w-screen-xl flex-1 flex-col items-center gap-20 px-6 md:px-8 [&>section]:w-full">

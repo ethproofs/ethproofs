@@ -10,6 +10,7 @@ import Heart from "@/components/svgs/heart.svg"
 import HexTarget from "@/components/svgs/hex-target.svg"
 import LightningBolt from "@/components/svgs/lightning-bolt.svg"
 import ProofCheck from "@/components/svgs/proof-check.svg"
+import Team from "@/components/svgs/team.svg"
 import TrendUpChart from "@/components/svgs/trend-up-chart.svg"
 
 import { SITE_REPO } from "@/lib/constants"
@@ -43,7 +44,7 @@ const AppSidebar = () => (
       <SearchInput className="max-md:hidden" placeholder="Search by block" />
     </SidebarHeader>
     <SidebarContent>
-      <SidebarMenu className="gap-y-10 p-6">
+      <SidebarMenu className="gap-y-2 px-6 py-1">
         <SidebarGroup className="">
           <SidebarGroupLabel className="">Home</SidebarGroupLabel>
           <SidebarMenuItem>
@@ -69,11 +70,11 @@ const AppSidebar = () => (
           </SidebarMenuItem>
           <SidebarMenuItem>
             <Link
-              href="/teams"
+              href="/clusters"
               className="inline-flex text-body hover:text-primary [&>svg:first-child]:me-2 [&>svg:first-child]:size-6"
             >
               <ProofCheck />
-              provers
+              clusters
             </Link>
           </SidebarMenuItem>
           <SidebarMenuItem>
@@ -92,6 +93,15 @@ const AppSidebar = () => (
             >
               <Bomb />
               killers
+            </Link>
+          </SidebarMenuItem>
+          <SidebarMenuItem>
+            <Link
+              href="/teams"
+              className="inline-flex text-body hover:text-primary [&>svg:first-child]:me-2 [&>svg:first-child]:size-6"
+            >
+              <Team />
+              teams
             </Link>
           </SidebarMenuItem>
         </SidebarGroup>
