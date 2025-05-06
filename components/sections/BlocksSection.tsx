@@ -59,9 +59,11 @@ const BlocksSection = async () => {
   return (
     <Card className="!p-0 !pb-6 md:!pb-8">
       <CardHeader className="space-y-3 p-6 pb-0 md:px-12 md:pt-8">
-        <CardTitle className="text-2xl">latest blocks</CardTitle>
+        <CardTitle className="text-3xl font-normal tracking-[1px]">latest blocks</CardTitle>
 
-        <KPIs items={blocksSummary} />
+        <div className="py-4">
+          <KPIs items={blocksSummary} />
+        </div>
       </CardHeader>
 
       <MachineTabs
