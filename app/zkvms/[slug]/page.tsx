@@ -8,14 +8,16 @@ import SoftwareDetails from "@/components/SoftwareDetails"
 import GitHub from "@/components/svgs/github.svg"
 import Link from "@/components/ui/link"
 
-import { cn } from "@/lib/utils"
-
 import { getActiveClusters } from "@/lib/api/clusters"
 import { getClusterSummary } from "@/lib/api/stats"
 import { getZkvm } from "@/lib/api/zkvms"
 import { formatShortDate } from "@/lib/date"
 import { getMetadata } from "@/lib/metadata"
-import { getZkvmMetrics, getZkvmMetricSeverityLevels } from "@/lib/metrics"
+import {
+  getZkvmMetricLabel,
+  getZkvmMetrics,
+  getZkvmMetricSeverityLevels,
+} from "@/lib/metrics"
 import { getZkvmWithUsage } from "@/lib/zkvms"
 
 export type ZkvmDetailsPageProps = {
@@ -68,7 +70,6 @@ export default async function ZkvmDetailsPage({
   })
 
   const zkvmMetrics = await getZkvmMetrics(zkvm.id)
-  const severityLevels = getZkvmMetricSeverityLevels(zkvmMetrics)
 
   return (
     <>
@@ -128,18 +129,7 @@ export default async function ZkvmDetailsPage({
       <div className="bg-gradient-to-b from-background to-background-active">
         <div className="mx-auto max-w-screen-xl">
           <h2 className="sr-only">zkVM software details</h2>
-          <SoftwareDetails
-            numericMetrics={{
-              verification_ms: zkvmMetrics.verification_ms,
-              size_bytes: zkvmMetrics.size_bytes,
-            }}
-            categoricalMetrics={{
-              ...zkvmMetrics,
-              security_target_bits: severityLevels[0],
-              max_bounty_amount: severityLevels[3],
-            }}
-            severityLevels={severityLevels}
-          />
+          <SoftwareDetails metrics={zkvmMetrics} />
         </div>
       </div>
 

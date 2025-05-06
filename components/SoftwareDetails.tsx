@@ -1,9 +1,4 @@
-import type {
-  SeverityLevel,
-  Slices,
-  ZkvmMetric,
-  ZkvmMetrics,
-} from "@/lib/types"
+import type { Slices, ZkvmMetrics } from "@/lib/types"
 
 import { cn } from "@/lib/utils"
 
@@ -11,35 +6,32 @@ import { MetricBox, MetricInfo, MetricLabel } from "./ui/metric"
 import LevelMeter from "./LevelMeter"
 import Pizza from "./Pizza"
 
-import { thresholds } from "@/lib/metrics"
-import { getZkvmMetricLabel } from "@/lib/metrics"
-
-type NumericMetrics = Pick<ZkvmMetrics, "size_bytes" | "verification_ms">
-type CategoricalMetrics = Pick<
-  ZkvmMetrics,
-  | "protocol_soundness"
-  | "implementation_soundness"
-  | "evm_stf_bytecode"
-  | "quantum_security"
-> & {
-  security_target_bits: SeverityLevel
-  max_bounty_amount: SeverityLevel
-  trusted_setup: boolean
-}
+import {
+  getZkvmMetricLabel,
+  getZkvmMetricSeverityLevels,
+  thresholds,
+} from "@/lib/metrics"
 
 type Props = {
-  numericMetrics: NumericMetrics
-  categoricalMetrics: CategoricalMetrics
-  severityLevels: SeverityLevel[]
+  metrics: ZkvmMetrics
   className?: string
 }
 
-const SoftwareDetails = ({
-  numericMetrics,
-  categoricalMetrics,
-  severityLevels,
-  className,
-}: Props) => {
+const SoftwareDetails = ({ metrics, className }: Props) => {
+  const severityLevels = getZkvmMetricSeverityLevels(metrics)
+
+  // order for the pizza chart
+  const severityArray = [
+    severityLevels.proofSize,
+    severityLevels.securityTarget,
+    severityLevels.quantumSecurity,
+    severityLevels.maxBountyAmount,
+    severityLevels.evmStfBytecode,
+    severityLevels.implementationSoundness,
+    severityLevels.protocolSoundness,
+    severityLevels.verificationTime,
+  ]
+
   return (
     <div
       className={cn(
@@ -53,7 +45,7 @@ const SoftwareDetails = ({
             bestThreshold={thresholds.verification_ms.green}
             worstThreshold={thresholds.verification_ms.red}
             unit="ms"
-            value={numericMetrics.verification_ms}
+            value={Number(metrics.verification_ms)}
           />
           <MetricLabel>
             <MetricInfo label="verification times">
@@ -72,7 +64,7 @@ const SoftwareDetails = ({
           </MetricLabel>
           <div className="text-center font-sans text-base">
             {getZkvmMetricLabel(
-              categoricalMetrics.protocol_soundness,
+              severityLevels.protocolSoundness,
               "protocol_soundness"
             )}
           </div>
@@ -91,7 +83,7 @@ const SoftwareDetails = ({
           </MetricLabel>
           <div className="text-center font-sans text-base">
             {getZkvmMetricLabel(
-              categoricalMetrics.implementation_soundness,
+              severityLevels.implementationSoundness,
               "implementation_soundness"
             )}
           </div>
@@ -107,7 +99,7 @@ const SoftwareDetails = ({
           </MetricLabel>
           <div className="text-center font-sans text-base">
             {getZkvmMetricLabel(
-              categoricalMetrics.evm_stf_bytecode,
+              severityLevels.evmStfBytecode,
               "evm_stf_bytecode"
             )}
           </div>
@@ -115,7 +107,13 @@ const SoftwareDetails = ({
       </div>
 
       <div className="col-start-3 row-span-3 row-start-2 flex flex-col items-center text-[10rem]">
-        <Pizza slices={severityLevels.map((level) => ({ level })) as Slices} />
+        <Pizza
+          slices={
+            severityArray.map((severity) => ({
+              level: severity,
+            })) as Slices
+          }
+        />
       </div>
 
       <div className="col-span-2 col-start-4 row-start-1 flex-1 text-center">
@@ -124,7 +122,7 @@ const SoftwareDetails = ({
             bestThreshold={thresholds.size_bytes.green / 1024}
             worstThreshold={thresholds.size_bytes.red / 1024}
             unit="kB"
-            value={numericMetrics.size_bytes / 1024}
+            value={Number(metrics.size_bytes) / 1024}
           />
           <MetricLabel>
             <MetricInfo label="proof size">TODO: Popover details</MetricInfo>
@@ -141,7 +139,7 @@ const SoftwareDetails = ({
           </MetricLabel>
           <div className="text-center font-sans text-base">
             {getZkvmMetricLabel(
-              categoricalMetrics.security_target_bits,
+              severityLevels.securityTarget,
               "security_target_bits"
             )}
           </div>
@@ -155,7 +153,7 @@ const SoftwareDetails = ({
           </MetricLabel>
           <div className="text-center font-sans text-base">
             {getZkvmMetricLabel(
-              categoricalMetrics.quantum_security,
+              severityLevels.quantumSecurity,
               "quantum_security"
             )}
           </div>
@@ -169,7 +167,7 @@ const SoftwareDetails = ({
           </MetricLabel>
           <div className="text-center font-sans text-base">
             {getZkvmMetricLabel(
-              categoricalMetrics.max_bounty_amount,
+              severityLevels.maxBountyAmount,
               "max_bounty_amount"
             )}
           </div>
@@ -182,9 +180,7 @@ const SoftwareDetails = ({
             <MetricInfo label="trusted setup">TODO: Popover details</MetricInfo>
           </MetricLabel>
           <div className="text-nowrap text-center font-sans text-base">
-            {categoricalMetrics.trusted_setup
-              ? "trusted setup"
-              : "no trusted setup"}
+            {getZkvmMetricLabel(severityLevels.trustedSetup, "trusted_setup")}
           </div>
         </MetricBox>
       </div>
