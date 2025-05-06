@@ -35,6 +35,18 @@ const SoftwareAccordionItem = ({
 }) => {
   const severityLevels = getZkvmMetricSeverityLevels(metrics)
 
+  // order for the pizza chart
+  const severityArray = [
+    severityLevels.proofSize,
+    severityLevels.securityTarget,
+    severityLevels.quantumSecurity,
+    severityLevels.maxBountyAmount,
+    severityLevels.evmStfBytecode,
+    severityLevels.implementationSoundness,
+    severityLevels.protocolSoundness,
+    severityLevels.verificationTime,
+  ]
+
   return (
     <AccordionItem value={value} className="col-span-5 grid grid-cols-subgrid">
       <div className="col-span-5 grid grid-cols-subgrid items-center gap-12 border-b px-6 hover:bg-primary/5 dark:hover:bg-primary/10">
@@ -81,24 +93,18 @@ const SoftwareAccordionItem = ({
 
         <AccordionTrigger className="col-start-5 my-2 h-fit gap-2 rounded-full border-2 border-primary-border bg-background-highlight p-0.5 text-primary [&>svg]:size-6">
           <Pizza
-            slices={severityLevels.map((level) => ({ level })) as Slices}
+            slices={
+              severityArray.map((severity) => ({
+                level: severity,
+              })) as Slices
+            }
             disableEffects
           />
         </AccordionTrigger>
       </div>
       <AccordionContent className="col-span-full border-b bg-gradient-to-b from-background to-background-active p-0">
-        <SoftwareDetails
-          numericMetrics={{
-            verification_ms: metrics.verification_ms,
-            size_bytes: metrics.size_bytes,
-          }}
-          categoricalMetrics={{
-            ...metrics,
-            security_target_bits: severityLevels[0],
-            max_bounty_amount: severityLevels[3],
-          }}
-          severityLevels={severityLevels}
-        />
+        <SoftwareDetails metrics={metrics} />
+
         <div className="flex justify-center gap-16 p-8 pt-0">
           <ButtonLink variant="outline" href={`/zkvms/${zkvm.slug}`}>
             See all details
