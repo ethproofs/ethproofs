@@ -40,8 +40,8 @@ export default async function ClustersPage() {
         <div>Clusters or single machines</div>
       </div>
 
-      <div className="mt-20 flex flex-1 flex-col items-center gap-20 px-6 md:px-8">
-        <section className="w-full max-w-screen-xl scroll-m-20">
+      <div className="mx-auto mt-20 flex max-w-screen-xl flex-1 flex-col items-center gap-20 px-6 md:px-8 [&>section]:w-full">
+        <section>
           <MachineTabs
             singleContent={
               <ClusterAccordion clusters={singleMachineClusters} />

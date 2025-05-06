@@ -13,8 +13,8 @@ export default async function ZkvmsPage() {
         <h1 className="text-shadow text-3xl">zkVMs</h1>
       </div>
 
-      <div className="flex flex-1 flex-col items-center gap-20 px-6 md:px-8">
-        {/* <section id="kpis" className="w-full max-w-screen-xl scroll-m-20">
+      <div className="mx-auto flex max-w-screen-xl flex-1 flex-col items-center gap-20 px-6 md:px-8 [&>section]:w-full">
+        {/* <section id="kpis">
           <LineChartCard
             id="cost-chart"
             className="w-full"
@@ -27,7 +27,7 @@ export default async function ZkvmsPage() {
           />
         </section> */}
 
-        <section className="w-full max-w-screen-xl scroll-m-20">
+        <section>
           <SoftwareAccordion />
         </section>
       </div>
