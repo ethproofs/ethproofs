@@ -1,4 +1,4 @@
-import type { Level, Slices } from "@/lib/types"
+import type { SeverityLevel, Slices } from "@/lib/types"
 
 import PizzaSliceEighth from "@/components/svgs/pizza-slice-n-8.svg"
 
@@ -14,7 +14,7 @@ type PizzaProps = React.ComponentProps<"div"> & {
  * Each slice can have different levels and hover effects.
  *
  * @param {PizzaProps} props - The properties for the Pizza component.
- * @param {Array<{ level: Level }>} props.slices - An array of slice objects, each containing a `level` property
+ * @param {Array<{ level: SeverityLevel }>} props.slices - An array of slice objects, each containing a `level` property
  * indicating the slice's level (e.g., "green", "yellow", "red").
  * @param {boolean} [props.disableEffects] - If true, disables hover effects on the slices.
  * @param {string} [props.className] - Additional CSS class names to apply to the pizza container.
@@ -49,7 +49,7 @@ const Pizza = ({
     "rotate-[337.5deg]",
   ] as const
 
-  const COLORS: { [key in Level]: string } = {
+  const COLORS: { [key in SeverityLevel]: string } = {
     green: "text-level-best",
     yellow: "text-level-middle",
     red: "text-level-worst",

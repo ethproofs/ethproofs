@@ -1,5 +1,7 @@
 import { type ReactNode } from "react"
 
+import { LevelMeterProps } from "@/components/LevelMeter"
+
 import { CHART_RANGES } from "./constants"
 
 import {
@@ -216,10 +218,8 @@ export type Stats = {
   bestProof: ProofWithCluster
 }
 
-export type Level = "green" | "yellow" | "red"
-
 export type SliceDetails = {
-  level: Level
+  level: SeverityLevel
 }
 
 export type Slices = [
@@ -234,3 +234,12 @@ export type Slices = [
 ]
 
 export type DayRange = (typeof CHART_RANGES)[number]
+
+export type SoftwareItem = {
+  id: string
+  label: React.ReactNode
+  className: string
+  popoverDetails: React.ReactNode
+  severity: SeverityLevel
+  position: 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7
+} & ({ chartInfo: LevelMeterProps } | { value: string })

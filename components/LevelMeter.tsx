@@ -1,6 +1,6 @@
 import { cn } from "@/lib/utils"
 
-type LevelMeterProps = React.ComponentProps<"div"> & {
+export type LevelMeterProps = React.ComponentProps<"div"> & {
   bestThreshold: number
   worstThreshold: number
   value: number
