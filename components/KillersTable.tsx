@@ -51,9 +51,9 @@ const demoBenchmarks: Benchmark[] = [
 ]
 
 const CELL_COLOR_CLASSES = {
-  red: "border-level-worst from-level-worst/25",
-  yellow: "border-level-middle from-level-middle/25",
-  green: "border-level-best from-level-best/25",
+  red: "border-level-worst dark:from-level-worst/20 from-level-worst/10",
+  yellow: "border-level-middle from-level-middle/10",
+  green: "border-level-best from-level-best/10",
   none: "border-transparent",
 } as const
 
@@ -67,7 +67,7 @@ type BenchmarkItemProps = {
 
 const DataCell = ({ timeMs, costUsd, color }: BenchmarkItemProps) => (
   // TODO: Add Popover for remaining details of benchmark block
-  <div className="flex flex-col px-2">
+  <div className="flex flex-col">
     <div
       className={cn(
         "rounded-sm border-b bg-gradient-to-t text-center",
@@ -98,12 +98,12 @@ const RowItem = ({
   className?: string
 }) => (
   <div
-    className={cn("gap-x-4 border-b border-primary/10 px-4 py-6", className)}
+    className={cn("gap-x-10 border-b border-primary/10 px-4 py-6", className)}
   >
     {/* Proving team logo and cluster name */}
-    <div className="space-y-2">
+    <div className="space-y-2 text-nowrap">
       <Image
-        src="https://ibkqxhjnroghhtfyualc.supabase.co/storage/v1/object/public/public-assets/succinct-logo.svg"
+        src="https://ndjfbkojyebmdbckigbe.supabase.co/storage/v1/object/public/public-assets/succinct-logo-new.svg"
         alt=""
         className="dark:invert"
         height={24}
@@ -130,21 +130,21 @@ const RowItem = ({
   </div>
 )
 
+// TODO: Accept data as props
 const KillersTable = () => (
-  // TODO: Accept data as props
   <div
-    className="grid"
+    className="-me-6 grid overflow-x-auto pe-6 md:-me-8 md:pe-8"
     style={{
-      gridTemplateColumns: `1fr repeat(${demoBenchmarks.length}, auto)`,
+      gridTemplateColumns: `1fr repeat(${demoBenchmarks.length}, 8rem)`,
     }}
   >
-    <div className="col-span-full grid grid-cols-subgrid gap-x-12 border-b border-primary py-6">
+    <div className="col-span-full grid grid-cols-subgrid border-b border-primary py-6">
       <div className="SPACER col-start-1" />
 
       {demoBenchmarks.map((benchmark) => (
         <div
           key={benchmark.target}
-          className="flex flex-col items-center px-2 font-sans"
+          className="flex flex-col items-center font-sans"
         >
           <div className="text-center">{benchmark.target}</div>
           <div className="text-center text-level-worst">
