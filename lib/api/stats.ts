@@ -5,6 +5,7 @@ import { db } from "@/db"
 import {
   clusterSummary as clusterSummaryView,
   recentSummary as recentSummaryView,
+  teams,
   teamsSummary as teamsSummaryView,
 } from "@/db/schema"
 
@@ -72,11 +73,15 @@ export const getTeamsSummary = async () => {
   const teamsSummary = await db
     .select()
     .from(teamsSummaryView)
+    .innerJoin(teams, eq(teamsSummaryView.team_id, teams.id))
     // hide test teams from the provers list
     .where(notIlike(teamsSummaryView.team_name, "%test%"))
     .orderBy(asc(teamsSummaryView.avg_proving_time))
 
-  return teamsSummary
+  return teamsSummary.map(({ teams, teams_summary }) => ({
+    ...teams_summary,
+    ...teams,
+  }))
 }
 
 export const getTeamSummary = async (teamId: string) => {
