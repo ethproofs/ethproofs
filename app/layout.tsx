@@ -1,29 +1,15 @@
 import Link from "next/link"
 import Script from "next/script"
 
-import MobileSearchInput from "@/components/header/MobileSearchInput"
-import ThemeSwitch from "@/components/header/ThemeSwitch"
 import LampEffect from "@/components/LampEffect"
-import { AppSidebar } from "@/components/Sidebar"
+import AppSidebar from "@/components/Sidebar"
 import EthProofsLogo from "@/components/svgs/eth-proofs-logo.svg"
-import GitHub from "@/components/svgs/github.svg"
 import Hamburger from "@/components/svgs/hamburger.svg"
-import Heart from "@/components/svgs/heart.svg"
-import { Button, ButtonLink } from "@/components/ui/button"
-import {
-  Drawer,
-  DrawerClose,
-  DrawerContent,
-  DrawerDescription,
-  DrawerFooter,
-  DrawerHeader,
-  DrawerTitle,
-  DrawerTrigger,
-} from "@/components/ui/drawer"
+import { Button } from "@/components/ui/button"
+import { Drawer, DrawerContent, DrawerTrigger } from "@/components/ui/drawer"
+import { Sidebar } from "@/components/ui/sidebar"
 
 import { cn } from "@/lib/utils"
-
-import { SITE_NAME, SITE_REPO } from "@/lib/constants"
 
 import Providers from "./providers"
 
@@ -72,7 +58,9 @@ export default function RootLayout({
       </head>
       <body className="pb-80">
         <Providers>
-          <AppSidebar />
+          <Sidebar>
+            <AppSidebar />
+          </Sidebar>
 
           <div className="relative flex w-full flex-col gap-16 overflow-x-hidden md:w-[calc(100vw_-_var(--sidebar-width))]">
             <LampEffect />
@@ -112,93 +100,7 @@ export default function RootLayout({
                     </Button>
                   </DrawerTrigger>
                   <DrawerContent>
-                    <DrawerHeader className="space-y-16">
-                      <MobileSearchInput />
-                      <DrawerTitle className="mb-4 flex items-center justify-between gap-4">
-                        <Link href="/" className="ms-4">
-                          <EthProofsLogo />
-                        </Link>
-                        <DrawerClose asChild>
-                          <Button variant="ghost">Close</Button>
-                        </DrawerClose>
-                      </DrawerTitle>
-                      <DrawerDescription className="space-y-12">
-                        <nav>
-                          <ul className="space-y-12 text-center">
-                            <li className="list-none">
-                              <Button variant="ghost" size="lg" asChild>
-                                <Link href="/">Proofs</Link>
-                              </Button>
-                            </li>
-                            <li className="list-none">
-                              <Button variant="ghost" size="lg" asChild>
-                                <Link href="/learn">Learn</Link>
-                              </Button>
-                            </li>
-                          </ul>
-                        </nav>
-                        <div className="flex justify-center">
-                          <ThemeSwitch />
-                        </div>
-                      </DrawerDescription>
-                    </DrawerHeader>
-                    <DrawerFooter>
-                      <nav className="flex justify-center">
-                        <Button variant="ghost" size="lg" asChild>
-                          <Link
-                            href={new URL(
-                              SITE_REPO,
-                              "https://github.com"
-                            ).toString()}
-                          >
-                            <GitHub /> GitHub
-                          </Link>
-                        </Button>
-                      </nav>
-                      <footer className="mx-auto mt-16 flex max-w-prose flex-col items-center">
-                        <ButtonLink
-                          size="lg"
-                          href={new URL(
-                            SITE_REPO,
-                            "https://github.com"
-                          ).toString()}
-                          className="mb-12"
-                        >
-                          <GitHub className="size-6" />
-                          <span>Contribute to {SITE_NAME}</span>
-                        </ButtonLink>
-
-                        <p className="mb-4 text-center">
-                          Built with{" "}
-                          <Heart className="mb-0.5 inline animate-heart-beat text-xl text-primary" />{" "}
-                          by the{" "}
-                          <Link
-                            href="https://ethereum.org"
-                            target="_blank"
-                            rel="noopener noreferrer"
-                            className="hover:text-primary-light"
-                          >
-                            ethereum.org
-                          </Link>{" "}
-                          team
-                        </p>
-                        <p className="text-center text-lg text-primary-light">
-                          Public goods are good
-                        </p>
-
-                        <Link
-                          href={new URL(
-                            SITE_REPO + "/issues/new/choose/",
-                            "https://github.com"
-                          ).toString()}
-                          className="mt-8 text-center text-body-secondary"
-                          target="_blank"
-                          rel="noopener noreferrer"
-                        >
-                          Spot a bug? Report it here
-                        </Link>
-                      </footer>
-                    </DrawerFooter>
+                    <AppSidebar />
                   </DrawerContent>
                 </Drawer>
               </header>
