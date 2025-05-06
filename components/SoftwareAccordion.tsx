@@ -91,7 +91,7 @@ const SoftwareAccordionItem = ({
           />
         </div>
 
-        <AccordionTrigger className="col-start-5 my-2 h-fit gap-2 rounded-full border-2 border-primary-border bg-background-highlight p-0.5 text-primary [&>svg]:size-6">
+        <AccordionTrigger className="col-start-5 my-2 h-fit gap-2 rounded-full border-2 border-primary bg-background-highlight p-0.5 pe-2 text-primary [&>svg]:size-6">
           <Pizza
             slices={
               severityArray.map((severity) => ({
@@ -102,7 +102,7 @@ const SoftwareAccordionItem = ({
           />
         </AccordionTrigger>
       </div>
-      <AccordionContent className="col-span-full border-b bg-gradient-to-b from-background to-background-active p-0">
+      <AccordionContent className="col-span-full border-b bg-gradient-to-t from-background-active p-0">
         <SoftwareDetails metrics={metrics} />
 
         <div className="flex justify-center gap-16 p-8 pt-0">
