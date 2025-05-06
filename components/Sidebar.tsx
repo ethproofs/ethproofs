@@ -71,11 +71,11 @@ export function AppSidebar() {
             </SidebarMenuItem>
             <SidebarMenuItem>
               <Link
-                href="/teams"
+                href="/clusters"
                 className="inline-flex text-body hover:text-primary [&>svg:first-child]:me-2 [&>svg:first-child]:size-6"
               >
                 <ProofCheck />
-                provers
+                clusters
               </Link>
             </SidebarMenuItem>
             <SidebarMenuItem>
@@ -94,6 +94,15 @@ export function AppSidebar() {
               >
                 <Bomb />
                 killers
+              </Link>
+            </SidebarMenuItem>
+            <SidebarMenuItem>
+              <Link
+                href="/teams"
+                className="inline-flex text-body hover:text-primary [&>svg:first-child]:me-2 [&>svg:first-child]:size-6"
+              >
+                <ProofCheck />
+                teams
               </Link>
             </SidebarMenuItem>
           </SidebarGroup>
