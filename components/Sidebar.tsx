@@ -10,6 +10,7 @@ import Heart from "@/components/svgs/heart.svg"
 import HexTarget from "@/components/svgs/hex-target.svg"
 import LightningBolt from "@/components/svgs/lightning-bolt.svg"
 import ProofCheck from "@/components/svgs/proof-check.svg"
+import Team from "@/components/svgs/team.svg"
 import TrendUpChart from "@/components/svgs/trend-up-chart.svg"
 
 import { SITE_REPO } from "@/lib/constants"
@@ -101,7 +102,7 @@ export function AppSidebar() {
                 href="/teams"
                 className="inline-flex text-body hover:text-primary [&>svg:first-child]:me-2 [&>svg:first-child]:size-6"
               >
-                <ProofCheck />
+                <Team />
                 teams
               </Link>
             </SidebarMenuItem>
