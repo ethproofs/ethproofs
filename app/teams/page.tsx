@@ -32,6 +32,7 @@ export default async function TeamsPage() {
           teamsSummary.map(
             ({
               team_id,
+              slug,
               logo_url,
               team_name,
               avg_cost_per_proof,
@@ -87,10 +88,7 @@ export default async function TeamsPage() {
                             </div>
                           </div>
                         </div>
-                        <ButtonLink
-                          href={`/teams/${team_id}`}
-                          variant="outline"
-                        >
+                        <ButtonLink href={`/teams/${slug}`} variant="outline">
                           + details for {team_name}
                         </ButtonLink>
                       </>

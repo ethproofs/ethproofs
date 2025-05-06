@@ -48,7 +48,7 @@ const SoftwareAccordionItem = ({
             by
           </span>
           <Link
-            href={`/teams/${zkvm.vendor.user_id}`}
+            href={`/teams/${zkvm.vendor.slug}`}
             className="-m-1 rounded p-1 hover:bg-primary/10"
           >
             <Image

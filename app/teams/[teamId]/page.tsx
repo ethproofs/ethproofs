@@ -19,11 +19,11 @@ import { SITE_NAME } from "@/lib/constants"
 
 import { getActiveClusters } from "@/lib/api/clusters"
 import { getTeamSummary } from "@/lib/api/stats"
-import { getTeam } from "@/lib/api/teams"
 import { getVendorByUserId } from "@/lib/api/vendor"
 import { getZkvmsByVendorId } from "@/lib/api/zkvms"
 import { getMetadata } from "@/lib/metadata"
 import { formatUsd } from "@/lib/number"
+import { getTeamByIdOrSlug } from "@/lib/teams"
 import { prettyMs } from "@/lib/time"
 import { getHost, getTwitterHandle } from "@/lib/url"
 
@@ -37,7 +37,7 @@ export async function generateMetadata({
   const { teamId } = await params
 
   try {
-    const team = await getTeam(teamId)
+    const team = await getTeamByIdOrSlug(teamId)
     if (!team) throw new Error()
     return getMetadata({ title: `${team.name}` })
   } catch {
@@ -52,13 +52,13 @@ export default async function TeamDetailsPage({
 
   let team: Team | undefined
   try {
-    team = await getTeam(teamId)
+    team = await getTeamByIdOrSlug(teamId)
     if (!team) throw new Error()
   } catch {
     return notFound()
   }
 
-  const teamSummary = await getTeamSummary(teamId)
+  const teamSummary = await getTeamSummary(team.id)
 
   const vendor = await getVendorByUserId(team.id)
   const isVendor = !!vendor
@@ -68,7 +68,7 @@ export default async function TeamDetailsPage({
     zkvms = await getZkvmsByVendorId(vendor.id)
   }
 
-  const clusters = await getActiveClusters({ teamId })
+  const clusters = await getActiveClusters({ teamId: team.id })
 
   const singleMachineClusters = clusters.filter(
     (cluster) => !cluster.is_multi_machine
