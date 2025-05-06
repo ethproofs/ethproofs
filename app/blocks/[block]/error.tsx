@@ -25,6 +25,9 @@ export default function Error() {
         repo
       </p>
       <Divider className="my-6" />
+      <ButtonLink href="/blocks" size="lg">
+        Explore all blocks
+      </ButtonLink>
       <ButtonLink href="/" variant="outline" size="lg">
         Back to homepage
       </ButtonLink>

@@ -97,13 +97,7 @@ export default async function ZkvmDetailsPage({
         </div>
       </div>
 
-      <div
-        className={cn(
-          "mb-20 grid grid-cols-1 gap-y-8 max-sm:gap-y-4 sm:grid-cols-2 lg:grid-cols-4",
-          "w-fit md:w-full",
-          "mx-auto gap-x-20 md:px-24"
-        )}
-      >
+      <div className="mx-auto mb-20 grid w-fit max-w-screen-xl grid-cols-1 gap-x-20 gap-y-8 max-sm:gap-y-4 sm:grid-cols-2 md:px-24 lg:grid-cols-4">
         <div className="row-span-2 grid grid-cols-subgrid place-items-center gap-y-1 text-nowrap">
           <div className="text-body-secondary">latest version</div>
           <div className="">{zkvm.versions[0].version}</div>
@@ -131,36 +125,35 @@ export default async function ZkvmDetailsPage({
         </div>
       </div>
 
-      <div
-        className={cn(
-          "bg-gradient-to-b from-background to-background-active",
-          "-mx-6 px-12 md:-mx-8 md:px-24"
-        )}
-      >
-        <h2 className="sr-only">zkVM software details</h2>
-        <SoftwareDetails
-          numericMetrics={{
-            verification_ms: zkvmMetrics.verification_ms,
-            size_bytes: zkvmMetrics.size_bytes,
-          }}
-          categoricalMetrics={{
-            ...zkvmMetrics,
-            security_target_bits: severityLevels[0],
-            max_bounty_amount: severityLevels[3],
-          }}
-          severityLevels={severityLevels}
-        />
+      <div className="bg-gradient-to-b from-background to-background-active">
+        <div className="mx-auto max-w-screen-xl">
+          <h2 className="sr-only">zkVM software details</h2>
+          <SoftwareDetails
+            numericMetrics={{
+              verification_ms: zkvmMetrics.verification_ms,
+              size_bytes: zkvmMetrics.size_bytes,
+            }}
+            categoricalMetrics={{
+              ...zkvmMetrics,
+              security_target_bits: severityLevels[0],
+              max_bounty_amount: severityLevels[3],
+            }}
+            severityLevels={severityLevels}
+          />
+        </div>
       </div>
 
-      <div className="mx-6 mt-40 max-w-full gap-x-20 px-6 md:mx-auto md:px-8">
-        <h2 className="flex items-center gap-2 font-mono text-lg font-normal text-primary">
-          <Box className="size-11 text-primary" strokeWidth="1" />
-          active clusters using {zkvm.name}: {zkvm.activeClusters} /{" "}
-          {zkvm.totalClusters}
-        </h2>
-        <div className="-me-6 overflow-x-auto pe-6">
-          <ClusterAccordion clusters={clusters} />
-        </div>
+      <div className="mx-auto max-w-screen-xl">
+        <section className="mx-6 mt-40 px-6 md:mx-auto md:px-8">
+          <h2 className="flex items-center gap-2 font-mono text-lg font-normal text-primary">
+            <Box className="size-11 text-primary" strokeWidth="1" />
+            active clusters using {zkvm.name}: {zkvm.activeClusters} /{" "}
+            {zkvm.totalClusters}
+          </h2>
+          <div className="-me-6 overflow-x-auto pe-6">
+            <ClusterAccordion clusters={clusters} />
+          </div>
+        </section>
       </div>
     </>
   )

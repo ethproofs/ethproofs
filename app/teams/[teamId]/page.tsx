@@ -137,8 +137,8 @@ export default async function TeamDetailsPage({
         </HeroBody>
       </div>
 
-      <div className="mt-14 space-y-20">
-        <div className="grid grid-cols-1 gap-6 md:grid-cols-2">
+      <div className="mx-auto mt-14 max-w-screen-xl space-y-20 [&>section]:w-full">
+        <section className="grid grid-cols-1 gap-6 md:grid-cols-2">
           <div className="relative rounded-[1.25rem] bg-background p-6">
             <div className="absolute -inset-px z-[-2] rounded-[calc(1.25rem_+_1px)] bg-gradient-to-tl from-primary to-primary/10" />
             <div className="absolute -inset-px z-[-1] rounded-[1.25rem] bg-black/10" />
@@ -201,7 +201,7 @@ export default async function TeamDetailsPage({
               </div>
             </div>
           </div>
-        </div>
+        </section>
 
         {isVendor && zkvms && <VendorsAside team={team} zkvms={zkvms} />}
 

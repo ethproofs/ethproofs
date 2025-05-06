@@ -73,6 +73,10 @@
     @apply list-inside;
   }
 
+  section {
+    @apply scroll-m-20;
+  }
+
   .text-shadow {
     text-shadow:
       0 0 3rem hsla(var(--background-modal)),

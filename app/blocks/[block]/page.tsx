@@ -120,7 +120,7 @@ export default async function BlockDetailsPage({
   const multiMachineBlockFeeMetrics = getBlockFeeMetrics(multiMachineStats)
 
   return (
-    <div className="-mt-40 space-y-20 px-6 md:px-8">
+    <div className="mx-auto -mt-40 max-w-screen-xl space-y-20 px-6 md:px-8 [&>section]:w-full">
       <HeroTitle className="mx-auto max-w-[18rem] items-center gap-4">
         <Box strokeWidth="1" className="size-[4.5rem] shrink-0 text-primary" />
         <div className="truncate">
@@ -141,7 +141,7 @@ export default async function BlockDetailsPage({
         </div>
       </HeroTitle>
 
-      <div className="mx-auto grid w-fit grid-cols-2 gap-x-8 gap-y-4 px-6 md:grid-cols-[auto,auto,auto,auto]">
+      <section className="grid w-fit grid-cols-2 gap-x-8 gap-y-4 px-6 md:grid-cols-[auto,auto,auto,auto]">
         <HeroItem className="row-span-2 grid grid-rows-subgrid place-items-center gap-y-1">
           <HeroItemLabel>
             <Clock /> Timestamp
@@ -169,9 +169,9 @@ export default async function BlockDetailsPage({
           </HeroItemLabel>
           {timestampToEpoch(timestamp)}
         </HeroItem>
-      </div>
+      </section>
 
-      <div className="flex flex-row gap-8">
+      <section className="flex flex-row gap-8">
         <Card className="flex-1">
           <CardHeader className="flex flex-row justify-between space-y-0">
             <CardTitle>
@@ -280,7 +280,7 @@ export default async function BlockDetailsPage({
             )}
           </div>
         </Card>
-      </div>
+      </section>
 
       <section>
         <div className="flex justify-between md:mb-4">

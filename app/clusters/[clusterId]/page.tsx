@@ -71,7 +71,7 @@ export default async function ClusterDetailsPage({
   const latestProofs = await fetchProvedProofsByClusterId(clusterId)
 
   return (
-    <div className="-mt-40 space-y-8 px-6 md:px-8">
+    <div className="mx-auto -mt-40 max-w-screen-xl space-y-8 px-6 md:px-8 [&>section]:w-full">
       <div id="hero-section" className="flex flex-col items-center gap-2">
         <h1 className="text-shadow font-mono text-4xl font-semibold">
           {cluster.nickname}
@@ -154,7 +154,7 @@ export default async function ClusterDetailsPage({
         </aside>
       )}
 
-      <div className="!mt-16 flex w-full flex-wrap justify-evenly gap-x-8 border-b">
+      <section className="!mt-16 flex w-full flex-wrap justify-evenly gap-x-8 border-b">
         <div className="flex flex-col items-center gap-1 p-4">
           <div className="font-sans text-sm text-body-secondary">zkVM</div>
           <div className="font-mono text-lg text-primary">{zkvm.name}</div>
@@ -179,9 +179,9 @@ export default async function ClusterDetailsPage({
             {cluster.proof_type}
           </div>
         </div>
-      </div>
+      </section>
 
-      <section className="flex max-w-full">
+      <section className="flex gap-x-16 gap-y-8 max-sm:flex-col max-sm:items-center">
         <ClusterMachineSummary
           machines={cluster.versions[0].cluster_machines}
         />
@@ -225,7 +225,7 @@ export default async function ClusterDetailsPage({
       </section>
 
       {/* // TODO: Mobile responsiveness */}
-      <section className="flex max-w-full flex-col">
+      <section className="flex flex-col">
         <div className="flex items-center gap-2 px-6">
           <Box strokeWidth="1" className="size-11" />
           <div className="font-mono text-xl">latest proofs</div>
@@ -299,7 +299,7 @@ export default async function ClusterDetailsPage({
       </section>
 
       {/* // TODO: Mobile responsiveness */}
-      <section className="flex max-w-full flex-col">
+      <section className="flex flex-col">
         <div className="flex items-center gap-2 px-6">
           <Box strokeWidth="1" className="size-11" />
           <div className="font-mono text-xl">killer-block proofs</div>
