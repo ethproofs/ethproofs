@@ -42,6 +42,12 @@ const bountyLabels: Record<SeverityLevel, string> = {
   green: "≥ $1M",
 }
 
+const trustedSetupLabels: Record<SeverityLevel, string> = {
+  red: "no trusted setup",
+  yellow: "no trusted setup",
+  green: "trusted setup",
+}
+
 type MetricThresholds = {
   red: number
   yellow: number
@@ -90,6 +96,8 @@ export const getZkvmMetricLabel = (
       return securityTargetLabels[severity]
     case "max_bounty_amount":
       return bountyLabels[severity]
+    case "trusted_setup":
+      return trustedSetupLabels[severity]
     default:
       return ""
   }
@@ -137,16 +145,17 @@ export const getZkvmMetricSeverityLevels = (metrics: ZkvmMetrics) => {
     "security_target_bits"
   )
 
-  return [
-    proofSizeSeverity,
-    securityTargetSeverity,
-    metrics.quantum_security,
-    maxBountyAmountSeverity,
-    metrics.evm_stf_bytecode,
-    metrics.implementation_soundness,
-    metrics.protocol_soundness,
-    verificationTimeSeverity,
-  ]
+  return {
+    proofSize: proofSizeSeverity,
+    securityTarget: securityTargetSeverity,
+    quantumSecurity: metrics.quantum_security,
+    maxBountyAmount: maxBountyAmountSeverity,
+    evmStfBytecode: metrics.evm_stf_bytecode,
+    implementationSoundness: metrics.implementation_soundness,
+    protocolSoundness: metrics.protocol_soundness,
+    verificationTime: verificationTimeSeverity,
+    trustedSetup: metrics.trusted_setup ? ("green" as const) : ("red" as const),
+  }
 }
 
 export const getZkvmsMetrics = async () => {

@@ -8,14 +8,16 @@ import SoftwareDetails from "@/components/SoftwareDetails"
 import GitHub from "@/components/svgs/github.svg"
 import Link from "@/components/ui/link"
 
-import { cn } from "@/lib/utils"
-
 import { getActiveClusters } from "@/lib/api/clusters"
 import { getClusterSummary } from "@/lib/api/stats"
 import { getZkvm } from "@/lib/api/zkvms"
 import { formatShortDate } from "@/lib/date"
 import { getMetadata } from "@/lib/metadata"
-import { getZkvmMetrics, getZkvmMetricSeverityLevels } from "@/lib/metrics"
+import {
+  getZkvmMetricLabel,
+  getZkvmMetrics,
+  getZkvmMetricSeverityLevels,
+} from "@/lib/metrics"
 import { getZkvmWithUsage } from "@/lib/zkvms"
 
 export type ZkvmDetailsPageProps = {
@@ -69,6 +71,76 @@ export default async function ZkvmDetailsPage({
 
   const zkvmMetrics = await getZkvmMetrics(zkvm.id)
   const severityLevels = getZkvmMetricSeverityLevels(zkvmMetrics)
+
+  // 3 things: value, label, severity
+  const metrics = {
+    size_bytes: {
+      value: zkvmMetrics.size_bytes,
+      label: getZkvmMetricLabel(severityLevels.proofSize, "size_bytes"),
+      severity: severityLevels.proofSize,
+    },
+    verification_ms: {
+      value: zkvmMetrics.verification_ms,
+      label: getZkvmMetricLabel(
+        severityLevels.verificationTime,
+        "verification_ms"
+      ),
+      severity: severityLevels.verificationTime,
+    },
+    security_target_bits: {
+      value: zkvmMetrics.security_target_bits,
+      label: getZkvmMetricLabel(
+        severityLevels.securityTarget,
+        "security_target_bits"
+      ),
+      severity: severityLevels.securityTarget,
+    },
+    max_bounty_amount: {
+      value: zkvmMetrics.max_bounty_amount,
+      label: getZkvmMetricLabel(
+        severityLevels.maxBountyAmount,
+        "max_bounty_amount"
+      ),
+      severity: severityLevels.maxBountyAmount,
+    },
+    quantum_security: {
+      value: zkvmMetrics.quantum_security,
+      label: getZkvmMetricLabel(
+        severityLevels.quantumSecurity,
+        "quantum_security"
+      ),
+      severity: severityLevels.quantumSecurity,
+    },
+    evm_stf_bytecode: {
+      value: zkvmMetrics.evm_stf_bytecode,
+      label: getZkvmMetricLabel(
+        severityLevels.evmStfBytecode,
+        "evm_stf_bytecode"
+      ),
+      severity: severityLevels.evmStfBytecode,
+    },
+    implementation_soundness: {
+      value: zkvmMetrics.implementation_soundness,
+      label: getZkvmMetricLabel(
+        severityLevels.implementationSoundness,
+        "implementation_soundness"
+      ),
+      severity: severityLevels.implementationSoundness,
+    },
+    protocol_soundness: {
+      value: zkvmMetrics.protocol_soundness,
+      label: getZkvmMetricLabel(
+        severityLevels.protocolSoundness,
+        "protocol_soundness"
+      ),
+      severity: severityLevels.protocolSoundness,
+    },
+    trusted_setup: {
+      value: zkvmMetrics.trusted_setup,
+      label: getZkvmMetricLabel(severityLevels.trustedSetup, "trusted_setup"),
+      severity: severityLevels.trustedSetup,
+    },
+  }
 
   return (
     <>
@@ -128,18 +200,7 @@ export default async function ZkvmDetailsPage({
       <div className="bg-gradient-to-b from-background to-background-active">
         <div className="mx-auto max-w-screen-xl">
           <h2 className="sr-only">zkVM software details</h2>
-          <SoftwareDetails
-            numericMetrics={{
-              verification_ms: zkvmMetrics.verification_ms,
-              size_bytes: zkvmMetrics.size_bytes,
-            }}
-            categoricalMetrics={{
-              ...zkvmMetrics,
-              security_target_bits: severityLevels[0],
-              max_bounty_amount: severityLevels[3],
-            }}
-            severityLevels={severityLevels}
-          />
+          <SoftwareDetails metrics={metrics} />
         </div>
       </div>
 
