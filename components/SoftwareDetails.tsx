@@ -1,4 +1,4 @@
-import type { Slices, ZkvmMetrics } from "@/lib/types"
+import type { Slices, SoftwareItem, ZkvmMetrics } from "@/lib/types"
 
 import { cn } from "@/lib/utils"
 
@@ -12,177 +12,154 @@ import {
   thresholds,
 } from "@/lib/metrics"
 
-type Props = {
+const DetailItem = ({ item }: { item: SoftwareItem }) => (
+  <div className={item.className}>
+    <MetricBox className="py-0">
+      {"chartInfo" in item && <LevelMeter {...item.chartInfo} />}
+    </MetricBox>
+    <MetricLabel>
+      <MetricInfo label={item.label}>{item.popoverDetails}</MetricInfo>
+    </MetricLabel>
+    {"value" in item && (
+      <div className="text-center font-sans text-base">{item.value}</div>
+    )}
+  </div>
+)
+
+DetailItem.displayName = "DetailItem"
+
+type SoftwareDetailsProps = {
   metrics: ZkvmMetrics
   className?: string
 }
 
-const SoftwareDetails = ({ metrics, className }: Props) => {
+const SoftwareDetails = ({ metrics, className }: SoftwareDetailsProps) => {
   const severityLevels = getZkvmMetricSeverityLevels(metrics)
 
-  // order for the pizza chart
-  const severityArray = [
-    severityLevels.proofSize,
-    severityLevels.securityTarget,
-    severityLevels.quantumSecurity,
-    severityLevels.maxBountyAmount,
-    severityLevels.evmStfBytecode,
-    severityLevels.implementationSoundness,
-    severityLevels.protocolSoundness,
-    severityLevels.verificationTime,
+  const items: SoftwareItem[] = [
+    {
+      id: "verification-time",
+      label: "verification times",
+      className:
+        "peer/verificationTime col-span-2 col-start-1 row-start-1 flex-1 py-4 text-center",
+      popoverDetails: "TODO: Popover details",
+      severity: severityLevels.verificationTime,
+      position: 7,
+      chartInfo: {
+        bestThreshold: thresholds.verification_ms.green,
+        worstThreshold: thresholds.verification_ms.red,
+        unit: "ms",
+        value: Number(metrics.verification_ms),
+      },
+    },
+    {
+      id: "proof-size",
+      label: "proof size",
+      className:
+        "peer/proofSize col-span-2 col-start-4 row-start-1 flex-1 text-center",
+      popoverDetails: "TODO: Popover details",
+      severity: severityLevels.proofSize,
+      position: 0,
+      chartInfo: {
+        bestThreshold: thresholds.size_bytes.green / 1024,
+        worstThreshold: thresholds.size_bytes.red / 1024,
+        unit: "kB",
+        value: Number(metrics.size_bytes) / 1024,
+      },
+    },
+    // Section 2 - Left
+    {
+      id: "protocol-soundness",
+      label: "protocol soundness",
+      className: "peer/protocolSoundness col-start-2 row-start-2 text-center",
+      popoverDetails: "TODO: Popover details",
+      severity: severityLevels.protocolSoundness,
+      position: 6,
+      value: getZkvmMetricLabel(
+        severityLevels.protocolSoundness,
+        "protocol_soundness"
+      ),
+    },
+    {
+      id: "implementation-soundness",
+      label: "implementation soundness",
+      className:
+        "peer/implementationSoundness col-start-2 row-start-3 text-center",
+      popoverDetails: "TODO: Popover details",
+      severity: severityLevels.implementationSoundness,
+      position: 5,
+      value: getZkvmMetricLabel(
+        severityLevels.implementationSoundness,
+        "implementation_soundness"
+      ),
+    },
+    {
+      id: "evm-stf-bytecode",
+      label: "EVM STF bytecode",
+      className: "peer/evmStfBytecode col-start-2 row-start-4 text-center",
+      popoverDetails: "TODO: Popover details",
+      severity: severityLevels.evmStfBytecode,
+      position: 4,
+      value: getZkvmMetricLabel(
+        severityLevels.evmStfBytecode,
+        "evm_stf_bytecode"
+      ),
+    },
+    // Section 3 - Right
+    {
+      id: "security-target",
+      label: "security target",
+      className: "peer/securityTarget col-start-4 row-start-2 text-center",
+      popoverDetails: "TODO: Popover details",
+      severity: severityLevels.securityTarget,
+      position: 1,
+      value: getZkvmMetricLabel(
+        severityLevels.securityTarget,
+        "security_target_bits"
+      ),
+    },
+    {
+      id: "quantum-security",
+      label: "quantum security",
+      className: "peer/quantumSecurity col-start-4 row-start-3 text-center",
+      popoverDetails: "TODO: Popover details",
+      severity: severityLevels.quantumSecurity,
+      position: 2,
+      value: getZkvmMetricLabel(
+        severityLevels.quantumSecurity,
+        "quantum_security"
+      ),
+    },
+    {
+      id: "max-bounty-amount",
+      label: "bounties",
+      className:
+        "peer peer/maxBountyAmount peer/max-bounty-amount col-start-4 row-start-4 text-center",
+      popoverDetails: "TODO: Popover details",
+      severity: severityLevels.maxBountyAmount,
+      position: 3,
+      value: getZkvmMetricLabel(
+        severityLevels.maxBountyAmount,
+        "max_bounty_amount"
+      ),
+    },
   ]
 
   return (
     <div
       className={cn(
-        "grid grid-cols-[2fr,2fr,2fr,2fr,2fr] gap-8 p-8",
+        "grid grid-cols-[1fr,4fr,auto,4fr,1fr] gap-8 p-8",
         className
       )}
     >
-      <div className="col-span-2 col-start-1 row-start-1 flex-1 text-center">
-        <MetricBox>
-          <LevelMeter
-            bestThreshold={thresholds.verification_ms.green}
-            worstThreshold={thresholds.verification_ms.red}
-            unit="ms"
-            value={Number(metrics.verification_ms)}
-          />
-          <MetricLabel>
-            <MetricInfo label="verification times">
-              TODO: Popover details
-            </MetricInfo>
-          </MetricLabel>
-        </MetricBox>
-      </div>
+      {items.map((item) => (
+        <DetailItem key={item.id} item={item} />
+      ))}
 
-      <div className="col-start-2 row-start-2 text-center">
-        <MetricBox className="py-0">
-          <MetricLabel>
-            <MetricInfo label="protocol soundness">
-              TODO: Popover details
-            </MetricInfo>
-          </MetricLabel>
-          <div className="text-center font-sans text-base">
-            {getZkvmMetricLabel(
-              severityLevels.protocolSoundness,
-              "protocol_soundness"
-            )}
-          </div>
-        </MetricBox>
-      </div>
-
-      <div className="col-start-2 row-start-3 text-center">
-        <MetricBox className="py-0">
-          <MetricLabel>
-            <MetricInfo
-              label="implementation soundness"
-              className="block overflow-visible text-nowrap"
-            >
-              TODO: Popover details
-            </MetricInfo>
-          </MetricLabel>
-          <div className="text-center font-sans text-base">
-            {getZkvmMetricLabel(
-              severityLevels.implementationSoundness,
-              "implementation_soundness"
-            )}
-          </div>
-        </MetricBox>
-      </div>
-
-      <div className="col-start-2 row-start-4 text-center">
-        <MetricBox className="py-0">
-          <MetricLabel>
-            <MetricInfo label="EVM STF bytecode">
-              TODO: Popover details
-            </MetricInfo>
-          </MetricLabel>
-          <div className="text-center font-sans text-base">
-            {getZkvmMetricLabel(
-              severityLevels.evmStfBytecode,
-              "evm_stf_bytecode"
-            )}
-          </div>
-        </MetricBox>
-      </div>
-
-      <div className="col-start-3 row-span-3 row-start-2 flex flex-col items-center text-[10rem]">
+      <div className="peer/pizza col-start-3 row-span-3 row-start-2 flex flex-col items-center text-[10rem]">
         <Pizza
-          slices={
-            severityArray.map((severity) => ({
-              level: severity,
-            })) as Slices
-          }
+          slices={items.map((item) => ({ level: item.severity })) as Slices}
         />
-      </div>
-
-      <div className="col-span-2 col-start-4 row-start-1 flex-1 text-center">
-        <MetricBox>
-          <LevelMeter
-            bestThreshold={thresholds.size_bytes.green / 1024}
-            worstThreshold={thresholds.size_bytes.red / 1024}
-            unit="kB"
-            value={Number(metrics.size_bytes) / 1024}
-          />
-          <MetricLabel>
-            <MetricInfo label="proof size">TODO: Popover details</MetricInfo>
-          </MetricLabel>
-        </MetricBox>
-      </div>
-
-      <div className="col-start-4 row-start-2 text-center">
-        <MetricBox className="py-0">
-          <MetricLabel>
-            <MetricInfo label="security target">
-              TODO: Popover details
-            </MetricInfo>
-          </MetricLabel>
-          <div className="text-center font-sans text-base">
-            {getZkvmMetricLabel(
-              severityLevels.securityTarget,
-              "security_target_bits"
-            )}
-          </div>
-        </MetricBox>
-      </div>
-
-      <div className="col-start-4 row-start-3 text-center">
-        <MetricBox className="py-0">
-          <MetricLabel>
-            <MetricInfo label="quantum">TODO: Popover details</MetricInfo>
-          </MetricLabel>
-          <div className="text-center font-sans text-base">
-            {getZkvmMetricLabel(
-              severityLevels.quantumSecurity,
-              "quantum_security"
-            )}
-          </div>
-        </MetricBox>
-      </div>
-
-      <div className="col-start-4 row-start-4 text-center">
-        <MetricBox className="py-0">
-          <MetricLabel>
-            <MetricInfo label="bounties">TODO: Popover details</MetricInfo>
-          </MetricLabel>
-          <div className="text-center font-sans text-base">
-            {getZkvmMetricLabel(
-              severityLevels.maxBountyAmount,
-              "max_bounty_amount"
-            )}
-          </div>
-        </MetricBox>
-      </div>
-
-      <div className="col-start-3 row-start-5 self-end text-center">
-        <MetricBox className="py-0">
-          <MetricLabel>
-            <MetricInfo label="trusted setup">TODO: Popover details</MetricInfo>
-          </MetricLabel>
-          <div className="text-nowrap text-center font-sans text-base">
-            {getZkvmMetricLabel(severityLevels.trustedSetup, "trusted_setup")}
-          </div>
-        </MetricBox>
       </div>
     </div>
   )
