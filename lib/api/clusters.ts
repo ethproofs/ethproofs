@@ -6,6 +6,7 @@ import {
   clusters,
   clusterVersions,
   proofs,
+  teams,
   zkvms,
   zkvmVersions,
 } from "@/db/schema"
@@ -186,6 +187,16 @@ export const getClustersBenchmarks = async () => {
       benchmarks: true,
       team: true,
     },
+    where: (clusters, { and, exists, notIlike }) =>
+      // hide test teams from the provers list
+      exists(
+        db
+          .select()
+          .from(teams)
+          .where(
+            and(eq(teams.id, clusters.team_id), notIlike(teams.name, "%test%"))
+          )
+      ),
   })
 
   return clusters
