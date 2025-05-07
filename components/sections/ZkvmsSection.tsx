@@ -26,7 +26,9 @@ const ZkvmsSection = async () => {
   return (
     <Card>
       <CardHeader className="space-y-3">
-        <CardTitle className="text-3xl font-normal tracking-[1px]">zkVMs</CardTitle>
+        <CardTitle className="text-3xl font-normal tracking-[1px]">
+          zkVMs
+        </CardTitle>
 
         <div className="py-4">
           <KPIs items={zkvmsSummary} />

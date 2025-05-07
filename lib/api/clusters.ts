@@ -6,6 +6,7 @@ import {
   clusters,
   clusterVersions,
   proofs,
+  teams,
   zkvms,
   zkvmVersions,
 } from "@/db/schema"
@@ -178,4 +179,31 @@ export const getActiveMachineCount = async () => {
     )
 
   return machineCount.count
+}
+
+export const getClustersBenchmarks = async () => {
+  const clusters = await db.query.clusters.findMany({
+    with: {
+      benchmarks: true,
+      team: true,
+    },
+    where: (clusters, { and, exists, notIlike }) =>
+      // hide test teams from the provers list
+      exists(
+        db
+          .select()
+          .from(teams)
+          .where(
+            and(eq(teams.id, clusters.team_id), notIlike(teams.name, "%test%"))
+          )
+      ),
+    // order by the clusters that have benchmarks first
+    orderBy: (clusters) => [
+      desc(
+        sql`EXISTS (SELECT 1 FROM cluster_benchmarks WHERE cluster_benchmarks.cluster_id = ${clusters.id})`
+      ),
+    ],
+  })
+
+  return clusters
 }

@@ -112,7 +112,9 @@ const LineChartCard = ({
       )}
     >
       <CardHeader className="flex flex-col gap-6 space-y-0 py-5">
-        <CardTitle className="text-2xl font-normal text-center">{title}</CardTitle>
+        <CardTitle className="text-center text-2xl font-normal">
+          {title}
+        </CardTitle>
         {!hideKPIs && (
           <div className="flex">
             <div className="flex flex-1 flex-col items-center border-e text-center">
