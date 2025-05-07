@@ -2,7 +2,7 @@ import Link from "next/link"
 import Script from "next/script"
 
 import LampEffect from "@/components/LampEffect"
-import AppSidebar from "@/components/Sidebar"
+import AppNavigationMenu from "@/components/AppSidebar"
 import EthProofsLogo from "@/components/svgs/eth-proofs-logo.svg"
 import Hamburger from "@/components/svgs/hamburger.svg"
 import { Button } from "@/components/ui/button"
@@ -59,7 +59,7 @@ export default function RootLayout({
       <body className="pb-80">
         <Providers>
           <Sidebar>
-            <AppSidebar />
+            <AppNavigationMenu />
           </Sidebar>
 
           <div className="relative flex w-full flex-col gap-16 overflow-x-hidden md:w-[calc(100vw_-_var(--sidebar-width))]">
@@ -98,7 +98,7 @@ export default function RootLayout({
                     </Button>
                   </DrawerTrigger>
                   <DrawerContent>
-                    <AppSidebar />
+                    <AppNavigationMenu insideDrawer />
                   </DrawerContent>
                 </Drawer>
               </header>
