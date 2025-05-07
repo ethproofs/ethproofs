@@ -179,3 +179,14 @@ export const getActiveMachineCount = async () => {
 
   return machineCount.count
 }
+
+export const getClustersBenchmarks = async () => {
+  const clusters = await db.query.clusters.findMany({
+    with: {
+      benchmarks: true,
+      team: true,
+    },
+  })
+
+  return clusters
+}
