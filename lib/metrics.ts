@@ -4,7 +4,13 @@ import {
   getZkvmSecurityMetrics,
   getZkvmSecurityMetricsByZkvmId,
 } from "./api/metrics"
-import { SeverityLevel, ZkvmMetrics } from "./types"
+import { ZKVM_THRESHOLDS } from "./constants"
+import {
+  SeverityLevel,
+  SoftwareDetailItem,
+  ZkvmMetrics,
+  ZkvmThresholdMetric,
+} from "./types"
 
 const protocolLabels: Record<SeverityLevel, string> = {
   red: "not fully audited",
@@ -48,35 +54,6 @@ const trustedSetupLabels: Record<SeverityLevel, string> = {
   green: "trusted setup",
 }
 
-type MetricThresholds = {
-  red: number
-  yellow: number
-  green: number
-}
-
-export const thresholds: Record<string, MetricThresholds> = {
-  size_bytes: {
-    red: 512 * 1024, // 512 KiB
-    yellow: 32 * 1024, // 32 KiB
-    green: 0,
-  },
-  verification_ms: {
-    red: 16, // 16ms
-    yellow: 1, // 1ms
-    green: 0,
-  },
-  security_target_bits: {
-    red: 100,
-    yellow: 128,
-    green: Number.MAX_SAFE_INTEGER,
-  },
-  max_bounty_amount: {
-    red: 64000, // $64k
-    yellow: 1000000, // $1M
-    green: Number.MAX_SAFE_INTEGER,
-  },
-}
-
 export const getZkvmMetricLabel = (
   severity: SeverityLevel,
   metricType: string
@@ -103,30 +80,29 @@ export const getZkvmMetricLabel = (
   }
 }
 
-export const getZkvmMetricSeverity = (value: number, metric: string) => {
-  let severity: SeverityLevel = "red"
-
+export const getZkvmMetricSeverity = (
+  value: number,
+  metric: ZkvmThresholdMetric
+) => {
   // Handle numeric metrics
-  const threshold = thresholds[metric]
+  const threshold = ZKVM_THRESHOLDS[metric]
 
-  if (!threshold) {
-    return severity
+  const lowerBetter: ZkvmThresholdMetric[] = ["size_bytes", "verification_ms"]
+
+  if (lowerBetter.includes(metric)) {
+    if (value >= threshold.red) return "red"
+    if (value >= threshold.yellow) return "yellow"
+    return "green"
   }
 
-  if (metric === "size_bytes" || metric === "verification_ms") {
-    if (value >= threshold.red) severity = "red"
-    else if (value >= threshold.yellow) severity = "yellow"
-    else severity = "green"
-  } else {
-    if (value < threshold.red) severity = "red"
-    else if (value < threshold.yellow) severity = "yellow"
-    else severity = "green"
-  }
-
-  return severity
+  if (value < threshold.red) return "red"
+  if (value < threshold.yellow) return "yellow"
+  return "green"
 }
 
-export const getZkvmMetricSeverityLevels = (metrics: ZkvmMetrics) => {
+export const getZkvmMetricSeverityLevels = (
+  metrics: ZkvmMetrics
+): Record<string, SeverityLevel> => {
   // Get the severity levels for each numeric metric
   const proofSizeSeverity = getZkvmMetricSeverity(
     metrics.size_bytes,
@@ -194,4 +170,116 @@ export const getZkvmMetrics = async (zkvmId: number) => {
     ...securityMetrics,
     ...performanceMetrics,
   }
+}
+
+export const getSoftwareDetailItems = (
+  metrics: ZkvmMetrics
+): SoftwareDetailItem[] => {
+  const severityLevels = getZkvmMetricSeverityLevels(metrics)
+
+  return [
+    // Section 1 - Top charts
+    {
+      id: "verification-time",
+      label: "verification times",
+      className: "col-span-2 col-start-1 row-start-1 flex-1 pt-8 text-center",
+      popoverDetails: "TODO: Popover details",
+      severity: severityLevels.verificationTime,
+      position: 7,
+      chartInfo: {
+        bestThreshold: ZKVM_THRESHOLDS.verification_ms.yellow,
+        worstThreshold: ZKVM_THRESHOLDS.verification_ms.red,
+        unit: "ms",
+        value: Number(metrics.verification_ms),
+      },
+    },
+    {
+      id: "proof-size",
+      label: "proof size",
+      className: "col-span-2 col-start-4 row-start-1 flex-1 pt-8 text-center",
+      popoverDetails: "TODO: Popover details",
+      severity: severityLevels.proofSize,
+      position: 0,
+      chartInfo: {
+        bestThreshold: ZKVM_THRESHOLDS.size_bytes.yellow / 1024,
+        worstThreshold: ZKVM_THRESHOLDS.size_bytes.red / 1024,
+        unit: "kB",
+        value: Number(metrics.size_bytes) / 1024,
+      },
+    },
+    // Section 2 - Left
+    {
+      id: "protocol-soundness",
+      label: "protocol soundness",
+      className: "col-start-2 row-start-2 text-center",
+      popoverDetails: "TODO: Popover details",
+      severity: severityLevels.protocolSoundness,
+      position: 6,
+      value: getZkvmMetricLabel(
+        severityLevels.protocolSoundness,
+        "protocol_soundness"
+      ),
+    },
+    {
+      id: "implementation-soundness",
+      label: "implementation soundness",
+      className: "col-start-2 row-start-3 text-center",
+      popoverDetails: "TODO: Popover details",
+      severity: severityLevels.implementationSoundness,
+      position: 5,
+      value: getZkvmMetricLabel(
+        severityLevels.implementationSoundness,
+        "implementation_soundness"
+      ),
+    },
+    {
+      id: "evm-stf-bytecode",
+      label: "EVM STF bytecode",
+      className: "col-start-2 row-start-4 text-center",
+      popoverDetails: "TODO: Popover details",
+      severity: severityLevels.evmStfBytecode,
+      position: 4,
+      value: getZkvmMetricLabel(
+        severityLevels.evmStfBytecode,
+        "evm_stf_bytecode"
+      ),
+    },
+    // Section 3 - Right
+    {
+      id: "security-target",
+      label: "security target",
+      className: "col-start-4 row-start-2 text-center",
+      popoverDetails: "TODO: Popover details",
+      severity: severityLevels.securityTarget,
+      position: 1,
+      value: getZkvmMetricLabel(
+        severityLevels.securityTarget,
+        "security_target_bits"
+      ),
+    },
+    {
+      id: "quantum-security",
+      label: "quantum security",
+      className: "col-start-4 row-start-3 text-center",
+      popoverDetails: "TODO: Popover details",
+      severity: severityLevels.quantumSecurity,
+      position: 2,
+      value: getZkvmMetricLabel(
+        severityLevels.quantumSecurity,
+        "quantum_security"
+      ),
+    },
+    {
+      id: "max-bounty-amount",
+      label: "bounties",
+      className: "col-start-4 row-start-4 text-center",
+      popoverDetails: "TODO: Popover details",
+      severity: severityLevels.maxBountyAmount,
+      position: 3,
+      value: getZkvmMetricLabel(
+        severityLevels.maxBountyAmount,
+        "max_bounty_amount"
+      ),
+    },
+  ]
 }
