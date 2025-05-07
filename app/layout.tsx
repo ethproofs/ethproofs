@@ -81,12 +81,10 @@ export default function RootLayout({
                 id="mobile-header"
                 className={cn(
                   "md:hidden", // Mobile only
-                  "sticky top-0 z-10 grid w-full grid-cols-3 items-center py-4",
-                  "-mx-4 sm:-mx-4 md:-mx-8 xl:-mx-16", // Extend the background to the edges
-                  "px-4 sm:px-4 md:px-8 xl:px-16" // Padding to accommodate for margins
+                  "sticky top-0 z-10 flex w-full items-center justify-between p-6"
                 )}
               >
-                <Link href="/" className="col-start-2 grid place-items-center">
+                <Link href="/">
                   <EthProofsLogo className="text-3xl" />
                 </Link>
 
@@ -94,7 +92,7 @@ export default function RootLayout({
                   <DrawerTrigger asChild>
                     <Button
                       variant="outline"
-                      className="col-start-3 ms-auto size-[2rem] border-2 p-2"
+                      className="ms-auto size-[2rem] border-2 p-2"
                     >
                       <Hamburger />
                     </Button>
