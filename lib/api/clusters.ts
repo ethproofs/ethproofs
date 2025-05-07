@@ -197,6 +197,12 @@ export const getClustersBenchmarks = async () => {
             and(eq(teams.id, clusters.team_id), notIlike(teams.name, "%test%"))
           )
       ),
+    // order by the clusters that have benchmarks first
+    orderBy: (clusters) => [
+      desc(
+        sql`EXISTS (SELECT 1 FROM cluster_benchmarks WHERE cluster_benchmarks.cluster_id = ${clusters.id})`
+      ),
+    ],
   })
 
   return clusters
