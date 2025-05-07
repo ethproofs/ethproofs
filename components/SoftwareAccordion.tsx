@@ -51,7 +51,7 @@ const SoftwareAccordionItem = ({
     {
       id: "verification-time",
       label: "verification times",
-      className: "col-span-2 col-start-1 row-start-1 flex-1 py-4 text-center",
+      className: "col-span-2 col-start-1 row-start-1 flex-1 pt-8 text-center",
       popoverDetails: "TODO: Popover details",
       severity: severityLevels.verificationTime,
       position: 7,
@@ -65,7 +65,7 @@ const SoftwareAccordionItem = ({
     {
       id: "proof-size",
       label: "proof size",
-      className: "col-span-2 col-start-4 row-start-1 flex-1 text-center",
+      className: "col-span-2 col-start-4 row-start-1 flex-1 pt-8 text-center",
       popoverDetails: "TODO: Popover details",
       severity: severityLevels.proofSize,
       position: 0,
@@ -171,7 +171,7 @@ const SoftwareAccordionItem = ({
             <Image
               // TODO: add fallback logo
               src={zkvm.vendor.logo_url ?? ""}
-              alt="Succinct logo"
+              alt="Zkvm team logo"
               height={16}
               width={16}
               style={{ height: "1rem", width: "auto" }}
