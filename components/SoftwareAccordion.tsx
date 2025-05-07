@@ -1,7 +1,13 @@
 import Image from "next/image"
 import { type AccordionItemProps } from "@radix-ui/react-accordion"
 
-import { Slices, Vendor, Zkvm, ZkvmMetrics, ZkvmVersion } from "@/lib/types"
+import {
+  SoftwareItem,
+  Vendor,
+  Zkvm,
+  ZkvmMetrics,
+  ZkvmVersion,
+} from "@/lib/types"
 
 import {
   Accordion,
@@ -17,8 +23,13 @@ import Pizza from "./Pizza"
 import SoftwareDetails from "./SoftwareDetails"
 
 import { formatShortDate } from "@/lib/date"
-import { getZkvmMetricSeverityLevels, getZkvmsMetrics } from "@/lib/metrics"
-import { getZkvmsWithUsage } from "@/lib/zkvms"
+import {
+  getZkvmMetricLabel,
+  getZkvmMetricSeverityLevels,
+  getZkvmsMetrics,
+} from "@/lib/metrics"
+import { getSlices, getZkvmsWithUsage } from "@/lib/zkvms"
+import { ZKVM_THRESHOLDS } from "@/lib/constants"
 
 const SoftwareAccordionItem = ({
   value,
@@ -35,16 +46,110 @@ const SoftwareAccordionItem = ({
 }) => {
   const severityLevels = getZkvmMetricSeverityLevels(metrics)
 
-  // order for the pizza chart
-  const severityArray = [
-    severityLevels.proofSize,
-    severityLevels.securityTarget,
-    severityLevels.quantumSecurity,
-    severityLevels.maxBountyAmount,
-    severityLevels.evmStfBytecode,
-    severityLevels.implementationSoundness,
-    severityLevels.protocolSoundness,
-    severityLevels.verificationTime,
+  const items: SoftwareItem[] = [
+    // Section 1 - Top charts
+    {
+      id: "verification-time",
+      label: "verification times",
+      className: "col-span-2 col-start-1 row-start-1 flex-1 py-4 text-center",
+      popoverDetails: "TODO: Popover details",
+      severity: severityLevels.verificationTime,
+      position: 7,
+      chartInfo: {
+        bestThreshold: ZKVM_THRESHOLDS.verification_ms.yellow,
+        worstThreshold: ZKVM_THRESHOLDS.verification_ms.red,
+        unit: "ms",
+        value: Number(metrics.verification_ms),
+      },
+    },
+    {
+      id: "proof-size",
+      label: "proof size",
+      className: "col-span-2 col-start-4 row-start-1 flex-1 text-center",
+      popoverDetails: "TODO: Popover details",
+      severity: severityLevels.proofSize,
+      position: 0,
+      chartInfo: {
+        bestThreshold: ZKVM_THRESHOLDS.size_bytes.yellow / 1024,
+        worstThreshold: ZKVM_THRESHOLDS.size_bytes.red / 1024,
+        unit: "kB",
+        value: Number(metrics.size_bytes) / 1024,
+      },
+    },
+    // Section 2 - Left
+    {
+      id: "protocol-soundness",
+      label: "protocol soundness",
+      className: "col-start-2 row-start-2 text-center",
+      popoverDetails: "TODO: Popover details",
+      severity: severityLevels.protocolSoundness,
+      position: 6,
+      value: getZkvmMetricLabel(
+        severityLevels.protocolSoundness,
+        "protocol_soundness"
+      ),
+    },
+    {
+      id: "implementation-soundness",
+      label: "implementation soundness",
+      className: "col-start-2 row-start-3 text-center",
+      popoverDetails: "TODO: Popover details",
+      severity: severityLevels.implementationSoundness,
+      position: 5,
+      value: getZkvmMetricLabel(
+        severityLevels.implementationSoundness,
+        "implementation_soundness"
+      ),
+    },
+    {
+      id: "evm-stf-bytecode",
+      label: "EVM STF bytecode",
+      className: "col-start-2 row-start-4 text-center",
+      popoverDetails: "TODO: Popover details",
+      severity: severityLevels.evmStfBytecode,
+      position: 4,
+      value: getZkvmMetricLabel(
+        severityLevels.evmStfBytecode,
+        "evm_stf_bytecode"
+      ),
+    },
+    // Section 3 - Right
+    {
+      id: "security-target",
+      label: "security target",
+      className: "col-start-4 row-start-2 text-center",
+      popoverDetails: "TODO: Popover details",
+      severity: severityLevels.securityTarget,
+      position: 1,
+      value: getZkvmMetricLabel(
+        severityLevels.securityTarget,
+        "security_target_bits"
+      ),
+    },
+    {
+      id: "quantum-security",
+      label: "quantum security",
+      className: "col-start-4 row-start-3 text-center",
+      popoverDetails: "TODO: Popover details",
+      severity: severityLevels.quantumSecurity,
+      position: 2,
+      value: getZkvmMetricLabel(
+        severityLevels.quantumSecurity,
+        "quantum_security"
+      ),
+    },
+    {
+      id: "max-bounty-amount",
+      label: "bounties",
+      className: "col-start-4 row-start-4 text-center",
+      popoverDetails: "TODO: Popover details",
+      severity: severityLevels.maxBountyAmount,
+      position: 3,
+      value: getZkvmMetricLabel(
+        severityLevels.maxBountyAmount,
+        "max_bounty_amount"
+      ),
+    },
   ]
 
   return (
@@ -92,18 +197,11 @@ const SoftwareAccordionItem = ({
         </div>
 
         <AccordionTrigger className="col-start-5 my-2 h-fit gap-2 rounded-full border-2 border-primary bg-background-highlight p-0.5 pe-2 text-primary [&>svg]:size-6">
-          <Pizza
-            slices={
-              severityArray.map((severity) => ({
-                level: severity,
-              })) as Slices
-            }
-            disableEffects
-          />
+          <Pizza slices={getSlices(items)} disableEffects />
         </AccordionTrigger>
       </div>
       <AccordionContent className="col-span-full border-b bg-gradient-to-t from-background-active p-0">
-        <SoftwareDetails metrics={metrics} />
+        <SoftwareDetails items={items} />
 
         <div className="flex justify-center gap-16 p-8 pt-0">
           <ButtonLink variant="outline" href={`/zkvms/${zkvm.slug}`}>

@@ -4,7 +4,8 @@ import {
   getZkvmSecurityMetrics,
   getZkvmSecurityMetricsByZkvmId,
 } from "./api/metrics"
-import { SeverityLevel, ZkvmMetrics } from "./types"
+import { ZKVM_THRESHOLDS } from "./constants"
+import { SeverityLevel, ZkvmMetrics, ZkvmThresholdMetric } from "./types"
 
 const protocolLabels: Record<SeverityLevel, string> = {
   red: "not fully audited",
@@ -48,35 +49,6 @@ const trustedSetupLabels: Record<SeverityLevel, string> = {
   green: "trusted setup",
 }
 
-type MetricThresholds = {
-  red: number
-  yellow: number
-  green: number
-}
-
-export const thresholds: Record<string, MetricThresholds> = {
-  size_bytes: {
-    red: 512 * 1024, // 512 KiB
-    yellow: 32 * 1024, // 32 KiB
-    green: 0,
-  },
-  verification_ms: {
-    red: 16, // 16ms
-    yellow: 1, // 1ms
-    green: 0,
-  },
-  security_target_bits: {
-    red: 100,
-    yellow: 128,
-    green: Number.MAX_SAFE_INTEGER,
-  },
-  max_bounty_amount: {
-    red: 64000, // $64k
-    yellow: 1000000, // $1M
-    green: Number.MAX_SAFE_INTEGER,
-  },
-}
-
 export const getZkvmMetricLabel = (
   severity: SeverityLevel,
   metricType: string
@@ -103,30 +75,29 @@ export const getZkvmMetricLabel = (
   }
 }
 
-export const getZkvmMetricSeverity = (value: number, metric: string) => {
-  let severity: SeverityLevel = "red"
-
+export const getZkvmMetricSeverity = (
+  value: number,
+  metric: ZkvmThresholdMetric
+) => {
   // Handle numeric metrics
-  const threshold = thresholds[metric]
+  const threshold = ZKVM_THRESHOLDS[metric]
 
-  if (!threshold) {
-    return severity
+  const lowerBetter: ZkvmThresholdMetric[] = ["size_bytes", "verification_ms"]
+
+  if (lowerBetter.includes(metric)) {
+    if (value >= threshold.red) return "red"
+    if (value >= threshold.yellow) return "yellow"
+    return "green"
   }
 
-  if (metric === "size_bytes" || metric === "verification_ms") {
-    if (value >= threshold.red) severity = "red"
-    else if (value >= threshold.yellow) severity = "yellow"
-    else severity = "green"
-  } else {
-    if (value < threshold.red) severity = "red"
-    else if (value < threshold.yellow) severity = "yellow"
-    else severity = "green"
-  }
-
-  return severity
+  if (value < threshold.red) return "red"
+  if (value < threshold.yellow) return "yellow"
+  return "green"
 }
 
-export const getZkvmMetricSeverityLevels = (metrics: ZkvmMetrics) => {
+export const getZkvmMetricSeverityLevels = (
+  metrics: ZkvmMetrics
+): Record<string, SeverityLevel> => {
   // Get the severity levels for each numeric metric
   const proofSizeSeverity = getZkvmMetricSeverity(
     metrics.size_bytes,

@@ -1,5 +1,6 @@
 import { getActiveClusterCountByZkvmId } from "@/lib/api/clusters"
 import { getZkvm, getZkvms } from "@/lib/api/zkvms"
+import { Slices, SoftwareItem } from "./types"
 
 export const getZkvmsStats = async () => {
   const zkvms = await getZkvms()
@@ -61,3 +62,8 @@ export const getZkvmWithUsage = async ({
     activeClusters,
   }
 }
+
+export const getSlices = (items: SoftwareItem[]) =>
+  items
+    .sort((a, b) => a.position - b.position)
+    .map((item) => ({ level: item.severity })) as Slices
