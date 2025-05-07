@@ -4,12 +4,8 @@ import { Benchmark, ClusterBase, ClusterBenchmark, Team } from "@/lib/types"
 
 import { cn } from "@/lib/utils"
 
+import { getBenchmarkColor } from "@/lib/benchmarks"
 import { prettyMs } from "@/lib/time"
-
-type ClusterBenchmarkItem = ClusterBase & {
-  benchmarks: ClusterBenchmark[]
-  team: Team
-}
 
 const CELL_COLOR_CLASSES = {
   red: "border-level-worst dark:from-level-worst/20 from-level-worst/10",
@@ -51,12 +47,9 @@ const DataCell = ({ timeMs, costUsd, color }: BenchmarkItemProps) => (
   </div>
 )
 
-// TODO: move this to a util function
-const getBenchmarkColor = (timeMs: number | undefined): Color | undefined => {
-  if (!timeMs) return undefined
-  if (timeMs < 45 * 1000) return "green"
-  if (timeMs < 90 * 1000) return "yellow"
-  return "red"
+type ClusterBenchmarkItem = ClusterBase & {
+  benchmarks: ClusterBenchmark[]
+  team: Team
 }
 
 const RowItem = ({
