@@ -247,7 +247,7 @@ export type Slices = [
 
 export type DayRange = (typeof CHART_RANGES)[number]
 
-export type SoftwareItem = {
+export type SoftwareDetailItem = {
   id: string
   label: React.ReactNode
   className: string

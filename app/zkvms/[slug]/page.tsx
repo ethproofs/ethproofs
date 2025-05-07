@@ -13,11 +13,7 @@ import { getClusterSummary } from "@/lib/api/stats"
 import { getZkvm } from "@/lib/api/zkvms"
 import { formatShortDate } from "@/lib/date"
 import { getMetadata } from "@/lib/metadata"
-import {
-  getZkvmMetricLabel,
-  getZkvmMetrics,
-  getZkvmMetricSeverityLevels,
-} from "@/lib/metrics"
+import { getSoftwareDetailItems, getZkvmMetrics } from "@/lib/metrics"
 import { getZkvmWithUsage } from "@/lib/zkvms"
 
 export type ZkvmDetailsPageProps = {
@@ -129,7 +125,7 @@ export default async function ZkvmDetailsPage({
       <div className="bg-gradient-to-b from-background to-background-active">
         <div className="mx-auto max-w-screen-xl">
           <h2 className="sr-only">zkVM software details</h2>
-          <SoftwareDetails metrics={zkvmMetrics} />
+          <SoftwareDetails detailItems={getSoftwareDetailItems(zkvmMetrics)} />
         </div>
       </div>
 

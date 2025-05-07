@@ -1,4 +1,4 @@
-import type { SoftwareItem } from "@/lib/types"
+import type { SoftwareDetailItem } from "@/lib/types"
 
 import { cn } from "@/lib/utils"
 
@@ -8,7 +8,7 @@ import Pizza from "./Pizza"
 
 import { getSlices } from "@/lib/zkvms"
 
-const DetailItem = ({ item }: { item: SoftwareItem }) => (
+const DetailItem = ({ item }: { item: SoftwareDetailItem }) => (
   <div className={item.className} data-index={item.position}>
     <MetricBox className="py-0">
       {"chartInfo" in item && <LevelMeter {...item.chartInfo} />}
@@ -25,23 +25,23 @@ const DetailItem = ({ item }: { item: SoftwareItem }) => (
 DetailItem.displayName = "DetailItem"
 
 type SoftwareDetailsProps = {
-  items: SoftwareItem[]
+  detailItems: SoftwareDetailItem[]
   className?: string
 }
 
-const SoftwareDetails = ({ items, className }: SoftwareDetailsProps) => (
+const SoftwareDetails = ({ detailItems, className }: SoftwareDetailsProps) => (
   <div
     className={cn(
       "group/software grid grid-cols-[1fr,4fr,auto,4fr,1fr] gap-8 p-8",
       className
     )}
   >
-    {items.map((item) => (
+    {detailItems.map((item) => (
       <DetailItem key={item.id} item={item} />
     ))}
 
     <div className="col-start-3 row-span-3 row-start-2 flex flex-col items-center text-[10rem]">
-      <Pizza slices={getSlices(items)} />
+      <Pizza slices={getSlices(detailItems)} />
     </div>
   </div>
 )
