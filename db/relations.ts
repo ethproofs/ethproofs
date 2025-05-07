@@ -3,9 +3,11 @@ import { authUsers } from "drizzle-orm/supabase"
 
 import {
   apiAuthTokens,
+  benchmarks,
   blocks,
   cloudInstances,
   cloudProviders,
+  clusterBenchmarks,
   clusterMachines,
   clusters,
   clusterVersions,
@@ -42,6 +44,7 @@ export const clustersRelations = relations(clusters, ({ one, many }) => ({
     fields: [clusters.team_id],
     references: [teams.id],
   }),
+  benchmarks: many(clusterBenchmarks),
 }))
 
 export const clusterVersionsRelations = relations(
@@ -89,6 +92,20 @@ export const cloudInstancesRelations = relations(
     provider: one(cloudProviders, {
       fields: [cloudInstances.provider_id],
       references: [cloudProviders.id],
+    }),
+  })
+)
+
+export const clusterBenchmarksRelations = relations(
+  clusterBenchmarks,
+  ({ one }) => ({
+    cluster: one(clusters, {
+      fields: [clusterBenchmarks.cluster_id],
+      references: [clusters.id],
+    }),
+    benchmark: one(benchmarks, {
+      fields: [clusterBenchmarks.benchmark_id],
+      references: [benchmarks.id],
     }),
   })
 )

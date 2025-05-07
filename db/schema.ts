@@ -283,6 +283,36 @@ export const cloudInstances = pgTable(
   ]
 )
 
+export const clusterBenchmarks = pgTable("cluster_benchmarks", {
+  id: bigint({ mode: "number" }).primaryKey().generatedByDefaultAsIdentity(),
+  cluster_id: uuid("cluster_id")
+    .notNull()
+    .references(() => clusters.id, {
+      onDelete: "cascade",
+      onUpdate: "cascade",
+    }),
+  benchmark_id: bigint({ mode: "number" })
+    .notNull()
+    .references(() => benchmarks.id, {
+      onDelete: "cascade",
+      onUpdate: "cascade",
+    }),
+  time_ms: integer("time_ms").notNull(),
+  cost_usd: real("cost_usd").notNull(),
+  created_at: timestamp("created_at", { withTimezone: true, mode: "string" })
+    .defaultNow()
+    .notNull(),
+})
+
+export const benchmarks = pgTable("benchmarks", {
+  id: bigint({ mode: "number" }).primaryKey().generatedByDefaultAsIdentity(),
+  operation_type: text().notNull(),
+  display_name: text().notNull(),
+  created_at: timestamp("created_at", { withTimezone: true, mode: "string" })
+    .defaultNow()
+    .notNull(),
+})
+
 export const recursiveRootProofs = pgTable(
   "recursive_root_proofs",
   {

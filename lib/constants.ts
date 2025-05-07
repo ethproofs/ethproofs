@@ -34,3 +34,6 @@ export const PROOF_BINARY_BUCKET = "proof_binaries"
 export const PUBLIC_ASSETS_BUCKET = "public-assets"
 
 export const CHART_RANGES = [7, 30, 90] as const
+
+export const BENCHMARK_LOWER_THRESHOLD = 45_000 // milliseconds
+export const BENCHMARK_UPPER_THRESHOLD = 90_000 // milliseconds
