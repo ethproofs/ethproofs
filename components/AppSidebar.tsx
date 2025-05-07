@@ -17,6 +17,7 @@ import { SITE_REPO } from "@/lib/constants"
 
 import SearchInput from "./header/SearchInput"
 import ThemeSwitch from "./header/ThemeSwitch"
+import { DrawerClose } from "./ui/drawer"
 import Link from "./ui/link"
 import {
   SidebarContent,
@@ -28,7 +29,6 @@ import {
   SidebarMenuItem,
 } from "./ui/sidebar"
 import { Skeleton } from "./ui/skeleton"
-import { DrawerClose } from "./ui/drawer"
 
 type AppNavigationMenuProps = {
   insideDrawer?: boolean

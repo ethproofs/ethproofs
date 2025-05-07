@@ -1,8 +1,8 @@
 import Link from "next/link"
 import Script from "next/script"
 
-import LampEffect from "@/components/LampEffect"
 import AppNavigationMenu from "@/components/AppSidebar"
+import LampEffect from "@/components/LampEffect"
 import EthProofsLogo from "@/components/svgs/eth-proofs-logo.svg"
 import Hamburger from "@/components/svgs/hamburger.svg"
 import { Button } from "@/components/ui/button"
