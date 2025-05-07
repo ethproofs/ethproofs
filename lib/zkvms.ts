@@ -1,6 +1,7 @@
+import { Slices, SoftwareItem } from "./types"
+
 import { getActiveClusterCountByZkvmId } from "@/lib/api/clusters"
 import { getZkvm, getZkvms } from "@/lib/api/zkvms"
-import { Slices, SoftwareItem } from "./types"
 
 export const getZkvmsStats = async () => {
   const zkvms = await getZkvms()

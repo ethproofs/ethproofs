@@ -9,6 +9,8 @@ import {
   ZkvmVersion,
 } from "@/lib/types"
 
+import { ZKVM_THRESHOLDS } from "@/lib/constants"
+
 import {
   Accordion,
   AccordionContent,
@@ -29,7 +31,6 @@ import {
   getZkvmsMetrics,
 } from "@/lib/metrics"
 import { getSlices, getZkvmsWithUsage } from "@/lib/zkvms"
-import { ZKVM_THRESHOLDS } from "@/lib/constants"
 
 const SoftwareAccordionItem = ({
   value,
