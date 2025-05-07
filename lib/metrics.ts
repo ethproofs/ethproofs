@@ -182,7 +182,6 @@ export const getSoftwareDetailItems = (
     {
       id: "verification-time",
       label: "verification times",
-      className: "col-span-2 col-start-1 row-start-1 flex-1 pt-8 text-center",
       popoverDetails: "TODO: Popover details",
       severity: severityLevels.verificationTime,
       position: 7,
@@ -192,11 +191,11 @@ export const getSoftwareDetailItems = (
         unit: "ms",
         value: Number(metrics.verification_ms),
       },
+      className: "px-8",
     },
     {
       id: "proof-size",
       label: "proof size",
-      className: "col-span-2 col-start-4 row-start-1 flex-1 pt-8 text-center",
       popoverDetails: "TODO: Popover details",
       severity: severityLevels.proofSize,
       position: 0,
@@ -206,12 +205,12 @@ export const getSoftwareDetailItems = (
         unit: "kB",
         value: Number(metrics.size_bytes) / 1024,
       },
+      className: "px-8",
     },
     // Section 2 - Left
     {
       id: "protocol-soundness",
       label: "protocol soundness",
-      className: "col-start-2 row-start-2 text-center",
       popoverDetails: "TODO: Popover details",
       severity: severityLevels.protocolSoundness,
       position: 6,
@@ -223,7 +222,6 @@ export const getSoftwareDetailItems = (
     {
       id: "implementation-soundness",
       label: "implementation soundness",
-      className: "col-start-2 row-start-3 text-center",
       popoverDetails: "TODO: Popover details",
       severity: severityLevels.implementationSoundness,
       position: 5,
@@ -235,7 +233,6 @@ export const getSoftwareDetailItems = (
     {
       id: "evm-stf-bytecode",
       label: "EVM STF bytecode",
-      className: "col-start-2 row-start-4 text-center",
       popoverDetails: "TODO: Popover details",
       severity: severityLevels.evmStfBytecode,
       position: 4,
@@ -248,7 +245,6 @@ export const getSoftwareDetailItems = (
     {
       id: "security-target",
       label: "security target",
-      className: "col-start-4 row-start-2 text-center",
       popoverDetails: "TODO: Popover details",
       severity: severityLevels.securityTarget,
       position: 1,
@@ -260,7 +256,6 @@ export const getSoftwareDetailItems = (
     {
       id: "quantum-security",
       label: "quantum security",
-      className: "col-start-4 row-start-3 text-center",
       popoverDetails: "TODO: Popover details",
       severity: severityLevels.quantumSecurity,
       position: 2,
@@ -272,7 +267,6 @@ export const getSoftwareDetailItems = (
     {
       id: "max-bounty-amount",
       label: "bounties",
-      className: "col-start-4 row-start-4 text-center",
       popoverDetails: "TODO: Popover details",
       severity: severityLevels.maxBountyAmount,
       position: 3,

@@ -250,7 +250,7 @@ export type DayRange = (typeof CHART_RANGES)[number]
 export type SoftwareDetailItem = {
   id: string
   label: React.ReactNode
-  className: string
+  className?: string
   popoverDetails: React.ReactNode
   severity: SeverityLevel
   position: 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7
