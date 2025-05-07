@@ -2,7 +2,7 @@ import { type ReactNode } from "react"
 
 import { LevelMeterProps } from "@/components/LevelMeter"
 
-import { CHART_RANGES } from "./constants"
+import { CHART_RANGES, ZKVM_THRESHOLDS } from "./constants"
 
 import {
   benchmarks,
@@ -247,7 +247,7 @@ export type Slices = [
 
 export type DayRange = (typeof CHART_RANGES)[number]
 
-export type SoftwareItem = {
+export type SoftwareDetailItem = {
   id: string
   label: React.ReactNode
   className: string
@@ -255,3 +255,7 @@ export type SoftwareItem = {
   severity: SeverityLevel
   position: 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7
 } & ({ chartInfo: LevelMeterProps } | { value: string })
+
+export type MetricThresholds = Record<SeverityLevel, number>
+
+export type ZkvmThresholdMetric = keyof typeof ZKVM_THRESHOLDS

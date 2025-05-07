@@ -1,7 +1,7 @@
 import Image from "next/image"
 import { type AccordionItemProps } from "@radix-ui/react-accordion"
 
-import { Slices, Vendor, Zkvm, ZkvmMetrics, ZkvmVersion } from "@/lib/types"
+import { Vendor, Zkvm, ZkvmMetrics, ZkvmVersion } from "@/lib/types"
 
 import {
   Accordion,
@@ -17,8 +17,8 @@ import Pizza from "./Pizza"
 import SoftwareDetails from "./SoftwareDetails"
 
 import { formatShortDate } from "@/lib/date"
-import { getZkvmMetricSeverityLevels, getZkvmsMetrics } from "@/lib/metrics"
-import { getZkvmsWithUsage } from "@/lib/zkvms"
+import { getSoftwareDetailItems, getZkvmsMetrics } from "@/lib/metrics"
+import { getSlices, getZkvmsWithUsage } from "@/lib/zkvms"
 
 const SoftwareAccordionItem = ({
   value,
@@ -33,19 +33,7 @@ const SoftwareAccordionItem = ({
   }
   metrics: ZkvmMetrics
 }) => {
-  const severityLevels = getZkvmMetricSeverityLevels(metrics)
-
-  // order for the pizza chart
-  const severityArray = [
-    severityLevels.proofSize,
-    severityLevels.securityTarget,
-    severityLevels.quantumSecurity,
-    severityLevels.maxBountyAmount,
-    severityLevels.evmStfBytecode,
-    severityLevels.implementationSoundness,
-    severityLevels.protocolSoundness,
-    severityLevels.verificationTime,
-  ]
+  const detailItems = getSoftwareDetailItems(metrics)
 
   return (
     <AccordionItem value={value} className="col-span-5 grid grid-cols-subgrid">
@@ -66,7 +54,7 @@ const SoftwareAccordionItem = ({
             <Image
               // TODO: add fallback logo
               src={zkvm.vendor.logo_url ?? ""}
-              alt="Succinct logo"
+              alt="Zkvm team logo"
               height={16}
               width={16}
               style={{ height: "1rem", width: "auto" }}
@@ -92,18 +80,11 @@ const SoftwareAccordionItem = ({
         </div>
 
         <AccordionTrigger className="col-start-5 my-2 h-fit gap-2 rounded-full border-2 border-primary bg-background-highlight p-0.5 pe-2 text-primary [&>svg]:size-6">
-          <Pizza
-            slices={
-              severityArray.map((severity) => ({
-                level: severity,
-              })) as Slices
-            }
-            disableEffects
-          />
+          <Pizza slices={getSlices(detailItems)} disableEffects />
         </AccordionTrigger>
       </div>
       <AccordionContent className="col-span-full border-b bg-gradient-to-t from-background-active p-0">
-        <SoftwareDetails metrics={metrics} />
+        <SoftwareDetails detailItems={detailItems} />
 
         <div className="flex justify-center gap-16 p-8 pt-0">
           <ButtonLink variant="outline" href={`/zkvms/${zkvm.slug}`}>
