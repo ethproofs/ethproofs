@@ -1,7 +1,5 @@
 import type { Metadata } from "next"
 
-import { Benchmark, ClusterBenchmark, ClusterVersionBase } from "@/lib/types"
-
 import KillersTable from "@/components/KillersTable"
 import MachineTabs from "@/components/MachineTabs"
 
