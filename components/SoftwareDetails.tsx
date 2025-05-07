@@ -37,20 +37,7 @@ const SoftwareDetails = ({ metrics, className }: SoftwareDetailsProps) => {
   const severityLevels = getZkvmMetricSeverityLevels(metrics)
 
   const items: SoftwareItem[] = [
-    {
-      id: "verification-time",
-      label: "verification times",
-      className: "col-span-2 col-start-1 row-start-1 flex-1 py-4 text-center",
-      popoverDetails: "TODO: Popover details",
-      severity: severityLevels.verificationTime,
-      position: 7,
-      chartInfo: {
-        bestThreshold: thresholds.verification_ms.green,
-        worstThreshold: thresholds.verification_ms.red,
-        unit: "ms",
-        value: Number(metrics.verification_ms),
-      },
-    },
+    // Top Right Section
     {
       id: "proof-size",
       label: "proof size",
@@ -138,6 +125,21 @@ const SoftwareDetails = ({ metrics, className }: SoftwareDetailsProps) => {
         severityLevels.maxBountyAmount,
         "max_bounty_amount"
       ),
+    },
+    // Top Left Section
+    {
+      id: "verification-time",
+      label: "verification times",
+      className: "col-span-2 col-start-1 row-start-1 flex-1 py-4 text-center",
+      popoverDetails: "TODO: Popover details",
+      severity: severityLevels.verificationTime,
+      position: 7,
+      chartInfo: {
+        bestThreshold: thresholds.verification_ms.green,
+        worstThreshold: thresholds.verification_ms.red,
+        unit: "ms",
+        value: Number(metrics.verification_ms),
+      },
     },
   ]
 
