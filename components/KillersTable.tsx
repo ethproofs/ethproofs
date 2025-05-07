@@ -73,15 +73,22 @@ const RowItem = ({
   >
     {/* Proving team logo and cluster name */}
     <div className="space-y-2 text-nowrap">
-      <Image
-        src="https://ndjfbkojyebmdbckigbe.supabase.co/storage/v1/object/public/public-assets/succinct-logo-new.svg"
-        alt=""
-        className="dark:invert"
-        height={24}
-        width={24}
-        style={{ height: "1.5rem", width: "auto" }}
-      />
-      <div className="text-primary">snarking beast v1.2</div>
+      {cluster.team.logo_url ? (
+        <Image
+          src={cluster.team.logo_url}
+          alt={`${cluster.team.name} logo`}
+          className="dark:invert"
+          height={24}
+          width={24}
+          style={{ height: "1.5rem", width: "auto" }}
+        />
+      ) : (
+        <div className="flex items-center gap-1">
+          <div className="size-4 rounded-full bg-primary-border" />
+          {cluster.team.name}
+        </div>
+      )}
+      <div className="text-primary">{cluster.nickname}</div>
     </div>
     {/* One column per benchmark */}
     {Array.from({ length: benchmarks.length }).map((_, idx) => {
