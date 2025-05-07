@@ -193,6 +193,6 @@ const AppNavigationMenu = ({ insideDrawer }: AppNavigationMenuProps) => {
   )
 }
 
-AppNavigationMenu.displayName = "AppSidebar"
+AppNavigationMenu.displayName = "AppNavigationMenu"
 
 export default AppNavigationMenu
