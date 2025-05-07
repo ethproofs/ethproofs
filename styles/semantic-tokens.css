@@ -37,9 +37,9 @@
     --chart-5: 27 87% 67%;
     --chart-border: var(--teal-200);
 
-    --level-best: 136 100% 38%; /* #1DC200 */
-    --level-middle: 54 100% 50%; /* #FFF200 */
-    --level-worst: 0 100% 38%; /* #C20000 */
+    --level-best: 136, 100%, 38%; /* #1DC200 */
+    --level-middle: 54, 100%, 50%; /* #FFF200 */
+    --level-worst: 0, 100%, 38%; /* #C20000 */
   }
 
   /* Dark mode token declarations */
@@ -65,11 +65,11 @@
 
     --sidebar: var(--teal-900);
 
-    --chart-1: 220 70% 50%;
-    --chart-2: 160 60% 45%;
-    --chart-3: 30 80% 55%;
-    --chart-4: 280 65% 60%;
-    --chart-5: 340 75% 55%;
+    --chart-1: 220, 70%, 50%;
+    --chart-2: 160, 60%, 45%;
+    --chart-3: 30, 80%, 55%;
+    --chart-4: 280, 65%, 60%;
+    --chart-5: 340, 75%, 55%;
     --chart-border: var(--teal-800);
   }
 }

@@ -28,7 +28,7 @@ const config = {
         "6xl": ["4rem", "4.5rem"],
         "5xl": ["3.25rem", "4rem"],
         "4xl": ["2.75rem", "3.25rem"],
-        "3xl": ["2rem", "2.375rem"],
+        "3xl": ["2.375rem", "2.875rem"],
         "2xl": ["1.5rem", "1.75rem"],
         xl: ["1.25rem", "1.75rem"],
         lg: ["1.125rem", "1.75rem"],
