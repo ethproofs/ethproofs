@@ -1,6 +1,14 @@
-export const getBenchmarkColor = (timeMs: number | undefined) => {
+import {
+  BENCHMARK_LOWER_THRESHOLD,
+  BENCHMARK_UPPER_THRESHOLD,
+} from "./constants"
+import { SeverityLevel } from "./types"
+
+export const getBenchmarkColor = (
+  timeMs: number | undefined
+): SeverityLevel | undefined => {
   if (!timeMs) return undefined
-  if (timeMs < 45 * 1000) return "green" as const
-  if (timeMs < 90 * 1000) return "yellow" as const
-  return "red" as const
+  if (timeMs < BENCHMARK_LOWER_THRESHOLD) return "green"
+  if (timeMs < BENCHMARK_UPPER_THRESHOLD) return "yellow"
+  return "red"
 }
