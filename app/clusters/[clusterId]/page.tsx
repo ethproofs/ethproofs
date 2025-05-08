@@ -18,6 +18,7 @@ import { Skeleton } from "@/components/ui/skeleton"
 import { getCluster } from "@/lib/api/clusters"
 import { fetchProvedProofsByClusterId } from "@/lib/api/proofs"
 import { getClusterSummaryById } from "@/lib/api/stats"
+import { hasPhysicalMachines } from "@/lib/clusters"
 import { formatTimeAgo } from "@/lib/date"
 import { getMetadata } from "@/lib/metadata"
 import { formatUsd } from "@/lib/number"
@@ -69,6 +70,8 @@ export default async function ClusterDetailsPage({
   const clusterMachines = cluster.versions[0].cluster_machines
 
   const latestProofs = await fetchProvedProofsByClusterId(clusterId)
+
+  const hasPhysicalMachinesInCluster = hasPhysicalMachines(clusterMachines)
 
   return (
     <div className="mx-auto -mt-40 max-w-screen-xl space-y-8 px-6 md:px-8 [&>section]:w-full">
@@ -181,48 +184,48 @@ export default async function ClusterDetailsPage({
         </div>
       </section>
 
-      <section className="flex gap-x-16 gap-y-8 max-sm:flex-col max-sm:items-center">
-        <ClusterMachineSummary
-          machines={cluster.versions[0].cluster_machines}
-        />
+      {hasPhysicalMachinesInCluster && (
+        <section className="flex gap-x-16 gap-y-8 max-sm:flex-col max-sm:items-center">
+          <ClusterMachineSummary machines={clusterMachines} />
 
-        <div className="flex gap-8 overflow-x-auto overflow-y-visible">
-          {clusterMachines
-            .sort((a, b) => b.machine_count - a.machine_count)
-            .map((clusterMachine) => (
-              <div
-                key={clusterMachine.id}
-                className="relative flex flex-col justify-end -space-y-4"
-              >
-                <MachineDetails
-                  machine={clusterMachine.machine}
-                  className="rounded-2xl border border-primary-border bg-background px-8"
-                />
-                {Array.from({ length: clusterMachine.machine_count - 1 }).map(
-                  (_, i) => (
-                    <div
-                      key={i}
-                      className="h-6 rounded-b-2xl border border-primary-border border-t-transparent"
-                    />
-                  )
-                )}
-                <div className="!mt-2 inline-flex justify-center">
-                  <MetricBox className="py-0">
-                    <MetricLabel>
-                      <MetricInfo
-                        label={`${clusterMachine.machine_count} machines @ ${formatUsd(
-                          clusterMachine.cloud_instance.hourly_price
-                        )}/h`}
-                      >
-                        TODO: Popover details
-                      </MetricInfo>
-                    </MetricLabel>
-                  </MetricBox>
+          <div className="flex gap-8 overflow-x-auto overflow-y-visible">
+            {clusterMachines
+              .sort((a, b) => b.machine_count - a.machine_count)
+              .map((clusterMachine) => (
+                <div
+                  key={clusterMachine.id}
+                  className="relative flex flex-col justify-end -space-y-4"
+                >
+                  <MachineDetails
+                    machine={clusterMachine.machine}
+                    className="rounded-2xl border border-primary-border bg-background px-8"
+                  />
+                  {Array.from({ length: clusterMachine.machine_count - 1 }).map(
+                    (_, i) => (
+                      <div
+                        key={i}
+                        className="h-6 rounded-b-2xl border border-primary-border border-t-transparent"
+                      />
+                    )
+                  )}
+                  <div className="!mt-2 inline-flex justify-center">
+                    <MetricBox className="py-0">
+                      <MetricLabel>
+                        <MetricInfo
+                          label={`${clusterMachine.machine_count} machines @ ${formatUsd(
+                            clusterMachine.cloud_instance.hourly_price
+                          )}/h`}
+                        >
+                          TODO: Popover details
+                        </MetricInfo>
+                      </MetricLabel>
+                    </MetricBox>
+                  </div>
                 </div>
-              </div>
-            ))}
-        </div>
-      </section>
+              ))}
+          </div>
+        </section>
+      )}
 
       {/* // TODO: Mobile responsiveness */}
       <section className="flex flex-col">
