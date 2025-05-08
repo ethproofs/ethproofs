@@ -55,8 +55,9 @@ type SoftwareDetailsProps = {
 const SoftwareDetails = ({ detailItems, className }: SoftwareDetailsProps) => (
   <div
     className={cn(
-      "group/software grid gap-8 p-8",
-      "grid-cols-[2fr,4fr,1fr,auto,1fr,4fr,2fr]",
+      "group/software grid gap-4 lg:gap-8 p-4 lg:p-8",
+      "lg:grid-cols-[2fr,4fr,1fr,auto,1fr,4fr,2fr]",
+      "grid-cols-[0,4fr,1fr,auto,1fr,4fr,0]",
       className
     )}
     style={{
@@ -72,7 +73,7 @@ const SoftwareDetails = ({ detailItems, className }: SoftwareDetailsProps) => (
     ))}
 
     <div
-      className="flex flex-col items-center text-[10rem]"
+      className="flex flex-col items-center text-[7.5rem] lg:text-[10rem]"
       style={{ gridArea: "pizza" }}
     >
       <Pizza slices={getSlices(detailItems)} />

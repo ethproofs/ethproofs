@@ -119,13 +119,13 @@ const LineChartCard = ({
           <div className="flex">
             <div className="flex flex-1 flex-col items-center border-e text-center">
               <span className="block text-sm font-bold uppercase">avg</span>
-              <span className="block font-mono text-3xl text-primary">
+              <span className="block font-mono text-2xl text-primary sm:text-3xl md:text-2xl xl:text-3xl">
                 {formatValue ? formatValue(totalAvg) : totalAvg}
               </span>
             </div>
             <div className="flex flex-1 flex-col items-center text-center">
               <span className="block text-sm font-bold uppercase">median</span>
-              <span className="block font-mono text-3xl text-primary">
+              <span className="block font-mono text-2xl text-primary sm:text-3xl md:text-2xl xl:text-3xl">
                 {formatValue ? formatValue(totalMedian) : totalMedian}
               </span>
             </div>

@@ -52,14 +52,14 @@ const SoftwareAccordionItem = ({
             className="-m-1 rounded p-1 hover:bg-primary/10"
           >
             {zkvm.vendor.logo_url ? (
-            <Image
+              <Image
                 src={zkvm.vendor.logo_url}
                 alt={`${zkvm.vendor.name} team logo`}
-              height={16}
-              width={16}
+                height={16}
+                width={16}
                 className="dark:invert"
-              style={{ height: "1rem", width: "auto" }}
-            />
+                style={{ height: "1rem", width: "auto" }}
+              />
             ) : (
               zkvm.vendor.name
             )}
@@ -89,19 +89,23 @@ const SoftwareAccordionItem = ({
       <AccordionContent className="col-span-full border-b bg-gradient-to-t from-background-active p-0">
         <SoftwareDetails detailItems={detailItems} />
 
-        <div className="flex justify-center gap-16 p-8 pt-0">
-          <ButtonLink variant="outline" href={`/zkvms/${zkvm.slug}`}>
+        <div className="grid grid-cols-3 gap-16 p-8 pt-0">
+          <ButtonLink
+            variant="outline"
+            href={`/zkvms/${zkvm.slug}`}
+            className="col-start-2 mx-auto"
+          >
             See all details
           </ButtonLink>
-          <div>
+          {/* // TODO: Get and use last updated date, disabled in meantime */}
+          {/* <div className="col-start-3 text-end">
             <span className="text-xs italic text-body-secondary">
               Last updated
             </span>{" "}
             <span className="text-xs uppercase text-body">
-              {/* // TODO: Get and use last updated date */}
               {formatShortDate(new Date())}
             </span>
-          </div>
+          </div> */}
         </div>
       </AccordionContent>
     </AccordionItem>
