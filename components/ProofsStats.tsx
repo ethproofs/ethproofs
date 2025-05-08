@@ -40,7 +40,7 @@ const ProofsStats = ({ recentSummary }: { recentSummary: RecentSummary }) => {
   )
 
   return (
-    <section className="grid grid-cols-1 gap-8 md:grid-cols-2">
+    <section className="grid grid-cols-1 gap-8 lg:grid-cols-2">
       <LineChartCard
         className="w-full"
         title="cost"

@@ -62,7 +62,10 @@ const ClusterAccordionItem = ({
   }
 
   return (
-    <AccordionItem value={value} className="col-span-6 grid grid-cols-subgrid">
+    <AccordionItem
+      value={value}
+      className="col-span-6 grid grid-cols-subgrid text-nowrap"
+    >
       <div className="col-span-6 grid grid-cols-subgrid items-center gap-12 px-6 py-4 hover:bg-primary/5 dark:hover:bg-primary/10">
         <div className="col-start-1 flex flex-col gap-1">
           <Link
@@ -170,7 +173,7 @@ type ClusterAccordionProps = {
 const ClusterAccordion = ({ clusters }: ClusterAccordionProps) => (
   <Accordion
     type="multiple"
-    className="grid w-full grid-cols-[1fr_repeat(5,_auto)]"
+    className="grid w-full grid-cols-[1fr_repeat(5,_auto)] overflow-x-auto"
   >
     <div className="col-span-6 grid grid-cols-subgrid text-center">
       <MetricBox className="col-start-2">
@@ -200,6 +203,7 @@ const ClusterAccordion = ({ clusters }: ClusterAccordionProps) => (
         </MetricLabel>
       </MetricBox>
     </div>
+
     {clusters.map((cluster, i) => (
       <ClusterAccordionItem
         key={i}

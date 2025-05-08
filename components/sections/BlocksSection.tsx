@@ -69,10 +69,8 @@ const BlocksSection = async () => {
       </CardHeader>
 
       <MachineTabs
-        singleContent={
-          <SimpleBlockTable machineType="single" className="px-6" />
-        }
-        multiContent={<SimpleBlockTable machineType="multi" className="px-6" />}
+        singleContent={<SimpleBlockTable machineType="single" />}
+        multiContent={<SimpleBlockTable machineType="multi" />}
       />
 
       <div className="flex justify-center">

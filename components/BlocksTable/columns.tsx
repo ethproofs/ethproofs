@@ -39,7 +39,10 @@ export const columns: ColumnDef<Block>[] = [
     id: "block_number",
     accessorKey: "block_number",
     header: () => (
-      <ColumnHeader label={<metrics.blockNumber.Label />} className="text-left">
+      <ColumnHeader
+        label={<metrics.blockNumber.Label />}
+        className="text-center"
+      >
         <metrics.blockNumber.Details />
         <TooltipContentFooter className="space-y-3">
           <p className="font-bold">Time since block published</p>
