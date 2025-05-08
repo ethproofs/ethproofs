@@ -34,8 +34,9 @@ const ZkvmsSection = async () => {
           <KPIs items={zkvmsSummary} />
         </div>
       </CardHeader>
-
-      <SoftwareAccordion />
+      <div className="-mx-6 md:-mx-12 overflow-x-auto">
+        <SoftwareAccordion />
+      </div>
 
       <div className="flex justify-center">
         <ButtonLink variant="outline" href="/zkvms">

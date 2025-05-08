@@ -37,7 +37,7 @@ const SoftwareAccordionItem = ({
 
   return (
     <AccordionItem value={value} className="col-span-5 grid grid-cols-subgrid">
-      <div className="col-span-5 grid grid-cols-subgrid items-center gap-12 border-b px-6 hover:bg-primary/5 dark:hover:bg-primary/10">
+      <div className="col-span-5 grid grid-cols-subgrid items-center gap-12 text-nowrap border-b px-6 hover:bg-primary/5 dark:hover:bg-primary/10">
         <div className="col-start-1 flex items-center gap-3">
           <Link href={`/zkvms/${zkvm.slug}`} className="hover:underline">
             <span className="block font-mono text-2xl text-primary">
@@ -51,15 +51,18 @@ const SoftwareAccordionItem = ({
             href={`/teams/${zkvm.vendor.slug}`}
             className="-m-1 rounded p-1 hover:bg-primary/10"
           >
+            {zkvm.vendor.logo_url ? (
             <Image
-              // TODO: add fallback logo
-              src={zkvm.vendor.logo_url ?? ""}
-              alt="Zkvm team logo"
+                src={zkvm.vendor.logo_url}
+                alt={`${zkvm.vendor.name} team logo`}
               height={16}
               width={16}
+                className="dark:invert"
               style={{ height: "1rem", width: "auto" }}
-              className="dark:invert"
             />
+            ) : (
+              zkvm.vendor.name
+            )}
           </Link>
         </div>
         <div id="version" className="col-start-2">
