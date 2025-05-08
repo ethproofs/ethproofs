@@ -289,8 +289,10 @@ export default async function ClusterDetailsPage({
                   <CalendarCheck className="text-lg" />
                   verify
                 </Button>
-                <div className="font-sans text-xs text-body-secondary">
+                <div className="font-sans text-xs text-body-secondary text-center">
                   in-browser verification
+                  <br />
+                  (soon)
                 </div>
               </div>
             </div>
@@ -361,8 +363,10 @@ export default async function ClusterDetailsPage({
                 <CalendarCheck className="text-lg" />
                 verify
               </Button>
-              <div className="font-sans text-xs text-body-secondary">
+              <div className="font-sans text-xs text-body-secondary text-center">
                 in-browser verification
+                <br />
+                (soon)
               </div>
             </div>
           </div>
