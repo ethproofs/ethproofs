@@ -158,8 +158,7 @@ const AppSidebar = () => (
       <p className="text-center text-sm">
         Built with{" "}
         <Heart className="mb-0.5 inline animate-heart-beat text-xl text-primary" />{" "}
-        by the{" "}
-        <br />
+        by the <br />
         <Link
           href="https://ethereum.org"
           hideArrow
@@ -169,7 +168,9 @@ const AppSidebar = () => (
         </Link>{" "}
         team
       </p>
-      <p className="text-center text-sm text-primary mt-0">Public goods are good</p>
+      <p className="mt-0 text-center text-sm text-primary">
+        Public goods are good
+      </p>
     </SidebarFooter>
   </>
 )
