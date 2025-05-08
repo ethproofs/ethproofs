@@ -10,14 +10,14 @@ import { getSlices } from "@/lib/zkvms"
 
 const DetailItem = ({ item }: { item: SoftwareDetailItem }) => {
   const GROUP_HOVER = [
-    "group-has-[:not([data-index='0']):hover]/software:opacity-[50%] group-has-[[data-index='0']:hover]/software:opacity-[100%] group-has-[[data-index='0']:hover]/software:scale-110 scale-100 transition-all",
-    "group-has-[:not([data-index='1']):hover]/software:opacity-[50%] group-has-[[data-index='1']:hover]/software:opacity-[100%] group-has-[[data-index='1']:hover]/software:scale-110 scale-100 transition-all",
-    "group-has-[:not([data-index='2']):hover]/software:opacity-[50%] group-has-[[data-index='2']:hover]/software:opacity-[100%] group-has-[[data-index='2']:hover]/software:scale-110 scale-100 transition-all",
-    "group-has-[:not([data-index='3']):hover]/software:opacity-[50%] group-has-[[data-index='3']:hover]/software:opacity-[100%] group-has-[[data-index='3']:hover]/software:scale-110 scale-100 transition-all",
-    "group-has-[:not([data-index='4']):hover]/software:opacity-[50%] group-has-[[data-index='4']:hover]/software:opacity-[100%] group-has-[[data-index='4']:hover]/software:scale-110 scale-100 transition-all",
-    "group-has-[:not([data-index='5']):hover]/software:opacity-[50%] group-has-[[data-index='5']:hover]/software:opacity-[100%] group-has-[[data-index='5']:hover]/software:scale-110 scale-100 transition-all",
-    "group-has-[:not([data-index='6']):hover]/software:opacity-[50%] group-has-[[data-index='6']:hover]/software:opacity-[100%] group-has-[[data-index='6']:hover]/software:scale-110 scale-100 transition-all",
-    "group-has-[:not([data-index='7']):hover]/software:opacity-[50%] group-has-[[data-index='7']:hover]/software:opacity-[100%] group-has-[[data-index='7']:hover]/software:scale-110 scale-100 transition-all",
+    "group-has-[:not([data-index='0']):hover]/software:opacity-[50%] group-has-[[data-index='0']:hover]/software:opacity-[100%] group-has-[[data-index='0']:hover]/software:scale-110 group-has-[[data-label='pizza']>[data-index='0']:hover]/software:scale-110 scale-100 transition-all",
+    "group-has-[:not([data-index='1']):hover]/software:opacity-[50%] group-has-[[data-index='1']:hover]/software:opacity-[100%] group-has-[[data-index='1']:hover]/software:scale-110 group-has-[[data-label='pizza']>[data-index='1']:hover]/software:scale-110 scale-100 transition-all",
+    "group-has-[:not([data-index='2']):hover]/software:opacity-[50%] group-has-[[data-index='2']:hover]/software:opacity-[100%] group-has-[[data-index='2']:hover]/software:scale-110 group-has-[[data-label='pizza']>[data-index='2']:hover]/software:scale-110 scale-100 transition-all",
+    "group-has-[:not([data-index='3']):hover]/software:opacity-[50%] group-has-[[data-index='3']:hover]/software:opacity-[100%] group-has-[[data-index='3']:hover]/software:scale-110 group-has-[[data-label='pizza']>[data-index='3']:hover]/software:scale-110 scale-100 transition-all",
+    "group-has-[:not([data-index='4']):hover]/software:opacity-[50%] group-has-[[data-index='4']:hover]/software:opacity-[100%] group-has-[[data-index='4']:hover]/software:scale-110 group-has-[[data-label='pizza']>[data-index='4']:hover]/software:scale-110 scale-100 transition-all",
+    "group-has-[:not([data-index='5']):hover]/software:opacity-[50%] group-has-[[data-index='5']:hover]/software:opacity-[100%] group-has-[[data-index='5']:hover]/software:scale-110 group-has-[[data-label='pizza']>[data-index='5']:hover]/software:scale-110 scale-100 transition-all",
+    "group-has-[:not([data-index='6']):hover]/software:opacity-[50%] group-has-[[data-index='6']:hover]/software:opacity-[100%] group-has-[[data-index='6']:hover]/software:scale-110 group-has-[[data-label='pizza']>[data-index='6']:hover]/software:scale-110 scale-100 transition-all",
+    "group-has-[:not([data-index='7']):hover]/software:opacity-[50%] group-has-[[data-index='7']:hover]/software:opacity-[100%] group-has-[[data-index='7']:hover]/software:scale-110 group-has-[[data-label='pizza']>[data-index='7']:hover]/software:scale-110 scale-100 transition-all",
   ] as const
 
   return (
