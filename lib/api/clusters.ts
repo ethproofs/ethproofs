@@ -67,8 +67,11 @@ export const getClusters = async () => {
   return clusters
 }
 
-export const getActiveClusters = async (filters?: { teamId?: string }) => {
-  const { teamId } = filters ?? {}
+export const getActiveClusters = async (filters?: {
+  teamId?: string
+  zkvmId?: number
+}) => {
+  const { teamId, zkvmId } = filters ?? {}
   const sevenDaysAgo = sql`NOW() - INTERVAL '7 days'`
 
   return db.query.clusters.findMany({
@@ -82,11 +85,17 @@ export const getActiveClusters = async (filters?: { teamId?: string }) => {
               clusterVersions,
               eq(proofs.cluster_version_id, clusterVersions.id)
             )
+            .innerJoin(
+              zkvmVersions,
+              eq(clusterVersions.zkvm_version_id, zkvmVersions.id)
+            )
+            .innerJoin(zkvms, eq(zkvmVersions.zkvm_id, zkvms.id))
             .where(
               and(
                 eq(clusterVersions.cluster_id, clusters.id),
                 eq(proofs.proof_status, "proved"),
-                gt(proofs.proved_timestamp, sevenDaysAgo)
+                gt(proofs.proved_timestamp, sevenDaysAgo),
+                zkvmId ? eq(zkvms.id, zkvmId) : undefined
               )
             )
         ),
@@ -130,12 +139,12 @@ export const getActiveClusterCountByZkvmId = async () => {
       active_clusters: sql<number>`CAST(COUNT(DISTINCT ${clusters.id}) AS int)`,
     })
     .from(zkvms)
-    .leftJoin(zkvmVersions, eq(zkvms.id, zkvmVersions.zkvm_id))
-    .leftJoin(
+    .innerJoin(zkvmVersions, eq(zkvms.id, zkvmVersions.zkvm_id))
+    .innerJoin(
       clusterVersions,
       eq(zkvmVersions.id, clusterVersions.zkvm_version_id)
     )
-    .leftJoin(clusters, eq(clusterVersions.cluster_id, clusters.id))
+    .innerJoin(clusters, eq(clusterVersions.cluster_id, clusters.id))
     .where(
       exists(
         db
@@ -145,7 +154,7 @@ export const getActiveClusterCountByZkvmId = async () => {
             and(
               eq(proofs.cluster_version_id, clusterVersions.id),
               eq(proofs.proof_status, "proved"),
-              gt(proofs.created_at, sevenDaysAgo)
+              gt(proofs.proved_timestamp, sevenDaysAgo)
             )
           )
       )
