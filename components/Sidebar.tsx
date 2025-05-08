@@ -155,20 +155,21 @@ const AppSidebar = () => (
       </SidebarMenu>
     </SidebarContent>
     <SidebarFooter className="mx-auto mb-4 mt-8 flex max-w-prose flex-col items-center space-y-4">
-      <p className="mb-4 text-center">
+      <p className="text-center text-sm">
         Built with{" "}
         <Heart className="mb-0.5 inline animate-heart-beat text-xl text-primary" />{" "}
         by the{" "}
+        <br />
         <Link
           href="https://ethereum.org"
           hideArrow
-          className="hover:text-primary-light"
+          className="text-sm hover:text-primary-light"
         >
           ethereum.org
         </Link>{" "}
         team
       </p>
-      <p className="text-center text-lg text-primary">Public goods are good</p>
+      <p className="text-center text-sm text-primary mt-0">Public goods are good</p>
     </SidebarFooter>
   </>
 )
