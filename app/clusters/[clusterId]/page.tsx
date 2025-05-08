@@ -377,7 +377,7 @@ export default async function ClusterDetailsPage({
             </div>
           ))
         ) : (
-          <div className="py-16 text-center">
+          <div className="py-8 text-center">
             <div className="font-sans text-sm text-body-secondary">
               No data for this cluster
             </div>
