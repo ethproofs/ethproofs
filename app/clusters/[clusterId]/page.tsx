@@ -7,6 +7,7 @@ import prettyBytes from "pretty-bytes"
 
 import ClusterMachineSummary from "@/components/ClusterMachineSummary"
 import DownloadButton from "@/components/DownloadButton"
+import NoData from "@/components/NoData"
 import Null from "@/components/Null"
 import CalendarCheck from "@/components/svgs/calendar-check.svg"
 import { Button } from "@/components/ui/button"
@@ -236,74 +237,83 @@ export default async function ClusterDetailsPage({
           <Box strokeWidth="1" className="size-11" />
           <div className="font-mono text-xl">latest proofs</div>
         </div>
-        {latestProofs.map((proof, i) => {
-          const costPerProof = getProvingCost(proof)
-          const costPerMgas = costPerProof
-            ? costPerProof / (proof.block.gas_used / 1e6)
-            : null
+        {latestProofs.length ? (
+          latestProofs.map((proof, i) => {
+            const costPerProof = getProvingCost(proof)
+            const costPerMgas = costPerProof
+              ? costPerProof / (proof.block.gas_used / 1e6)
+              : null
 
-          return (
-            <div
-              key={i}
-              className="grid grid-cols-[1fr_repeat(4,_auto)] gap-x-6 border-b border-primary-border p-6"
-            >
-              <div className="col-start-1 row-span-2 grid grid-cols-1 grid-rows-subgrid">
-                <div className="font-mono text-lg text-primary">
-                  {proof.block_number}
+            return (
+              <div
+                key={i}
+                className="grid grid-cols-[1fr_repeat(4,_auto)] gap-x-6 border-b border-primary-border p-6"
+              >
+                <div className="col-start-1 row-span-2 grid grid-cols-1 grid-rows-subgrid">
+                  <div className="font-mono text-lg text-primary">
+                    {proof.block_number}
+                  </div>
+                  <div className="font-sans text-xs text-body-secondary">
+                    {proof.proved_timestamp ? (
+                      formatTimeAgo(proof.proved_timestamp)
+                    ) : (
+                      <Null />
+                    )}
+                  </div>
                 </div>
-                <div className="font-sans text-xs text-body-secondary">
-                  {proof.proved_timestamp ? (
-                    formatTimeAgo(proof.proved_timestamp)
-                  ) : (
-                    <Null />
-                  )}
-                </div>
-              </div>
-              <div className="col-start-2 row-span-2 grid grid-cols-1 grid-rows-subgrid place-items-center">
-                <div className="font-mono text-sm">
-                  proving:{" "}
-                  {proof.proving_time ? prettyMs(proof.proving_time) : <Null />}
-                </div>
-                <div className="font-sans text-xs text-body-secondary">
-                  total to proof:{" "}
-                  {proof.proved_timestamp ? (
-                    prettyMs(
-                      differenceInMilliseconds(
-                        new Date(proof.proved_timestamp),
-                        new Date(proof.block.timestamp)
+                <div className="col-start-2 row-span-2 grid grid-cols-1 grid-rows-subgrid place-items-center">
+                  <div className="font-mono text-sm">
+                    proving:{" "}
+                    {proof.proving_time ? (
+                      prettyMs(proof.proving_time)
+                    ) : (
+                      <Null />
+                    )}
+                  </div>
+                  <div className="font-sans text-xs text-body-secondary">
+                    total to proof:{" "}
+                    {proof.proved_timestamp ? (
+                      prettyMs(
+                        differenceInMilliseconds(
+                          new Date(proof.proved_timestamp),
+                          new Date(proof.block.timestamp)
+                        )
                       )
-                    )
-                  ) : (
-                    <Null />
-                  )}
+                    ) : (
+                      <Null />
+                    )}
+                  </div>
+                </div>
+                <div className="col-start-3 row-span-2 grid grid-cols-1 grid-rows-subgrid place-items-center">
+                  <div className="font-mono text-sm">
+                    per proof:{" "}
+                    {costPerProof ? formatUsd(costPerProof) : <Null />}
+                  </div>
+                  <div className="font-sans text-xs text-body-secondary">
+                    per Mgas: {costPerMgas ? formatUsd(costPerMgas) : <Null />}
+                  </div>
+                </div>
+                <DownloadButton
+                  proof={proof}
+                  containerClass="col-start-4 row-span-2 grid grid-cols-1 grid-rows-subgrid place-items-center"
+                />
+                <div className="col-start-5 row-span-2 grid grid-cols-1 grid-rows-subgrid place-items-center">
+                  <Button disabled variant="solid" className="w-full p-0">
+                    <CalendarCheck className="text-lg" />
+                    verify
+                  </Button>
+                  <div className="text-center font-sans text-xs text-body-secondary">
+                    in-browser verification
+                    <br />
+                    (soon)
+                  </div>
                 </div>
               </div>
-              <div className="col-start-3 row-span-2 grid grid-cols-1 grid-rows-subgrid place-items-center">
-                <div className="font-mono text-sm">
-                  per proof: {costPerProof ? formatUsd(costPerProof) : <Null />}
-                </div>
-                <div className="font-sans text-xs text-body-secondary">
-                  per Mgas: {costPerMgas ? formatUsd(costPerMgas) : <Null />}
-                </div>
-              </div>
-              <DownloadButton
-                proof={proof}
-                containerClass="col-start-4 row-span-2 grid grid-cols-1 grid-rows-subgrid place-items-center"
-              />
-              <div className="col-start-5 row-span-2 grid grid-cols-1 grid-rows-subgrid place-items-center">
-                <Button disabled variant="solid" className="w-full p-0">
-                  <CalendarCheck className="text-lg" />
-                  verify
-                </Button>
-                <div className="text-center font-sans text-xs text-body-secondary">
-                  in-browser verification
-                  <br />
-                  (soon)
-                </div>
-              </div>
-            </div>
-          )
-        })}
+            )
+          })
+        ) : (
+          <NoData>cluster</NoData>
+        )}
       </section>
 
       {/* // TODO: Mobile responsiveness */}
@@ -377,11 +387,7 @@ export default async function ClusterDetailsPage({
             </div>
           ))
         ) : (
-          <div className="py-8 text-center">
-            <div className="font-sans text-sm text-body-secondary">
-              No data for this cluster
-            </div>
-          </div>
+          <NoData>cluster</NoData>
         )}
       </section>
     </div>
