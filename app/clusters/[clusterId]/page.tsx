@@ -313,13 +313,7 @@ export default async function ClusterDetailsPage({
           <div className="font-mono text-xl">killer-block proofs</div>
         </div>
         {/* // TODO: Replace with killer-block proofs data */}
-        {killerBlockProofs.length === 0 ? (
-          <div className="py-16 text-center">
-            <div className="font-sans text-sm text-body-secondary">
-              No data for this cluster
-            </div>
-          </div>
-        ) : (
+        {killerBlockProofs.length ? (
           killerBlockProofs.map((_, i) => (
             <div
               key={i}
@@ -382,6 +376,12 @@ export default async function ClusterDetailsPage({
               </div>
             </div>
           ))
+        ) : (
+          <div className="py-16 text-center">
+            <div className="font-sans text-sm text-body-secondary">
+              No data for this cluster
+            </div>
+          </div>
         )}
       </section>
     </div>
