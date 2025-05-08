@@ -117,7 +117,9 @@ const SoftwareAccordion = async () => {
       <div className="col-span-5 grid grid-cols-subgrid text-center">
         <MetricBox className="col-start-2">
           <MetricLabel>
-            <MetricInfo label="Version">TODO: Popover details</MetricInfo>
+            <MetricInfo label="Latest version">
+              TODO: Popover details
+            </MetricInfo>
           </MetricLabel>
         </MetricBox>
         <MetricBox className="col-start-3">

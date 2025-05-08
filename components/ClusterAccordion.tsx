@@ -27,7 +27,9 @@ import Link from "./ui/link"
 import { MetricBox, MetricInfo, MetricLabel } from "./ui/metric"
 import ClusterMachineSummary from "./ClusterMachineSummary"
 import HardwareGrid from "./HardwareGrid"
+import Null from "./Null"
 
+import { hasPhysicalMachines } from "@/lib/clusters"
 import { formatShortDate } from "@/lib/date"
 import { formatUsd } from "@/lib/number"
 import { prettyMs } from "@/lib/time"
@@ -60,6 +62,10 @@ const ClusterAccordionItem = ({
   if (!lastVersion) {
     throw new Error("No cluster version found")
   }
+
+  const hasPhysicalMachinesInCluster = hasPhysicalMachines(
+    lastVersion.cluster_machines
+  )
 
   return (
     <AccordionItem
@@ -123,30 +129,36 @@ const ClusterAccordionItem = ({
         </AccordionTrigger>
       </div>
       <AccordionContent className="relative col-span-full flex flex-col gap-12 bg-gradient-to-t from-background-active/25 p-6">
-        <div className="flex items-center gap-x-20">
-          <ClusterMachineSummary machines={lastVersion.cluster_machines} />
+        {hasPhysicalMachinesInCluster ? (
+          <div className="flex items-center gap-x-20">
+            <ClusterMachineSummary machines={lastVersion.cluster_machines} />
 
-          <div className="flex flex-1 flex-col space-y-4 overflow-x-hidden">
-            <HardwareGrid clusterMachines={lastVersion.cluster_machines} />
-            <div className="flex items-center gap-3 self-end">
-              <span className="me-4">GPUs</span>
-              {Array(6)
-                .fill(0)
-                .map((_, i) => (
-                  <Fragment key={i}>
-                    <span className="-me-1">{2 ** i}</span>
-                    <div
-                      key={i}
-                      className={cn(
-                        "size-4 rounded-[4px]",
-                        getBoxIndexColor(i)
-                      )}
-                    />
-                  </Fragment>
-                ))}
+            <div className="flex flex-1 flex-col space-y-4 overflow-x-hidden">
+              <HardwareGrid clusterMachines={lastVersion.cluster_machines} />
+              <div className="flex items-center gap-3 self-end">
+                <span className="me-4">GPUs</span>
+                {Array(6)
+                  .fill(0)
+                  .map((_, i) => (
+                    <Fragment key={i}>
+                      <span className="-me-1">{2 ** i}</span>
+                      <div
+                        key={i}
+                        className={cn(
+                          "size-4 rounded-[4px]",
+                          getBoxIndexColor(i)
+                        )}
+                      />
+                    </Fragment>
+                  ))}
+              </div>
             </div>
           </div>
-        </div>
+        ) : (
+          <div className="flex min-h-[80px] items-center justify-center italic text-body-secondary">
+            No hardware specifications available.
+          </div>
+        )}
 
         <div className="grid place-items-center">
           <ButtonLink variant="outline" href={`/clusters/${clusterDetails.id}`}>
