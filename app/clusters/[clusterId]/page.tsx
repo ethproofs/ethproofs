@@ -287,10 +287,10 @@ export default async function ClusterDetailsPage({
               <div className="col-start-5 row-span-2 grid grid-cols-1 grid-rows-subgrid place-items-center">
                 <Button disabled variant="solid" className="w-full p-0">
                   <CalendarCheck className="text-lg" />
-                  verify (soon)
+                  verify
                 </Button>
                 <div className="font-sans text-xs text-body-secondary">
-                  in-browser verification
+                  in-browser verification (soon)
                 </div>
               </div>
             </div>
@@ -359,10 +359,10 @@ export default async function ClusterDetailsPage({
             <div className="col-start-5 row-span-2 grid grid-cols-1 grid-rows-subgrid place-items-center">
               <Button disabled variant="solid" className="w-full p-0">
                 <CalendarCheck className="text-lg" />
-                verify (soon)
+                verify
               </Button>
               <div className="font-sans text-xs text-body-secondary">
-                in-browser verification
+                in-browser verification (soon)
               </div>
             </div>
           </div>
