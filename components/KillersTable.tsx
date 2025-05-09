@@ -1,6 +1,11 @@
 import Image from "next/image"
 
-import type { Benchmark, ClusterBase, ClusterBenchmark, Team } from "@/lib/types"
+import type {
+  Benchmark,
+  ClusterBase,
+  ClusterBenchmark,
+  Team,
+} from "@/lib/types"
 
 import { cn } from "@/lib/utils"
 
@@ -70,12 +75,11 @@ const RowItem = ({
   >
     {/* Proving team logo and cluster name */}
     <div className="space-y-2 text-nowrap">
-      <Link
-        href={`/teams/${cluster.team.id}`}
-        className="-m-2 block w-fit rounded p-2 hover:bg-primary/10"
-      >
-        <DisplayTeamLink team={cluster.team} height={24} className="block" />
-      </Link>
+      <DisplayTeamLink
+        team={cluster.team}
+        height={24}
+        className="-m-2 block p-2"
+      />
       <Link
         href={`/clusters/${cluster.id}`}
         className="block font-sans text-primary hover:underline"
