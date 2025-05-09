@@ -3,6 +3,7 @@ import { ComponentProps } from "react"
 import { BlockBase } from "@/lib/types"
 
 import ProofRow from "@/components/ProofRow"
+
 import NoData from "./NoData"
 
 type ProofListProps = {

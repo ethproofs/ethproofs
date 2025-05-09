@@ -6,9 +6,9 @@ import { ButtonLink } from "./ui/button"
 import Link from "./ui/link"
 import { MetricBox, MetricInfo, MetricLabel } from "./ui/metric"
 import { ClusterWithRelations } from "./ClusterAccordion"
+import NoData from "./NoData"
 
 import { formatShortDate } from "@/lib/date"
-import NoData from "./NoData"
 
 type ClusterRowItemProps = { cluster: ClusterWithRelations }
 

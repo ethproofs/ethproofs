@@ -28,13 +28,13 @@ import { MetricBox, MetricInfo, MetricLabel } from "./ui/metric"
 import ClusterMachineSummary from "./ClusterMachineSummary"
 import { DisplayTeamLink } from "./DisplayTeamLink"
 import HardwareGrid from "./HardwareGrid"
+import NoData from "./NoData"
 import Null from "./Null"
 
 import { hasPhysicalMachines } from "@/lib/clusters"
 import { formatShortDate } from "@/lib/date"
 import { formatUsd } from "@/lib/number"
 import { prettyMs } from "@/lib/time"
-import NoData from "./NoData"
 
 export type ClusterWithRelations = ClusterBase & {
   team: Team

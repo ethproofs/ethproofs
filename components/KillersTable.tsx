@@ -5,11 +5,11 @@ import { Benchmark, ClusterBase, ClusterBenchmark, Team } from "@/lib/types"
 import { cn } from "@/lib/utils"
 
 import Link from "./ui/link"
+import { DisplayTeamLink } from "./DisplayTeamLink"
+import NoData from "./NoData"
 
 import { getBenchmarkColor } from "@/lib/benchmarks"
 import { prettyMs } from "@/lib/time"
-import { DisplayTeamLink } from "./DisplayTeamLink"
-import NoData from "./NoData"
 
 const CELL_COLOR_CLASSES = {
   red: "border-level-worst dark:from-level-worst/20 from-level-worst/10",
