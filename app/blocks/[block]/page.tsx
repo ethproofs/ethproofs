@@ -29,10 +29,9 @@ import {
   getAvailabilityMetrics,
   getBlockFeeMetrics,
 } from "@/app/block/[block]/utils"
-import { db } from "@/db"
 import { fetchBlock } from "@/lib/api/blocks"
 import { timestampToEpoch, timestampToSlot } from "@/lib/beaconchain"
-import { getBlockValueType, isBlockHash } from "@/lib/blocks"
+import { isBlockHash } from "@/lib/blocks"
 import { getMetadata } from "@/lib/metadata"
 import { formatNumber } from "@/lib/number"
 import {
@@ -52,15 +51,17 @@ export async function generateMetadata({
 }: BlockDetailsPageProps): Promise<Metadata> {
   const { block } = await params
 
-  const blockValueType = getBlockValueType(block)
-  if (!blockValueType) throw new Error()
+  if (isNaN(+block)) throw new Error()
 
-  const blockData = await db.query.blocks.findFirst({
-    where: (blocks, { eq }) => eq(blocks[blockValueType], block),
-    with: {
-      proofs: true,
-    },
-  })
+  const blockData = await fetchBlock(
+    isBlockHash(block)
+      ? {
+          hash: block,
+        }
+      : {
+          blockNumber: +block,
+        }
+  )
 
   return getMetadata({
     title: `Block ${blockData ? blockData.block_number : block}`,

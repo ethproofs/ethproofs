@@ -12,7 +12,7 @@ import {
   zkvmVersions,
 } from "@/db/schema"
 
-export const getCluster = async (id: string) => {
+export const getCluster = cache(async (id: string) => {
   const cluster = await db.query.clusters.findFirst({
     where: (clusters, { eq }) => eq(clusters.id, id),
     with: {
@@ -41,9 +41,9 @@ export const getCluster = async (id: string) => {
   })
 
   return cluster
-}
+})
 
-export const getClusters = async () => {
+export const getClusters = cache(async () => {
   const clusters = await db.query.clusters.findMany({
     with: {
       team: true,
@@ -66,7 +66,7 @@ export const getClusters = async () => {
   })
 
   return clusters
-}
+})
 
 export const getActiveClusters = cache(
   async (filters?: { teamId?: string; zkvmId?: number }) => {
@@ -119,17 +119,16 @@ export const getActiveClusters = cache(
         },
       },
     })
-  },
-  ["getActiveClusters"]
+  }
 )
 
-export const getClustersByTeamId = async (teamId: string) => {
+export const getClustersByTeamId = cache(async (teamId: string) => {
   const clusters = await db.query.clusters.findMany({
     where: (clusters, { eq }) => eq(clusters.team_id, teamId),
   })
 
   return clusters
-}
+})
 
 export const getActiveClusterCountByZkvmId = cache(async () => {
   const sevenDaysAgo = sql`NOW() - INTERVAL '7 days'`
@@ -163,7 +162,7 @@ export const getActiveClusterCountByZkvmId = cache(async () => {
     .groupBy(zkvms.id)
 
   return result
-}, ["getActiveClusterCountByZkvmId"])
+})
 
 export const getActiveMachineCount = cache(async () => {
   const sevenDaysAgo = sql`NOW() - INTERVAL '7 days'`
@@ -191,7 +190,7 @@ export const getActiveMachineCount = cache(async () => {
     )
 
   return machineCount.count
-}, ["getActiveMachineCount"])
+})
 
 export const getClustersBenchmarks = cache(async () => {
   const clusters = await db.query.clusters.findMany({
@@ -218,4 +217,4 @@ export const getClustersBenchmarks = cache(async () => {
   })
 
   return clusters
-}, ["getClustersBenchmarks"])
+})

@@ -19,17 +19,17 @@ export const metadata: Metadata = getMetadata()
 export default async function BlocksPage() {
   const queryClient = new QueryClient()
 
-  const teams = await getTeams()
-
-  await queryClient.prefetchQuery({
-    queryKey: ["blocks", "single", DEFAULT_PAGE_STATE],
-    queryFn: () => fetchBlocksPaginated(DEFAULT_PAGE_STATE, "single"),
-  })
-
-  await queryClient.prefetchQuery({
-    queryKey: ["blocks", "multi", DEFAULT_PAGE_STATE],
-    queryFn: () => fetchBlocksPaginated(DEFAULT_PAGE_STATE, "multi"),
-  })
+  const [teams] = await Promise.all([
+    getTeams(),
+    queryClient.prefetchQuery({
+      queryKey: ["blocks", "single", DEFAULT_PAGE_STATE],
+      queryFn: () => fetchBlocksPaginated(DEFAULT_PAGE_STATE, "single"),
+    }),
+    queryClient.prefetchQuery({
+      queryKey: ["blocks", "multi", DEFAULT_PAGE_STATE],
+      queryFn: () => fetchBlocksPaginated(DEFAULT_PAGE_STATE, "multi"),
+    }),
+  ])
 
   return (
     <>

@@ -10,9 +10,10 @@ import { getMetadata } from "@/lib/metadata"
 export const metadata: Metadata = getMetadata()
 
 export default async function KillersPage() {
-  const benchmarks = await getBenchmarks()
-
-  const clusters = await getClustersBenchmarks()
+  const [clusters, benchmarks] = await Promise.all([
+    getClustersBenchmarks(),
+    getBenchmarks(),
+  ])
 
   const multiMachineBenchmarks = clusters.filter(
     (cluster) => cluster.is_multi_machine
