@@ -15,15 +15,6 @@ type HardwareGridProps = React.ComponentProps<"div"> & {
 }
 
 const HardwareGrid = ({ clusterMachines, className }: HardwareGridProps) => {
-  const totalGpuCount = useMemo(
-    () =>
-      clusterMachines.reduce(
-        (acc, curr) => acc + sumArray(curr.machine.gpu_count),
-        0
-      ),
-    [clusterMachines]
-  )
-
   const totalMachineCount = useMemo(
     () => clusterMachines.reduce((acc, curr) => acc + curr.machine_count, 0),
     [clusterMachines]
@@ -39,10 +30,12 @@ const HardwareGrid = ({ clusterMachines, className }: HardwareGridProps) => {
         // Create array of indices for the count of this machine type
         [...Array(clusterMachine.machine_count)].map((_, countIdx) => {
           const uniqueKey = `machine-${clusterMachine.id}-${countIdx}`
+          const gpuCount = sumArray(clusterMachine.machine.gpu_count)
+
           return (
             <MachineBox
               key={uniqueKey}
-              className={getBoxColor(totalGpuCount)}
+              className={getBoxColor(gpuCount)}
               machine={clusterMachine.machine}
             />
           )

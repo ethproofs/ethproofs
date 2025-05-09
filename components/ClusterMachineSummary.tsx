@@ -2,6 +2,8 @@ import { ClusterMachineBase, MachineBase } from "@/lib/types"
 
 import { cn, sumArray } from "@/lib/utils"
 
+import { getMachineTotalGpuMemory } from "@/lib/machines"
+
 type ClusterMachineSummaryProps = React.HTMLAttributes<HTMLDivElement> & {
   machines: (ClusterMachineBase & {
     machine: MachineBase
@@ -39,7 +41,7 @@ const ClusterMachineSummary = ({
         <span className="block font-mono text-xl text-body">
           {sumArray(
             machines.map(
-              (m) => sumArray(m.machine.gpu_memory_gb) * m.machine_count
+              (m) => getMachineTotalGpuMemory(m.machine) * m.machine_count
             )
           )}{" "}
           GB
