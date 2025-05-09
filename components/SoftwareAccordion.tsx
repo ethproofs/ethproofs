@@ -16,6 +16,7 @@ import { DisplayTeamLink } from "./DisplayTeamLink"
 import Pizza from "./Pizza"
 import SoftwareDetails from "./SoftwareDetails"
 
+import { formatShortDate } from "@/lib/date"
 import { getSoftwareDetailItems, getZkvmsMetrics } from "@/lib/metrics"
 import { getSlices, getZkvmsWithUsage } from "@/lib/zkvms"
 
@@ -83,15 +84,14 @@ const SoftwareAccordionItem = ({
           >
             See all details
           </ButtonLink>
-          {/* // TODO: Get and use last updated date, disabled in meantime */}
-          {/* <div className="col-start-3 text-end">
+          <div className="col-start-3 text-end">
             <span className="text-xs italic text-body-secondary">
               Last updated
             </span>{" "}
             <span className="text-xs uppercase text-body">
-              {formatShortDate(new Date())}
+              {formatShortDate(new Date(zkvm.created_at))}
             </span>
-          </div> */}
+          </div>
         </div>
       </AccordionContent>
     </AccordionItem>
