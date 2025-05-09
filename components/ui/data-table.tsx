@@ -16,9 +16,14 @@ import { Button } from "./button"
 type Props<TData> = {
   className?: string
   table: TableType<TData>
+  hidePagination?: boolean
 }
 
-const DataTable = <TData,>({ className, table }: Props<TData>) => {
+const DataTable = <TData,>({
+  className,
+  table,
+  hidePagination = false,
+}: Props<TData>) => {
   return (
     <div className={cn("flex w-full flex-col gap-8", className)}>
       <Table>
@@ -69,34 +74,36 @@ const DataTable = <TData,>({ className, table }: Props<TData>) => {
         </TableBody>
       </Table>
 
-      <div className="flex items-center justify-center gap-6">
-        <Button
-          variant="outline"
-          isSecondary
-          onClick={() => table.previousPage()}
-          disabled={!table.getCanPreviousPage()}
-          className="lowercase"
-        >
-          Previous
-        </Button>
-        <span className="flex items-center gap-1 font-mono uppercase text-body-secondary">
-          <div>
-            Page {table.getState().pagination.pageIndex + 1} of{" "}
-            {table.getPageCount() === 0
-              ? 1
-              : table.getPageCount().toLocaleString()}
-          </div>
-        </span>
-        <Button
-          variant="outline"
-          isSecondary
-          onClick={() => table.nextPage()}
-          disabled={!table.getCanNextPage()}
-          className="lowercase"
-        >
-          Next
-        </Button>
-      </div>
+      {!hidePagination && (
+        <div className="flex items-center justify-center gap-6">
+          <Button
+            variant="outline"
+            isSecondary
+            onClick={() => table.previousPage()}
+            disabled={!table.getCanPreviousPage()}
+            className="lowercase"
+          >
+            Previous
+          </Button>
+          <span className="flex items-center gap-1 font-mono uppercase text-body-secondary">
+            <div>
+              Page {table.getState().pagination.pageIndex + 1} of{" "}
+              {table.getPageCount() === 0
+                ? 1
+                : table.getPageCount().toLocaleString()}
+            </div>
+          </span>
+          <Button
+            variant="outline"
+            isSecondary
+            onClick={() => table.nextPage()}
+            disabled={!table.getCanNextPage()}
+            className="lowercase"
+          >
+            Next
+          </Button>
+        </div>
+      )}
     </div>
   )
 }

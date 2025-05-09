@@ -28,7 +28,7 @@ const config = {
         "6xl": ["4rem", "4.5rem"],
         "5xl": ["3.25rem", "4rem"],
         "4xl": ["2.75rem", "3.25rem"],
-        "3xl": ["2rem", "2.375rem"],
+        "3xl": ["2.375rem", "2.875rem"],
         "2xl": ["1.5rem", "1.75rem"],
         xl: ["1.25rem", "1.75rem"],
         lg: ["1.125rem", "1.75rem"],
@@ -44,6 +44,8 @@ const config = {
           DEFAULT: "hsla(var(--background))",
           highlight: "hsla(var(--background-highlight))",
           active: "hsla(var(--background-active))",
+          accent: "hsla(var(--background-accent))",
+          modal: "hsla(var(--background-modal))",
         },
         primary: {
           DEFAULT: "hsla(var(--primary))",
@@ -56,7 +58,22 @@ const config = {
           DEFAULT: "hsla(var(--body))",
           secondary: "hsla(var(--body-secondary))",
         },
-
+        sidebar: {
+          DEFAULT: "hsla(var(--sidebar))",
+        },
+        chart: {
+          1: "hsla(var(--chart-1))",
+          2: "hsla(var(--chart-2))",
+          3: "hsla(var(--chart-3))",
+          4: "hsla(var(--chart-4))",
+          5: "hsla(var(--chart-5))",
+          border: "hsla(var(--chart-border))",
+        },
+        level: {
+          best: "hsla(var(--level-best))",
+          middle: "hsla(var(--level-middle))",
+          worst: "hsla(var(--level-worst))",
+        },
         border: "hsla(var(--border))",
       },
       borderRadius: {
@@ -81,11 +98,22 @@ const config = {
             animationTiming: "ease",
           },
         },
+        "write-on-off": {
+          "0%": {
+            strokeDasharray: "100% 100%",
+            strokeDashoffset: "-100%",
+          },
+          "100%": {
+            strokeDasharray: "100% 100%",
+            strokeDashoffset: "100%",
+          },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
         "heart-beat": "heart-beat 1s infinite",
+        "write-on-off": "write-on-off 1s ease-in-out infinite",
       },
     },
   },

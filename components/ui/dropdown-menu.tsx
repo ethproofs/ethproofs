@@ -65,8 +65,8 @@ const DropdownMenuContent = React.forwardRef<
       ref={ref}
       sideOffset={sideOffset}
       className={cn(
-        "bg-background bg-gradient-to-b from-white/[0.06] to-white/[0.12]",
-        "z-50 min-w-[8rem] overflow-hidden rounded-2xl border p-0 text-body shadow-md data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2",
+        "bg-background-modal bg-gradient-to-b from-white/[0.06] to-white/[0.12]",
+        "z-50 min-w-[8rem] space-y-1 overflow-hidden rounded-2xl border p-6 text-body shadow-md data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95 data-[side=bottom]:slide-in-from-top-2 data-[side=left]:slide-in-from-right-2 data-[side=right]:slide-in-from-left-2 data-[side=top]:slide-in-from-bottom-2",
         className
       )}
       {...props}
@@ -101,15 +101,20 @@ const DropdownMenuCheckboxItem = React.forwardRef<
   <DropdownMenuPrimitive.CheckboxItem
     ref={ref}
     className={cn(
-      "relative flex cursor-default select-none items-center rounded-sm py-1.5 pl-8 pr-2 text-sm outline-none transition-colors focus:bg-background-highlight focus:text-body data-[disabled]:pointer-events-none data-[disabled]:opacity-50",
+      "relative flex cursor-default select-none items-center rounded py-1 pe-2 ps-8 text-sm outline-none transition-colors focus:bg-background-highlight focus:text-body data-[disabled]:pointer-events-none data-[disabled]:opacity-50",
       className
     )}
     checked={checked}
     {...props}
   >
-    <span className="absolute left-2 flex h-3.5 w-3.5 items-center justify-center">
+    <span className="absolute start-1.5 flex size-4 items-center justify-center rounded border border-primary">
       <DropdownMenuPrimitive.ItemIndicator>
-        <Check className="h-4 w-4" />
+        <Check
+          className="size-3 text-primary"
+          strokeLinejoin="miter"
+          strokeLinecap="square"
+          strokeWidth="4px"
+        />
       </DropdownMenuPrimitive.ItemIndicator>
     </span>
     {children}
@@ -164,7 +169,7 @@ const DropdownMenuSeparator = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <DropdownMenuPrimitive.Separator
     ref={ref}
-    className={cn("-mx-1 my-1 h-px bg-body-secondary", className)}
+    className={cn("my-3 h-px bg-background-highlight", className)}
     {...props}
   />
 ))

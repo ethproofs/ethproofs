@@ -39,7 +39,10 @@ export const columns: ColumnDef<Block>[] = [
     id: "block_number",
     accessorKey: "block_number",
     header: () => (
-      <ColumnHeader label={<metrics.blockNumber.Label />} className="text-left">
+      <ColumnHeader
+        label={<metrics.blockNumber.Label />}
+        className="text-center"
+      >
         <metrics.blockNumber.Details />
         <TooltipContentFooter className="space-y-3">
           <p className="font-bold">Time since block published</p>
@@ -63,10 +66,10 @@ export const columns: ColumnDef<Block>[] = [
         : "pending"
 
       return (
-        <div className="text-start">
+        <div className="text-center">
           <Link
-            href={`/block/${blockNumber}`}
-            className="text-lg tracking-wide hover:text-primary-light hover:underline"
+            href={`/blocks/${blockNumber}`}
+            className="text-lg tracking-wide text-primary hover:text-primary-light hover:underline"
           >
             <HidePunctuation>{formatNumber(blockNumber)}</HidePunctuation>
           </Link>
@@ -115,10 +118,7 @@ export const columns: ColumnDef<Block>[] = [
           <HidePunctuation>{formatted}</HidePunctuation>
           <Progress
             value={percentGasUsage}
-            className={cn(
-              percentGasUsage < 50 && "[&>div]:bg-primary-light",
-              "mx-auto my-2 h-1 max-w-32"
-            )}
+            className="mx-auto my-2 h-1.5 max-w-32"
           />
         </>
       )
@@ -225,10 +225,10 @@ export const columns: ColumnDef<Block>[] = [
       return (
         <div className="flex h-12 items-center">
           <ButtonLink
-            href={`/block/${blockNumber}`}
+            href={`/blocks/${blockNumber}`}
             variant="outline"
             size="icon"
-            className="ms-auto"
+            className="ms-auto h-auto p-1.5 text-lg"
           >
             <ArrowRight />
           </ButtonLink>

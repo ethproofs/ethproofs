@@ -14,24 +14,28 @@ import DataTableControlled from "../ui/data-table-controlled"
 import { columns } from "./columns"
 import useRealtimeUpdates from "./useRealtimeUpdates"
 
+import { MachineType } from "@/lib/api/blocks"
 import { mergeBlocksWithTeams } from "@/lib/blocks"
 
 type Props = {
   className?: string
   teams: Team[]
+  machineType: MachineType
 }
 
-const BlocksTable = ({ className, teams }: Props) => {
+const BlocksTable = ({ className, teams, machineType }: Props) => {
   const [pagination, setPagination] =
     useState<PaginationState>(DEFAULT_PAGE_STATE)
   const [deferredPagination] = useDebounceValue(pagination, 200)
 
   const blocksQuery = useQuery<{ rows: Block[]; rowCount: number }>({
-    queryKey: ["blocks", deferredPagination],
+    queryKey: ["blocks", machineType, deferredPagination],
     queryFn: async () => {
-      const response = await fetch(
-        `/api/blocks?page_index=${deferredPagination.pageIndex}&page_size=${deferredPagination.pageSize}`
-      )
+      const params = new URLSearchParams()
+      params.set("page_index", deferredPagination.pageIndex.toString())
+      params.set("page_size", deferredPagination.pageSize.toString())
+      params.set("machine_type", machineType)
+      const response = await fetch(`/api/blocks?${params.toString()}`)
       return response.json()
     },
     placeholderData: keepPreviousData,

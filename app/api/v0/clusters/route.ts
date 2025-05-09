@@ -103,6 +103,10 @@ export const POST = withAuth(async ({ request, user }) => {
     return new Response("Invalid cluster configuration", { status: 400 })
   }
 
+  const isMultiMachine =
+    configuration.length > 1 ||
+    configuration.some((config) => config.machine_count > 1)
+
   let clusterIndex: number | null = null
   await db.transaction(async (tx) => {
     // create cluster
@@ -114,6 +118,7 @@ export const POST = withAuth(async ({ request, user }) => {
         hardware,
         cycle_type,
         proof_type,
+        is_multi_machine: isMultiMachine,
         team_id: user.id,
       })
       .returning({ id: clusters.id, index: clusters.index })
