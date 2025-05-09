@@ -8,19 +8,42 @@ import Pizza from "./Pizza"
 
 import { getSlices } from "@/lib/zkvms"
 
-const DetailItem = ({ item }: { item: SoftwareDetailItem }) => (
-  <div className={item.className} data-index={item.position}>
-    <MetricBox className="py-0">
-      {"chartInfo" in item && <LevelMeter {...item.chartInfo} />}
-    </MetricBox>
-    <MetricLabel>
-      <MetricInfo label={item.label}>{item.popoverDetails}</MetricInfo>
-    </MetricLabel>
-    {"value" in item && (
-      <div className="text-center font-sans text-base">{item.value}</div>
-    )}
-  </div>
-)
+const DetailItem = ({ item }: { item: SoftwareDetailItem }) => {
+  const GROUP_HOVER = [
+    "group-has-[:not([data-index='0']):hover]/software:opacity-[50%] group-has-[[data-index='0']:hover]/software:opacity-[100%] group-has-[[data-index='0']:hover]/software:scale-110 scale-100 transition-all",
+    "group-has-[:not([data-index='1']):hover]/software:opacity-[50%] group-has-[[data-index='1']:hover]/software:opacity-[100%] group-has-[[data-index='1']:hover]/software:scale-110 scale-100 transition-all",
+    "group-has-[:not([data-index='2']):hover]/software:opacity-[50%] group-has-[[data-index='2']:hover]/software:opacity-[100%] group-has-[[data-index='2']:hover]/software:scale-110 scale-100 transition-all",
+    "group-has-[:not([data-index='3']):hover]/software:opacity-[50%] group-has-[[data-index='3']:hover]/software:opacity-[100%] group-has-[[data-index='3']:hover]/software:scale-110 scale-100 transition-all",
+    "group-has-[:not([data-index='4']):hover]/software:opacity-[50%] group-has-[[data-index='4']:hover]/software:opacity-[100%] group-has-[[data-index='4']:hover]/software:scale-110 scale-100 transition-all",
+    "group-has-[:not([data-index='5']):hover]/software:opacity-[50%] group-has-[[data-index='5']:hover]/software:opacity-[100%] group-has-[[data-index='5']:hover]/software:scale-110 scale-100 transition-all",
+    "group-has-[:not([data-index='6']):hover]/software:opacity-[50%] group-has-[[data-index='6']:hover]/software:opacity-[100%] group-has-[[data-index='6']:hover]/software:scale-110 scale-100 transition-all",
+    "group-has-[:not([data-index='7']):hover]/software:opacity-[50%] group-has-[[data-index='7']:hover]/software:opacity-[100%] group-has-[[data-index='7']:hover]/software:scale-110 scale-100 transition-all",
+  ] as const
+
+  return (
+    <div
+      className={cn(
+        "text-center",
+        "chartInfo" in item && "mb-2 mt-8 flex-1",
+        "value" in item && "mx-auto w-fit",
+        GROUP_HOVER[item.position],
+        item.className
+      )}
+      data-index={item.position}
+      style={{ gridArea: `position${item.position}` }}
+    >
+      <MetricBox className="py-0">
+        {"chartInfo" in item && <LevelMeter {...item.chartInfo} />}
+      </MetricBox>
+      <MetricLabel>
+        <MetricInfo label={item.label}>{item.popoverDetails}</MetricInfo>
+      </MetricLabel>
+      {"value" in item && (
+        <div className="text-center font-sans text-base">{item.value}</div>
+      )}
+    </div>
+  )
+}
 
 DetailItem.displayName = "DetailItem"
 
@@ -32,15 +55,26 @@ type SoftwareDetailsProps = {
 const SoftwareDetails = ({ detailItems, className }: SoftwareDetailsProps) => (
   <div
     className={cn(
-      "group/software grid grid-cols-[1fr,4fr,auto,4fr,1fr] gap-8 p-8",
+      "group/software grid gap-8 p-8",
+      "grid-cols-[2fr,4fr,1fr,auto,1fr,4fr,2fr]",
       className
     )}
+    style={{
+      gridTemplateAreas: `
+        "position7 position7 position7 . position0 position0 position0"
+        ". position6 pizza pizza pizza position1 ."
+        ". position5 pizza pizza pizza position2 ."
+        ". position4 pizza pizza pizza position3 ."`,
+    }}
   >
     {detailItems.map((item) => (
       <DetailItem key={item.id} item={item} />
     ))}
 
-    <div className="col-start-3 row-span-3 row-start-2 flex flex-col items-center text-[10rem]">
+    <div
+      className="flex flex-col items-center text-[10rem]"
+      style={{ gridArea: "pizza" }}
+    >
       <Pizza slices={getSlices(detailItems)} />
     </div>
   </div>

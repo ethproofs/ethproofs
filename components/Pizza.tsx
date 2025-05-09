@@ -80,7 +80,7 @@ const Pizza = ({
             sharedClasses,
             ROTATIONS[idx % ROTATIONS.length],
             COLORS[level],
-            GROUP_HOVER[idx]
+            !disableEffects && GROUP_HOVER[idx]
           )}
           key={idx}
           style={{ clipPath }}
