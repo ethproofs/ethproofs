@@ -55,7 +55,7 @@ type SoftwareDetailsProps = {
 const SoftwareDetails = ({ detailItems, className }: SoftwareDetailsProps) => (
   <div
     className={cn(
-      "group/software grid gap-4 lg:gap-8 p-4 lg:p-8",
+      "group/software grid gap-4 p-4 lg:gap-8 lg:p-8",
       "lg:grid-cols-[2fr,4fr,1fr,auto,1fr,4fr,2fr]",
       "grid-cols-[0,4fr,1fr,auto,1fr,4fr,0]",
       className
