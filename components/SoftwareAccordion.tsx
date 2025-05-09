@@ -39,31 +39,34 @@ const SoftwareAccordionItem = ({
     <AccordionItem value={value} className="col-span-5 grid grid-cols-subgrid">
       <div className="col-span-5 grid grid-cols-subgrid items-center gap-12 text-nowrap border-b px-6 hover:bg-primary/5 dark:hover:bg-primary/10">
         <div className="col-start-1 flex items-center gap-3">
-          <Link href={`/zkvms/${zkvm.slug}`} className="hover:underline">
-            <span className="block font-mono text-2xl text-primary">
-              {zkvm.name}
-            </span>
+          <Link
+            href={`/zkvms/${zkvm.slug}`}
+            className="block text-2xl text-primary hover:underline"
+          >
+            {zkvm.name}
           </Link>
           <span className="block font-mono text-sm italic text-body-secondary">
             by
           </span>
-          <Link
-            href={`/teams/${zkvm.vendor.slug}`}
-            className="-m-1 rounded p-1 hover:bg-primary/10"
-          >
-            {zkvm.vendor.logo_url ? (
-              <Image
-                src={zkvm.vendor.logo_url}
-                alt={`${zkvm.vendor.name} team logo`}
-                height={16}
-                width={16}
-                className="dark:invert"
-                style={{ height: "1rem", width: "auto" }}
-              />
-            ) : (
-              zkvm.vendor.name
-            )}
-          </Link>
+          <div className="min-w-24">
+            <Link
+              href={`/teams/${zkvm.vendor.slug}`}
+              className="-m-1 block w-fit rounded p-1 hover:bg-primary/10"
+            >
+              {zkvm.vendor.logo_url ? (
+                <Image
+                  src={zkvm.vendor.logo_url}
+                  alt={`${zkvm.vendor.name} team logo`}
+                  height={16}
+                  width={16}
+                  className="dark:invert"
+                  style={{ height: "1rem", width: "auto" }}
+                />
+              ) : (
+                zkvm.vendor.name
+              )}
+            </Link>
+          </div>
         </div>
         <div id="version" className="col-start-2">
           {zkvm.versions[0].version}
