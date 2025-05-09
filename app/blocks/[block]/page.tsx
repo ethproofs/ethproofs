@@ -6,7 +6,7 @@ import CopyButton from "@/components/CopyButton"
 import DownloadAllButton from "@/components/DownloadAllButton"
 import MachineTabs from "@/components/MachineTabs"
 import ProofList from "@/components/ProofList"
-import ProofStatus from "@/components/ProofStatus"
+import ProofStatus, { ProofStatusInfo } from "@/components/ProofStatus"
 import { HidePunctuation } from "@/components/StylePunctuation"
 import BookOpen from "@/components/svgs/book-open.svg"
 import Clock from "@/components/svgs/clock.svg"
@@ -172,112 +172,130 @@ export default async function BlockDetailsPage({
       </section>
 
       <section className="flex flex-row gap-8">
-        <Card className="flex-1">
-          <CardHeader className="flex flex-row justify-between space-y-0">
-            <CardTitle>
-              <div className="flex items-center gap-2">
-                <Timer /> Proof availability
-              </div>
+        <Card className="flex-1" variant="borderGradient">
+          <CardHeader className="flex h-16 flex-row justify-between space-y-0">
+            <CardTitle className="flex items-center gap-2 font-mono text-lg font-normal">
+              <Timer /> Proof availability
             </CardTitle>
 
-            <div>
-              <MetricBox>
-                <MetricLabel>
-                  <MetricInfo label="Status of proofs">
-                    TODO: Add proof status info
-                  </MetricInfo>
-                </MetricLabel>
-                <MetricValue className="font-normal">
-                  <ProofStatus statusCount={proofsPerStatusCount} />
-                </MetricValue>
-              </MetricBox>
-            </div>
+            <MetricBox className="py-0">
+              <MetricLabel>
+                <MetricInfo label="Status of proofs">
+                  <ProofStatusInfo title="Status of proofs" />
+                </MetricInfo>
+              </MetricLabel>
+              <MetricValue className="font-normal">
+                <ProofStatus statusCount={proofsPerStatusCount} />
+              </MetricValue>
+            </MetricBox>
           </CardHeader>
 
-          <div className="grid grid-cols-2 gap-x-8 sm:grid-cols-[repeat(5,auto)] sm:grid-rows-[auto,auto] md:flex md:flex-wrap">
-            {multiMachineMetrics.map(({ key, label, description, value }) => (
-              <MetricBox
-                key={"multi-" + key}
-                className="row-span-2 grid grid-rows-subgrid"
-              >
-                <MetricLabel className="flex items-stretch lowercase">
-                  <MetricInfo
-                    label={<span className="h-full lowercase">{label}</span>}
-                  >
-                    {description}
-                  </MetricInfo>
-                </MetricLabel>
-                <MetricValue className="font-normal">{value}</MetricValue>
-              </MetricBox>
-            ))}
+          <div>
+            <div className="font-mono text-sm text-primary">
+              multi-machine performance
+            </div>
+            <div className="grid grid-cols-2 gap-x-8">
+              {multiMachineMetrics.map(({ key, label, description, value }) => (
+                <MetricBox
+                  key={"multi-" + key}
+                  className="row-span-2 grid grid-rows-subgrid"
+                >
+                  <MetricLabel className="flex items-stretch lowercase">
+                    <MetricInfo
+                      label={<span className="h-full lowercase">{label}</span>}
+                    >
+                      {description}
+                    </MetricInfo>
+                  </MetricLabel>
+                  <MetricValue className="font-normal">{value}</MetricValue>
+                </MetricBox>
+              ))}
+            </div>
           </div>
 
-          <div className="grid grid-cols-2 gap-x-8 sm:grid-cols-[repeat(5,auto)] sm:grid-rows-[auto,auto] md:flex md:flex-wrap">
-            {singleMachineMetrics.map(({ key, label, description, value }) => (
-              <MetricBox
-                key={"single-" + key}
-                className="row-span-2 grid grid-rows-subgrid"
-              >
-                <MetricLabel className="flex items-stretch lowercase">
-                  <MetricInfo
-                    label={<span className="h-full lowercase">{label}</span>}
+          <div>
+            <div className="font-mono text-sm text-primary">
+              single machine performance
+            </div>
+            <div className="grid grid-cols-2 gap-x-8">
+              {singleMachineMetrics.map(
+                ({ key, label, description, value }) => (
+                  <MetricBox
+                    key={"single-" + key}
+                    className="row-span-2 grid grid-rows-subgrid"
                   >
-                    {description}
-                  </MetricInfo>
-                </MetricLabel>
-                <MetricValue className="font-normal">{value}</MetricValue>
-              </MetricBox>
-            ))}
+                    <MetricLabel className="flex items-stretch lowercase">
+                      <MetricInfo
+                        label={
+                          <span className="h-full lowercase">{label}</span>
+                        }
+                      >
+                        {description}
+                      </MetricInfo>
+                    </MetricLabel>
+                    <MetricValue className="font-normal">{value}</MetricValue>
+                  </MetricBox>
+                )
+              )}
+            </div>
           </div>
         </Card>
 
-        <Card className="flex-1">
-          <CardHeader>
-            <CardTitle>
-              <div className="flex items-center gap-2">
-                <DollarSign /> Proof costs
-              </div>
+        <Card className="flex-1" variant="borderGradient">
+          <CardHeader className="flex h-16 flex-row items-center">
+            <CardTitle className="flex items-center gap-2 font-mono text-lg font-normal">
+              <DollarSign /> Proof costs
             </CardTitle>
           </CardHeader>
 
-          <div className="grid grid-cols-2 gap-x-8 sm:flex sm:flex-wrap">
-            {multiMachineBlockFeeMetrics.map(
-              ({ key, label, description, value }) => (
-                <MetricBox
-                  key={key}
-                  className="row-span-2 grid grid-rows-subgrid"
-                >
-                  <MetricLabel>
-                    <MetricInfo
-                      label={<span className="lowercase">{label}</span>}
-                    >
-                      {description}
-                    </MetricInfo>
-                  </MetricLabel>
-                  <MetricValue className="font-normal">{value}</MetricValue>
-                </MetricBox>
-              )
-            )}
+          <div>
+            <div className="font-mono text-sm text-primary">
+              multi-machine performance
+            </div>
+            <div className="grid grid-cols-2 gap-x-8">
+              {multiMachineBlockFeeMetrics.map(
+                ({ key, label, description, value }) => (
+                  <MetricBox
+                    key={key}
+                    className="row-span-2 grid grid-rows-subgrid"
+                  >
+                    <MetricLabel>
+                      <MetricInfo
+                        label={<span className="lowercase">{label}</span>}
+                      >
+                        {description}
+                      </MetricInfo>
+                    </MetricLabel>
+                    <MetricValue className="font-normal">{value}</MetricValue>
+                  </MetricBox>
+                )
+              )}
+            </div>
           </div>
 
-          <div className="grid grid-cols-2 gap-x-8 sm:flex sm:flex-wrap">
-            {singleMachineBlockFeeMetrics.map(
-              ({ key, label, description, value }) => (
-                <MetricBox
-                  key={key}
-                  className="row-span-2 grid grid-rows-subgrid"
-                >
-                  <MetricLabel>
-                    <MetricInfo
-                      label={<span className="lowercase">{label}</span>}
-                    >
-                      {description}
-                    </MetricInfo>
-                  </MetricLabel>
-                  <MetricValue className="font-normal">{value}</MetricValue>
-                </MetricBox>
-              )
-            )}
+          <div>
+            <div className="font-mono text-sm text-primary">
+              single machine performance
+            </div>
+            <div className="grid grid-cols-2 gap-x-8">
+              {singleMachineBlockFeeMetrics.map(
+                ({ key, label, description, value }) => (
+                  <MetricBox
+                    key={key}
+                    className="row-span-2 grid grid-rows-subgrid"
+                  >
+                    <MetricLabel>
+                      <MetricInfo
+                        label={<span className="lowercase">{label}</span>}
+                      >
+                        {description}
+                      </MetricInfo>
+                    </MetricLabel>
+                    <MetricValue className="font-normal">{value}</MetricValue>
+                  </MetricBox>
+                )
+              )}
+            </div>
           </div>
         </Card>
       </section>
