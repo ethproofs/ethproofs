@@ -121,9 +121,9 @@ export default async function BlockDetailsPage({
 
   return (
     <div className="mx-auto -mt-40 max-w-screen-xl space-y-20 px-6 md:px-8 [&>section]:w-full">
-      <HeroTitle className="mx-auto max-w-[18rem] items-center gap-4">
+      <HeroTitle className="mx-auto w-fit items-center gap-4">
         <Box strokeWidth="1" className="size-[4.5rem] shrink-0 text-primary" />
-        <div className="truncate">
+        <div className="max-w-[14rem]">
           <h1 className="font-mono">
             <p className="font-sans text-sm font-normal text-body-secondary">
               Block Height
@@ -132,7 +132,7 @@ export default async function BlockDetailsPage({
               <HidePunctuation>{formatNumber(block_number)}</HidePunctuation>
             </p>
           </h1>
-          <div className="flex gap-2">
+          <div className="flex gap-2 truncate">
             <div className="truncate font-sans text-sm font-normal text-body-secondary">
               {hash}
             </div>
