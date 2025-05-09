@@ -1,18 +1,30 @@
 import { type ReactNode } from "react"
 
+import { LevelMeterProps } from "@/components/LevelMeter"
+
+import { CHART_RANGES, ZKVM_THRESHOLDS } from "./constants"
+
 import {
+  benchmarks,
   blocks,
   cloudInstances,
   cloudProviders,
+  clusterBenchmarks,
   clusterMachines,
   clusters,
   clusterVersions,
   machines,
   proofs,
+  proofsDailyStats,
+  proverDailyStats,
+  recentSummary,
+  severityLevel,
   teams,
   teamsSummary,
   vendors,
+  zkvmPerformanceMetrics,
   zkvms,
+  zkvmSecurityMetrics,
   zkvmVersions,
 } from "@/db/schema"
 
@@ -82,9 +94,50 @@ export type Zkvm = typeof zkvms.$inferSelect
 export type ZkvmVersion = typeof zkvmVersions.$inferSelect
 
 /**
+ * Represents a row in the benchmarks table.
+ */
+export type Benchmark = typeof benchmarks.$inferSelect
+
+/**
+ * Represents a row in the cluster_benchmarks table.
+ */
+export type ClusterBenchmark = typeof clusterBenchmarks.$inferSelect
+
+/**
  * Represents a row in the teams_summary view.
  */
 export type TeamSummary = typeof teamsSummary.$inferSelect
+
+/**
+ * Represents a row in the proofs_daily_stats table.
+ */
+export type ProofsDailyStats = typeof proofsDailyStats.$inferSelect
+
+/**
+ * Represents a row in the recent_summary view.
+ */
+export type RecentSummary = typeof recentSummary.$inferSelect
+
+/**
+ * Represents a row in the prover_daily_stats table.
+ */
+export type ProverDailyStats = typeof proverDailyStats.$inferSelect
+
+/**
+ * Represents a row in the zkvm_security_metrics table.
+ */
+export type ZkvmSecurityMetric = typeof zkvmSecurityMetrics.$inferSelect
+
+/**
+ * Represents a row in the zkvm_performance_metrics table.
+ */
+export type ZkvmPerformanceMetric = typeof zkvmPerformanceMetrics.$inferSelect
+
+export type SeverityLevel = (typeof severityLevel.enumValues)[number]
+
+export type ZkvmMetrics = ZkvmSecurityMetric & ZkvmPerformanceMetric
+
+export type ZkvmMetric = keyof ZkvmMetrics
 
 export type ClusterVersionExtensions = {
   cluster: ClusterBase
@@ -161,8 +214,8 @@ export type Metric = {
 export type SummaryItem = {
   key: string
   label: ReactNode
-  icon: ReactNode
   value: ReactNode
+  icon?: ReactNode
 }
 
 /**
@@ -176,3 +229,33 @@ export type Stats = {
   bestFormatted: string
   bestProof: ProofWithCluster
 }
+
+export type SliceDetails = {
+  level: SeverityLevel
+}
+
+export type Slices = [
+  SliceDetails,
+  SliceDetails,
+  SliceDetails,
+  SliceDetails,
+  SliceDetails,
+  SliceDetails,
+  SliceDetails,
+  SliceDetails,
+]
+
+export type DayRange = (typeof CHART_RANGES)[number]
+
+export type SoftwareDetailItem = {
+  id: string
+  label: React.ReactNode
+  className?: string
+  popoverDetails: React.ReactNode
+  severity: SeverityLevel
+  position: 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7
+} & ({ chartInfo: LevelMeterProps } | { value: string })
+
+export type MetricThresholds = Record<SeverityLevel, number>
+
+export type ZkvmThresholdMetric = keyof typeof ZKVM_THRESHOLDS

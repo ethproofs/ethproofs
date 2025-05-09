@@ -12,3 +12,18 @@ export const getTeam = cache(
   },
   ["team"]
 )
+
+export const getTeams = cache(async () => {
+  const teams = await db.query.teams.findMany()
+  return teams
+})
+
+export const getTeamBySlug = cache(
+  async (slug: string) => {
+    const team = await db.query.teams.findFirst({
+      where: (teams, { eq }) => eq(teams.slug, slug),
+    })
+    return team
+  },
+  ["team-by-slug"]
+)
