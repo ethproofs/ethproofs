@@ -1,4 +1,4 @@
-import { MachineBase } from "./types"
+import type { MachineBase } from "./types"
 import { sumArray } from "./utils"
 
 export const getMachineTotalGpuMemory = (machine: MachineBase) => {
