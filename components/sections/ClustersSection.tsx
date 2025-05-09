@@ -9,7 +9,7 @@ import { Card, CardHeader, CardTitle } from "../ui/card"
 import { getActiveClusters, getActiveMachineCount } from "@/lib/api/clusters"
 import { getClusterSummary, getTeamsSummary } from "@/lib/api/stats"
 
-const ProverTeamsSection = async () => {
+const ClustersSection = async () => {
   const [teamsSummary, clusterSummary, machineCount, activeClusters] =
     await Promise.all([
       getTeamsSummary(),
@@ -18,7 +18,7 @@ const ProverTeamsSection = async () => {
       getActiveClusters(),
     ])
 
-  const proversSummary: SummaryItem[] = [
+  const clustersSummary: SummaryItem[] = [
     {
       key: "teams",
       label: "teams",
@@ -59,7 +59,7 @@ const ProverTeamsSection = async () => {
         </CardTitle>
 
         <div className="py-4">
-          <KPIs items={proversSummary} />
+          <KPIs items={clustersSummary} />
         </div>
       </CardHeader>
 
@@ -69,7 +69,7 @@ const ProverTeamsSection = async () => {
       />
 
       <div className="flex justify-center">
-        <ButtonLink variant="outline" href="/teams">
+        <ButtonLink variant="outline" href="/clusters">
           See all
         </ButtonLink>
       </div>
@@ -77,4 +77,4 @@ const ProverTeamsSection = async () => {
   )
 }
 
-export default ProverTeamsSection
+export default ClustersSection
