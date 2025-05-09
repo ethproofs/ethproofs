@@ -73,7 +73,7 @@ const SoftwareDetails = ({ detailItems, className }: SoftwareDetailsProps) => (
     ))}
 
     <div
-      className="flex flex-col items-center text-[7.5rem] lg:text-[10rem]"
+      className="flex flex-col items-center text-[clamp(8rem,16vw,12rem)]"
       style={{ gridArea: "pizza" }}
     >
       <Pizza slices={getSlices(detailItems)} />
