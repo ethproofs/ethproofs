@@ -171,7 +171,7 @@ export default async function BlockDetailsPage({
         </HeroItem>
       </section>
 
-      <section className="flex flex-row gap-8">
+      <section className="flex flex-col gap-8 xl:flex-row">
         <Card className="flex-1" variant="borderGradient">
           <CardHeader className="flex h-16 flex-row justify-between space-y-0">
             <CardTitle className="flex items-center gap-2 font-mono text-lg font-normal">
@@ -191,10 +191,10 @@ export default async function BlockDetailsPage({
           </CardHeader>
 
           <div>
-            <div className="font-mono text-sm text-primary">
+            <div className="text-center font-mono text-sm text-primary sm:text-start">
               multi-machine performance
             </div>
-            <div className="grid grid-cols-2 gap-x-8">
+            <div className="grid grid-cols-1 place-items-center gap-x-8 text-center sm:grid-cols-2 sm:place-items-start sm:text-start lg:grid-cols-4 xl:grid-cols-2">
               {multiMachineMetrics.map(({ key, label, description, value }) => (
                 <MetricBox
                   key={"multi-" + key}
@@ -214,10 +214,10 @@ export default async function BlockDetailsPage({
           </div>
 
           <div>
-            <div className="font-mono text-sm text-primary">
+            <div className="text-center font-mono text-sm text-primary sm:text-start">
               single machine performance
             </div>
-            <div className="grid grid-cols-2 gap-x-8">
+            <div className="grid grid-cols-1 place-items-center gap-x-8 text-center sm:grid-cols-2 sm:place-items-start sm:text-start lg:grid-cols-4 xl:grid-cols-2">
               {singleMachineMetrics.map(
                 ({ key, label, description, value }) => (
                   <MetricBox
@@ -249,10 +249,10 @@ export default async function BlockDetailsPage({
           </CardHeader>
 
           <div>
-            <div className="font-mono text-sm text-primary">
+            <div className="text-center font-mono text-sm text-primary sm:text-start">
               multi-machine performance
             </div>
-            <div className="grid grid-cols-2 gap-x-8">
+            <div className="grid grid-cols-1 place-items-center gap-x-8 text-center sm:grid-cols-2 sm:place-items-start sm:text-start lg:grid-cols-4 xl:grid-cols-2">
               {multiMachineBlockFeeMetrics.map(
                 ({ key, label, description, value }) => (
                   <MetricBox
@@ -274,10 +274,10 @@ export default async function BlockDetailsPage({
           </div>
 
           <div>
-            <div className="font-mono text-sm text-primary">
+            <div className="text-center font-mono text-sm text-primary sm:text-start">
               single machine performance
             </div>
-            <div className="grid grid-cols-2 gap-x-8">
+            <div className="grid grid-cols-1 place-items-center gap-x-8 text-center sm:grid-cols-2 sm:place-items-start sm:text-start lg:grid-cols-4 xl:grid-cols-2">
               {singleMachineBlockFeeMetrics.map(
                 ({ key, label, description, value }) => (
                   <MetricBox
