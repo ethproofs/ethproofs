@@ -64,14 +64,14 @@ export default async function TeamsPage() {
                     </h3>
                   </div>
 
-                  <div className="mx-auto flex flex-col gap-6">
+                  <div className="mx-auto flex flex-col items-center gap-6">
                     {isNewTeam ? (
                       <div className="py-8 text-center font-mono text-lg uppercase text-body-secondary">
                         Proving soon
                       </div>
                     ) : (
                       <>
-                        <div className="flex w-full flex-nowrap">
+                        <div className="flex w-full flex-nowrap justify-center">
                           <div className="flex flex-col items-center gap-2 px-4">
                             <div className="flex items-center gap-1 text-body-secondary">
                               {AVERAGE_LABEL} <metrics.provingTime.Label />
