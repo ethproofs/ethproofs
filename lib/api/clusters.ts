@@ -164,8 +164,9 @@ export const getActiveClusterCountByZkvmId = async () => {
   return result
 }
 
-// Those machines that at least have 1 proof submitted with status "proved"
 export const getActiveMachineCount = async () => {
+  const sevenDaysAgo = sql`NOW() - INTERVAL '7 days'`
+
   const [machineCount] = await db
     .select({ count: count() })
     .from(clusterMachines)
@@ -181,7 +182,8 @@ export const getActiveMachineCount = async () => {
           .where(
             and(
               eq(clusterMachines.cluster_version_id, clusterVersions.id),
-              eq(proofs.proof_status, "proved")
+              eq(proofs.proof_status, "proved"),
+              gt(proofs.proved_timestamp, sevenDaysAgo)
             )
           )
       )
