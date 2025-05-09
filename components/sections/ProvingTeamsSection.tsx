@@ -17,8 +17,8 @@ const ProverTeamsSection = async () => {
 
   const proversSummary: SummaryItem[] = [
     {
-      key: "provers",
-      label: "provers",
+      key: "teams",
+      label: "teams",
       value: teamsSummary.length,
     },
     {
