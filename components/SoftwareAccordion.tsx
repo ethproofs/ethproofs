@@ -1,4 +1,3 @@
-import Image from "next/image"
 import { type AccordionItemProps } from "@radix-ui/react-accordion"
 
 import { Vendor, Zkvm, ZkvmMetrics, ZkvmVersion } from "@/lib/types"
@@ -13,10 +12,10 @@ import { ButtonLink } from "./ui/button"
 import Link from "./ui/link"
 import { MetricBox, MetricInfo, MetricLabel } from "./ui/metric"
 import { Progress } from "./ui/progress"
+import { DisplayTeamLink } from "./DisplayTeamLink"
 import Pizza from "./Pizza"
 import SoftwareDetails from "./SoftwareDetails"
 
-import { formatShortDate } from "@/lib/date"
 import { getSoftwareDetailItems, getZkvmsMetrics } from "@/lib/metrics"
 import { getSlices, getZkvmsWithUsage } from "@/lib/zkvms"
 
@@ -49,23 +48,7 @@ const SoftwareAccordionItem = ({
             by
           </span>
           <div className="min-w-24">
-            <Link
-              href={`/teams/${zkvm.vendor.slug}`}
-              className="-m-1 block w-fit rounded p-1 hover:bg-primary/10"
-            >
-              {zkvm.vendor.logo_url ? (
-                <Image
-                  src={zkvm.vendor.logo_url}
-                  alt={`${zkvm.vendor.name} team logo`}
-                  height={16}
-                  width={16}
-                  className="dark:invert"
-                  style={{ height: "1rem", width: "auto" }}
-                />
-              ) : (
-                zkvm.vendor.name
-              )}
-            </Link>
+            <DisplayTeamLink team={zkvm.vendor} className="block" />
           </div>
         </div>
         <div id="version" className="col-start-2">

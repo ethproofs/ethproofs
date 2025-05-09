@@ -6,6 +6,7 @@ import { notFound } from "next/navigation"
 import prettyBytes from "pretty-bytes"
 
 import ClusterMachineSummary from "@/components/ClusterMachineSummary"
+import { DisplayTeam } from "@/components/DisplayTeamLink"
 import DownloadButton from "@/components/DownloadButton"
 import NoData from "@/components/NoData"
 import Null from "@/components/Null"
@@ -90,19 +91,12 @@ export default async function ClusterDetailsPage({
             : "single machine cluster"}
         </div>
         {team && (
-          <div className="mx-auto mt-4 flex w-full max-w-lg justify-center border-t border-primary p-6">
-            {team.logo_url ? (
-              <Image
-                src={team.logo_url}
-                alt={`${team.name} logo`}
-                width={100}
-                height={100}
-                className="dark:invert"
-              />
-            ) : (
-              <div className="text-xl">{team.name}</div>
-            )}
-          </div>
+          <DisplayTeam
+            team={team}
+            className="mt-4 block border-t border-primary p-6"
+            height={36}
+            hideDot
+          />
         )}
       </div>
 

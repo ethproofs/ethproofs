@@ -26,6 +26,7 @@ import { ButtonLink } from "./ui/button"
 import Link from "./ui/link"
 import { MetricBox, MetricInfo, MetricLabel } from "./ui/metric"
 import ClusterMachineSummary from "./ClusterMachineSummary"
+import { DisplayTeamLink } from "./DisplayTeamLink"
 import HardwareGrid from "./HardwareGrid"
 import Null from "./Null"
 
@@ -74,26 +75,7 @@ const ClusterAccordionItem = ({
     >
       <div className="col-span-6 grid grid-cols-subgrid items-center gap-12 px-6 py-4 hover:bg-primary/5 dark:hover:bg-primary/10">
         <div className="col-start-1 flex flex-col gap-1">
-          <Link
-            href={`/teams/${clusterDetails.team.id}`}
-            className="-m-1 w-fit rounded p-1 hover:bg-primary/10"
-          >
-            {clusterDetails.team.logo_url ? (
-              <Image
-                src={clusterDetails.team.logo_url}
-                alt="Proving team logo"
-                height={16}
-                width={16}
-                style={{ height: "1rem", width: "auto" }}
-                className="dark:invert"
-              />
-            ) : (
-              <div className="flex items-center gap-1">
-                <div className="size-4 rounded-full bg-primary-border" />
-                {clusterDetails.team.name}
-              </div>
-            )}
-          </Link>
+          <DisplayTeamLink team={clusterDetails.team} />
           <div>
             <span className="text-sm text-primary">
               <Link

@@ -8,6 +8,7 @@ import Link from "./ui/link"
 
 import { getBenchmarkColor } from "@/lib/benchmarks"
 import { prettyMs } from "@/lib/time"
+import { DisplayTeamLink } from "./DisplayTeamLink"
 
 const CELL_COLOR_CLASSES = {
   red: "border-level-worst dark:from-level-worst/20 from-level-worst/10",
@@ -72,18 +73,7 @@ const RowItem = ({
         href={`/teams/${cluster.team.id}`}
         className="-m-2 block w-fit rounded p-2 hover:bg-primary/10"
       >
-        {cluster.team.logo_url ? (
-          <Image
-            src={cluster.team.logo_url}
-            alt={`${cluster.team.name} team logo`}
-            height={24}
-            width={24}
-            className="dark:invert"
-            style={{ height: "1.5rem", width: "auto" }}
-          />
-        ) : (
-          cluster.team.name
-        )}
+        <DisplayTeamLink team={cluster.team} height={24} className="block" />
       </Link>
       <Link
         href={`/clusters/${cluster.id}`}
