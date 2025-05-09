@@ -105,11 +105,7 @@ const LineChartCard = ({
   }
 
   return (
-    <Card
-      variant="borderGradient"
-      childrenClasses="!space-y-4"
-      className={className}
-    >
+    <Card className={cn("!space-y-4", className)}>
       <CardHeader className="flex flex-col gap-6 space-y-0 py-5">
         <CardTitle className="text-center text-2xl font-normal">
           {title}

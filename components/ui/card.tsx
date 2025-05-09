@@ -1,54 +1,26 @@
 import * as React from "react"
-import { cva, VariantProps } from "class-variance-authority"
 
 import { cn } from "@/lib/utils"
 
-const cardVariants = cva("md:px-12 md:py-8 rounded-4xl p-6", {
-  variants: {
-    variant: {
-      default:
-        "space-y-6 md:space-y-12 border bg-white/10 bg-gradient-to-b from-body/[0.06] to-body/[0.03] dark:bg-black/10",
-      borderGradient: "relative bg-background",
-    },
-  },
-  defaultVariants: {
-    variant: "default",
-  },
-})
-
 const Card = React.forwardRef<
   HTMLDivElement,
-  React.HTMLAttributes<HTMLDivElement> &
-    VariantProps<typeof cardVariants> & {
-      gradientClasses?: string
-      childrenClasses?: string
-    }
->(({ className, childrenClasses, variant, gradientClasses, ...props }, ref) =>
-  variant === "borderGradient" ? (
-    <div
-      ref={ref}
-      className={cn(cardVariants({ variant }), className)}
-      {...props}
-    >
-      <div
-        className={cn(
-          "absolute -inset-px z-[-2] rounded-[calc(2rem_+_1px)] bg-gradient-to-tl from-primary to-primary/10",
-          gradientClasses
-        )}
-      />
-      <div className="absolute -inset-px z-[-1] rounded-4xl bg-black/10" />
-      <div className={cn("space-y-6 md:space-y-12", childrenClasses)}>
-        {props.children}
-      </div>
-    </div>
-  ) : (
-    <div
-      ref={ref}
-      className={cn(cardVariants({ variant }), className)}
-      {...props}
-    />
-  )
-)
+  React.HTMLAttributes<HTMLDivElement>
+>(({ className, ...props }, ref) => (
+  <div
+    ref={ref}
+    className={cn(
+      "space-y-6 md:space-y-12",
+      "rounded-3xl p-6 shadow-md md:px-12 md:py-8",
+      "relative before:absolute before:inset-0 before:-z-[2] before:rounded-3xl before:bg-gradient-to-tl before:from-primary before:to-primary/10",
+      "after:absolute after:inset-px after:-z-[1] after:rounded-[calc(1.5rem_-_1px)] after:bg-background after:bg-gradient-to-b after:from-background after:to-background-modal/75",
+
+      className
+    )}
+    {...props}
+  >
+    {props.children}
+  </div>
+))
 Card.displayName = "Card"
 
 const CardHeader = React.forwardRef<

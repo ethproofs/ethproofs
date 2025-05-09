@@ -5,7 +5,6 @@ import ProofsStats from "@/components/ProofsStats"
 import BlocksSection from "@/components/sections/BlocksSection"
 import ProverTeamsSection from "@/components/sections/ProvingTeamsSection"
 import ZkvmsSection from "@/components/sections/ZkvmsSection"
-import { Card } from "@/components/ui/card"
 
 import { getRecentSummary } from "@/lib/api/stats"
 import { getMetadata } from "@/lib/metadata"

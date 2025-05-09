@@ -24,7 +24,7 @@ const ZkvmsSection = async () => {
   ]
 
   return (
-    <Card variant="borderGradient">
+    <Card>
       <CardHeader className="space-y-3">
         <CardTitle className="text-3xl font-normal tracking-[1px]">
           zkVMs

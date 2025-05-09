@@ -172,7 +172,7 @@ export default async function BlockDetailsPage({
       </section>
 
       <section className="flex flex-col gap-8 xl:flex-row">
-        <Card className="flex-1" variant="borderGradient">
+        <Card className="flex-1">
           <CardHeader className="flex h-16 flex-row justify-between space-y-0">
             <CardTitle className="flex items-center gap-2 font-mono text-lg font-normal [&>svg]:shrink-0">
               <Timer /> Proof availability
@@ -241,7 +241,7 @@ export default async function BlockDetailsPage({
           </div>
         </Card>
 
-        <Card className="flex-1" variant="borderGradient">
+        <Card className="flex-1">
           <CardHeader className="flex h-16 flex-row items-center">
             <CardTitle className="flex items-center gap-2 font-mono text-lg font-normal [&>svg]:shrink-0">
               <DollarSign /> Proof costs
