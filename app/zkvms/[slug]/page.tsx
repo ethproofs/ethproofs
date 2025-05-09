@@ -51,7 +51,7 @@ export default async function ZkvmDetailsPage({
     return notFound()
   }
 
-  const activeClusters = await getActiveClusters()
+  const activeClusters = await getActiveClusters({ zkvmId: zkvm.id })
   const clusterSummary = await getClusterSummary()
   const clusters = activeClusters.map((cluster) => {
     const stats = clusterSummary.find(
