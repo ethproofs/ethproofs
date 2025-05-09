@@ -3,13 +3,11 @@ import { cva, VariantProps } from "class-variance-authority"
 
 import { cn } from "@/lib/utils"
 
-const cardVariants = cva("rounded-4xl p-6", {
+const cardVariants = cva("md:px-12 md:py-8 rounded-4xl p-6", {
   variants: {
     variant: {
-      default: cn(
-        "border bg-white/10 bg-gradient-to-b from-body/[0.06] to-body/[0.03] dark:bg-black/10",
-        "space-y-6 md:space-y-12 md:px-12 md:py-8"
-      ),
+      default:
+        "space-y-6 md:space-y-12 border bg-white/10 bg-gradient-to-b from-body/[0.06] to-body/[0.03] dark:bg-black/10",
       borderGradient: "relative bg-background",
     },
   },
@@ -23,8 +21,9 @@ const Card = React.forwardRef<
   React.HTMLAttributes<HTMLDivElement> &
     VariantProps<typeof cardVariants> & {
       gradientClasses?: string
+      childrenClasses?: string
     }
->(({ className, variant, gradientClasses, ...props }, ref) =>
+>(({ className, childrenClasses, variant, gradientClasses, ...props }, ref) =>
   variant === "borderGradient" ? (
     <div
       ref={ref}
@@ -38,7 +37,9 @@ const Card = React.forwardRef<
         )}
       />
       <div className="absolute -inset-px z-[-1] rounded-4xl bg-black/10" />
-      <div className="space-y-6 md:space-y-12">{props.children}</div>
+      <div className={cn("space-y-6 md:space-y-12", childrenClasses)}>
+        {props.children}
+      </div>
     </div>
   ) : (
     <div
