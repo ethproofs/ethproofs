@@ -306,7 +306,7 @@ export default async function ClusterDetailsPage({
             )
           })
         ) : (
-          <NoData>cluster</NoData>
+          <NoData>for this cluster</NoData>
         )}
       </section>
 
@@ -381,7 +381,7 @@ export default async function ClusterDetailsPage({
             </div>
           ))
         ) : (
-          <NoData>cluster</NoData>
+          <NoData>for this cluster</NoData>
         )}
       </section>
     </div>

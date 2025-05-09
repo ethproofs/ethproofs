@@ -9,6 +9,7 @@ import Link from "./ui/link"
 import { getBenchmarkColor } from "@/lib/benchmarks"
 import { prettyMs } from "@/lib/time"
 import { DisplayTeamLink } from "./DisplayTeamLink"
+import NoData from "./NoData"
 
 const CELL_COLOR_CLASSES = {
   red: "border-level-worst dark:from-level-worst/20 from-level-worst/10",
@@ -129,14 +130,18 @@ const KillersTable = ({
       ))}
     </div>
 
-    {clusters.map((cluster) => (
-      <RowItem
-        key={cluster.id}
-        cluster={cluster}
-        benchmarks={benchmarks}
-        className="col-span-full grid grid-cols-subgrid"
-      />
-    ))}
+    {clusters.length ? (
+      clusters.map((cluster) => (
+        <RowItem
+          key={cluster.id}
+          cluster={cluster}
+          benchmarks={benchmarks}
+          className="col-span-full grid grid-cols-subgrid"
+        />
+      ))
+    ) : (
+      <NoData />
+    )}
   </div>
 )
 

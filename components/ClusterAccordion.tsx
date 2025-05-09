@@ -34,6 +34,7 @@ import { hasPhysicalMachines } from "@/lib/clusters"
 import { formatShortDate } from "@/lib/date"
 import { formatUsd } from "@/lib/number"
 import { prettyMs } from "@/lib/time"
+import NoData from "./NoData"
 
 export type ClusterWithRelations = ClusterBase & {
   team: Team
@@ -198,13 +199,17 @@ const ClusterAccordion = ({ clusters }: ClusterAccordionProps) => (
       </MetricBox>
     </div>
 
-    {clusters.map((cluster, i) => (
-      <ClusterAccordionItem
-        key={i}
-        value={"item-" + i}
-        clusterDetails={cluster}
-      />
-    ))}
+    {clusters.length ? (
+      clusters.map((cluster, i) => (
+        <ClusterAccordionItem
+          key={i}
+          value={"item-" + i}
+          clusterDetails={cluster}
+        />
+      ))
+    ) : (
+      <NoData />
+    )}
   </Accordion>
 )
 
