@@ -64,14 +64,15 @@ export default async function ClusterDetailsPage({
     return notFound()
   }
 
+  const [clusterSummary, latestProofs] = await Promise.all([
+    getClusterSummaryById(clusterId),
+    fetchProvedProofsByClusterId(clusterId),
+  ])
+
   const team = cluster.team
-  const zkvm = cluster.versions[0].zkvm_version.zkvm
-
-  const clusterSummary = await getClusterSummaryById(clusterId)
-
-  const clusterMachines = cluster.versions[0].cluster_machines
-
-  const latestProofs = await fetchProvedProofsByClusterId(clusterId)
+  const lastVersion = cluster.versions[0]
+  const zkvm = lastVersion.zkvm_version.zkvm
+  const clusterMachines = lastVersion.cluster_machines
 
   // TODO: Replace with killer-block proofs data
   const killerBlockProofs: undefined[] = []

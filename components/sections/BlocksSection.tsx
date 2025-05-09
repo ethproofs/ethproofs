@@ -17,15 +17,15 @@ import { fetchProofsPerStatusCount, lastProvedProof } from "@/lib/api/proofs"
 import { prettyMs } from "@/lib/time"
 
 const BlocksSection = async () => {
-  const lastProof = await lastProvedProof()
-  const proofsPerStatusCount = await fetchProofsPerStatusCount(
-    startOfYesterday(),
-    new Date()
-  )
-  const recentProofsPerStatusCount = await fetchProofsPerStatusCount(
-    startOfDay(addDays(new Date(), -30)),
-    new Date()
-  )
+  const [lastProof, proofsPerStatusCount, recentProofsPerStatusCount] =
+    await Promise.all([
+      lastProvedProof(),
+      fetchProofsPerStatusCount(startOfYesterday(), new Date()),
+      fetchProofsPerStatusCount(
+        startOfDay(addDays(new Date(), -30)),
+        new Date()
+      ),
+    ])
 
   const provingCount = proofsPerStatusCount.find(
     (proof) => proof.proof_status === "proving"

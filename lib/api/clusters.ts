@@ -1,4 +1,5 @@
 import { and, count, desc, eq, exists, gt, sql } from "drizzle-orm"
+import { unstable_cache as cache } from "next/cache"
 
 import { db } from "@/db"
 import {
@@ -11,7 +12,7 @@ import {
   zkvmVersions,
 } from "@/db/schema"
 
-export const getCluster = async (id: string) => {
+export const getCluster = cache(async (id: string) => {
   const cluster = await db.query.clusters.findFirst({
     where: (clusters, { eq }) => eq(clusters.id, id),
     with: {
@@ -40,9 +41,9 @@ export const getCluster = async (id: string) => {
   })
 
   return cluster
-}
+})
 
-export const getClusters = async () => {
+export const getClusters = cache(async () => {
   const clusters = await db.query.clusters.findMany({
     with: {
       team: true,
@@ -65,72 +66,71 @@ export const getClusters = async () => {
   })
 
   return clusters
-}
+})
 
-export const getActiveClusters = async (filters?: {
-  teamId?: string
-  zkvmId?: number
-}) => {
-  const { teamId, zkvmId } = filters ?? {}
-  const sevenDaysAgo = sql`NOW() - INTERVAL '7 days'`
+export const getActiveClusters = cache(
+  async (filters?: { teamId?: string; zkvmId?: number }) => {
+    const { teamId, zkvmId } = filters ?? {}
+    const sevenDaysAgo = sql`NOW() - INTERVAL '7 days'`
 
-  return db.query.clusters.findMany({
-    where: (clusters, { and }) =>
-      and(
-        exists(
-          db
-            .select()
-            .from(proofs)
-            .innerJoin(
-              clusterVersions,
-              eq(proofs.cluster_version_id, clusterVersions.id)
-            )
-            .innerJoin(
-              zkvmVersions,
-              eq(clusterVersions.zkvm_version_id, zkvmVersions.id)
-            )
-            .innerJoin(zkvms, eq(zkvmVersions.zkvm_id, zkvms.id))
-            .where(
-              and(
-                eq(clusterVersions.cluster_id, clusters.id),
-                eq(proofs.proof_status, "proved"),
-                gt(proofs.proved_timestamp, sevenDaysAgo),
-                zkvmId ? eq(zkvms.id, zkvmId) : undefined
+    return db.query.clusters.findMany({
+      where: (clusters, { and }) =>
+        and(
+          exists(
+            db
+              .select()
+              .from(proofs)
+              .innerJoin(
+                clusterVersions,
+                eq(proofs.cluster_version_id, clusterVersions.id)
               )
-            )
+              .innerJoin(
+                zkvmVersions,
+                eq(clusterVersions.zkvm_version_id, zkvmVersions.id)
+              )
+              .innerJoin(zkvms, eq(zkvmVersions.zkvm_id, zkvms.id))
+              .where(
+                and(
+                  eq(clusterVersions.cluster_id, clusters.id),
+                  eq(proofs.proof_status, "proved"),
+                  gt(proofs.proved_timestamp, sevenDaysAgo),
+                  zkvmId ? eq(zkvms.id, zkvmId) : undefined
+                )
+              )
+          ),
+          teamId ? eq(clusters.team_id, teamId) : undefined
         ),
-        teamId ? eq(clusters.team_id, teamId) : undefined
-      ),
-    with: {
-      team: true,
-      versions: {
-        orderBy: desc(clusterVersions.created_at),
-        with: {
-          zkvm_version: {
-            with: {
-              zkvm: true,
+      with: {
+        team: true,
+        versions: {
+          orderBy: desc(clusterVersions.created_at),
+          with: {
+            zkvm_version: {
+              with: {
+                zkvm: true,
+              },
             },
-          },
-          cluster_machines: {
-            with: {
-              machine: true,
+            cluster_machines: {
+              with: {
+                machine: true,
+              },
             },
           },
         },
       },
-    },
-  })
-}
+    })
+  }
+)
 
-export const getClustersByTeamId = async (teamId: string) => {
+export const getClustersByTeamId = cache(async (teamId: string) => {
   const clusters = await db.query.clusters.findMany({
     where: (clusters, { eq }) => eq(clusters.team_id, teamId),
   })
 
   return clusters
-}
+})
 
-export const getActiveClusterCountByZkvmId = async () => {
+export const getActiveClusterCountByZkvmId = cache(async () => {
   const sevenDaysAgo = sql`NOW() - INTERVAL '7 days'`
 
   const result = await db
@@ -162,9 +162,9 @@ export const getActiveClusterCountByZkvmId = async () => {
     .groupBy(zkvms.id)
 
   return result
-}
+})
 
-export const getActiveMachineCount = async () => {
+export const getActiveMachineCount = cache(async () => {
   const sevenDaysAgo = sql`NOW() - INTERVAL '7 days'`
 
   const [machineCount] = await db
@@ -190,9 +190,9 @@ export const getActiveMachineCount = async () => {
     )
 
   return machineCount.count
-}
+})
 
-export const getClustersBenchmarks = async () => {
+export const getClustersBenchmarks = cache(async () => {
   const clusters = await db.query.clusters.findMany({
     with: {
       benchmarks: true,
@@ -217,4 +217,4 @@ export const getClustersBenchmarks = async () => {
   })
 
   return clusters
-}
+})

@@ -10,10 +10,13 @@ import { getActiveClusters, getActiveMachineCount } from "@/lib/api/clusters"
 import { getClusterSummary, getTeamsSummary } from "@/lib/api/stats"
 
 const ProverTeamsSection = async () => {
-  const teamsSummary = await getTeamsSummary()
-  const clusterSummary = await getClusterSummary()
-  const machineCount = await getActiveMachineCount()
-  const activeClusters = await getActiveClusters()
+  const [teamsSummary, clusterSummary, machineCount, activeClusters] =
+    await Promise.all([
+      getTeamsSummary(),
+      getClusterSummary(),
+      getActiveMachineCount(),
+      getActiveClusters(),
+    ])
 
   const proversSummary: SummaryItem[] = [
     {

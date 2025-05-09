@@ -10,8 +10,10 @@ import { getMetadata } from "@/lib/metadata"
 export const metadata: Metadata = getMetadata()
 
 export default async function ClustersPage() {
-  const clusterSummary = await getClusterSummary()
-  const activeClusters = await getActiveClusters()
+  const [clusterSummary, activeClusters] = await Promise.all([
+    getClusterSummary(),
+    getActiveClusters(),
+  ])
 
   const clusters = activeClusters.map((cluster) => {
     const stats = clusterSummary.find(

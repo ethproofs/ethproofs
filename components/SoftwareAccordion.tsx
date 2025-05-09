@@ -106,8 +106,10 @@ const SoftwareAccordionItem = ({
 }
 
 const SoftwareAccordion = async () => {
-  const zkvms = await getZkvmsWithUsage()
-  const metricsByZkvmId = await getZkvmsMetrics()
+  const [zkvms, metricsByZkvmId] = await Promise.all([
+    getZkvmsWithUsage(),
+    getZkvmsMetrics(),
+  ])
 
   return (
     <Accordion
