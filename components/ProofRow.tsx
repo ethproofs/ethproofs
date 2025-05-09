@@ -71,24 +71,23 @@ const ProofRow = ({ proof, block }: ProofRowProps) => {
   return (
     <div
       className={cn(
-        "grid grid-flow-dense grid-cols-4 grid-rows-3",
-        "sm:grid-rows-2",
-        "md:grid-cols-6-auto md:grid-rows-1"
+        "grid grid-flow-dense grid-cols-4",
+        "xl:grid-cols-6-auto xl:grid-rows-1"
       )}
       key={proof_id}
     >
       <div
         className={cn(
           "relative flex h-full items-center",
-          "col-span-3 col-start-1 row-span-1 row-start-1",
-          "sm:col-span-2 sm:col-start-1 sm:row-span-1 sm:row-start-1",
-          "md:col-span-1 md:col-start-1 md:row-span-1 md:row-start-1"
+          "col-span-3 col-start-1 row-start-1",
+          "sm:col-span-2 sm:col-start-1 sm:row-start-1",
+          "xl:col-span-1 xl:col-start-1 xl:row-start-1"
         )}
       >
         <div className="flex flex-col gap-2">
           {team?.name && (
             <Link
-              href={"/prover/" + team?.id}
+              href={"/teams/" + team?.id}
               className="text-2xl hover:text-primary-light hover:underline"
             >
               {team.name}
@@ -102,23 +101,23 @@ const ProofRow = ({ proof, block }: ProofRowProps) => {
       <div
         className={cn(
           "ms-auto self-center",
-          "col-span-2 col-start-3 row-span-1 row-start-1",
-          "sm:col-span-2 sm:col-start-3 sm:row-span-1 sm:row-start-1",
-          "md:col-span-1 md:col-start-6 md:row-span-1 md:row-start-1"
+          "col-span-2 col-start-3 row-start-1",
+          "sm:col-span-2 sm:col-start-3 sm:row-start-1",
+          "xl:col-span-1 xl:col-start-6 xl:row-start-1"
         )}
       >
         <DownloadButton
           proof={proof}
-          className="sm:max-md:w-40 lg:w-40"
-          labelClass="hidden sm:inline-block md:hidden lg:inline-block"
-          containerClass="flex-row-reverse md:flex-col-reverse"
+          className="sm:max-xl:w-40 lg:w-40"
+          labelClass="hidden sm:inline-block"
+          containerClass="flex-row-reverse xl:flex-col-reverse"
         />
       </div>
       <MetricBox
         className={cn(
-          "col-span-2 col-start-1 row-span-1 row-start-2",
-          "sm:col-span-1 sm:col-start-1 sm:row-span-1 sm:row-start-2",
-          "md:col-span-1 md:col-start-2 md:row-span-1 md:row-start-1"
+          "col-span-2 col-start-1 row-start-2",
+          "sm:col-span-1 sm:col-start-1 sm:row-start-2",
+          "xl:col-span-1 xl:col-start-2 xl:row-start-1"
         )}
       >
         <MetricLabel>
@@ -135,9 +134,9 @@ const ProofRow = ({ proof, block }: ProofRowProps) => {
       </MetricBox>
       <MetricBox
         className={cn(
-          "col-span-2 col-start-3 row-span-1 row-start-2",
-          "sm:col-span-1 sm:col-start-2 sm:row-span-1 sm:row-start-2",
-          "md:col-span-1 md:col-start-3 md:row-span-1 md:row-start-1"
+          "col-span-2 col-start-3 row-start-2",
+          "sm:col-span-1 sm:col-start-2 sm:row-start-2",
+          "xl:col-span-1 xl:col-start-3 xl:row-start-1"
         )}
       >
         <MetricLabel>
@@ -154,9 +153,9 @@ const ProofRow = ({ proof, block }: ProofRowProps) => {
       </MetricBox>
       <MetricBox
         className={cn(
-          "col-span-2 col-start-1 row-span-1 row-start-3",
-          "sm:col-span-1 sm:col-start-3 sm:row-span-1 sm:row-start-2",
-          "md:col-span-1 md:col-start-4 md:row-span-1 md:row-start-1"
+          "col-span-2 col-start-1 row-start-3",
+          "sm:col-span-1 sm:col-start-3 sm:row-start-2",
+          "xl:col-span-1 xl:col-start-4 xl:row-start-1"
         )}
       >
         <MetricLabel>
@@ -208,13 +207,13 @@ const ProofRow = ({ proof, block }: ProofRowProps) => {
       </MetricBox>
       <MetricBox
         className={cn(
-          "col-span-2 col-start-3 row-span-1 row-start-3",
-          "sm:col-span-1 sm:col-start-4 sm:row-span-1 sm:row-start-2",
-          "md:col-span-1 md:col-start-5 md:row-span-1 md:row-start-1",
-          "sm:max-md:text-end"
+          "col-span-2 col-start-3 row-start-3",
+          "sm:col-span-1 sm:col-start-4 sm:row-start-2",
+          "xl:col-span-1 xl:col-start-5 xl:row-start-1",
+          "sm:max-xl:text-end"
         )}
       >
-        <MetricLabel className="sm:max-md:justify-end">
+        <MetricLabel className="sm:max-xl:justify-end">
           <MetricInfo label={<metrics.costPerProof.Label />}>
             <TooltipContentHeader>
               <metrics.costPerProof.Label />
