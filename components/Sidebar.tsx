@@ -175,5 +175,4 @@ const AppSidebar = () => (
 )
 
 AppSidebar.displayName = "AppSidebar"
-
 export default AppSidebar
