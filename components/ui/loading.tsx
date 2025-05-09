@@ -13,8 +13,11 @@ const Loading = ({ className, children }: LoadingProps) => (
       "[&>svg]:animate-write-on-off text-[250px] text-primary opacity-25",
       className
     )}
+    role="status"
+    aria-live="polite"
   >
     {children || <TrendUpChart strokeLinecap="round" />}
+    <span className="sr-only">Loading...</span>
   </div>
 )
 
