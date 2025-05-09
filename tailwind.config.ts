@@ -98,11 +98,22 @@ const config = {
             animationTiming: "ease",
           },
         },
+        "write-on-off": {
+          "0%": {
+            strokeDasharray: "100% 100%",
+            strokeDashoffset: "-100%",
+          },
+          "100%": {
+            strokeDasharray: "100% 100%",
+            strokeDashoffset: "100%",
+          },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
         "heart-beat": "heart-beat 1s infinite",
+        "write-on-off": "write-on-off 1s ease-in-out infinite",
       },
     },
   },

@@ -34,6 +34,7 @@ import { cn } from "@/lib/utils"
 import { CHART_RANGES } from "@/lib/constants"
 
 import { Button } from "./ui/button"
+import Loading from "./ui/loading"
 
 const chartConfig = {
   avg: {
@@ -134,10 +135,8 @@ const LineChartCard = ({
       </CardHeader>
       <CardContent className="relative">
         {isLoading ? (
-          <div className="aspect-auto h-[250px] w-full">
-            <div className="absolute inset-0 flex h-[calc(250px-60px)] w-full items-center justify-center">
-              <div className="h-10 w-10 animate-spin rounded-full border-b-2 border-t-2 border-primary" />
-            </div>
+          <div className="flex justify-center">
+            <Loading />
           </div>
         ) : (
           <ChartContainer
