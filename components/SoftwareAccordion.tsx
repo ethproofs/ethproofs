@@ -1,6 +1,6 @@
 import { type AccordionItemProps } from "@radix-ui/react-accordion"
 
-import { Vendor, Zkvm, ZkvmMetrics, ZkvmVersion } from "@/lib/types"
+import type { Vendor, Zkvm, ZkvmMetrics, ZkvmVersion } from "@/lib/types"
 
 import {
   Accordion,

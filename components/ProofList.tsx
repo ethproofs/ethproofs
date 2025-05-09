@@ -1,6 +1,6 @@
 import { ComponentProps } from "react"
 
-import { BlockBase } from "@/lib/types"
+import type { BlockBase } from "@/lib/types"
 
 import ProofRow from "@/components/ProofRow"
 

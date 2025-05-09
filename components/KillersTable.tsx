@@ -1,6 +1,6 @@
 import Image from "next/image"
 
-import { Benchmark, ClusterBase, ClusterBenchmark, Team } from "@/lib/types"
+import type { Benchmark, ClusterBase, ClusterBenchmark, Team } from "@/lib/types"
 
 import { cn } from "@/lib/utils"
 

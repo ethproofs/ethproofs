@@ -1,4 +1,4 @@
-import { SummaryItem } from "@/lib/types"
+import type { SummaryItem } from "@/lib/types"
 
 import KPIs from "../KPIs"
 import SoftwareAccordion from "../SoftwareAccordion"
