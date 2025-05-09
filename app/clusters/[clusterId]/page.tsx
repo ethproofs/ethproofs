@@ -5,6 +5,7 @@ import Image from "next/image"
 import { notFound } from "next/navigation"
 import prettyBytes from "pretty-bytes"
 
+import BlockNumber from "@/components/BlockNumber"
 import ClusterMachineSummary from "@/components/ClusterMachineSummary"
 import DownloadButton from "@/components/DownloadButton"
 import NoData from "@/components/NoData"
@@ -250,9 +251,7 @@ export default async function ClusterDetailsPage({
                 className="grid grid-cols-[1fr_repeat(4,_auto)] gap-x-6 border-b border-primary-border p-6"
               >
                 <div className="col-start-1 row-span-2 grid grid-cols-1 grid-rows-subgrid">
-                  <div className="font-mono text-lg text-primary">
-                    {proof.block_number}
-                  </div>
+                  <BlockNumber blockNumber={proof.block_number} />
                   <div className="font-sans text-xs text-body-secondary">
                     {proof.proved_timestamp ? (
                       formatTimeAgo(proof.proved_timestamp)
