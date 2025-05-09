@@ -98,6 +98,16 @@ const config = {
             animationTiming: "ease",
           },
         },
+        "write-on-off": {
+          "0%": {
+            strokeDasharray: "100% 100%",
+            strokeDashoffset: "-100%",
+          },
+          "100%": {
+            strokeDasharray: "100% 100%",
+            strokeDashoffset: "100%",
+          },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",

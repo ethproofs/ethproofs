@@ -1,18 +1,16 @@
 "use client"
 
-import Link from "next/link"
 import { ColumnDef } from "@tanstack/react-table"
 
 import type { Block, Proof, ProofWithCluster } from "@/lib/types"
 
+import BlockNumber from "@/components/BlockNumber"
 import { ColumnHeader } from "@/components/ColumnHeader"
 import { metrics } from "@/components/Metrics"
 import Null from "@/components/Null"
 import ArrowRight from "@/components/svgs/arrow-right.svg"
 import { ButtonLink } from "@/components/ui/button"
 import * as Info from "@/components/ui/info"
-
-import { cn } from "@/lib/utils"
 
 import { BLOCK_GAS_LIMIT } from "@/lib/constants"
 
@@ -67,12 +65,7 @@ export const columns: ColumnDef<Block>[] = [
 
       return (
         <div className="text-center">
-          <Link
-            href={`/blocks/${blockNumber}`}
-            className="text-lg tracking-wide text-primary hover:text-primary-light hover:underline"
-          >
-            <HidePunctuation>{formatNumber(blockNumber)}</HidePunctuation>
-          </Link>
+          <BlockNumber blockNumber={blockNumber} />
           <div className="font-sans text-xs text-body-secondary">
             {formattedTimestamp}
           </div>

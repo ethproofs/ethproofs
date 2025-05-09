@@ -59,17 +59,18 @@ export default async function TeamDetailsPage({
     return notFound()
   }
 
-  const teamSummary = await getTeamSummary(team.id)
+  const [teamSummary, vendor, clusters] = await Promise.all([
+    getTeamSummary(team.id),
+    getVendorByUserId(team.id),
+    getActiveClusters({ teamId: team.id }),
+  ])
 
-  const vendor = await getVendorByUserId(team.id)
   const isVendor = !!vendor
 
   let zkvms: Zkvm[] | undefined
   if (isVendor) {
     zkvms = await getZkvmsByVendorId(vendor.id)
   }
-
-  const clusters = await getActiveClusters({ teamId: team.id })
 
   const singleMachineClusters = clusters.filter(
     (cluster) => !cluster.is_multi_machine

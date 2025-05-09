@@ -171,23 +171,22 @@ const AppNavigationMenu = ({ insideDrawer }: AppNavigationMenuProps) => {
         </SidebarMenu>
       </SidebarContent>
 
-      <SidebarFooter className="mx-auto mb-4 mt-8 flex max-w-prose flex-col items-center space-y-4 px-6">
-        <p className="mb-4 text-center">
+      <SidebarFooter className="mx-auto mb-4 mt-8 flex max-w-prose flex-col items-center space-y-4 px-6 text-sm">
+        <p className="text-center">
           Built with{" "}
           <Heart className="mb-0.5 inline animate-heart-beat text-xl text-primary" />{" "}
-          by the{" "}
+          by the
+          <br />
           <Link
             href="https://ethereum.org"
             hideArrow
-            className="hover:text-primary-light"
+            className="text-sm hover:text-primary-light"
           >
             ethereum.org
           </Link>{" "}
           team
         </p>
-        <p className="text-center text-lg text-primary">
-          Public goods are good
-        </p>
+        <p className="text-center text-primary">Public goods are good</p>
       </SidebarFooter>
     </>
   )

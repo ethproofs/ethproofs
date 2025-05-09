@@ -68,7 +68,7 @@ const SoftwareAccordionItem = ({
           />
         </div>
 
-        <AccordionTrigger className="col-start-5 my-2 h-fit gap-2 rounded-full border-2 border-primary bg-background-highlight p-0.5 pe-2 text-primary [&>svg]:size-6">
+        <AccordionTrigger className="col-start-5 my-4 h-fit gap-2 rounded-full border-2 border-primary bg-background-highlight p-0.5 pe-2 text-primary [&>svg]:size-6">
           <Pizza slices={getSlices(detailItems)} disableEffects />
         </AccordionTrigger>
       </div>
@@ -99,8 +99,10 @@ const SoftwareAccordionItem = ({
 }
 
 const SoftwareAccordion = async () => {
-  const zkvms = await getZkvmsWithUsage()
-  const metricsByZkvmId = await getZkvmsMetrics()
+  const [zkvms, metricsByZkvmId] = await Promise.all([
+    getZkvmsWithUsage(),
+    getZkvmsMetrics(),
+  ])
 
   return (
     <Accordion

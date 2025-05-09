@@ -5,6 +5,7 @@ import Image from "next/image"
 import { notFound } from "next/navigation"
 import prettyBytes from "pretty-bytes"
 
+import BlockNumber from "@/components/BlockNumber"
 import ClusterMachineSummary from "@/components/ClusterMachineSummary"
 import { DisplayTeam } from "@/components/DisplayTeamLink"
 import DownloadButton from "@/components/DownloadButton"
@@ -64,14 +65,15 @@ export default async function ClusterDetailsPage({
     return notFound()
   }
 
+  const [clusterSummary, latestProofs] = await Promise.all([
+    getClusterSummaryById(clusterId),
+    fetchProvedProofsByClusterId(clusterId),
+  ])
+
   const team = cluster.team
-  const zkvm = cluster.versions[0].zkvm_version.zkvm
-
-  const clusterSummary = await getClusterSummaryById(clusterId)
-
-  const clusterMachines = cluster.versions[0].cluster_machines
-
-  const latestProofs = await fetchProvedProofsByClusterId(clusterId)
+  const lastVersion = cluster.versions[0]
+  const zkvm = lastVersion.zkvm_version.zkvm
+  const clusterMachines = lastVersion.cluster_machines
 
   // TODO: Replace with killer-block proofs data
   const killerBlockProofs: undefined[] = []
@@ -244,9 +246,7 @@ export default async function ClusterDetailsPage({
                 className="grid grid-cols-[1fr_repeat(4,_auto)] gap-x-6 border-b border-primary-border p-6"
               >
                 <div className="col-start-1 row-span-2 grid grid-cols-1 grid-rows-subgrid">
-                  <div className="font-mono text-lg text-primary">
-                    {proof.block_number}
-                  </div>
+                  <BlockNumber blockNumber={proof.block_number} />
                   <div className="font-sans text-xs text-body-secondary">
                     {proof.proved_timestamp ? (
                       formatTimeAgo(proof.proved_timestamp)
