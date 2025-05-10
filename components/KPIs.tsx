@@ -23,10 +23,7 @@ export const KPI = ({ item }: { item: SummaryItem }) => (
 )
 
 const KPIs = ({ items }: { items: SummaryItem[] }) => (
-  <div
-    className="mx-auto grid w-full max-w-2xl gap-x-8 gap-y-4"
-    style={{ gridTemplateColumns: `repeat(${items.length}, auto)` }}
-  >
+  <div className="mx-auto flex max-w-2xl flex-wrap justify-around gap-x-8 gap-y-4">
     {items.map((item) => (
       <KPI key={item.key} item={item} />
     ))}

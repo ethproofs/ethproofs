@@ -42,7 +42,7 @@ export default async function ClustersPage() {
         <div>Multi or single machine clusters</div>
       </div>
 
-      <div className="mx-auto mt-20 flex max-w-screen-xl flex-1 flex-col items-center gap-20 px-6 md:px-8 [&>section]:w-full">
+      <div className="mx-auto mt-20 flex max-w-screen-lg flex-1 flex-col items-center gap-20 [&>section]:w-full">
         <section>
           <MachineTabs
             singleContent={

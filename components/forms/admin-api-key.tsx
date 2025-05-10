@@ -2,7 +2,7 @@
 
 import { useFormState } from "react-dom"
 
-import { Team } from "@/lib/types"
+import type { Team } from "@/lib/types"
 
 import CopyButton from "../CopyButton"
 import {

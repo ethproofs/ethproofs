@@ -1,4 +1,4 @@
-import { Stats } from "@/lib/types"
+import type { Stats } from "@/lib/types"
 
 import { metrics } from "@/components/Metrics"
 import Null from "@/components/Null"

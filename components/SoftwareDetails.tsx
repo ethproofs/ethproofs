@@ -10,14 +10,14 @@ import { getSlices } from "@/lib/zkvms"
 
 const DetailItem = ({ item }: { item: SoftwareDetailItem }) => {
   const GROUP_HOVER = [
-    "group-has-[:not([data-index='0']):hover]/software:opacity-[50%] group-has-[[data-index='0']:hover]/software:opacity-[100%] group-has-[[data-index='0']:hover]/software:scale-110 scale-100 transition-all",
-    "group-has-[:not([data-index='1']):hover]/software:opacity-[50%] group-has-[[data-index='1']:hover]/software:opacity-[100%] group-has-[[data-index='1']:hover]/software:scale-110 scale-100 transition-all",
-    "group-has-[:not([data-index='2']):hover]/software:opacity-[50%] group-has-[[data-index='2']:hover]/software:opacity-[100%] group-has-[[data-index='2']:hover]/software:scale-110 scale-100 transition-all",
-    "group-has-[:not([data-index='3']):hover]/software:opacity-[50%] group-has-[[data-index='3']:hover]/software:opacity-[100%] group-has-[[data-index='3']:hover]/software:scale-110 scale-100 transition-all",
-    "group-has-[:not([data-index='4']):hover]/software:opacity-[50%] group-has-[[data-index='4']:hover]/software:opacity-[100%] group-has-[[data-index='4']:hover]/software:scale-110 scale-100 transition-all",
-    "group-has-[:not([data-index='5']):hover]/software:opacity-[50%] group-has-[[data-index='5']:hover]/software:opacity-[100%] group-has-[[data-index='5']:hover]/software:scale-110 scale-100 transition-all",
-    "group-has-[:not([data-index='6']):hover]/software:opacity-[50%] group-has-[[data-index='6']:hover]/software:opacity-[100%] group-has-[[data-index='6']:hover]/software:scale-110 scale-100 transition-all",
-    "group-has-[:not([data-index='7']):hover]/software:opacity-[50%] group-has-[[data-index='7']:hover]/software:opacity-[100%] group-has-[[data-index='7']:hover]/software:scale-110 scale-100 transition-all",
+    "group-has-[:not([data-index='0']):hover]/software:opacity-[50%] group-has-[[data-index='0']:hover]/software:opacity-[100%] group-has-[[data-index='0']:hover]/software:scale-110 group-has-[[data-label='pizza']>[data-index='0']:hover]/software:scale-110 scale-100 transition-all",
+    "group-has-[:not([data-index='1']):hover]/software:opacity-[50%] group-has-[[data-index='1']:hover]/software:opacity-[100%] group-has-[[data-index='1']:hover]/software:scale-110 group-has-[[data-label='pizza']>[data-index='1']:hover]/software:scale-110 scale-100 transition-all",
+    "group-has-[:not([data-index='2']):hover]/software:opacity-[50%] group-has-[[data-index='2']:hover]/software:opacity-[100%] group-has-[[data-index='2']:hover]/software:scale-110 group-has-[[data-label='pizza']>[data-index='2']:hover]/software:scale-110 scale-100 transition-all",
+    "group-has-[:not([data-index='3']):hover]/software:opacity-[50%] group-has-[[data-index='3']:hover]/software:opacity-[100%] group-has-[[data-index='3']:hover]/software:scale-110 group-has-[[data-label='pizza']>[data-index='3']:hover]/software:scale-110 scale-100 transition-all",
+    "group-has-[:not([data-index='4']):hover]/software:opacity-[50%] group-has-[[data-index='4']:hover]/software:opacity-[100%] group-has-[[data-index='4']:hover]/software:scale-110 group-has-[[data-label='pizza']>[data-index='4']:hover]/software:scale-110 scale-100 transition-all",
+    "group-has-[:not([data-index='5']):hover]/software:opacity-[50%] group-has-[[data-index='5']:hover]/software:opacity-[100%] group-has-[[data-index='5']:hover]/software:scale-110 group-has-[[data-label='pizza']>[data-index='5']:hover]/software:scale-110 scale-100 transition-all",
+    "group-has-[:not([data-index='6']):hover]/software:opacity-[50%] group-has-[[data-index='6']:hover]/software:opacity-[100%] group-has-[[data-index='6']:hover]/software:scale-110 group-has-[[data-label='pizza']>[data-index='6']:hover]/software:scale-110 scale-100 transition-all",
+    "group-has-[:not([data-index='7']):hover]/software:opacity-[50%] group-has-[[data-index='7']:hover]/software:opacity-[100%] group-has-[[data-index='7']:hover]/software:scale-110 group-has-[[data-label='pizza']>[data-index='7']:hover]/software:scale-110 scale-100 transition-all",
   ] as const
 
   return (
@@ -55,8 +55,9 @@ type SoftwareDetailsProps = {
 const SoftwareDetails = ({ detailItems, className }: SoftwareDetailsProps) => (
   <div
     className={cn(
-      "group/software grid gap-8 p-8",
-      "grid-cols-[2fr,4fr,1fr,auto,1fr,4fr,2fr]",
+      "group/software grid gap-4 p-4 lg:gap-8 lg:p-8",
+      "lg:grid-cols-[2fr_4fr_1fr_auto_1fr_4fr_2fr]",
+      "grid-cols-[0_4fr_1fr_auto_1fr_4fr_0]",
       className
     )}
     style={{
@@ -72,7 +73,7 @@ const SoftwareDetails = ({ detailItems, className }: SoftwareDetailsProps) => (
     ))}
 
     <div
-      className="flex flex-col items-center text-[10rem]"
+      className="flex flex-col items-center text-[clamp(8rem,16vw,12rem)]"
       style={{ gridArea: "pizza" }}
     >
       <Pizza slices={getSlices(detailItems)} />

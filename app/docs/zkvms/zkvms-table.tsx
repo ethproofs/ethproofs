@@ -1,4 +1,4 @@
-import { Vendor, Zkvm, ZkvmVersion } from "@/lib/types"
+import type { Vendor, Zkvm, ZkvmVersion } from "@/lib/types"
 
 import Link from "@/components/ui/link"
 import {

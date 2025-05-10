@@ -27,7 +27,7 @@ export default async function ZkvmsPage() {
           />
         </section> */}
 
-        <section>
+        <section className="overflow-x-auto">
           <SoftwareAccordion />
         </section>
       </div>

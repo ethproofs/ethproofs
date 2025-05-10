@@ -2,7 +2,7 @@
 
 import { useQuery } from "@tanstack/react-query"
 
-import { ProofsDailyStats, RecentSummary } from "@/lib/types"
+import type { ProofsDailyStats, RecentSummary } from "@/lib/types"
 
 import { CHART_RANGES } from "@/lib/constants"
 

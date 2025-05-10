@@ -79,9 +79,8 @@
 
   .text-shadow {
     text-shadow:
-      0 0 3rem hsla(var(--background-modal)),
-      0 0 2rem hsla(var(--background-modal)),
-      0 0 1rem hsla(var(--background-modal)),
-      0 0 1rem hsla(var(--background-modal));
+      0 0 3rem hsla(var(--background)),
+      0 0 2rem hsla(var(--background)),
+      0 0 1rem hsla(var(--background));
   }
 }
