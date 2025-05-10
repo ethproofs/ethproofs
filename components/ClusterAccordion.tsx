@@ -111,7 +111,7 @@ const ClusterAccordionItem = ({
           <span className="sr-only">Toggle details</span>
         </AccordionTrigger>
       </div>
-      <AccordionContent className="relative col-span-full flex flex-col gap-12 bg-gradient-to-t from-background-active/25 p-6">
+      <AccordionContent className="relative col-span-full flex flex-col gap-12 p-6">
         {hasPhysicalMachinesInCluster ? (
           <div className="flex items-center gap-x-20">
             <ClusterMachineSummary machines={lastVersion.cluster_machines} />

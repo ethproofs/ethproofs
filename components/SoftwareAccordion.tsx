@@ -73,7 +73,7 @@ const SoftwareAccordionItem = ({
           <Pizza slices={getSlices(detailItems)} disableEffects />
         </AccordionTrigger>
       </div>
-      <AccordionContent className="col-span-full border-b bg-gradient-to-t from-background-active p-0">
+      <AccordionContent className="col-span-full border-b p-0">
         <SoftwareDetails detailItems={detailItems} />
 
         <div className="grid grid-cols-3 gap-16 p-8 pt-0">
