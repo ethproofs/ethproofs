@@ -37,7 +37,7 @@ const SoftwareAccordionItem = ({
 
   return (
     <AccordionItem value={value} className="col-span-5 grid grid-cols-subgrid">
-      <div className="col-span-5 grid grid-cols-subgrid items-center gap-12 text-nowrap border-b px-6 hover:bg-primary/5 dark:hover:bg-primary/10">
+      <div className="col-span-5 grid grid-cols-subgrid items-center gap-12 text-nowrap border-b p-px px-6 hover:bg-primary/5 dark:hover:bg-primary/10">
         <div className="col-start-1 flex items-center gap-3">
           <Link
             href={`/zkvms/${zkvm.slug}`}
@@ -69,7 +69,7 @@ const SoftwareAccordionItem = ({
           />
         </div>
 
-        <AccordionTrigger className="text-4xl col-start-5 my-4 h-fit gap-2 rounded-full border-2 border-primary bg-background-highlight p-0.5 pe-2 text-primary [&>svg]:size-6">
+        <AccordionTrigger className="col-start-5 my-4 h-fit gap-2 rounded-full border-2 border-primary bg-background-highlight p-0.5 pe-2 text-4xl text-primary [&>svg]:size-6">
           <Pizza slices={getSlices(detailItems)} disableEffects />
         </AccordionTrigger>
       </div>
