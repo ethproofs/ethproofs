@@ -17,6 +17,10 @@ export const LampEffect = ({ className }: LampEffectProps) => {
         "pointer-events-none absolute top-0 h-[40rem] w-full translate-y-[-50%] scale-x-125 bg-transparent dark:mix-blend-plus-lighter md:h-[calc((100vw_-_var(--sidebar-width))_*_0.4)]",
         className
       )}
+      style={{
+        // Fade bottom edge with mask to avoid hard cut-off
+        mask: "linear-gradient(to top, transparent 0%, white 2rem)",
+      }}
     >
       {/* Primary light source - stronger intensity */}
       <div
