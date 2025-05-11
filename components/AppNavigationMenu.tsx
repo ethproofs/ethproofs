@@ -65,7 +65,7 @@ const AppNavigationMenu = ({ insideDrawer }: AppNavigationMenuProps) => {
       <SidebarContent style={verticalFade}>
         <SidebarMenu
           style={verticalFade}
-          className="gap-y-2 bg-background-accent px-6 py-12"
+          className="gap-y-2 bg-background-accent/35 px-6 py-12"
         >
           <SidebarGroup>
             <SidebarGroupLabel>Home</SidebarGroupLabel>
