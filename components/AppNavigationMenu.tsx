@@ -44,6 +44,9 @@ const AppNavigationMenu = ({ insideDrawer }: AppNavigationMenuProps) => {
       <SidebarMenuItem {...props} />
     )
 
+  const verticalFade = {
+    mask: `linear-gradient(to bottom, transparent 0rem, white 2.5rem, white calc(100% - 2.5rem), transparent 100%)`,
+  }
   return (
     <>
       <SidebarHeader className="mb-4 mt-11 space-y-10 px-6">
@@ -59,10 +62,13 @@ const AppNavigationMenu = ({ insideDrawer }: AppNavigationMenuProps) => {
         <SearchInput className="max-md:hidden" placeholder="Search by block" />
       </SidebarHeader>
 
-      <SidebarContent>
-        <SidebarMenu className="gap-y-2 px-6 py-1">
-          <SidebarGroup className="">
-            <SidebarGroupLabel className="">Home</SidebarGroupLabel>
+      <SidebarContent style={verticalFade}>
+        <SidebarMenu
+          style={verticalFade}
+          className="gap-y-2 bg-background-accent px-6 py-12"
+        >
+          <SidebarGroup>
+            <SidebarGroupLabel>Home</SidebarGroupLabel>
             <MenuItem>
               <Link
                 href="/"
