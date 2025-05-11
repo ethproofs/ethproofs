@@ -71,7 +71,7 @@ const ProofRow = ({ proof, block }: ProofRowProps) => {
   return (
     <div
       className={cn(
-        "grid grid-flow-dense grid-cols-4 grid-rows-3",
+        "grid grid-flow-dense grid-cols-4 grid-rows-3 max-md:py-4",
         "sm:grid-rows-2",
         "md:grid-cols-6-auto md:grid-rows-1"
       )}
