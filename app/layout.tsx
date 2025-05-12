@@ -64,21 +64,19 @@ export default function RootLayout({
             <AppNavigationMenu />
           </Sidebar>
 
-          <div
-            className="w-full md:w-[calc(100vw_-_var(--sidebar-width))]"
-            style={{ overflow: "hidden auto" }}
-          >
-            <LampEffect />
-
+          <div className="relative w-full md:w-[calc(100vw_-_var(--sidebar-width))]">
             <div
               className={cn(
-                "bg-[url('/images/blocks-and-hashes.svg')] bg-no-repeat",
-                "pointer-events-none absolute h-[50vh] w-screen",
-                "before:absolute before:inset-0 before:-z-10 before:bg-gradient-to-b before:from-background-highlight/25 before:content-['']",
-                "-z-[0] opacity-75 hue-rotate-180 invert dark:opacity-100 dark:hue-rotate-0 dark:invert-0 max-md:hidden"
+                "max-md:hidden",
+                "bg-[url('/images/blocks-and-hashes.svg')] bg-no-repeat dark:bg-[url('/images/blocks-and-hashes.svg')]",
+                "opacity-75 hue-rotate-180 invert dark:opacity-100 dark:hue-rotate-0 dark:invert-0",
+                "before:absolute before:inset-0 before:-z-10 before:bg-gradient-to-b before:content-[''] before:dark:from-background-accent/10",
+                "pointer-events-none absolute -z-[0] h-1/3 w-full"
               )}
-              style={{ backgroundPosition: "100% -6rem" }}
+              style={{ backgroundPosition: "calc(50% + 20rem) -6rem" }}
             />
+
+            <LampEffect />
 
             <header
               id="mobile-header"
