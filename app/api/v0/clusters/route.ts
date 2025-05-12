@@ -103,6 +103,18 @@ export const POST = withAuth(async ({ request, user }) => {
     return new Response("Invalid cluster configuration", { status: 400 })
   }
 
+  // validate zkvm_version_id
+  const zkvmVersion = await db.query.zkvmVersions.findFirst({
+    columns: {
+      id: true,
+    },
+    where: (zkvmVersions, { eq }) => eq(zkvmVersions.id, zkvm_version_id),
+  })
+
+  if (!zkvmVersion) {
+    return new Response("Invalid zkvm version", { status: 400 })
+  }
+
   const isMultiMachine =
     configuration.length > 1 ||
     configuration.some((config) => config.machine_count > 1)

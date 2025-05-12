@@ -55,6 +55,18 @@ export const POST = withAuth(async ({ request, user }) => {
     return new Response("Cloud instance not found", { status: 400 })
   }
 
+  // validate zkvm_version_id
+  const zkvmVersion = await db.query.zkvmVersions.findFirst({
+    columns: {
+      id: true,
+    },
+    where: (zkvmVersions, { eq }) => eq(zkvmVersions.id, zkvm_version_id),
+  })
+
+  if (!zkvmVersion) {
+    return new Response("Invalid zkvm version", { status: 400 })
+  }
+
   let clusterIndex: number | null = null
   await db.transaction(async (tx) => {
     // create cluster for single machine
