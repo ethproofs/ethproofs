@@ -24,9 +24,9 @@ const ZkvmsSection = async () => {
   ]
 
   return (
-    <Card>
-      <CardHeader className="space-y-3">
-        <CardTitle className="text-3xl font-normal tracking-[1px]">
+    <Card className="!p-0 !pb-6 md:!pb-8">
+      <CardHeader className="flex items-center justify-between px-6 pb-0 sm:flex-row md:px-12 max-sm:[&>div]:w-full">
+        <CardTitle className="text-3xl font-normal tracking-[1px] max-sm:pt-8">
           zkVMs
         </CardTitle>
 
@@ -34,7 +34,8 @@ const ZkvmsSection = async () => {
           <KPIs items={zkvmsSummary} />
         </div>
       </CardHeader>
-      <div className="-mx-6 overflow-x-auto md:-mx-12">
+
+      <div className="overflow-x-auto">
         <SoftwareAccordion />
       </div>
 
