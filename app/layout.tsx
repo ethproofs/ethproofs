@@ -70,13 +70,12 @@ export default function RootLayout({
             <div
               className={cn(
                 "bg-[url('/images/blocks-and-hashes.svg')] bg-no-repeat",
-                "pointer-events-none absolute h-80 w-screen",
+                "pointer-events-none absolute h-[50vh] w-screen",
+                "before:absolute before:inset-0 before:-z-10 before:bg-gradient-to-b before:from-background-highlight/25 before:content-['']",
                 "-z-[0] opacity-75 hue-rotate-180 invert dark:opacity-100 dark:hue-rotate-0 dark:invert-0 max-md:hidden"
               )}
               style={{ backgroundPosition: "100% -6rem" }}
             />
-
-            <div className="pointer-events-none absolute top-0 -z-10 h-[50vh] w-full bg-gradient-to-b from-background-highlight/25" />
 
             <header
               id="mobile-header"
