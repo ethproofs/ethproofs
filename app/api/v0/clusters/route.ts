@@ -7,6 +7,7 @@ import {
   clusterVersions,
   machines,
 } from "@/db/schema"
+import { getZkvmVersion } from "@/lib/api/zkvm-versions"
 import { withAuth } from "@/lib/middleware/with-auth"
 import { createClusterSchema } from "@/lib/zod/schemas/cluster"
 
@@ -101,6 +102,13 @@ export const POST = withAuth(async ({ request, user }) => {
 
   if (cloudInstanceIds.length !== configuration.length) {
     return new Response("Invalid cluster configuration", { status: 400 })
+  }
+
+  // validate zkvm_version_id
+  const zkvmVersion = await getZkvmVersion(zkvm_version_id)
+
+  if (!zkvmVersion) {
+    return new Response("Invalid zkvm version", { status: 400 })
   }
 
   const isMultiMachine =
