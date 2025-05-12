@@ -32,7 +32,7 @@ export default async function Index() {
           </Suspense>
         </section>
 
-        <section id="provers">
+        <section id="clusters">
           <Suspense fallback={null}>
             <ClustersSection />
           </Suspense>
