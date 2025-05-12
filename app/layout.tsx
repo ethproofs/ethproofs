@@ -102,7 +102,7 @@ export default function RootLayout({
               </Drawer>
             </header>
 
-            <main className="min-h-[50vh]">{children}</main>
+            <main className="isolate min-h-[50vh]">{children}</main>
           </div>
         </Providers>
       </body>
