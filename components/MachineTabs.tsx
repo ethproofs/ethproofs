@@ -7,7 +7,7 @@ type MachineTabsProps = {
 
 const MachineTabs = ({ multiContent, singleContent }: MachineTabsProps) => {
   return (
-    <Tabs defaultValue="single" className="w-full">
+    <Tabs defaultValue="single" className="w-full p-px">
       <TabsList className="w-full">
         <TabsTrigger className="w-full" value="multi">
           Multi-machine

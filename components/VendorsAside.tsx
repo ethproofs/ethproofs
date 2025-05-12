@@ -1,6 +1,6 @@
 import Image from "next/image"
 
-import { Team, Zkvm } from "@/lib/types"
+import type { Team, Zkvm } from "@/lib/types"
 
 import Link from "@/components/ui/link"
 

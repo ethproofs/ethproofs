@@ -6,7 +6,7 @@ import CopyButton from "@/components/CopyButton"
 import DownloadAllButton from "@/components/DownloadAllButton"
 import MachineTabs from "@/components/MachineTabs"
 import ProofList from "@/components/ProofList"
-import ProofStatus from "@/components/ProofStatus"
+import ProofStatus, { ProofStatusInfo } from "@/components/ProofStatus"
 import { HidePunctuation } from "@/components/StylePunctuation"
 import BookOpen from "@/components/svgs/book-open.svg"
 import Clock from "@/components/svgs/clock.svg"
@@ -121,10 +121,10 @@ export default async function BlockDetailsPage({
   const multiMachineBlockFeeMetrics = getBlockFeeMetrics(multiMachineStats)
 
   return (
-    <div className="mx-auto -mt-40 max-w-screen-xl space-y-20 px-6 md:px-8 [&>section]:w-full">
-      <HeroTitle className="mx-auto max-w-[18rem] items-center gap-4">
+    <div className="mx-auto -mt-24 max-w-screen-xl space-y-20 px-6 md:-mt-32 md:px-8 [&>section]:w-full">
+      <HeroTitle className="mx-auto w-fit items-center gap-4">
         <Box strokeWidth="1" className="size-[4.5rem] shrink-0 text-primary" />
-        <div className="truncate">
+        <div className="max-w-[14rem]">
           <h1 className="font-mono">
             <p className="font-sans text-sm font-normal text-body-secondary">
               Block Height
@@ -133,7 +133,7 @@ export default async function BlockDetailsPage({
               <HidePunctuation>{formatNumber(block_number)}</HidePunctuation>
             </p>
           </h1>
-          <div className="flex gap-2">
+          <div className="flex gap-2 truncate">
             <div className="truncate font-sans text-sm font-normal text-body-secondary">
               {hash}
             </div>
@@ -172,113 +172,131 @@ export default async function BlockDetailsPage({
         </HeroItem>
       </section>
 
-      <section className="flex flex-row gap-8">
+      <section className="flex flex-col gap-8 xl:flex-row">
         <Card className="flex-1">
-          <CardHeader className="flex flex-row justify-between space-y-0">
-            <CardTitle>
-              <div className="flex items-center gap-2">
-                <Timer /> Proof availability
-              </div>
+          <CardHeader className="flex h-16 flex-row justify-between space-y-0">
+            <CardTitle className="flex items-center gap-2 font-mono text-lg font-normal [&>svg]:shrink-0">
+              <Timer /> Proof availability
             </CardTitle>
 
-            <div>
-              <MetricBox>
-                <MetricLabel>
-                  <MetricInfo label="Status of proofs">
-                    TODO: Add proof status info
-                  </MetricInfo>
-                </MetricLabel>
-                <MetricValue className="font-normal">
-                  <ProofStatus statusCount={proofsPerStatusCount} />
-                </MetricValue>
-              </MetricBox>
-            </div>
+            <MetricBox className="py-0">
+              <MetricLabel>
+                <MetricInfo label="Status of proofs">
+                  <ProofStatusInfo title="Status of proofs" />
+                </MetricInfo>
+              </MetricLabel>
+              <MetricValue className="font-normal">
+                <ProofStatus statusCount={proofsPerStatusCount} />
+              </MetricValue>
+            </MetricBox>
           </CardHeader>
 
-          <div className="grid grid-cols-2 gap-x-8 sm:grid-cols-[repeat(5,auto)] sm:grid-rows-[auto,auto] md:flex md:flex-wrap">
-            {multiMachineMetrics.map(({ key, label, description, value }) => (
-              <MetricBox
-                key={"multi-" + key}
-                className="row-span-2 grid grid-rows-subgrid"
-              >
-                <MetricLabel className="flex items-stretch lowercase">
-                  <MetricInfo
-                    label={<span className="h-full lowercase">{label}</span>}
-                  >
-                    {description}
-                  </MetricInfo>
-                </MetricLabel>
-                <MetricValue className="font-normal">{value}</MetricValue>
-              </MetricBox>
-            ))}
+          <div>
+            <div className="text-center font-mono text-sm text-primary sm:text-start">
+              multi-machine performance
+            </div>
+            <div className="grid grid-cols-1 place-items-center gap-x-8 text-center sm:grid-cols-2 sm:place-items-start sm:text-start lg:grid-cols-4 xl:grid-cols-2">
+              {multiMachineMetrics.map(({ key, label, description, value }) => (
+                <MetricBox
+                  key={"multi-" + key}
+                  className="row-span-2 grid grid-rows-subgrid"
+                >
+                  <MetricLabel className="flex items-stretch lowercase">
+                    <MetricInfo
+                      label={<span className="h-full lowercase">{label}</span>}
+                    >
+                      {description}
+                    </MetricInfo>
+                  </MetricLabel>
+                  <MetricValue className="font-normal">{value}</MetricValue>
+                </MetricBox>
+              ))}
+            </div>
           </div>
 
-          <div className="grid grid-cols-2 gap-x-8 sm:grid-cols-[repeat(5,auto)] sm:grid-rows-[auto,auto] md:flex md:flex-wrap">
-            {singleMachineMetrics.map(({ key, label, description, value }) => (
-              <MetricBox
-                key={"single-" + key}
-                className="row-span-2 grid grid-rows-subgrid"
-              >
-                <MetricLabel className="flex items-stretch lowercase">
-                  <MetricInfo
-                    label={<span className="h-full lowercase">{label}</span>}
+          <div>
+            <div className="text-center font-mono text-sm text-primary sm:text-start">
+              single machine performance
+            </div>
+            <div className="grid grid-cols-1 place-items-center gap-x-8 text-center sm:grid-cols-2 sm:place-items-start sm:text-start lg:grid-cols-4 xl:grid-cols-2">
+              {singleMachineMetrics.map(
+                ({ key, label, description, value }) => (
+                  <MetricBox
+                    key={"single-" + key}
+                    className="row-span-2 grid grid-rows-subgrid"
                   >
-                    {description}
-                  </MetricInfo>
-                </MetricLabel>
-                <MetricValue className="font-normal">{value}</MetricValue>
-              </MetricBox>
-            ))}
+                    <MetricLabel className="flex items-stretch lowercase">
+                      <MetricInfo
+                        label={
+                          <span className="h-full lowercase">{label}</span>
+                        }
+                      >
+                        {description}
+                      </MetricInfo>
+                    </MetricLabel>
+                    <MetricValue className="font-normal">{value}</MetricValue>
+                  </MetricBox>
+                )
+              )}
+            </div>
           </div>
         </Card>
 
         <Card className="flex-1">
-          <CardHeader>
-            <CardTitle>
-              <div className="flex items-center gap-2">
-                <DollarSign /> Proof costs
-              </div>
+          <CardHeader className="flex h-16 flex-row items-center">
+            <CardTitle className="flex items-center gap-2 font-mono text-lg font-normal [&>svg]:shrink-0">
+              <DollarSign /> Proof costs
             </CardTitle>
           </CardHeader>
 
-          <div className="grid grid-cols-2 gap-x-8 sm:flex sm:flex-wrap">
-            {multiMachineBlockFeeMetrics.map(
-              ({ key, label, description, value }) => (
-                <MetricBox
-                  key={key}
-                  className="row-span-2 grid grid-rows-subgrid"
-                >
-                  <MetricLabel>
-                    <MetricInfo
-                      label={<span className="lowercase">{label}</span>}
-                    >
-                      {description}
-                    </MetricInfo>
-                  </MetricLabel>
-                  <MetricValue className="font-normal">{value}</MetricValue>
-                </MetricBox>
-              )
-            )}
+          <div>
+            <div className="text-center font-mono text-sm text-primary sm:text-start">
+              multi-machine performance
+            </div>
+            <div className="grid grid-cols-1 place-items-center gap-x-8 text-center sm:grid-cols-2 sm:place-items-start sm:text-start lg:grid-cols-4 xl:grid-cols-2">
+              {multiMachineBlockFeeMetrics.map(
+                ({ key, label, description, value }) => (
+                  <MetricBox
+                    key={key}
+                    className="row-span-2 grid grid-rows-subgrid"
+                  >
+                    <MetricLabel>
+                      <MetricInfo
+                        label={<span className="lowercase">{label}</span>}
+                      >
+                        {description}
+                      </MetricInfo>
+                    </MetricLabel>
+                    <MetricValue className="font-normal">{value}</MetricValue>
+                  </MetricBox>
+                )
+              )}
+            </div>
           </div>
 
-          <div className="grid grid-cols-2 gap-x-8 sm:flex sm:flex-wrap">
-            {singleMachineBlockFeeMetrics.map(
-              ({ key, label, description, value }) => (
-                <MetricBox
-                  key={key}
-                  className="row-span-2 grid grid-rows-subgrid"
-                >
-                  <MetricLabel>
-                    <MetricInfo
-                      label={<span className="lowercase">{label}</span>}
-                    >
-                      {description}
-                    </MetricInfo>
-                  </MetricLabel>
-                  <MetricValue className="font-normal">{value}</MetricValue>
-                </MetricBox>
-              )
-            )}
+          <div>
+            <div className="text-center font-mono text-sm text-primary sm:text-start">
+              single machine performance
+            </div>
+            <div className="grid grid-cols-1 place-items-center gap-x-8 text-center sm:grid-cols-2 sm:place-items-start sm:text-start lg:grid-cols-4 xl:grid-cols-2">
+              {singleMachineBlockFeeMetrics.map(
+                ({ key, label, description, value }) => (
+                  <MetricBox
+                    key={key}
+                    className="row-span-2 grid grid-rows-subgrid"
+                  >
+                    <MetricLabel>
+                      <MetricInfo
+                        label={<span className="lowercase">{label}</span>}
+                      >
+                        {description}
+                      </MetricInfo>
+                    </MetricLabel>
+                    <MetricValue className="font-normal">{value}</MetricValue>
+                  </MetricBox>
+                )
+              )}
+            </div>
           </div>
         </Card>
       </section>

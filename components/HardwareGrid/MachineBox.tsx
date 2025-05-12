@@ -1,4 +1,4 @@
-import { MachineBase } from "@/lib/types"
+import type { MachineBase } from "@/lib/types"
 
 import { cn } from "@/lib/utils"
 

@@ -1,9 +1,9 @@
-type NoDataProps = { children: string }
+type NoDataProps = { children?: string }
 
 const NoData = ({ children }: NoDataProps) => (
   <div className="py-8 text-center">
     <div className="font-sans text-sm text-body-secondary">
-      No data for this {children}
+      No data {children}
     </div>
   </div>
 )

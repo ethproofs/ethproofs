@@ -5,7 +5,7 @@ import { useDebounceValue } from "usehooks-ts"
 import { keepPreviousData, useQuery } from "@tanstack/react-query"
 import { PaginationState } from "@tanstack/react-table"
 
-import { ProofWithCluster } from "@/lib/types"
+import type { ProofWithCluster } from "@/lib/types"
 
 import { DEFAULT_PAGE_STATE } from "@/lib/constants"
 
