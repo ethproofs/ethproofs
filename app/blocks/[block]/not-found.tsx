@@ -18,7 +18,7 @@ export default function NotFound() {
   const blockType = getBlockValueType(block)
 
   return (
-    <div className="flex flex-col items-center gap-4 text-center">
+    <div className="mt-40 flex flex-col items-center gap-4 text-center">
       <Box className="size-40 stroke-[0.5px] text-body-secondary" />
       <h1 className="mb-4 font-mono text-3xl text-primary">
         No block found with proofs
