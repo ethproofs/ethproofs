@@ -51,13 +51,14 @@ export async function GET(
       cycle_type,
     } = proofRow.cluster_version.cluster
     const teamName = team?.name ? team.name : cluster_id.split("-")[0]
-    const filename = `block_${block}_${proof_type}_${cycle_type}_${teamName}.txt`
+    const filenameInStorage = `${proofRow.block_number}_${teamName}_${proofRow.proof_id}.txt`
 
-    const blob = await downloadProofBinary(filename)
+    const blob = await downloadProofBinary(filenameInStorage)
     if (blob) {
       const arrayBuffer = await blob.arrayBuffer()
       const binaryBuffer = Buffer.from(arrayBuffer)
 
+      const filename = `block_${block}_${proof_type}_${cycle_type}_${teamName}.txt`
       binaryBuffers.push({ binaryBuffer, filename })
     }
   }
