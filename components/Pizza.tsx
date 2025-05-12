@@ -72,6 +72,7 @@ const Pizza = ({
         "relative box-content flex size-[0.94em] justify-center rounded-full border-[0.05em] border-background-accent bg-background-accent shadow-lg",
         className
       )}
+      data-label="pizza"
       {...props}
     >
       {slices.map(({ level }, idx) => (
@@ -84,6 +85,7 @@ const Pizza = ({
           )}
           key={idx}
           style={{ clipPath }}
+          data-index={idx}
         >
           <PizzaSliceEighth />
         </div>

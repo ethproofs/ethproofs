@@ -1,7 +1,6 @@
 import { useMemo } from "react"
 
-import { ClusterMachineBase } from "@/lib/types"
-import { MachineBase } from "@/lib/types"
+import type { ClusterMachineBase, MachineBase } from "@/lib/types"
 
 import { cn, sumArray } from "@/lib/utils"
 

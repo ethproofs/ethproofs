@@ -7,7 +7,7 @@ import { useDebounceValue, useEventListener } from "usehooks-ts"
 import { isHash } from "viem"
 import { useQuery } from "@tanstack/react-query"
 
-import { BlockBase } from "@/lib/types"
+import type { BlockBase } from "@/lib/types"
 
 import Magnifier from "@/components/svgs/magnifier.svg"
 import { Input } from "@/components/ui/input"

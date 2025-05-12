@@ -1,4 +1,4 @@
-import { SummaryItem } from "@/lib/types"
+import type { SummaryItem } from "@/lib/types"
 
 import KPIs from "../KPIs"
 import SoftwareAccordion from "../SoftwareAccordion"
@@ -34,8 +34,9 @@ const ZkvmsSection = async () => {
           <KPIs items={zkvmsSummary} />
         </div>
       </CardHeader>
-
-      <SoftwareAccordion />
+      <div className="-mx-6 overflow-x-auto md:-mx-12">
+        <SoftwareAccordion />
+      </div>
 
       <div className="flex justify-center">
         <ButtonLink variant="outline" href="/zkvms">

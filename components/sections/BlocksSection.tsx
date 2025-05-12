@@ -5,7 +5,7 @@ import {
   startOfYesterday,
 } from "date-fns"
 
-import { SummaryItem } from "@/lib/types"
+import type { SummaryItem } from "@/lib/types"
 
 import KPIs from "../KPIs"
 import MachineTabs from "../MachineTabs"

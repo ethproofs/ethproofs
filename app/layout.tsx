@@ -56,13 +56,13 @@ export default function RootLayout({
           }}
         />
       </head>
-      <body className="pb-80">
+      <body className="overflow-x-hidden pb-80">
         <Providers>
           <Sidebar>
             <AppNavigationMenu />
           </Sidebar>
 
-          <div className="relative flex w-full flex-col gap-16 overflow-x-hidden md:w-[calc(100vw_-_var(--sidebar-width))]">
+          <div className="relative flex w-full flex-col gap-16 md:w-[calc(100vw_-_var(--sidebar-width))]">
             <LampEffect />
 
             <div

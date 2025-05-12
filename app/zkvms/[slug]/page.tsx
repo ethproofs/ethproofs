@@ -4,6 +4,7 @@ import Image from "next/image"
 import { notFound } from "next/navigation"
 
 import ClusterAccordion from "@/components/ClusterAccordion"
+import { DisplayTeamLink } from "@/components/DisplayTeamLink"
 import SoftwareDetails from "@/components/SoftwareDetails"
 import GitHub from "@/components/svgs/github.svg"
 import Link from "@/components/ui/link"
@@ -78,21 +79,7 @@ export default async function ZkvmDetailsPage({
           <span className="inline-block font-mono italic text-body-secondary">
             by
           </span>
-          <Link
-            href={`/teams/${zkvm.vendor.slug}`}
-            className="inline-block rounded p-1 hover:bg-primary/10"
-          >
-            <Image
-              // TODO: Add fallback image
-              src={zkvm.vendor.logo_url ?? ""}
-              alt={`${zkvm.vendor.name} logo`}
-              height={16}
-              width={16}
-              style={{ height: "1.5rem", width: "auto" }}
-              className="dark:invert"
-            />
-            <span className="sr-only">{zkvm.vendor.name}</span>
-          </Link>
+          <DisplayTeamLink team={zkvm.vendor} height={24} />
         </div>
       </div>
 
