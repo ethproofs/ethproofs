@@ -2,6 +2,7 @@ import Link from "next/link"
 import Script from "next/script"
 
 import AppNavigationMenu from "@/components/AppNavigationMenu"
+import HeaderScrollEffects from "@/components/header/HeaderScrollEffects"
 import LampEffect from "@/components/LampEffect"
 import EthProofsLogo from "@/components/svgs/eth-proofs-logo.svg"
 import Hamburger from "@/components/svgs/hamburger.svg"
@@ -56,55 +57,55 @@ export default function RootLayout({
           }}
         />
       </head>
-      <body className="overflow-x-hidden pb-80">
+
+      <body className="pb-80">
         <Providers>
           <Sidebar>
             <AppNavigationMenu />
           </Sidebar>
 
-          <div className="relative flex w-full flex-col gap-16 md:w-[calc(100vw_-_var(--sidebar-width))]">
+          <div
+            className="w-full md:w-[calc(100vw_-_var(--sidebar-width))]"
+            style={{ overflow: "hidden auto" }}
+          >
             <LampEffect />
 
             <div
               className={cn(
                 "bg-[url('/images/blocks-and-hashes.svg')] bg-no-repeat",
-                "pointer-events-none absolute h-80 w-screen",
-                "opacity-75 hue-rotate-180 invert dark:opacity-100 dark:hue-rotate-0 dark:invert-0 max-md:hidden"
+                "pointer-events-none absolute h-[50vh] w-screen",
+                "before:absolute before:inset-0 before:-z-10 before:bg-gradient-to-b before:from-background-highlight/25 before:content-['']",
+                "-z-[0] opacity-75 hue-rotate-180 invert dark:opacity-100 dark:hue-rotate-0 dark:invert-0 max-md:hidden"
               )}
               style={{ backgroundPosition: "100% -6rem" }}
             />
 
-            <div className="pointer-events-none absolute top-0 -z-10 h-[50vh] w-full bg-gradient-to-b from-background to-background/0" />
+            <header
+              id="mobile-header"
+              className="sticky top-0 z-10 flex w-full items-center justify-between p-6 md:hidden"
+            >
+              <HeaderScrollEffects />
 
-            <div className="flex h-40 w-full flex-col items-center justify-between gap-4 p-0 md:p-16">
-              <header
-                id="mobile-header"
-                className={cn(
-                  "md:hidden", // Mobile only
-                  "sticky top-0 z-10 flex w-full items-center justify-between p-6"
-                )}
-              >
-                <Link href="/">
-                  <EthProofsLogo className="text-3xl" />
-                </Link>
+              <Link href="/">
+                <EthProofsLogo className="text-3xl" />
+              </Link>
 
-                <Drawer>
-                  <DrawerTrigger asChild>
-                    <Button
-                      variant="outline"
-                      className="ms-auto size-[2rem] border-2 p-2"
-                    >
-                      <Hamburger />
-                    </Button>
-                  </DrawerTrigger>
-                  <DrawerContent>
-                    <AppNavigationMenu insideDrawer />
-                  </DrawerContent>
-                </Drawer>
-              </header>
-            </div>
+              <Drawer>
+                <DrawerTrigger asChild>
+                  <Button
+                    variant="outline"
+                    className="ms-auto size-[2rem] border-2 p-2"
+                  >
+                    <Hamburger />
+                  </Button>
+                </DrawerTrigger>
+                <DrawerContent>
+                  <AppNavigationMenu insideDrawer />
+                </DrawerContent>
+              </Drawer>
+            </header>
 
-            <main className="min-h-[50vh]">{children}</main>
+            <main className="isolate min-h-[50vh]">{children}</main>
           </div>
         </Providers>
       </body>

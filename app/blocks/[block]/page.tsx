@@ -121,7 +121,7 @@ export default async function BlockDetailsPage({
   const multiMachineBlockFeeMetrics = getBlockFeeMetrics(multiMachineStats)
 
   return (
-    <div className="mx-auto -mt-24 max-w-screen-xl space-y-20 px-6 md:-mt-32 md:px-8 [&>section]:w-full">
+    <div className="mx-auto mt-12 max-w-screen-xl space-y-20 px-6 md:mt-24 md:px-8 [&>section]:w-full">
       <HeroTitle className="mx-auto w-fit items-center gap-4">
         <Box strokeWidth="1" className="size-[4.5rem] shrink-0 text-primary" />
         <div className="max-w-[14rem]">

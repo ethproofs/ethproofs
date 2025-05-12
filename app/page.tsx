@@ -16,12 +16,9 @@ export default async function Index() {
 
   return (
     <>
-      <div className="absolute top-0 h-40 w-full space-y-12 px-6 pt-24 text-center font-mono font-semibold md:px-8">
-        <h1 className="text-shadow text-3xl">
-          Building a fully SNARKed{" "}
-          <span className="text-primary">Ethereum</span>
-        </h1>
-      </div>
+      <h1 className="text-shadow my-12 px-6 text-center font-mono text-3xl font-semibold md:my-24 md:px-8">
+        Building a fully SNARKed <span className="text-primary">Ethereum</span>
+      </h1>
 
       <div className="mx-auto flex max-w-screen-xl flex-col items-center gap-20 px-6 md:px-8 [&>section]:w-full">
         <ProofsStats recentSummary={recentSummary} />
