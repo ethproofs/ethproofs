@@ -33,9 +33,9 @@ export default async function BlocksPage() {
 
   return (
     <>
-      <div className="absolute top-0 h-40 w-full space-y-12 px-6 pt-24 text-center font-mono font-semibold">
-        <h1 className="text-shadow text-3xl">blocks</h1>
-      </div>
+      <h1 className="text-shadow my-12 px-6 text-center font-mono text-3xl font-semibold md:my-24 md:px-8">
+        blocks
+      </h1>
       <div className="mx-auto flex max-w-screen-xl flex-1 flex-col items-center gap-20 [&>section]:w-full">
         {/* <section id="chart">
           <LineChartCard

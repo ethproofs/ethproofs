@@ -80,7 +80,7 @@ export default async function TeamDetailsPage({
   )
 
   return (
-    <div className="-mt-40 px-6 md:px-8">
+    <div className="mt-24 px-6 md:px-8">
       <div id="hero-section">
         <h1 className="text-shadow font-serif text-4xl font-semibold">
           {team.logo_url && (

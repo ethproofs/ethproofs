@@ -19,11 +19,9 @@ export default function LearnPage() {
 
   return (
     <>
-      <div className="absolute top-0 h-40 w-full space-y-12 px-6 pt-24 text-center font-mono font-semibold">
-        <h1 className="text-shadow text-3xl">
-          learn <span className="text-primary">&</span> resources
-        </h1>
-      </div>
+      <h1 className="text-shadow my-12 px-6 pt-24 text-center font-mono text-3xl font-semibold md:my-24 md:px-8">
+        learn <span className="text-primary">&</span> resources
+      </h1>
 
       <div className="mx-auto max-w-screen-md space-y-8 px-6 md:px-8">
         <MarkdownProvider>{content}</MarkdownProvider>
