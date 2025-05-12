@@ -22,7 +22,7 @@ export const LampEffect = ({ className }: LampEffectProps) => {
     >
       {/* Primary light source - stronger intensity */}
       <div
-        className="absolute inset-0 scale-x-150"
+        className="absolute inset-0 scale-x-[175%]"
         aria-hidden="true"
         style={{
           backgroundImage: getBgImage(
@@ -33,7 +33,7 @@ export const LampEffect = ({ className }: LampEffectProps) => {
       />
       {/* Secondary light source - provides a more ambient glow with wider spread */}
       <div
-        className="absolute inset-0 scale-x-150"
+        className="absolute inset-0 scale-x-[175%]"
         aria-hidden="true"
         style={{
           backgroundImage: getBgImage(
