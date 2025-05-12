@@ -59,13 +59,16 @@ export const POST = withAuth(async ({ request, user, timestamp }) => {
     try {
       // create block
       console.log("creating block", block_number)
-      await db.insert(blocks).values({
-        block_number,
-        gas_used: Number(blockData.gasUsed),
-        transaction_count: blockData.txsCount,
-        timestamp: new Date(Number(blockData.timestamp) * 1000).toISOString(),
-        hash: blockData.hash,
-      })
+      await db
+        .insert(blocks)
+        .values({
+          block_number,
+          gas_used: Number(blockData.gasUsed),
+          transaction_count: blockData.txsCount,
+          timestamp: new Date(Number(blockData.timestamp) * 1000).toISOString(),
+          hash: blockData.hash,
+        })
+        .onConflictDoNothing()
     } catch (error) {
       console.error("error creating block", error)
       return new Response("Internal server error", { status: 500 })
