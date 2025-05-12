@@ -5,6 +5,7 @@ import { notFound } from "next/navigation"
 import type { Team, Zkvm } from "@/lib/types"
 
 import ClusterTable from "@/components/ClusterTable"
+import { DisplayTeam } from "@/components/DisplayTeamLink"
 import MachineTabs from "@/components/MachineTabs"
 import GitHub from "@/components/svgs/github.svg"
 import Globe from "@/components/svgs/globe.svg"
@@ -82,18 +83,8 @@ export default async function TeamDetailsPage({
   return (
     <div className="mt-24 px-6 md:px-8">
       <div id="hero-section">
-        <h1 className="text-shadow font-serif text-4xl font-semibold">
-          {team.logo_url && (
-            <Image
-              src={team.logo_url}
-              alt={`${team.name} logo`}
-              height={48}
-              width={48}
-              style={{ height: "3rem", width: "auto" }}
-              className="mx-auto dark:invert"
-            />
-          )}
-          <span className={cn(team.logo_url && "sr-only")}>{team.name}</span>
+        <h1 className="text-shadow flex justify-center text-center font-serif text-4xl font-semibold">
+          <DisplayTeam team={team} height={48} />
         </h1>
 
         <HeroBody className="mx-auto mt-0 flex w-fit flex-wrap justify-center gap-x-6 border-t border-primary px-12 py-6">

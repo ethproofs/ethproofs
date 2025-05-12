@@ -6,6 +6,7 @@ import { ButtonLink } from "./ui/button"
 import Link from "./ui/link"
 import { MetricBox, MetricInfo, MetricLabel } from "./ui/metric"
 import { ClusterWithRelations } from "./ClusterAccordion"
+import NoData from "./NoData"
 
 import { formatShortDate } from "@/lib/date"
 
@@ -74,9 +75,13 @@ const ClusterTable = ({ className, clusters, ...props }: ClusterTableProps) => (
     className={cn("grid w-full grid-cols-[1fr_repeat(4,_auto)]", className)}
     {...props}
   >
-    {clusters.map((cluster) => (
-      <ClusterRowItem key={cluster.id} cluster={cluster} />
-    ))}
+    {clusters.length ? (
+      clusters.map((cluster) => (
+        <ClusterRowItem key={cluster.id} cluster={cluster} />
+      ))
+    ) : (
+      <NoData>for this set of machines</NoData>
+    )}
   </div>
 )
 

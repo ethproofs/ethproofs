@@ -58,13 +58,16 @@ export default function RootLayout({
         />
       </head>
 
-      <body className="overflow-x-hidden pb-80">
+      <body className="pb-80">
         <Providers>
           <Sidebar>
             <AppNavigationMenu />
           </Sidebar>
 
-          <div className="flex w-full flex-col md:w-[calc(100vw_-_var(--sidebar-width))]">
+          <div
+            className="w-full md:w-[calc(100vw_-_var(--sidebar-width))]"
+            style={{ overflow: "hidden auto" }}
+          >
             <LampEffect />
 
             <div

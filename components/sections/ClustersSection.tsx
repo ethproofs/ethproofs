@@ -1,4 +1,4 @@
-import { SummaryItem } from "@/lib/types"
+import type { SummaryItem } from "@/lib/types"
 
 import ClusterAccordion from "../ClusterAccordion"
 import KPIs from "../KPIs"
@@ -9,7 +9,7 @@ import { Card, CardHeader, CardTitle } from "../ui/card"
 import { getActiveClusters, getActiveMachineCount } from "@/lib/api/clusters"
 import { getClusterSummary, getTeamsSummary } from "@/lib/api/stats"
 
-const ProverTeamsSection = async () => {
+const ClustersSection = async () => {
   const [teamsSummary, clusterSummary, machineCount, activeClusters] =
     await Promise.all([
       getTeamsSummary(),
@@ -18,7 +18,7 @@ const ProverTeamsSection = async () => {
       getActiveClusters(),
     ])
 
-  const proversSummary: SummaryItem[] = [
+  const clustersSummary: SummaryItem[] = [
     {
       key: "teams",
       label: "teams",
@@ -53,13 +53,13 @@ const ProverTeamsSection = async () => {
 
   return (
     <Card className="!p-0 !pb-6 md:!pb-8">
-      <CardHeader className="space-y-3 p-6 pb-0 md:px-12 md:pt-8">
-        <CardTitle className="text-3xl font-normal tracking-[1px]">
+      <CardHeader className="flex flex-wrap items-center justify-between px-6 pb-0 sm:flex-row md:px-12 max-sm:[&>div]:w-full">
+        <CardTitle className="text-3xl font-normal tracking-[1px] max-sm:pt-8">
           clusters
         </CardTitle>
 
         <div className="py-4">
-          <KPIs items={proversSummary} />
+          <KPIs items={clustersSummary} />
         </div>
       </CardHeader>
 
@@ -69,7 +69,7 @@ const ProverTeamsSection = async () => {
       />
 
       <div className="flex justify-center">
-        <ButtonLink variant="outline" href="/teams">
+        <ButtonLink variant="outline" href="/clusters">
           See all
         </ButtonLink>
       </div>
@@ -77,4 +77,4 @@ const ProverTeamsSection = async () => {
   )
 }
 
-export default ProverTeamsSection
+export default ClustersSection

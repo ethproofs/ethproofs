@@ -13,7 +13,7 @@ import type {
   ZkvmVersion,
 } from "@/lib/types"
 
-import { cn } from "@/lib/utils"
+import { cn, sumArray } from "@/lib/utils"
 
 import { getBoxIndexColor } from "./HardwareGrid/utils"
 import {
@@ -26,10 +26,12 @@ import { ButtonLink } from "./ui/button"
 import Link from "./ui/link"
 import { MetricBox, MetricInfo, MetricLabel } from "./ui/metric"
 import ClusterMachineSummary from "./ClusterMachineSummary"
+import { DisplayTeamLink } from "./DisplayTeamLink"
 import HardwareGrid from "./HardwareGrid"
+import NoData from "./NoData"
 import Null from "./Null"
 
-import { hasPhysicalMachines } from "@/lib/clusters"
+import { hasPhysicalMachines, isMultiMachineCluster } from "@/lib/clusters"
 import { formatShortDate } from "@/lib/date"
 import { formatUsd } from "@/lib/number"
 import { prettyMs } from "@/lib/time"
@@ -67,6 +69,8 @@ const ClusterAccordionItem = ({
     lastVersion.cluster_machines
   )
 
+  const isMultiMachine = isMultiMachineCluster(lastVersion.cluster_machines)
+
   return (
     <AccordionItem
       value={value}
@@ -74,26 +78,7 @@ const ClusterAccordionItem = ({
     >
       <div className="col-span-6 grid grid-cols-subgrid items-center gap-12 px-6 py-4 hover:bg-primary/5 dark:hover:bg-primary/10">
         <div className="col-start-1 flex flex-col gap-1">
-          <Link
-            href={`/teams/${clusterDetails.team.id}`}
-            className="-m-1 w-fit rounded p-1 hover:bg-primary/10"
-          >
-            {clusterDetails.team.logo_url ? (
-              <Image
-                src={clusterDetails.team.logo_url}
-                alt="Proving team logo"
-                height={16}
-                width={16}
-                style={{ height: "1rem", width: "auto" }}
-                className="dark:invert"
-              />
-            ) : (
-              <div className="flex items-center gap-1">
-                <div className="size-4 rounded-full bg-primary-border" />
-                {clusterDetails.team.name}
-              </div>
-            )}
-          </Link>
+          <DisplayTeamLink team={clusterDetails.team} />
           <div>
             <span className="text-sm text-primary">
               <Link
@@ -128,31 +113,33 @@ const ClusterAccordionItem = ({
           <span className="sr-only">Toggle details</span>
         </AccordionTrigger>
       </div>
-      <AccordionContent className="relative col-span-full flex flex-col gap-12 bg-gradient-to-t from-background-active/25 p-6">
+      <AccordionContent className="relative col-span-full flex flex-col gap-12 p-6">
         {hasPhysicalMachinesInCluster ? (
           <div className="flex items-center gap-x-20">
             <ClusterMachineSummary machines={lastVersion.cluster_machines} />
 
-            <div className="flex flex-1 flex-col space-y-4 overflow-x-hidden">
-              <HardwareGrid clusterMachines={lastVersion.cluster_machines} />
-              <div className="flex items-center gap-3 self-end">
-                <span className="me-4">GPUs</span>
-                {Array(6)
-                  .fill(0)
-                  .map((_, i) => (
-                    <Fragment key={i}>
-                      <span className="-me-1">{2 ** i}</span>
-                      <div
-                        key={i}
-                        className={cn(
-                          "size-4 rounded-[4px]",
-                          getBoxIndexColor(i)
-                        )}
-                      />
-                    </Fragment>
-                  ))}
+            {isMultiMachine && (
+              <div className="flex flex-1 flex-col space-y-4 overflow-x-hidden">
+                <HardwareGrid clusterMachines={lastVersion.cluster_machines} />
+                <div className="flex items-center gap-3 self-end">
+                  <span className="me-4">GPUs</span>
+                  {Array(6)
+                    .fill(0)
+                    .map((_, i) => (
+                      <Fragment key={i}>
+                        <span className="-me-1">{2 ** i}</span>
+                        <div
+                          key={i}
+                          className={cn(
+                            "size-4 rounded-[4px]",
+                            getBoxIndexColor(i)
+                          )}
+                        />
+                      </Fragment>
+                    ))}
+                </div>
               </div>
-            </div>
+            )}
           </div>
         ) : (
           <div className="flex min-h-[80px] items-center justify-center italic text-body-secondary">
@@ -216,13 +203,17 @@ const ClusterAccordion = ({ clusters }: ClusterAccordionProps) => (
       </MetricBox>
     </div>
 
-    {clusters.map((cluster, i) => (
-      <ClusterAccordionItem
-        key={i}
-        value={"item-" + i}
-        clusterDetails={cluster}
-      />
-    ))}
+    {clusters.length ? (
+      clusters.map((cluster, i) => (
+        <ClusterAccordionItem
+          key={i}
+          value={"item-" + i}
+          clusterDetails={cluster}
+        />
+      ))
+    ) : (
+      <NoData />
+    )}
   </Accordion>
 )
 

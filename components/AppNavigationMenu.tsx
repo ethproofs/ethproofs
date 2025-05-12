@@ -59,7 +59,11 @@ const AppNavigationMenu = ({ insideDrawer }: AppNavigationMenuProps) => {
             <ThemeSwitch />
           </Suspense>
         </div>
-        <SearchInput className="max-md:hidden" placeholder="Search by block" />
+        <SearchInput
+          className="max-md:hidden"
+          placeholder="Search by block"
+          insideDrawer={insideDrawer}
+        />
       </SidebarHeader>
 
       <SidebarContent style={verticalFade}>

@@ -1,8 +1,17 @@
 import Image from "next/image"
 
-import { Benchmark, ClusterBase, ClusterBenchmark, Team } from "@/lib/types"
+import type {
+  Benchmark,
+  ClusterBase,
+  ClusterBenchmark,
+  Team,
+} from "@/lib/types"
 
 import { cn } from "@/lib/utils"
+
+import Link from "./ui/link"
+import { DisplayTeamLink } from "./DisplayTeamLink"
+import NoData from "./NoData"
 
 import { getBenchmarkColor } from "@/lib/benchmarks"
 import { prettyMs } from "@/lib/time"
@@ -66,22 +75,17 @@ const RowItem = ({
   >
     {/* Proving team logo and cluster name */}
     <div className="space-y-2 text-nowrap">
-      {cluster.team.logo_url ? (
-        <Image
-          src={cluster.team.logo_url}
-          alt={`${cluster.team.name} logo`}
-          className="dark:invert"
-          height={24}
-          width={24}
-          style={{ height: "1.5rem", width: "auto" }}
-        />
-      ) : (
-        <div className="flex items-center gap-1">
-          <div className="size-4 rounded-full bg-primary-border" />
-          {cluster.team.name}
-        </div>
-      )}
-      <div className="text-primary">{cluster.nickname}</div>
+      <DisplayTeamLink
+        team={cluster.team}
+        height={24}
+        className="-m-2 block p-2"
+      />
+      <Link
+        href={`/clusters/${cluster.id}`}
+        className="block font-sans text-primary hover:underline"
+      >
+        {cluster.nickname}
+      </Link>
     </div>
     {/* One column per benchmark */}
     {Array.from({ length: benchmarks.length }).map((_, idx) => {
@@ -130,14 +134,18 @@ const KillersTable = ({
       ))}
     </div>
 
-    {clusters.map((cluster) => (
-      <RowItem
-        key={cluster.id}
-        cluster={cluster}
-        benchmarks={benchmarks}
-        className="col-span-full grid grid-cols-subgrid"
-      />
-    ))}
+    {clusters.length ? (
+      clusters.map((cluster) => (
+        <RowItem
+          key={cluster.id}
+          cluster={cluster}
+          benchmarks={benchmarks}
+          className="col-span-full grid grid-cols-subgrid"
+        />
+      ))
+    ) : (
+      <NoData />
+    )}
   </div>
 )
 
