@@ -57,7 +57,7 @@ const AppNavigationMenu = ({ insideDrawer }: AppNavigationMenuProps) => {
           </Suspense>
         </div>
         <SearchInput
-          className="max-md://hidden"
+          className="max-md:hidden"
           placeholder="Search by block"
           insideDrawer={insideDrawer}
         />
