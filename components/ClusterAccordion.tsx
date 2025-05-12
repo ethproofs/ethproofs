@@ -13,7 +13,7 @@ import type {
   ZkvmVersion,
 } from "@/lib/types"
 
-import { cn } from "@/lib/utils"
+import { cn, sumArray } from "@/lib/utils"
 
 import { getBoxIndexColor } from "./HardwareGrid/utils"
 import {
@@ -31,7 +31,7 @@ import HardwareGrid from "./HardwareGrid"
 import NoData from "./NoData"
 import Null from "./Null"
 
-import { hasPhysicalMachines } from "@/lib/clusters"
+import { hasPhysicalMachines, isMultiMachineCluster } from "@/lib/clusters"
 import { formatShortDate } from "@/lib/date"
 import { formatUsd } from "@/lib/number"
 import { prettyMs } from "@/lib/time"
@@ -68,6 +68,8 @@ const ClusterAccordionItem = ({
   const hasPhysicalMachinesInCluster = hasPhysicalMachines(
     lastVersion.cluster_machines
   )
+
+  const isMultiMachine = isMultiMachineCluster(lastVersion.cluster_machines)
 
   return (
     <AccordionItem
@@ -116,26 +118,28 @@ const ClusterAccordionItem = ({
           <div className="flex items-center gap-x-20">
             <ClusterMachineSummary machines={lastVersion.cluster_machines} />
 
-            <div className="flex flex-1 flex-col space-y-4 overflow-x-hidden">
-              <HardwareGrid clusterMachines={lastVersion.cluster_machines} />
-              <div className="flex items-center gap-3 self-end">
-                <span className="me-4">GPUs</span>
-                {Array(6)
-                  .fill(0)
-                  .map((_, i) => (
-                    <Fragment key={i}>
-                      <span className="-me-1">{2 ** i}</span>
-                      <div
-                        key={i}
-                        className={cn(
-                          "size-4 rounded-[4px]",
-                          getBoxIndexColor(i)
-                        )}
-                      />
-                    </Fragment>
-                  ))}
+            {isMultiMachine && (
+              <div className="flex flex-1 flex-col space-y-4 overflow-x-hidden">
+                <HardwareGrid clusterMachines={lastVersion.cluster_machines} />
+                <div className="flex items-center gap-3 self-end">
+                  <span className="me-4">GPUs</span>
+                  {Array(6)
+                    .fill(0)
+                    .map((_, i) => (
+                      <Fragment key={i}>
+                        <span className="-me-1">{2 ** i}</span>
+                        <div
+                          key={i}
+                          className={cn(
+                            "size-4 rounded-[4px]",
+                            getBoxIndexColor(i)
+                          )}
+                        />
+                      </Fragment>
+                    ))}
+                </div>
               </div>
-            </div>
+            )}
           </div>
         ) : (
           <div className="flex min-h-[80px] items-center justify-center italic text-body-secondary">
