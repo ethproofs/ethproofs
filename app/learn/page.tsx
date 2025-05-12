@@ -19,7 +19,7 @@ export default function LearnPage() {
 
   return (
     <>
-      <h1 className="text-shadow my-12 px-6 pt-24 text-center font-mono text-3xl font-semibold md:my-24 md:px-8">
+      <h1 className="text-shadow my-12 px-6 text-center font-mono text-3xl font-semibold md:my-24 md:px-8">
         learn <span className="text-primary">&</span> resources
       </h1>
 
