@@ -21,10 +21,12 @@ import MachineDetails from "@/components/ui/MachineDetails"
 import { MetricBox, MetricInfo, MetricLabel } from "@/components/ui/metric"
 import { Skeleton } from "@/components/ui/skeleton"
 
+import { cn } from "@/lib/utils"
+
 import { getCluster } from "@/lib/api/clusters"
 import { fetchProvedProofsByClusterId } from "@/lib/api/proofs"
 import { getClusterSummaryById } from "@/lib/api/stats"
-import { hasPhysicalMachines } from "@/lib/clusters"
+import { hasPhysicalMachines, isMultiMachineCluster } from "@/lib/clusters"
 import { formatTimeAgo } from "@/lib/date"
 import { getMetadata } from "@/lib/metadata"
 import { formatUsd } from "@/lib/number"
@@ -77,6 +79,7 @@ export default async function ClusterDetailsPage({
   const lastVersion = cluster.versions[0]
   const zkvm = lastVersion.zkvm_version.zkvm
   const clusterMachines = lastVersion.cluster_machines
+  const isMultiMachine = isMultiMachineCluster(clusterMachines)
 
   // TODO: Replace with killer-block proofs data
   const killerBlockProofs: undefined[] = []
@@ -196,9 +199,16 @@ export default async function ClusterDetailsPage({
 
       {hasPhysicalMachinesInCluster && (
         <section className="flex gap-x-16 gap-y-8 max-sm:flex-col max-sm:items-center">
-          <ClusterMachineSummary machines={clusterMachines} />
+          {isMultiMachine && (
+            <ClusterMachineSummary machines={clusterMachines} />
+          )}
 
-          <div className="flex gap-8 overflow-x-auto overflow-y-visible">
+          <div
+            className={cn(
+              "flex gap-8 overflow-x-auto overflow-y-visible",
+              !isMultiMachine && "mx-auto"
+            )}
+          >
             {clusterMachines
               .sort((a, b) => b.machine_count - a.machine_count)
               .map((clusterMachine) => (
