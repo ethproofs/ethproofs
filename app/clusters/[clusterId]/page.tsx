@@ -1,18 +1,21 @@
 import { differenceInMilliseconds } from "date-fns"
 import { Box, Check, X as RedX } from "lucide-react"
 import type { Metadata } from "next"
-import Image from "next/image"
 import { notFound } from "next/navigation"
 import prettyBytes from "pretty-bytes"
+
+import { SummaryItem } from "@/lib/types"
 
 import BlockNumber from "@/components/BlockNumber"
 import ClusterMachineSummary from "@/components/ClusterMachineSummary"
 import { DisplayTeam } from "@/components/DisplayTeamLink"
 import DownloadButton from "@/components/DownloadButton"
+import KPIs from "@/components/KPIs"
 import NoData from "@/components/NoData"
 import Null from "@/components/Null"
 import CalendarCheck from "@/components/svgs/calendar-check.svg"
 import { Button } from "@/components/ui/button"
+import { Card } from "@/components/ui/card"
 import Link from "@/components/ui/link"
 import MachineDetails from "@/components/ui/MachineDetails"
 import { MetricBox, MetricInfo, MetricLabel } from "@/components/ui/metric"
@@ -80,6 +83,51 @@ export default async function ClusterDetailsPage({
 
   const hasPhysicalMachinesInCluster = hasPhysicalMachines(clusterMachines)
 
+  const BooleanIcon = ({ bool }: { bool: boolean }) =>
+    bool ? (
+      <Check
+        className="text-level-best"
+        strokeLinejoin="miter"
+        strokeLinecap="square"
+      />
+    ) : (
+      <RedX className="text-level-worst" strokeLinecap="square" />
+    )
+
+  const clusterSummaryItems: SummaryItem[] = [
+    {
+      key: "open-source",
+      label: "open source",
+      value: <BooleanIcon bool={cluster.is_open_source} />,
+    },
+    {
+      key: "binary-available",
+      label: "binary available",
+      value: <BooleanIcon bool={(cluster.software_link || "").length > 0} />,
+    },
+    {
+      key: "avg-cost",
+      label: "avg cost",
+      value:
+        clusterSummary.avg_cost_per_proof !== null &&
+        clusterSummary.avg_cost_per_proof > 0 ? (
+          formatUsd(clusterSummary.avg_cost_per_proof)
+        ) : (
+          <Null />
+        ),
+    },
+    {
+      key: "avg-time",
+      label: "avg time",
+      value:
+        Number(clusterSummary.avg_proving_time) > 0 ? (
+          prettyMs(Number(clusterSummary.avg_proving_time))
+        ) : (
+          <Null />
+        ),
+    },
+  ]
+
   return (
     <div className="mx-auto mt-12 max-w-screen-xl space-y-8 px-6 md:mt-24 md:px-8 [&>section]:w-full">
       <div id="hero-section" className="flex flex-col items-center gap-2">
@@ -102,48 +150,10 @@ export default async function ClusterDetailsPage({
         )}
       </div>
 
-      <div className="relative mx-auto flex w-fit flex-wrap justify-evenly gap-x-8 rounded-[1.25rem] bg-background p-6">
-        <div className="absolute -inset-px z-[-2] rounded-[calc(1.25rem_+_1px)] bg-gradient-to-tl from-primary to-primary/10" />
-        <div className="absolute -inset-px z-[-1] rounded-[1.25rem] bg-black/10" />
-        <div className="flex flex-col items-center gap-3 p-4">
-          <div className="font-sans text-sm font-semibold">open source</div>
-          {cluster.is_open_source ? (
-            <Check
-              className="text-level-best"
-              strokeLinejoin="miter"
-              strokeLinecap="square"
-            />
-          ) : (
-            <RedX className="text-level-worst" strokeLinecap="square" />
-          )}
-        </div>
-        <div className="flex flex-col items-center gap-3 p-4">
-          <div className="font-sans text-sm font-semibold">
-            binary available
-          </div>
-          {cluster.software_link ? (
-            <Check
-              className="text-level-best"
-              strokeLinejoin="miter"
-              strokeLinecap="square"
-            />
-          ) : (
-            <RedX className="text-level-worst" strokeLinecap="square" />
-          )}
-        </div>
-        <div className="flex flex-col items-center gap-3 p-4">
-          <div className="font-sans text-sm font-semibold">avg cost</div>
-          <div className="font-mono text-xl font-semibold text-primary">
-            {formatUsd(clusterSummary.avg_cost_per_proof ?? 0)}
-          </div>
-        </div>
-        <div className="flex flex-col items-center gap-3 p-4">
-          <div className="font-sans text-sm font-semibold">avg time</div>
-          <div className="font-mono text-xl font-semibold text-primary">
-            {prettyMs(Number(clusterSummary.avg_proving_time ?? 0))}
-          </div>
-        </div>
-      </div>
+      {/* TODO: Refactor to use Card */}
+      <Card className="mx-auto w-fit">
+        <KPIs items={clusterSummaryItems} layout="flipped" />
+      </Card>
 
       {cluster.software_link && (
         <aside className="flex items-center justify-center gap-2 rounded bg-background-accent px-6 py-4 text-center">
