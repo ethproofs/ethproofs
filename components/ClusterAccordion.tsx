@@ -80,14 +80,14 @@ const ClusterAccordionItem = ({
         <div className="col-start-1 flex flex-col gap-1">
           <Link
             href={`/clusters/${clusterDetails.id}`}
-            className="text-xl text-primary hover:underline"
+            className="text-xl text-primary hover:text-primary-light hover:underline"
           >
             {clusterDetails.nickname}
           </Link>
           <div className="flex items-center gap-2 text-sm">
             <Link
               href={`/zkvms/${lastVersion.zkvm_version.zkvm.slug}`}
-              className="block hover:underline"
+              className="block hover:text-primary-light hover:underline"
             >
               {lastVersion.zkvm_version.zkvm.name}
             </Link>{" "}
