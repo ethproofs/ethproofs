@@ -6,6 +6,7 @@ import {
   customType,
   decimal,
   doublePrecision,
+  index,
   integer,
   numeric,
   pgEnum,
@@ -134,29 +135,33 @@ export const clusters = pgTable(
   ]
 )
 
-export const clusterVersions = pgTable("cluster_versions", {
-  id: bigint({ mode: "number" }).primaryKey().generatedByDefaultAsIdentity(),
-  cluster_id: uuid("cluster_id")
-    .notNull()
-    .references(() => clusters.id, {
-      onDelete: "cascade",
-      onUpdate: "cascade",
-    }),
-  zkvm_version_id: bigint({ mode: "number" })
-    .notNull()
-    .references(() => zkvmVersions.id, {
-      onDelete: "cascade",
-      onUpdate: "cascade",
-    }),
-  version: text().notNull(),
-  description: text(),
-  created_at: timestamp("created_at", {
-    withTimezone: true,
-    mode: "string",
-  })
-    .defaultNow()
-    .notNull(),
-})
+export const clusterVersions = pgTable(
+  "cluster_versions",
+  {
+    id: bigint({ mode: "number" }).primaryKey().generatedByDefaultAsIdentity(),
+    cluster_id: uuid("cluster_id")
+      .notNull()
+      .references(() => clusters.id, {
+        onDelete: "cascade",
+        onUpdate: "cascade",
+      }),
+    zkvm_version_id: bigint({ mode: "number" })
+      .notNull()
+      .references(() => zkvmVersions.id, {
+        onDelete: "cascade",
+        onUpdate: "cascade",
+      }),
+    version: text().notNull(),
+    description: text(),
+    created_at: timestamp("created_at", {
+      withTimezone: true,
+      mode: "string",
+    })
+      .defaultNow()
+      .notNull(),
+  },
+  (table) => [index("cluster_versions_cluster_id_idx").on(table.cluster_id)]
+)
 
 export const clusterMachines = pgTable(
   "cluster_machines",
@@ -182,7 +187,11 @@ export const clusterMachines = pgTable(
       .references(() => cloudInstances.id),
     cloud_instance_count: smallint("cloud_instance_count").notNull(),
   },
-  () => [
+  (table) => [
+    index("cluster_machines_cluster_version_id_idx").on(
+      table.cluster_version_id
+    ),
+    index("cluster_machines_cloud_instance_id_idx").on(table.cloud_instance_id),
     pgPolicy("Enable read access for all users", {
       as: "permissive",
       for: "select",
@@ -526,6 +535,9 @@ export const proofs = pgTable(
       table.block_number,
       table.cluster_version_id
     ),
+    index("proofs_cluster_version_id_idx").on(table.cluster_version_id),
+    index("proofs_proved_timestamp_idx").on(table.proved_timestamp),
+    index("proofs_created_at_idx").on(table.created_at),
     pgPolicy("Enable updates for users with an api key", {
       as: "permissive",
       for: "update",
