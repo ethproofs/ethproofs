@@ -2,10 +2,14 @@
 
 import { useState } from "react"
 import { useDebounceValue } from "usehooks-ts"
-import { keepPreviousData, useQuery } from "@tanstack/react-query"
+import {
+  keepPreviousData,
+  usePrefetchQuery,
+  useQuery,
+} from "@tanstack/react-query"
 import { PaginationState } from "@tanstack/react-table"
 
-import { Block, Team } from "@/lib/types"
+import type { Block, Team } from "@/lib/types"
 
 import { DEFAULT_PAGE_STATE } from "@/lib/constants"
 
@@ -23,25 +27,52 @@ type Props = {
   machineType: MachineType
 }
 
+const getBlocksQueryKey = (
+  pageIndex: number,
+  pageSize: number,
+  machineType: MachineType
+) => ["blocks", machineType, { pageIndex, pageSize }]
+
+const getBlocksQueryFn =
+  (pageIndex: number, pageSize: number, machineType: MachineType) =>
+  async () => {
+    const params = new URLSearchParams()
+    params.set("page_index", pageIndex.toString())
+    params.set("page_size", pageSize.toString())
+    params.set("machine_type", machineType)
+    const response = await fetch(`/api/blocks?${params.toString()}`)
+    return response.json()
+  }
+
 const BlocksTable = ({ className, teams, machineType }: Props) => {
   const [pagination, setPagination] =
     useState<PaginationState>(DEFAULT_PAGE_STATE)
   const [deferredPagination] = useDebounceValue(pagination, 200)
 
+  const { pageIndex, pageSize } = deferredPagination
+
   const blocksQuery = useQuery<{ rows: Block[]; rowCount: number }>({
-    queryKey: ["blocks", machineType, deferredPagination],
-    queryFn: async () => {
-      const params = new URLSearchParams()
-      params.set("page_index", deferredPagination.pageIndex.toString())
-      params.set("page_size", deferredPagination.pageSize.toString())
-      params.set("machine_type", machineType)
-      const response = await fetch(`/api/blocks?${params.toString()}`)
-      return response.json()
-    },
+    queryKey: getBlocksQueryKey(pageIndex, pageSize, machineType),
+    queryFn: getBlocksQueryFn(pageIndex, pageSize, machineType),
     placeholderData: keepPreviousData,
   })
 
   useRealtimeUpdates()
+
+  // Prefetch next page
+  usePrefetchQuery({
+    queryKey: getBlocksQueryKey(pageIndex + 1, pageSize, machineType),
+    queryFn: getBlocksQueryFn(pageIndex + 1, pageSize, machineType),
+  })
+
+  // Prefetch previous page (no-op if on first page)
+  usePrefetchQuery({
+    queryKey: getBlocksQueryKey(pageIndex - 1, pageSize, machineType),
+    queryFn:
+      pageIndex > 0
+        ? getBlocksQueryFn(pageIndex - 1, pageSize, machineType)
+        : async () => Promise.resolve(null),
+  })
 
   const blocks = mergeBlocksWithTeams(blocksQuery.data?.rows ?? [], teams)
 

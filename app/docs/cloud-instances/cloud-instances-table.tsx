@@ -2,7 +2,7 @@
 
 import { useState } from "react"
 
-import { CloudInstance, CloudProvider } from "@/lib/types"
+import type { CloudInstance, CloudProvider } from "@/lib/types"
 
 import {
   Select,

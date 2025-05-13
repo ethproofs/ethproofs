@@ -5,7 +5,9 @@ import Image from "next/image"
 import { notFound } from "next/navigation"
 import prettyBytes from "pretty-bytes"
 
+import BlockNumber from "@/components/BlockNumber"
 import ClusterMachineSummary from "@/components/ClusterMachineSummary"
+import { DisplayTeam } from "@/components/DisplayTeamLink"
 import DownloadButton from "@/components/DownloadButton"
 import NoData from "@/components/NoData"
 import Null from "@/components/Null"
@@ -63,14 +65,15 @@ export default async function ClusterDetailsPage({
     return notFound()
   }
 
+  const [clusterSummary, latestProofs] = await Promise.all([
+    getClusterSummaryById(clusterId),
+    fetchProvedProofsByClusterId(clusterId),
+  ])
+
   const team = cluster.team
-  const zkvm = cluster.versions[0].zkvm_version.zkvm
-
-  const clusterSummary = await getClusterSummaryById(clusterId)
-
-  const clusterMachines = cluster.versions[0].cluster_machines
-
-  const latestProofs = await fetchProvedProofsByClusterId(clusterId)
+  const lastVersion = cluster.versions[0]
+  const zkvm = lastVersion.zkvm_version.zkvm
+  const clusterMachines = lastVersion.cluster_machines
 
   // TODO: Replace with killer-block proofs data
   const killerBlockProofs: undefined[] = []
@@ -78,7 +81,7 @@ export default async function ClusterDetailsPage({
   const hasPhysicalMachinesInCluster = hasPhysicalMachines(clusterMachines)
 
   return (
-    <div className="mx-auto -mt-40 max-w-screen-xl space-y-8 px-6 md:px-8 [&>section]:w-full">
+    <div className="mx-auto mt-12 max-w-screen-xl space-y-8 px-6 md:mt-24 md:px-8 [&>section]:w-full">
       <div id="hero-section" className="flex flex-col items-center gap-2">
         <h1 className="text-shadow font-mono text-4xl font-semibold">
           {cluster.nickname}
@@ -90,19 +93,12 @@ export default async function ClusterDetailsPage({
             : "single machine cluster"}
         </div>
         {team && (
-          <div className="mx-auto mt-4 flex w-full max-w-lg justify-center border-t border-primary p-6">
-            {team.logo_url ? (
-              <Image
-                src={team.logo_url}
-                alt={`${team.name} logo`}
-                width={100}
-                height={100}
-                className="dark:invert"
-              />
-            ) : (
-              <div className="text-xl">{team.name}</div>
-            )}
-          </div>
+          <DisplayTeam
+            team={team}
+            className="mt-4 block border-t border-primary p-6"
+            height={36}
+            hideDot
+          />
         )}
       </div>
 
@@ -250,9 +246,7 @@ export default async function ClusterDetailsPage({
                 className="grid grid-cols-[1fr_repeat(4,_auto)] gap-x-6 border-b border-primary-border p-6"
               >
                 <div className="col-start-1 row-span-2 grid grid-cols-1 grid-rows-subgrid">
-                  <div className="font-mono text-lg text-primary">
-                    {proof.block_number}
-                  </div>
+                  <BlockNumber blockNumber={proof.block_number} />
                   <div className="font-sans text-xs text-body-secondary">
                     {proof.proved_timestamp ? (
                       formatTimeAgo(proof.proved_timestamp)
@@ -312,7 +306,7 @@ export default async function ClusterDetailsPage({
             )
           })
         ) : (
-          <NoData>cluster</NoData>
+          <NoData>for this cluster</NoData>
         )}
       </section>
 
@@ -387,7 +381,7 @@ export default async function ClusterDetailsPage({
             </div>
           ))
         ) : (
-          <NoData>cluster</NoData>
+          <NoData>for this cluster</NoData>
         )}
       </section>
     </div>

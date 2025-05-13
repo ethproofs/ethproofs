@@ -1,18 +1,20 @@
 "use client"
 
-import { useState } from "react"
-import Link from "next/link"
+import { useRef, useState } from "react"
 import { useRouter } from "next/navigation"
 import { useDebounceValue, useEventListener } from "usehooks-ts"
 import { isHash } from "viem"
 import { useQuery } from "@tanstack/react-query"
 
-import { BlockBase } from "@/lib/types"
+import type { BlockBase } from "@/lib/types"
 
 import Magnifier from "@/components/svgs/magnifier.svg"
 import { Input } from "@/components/ui/input"
 
 import { cn } from "@/lib/utils"
+
+import { DrawerClose } from "../ui/drawer"
+import Link, { LinkProps } from "../ui/link"
 
 import useSearchKeyboardShortcuts from "@/hooks/useSearchKeyboardShortcuts"
 
@@ -23,13 +25,16 @@ const SearchInput = ({
   className,
   onSubmit,
   placeholder = PLACEHOLDER,
+  insideDrawer,
 }: React.HTMLAttributes<HTMLInputElement> & {
   onSubmit?: () => void
   placeholder?: string
+  insideDrawer?: boolean
 }) => {
   const router = useRouter()
   const [query, setQuery] = useState("")
   const [deferredQuery] = useDebounceValue(query, DEBOUNCE)
+  const searchContainerRef = useRef<HTMLDivElement>(null)
 
   const { data: blockMatch, isLoading } = useQuery<
     (BlockBase & { proofs: { proof_status: string }[] }) | null
@@ -48,6 +53,12 @@ const SearchInput = ({
     onSubmit()
   }
 
+  // Clear query when clicking outside
+  useEventListener("mousedown", (e) => {
+    if (searchContainerRef?.current?.contains(e.target as Node)) return
+    setQuery("")
+  })
+
   useEventListener("keydown", (e) => {
     if (e.key !== "Enter" || !blockMatch) return
     const path = `/blocks/${blockMatch[isHash(query) ? "hash" : "block_number"]}`
@@ -57,31 +68,49 @@ const SearchInput = ({
 
   const { inputRef } = useSearchKeyboardShortcuts()
 
-  return (
-    <div className={cn("relative z-0 w-full", className)}>
-      <div className="absolute -inset-px -z-10 rounded-full bg-gradient-to-l from-primary via-primary/10 peer-focus:hidden"></div>
-      <Input
-        ref={inputRef}
-        type="search"
-        onChange={(e) => setQuery(e.target.value)}
-        placeholder={placeholder}
-        value={query}
-        className="peer z-0 border border-transparent px-4 py-1.5"
-      />
+  const ResultLink = ({ href, ...props }: LinkProps) =>
+    insideDrawer ? (
+      <DrawerClose asChild>
+        <Link href={href} {...props} />
+      </DrawerClose>
+    ) : (
+      <Link href={href} {...props} />
+    )
 
+  return (
+    <div ref={searchContainerRef} className={cn("relative w-full", className)}>
       <div
         className={cn(
-          "pointer-events-none absolute inset-y-0 end-0 flex items-center pe-4 lg:m-0",
-          !!query.length && "hidden"
+          "z-20",
+          "relative rounded-full",
+          "before:absolute before:inset-0 before:-z-[2] before:rounded-full before:bg-gradient-to-tl before:from-primary before:to-primary/10",
+          "after:absolute after:inset-px after:-z-[1] after:rounded-[calc(100vmax_-_1px)] after:bg-background",
+          "[&>input:focus-visible]:after:bg-gradient-to-tl [&>input:focus-visible]:after:to-background-active"
         )}
       >
-        <Magnifier className="text-primary" />
+        <Input
+          ref={inputRef}
+          type="search"
+          onChange={(e) => setQuery(e.target.value)}
+          placeholder={placeholder}
+          value={query}
+          className={cn("px-4 py-1.5", "border-transparent bg-transparent")}
+        />
+
+        <div
+          className={cn(
+            "pointer-events-none absolute inset-y-0 end-0 flex items-center pe-4 lg:m-0",
+            !!query.length && "hidden"
+          )}
+        >
+          <Magnifier className="text-primary" />
+        </div>
       </div>
 
       {!!query.length && (
-        <div className="absolute inset-x-0 top-0 -z-10 flex h-fit flex-col rounded-b-2xl rounded-t-3xl bg-background bg-gradient-to-b from-white/[0.06] to-white/[0.12] px-2 pb-2 pt-[3.5rem] lg:m-0">
+        <div className="absolute inset-x-0 top-px z-10 flex h-fit flex-col rounded-b-2xl rounded-t-3xl border border-primary-border bg-background px-2 pb-2 pt-[3.5rem] lg:m-0">
           {blockMatch ? (
-            <Link
+            <ResultLink
               href={`/blocks/${blockMatch[isHash(query) ? "hash" : "block_number"]}`}
               className="rounded-lg border border-primary-light bg-background-active p-2"
               onClick={handleSubmit}
@@ -106,7 +135,7 @@ const SearchInput = ({
                 <span className="font-body">Hash: </span>
                 <span className="block truncate">{blockMatch.hash}</span>
               </span>
-            </Link>
+            </ResultLink>
           ) : (
             <div className="rounded-lg border border-primary-light bg-background-active p-2">
               {isLoading ? "Loading" : "No results"}

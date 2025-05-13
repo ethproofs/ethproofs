@@ -1,7 +1,6 @@
-import Image from "next/image"
 import { type AccordionItemProps } from "@radix-ui/react-accordion"
 
-import { Vendor, Zkvm, ZkvmMetrics, ZkvmVersion } from "@/lib/types"
+import type { Vendor, Zkvm, ZkvmMetrics, ZkvmVersion } from "@/lib/types"
 
 import {
   Accordion,
@@ -13,6 +12,7 @@ import { ButtonLink } from "./ui/button"
 import Link from "./ui/link"
 import { MetricBox, MetricInfo, MetricLabel } from "./ui/metric"
 import { Progress } from "./ui/progress"
+import { DisplayTeamLink } from "./DisplayTeamLink"
 import Pizza from "./Pizza"
 import SoftwareDetails from "./SoftwareDetails"
 
@@ -37,30 +37,20 @@ const SoftwareAccordionItem = ({
 
   return (
     <AccordionItem value={value} className="col-span-5 grid grid-cols-subgrid">
-      <div className="col-span-5 grid grid-cols-subgrid items-center gap-12 border-b px-6 hover:bg-primary/5 dark:hover:bg-primary/10">
+      <div className="col-span-5 grid grid-cols-subgrid items-center gap-12 text-nowrap border-b p-px px-6 hover:bg-primary/5 dark:hover:bg-primary/10">
         <div className="col-start-1 flex items-center gap-3">
-          <Link href={`/zkvms/${zkvm.slug}`} className="hover:underline">
-            <span className="block font-mono text-2xl text-primary">
-              {zkvm.name}
-            </span>
+          <Link
+            href={`/zkvms/${zkvm.slug}`}
+            className="block text-2xl text-primary hover:underline"
+          >
+            {zkvm.name}
           </Link>
           <span className="block font-mono text-sm italic text-body-secondary">
             by
           </span>
-          <Link
-            href={`/teams/${zkvm.vendor.slug}`}
-            className="-m-1 rounded p-1 hover:bg-primary/10"
-          >
-            <Image
-              // TODO: add fallback logo
-              src={zkvm.vendor.logo_url ?? ""}
-              alt="Zkvm team logo"
-              height={16}
-              width={16}
-              style={{ height: "1rem", width: "auto" }}
-              className="dark:invert"
-            />
-          </Link>
+          <div className="min-w-24">
+            <DisplayTeamLink team={zkvm.vendor} className="block" />
+          </div>
         </div>
         <div id="version" className="col-start-2">
           {zkvm.versions[0].version}
@@ -79,24 +69,27 @@ const SoftwareAccordionItem = ({
           />
         </div>
 
-        <AccordionTrigger className="col-start-5 my-2 h-fit gap-2 rounded-full border-2 border-primary bg-background-highlight p-0.5 pe-2 text-primary [&>svg]:size-6">
+        <AccordionTrigger className="col-start-5 my-4 h-fit gap-2 rounded-full border-2 border-primary bg-background-highlight p-0.5 pe-2 text-4xl text-primary [&>svg]:size-6">
           <Pizza slices={getSlices(detailItems)} disableEffects />
         </AccordionTrigger>
       </div>
-      <AccordionContent className="col-span-full border-b bg-gradient-to-t from-background-active p-0">
+      <AccordionContent className="col-span-full border-b p-0">
         <SoftwareDetails detailItems={detailItems} />
 
-        <div className="flex justify-center gap-16 p-8 pt-0">
-          <ButtonLink variant="outline" href={`/zkvms/${zkvm.slug}`}>
+        <div className="grid grid-cols-3 gap-16 p-8 pt-0">
+          <ButtonLink
+            variant="outline"
+            href={`/zkvms/${zkvm.slug}`}
+            className="col-start-2 mx-auto"
+          >
             See all details
           </ButtonLink>
-          <div>
+          <div className="col-start-3 text-end">
             <span className="text-xs italic text-body-secondary">
               Last updated
             </span>{" "}
             <span className="text-xs uppercase text-body">
-              {/* // TODO: Get and use last updated date */}
-              {formatShortDate(new Date())}
+              {formatShortDate(new Date(zkvm.created_at))}
             </span>
           </div>
         </div>
@@ -106,8 +99,10 @@ const SoftwareAccordionItem = ({
 }
 
 const SoftwareAccordion = async () => {
-  const zkvms = await getZkvmsWithUsage()
-  const metricsByZkvmId = await getZkvmsMetrics()
+  const [zkvms, metricsByZkvmId] = await Promise.all([
+    getZkvmsWithUsage(),
+    getZkvmsMetrics(),
+  ])
 
   return (
     <Accordion

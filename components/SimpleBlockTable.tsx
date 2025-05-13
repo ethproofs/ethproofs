@@ -13,7 +13,7 @@ type Props = {
 const SimpleBlocksTable = async ({ className, machineType }: Props) => {
   const teams = await getTeams()
   const blocks = await fetchBlocksPaginated(
-    { pageIndex: 0, pageSize: 10 },
+    { pageIndex: 0, pageSize: 5 },
     machineType
   )
 

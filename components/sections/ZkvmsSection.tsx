@@ -1,4 +1,4 @@
-import { SummaryItem } from "@/lib/types"
+import type { SummaryItem } from "@/lib/types"
 
 import KPIs from "../KPIs"
 import SoftwareAccordion from "../SoftwareAccordion"
@@ -24,9 +24,9 @@ const ZkvmsSection = async () => {
   ]
 
   return (
-    <Card>
-      <CardHeader className="space-y-3">
-        <CardTitle className="text-3xl font-normal tracking-[1px]">
+    <Card className="!p-0 !pb-6 md:!pb-8">
+      <CardHeader className="flex items-center justify-between px-6 pb-0 sm:flex-row md:px-12 max-sm:[&>div]:w-full">
+        <CardTitle className="text-3xl font-normal tracking-[1px] max-sm:pt-8">
           zkVMs
         </CardTitle>
 
@@ -35,7 +35,9 @@ const ZkvmsSection = async () => {
         </div>
       </CardHeader>
 
-      <SoftwareAccordion />
+      <div className="overflow-x-auto">
+        <SoftwareAccordion />
+      </div>
 
       <div className="flex justify-center">
         <ButtonLink variant="outline" href="/zkvms">

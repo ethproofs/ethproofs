@@ -10,9 +10,10 @@ import { getMetadata } from "@/lib/metadata"
 export const metadata: Metadata = getMetadata()
 
 export default async function KillersPage() {
-  const benchmarks = await getBenchmarks()
-
-  const clusters = await getClustersBenchmarks()
+  const [clusters, benchmarks] = await Promise.all([
+    getClustersBenchmarks(),
+    getBenchmarks(),
+  ])
 
   const multiMachineBenchmarks = clusters.filter(
     (cluster) => cluster.is_multi_machine
@@ -24,7 +25,7 @@ export default async function KillersPage() {
 
   return (
     <>
-      <div className="absolute top-0 h-40 w-full space-y-2 px-6 pt-24 text-center font-mono font-semibold">
+      <div className="mt-12 space-y-2 px-6 text-center font-mono font-semibold md:mt-24">
         <h1 className="text-shadow text-3xl">killers</h1>
         <div className="mx-auto max-w-md font-sans text-sm font-normal">
           Prover killers are adversarially-crafted benchmarks to test zkVMs with

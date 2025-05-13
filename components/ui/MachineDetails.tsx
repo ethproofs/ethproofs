@@ -1,4 +1,4 @@
-import { MachineBase } from "@/lib/types"
+import type { MachineBase } from "@/lib/types"
 
 import { cn, sumArray } from "@/lib/utils"
 
@@ -26,24 +26,29 @@ const MachineDetails = ({
         </div>
       </div>
       <div className="flex flex-col gap-y-3">
-        {machine.gpu_models?.map((gpuModel) => (
-          <div key={gpuModel}>
-            <div className="text-center font-mono text-lg text-primary">
-              {gpuModel}
-            </div>
+        {machine.gpu_models?.map((gpuModel, index) => {
+          const gpuCount = machine.gpu_count?.[index] || 0
+          const gpuMemory = machine.gpu_memory_gb?.[index] || 0
 
-            <div className="flex gap-x-3 text-center text-sm">
-              <div className="flex flex-1 flex-col items-center p-2">
-                <div className="text-nowrap text-body-secondary">GPUs</div>
-                <div className="">{sumArray(machine.gpu_count)}</div>
+          return (
+            <div key={gpuModel}>
+              <div className="text-center font-mono text-lg text-primary">
+                {gpuModel}
               </div>
-              <div className="flex flex-1 flex-col items-center p-2">
-                <div className="text-nowrap text-body-secondary">GPU RAM</div>
-                <div className="">{sumArray(machine.gpu_memory_gb)} GB</div>
+
+              <div className="flex gap-x-3 text-center text-sm">
+                <div className="flex flex-1 flex-col items-center p-2">
+                  <div className="text-nowrap text-body-secondary">GPUs</div>
+                  <div>{gpuCount}</div>
+                </div>
+                <div className="flex flex-1 flex-col items-center p-2">
+                  <div className="text-nowrap text-body-secondary">GPU RAM</div>
+                  <div className="">{gpuMemory * gpuCount} GB</div>
+                </div>
               </div>
             </div>
-          </div>
-        ))}
+          )
+        })}
       </div>
     </div>
   </div>

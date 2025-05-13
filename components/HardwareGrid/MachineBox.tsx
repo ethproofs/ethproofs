@@ -1,4 +1,4 @@
-import { MachineBase } from "@/lib/types"
+import type { MachineBase } from "@/lib/types"
 
 import { cn } from "@/lib/utils"
 
@@ -14,9 +14,7 @@ const MachineBox = ({
 }) => {
   return (
     <Popover>
-      <PopoverTrigger>
-        <div className={cn("size-6 rounded-[4px]", className)} />
-      </PopoverTrigger>
+      <PopoverTrigger className={cn("size-6 rounded-[4px]", className)} />
       <PopoverContent asChild>
         <MachineDetails machine={machine} />
       </PopoverContent>

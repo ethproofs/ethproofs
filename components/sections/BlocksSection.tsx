@@ -5,7 +5,7 @@ import {
   startOfYesterday,
 } from "date-fns"
 
-import { SummaryItem } from "@/lib/types"
+import type { SummaryItem } from "@/lib/types"
 
 import KPIs from "../KPIs"
 import MachineTabs from "../MachineTabs"
@@ -17,15 +17,15 @@ import { fetchProofsPerStatusCount, lastProvedProof } from "@/lib/api/proofs"
 import { prettyMs } from "@/lib/time"
 
 const BlocksSection = async () => {
-  const lastProof = await lastProvedProof()
-  const proofsPerStatusCount = await fetchProofsPerStatusCount(
-    startOfYesterday(),
-    new Date()
-  )
-  const recentProofsPerStatusCount = await fetchProofsPerStatusCount(
-    startOfDay(addDays(new Date(), -30)),
-    new Date()
-  )
+  const [lastProof, proofsPerStatusCount, recentProofsPerStatusCount] =
+    await Promise.all([
+      lastProvedProof(),
+      fetchProofsPerStatusCount(startOfYesterday(), new Date()),
+      fetchProofsPerStatusCount(
+        startOfDay(addDays(new Date(), -30)),
+        new Date()
+      ),
+    ])
 
   const provingCount = proofsPerStatusCount.find(
     (proof) => proof.proof_status === "proving"
@@ -58,8 +58,8 @@ const BlocksSection = async () => {
 
   return (
     <Card className="!p-0 !pb-6 md:!pb-8">
-      <CardHeader className="space-y-3 p-6 pb-0 md:px-12 md:pt-8">
-        <CardTitle className="text-3xl font-normal tracking-[1px]">
+      <CardHeader className="flex items-center justify-between px-6 pb-0 md:px-12 xl:flex-row max-xl:[&>div]:w-full">
+        <CardTitle className="text-3xl font-normal tracking-[1px] max-xl:mt-8">
           latest blocks
         </CardTitle>
 

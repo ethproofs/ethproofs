@@ -7,6 +7,7 @@ import {
   clusterVersions,
   machines,
 } from "@/db/schema"
+import { getZkvmVersion } from "@/lib/api/zkvm-versions"
 import { withAuth } from "@/lib/middleware/with-auth"
 import { singleMachineSchema } from "@/lib/zod/schemas/cluster"
 
@@ -53,6 +54,13 @@ export const POST = withAuth(async ({ request, user }) => {
 
   if (!cloudInstance) {
     return new Response("Cloud instance not found", { status: 400 })
+  }
+
+  // validate zkvm_version_id
+  const zkvmVersion = await getZkvmVersion(zkvm_version_id)
+
+  if (!zkvmVersion) {
+    return new Response("Invalid zkvm version", { status: 400 })
   }
 
   let clusterIndex: number | null = null

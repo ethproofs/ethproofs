@@ -21,12 +21,9 @@ const HeaderScrollEffects = () => {
 
   return (
     <>
+      <div className="absolute inset-0 z-[-1]" style={bgStyle} />
       <div
-        className="absolute inset-0 z-[-1] overflow-visible"
-        style={bgStyle}
-      />
-      <div
-        className="absolute top-full h-px w-full bg-primary"
+        className="absolute inset-x-0 top-full h-px bg-primary"
         style={borderStyle}
       />
     </>
