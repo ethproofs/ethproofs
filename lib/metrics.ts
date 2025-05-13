@@ -221,7 +221,7 @@ export const getSoftwareDetailItems = (
     },
     {
       id: "implementation-soundness",
-      label: "implementation soundness",
+      label: "implementation",
       popoverDetails: "TODO: Popover details",
       severity: severityLevels.implementationSoundness,
       position: 5,
