@@ -232,7 +232,7 @@ export default async function ClusterDetailsPage({
                     <MetricBox className="py-0">
                       <MetricLabel>
                         <MetricInfo
-                          label={`${clusterMachine.machine_count} machines @ ${formatUsd(
+                          label={`${clusterMachine.machine_count} machine${clusterMachine.machine_count === 1 ? "" : "s"} @ ${formatUsd(
                             clusterMachine.cloud_instance.hourly_price
                           )}/h`}
                         >
