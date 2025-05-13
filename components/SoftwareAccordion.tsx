@@ -41,7 +41,7 @@ const SoftwareAccordionItem = ({
         <div className="col-start-1 flex items-center gap-3">
           <Link
             href={`/zkvms/${zkvm.slug}`}
-            className="block text-2xl text-primary hover:underline"
+            className="block text-2xl text-primary hover:text-primary-light hover:underline"
           >
             {zkvm.name}
           </Link>
