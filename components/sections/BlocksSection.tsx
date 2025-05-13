@@ -17,15 +17,21 @@ import { fetchProofsPerStatusCount, lastProvedProof } from "@/lib/api/proofs"
 import { prettyMs } from "@/lib/time"
 
 const BlocksSection = async () => {
-  const [lastProof, proofsPerStatusCount, recentProofsPerStatusCount] =
-    await Promise.all([
-      lastProvedProof(),
-      fetchProofsPerStatusCount(startOfYesterday(), new Date()),
-      fetchProofsPerStatusCount(
-        startOfDay(addDays(new Date(), -30)),
-        new Date()
-      ),
-    ])
+  const now = new Date()
+  const yesterday = startOfYesterday()
+  const thirtyDaysAgo = startOfDay(addDays(now, -30))
+
+  const [lastProof, proofsPerStatusCount] = await Promise.all([
+    lastProvedProof(),
+    fetchProofsPerStatusCount(yesterday, now),
+  ])
+
+  // TODO: run this in parallel with the other queries once we fix
+  // performance issues
+  const recentProofsPerStatusCount = await fetchProofsPerStatusCount(
+    thirtyDaysAgo,
+    now
+  )
 
   const provingCount = proofsPerStatusCount.find(
     (proof) => proof.proof_status === "proving"
