@@ -15,7 +15,7 @@ export default function NotFound() {
   const teamId = useParams().teamId as string
 
   return (
-    <div className="flex flex-col items-center gap-4 text-center">
+    <div className="mt-40 flex flex-col items-center gap-4 text-center">
       <ProofCircle className="size-40 stroke-[0.5px] text-body-secondary" />
       {isUUID(teamId) ? (
         <>

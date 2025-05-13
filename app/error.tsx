@@ -16,16 +16,13 @@ export default function Error() {
     window.location.reload()
   }
   return (
-    <div className="flex flex-col items-center gap-4 text-center">
+    <div className="mt-40 flex flex-col items-center gap-4 text-center">
       <ProofCircle className="size-40 -translate-x-4 stroke-[1.25px] text-primary" />
       <h1 className="mb-4 font-mono font-normal text-primary">500</h1>
       <p className="text-lg">Internal server error</p>
       <Divider className="my-6" />
       <div className="flex flex-col gap-6">
-        <Button
-          onClick={handleRefresh}
-          size="lg"
-        >
+        <Button onClick={handleRefresh} size="lg">
           <RefreshCW className={cn(refreshing && "animate-spin")} />
           Refresh page
         </Button>
