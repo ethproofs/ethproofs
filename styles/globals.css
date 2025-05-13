@@ -83,4 +83,8 @@
       0 0 2rem hsla(var(--background)),
       0 0 1rem hsla(var(--background));
   }
+
+  .dev-ring {
+    @apply ring ring-red-500 sm:ring-orange-500 md:ring-yellow-500 lg:ring-green-500 xl:ring-blue-500 2xl:ring-violet-500;
+  }
 }
