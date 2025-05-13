@@ -2,10 +2,11 @@ import { type Metadata } from "next"
 import Image from "next/image"
 import { notFound } from "next/navigation"
 
-import type { Team, Zkvm } from "@/lib/types"
+import type { SummaryItem, Team, Zkvm } from "@/lib/types"
 
 import ClusterTable from "@/components/ClusterTable"
 import { DisplayTeam } from "@/components/DisplayTeamLink"
+import KPIs from "@/components/KPIs"
 import MachineTabs from "@/components/MachineTabs"
 import Null from "@/components/Null"
 import GitHub from "@/components/svgs/github.svg"
@@ -82,6 +83,60 @@ export default async function TeamDetailsPage({
     (cluster) => cluster.is_multi_machine
   )
 
+  const singleMachineSummary: SummaryItem[] = [
+    {
+      key: "total-proofs",
+      label: "proofs",
+      value: teamSummary.total_proofs_single || <Null />,
+    },
+    {
+      key: "avg-cost",
+      label: "avg cost",
+      value: teamSummary.avg_cost_per_proof_single ? (
+        formatUsd(teamSummary.avg_cost_per_proof_single)
+      ) : (
+        <Null />
+      ),
+    },
+    {
+      key: "avg-time",
+      label: "avg time",
+      value:
+        Number(teamSummary.avg_proving_time_single) > 0 ? (
+          prettyMs(Number(teamSummary.avg_proving_time_single))
+        ) : (
+          <Null />
+        ),
+    },
+  ]
+
+  const multiMachineSummary: SummaryItem[] = [
+    {
+      key: "total-proofs",
+      label: "proofs",
+      value: teamSummary.total_proofs_multi || <Null />,
+    },
+    {
+      key: "avg-cost",
+      label: "avg cost",
+      value: teamSummary.avg_cost_per_proof_multi ? (
+        formatUsd(teamSummary.avg_cost_per_proof_multi)
+      ) : (
+        <Null />
+      ),
+    },
+    {
+      key: "avg-time",
+      label: "avg time",
+      value:
+        Number(teamSummary.avg_proving_time_multi) > 0 ? (
+          prettyMs(Number(teamSummary.avg_proving_time_multi))
+        ) : (
+          <Null />
+        ),
+    },
+  ]
+
   return (
     <div className="mt-24 px-6 md:px-8">
       <div id="hero-section">
@@ -137,78 +192,16 @@ export default async function TeamDetailsPage({
             <CardHeader className="font-mono">
               Multi-machine performance
             </CardHeader>
-            <CardContent className="flex flex-wrap justify-center gap-2 text-nowrap">
-              <div className="row-span-2 grid grid-rows-subgrid gap-y-0.5 p-4">
-                <div className="text-center font-mono text-sm font-bold">
-                  proofs
-                </div>
-                <div className="text-center font-mono text-2xl font-semibold text-primary">
-                  {teamSummary.total_proofs_multi || <Null />}
-                </div>
-              </div>
-              <div className="row-span-2 grid grid-rows-subgrid gap-y-0.5 p-4">
-                <div className="text-center font-mono text-sm font-bold">
-                  avg cost
-                </div>
-                <div className="text-center font-mono text-2xl font-semibold text-primary">
-                  {teamSummary.avg_cost_per_proof_multi ? (
-                    formatUsd(teamSummary.avg_cost_per_proof_multi)
-                  ) : (
-                    <Null />
-                  )}
-                </div>
-              </div>
-              <div className="row-span-2 grid grid-rows-subgrid gap-y-0.5 p-4">
-                <div className="text-center font-mono text-sm font-bold">
-                  avg time
-                </div>
-                <div className="text-center font-mono text-2xl font-semibold text-primary">
-                  {Number(teamSummary.avg_proving_time_multi) > 0 ? (
-                    prettyMs(Number(teamSummary.avg_proving_time_multi))
-                  ) : (
-                    <Null />
-                  )}
-                </div>
-              </div>
+            <CardContent>
+              <KPIs items={multiMachineSummary} layout="flipped" />
             </CardContent>
           </Card>
           <Card className="!space-y-0">
             <CardHeader className="font-mono">
               Single machine performance
             </CardHeader>
-            <CardContent className="flex flex-wrap justify-center gap-2 text-nowrap">
-              <div className="row-span-2 grid grid-rows-subgrid gap-y-0.5 p-4">
-                <div className="text-center font-mono text-sm font-bold">
-                  proofs
-                </div>
-                <div className="text-center font-mono text-2xl font-semibold text-primary">
-                  {teamSummary.total_proofs_single || <Null />}
-                </div>
-              </div>
-              <div className="row-span-2 grid grid-rows-subgrid gap-y-0.5 p-4">
-                <div className="text-center font-mono text-sm font-bold">
-                  avg cost
-                </div>
-                <div className="text-center font-mono text-2xl font-semibold text-primary">
-                  {teamSummary.avg_cost_per_proof_single ? (
-                    formatUsd(teamSummary.avg_cost_per_proof_single)
-                  ) : (
-                    <Null />
-                  )}
-                </div>
-              </div>
-              <div className="row-span-2 grid grid-rows-subgrid gap-y-0.5 p-4">
-                <div className="text-center font-mono text-sm font-bold">
-                  avg time
-                </div>
-                <div className="text-center font-mono text-2xl font-semibold text-primary">
-                  {Number(teamSummary.avg_proving_time_single) > 0 ? (
-                    prettyMs(Number(teamSummary.avg_proving_time_single))
-                  ) : (
-                    <Null />
-                  )}
-                </div>
-              </div>
+            <CardContent>
+              <KPIs items={singleMachineSummary} layout="flipped" />
             </CardContent>
           </Card>
         </section>
