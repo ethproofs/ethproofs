@@ -7,9 +7,11 @@ import type { Team, Zkvm } from "@/lib/types"
 import ClusterTable from "@/components/ClusterTable"
 import { DisplayTeam } from "@/components/DisplayTeamLink"
 import MachineTabs from "@/components/MachineTabs"
+import Null from "@/components/Null"
 import GitHub from "@/components/svgs/github.svg"
 import Globe from "@/components/svgs/globe.svg"
 import TwitterLogo from "@/components/svgs/x-logo.svg"
+import { Card, CardContent, CardHeader } from "@/components/ui/card"
 import { HeroBody, HeroItem, HeroItemLabel } from "@/components/ui/hero"
 import Link from "@/components/ui/link"
 import VendorsAside from "@/components/VendorsAside"
@@ -131,17 +133,17 @@ export default async function TeamDetailsPage({
 
       <div className="mx-auto mt-14 max-w-screen-xl space-y-20 [&>section]:w-full">
         <section className="grid grid-cols-1 gap-6 md:grid-cols-2">
-          <div className="relative rounded-[1.25rem] bg-background p-6">
-            <div className="absolute -inset-px z-[-2] rounded-[calc(1.25rem_+_1px)] bg-gradient-to-tl from-primary to-primary/10" />
-            <div className="absolute -inset-px z-[-1] rounded-[1.25rem] bg-black/10" />
-            <div className="font-mono">Multi-machine performance</div>
-            <div className="flex flex-wrap justify-center gap-2 text-nowrap">
+          <Card className="!space-y-0">
+            <CardHeader className="font-mono">
+              Multi-machine performance
+            </CardHeader>
+            <CardContent className="flex flex-wrap justify-center gap-2 text-nowrap">
               <div className="row-span-2 grid grid-rows-subgrid gap-y-0.5 p-4">
                 <div className="text-center font-mono text-sm font-bold">
                   proofs
                 </div>
                 <div className="text-center font-mono text-2xl font-semibold text-primary">
-                  {teamSummary.total_proofs_multi}
+                  {teamSummary.total_proofs_multi || <Null />}
                 </div>
               </div>
               <div className="row-span-2 grid grid-rows-subgrid gap-y-0.5 p-4">
@@ -149,7 +151,11 @@ export default async function TeamDetailsPage({
                   avg cost
                 </div>
                 <div className="text-center font-mono text-2xl font-semibold text-primary">
-                  {formatUsd(teamSummary.avg_cost_per_proof_multi ?? 0)}
+                  {teamSummary.avg_cost_per_proof_multi ? (
+                    formatUsd(teamSummary.avg_cost_per_proof_multi)
+                  ) : (
+                    <Null />
+                  )}
                 </div>
               </div>
               <div className="row-span-2 grid grid-rows-subgrid gap-y-0.5 p-4">
@@ -157,22 +163,26 @@ export default async function TeamDetailsPage({
                   avg time
                 </div>
                 <div className="text-center font-mono text-2xl font-semibold text-primary">
-                  {prettyMs(Number(teamSummary.avg_proving_time_multi ?? 0))}
+                  {Number(teamSummary.avg_proving_time_multi) > 0 ? (
+                    prettyMs(Number(teamSummary.avg_proving_time_multi))
+                  ) : (
+                    <Null />
+                  )}
                 </div>
               </div>
-            </div>
-          </div>
-          <div className="relative rounded-[1.25rem] bg-background p-6">
-            <div className="absolute -inset-px z-[-2] rounded-[calc(1.25rem_+_1px)] bg-gradient-to-tl from-primary to-primary/10" />
-            <div className="absolute -inset-px z-[-1] rounded-[1.25rem] bg-black/10" />
-            <div className="font-mono">Single machine performance</div>
-            <div className="flex flex-wrap justify-center gap-2 text-nowrap">
+            </CardContent>
+          </Card>
+          <Card className="!space-y-0">
+            <CardHeader className="font-mono">
+              Single machine performance
+            </CardHeader>
+            <CardContent className="flex flex-wrap justify-center gap-2 text-nowrap">
               <div className="row-span-2 grid grid-rows-subgrid gap-y-0.5 p-4">
                 <div className="text-center font-mono text-sm font-bold">
                   proofs
                 </div>
                 <div className="text-center font-mono text-2xl font-semibold text-primary">
-                  {teamSummary.total_proofs_single}
+                  {teamSummary.total_proofs_single || <Null />}
                 </div>
               </div>
               <div className="row-span-2 grid grid-rows-subgrid gap-y-0.5 p-4">
@@ -180,7 +190,11 @@ export default async function TeamDetailsPage({
                   avg cost
                 </div>
                 <div className="text-center font-mono text-2xl font-semibold text-primary">
-                  {formatUsd(teamSummary.avg_cost_per_proof_single ?? 0)}
+                  {teamSummary.avg_cost_per_proof_single ? (
+                    formatUsd(teamSummary.avg_cost_per_proof_single)
+                  ) : (
+                    <Null />
+                  )}
                 </div>
               </div>
               <div className="row-span-2 grid grid-rows-subgrid gap-y-0.5 p-4">
@@ -188,11 +202,15 @@ export default async function TeamDetailsPage({
                   avg time
                 </div>
                 <div className="text-center font-mono text-2xl font-semibold text-primary">
-                  {prettyMs(Number(teamSummary.avg_proving_time_single ?? 0))}
+                  {Number(teamSummary.avg_proving_time_single) > 0 ? (
+                    prettyMs(Number(teamSummary.avg_proving_time_single))
+                  ) : (
+                    <Null />
+                  )}
                 </div>
               </div>
-            </div>
-          </div>
+            </CardContent>
+          </Card>
         </section>
 
         {isVendor && zkvms && <VendorsAside team={team} zkvms={zkvms} />}
