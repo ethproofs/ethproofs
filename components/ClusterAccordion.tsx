@@ -160,7 +160,7 @@ const ClusterAccordionItem = ({
 
         <div className="grid place-items-center">
           <ButtonLink variant="outline" href={`/clusters/${clusterDetails.id}`}>
-            See all details
+            Details
           </ButtonLink>
         </div>
 
