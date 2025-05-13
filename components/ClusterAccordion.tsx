@@ -78,18 +78,29 @@ const ClusterAccordionItem = ({
     >
       <div className="col-span-6 grid grid-cols-subgrid items-center gap-12 px-6 py-4 hover:bg-primary/5 dark:hover:bg-primary/10">
         <div className="col-start-1 flex flex-col gap-1">
-          <DisplayTeamLink team={clusterDetails.team} />
-          <div>
-            <span className="text-sm text-primary">
-              <Link
-                href={`/zkvms/${lastVersion.zkvm_version.zkvm.slug}`}
-                className="hover:underline"
-              >
-                {lastVersion.zkvm_version.zkvm.name}
-              </Link>{" "}
-              |{" "}
-            </span>
-            <span className="text-sm">{clusterDetails.nickname}</span>
+          <Link
+            href={`/clusters/${clusterDetails.id}`}
+            className="text-xl text-primary hover:underline"
+          >
+            {clusterDetails.nickname}
+          </Link>
+          <div className="flex items-center gap-2 text-sm">
+            <Link
+              href={`/zkvms/${lastVersion.zkvm_version.zkvm.slug}`}
+              className="block hover:underline"
+            >
+              {lastVersion.zkvm_version.zkvm.name}
+            </Link>{" "}
+            <span className="font-mono text-sm italic text-body-secondary">
+              by
+            </span>{" "}
+            <div className="min-w-24">
+              <DisplayTeamLink
+                team={clusterDetails.team}
+                className="block"
+                height={14}
+              />
+            </div>
           </div>
         </div>
         <div className="col-start-2 flex justify-center">
