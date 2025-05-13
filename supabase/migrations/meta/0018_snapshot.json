@@ -1,5 +1,5 @@
 {
-  "id": "66ccacb4-a0e9-43e0-9b65-1ae9761f64c4",
+  "id": "0af77bc5-383b-43fb-85d1-fa38c4ec4260",
   "prevId": "a83fe816-a067-47e9-80ca-54753555cc35",
   "version": "7",
   "dialect": "postgresql",
@@ -1196,6 +1196,21 @@
           "columns": [
             {
               "expression": "proved_timestamp",
+              "isExpression": false,
+              "asc": true,
+              "nulls": "last"
+            }
+          ],
+          "isUnique": false,
+          "concurrently": false,
+          "method": "btree",
+          "with": {}
+        },
+        "proofs_created_at_idx": {
+          "name": "proofs_created_at_idx",
+          "columns": [
+            {
+              "expression": "created_at",
               "isExpression": false,
               "asc": true,
               "nulls": "last"
