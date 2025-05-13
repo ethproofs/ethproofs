@@ -1,5 +1,6 @@
 import { and, eq, gte, lte, sql } from "drizzle-orm"
 import { count } from "drizzle-orm"
+import { unstable_cache as cache } from "next/cache"
 import { PaginationState } from "@tanstack/react-table"
 
 import { db } from "@/db"
@@ -54,23 +55,25 @@ export const fetchTeamProofsPerStatusCount = async (teamId: string) => {
   return proofsPerStatusCount
 }
 
-export const fetchProofsPerStatusCount = async (from?: Date, to?: Date) => {
-  const proofsPerStatusCount = await db
-    .select({
-      proof_status: proofs.proof_status,
-      count: sql<number>`cast(count(${proofs.proof_id}) as int)`,
-    })
-    .from(proofs)
-    .where(
-      and(
-        from ? gte(proofs.created_at, from.toISOString()) : undefined,
-        to ? lte(proofs.created_at, to.toISOString()) : undefined
+export const fetchProofsPerStatusCount = cache(
+  async (from?: Date, to?: Date) => {
+    const proofsPerStatusCount = await db
+      .select({
+        proof_status: proofs.proof_status,
+        count: sql<number>`cast(count(${proofs.proof_id}) as int)`,
+      })
+      .from(proofs)
+      .where(
+        and(
+          from ? gte(proofs.created_at, from.toISOString()) : undefined,
+          to ? lte(proofs.created_at, to.toISOString()) : undefined
+        )
       )
-    )
-    .groupBy(proofs.proof_status)
+      .groupBy(proofs.proof_status)
 
-  return proofsPerStatusCount
-}
+    return proofsPerStatusCount
+  }
+)
 
 export const lastProvedProof = async () => {
   const lastProvedProof = await db.query.proofs.findFirst({
