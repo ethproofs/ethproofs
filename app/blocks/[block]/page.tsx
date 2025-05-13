@@ -306,10 +306,12 @@ export default async function BlockDetailsPage({
           <h2 className="flex items-center gap-2 text-lg font-normal text-primary">
             <ProofCircle /> Proofs
           </h2>
-          <DownloadAllButton
-            blockNumber={blockNumber}
-            className="max-md:hidden"
-          />
+          {proofs.length >= 1 && (
+            <DownloadAllButton
+              blockNumber={blockNumber}
+              className="max-md:hidden"
+            />
+          )}
         </div>
 
         <MachineTabs
