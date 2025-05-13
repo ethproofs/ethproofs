@@ -1,5 +1,5 @@
 import { addDays, startOfDay } from "date-fns"
-import { and, asc, eq, notIlike } from "drizzle-orm"
+import { and, asc, eq, notIlike, sql } from "drizzle-orm"
 
 import { db } from "@/db"
 import {
@@ -76,7 +76,13 @@ export const getTeamsSummary = async () => {
     .innerJoin(teams, eq(teamsSummaryView.team_id, teams.id))
     // hide test teams from the provers list
     .where(notIlike(teamsSummaryView.team_name, "%test%"))
-    .orderBy(asc(teamsSummaryView.avg_proving_time))
+    // sort by avg_proving_time, leave nulls or 0 last
+    .orderBy(
+      asc(
+        sql`CASE WHEN ${teamsSummaryView.avg_proving_time} IS NULL OR ${teamsSummaryView.avg_proving_time} = 0 THEN 1 ELSE 0 END`
+      ),
+      asc(teamsSummaryView.avg_proving_time)
+    )
 
   return teamsSummary.map(({ teams, teams_summary }) => ({
     ...teams_summary,
