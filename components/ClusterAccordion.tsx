@@ -153,7 +153,7 @@ const ClusterAccordionItem = ({
             )}
           </div>
         ) : (
-          <div className="flex min-h-[80px] items-center justify-center italic text-body-secondary">
+          <div className="flex min-h-[80px] items-center justify-center text-body-secondary">
             No hardware specifications available.
           </div>
         )}
