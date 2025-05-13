@@ -536,6 +536,7 @@ export const proofs = pgTable(
       table.cluster_version_id
     ),
     index("proofs_cluster_version_id_idx").on(table.cluster_version_id),
+    index("proofs_proved_timestamp_idx").on(table.proved_timestamp),
     pgPolicy("Enable updates for users with an api key", {
       as: "permissive",
       for: "update",
