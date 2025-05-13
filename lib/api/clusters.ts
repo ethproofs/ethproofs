@@ -73,33 +73,40 @@ export const getActiveClusters = cache(
     const { teamId, zkvmId } = filters ?? {}
     const sevenDaysAgo = sql`NOW() - INTERVAL '7 days'`
 
+    const existsConditions = [
+      eq(clusterVersions.cluster_id, clusters.id),
+      eq(proofs.proof_status, "proved"),
+      gt(proofs.proved_timestamp, sevenDaysAgo),
+    ]
+
+    if (zkvmId) {
+      existsConditions.push(eq(zkvms.id, zkvmId))
+    }
+
+    const whereConditions = [
+      exists(
+        db
+          .select()
+          .from(proofs)
+          .innerJoin(
+            clusterVersions,
+            eq(proofs.cluster_version_id, clusterVersions.id)
+          )
+          .innerJoin(
+            zkvmVersions,
+            eq(clusterVersions.zkvm_version_id, zkvmVersions.id)
+          )
+          .innerJoin(zkvms, eq(zkvmVersions.zkvm_id, zkvms.id))
+          .where(and(...existsConditions))
+      ),
+    ]
+
+    if (teamId) {
+      whereConditions.push(eq(clusters.team_id, teamId))
+    }
+
     return db.query.clusters.findMany({
-      where: (clusters, { and }) =>
-        and(
-          exists(
-            db
-              .select()
-              .from(proofs)
-              .innerJoin(
-                clusterVersions,
-                eq(proofs.cluster_version_id, clusterVersions.id)
-              )
-              .innerJoin(
-                zkvmVersions,
-                eq(clusterVersions.zkvm_version_id, zkvmVersions.id)
-              )
-              .innerJoin(zkvms, eq(zkvmVersions.zkvm_id, zkvms.id))
-              .where(
-                and(
-                  eq(clusterVersions.cluster_id, clusters.id),
-                  eq(proofs.proof_status, "proved"),
-                  gt(proofs.proved_timestamp, sevenDaysAgo),
-                  zkvmId ? eq(zkvms.id, zkvmId) : undefined
-                )
-              )
-          ),
-          teamId ? eq(clusters.team_id, teamId) : undefined
-        ),
+      where: and(...whereConditions),
       with: {
         team: true,
         versions: {
