@@ -8,6 +8,8 @@ import Null from "@/components/Null"
 import CalendarCheck from "@/components/svgs/calendar-check.svg"
 import { Button } from "@/components/ui/button"
 
+import { cn } from "@/lib/utils"
+
 import { formatTimeAgo } from "@/lib/date"
 import { formatUsd } from "@/lib/number"
 import { getProvingCost } from "@/lib/proofs"
@@ -41,8 +43,17 @@ export const ClusterProofRow = ({ proof }: ClusterProofRowProps) => {
 
   // TODO: Mobile responsiveness
   return (
-    <div className="grid grid-cols-[1fr_repeat(4,_auto)] gap-x-6 border-b border-primary-border p-6">
-      <div className="col-start-1 row-span-2 grid grid-cols-1 grid-rows-subgrid">
+    <div
+      data-row="cluster-proof"
+      className={cn(
+        "grid-custom-areas grid gap-x-6 border-b border-primary-border p-6",
+        "grid-cols-[auto_auto] gap-y-4",
+        "md:grid-cols-[1fr_1fr_auto_auto]",
+        "lg:grid-cols-[1fr_repeat(3,_auto)]",
+        "xl:grid-cols-[1fr_repeat(4,_auto)]"
+      )}
+    >
+      <div className="my-auto" style={{ gridArea: "block" }}>
         <BlockNumber blockNumber={proof.block_number} />
         <div className="font-sans text-xs text-body-secondary">
           {proof.proved_timestamp ? (
@@ -52,8 +63,12 @@ export const ClusterProofRow = ({ proof }: ClusterProofRowProps) => {
           )}
         </div>
       </div>
-      <div className="col-start-2 row-span-2 grid grid-cols-1 grid-rows-subgrid place-items-center">
-        <div className="font-mono text-sm">
+
+      <div
+        className="my-auto flex flex-col items-center"
+        style={{ gridArea: "time" }}
+      >
+        <div className="text-nowrap font-mono text-sm">
           proving:{" "}
           {proof.proving_time ? prettyMs(proof.proving_time) : <Null />}
         </div>
@@ -71,8 +86,12 @@ export const ClusterProofRow = ({ proof }: ClusterProofRowProps) => {
           )}
         </div>
       </div>
-      <div className="col-start-3 row-span-2 grid grid-cols-1 grid-rows-subgrid place-items-center">
-        <div className="font-mono text-sm">
+
+      <div
+        className="my-auto flex flex-col items-center"
+        style={{ gridArea: "cost" }}
+      >
+        <div className="text-nowrap font-mono text-sm">
           per proof: {costPerProof ? formatUsd(costPerProof) : <Null />}
         </div>
         <div className="font-sans text-xs text-body-secondary">
@@ -82,10 +101,15 @@ export const ClusterProofRow = ({ proof }: ClusterProofRowProps) => {
 
       <DownloadButton
         proof={proof}
-        containerClass="col-start-4 row-span-2 grid grid-cols-1 grid-rows-subgrid place-items-center"
+        className="w-full"
+        containerStyle={{ gridArea: "download" }}
       />
-      <div className="dev-ring col-start-5 row-span-2 grid grid-cols-1 grid-rows-subgrid place-items-center">
-        <Button disabled variant="solid" className="w-full p-0">
+
+      <div
+        className="my-auto flex flex-col items-center"
+        style={{ gridArea: "verify" }}
+      >
+        <Button disabled variant="solid" className="w-full py-0.5">
           <CalendarCheck className="text-lg" />
           verify
         </Button>

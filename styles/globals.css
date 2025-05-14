@@ -88,3 +88,38 @@
     @apply ring ring-red-500 sm:ring-orange-500 md:ring-yellow-500 lg:ring-green-500 xl:ring-blue-500 2xl:ring-violet-500;
   }
 }
+
+@layer components {
+  /* base */
+  [data-row="cluster-proof"].grid-custom-areas {
+    grid-template-areas:
+      "block block"
+      "time cost"
+      "download verify";
+  }
+
+  /* md */
+  @media (min-width: 768px) {
+    [data-row="cluster-proof"].grid-custom-areas {
+      grid-template-areas:
+        "block block time cost"
+        ". download verify .";
+    }
+  }
+
+  /* lg */
+  @media (min-width: 1024px) {
+    [data-row="cluster-proof"].grid-custom-areas {
+      grid-template-areas:
+        "block time cost verify"
+        "block time cost download";
+    }
+  }
+
+  /* xl */
+  @media (min-width: 1280px) {
+    [data-row="cluster-proof"].grid-custom-areas {
+      grid-template-areas: "block time cost download verify";
+    }
+  }
+}

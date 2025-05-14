@@ -22,6 +22,7 @@ type DownloadButtonProps = {
   proof: ProofForDownload
   className?: string
   containerClass?: string
+  containerStyle?: React.CSSProperties
   labelClass?: string
 }
 
@@ -29,6 +30,7 @@ const DownloadButton = ({
   className,
   proof,
   containerClass = "flex-col",
+  containerStyle,
   labelClass,
 }: DownloadButtonProps) => {
   const { proof_status, proof_id, size_bytes, team } = proof
@@ -47,7 +49,10 @@ const DownloadButton = ({
 
   if (proof_status === "proved")
     return (
-      <div className={cn("flex items-center gap-x-2 gap-y-1", containerClass)}>
+      <div
+        className={cn("flex items-center gap-x-2 gap-y-1", containerClass)}
+        style={containerStyle}
+      >
         <Button
           variant="outline"
           className={cn(sizingClassName, className)}
@@ -67,7 +72,7 @@ const DownloadButton = ({
   if (proof_status === "proving")
     return (
       <Popover>
-        <PopoverTrigger>
+        <PopoverTrigger style={containerStyle}>
           <Button variant="outline" asChild>
             <div
               className={cn(sizingClassName, fakeButtonClassName, className)}
@@ -88,7 +93,7 @@ const DownloadButton = ({
   if (proof_status === "queued")
     return (
       <Popover>
-        <PopoverTrigger>
+        <PopoverTrigger style={containerStyle}>
           <Button variant="outline" asChild>
             <div
               className={cn(sizingClassName, fakeButtonClassName, className)}
