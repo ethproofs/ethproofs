@@ -12,7 +12,7 @@ import type {
 } from "@/lib/types"
 
 import { ColumnHeader } from "@/components/ColumnHeader"
-import DownloadButton from "@/components/DownloadButton"
+import DownloadButton, { ProofForDownload } from "@/components/DownloadButton"
 import { metrics } from "@/components/Metrics"
 import Null from "@/components/Null"
 import { HidePunctuation } from "@/components/StylePunctuation"
@@ -192,7 +192,7 @@ export const columns: ColumnDef<ProofWithCluster>[] = [
       const proof = row.original
       return (
         <DownloadButton
-          proof={proof}
+          proof={proof as ProofForDownload}
           className="!w-40"
           labelClass="inline-block"
           containerClass="flex-col"

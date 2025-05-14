@@ -45,11 +45,11 @@ const AppNavigationMenu = ({ insideDrawer }: AppNavigationMenuProps) => {
     )
 
   const verticalFade = {
-    mask: `linear-gradient(to bottom, transparent 0rem, white 2.5rem, white calc(100% - 2.5rem), transparent 100%)`,
+    mask: `linear-gradient(to bottom, transparent 0rem, white 2rem, white calc(100% - 2rem), transparent 100%)`,
   }
   return (
     <>
-      <SidebarHeader className="mb-4 mt-11 space-y-10 px-6">
+      <SidebarHeader className="mt-11 space-y-10">
         <div className="flex items-end justify-between gap-4">
           <Link href="/">
             <EthProofsLogo className="text-[2.625rem] text-body" />
@@ -68,7 +68,7 @@ const AppNavigationMenu = ({ insideDrawer }: AppNavigationMenuProps) => {
       <SidebarContent style={verticalFade}>
         <SidebarMenu
           style={verticalFade}
-          className="gap-y-2 bg-background-accent/35 px-6 py-12"
+          className="gap-y-2 bg-background-accent/35 px-6 py-10"
         >
           <SidebarGroup>
             <SidebarGroupLabel>Home</SidebarGroupLabel>
@@ -180,8 +180,8 @@ const AppNavigationMenu = ({ insideDrawer }: AppNavigationMenuProps) => {
         </SidebarMenu>
       </SidebarContent>
 
-      <SidebarFooter className="mx-auto mb-4 mt-8 flex max-w-prose flex-col items-center space-y-4 px-6 text-sm">
-        <p className="text-center">
+      <SidebarFooter>
+        <div>
           Built with{" "}
           <Heart className="mb-0.5 inline animate-heart-beat text-xl text-primary" />{" "}
           by the
@@ -194,8 +194,8 @@ const AppNavigationMenu = ({ insideDrawer }: AppNavigationMenuProps) => {
             ethereum.org
           </Link>{" "}
           team
-        </p>
-        <p className="text-center text-primary">Public goods are good</p>
+        </div>
+        <div className="text-primary">Public goods are good</div>
       </SidebarFooter>
     </>
   )
