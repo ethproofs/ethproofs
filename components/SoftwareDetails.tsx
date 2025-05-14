@@ -56,8 +56,8 @@ const SoftwareDetails = ({ detailItems, className }: SoftwareDetailsProps) => (
   <div
     className={cn(
       "group/software grid gap-4 p-4 lg:gap-8 lg:p-8",
-      "lg:grid-cols-[2fr_4fr_1fr_auto_1fr_4fr_2fr]",
-      "grid-cols-[0_4fr_1fr_auto_1fr_4fr_0]",
+      "lg:grid-cols-[2fr_minmax(200px,_4fr)_1fr_auto_1fr_minmax(200px,_4fr)_2fr]",
+      "grid-cols-[0_minmax(200px,_4fr)_1fr_auto_1fr_minmax(200px,_4fr)_0]",
       className
     )}
     style={{

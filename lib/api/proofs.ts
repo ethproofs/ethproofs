@@ -91,6 +91,7 @@ export const fetchProvedProofsByClusterId = async (
   const lastProvedProof = await db.query.proofs.findMany({
     with: {
       block: true,
+      team: true,
       cluster_version: {
         with: {
           cluster: true,

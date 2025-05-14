@@ -153,14 +153,14 @@ const ClusterAccordionItem = ({
             )}
           </div>
         ) : (
-          <div className="flex min-h-[80px] items-center justify-center italic text-body-secondary">
+          <div className="flex min-h-[80px] items-center justify-center text-body-secondary">
             No hardware specifications available.
           </div>
         )}
 
         <div className="grid place-items-center">
           <ButtonLink variant="outline" href={`/clusters/${clusterDetails.id}`}>
-            See all details
+            Details
           </ButtonLink>
         </div>
 
@@ -185,43 +185,45 @@ const ClusterAccordion = ({ clusters }: ClusterAccordionProps) => (
     type="multiple"
     className="grid w-full grid-cols-[1fr_repeat(5,_auto)] overflow-x-auto"
   >
-    <div className="col-span-6 grid grid-cols-subgrid text-center">
-      <MetricBox className="col-start-2">
-        <MetricLabel>
-          <MetricInfo label="open source">TODO: Popover details</MetricInfo>
-        </MetricLabel>
-      </MetricBox>
-      <MetricBox className="col-start-3">
-        <MetricLabel>
-          <MetricInfo label="binary available">
-            TODO: Popover details
-          </MetricInfo>
-        </MetricLabel>
-      </MetricBox>
-      <MetricBox className="col-start-4">
-        <MetricLabel>
-          <MetricInfo label="avg cost">
-            Instruction set architecture
-            <br />
-            TODO: Popover details
-          </MetricInfo>
-        </MetricLabel>
-      </MetricBox>
-      <MetricBox className="col-start-5">
-        <MetricLabel>
-          <MetricInfo label="avg time">TODO: Popover details</MetricInfo>
-        </MetricLabel>
-      </MetricBox>
-    </div>
-
     {clusters.length ? (
-      clusters.map((cluster, i) => (
-        <ClusterAccordionItem
-          key={i}
-          value={"item-" + i}
-          clusterDetails={cluster}
-        />
-      ))
+      <>
+        <div className="col-span-6 grid grid-cols-subgrid text-center">
+          <MetricBox className="col-start-2">
+            <MetricLabel>
+              <MetricInfo label="open source">TODO: Popover details</MetricInfo>
+            </MetricLabel>
+          </MetricBox>
+          <MetricBox className="col-start-3">
+            <MetricLabel>
+              <MetricInfo label="binary available">
+                TODO: Popover details
+              </MetricInfo>
+            </MetricLabel>
+          </MetricBox>
+          <MetricBox className="col-start-4">
+            <MetricLabel>
+              <MetricInfo label="avg cost">
+                Instruction set architecture
+                <br />
+                TODO: Popover details
+              </MetricInfo>
+            </MetricLabel>
+          </MetricBox>
+          <MetricBox className="col-start-5">
+            <MetricLabel>
+              <MetricInfo label="avg time">TODO: Popover details</MetricInfo>
+            </MetricLabel>
+          </MetricBox>
+        </div>
+
+        {clusters.map((cluster, i) => (
+          <ClusterAccordionItem
+            key={i}
+            value={"item-" + i}
+            clusterDetails={cluster}
+          />
+        ))}
+      </>
     ) : (
       <NoData />
     )}

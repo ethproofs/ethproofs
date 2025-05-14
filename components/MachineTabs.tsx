@@ -9,10 +9,16 @@ const MachineTabs = ({ multiContent, singleContent }: MachineTabsProps) => {
   return (
     <Tabs defaultValue="single" className="w-full p-px">
       <TabsList className="w-full">
-        <TabsTrigger className="w-full" value="multi">
+        <TabsTrigger
+          className="w-full hover:bg-gradient-to-b hover:from-primary/10 hover:to-primary/10"
+          value="multi"
+        >
           Multi-machine
         </TabsTrigger>
-        <TabsTrigger className="w-full" value="single">
+        <TabsTrigger
+          className="w-full hover:bg-gradient-to-b hover:from-primary/10 hover:to-primary/10"
+          value="single"
+        >
           Single machine
         </TabsTrigger>
       </TabsList>
