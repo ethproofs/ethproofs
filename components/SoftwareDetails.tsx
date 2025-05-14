@@ -56,12 +56,12 @@ const SoftwareDetails = ({ detailItems, className }: SoftwareDetailsProps) => (
   <div
     className={cn(
       "group/software grid gap-4 p-4 lg:gap-8 lg:p-8",
-      "grid-custom-areas grid-cols-[auto_auto]",
+      "grid-cols-[auto_auto]",
       "sm:grid-cols-[0_minmax(200px,_4fr)_1fr_auto_1fr_minmax(200px,_4fr)_0]",
       "lg:grid-cols-[2fr_minmax(200px,_4fr)_1fr_auto_1fr_minmax(200px,_4fr)_2fr]",
       className
     )}
-    data-row="software-details"
+    data-grid-template-areas="software-details"
   >
     {detailItems.map((item) => (
       <DetailItem key={item.id} item={item} />
