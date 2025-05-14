@@ -80,7 +80,7 @@ export default function RootLayout({
 
             <header
               id="mobile-header"
-              className="sticky top-0 z-10 flex w-full items-center justify-between p-6 md:hidden"
+              className="sticky top-0 z-10 flex w-full items-center justify-between p-6 before:absolute before:inset-0 before:z-[-1] before:backdrop-blur-[8px] before:content-[''] md:hidden"
             >
               <HeaderScrollEffects />
 
