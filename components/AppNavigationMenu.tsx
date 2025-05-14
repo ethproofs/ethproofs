@@ -183,7 +183,7 @@ const AppNavigationMenu = ({ insideDrawer }: AppNavigationMenuProps) => {
       <SidebarFooter>
         <div>
           Built with{" "}
-          <Heart className="mb-0.5 inline motion-safe:animate-heart-beat text-xl text-primary" />{" "}
+          <Heart className="mb-0.5 inline text-xl text-primary motion-safe:animate-heart-beat" />{" "}
           by the
           <br />
           <Link
