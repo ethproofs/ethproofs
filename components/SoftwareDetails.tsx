@@ -56,24 +56,19 @@ const SoftwareDetails = ({ detailItems, className }: SoftwareDetailsProps) => (
   <div
     className={cn(
       "group/software grid gap-4 p-4 lg:gap-8 lg:p-8",
+      "grid-custom-areas grid-cols-[auto_auto]",
+      "sm:grid-cols-[0_minmax(200px,_4fr)_1fr_auto_1fr_minmax(200px,_4fr)_0]",
       "lg:grid-cols-[2fr_minmax(200px,_4fr)_1fr_auto_1fr_minmax(200px,_4fr)_2fr]",
-      "grid-cols-[0_minmax(200px,_4fr)_1fr_auto_1fr_minmax(200px,_4fr)_0]",
       className
     )}
-    style={{
-      gridTemplateAreas: `
-        "position7 position7 position7 . position0 position0 position0"
-        ". position6 pizza pizza pizza position1 ."
-        ". position5 pizza pizza pizza position2 ."
-        ". position4 pizza pizza pizza position3 ."`,
-    }}
+    data-row="software-details"
   >
     {detailItems.map((item) => (
       <DetailItem key={item.id} item={item} />
     ))}
 
     <div
-      className="flex flex-col items-center text-[clamp(8rem,16vw,12rem)]"
+      className="flex flex-col items-center text-[12rem] sm:text-[clamp(8rem,16vw,12rem)]"
       style={{ gridArea: "pizza" }}
     >
       <Pizza slices={getSlices(detailItems)} />

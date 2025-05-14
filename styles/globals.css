@@ -98,6 +98,27 @@
       "download verify";
   }
 
+  [data-row="software-details"].grid-custom-areas {
+    grid-template-areas:
+      "position7 position7"
+      "position0 position0"
+      "pizza pizza"
+      "position6 position1"
+      "position5 position2"
+      "position4 position3";
+  }
+
+  /* sm */
+  @media (min-width: 640px) {
+    [data-row="software-details"].grid-custom-areas {
+      grid-template-areas:
+        "position7 position7 position7 . position0 position0 position0"
+        ". position6 pizza pizza pizza position1 ."
+        ". position5 pizza pizza pizza position2 ."
+        ". position4 pizza pizza pizza position3 .";
+    }
+  }
+
   /* md */
   @media (min-width: 768px) {
     [data-row="cluster-proof"].grid-custom-areas {
