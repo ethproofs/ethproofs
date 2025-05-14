@@ -118,3 +118,56 @@ export const fetchBlock = cache(
     return block
   }
 )
+
+export const fetchBlocks = cache(
+  async (machineType: MachineType = "all", limit: number = 10) => {
+    const blocksRows = await db.query.blocks.findMany({
+      with: {
+        proofs: {
+          with: {
+            cluster_version: {
+              with: {
+                cluster: true,
+                cluster_machines: {
+                  with: {
+                    cloud_instance: true,
+                    machine: true,
+                  },
+                },
+              },
+            },
+          },
+          // Filter proofs by cluster type
+          where:
+            machineType === "all"
+              ? undefined
+              : (proofs, { exists, eq, and }) =>
+                  exists(
+                    db
+                      .select()
+                      .from(clusterVersions)
+                      .innerJoin(
+                        clusters,
+                        eq(clusterVersions.cluster_id, clusters.id)
+                      )
+                      .where(
+                        and(
+                          eq(clusterVersions.id, proofs.cluster_version_id),
+                          eq(clusters.is_multi_machine, machineType === "multi")
+                        )
+                      )
+                  ),
+        },
+      },
+      orderBy: (blocks, { desc }) => [desc(blocks.block_number)],
+      limit,
+    })
+
+    return blocksRows
+  },
+  ["blocks-top-list"],
+  {
+    revalidate: 60, // every minute
+    tags: ["blocks"],
+  }
+)

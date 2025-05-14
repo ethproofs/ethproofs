@@ -72,6 +72,11 @@ export const fetchProofsPerStatusCount = cache(
       .groupBy(proofs.proof_status)
 
     return proofsPerStatusCount
+  },
+  ["proofs-per-status-count"],
+  {
+    revalidate: 60 * 60 * 24, // daily
+    tags: ["proofs"],
   }
 )
 
