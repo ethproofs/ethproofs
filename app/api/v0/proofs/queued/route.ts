@@ -1,4 +1,4 @@
-import { revalidatePath } from "next/cache"
+import { revalidateTag } from "next/cache"
 import { ZodError } from "zod"
 
 import { db } from "@/db"
@@ -129,8 +129,8 @@ export const POST = withAuth(async ({ request, user, timestamp }) => {
       })
       .returning({ proof_id: proofs.proof_id })
 
-    // invalidate home page cache
-    revalidatePath("/")
+    // invalidate cache
+    revalidateTag("blocks")
 
     // return the generated proof_id
     return Response.json(proof)
