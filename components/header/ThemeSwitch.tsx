@@ -61,13 +61,15 @@ const ThemeSwitch = () => {
         <ArrowDropdown className="transition-transform duration-100 group-[&[data-state=open]]:-scale-y-100" />
       </DropdownMenuTrigger>
 
-      <DropdownMenuContent className="space-y-0 p-0">
+      <DropdownMenuContent className="space-y-0 p-px">
         {items.map((item) => (
           <DropdownMenuItem
             key={item.id}
             onClick={() => setTheme(item.id)}
             className={cn(
               "rounded-none",
+              "first-of-type:rounded-t-[calc(1rem_-_1px)]",
+              "last-of-type:rounded-b-[calc(1rem_-_1px)]",
               theme === item.id && "bg-background-active"
             )}
           >

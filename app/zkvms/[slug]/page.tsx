@@ -72,7 +72,7 @@ export default async function ZkvmDetailsPage({
 
   return (
     <>
-      <div className="mt-12 space-y-4 px-6 text-center font-mono md:mt-24 md:px-8">
+      <div className="mb-24 mt-16 space-y-4 px-6 text-center font-mono md:mt-24 md:px-8">
         <h1 className="text-shadow text-3xl font-semibold">{zkvm.name}</h1>
 
         <div className="flex items-center justify-center gap-3">

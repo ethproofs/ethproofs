@@ -1,5 +1,4 @@
-import { eq, sql } from "drizzle-orm"
-import { revalidatePath } from "next/cache"
+import { revalidateTag } from "next/cache"
 import { ZodError } from "zod"
 
 import { db } from "@/db"
@@ -189,8 +188,9 @@ export const POST = withAuth(async ({ request, user, timestamp }) => {
       return newProof
     })
 
-    // invalidate home page cache
-    revalidatePath("/")
+    // invalidate cache
+    revalidateTag("proofs")
+    revalidateTag("blocks")
 
     // return the generated proof_id
     return Response.json(newProof)

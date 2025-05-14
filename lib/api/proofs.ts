@@ -72,6 +72,11 @@ export const fetchProofsPerStatusCount = cache(
       .groupBy(proofs.proof_status)
 
     return proofsPerStatusCount
+  },
+  ["proofs-per-status-count"],
+  {
+    revalidate: 60 * 60 * 24, // daily
+    tags: ["proofs"],
   }
 )
 
@@ -91,6 +96,7 @@ export const fetchProvedProofsByClusterId = async (
   const lastProvedProof = await db.query.proofs.findMany({
     with: {
       block: true,
+      team: true,
       cluster_version: {
         with: {
           cluster: true,

@@ -7,12 +7,13 @@ import { ButtonLink } from "../ui/button"
 import { Card, CardHeader, CardTitle } from "../ui/card"
 
 import { getActiveClusters, getActiveMachineCount } from "@/lib/api/clusters"
-import { getClusterSummary, getTeamsSummary } from "@/lib/api/stats"
+import { getClusterSummary } from "@/lib/api/stats"
+import { getTeamsCount } from "@/lib/api/teams"
 
 const ClustersSection = async () => {
-  const [teamsSummary, clusterSummary, machineCount, activeClusters] =
+  const [teamsCount, clusterSummary, machineCount, activeClusters] =
     await Promise.all([
-      getTeamsSummary(),
+      getTeamsCount(),
       getClusterSummary(),
       getActiveMachineCount(),
       getActiveClusters(),
@@ -22,7 +23,7 @@ const ClustersSection = async () => {
     {
       key: "teams",
       label: "teams",
-      value: teamsSummary.length,
+      value: teamsCount,
     },
     {
       key: "proving-machines",

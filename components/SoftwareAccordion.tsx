@@ -82,7 +82,7 @@ const SoftwareAccordionItem = ({
             href={`/zkvms/${zkvm.slug}`}
             className="col-start-2 mx-auto"
           >
-            See all details
+            Details
           </ButtonLink>
           <div className="col-start-3 text-end">
             <span className="text-xs italic text-body-secondary">
