@@ -138,8 +138,8 @@ export default async function TeamDetailsPage({
   ]
 
   return (
-    <div className="mt-24 px-6 md:px-8">
-      <div id="hero-section">
+    <div className="px-6 md:px-8">
+      <div id="hero-section" className="mb-24 mt-16 md:mt-24">
         <h1 className="text-shadow flex justify-center text-center font-serif text-4xl font-semibold">
           <DisplayTeam team={team} height={48} />
         </h1>
@@ -186,7 +186,7 @@ export default async function TeamDetailsPage({
         </HeroBody>
       </div>
 
-      <div className="mx-auto mt-14 max-w-screen-xl space-y-20 [&>section]:w-full">
+      <div className="mx-auto max-w-screen-xl space-y-20 [&>section]:w-full">
         <section className="grid grid-cols-1 gap-6 md:grid-cols-2">
           <Card className="!space-y-0">
             <CardHeader className="font-mono">

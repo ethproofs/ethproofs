@@ -124,7 +124,7 @@ export default async function ClusterDetailsPage({
   ]
 
   return (
-    <div className="mx-auto mt-12 max-w-screen-xl space-y-8 px-6 md:mt-24 md:px-8 [&>section]:w-full">
+    <div className="mx-auto mt-16 max-w-screen-xl space-y-8 px-6 md:mt-24 md:px-8 [&>section]:w-full">
       <div id="hero-section" className="flex flex-col items-center gap-2">
         <h1 className="text-shadow font-mono text-4xl font-semibold">
           {cluster.nickname}
