@@ -167,7 +167,7 @@ export const fetchBlocks = cache(
   },
   ["blocks-top-list"],
   {
-    revalidate: 60,
+    revalidate: 60, // every minute
     tags: ["blocks"],
   }
 )
