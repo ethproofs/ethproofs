@@ -11,7 +11,7 @@ const HeaderScrollEffects = () => {
   const blur = Math.min(scrollPosition * kBlur, maxBlurPx)
   const bgStyle = {
     backdropFilter: `blur(${blur}px)`,
-    "-webkit-backdrop-filter": `blur(${blur}px)`,
+    WebkitBackdropFilter: `blur(${blur}px)`,
   } as React.CSSProperties
 
   const maxOpacity = 1
