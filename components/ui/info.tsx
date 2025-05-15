@@ -11,33 +11,27 @@ type LabelProps = {
   isSecondary?: boolean
 }
 
-const Label = React.forwardRef<
-  HTMLDivElement | HTMLParagraphElement,
-  LabelProps
->(({ className, isSecondary, ...props }, ref) => {
+const Label = ({ className, isSecondary, ...props }: LabelProps) => {
   const Comp = isSecondary ? "p" : TooltipContentHeader
-  return <Comp ref={ref} className={cn("font-bold", className)} {...props} />
-})
+  return <Comp className={cn("font-bold", className)} {...props} />
+}
 Label.displayName = "Label"
 
-const Derivation = React.forwardRef<
-  HTMLDivElement,
-  React.HTMLAttributes<HTMLDivElement>
->(({ className, ...props }, ref) => (
+type DerivationProps = React.HTMLAttributes<HTMLDivElement>
+
+const Derivation = ({ className, ...props }: DerivationProps) => (
   <div
-    ref={ref}
     className={cn("rounded border bg-background px-3 py-2", className)}
     {...props}
   />
-))
+)
 Derivation.displayName = "Derivation"
 
-const Description = React.forwardRef<
-  HTMLParagraphElement,
-  React.HTMLAttributes<HTMLParagraphElement>
->(({ className, ...props }, ref) => (
-  <p ref={ref} className={cn("text-body-secondary", className)} {...props} />
-))
+type DescriptionProps = React.HTMLAttributes<HTMLParagraphElement>
+
+const Description = ({ className, ...props }: DescriptionProps) => (
+  <p className={cn("text-body-secondary", className)} {...props} />
+)
 Description.displayName = "Description"
 
 const termVariants = cva("", {
@@ -49,16 +43,12 @@ const termVariants = cva("", {
   },
 })
 
-const Term = React.forwardRef<
-  HTMLSpanElement,
-  React.HTMLAttributes<HTMLSpanElement> & VariantProps<typeof termVariants>
->(({ className, type, ...props }, ref) => (
-  <span
-    ref={ref}
-    className={cn(termVariants({ type, className }))}
-    {...props}
-  />
-))
+type TermProps = React.HTMLAttributes<HTMLSpanElement> &
+  VariantProps<typeof termVariants>
+
+const Term = ({ className, type, ...props }: TermProps) => (
+  <span className={cn(termVariants({ type, className }))} {...props} />
+)
 Term.displayName = "Term"
 
 export { Derivation, Description, Label, Term }
