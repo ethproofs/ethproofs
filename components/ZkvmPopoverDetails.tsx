@@ -9,10 +9,12 @@ type Breakdown = {
 }
 type ZkvmPopoverDetailsProps = React.HTMLAttributes<HTMLDivElement> & {
   breakdown: Breakdown
+  activeSeverity?: SeverityLevel
 }
 
 const ZkvmPopoverDetails = ({
   breakdown,
+  activeSeverity,
   children,
   className,
 }: ZkvmPopoverDetailsProps) => {
@@ -31,20 +33,48 @@ const ZkvmPopoverDetails = ({
     return ""
   }
 
+  const getSliceSaturateClass = (level: SeverityLevel) => {
+    if (!activeSeverity) return ""
+    if (level !== activeSeverity) return "saturate-50"
+    return ""
+  }
+
   return (
     <div className={cn("space-y-2", className)}>
       <p className="mb-4">{children}</p>
 
       <div className="grid grid-cols-3 gap-x-4 gap-y-1 px-6">
-        <div className="align-center col-start-1 row-start-2 flex items-center justify-end text-end font-semibold text-level-worst">
+        <div
+          className={cn(
+            "align-center col-start-1 row-start-2 flex items-center justify-end text-end font-semibold text-level-worst",
+            activeSeverity &&
+              (activeSeverity === orderedItems[0]
+                ? "scale-[115%] underline"
+                : "saturate-50")
+          )}
+        >
           {breakdown[orderedItems[0]]}
         </div>
 
-        <div className="col-start-2 row-start-1 flex justify-center text-center font-semibold text-yellow-700 dark:text-level-middle">
+        <div
+          className={cn(
+            "col-start-2 row-start-1 flex justify-center text-center font-semibold text-yellow-700 dark:text-level-middle",
+            activeSeverity === orderedItems[1]
+              ? "scale-[115%] underline"
+              : "saturate-50"
+          )}
+        >
           {breakdown[orderedItems[1]]}
         </div>
 
-        <div className="col-start-3 row-start-2 flex items-center justify-start text-start font-semibold text-primary">
+        <div
+          className={cn(
+            "col-start-3 row-start-2 flex items-center justify-start text-start font-semibold text-primary",
+            activeSeverity === orderedItems[2]
+              ? "scale-[115%] underline"
+              : "saturate-50"
+          )}
+        >
           {breakdown[orderedItems[2]]}
         </div>
 
@@ -57,7 +87,8 @@ const ZkvmPopoverDetails = ({
               className={cn(
                 "absolute inline origin-[50%_120%] scale-x-[133%] text-3xl",
                 getSliceRotationClass(level),
-                getSliceColorClass(level)
+                getSliceColorClass(level),
+                getSliceSaturateClass(level)
               )}
             />
           ))}
