@@ -39,7 +39,7 @@
 
     --level-best: 136, 100%, 38%; /* #1DC200 */
     --level-middle: 54, 100%, 50%; /* #FFF200 */
-    --level-worst: 0, 100%, 38%; /* #C20000 */
+    --level-worst: 0, 100%, 40%; /* #CC0000 */
   }
 
   /* Dark mode token declarations */
@@ -71,5 +71,7 @@
     --chart-4: 280, 65%, 60%;
     --chart-5: 340, 75%, 55%;
     --chart-border: var(--teal-800);
+
+    --level-worst: 0, 100%, 60%; /* #FF3333 */
   }
 }

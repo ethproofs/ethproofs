@@ -44,9 +44,9 @@ export const ClusterProofRow = ({ proof }: ClusterProofRowProps) => {
   // TODO: Mobile responsiveness
   return (
     <div
-      data-row="cluster-proof"
+      data-grid-template-areas="cluster-proof"
       className={cn(
-        "grid-custom-areas grid gap-x-6 border-b border-primary-border p-6",
+        "grid gap-x-6 border-b border-primary-border p-6",
         "grid-cols-[auto_auto] gap-y-4",
         "md:grid-cols-[1fr_1fr_auto_auto]",
         "lg:grid-cols-[1fr_repeat(3,_auto)]",

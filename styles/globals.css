@@ -91,16 +91,37 @@
 
 @layer components {
   /* base */
-  [data-row="cluster-proof"].grid-custom-areas {
+  [data-grid-template-areas="cluster-proof"] {
     grid-template-areas:
       "block block"
       "time cost"
       "download verify";
   }
 
+  [data-grid-template-areas="software-details"] {
+    grid-template-areas:
+      "position7 position7"
+      "position0 position0"
+      "pizza pizza"
+      "position6 position1"
+      "position5 position2"
+      "position4 position3";
+  }
+
+  /* sm */
+  @media (min-width: 640px) {
+    [data-grid-template-areas="software-details"] {
+      grid-template-areas:
+        "position7 position7 position7 . position0 position0 position0"
+        ". position6 pizza pizza pizza position1 ."
+        ". position5 pizza pizza pizza position2 ."
+        ". position4 pizza pizza pizza position3 .";
+    }
+  }
+
   /* md */
   @media (min-width: 768px) {
-    [data-row="cluster-proof"].grid-custom-areas {
+    [data-grid-template-areas="cluster-proof"] {
       grid-template-areas:
         "block block time cost"
         ". download verify .";
@@ -109,7 +130,7 @@
 
   /* lg */
   @media (min-width: 1024px) {
-    [data-row="cluster-proof"].grid-custom-areas {
+    [data-grid-template-areas="cluster-proof"] {
       grid-template-areas:
         "block time cost verify"
         "block time cost download";
@@ -118,7 +139,7 @@
 
   /* xl */
   @media (min-width: 1280px) {
-    [data-row="cluster-proof"].grid-custom-areas {
+    [data-grid-template-areas="cluster-proof"] {
       grid-template-areas: "block time cost download verify";
     }
   }
