@@ -17,20 +17,34 @@ const ZkvmPopoverDetails = ({
   className,
 }: ZkvmPopoverDetailsProps) => {
   const orderedItems = ["red", "yellow", "green"] as SeverityLevel[]
+
+  const getSliceRotationClass = (level: SeverityLevel) => {
+    if (level === orderedItems[0]) return "rotate-[-60deg]"
+    if (level === orderedItems[2]) return "rotate-[60deg]"
+    return "rotate-0"
+  }
+
+  const getSliceColorClass = (level: SeverityLevel) => {
+    if (level === "red") return "text-level-worst"
+    if (level === "yellow") return "text-level-middle"
+    if (level === "green") return "text-level-best"
+    return ""
+  }
+
   return (
     <div className={cn("space-y-2", className)}>
       <p className="mb-4">{children}</p>
 
-      <div className="grid grid-cols-3 gap-x-5 gap-y-2 px-6">
-        <div className="align-center col-start-1 row-start-2 flex items-center justify-end text-end text-level-worst">
+      <div className="grid grid-cols-3 gap-x-4 gap-y-1 px-6">
+        <div className="align-center col-start-1 row-start-2 flex items-center justify-end text-end font-semibold text-level-worst">
           {breakdown[orderedItems[0]]}
         </div>
 
-        <div className="col-start-2 row-start-1 flex justify-center text-center text-level-middle">
+        <div className="col-start-2 row-start-1 flex justify-center text-center font-semibold text-yellow-700 dark:text-level-middle">
           {breakdown[orderedItems[1]]}
         </div>
 
-        <div className="col-start-3 row-start-2 flex items-center justify-start text-start text-level-best">
+        <div className="col-start-3 row-start-2 flex items-center justify-start text-start font-semibold text-primary">
           {breakdown[orderedItems[2]]}
         </div>
 
@@ -41,12 +55,9 @@ const ZkvmPopoverDetails = ({
               width="0.7288135593em"
               height="1em"
               className={cn(
-                "inline text-3xl",
-                level === "red" &&
-                  "absolute origin-[50%_120%] -rotate-45 text-level-worst",
-                level === "yellow" && "absolute rotate-0 text-level-middle",
-                level === "green" &&
-                  "absolute origin-[50%_120%] rotate-45 text-level-best"
+                "absolute inline origin-[50%_120%] scale-x-[133%] text-3xl",
+                getSliceRotationClass(level),
+                getSliceColorClass(level)
               )}
             />
           ))}
