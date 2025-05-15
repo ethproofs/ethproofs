@@ -1,4 +1,6 @@
 import PizzaSliceEighth from "@/components/svgs/pizza-slice-n-8.svg"
+import ZkvmPopoverDetails from "@/components/ZkvmPopoverDetails"
+
 import {
   getZkvmPerformanceMetrics,
   getZkvmPerformanceMetricsByZkvmId,
@@ -12,7 +14,6 @@ import {
   ZkvmMetrics,
   ZkvmThresholdMetric,
 } from "./types"
-import ZkvmPopoverDetails from "@/components/ZkvmPopoverDetails"
 
 const protocolLabels: Record<SeverityLevel, string> = {
   red: "not fully audited",

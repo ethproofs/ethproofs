@@ -1,5 +1,7 @@
-import PizzaSliceEighth from "@/components/svgs/pizza-slice-n-8.svg"
 import { SeverityLevel } from "@/lib/types"
+
+import PizzaSliceEighth from "@/components/svgs/pizza-slice-n-8.svg"
+
 import { cn } from "@/lib/utils"
 
 type Breakdown = {
