@@ -3,13 +3,13 @@ import { Suspense } from "react"
 import Bomb from "@/components/svgs/bomb.svg"
 import Box from "@/components/svgs/box.svg"
 import Bug from "@/components/svgs/bug.svg"
+import CPU from "@/components/svgs/cpu.svg"
 import Document from "@/components/svgs/document.svg"
 import EthProofsLogo from "@/components/svgs/eth-proofs-logo.svg"
 import GitHub from "@/components/svgs/github.svg"
 import Heart from "@/components/svgs/heart.svg"
 import HexTarget from "@/components/svgs/hex-target.svg"
 import LightningBolt from "@/components/svgs/lightning-bolt.svg"
-import ProofCheck from "@/components/svgs/proof-check.svg"
 import Team from "@/components/svgs/team.svg"
 import TrendUpChart from "@/components/svgs/trend-up-chart.svg"
 
@@ -98,7 +98,7 @@ const AppNavigationMenu = ({ insideDrawer }: AppNavigationMenuProps) => {
                 href="/clusters"
                 className="inline-flex text-body hover:text-primary [&>svg:first-child]:me-2 [&>svg:first-child]:size-6"
               >
-                <ProofCheck />
+                <CPU />
                 clusters
               </Link>
             </MenuItem>
@@ -183,7 +183,7 @@ const AppNavigationMenu = ({ insideDrawer }: AppNavigationMenuProps) => {
       <SidebarFooter>
         <div>
           Built with{" "}
-          <Heart className="mb-0.5 inline animate-heart-beat text-xl text-primary" />{" "}
+          <Heart className="mb-0.5 inline text-xl text-primary motion-safe:animate-heart-beat" />{" "}
           by the
           <br />
           <Link

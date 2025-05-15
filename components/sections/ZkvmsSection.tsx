@@ -40,8 +40,8 @@ const ZkvmsSection = async () => {
       </div>
 
       <div className="flex justify-center">
-        <ButtonLink variant="outline" href="/zkvms">
-          See all
+        <ButtonLink variant="outline" href="/zkvms" className="min-w-40">
+          see all
         </ButtonLink>
       </div>
     </Card>

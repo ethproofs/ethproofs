@@ -221,7 +221,7 @@ const ProofRow = ({ proof, block }: ProofRowProps) => {
             <metrics.costPerProof.Details />
           </MetricInfo>
         </MetricLabel>
-        <MetricValue className="font-normal">
+        <MetricValue className="justify-end font-normal md:flex">
           {isAvailable && provingCost ? (
             <Popover>
               <PopoverTrigger className="flex items-center gap-2">

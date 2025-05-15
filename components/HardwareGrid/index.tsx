@@ -5,7 +5,7 @@ import type { ClusterMachineBase, MachineBase } from "@/lib/types"
 import { cn, sumArray } from "@/lib/utils"
 
 import MachineBox from "./MachineBox"
-import { getBoxColor } from "./utils"
+import { getBoxClassesByValue } from "./utils"
 
 type HardwareGridProps = React.ComponentProps<"div"> & {
   clusterMachines: (ClusterMachineBase & {
@@ -19,9 +19,11 @@ const HardwareGrid = ({ clusterMachines, className }: HardwareGridProps) => {
     [clusterMachines]
   )
 
+  const sharedClasses = "size-10 rounded-[4px]"
+
   return (
     <div
-      className={cn("grid w-fit grid-rows-5 gap-1", className)}
+      className={cn("grid w-fit grid-rows-4 gap-2", className)}
       style={{ gridAutoFlow: "column" }}
     >
       {/* Machine cells */}
@@ -34,7 +36,12 @@ const HardwareGrid = ({ clusterMachines, className }: HardwareGridProps) => {
           return (
             <MachineBox
               key={uniqueKey}
-              className={getBoxColor(gpuCount)}
+              className={cn(
+                "transition-all hover:scale-[115%] hover:rounded-[6px] hover:transition-all",
+                sharedClasses,
+                getBoxClassesByValue(gpuCount)
+              )}
+              style={{ animationDelay: `${Math.random() * countIdx * 100}ms` }}
               machine={clusterMachine.machine}
             />
           )
@@ -42,10 +49,10 @@ const HardwareGrid = ({ clusterMachines, className }: HardwareGridProps) => {
       )}
 
       {/* Fill remaining cells */}
-      {[...Array(2 ** 8 - totalMachineCount)].map((_, i) => (
+      {[...Array(2 ** 5 - totalMachineCount)].map((_, i) => (
         <div
           key={`empty-${i}`}
-          className={cn("size-6 rounded-[4px]", getBoxColor(0))}
+          className={cn(sharedClasses, getBoxClassesByValue(0))}
         />
       ))}
     </div>

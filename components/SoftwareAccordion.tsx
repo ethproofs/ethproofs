@@ -1,3 +1,4 @@
+import { ChevronRight } from "lucide-react"
 import { type AccordionItemProps } from "@radix-ui/react-accordion"
 
 import type { Vendor, Zkvm, ZkvmMetrics, ZkvmVersion } from "@/lib/types"
@@ -82,7 +83,8 @@ const SoftwareAccordionItem = ({
             href={`/zkvms/${zkvm.slug}`}
             className="col-start-2 mx-auto"
           >
-            Details
+            details for {zkvm.name}
+            <ChevronRight className="-mx-2 size-4" />
           </ButtonLink>
           <div className="col-start-3 text-end">
             <span className="text-xs italic text-body-secondary">

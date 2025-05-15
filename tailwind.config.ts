@@ -108,12 +108,30 @@ const config = {
             strokeDashoffset: "100%",
           },
         },
+        "brownian-motion": {
+          "0%": {
+            transform: "translate(0, 0)",
+          },
+          "25%": {
+            transform: "translate(-0.5px, -0.5px)",
+          },
+          "50%": {
+            transform: "translate(0.5px, 0.5px)",
+          },
+          "75%": {
+            transform: "translate(-0.5px, 0.5px)",
+          },
+          "100%": {
+            transform: "translate(0, 0)",
+          },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
         "accordion-up": "accordion-up 0.2s ease-out",
         "heart-beat": "heart-beat 1s infinite",
         "write-on-off": "write-on-off 2s ease-in-out infinite",
+        brownian: "brownian-motion 0.2s infinite",
       },
     },
   },

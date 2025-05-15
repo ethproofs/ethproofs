@@ -70,8 +70,8 @@ const ClustersSection = async () => {
       />
 
       <div className="flex justify-center">
-        <ButtonLink variant="outline" href="/clusters">
-          See all
+        <ButtonLink variant="outline" href="/clusters" className="min-w-40">
+          see all
         </ButtonLink>
       </div>
     </Card>

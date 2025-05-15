@@ -111,8 +111,8 @@ export default async function ZkvmDetailsPage({
         </div>
       </div>
 
-      <div className="bg-gradient-to-b from-background to-background-active">
-        <div className="mx-auto max-w-screen-xl">
+      <div className="bg-gradient-to-t from-background-active/20">
+        <div className="mx-auto max-w-screen-xl pb-6">
           <h2 className="sr-only">zkVM software details</h2>
           <SoftwareDetails detailItems={getSoftwareDetailItems(zkvmMetrics)} />
         </div>

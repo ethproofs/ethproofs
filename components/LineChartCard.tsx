@@ -79,7 +79,7 @@ const LineChartCard = ({
   className,
   title,
   data,
-  initialDayRange = CHART_RANGES[0],
+  initialDayRange = CHART_RANGES[1],
   isLoading = false,
   totalAvg,
   totalMedian,

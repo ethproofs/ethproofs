@@ -1,6 +1,5 @@
 import { Fragment } from "react"
-import { Check, X as RedX } from "lucide-react"
-import Image from "next/image"
+import { Check, ChevronRight, X as RedX } from "lucide-react"
 import { type AccordionItemProps } from "@radix-ui/react-accordion"
 
 import type {
@@ -13,7 +12,7 @@ import type {
   ZkvmVersion,
 } from "@/lib/types"
 
-import { cn, sumArray } from "@/lib/utils"
+import { cn } from "@/lib/utils"
 
 import { getBoxIndexColor } from "./HardwareGrid/utils"
 import {
@@ -29,7 +28,6 @@ import ClusterMachineSummary from "./ClusterMachineSummary"
 import { DisplayTeamLink } from "./DisplayTeamLink"
 import HardwareGrid from "./HardwareGrid"
 import NoData from "./NoData"
-import Null from "./Null"
 
 import { hasPhysicalMachines, isMultiMachineCluster } from "@/lib/clusters"
 import { formatShortDate } from "@/lib/date"
@@ -160,7 +158,8 @@ const ClusterAccordionItem = ({
 
         <div className="grid place-items-center">
           <ButtonLink variant="outline" href={`/clusters/${clusterDetails.id}`}>
-            Details
+            details for {clusterDetails.nickname}
+            <ChevronRight className="-mx-2 size-4" />
           </ButtonLink>
         </div>
 
