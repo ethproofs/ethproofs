@@ -1,3 +1,4 @@
+import { startOfDay } from "date-fns"
 import { and, eq, gte, lte, sql } from "drizzle-orm"
 import { count } from "drizzle-orm"
 import { unstable_cache as cache } from "next/cache"
@@ -55,30 +56,44 @@ export const fetchTeamProofsPerStatusCount = async (teamId: string) => {
   return proofsPerStatusCount
 }
 
-export const fetchProofsPerStatusCount = cache(
-  async (from?: Date, to?: Date) => {
-    const proofsPerStatusCount = await db
-      .select({
-        proof_status: proofs.proof_status,
-        count: sql<number>`cast(count(${proofs.proof_id}) as int)`,
-      })
-      .from(proofs)
-      .where(
-        and(
-          from ? gte(proofs.created_at, from.toISOString()) : undefined,
-          to ? lte(proofs.created_at, to.toISOString()) : undefined
-        )
-      )
-      .groupBy(proofs.proof_status)
+export const fetchProofsPerStatusCount = async (
+  fromDate?: Date,
+  toDate?: Date
+) => {
+  const from = fromDate ? startOfDay(fromDate).toISOString() : undefined
+  const to = toDate ? startOfDay(toDate).toISOString() : undefined
 
-    return proofsPerStatusCount
-  },
-  ["proofs-per-status-count"],
-  {
-    revalidate: 60 * 60 * 24, // daily
-    tags: ["proofs"],
-  }
-)
+  const keyParts = [
+    "proofs-per-status-count",
+    ...(from ? [from] : []),
+    ...(to ? [to] : []),
+  ]
+
+  return cache(
+    async (from: string | undefined, to: string | undefined) => {
+      const proofsPerStatusCount = await db
+        .select({
+          proof_status: proofs.proof_status,
+          count: sql<number>`cast(count(${proofs.proof_id}) as int)`,
+        })
+        .from(proofs)
+        .where(
+          and(
+            from ? gte(proofs.created_at, from) : undefined,
+            to ? lte(proofs.created_at, to) : undefined
+          )
+        )
+        .groupBy(proofs.proof_status)
+
+      return proofsPerStatusCount
+    },
+    keyParts,
+    {
+      revalidate: 60 * 60 * 24, // daily
+      tags: ["proofs"],
+    }
+  )(from, to)
+}
 
 export const lastProvedProof = async () => {
   const lastProvedProof = await db.query.proofs.findFirst({

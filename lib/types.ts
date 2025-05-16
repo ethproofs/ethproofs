@@ -231,7 +231,7 @@ export type Stats = {
 }
 
 export type SliceDetails = {
-  level: SeverityLevel
+  level: SeverityLevel | undefined
 }
 
 export type Slices = [
@@ -252,7 +252,7 @@ export type SoftwareDetailItem = {
   label: React.ReactNode
   className?: string
   popoverDetails: React.ReactNode
-  severity: SeverityLevel
+  severity: SeverityLevel | undefined
   position: 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7
 } & ({ chartInfo: LevelMeterProps } | { value: string })
 

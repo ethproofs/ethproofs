@@ -1,11 +1,9 @@
-import PizzaSliceEighth from "@/components/svgs/pizza-slice-n-8.svg"
 import ZkvmPopoverDetails from "@/components/ZkvmPopoverDetails"
 
 import {
-  getZkvmPerformanceMetrics,
   getZkvmPerformanceMetricsByZkvmId,
-  getZkvmSecurityMetrics,
   getZkvmSecurityMetricsByZkvmId,
+  getZkvmsWithMetrics,
 } from "./api/metrics"
 import { ZKVM_THRESHOLDS } from "./constants"
 import {
@@ -58,9 +56,11 @@ const trustedSetupLabels: Record<SeverityLevel, string> = {
 }
 
 export const getZkvmMetricLabel = (
-  severity: SeverityLevel,
+  severity: SeverityLevel | undefined,
   metricType: string
 ): string => {
+  if (severity === undefined) return "no data"
+
   switch (metricType) {
     case "protocol_soundness":
     case "implementation_soundness":
@@ -104,25 +104,24 @@ export const getZkvmMetricSeverity = (
 }
 
 export const getZkvmMetricSeverityLevels = (
-  metrics: ZkvmMetrics
-): Record<string, SeverityLevel> => {
+  metrics: Partial<ZkvmMetrics>
+): Record<string, SeverityLevel | undefined> => {
   // Get the severity levels for each numeric metric
-  const proofSizeSeverity = getZkvmMetricSeverity(
-    metrics.size_bytes,
-    "size_bytes"
-  )
-  const verificationTimeSeverity = getZkvmMetricSeverity(
-    metrics.verification_ms,
-    "verification_ms"
-  )
-  const maxBountyAmountSeverity = getZkvmMetricSeverity(
-    metrics.max_bounty_amount,
-    "max_bounty_amount"
-  )
-  const securityTargetSeverity = getZkvmMetricSeverity(
-    metrics.security_target_bits,
-    "security_target_bits"
-  )
+  const proofSizeSeverity = metrics.size_bytes
+    ? getZkvmMetricSeverity(metrics.size_bytes, "size_bytes")
+    : undefined
+  const verificationTimeSeverity = metrics.verification_ms
+    ? getZkvmMetricSeverity(metrics.verification_ms, "verification_ms")
+    : undefined
+  const maxBountyAmountSeverity = metrics.max_bounty_amount
+    ? getZkvmMetricSeverity(metrics.max_bounty_amount, "max_bounty_amount")
+    : undefined
+  const securityTargetSeverity = metrics.security_target_bits
+    ? getZkvmMetricSeverity(
+        metrics.security_target_bits,
+        "security_target_bits"
+      )
+    : undefined
 
   return {
     proofSize: proofSizeSeverity,
@@ -137,37 +136,28 @@ export const getZkvmMetricSeverityLevels = (
   }
 }
 
-export const getZkvmsMetrics = async () => {
-  const securityMetrics = await getZkvmSecurityMetrics()
-  const performanceMetrics = await getZkvmPerformanceMetrics()
+export const getZkvmsMetricsByZkvmId = async ({
+  zkvmIds,
+}: {
+  zkvmIds: number[]
+}) => {
+  const zkvmsWithMetrics = await getZkvmsWithMetrics({ zkvmIds })
 
-  const metricsByZkvmId = new Map()
+  const metricsByZkvmId = new Map<number, Partial<ZkvmMetrics>>()
 
-  for (const metric of securityMetrics) {
-    metricsByZkvmId.set(metric.zkvm_id, {
-      ...metric,
+  for (const zkvm of zkvmsWithMetrics) {
+    metricsByZkvmId.set(zkvm.id, {
+      ...zkvm.security_metrics,
+      ...zkvm.performance_metrics,
     })
   }
 
-  for (const metric of performanceMetrics) {
-    const existing = metricsByZkvmId.get(metric.zkvm_id) || {}
-
-    metricsByZkvmId.set(metric.zkvm_id, {
-      ...existing,
-      ...metric,
-    })
-  }
-
-  return Object.fromEntries(metricsByZkvmId)
+  return metricsByZkvmId
 }
 
 export const getZkvmMetrics = async (zkvmId: number) => {
   const securityMetrics = await getZkvmSecurityMetricsByZkvmId(zkvmId)
   const performanceMetrics = await getZkvmPerformanceMetricsByZkvmId(zkvmId)
-
-  if (!securityMetrics || !performanceMetrics) {
-    throw new Error("No metrics found for zkvm")
-  }
 
   return {
     ...securityMetrics,
@@ -176,7 +166,7 @@ export const getZkvmMetrics = async (zkvmId: number) => {
 }
 
 export const getSoftwareDetailItems = (
-  metrics: ZkvmMetrics
+  metrics: Partial<ZkvmMetrics>
 ): SoftwareDetailItem[] => {
   const severityLevels = getZkvmMetricSeverityLevels(metrics)
 
@@ -201,6 +191,7 @@ export const getSoftwareDetailItems = (
         worstThreshold: ZKVM_THRESHOLDS.verification_ms.red,
         unit: "ms",
         value: Number(metrics.verification_ms),
+        disabled: !metrics.verification_ms,
       },
       className: "px-8",
     },
@@ -227,6 +218,7 @@ export const getSoftwareDetailItems = (
         worstThreshold: ZKVM_THRESHOLDS.size_bytes.red / 1024,
         unit: "kB",
         value: Number(metrics.size_bytes) / 1024,
+        disabled: !metrics.size_bytes,
       },
       className: "px-8",
     },

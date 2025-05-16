@@ -5,6 +5,7 @@ export type LevelMeterProps = React.ComponentProps<"div"> & {
   worstThreshold: number
   value: number
   unit: string
+  disabled?: boolean
 }
 const LevelMeter = ({
   className,
@@ -12,6 +13,7 @@ const LevelMeter = ({
   worstThreshold,
   value,
   unit,
+  disabled,
 }: LevelMeterProps) => {
   const valueXPosition = (() => {
     const THIRD = 100 / 3
@@ -45,7 +47,11 @@ const LevelMeter = ({
 
   return (
     <div
-      className={cn("relative grid w-full grid-cols-6 space-y-1", className)}
+      className={cn(
+        "relative grid w-full grid-cols-6 space-y-1",
+        disabled && "grayscale",
+        className
+      )}
     >
       <div
         data-label="colored-meter"
@@ -72,25 +78,27 @@ const LevelMeter = ({
         {unit}
       </div>
 
-      <div
-        data-label="current-value"
-        className="absolute z-10"
-        style={{ insetInlineStart: valueXPosition + "%" }}
-      >
-        <span className="absolute -translate-x-1/2 -translate-y-9 font-mono">
-          {value}
-          {unit}
-          <div className="relative flex w-full flex-col">
-            <div className="col-span-2 place-items-center">
-              <div className="absolute bottom-full start-1/2 size-1 -translate-x-1/2 rounded-full bg-body" />
+      {!disabled && (
+        <div
+          data-label="current-value"
+          className="absolute z-10"
+          style={{ insetInlineStart: valueXPosition + "%" }}
+        >
+          <span className="absolute -translate-x-1/2 -translate-y-9 font-mono">
+            {value}
+            {unit}
+            <div className="relative flex w-full flex-col">
+              <div className="col-span-2 place-items-center">
+                <div className="absolute bottom-full start-1/2 size-1 -translate-x-1/2 rounded-full bg-body" />
+              </div>
+              <div className="flex h-4 w-full">
+                <div className="flex-1 border-e border-body"></div>
+                <div className="flex-1" data-label="spacer" />
+              </div>
             </div>
-            <div className="flex h-4 w-full">
-              <div className="flex-1 border-e border-body"></div>
-              <div className="flex-1" data-label="spacer" />
-            </div>
-          </div>
-        </span>
-      </div>
+          </span>
+        </div>
+      )}
     </div>
   )
 }
