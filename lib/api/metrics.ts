@@ -1,16 +1,20 @@
-import { eq } from "drizzle-orm"
+import { eq, inArray } from "drizzle-orm"
 
 import { db } from "@/db"
-import { zkvmPerformanceMetrics, zkvmSecurityMetrics } from "@/db/schema"
+import { zkvmPerformanceMetrics, zkvms, zkvmSecurityMetrics } from "@/db/schema"
 
-export const getZkvmSecurityMetrics = async () => {
-  const metrics = await db.query.zkvmSecurityMetrics.findMany()
-
-  return metrics
-}
-
-export const getZkvmPerformanceMetrics = async () => {
-  const metrics = await db.query.zkvmPerformanceMetrics.findMany()
+export const getZkvmsWithMetrics = async ({
+  zkvmIds,
+}: {
+  zkvmIds: number[]
+}) => {
+  const metrics = await db.query.zkvms.findMany({
+    where: inArray(zkvms.id, zkvmIds),
+    with: {
+      security_metrics: true,
+      performance_metrics: true,
+    },
+  })
 
   return metrics
 }

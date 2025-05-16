@@ -18,7 +18,7 @@ import Pizza from "./Pizza"
 import SoftwareDetails from "./SoftwareDetails"
 
 import { formatShortDate } from "@/lib/date"
-import { getSoftwareDetailItems, getZkvmsMetrics } from "@/lib/metrics"
+import { getSoftwareDetailItems, getZkvmsMetricsByZkvmId } from "@/lib/metrics"
 import { getSlices, getZkvmsWithUsage } from "@/lib/zkvms"
 
 const SoftwareAccordionItem = ({
@@ -32,7 +32,7 @@ const SoftwareAccordionItem = ({
     totalClusters: number
     activeClusters: number
   }
-  metrics: ZkvmMetrics
+  metrics: Partial<ZkvmMetrics>
 }) => {
   const detailItems = getSoftwareDetailItems(metrics)
 
@@ -101,10 +101,10 @@ const SoftwareAccordionItem = ({
 }
 
 const SoftwareAccordion = async () => {
-  const [zkvms, metricsByZkvmId] = await Promise.all([
-    getZkvmsWithUsage(),
-    getZkvmsMetrics(),
-  ])
+  const zkvms = await getZkvmsWithUsage()
+  const metricsByZkvmId = await getZkvmsMetricsByZkvmId({
+    zkvmIds: zkvms.map((zkvm) => zkvm.id),
+  })
 
   return (
     <Accordion
@@ -139,7 +139,7 @@ const SoftwareAccordion = async () => {
           key={zkvm.id}
           value={"item-" + zkvm.id}
           zkvm={zkvm}
-          metrics={metricsByZkvmId[zkvm.id]}
+          metrics={metricsByZkvmId.get(zkvm.id)!}
         />
       ))}
     </Accordion>
