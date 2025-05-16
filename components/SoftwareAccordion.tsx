@@ -139,7 +139,7 @@ const SoftwareAccordion = async () => {
           key={zkvm.id}
           value={"item-" + zkvm.id}
           zkvm={zkvm}
-          metrics={metricsByZkvmId.get(zkvm.id)!}
+          metrics={metricsByZkvmId.get(zkvm.id) || {}}
         />
       ))}
     </Accordion>
