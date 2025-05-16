@@ -11,6 +11,8 @@ import { getMetadata } from "@/lib/metadata"
 
 export const metadata: Metadata = getMetadata()
 
+export const dynamic = "force-dynamic"
+
 export default async function Index() {
   const recentSummary = await getRecentSummary()
 
