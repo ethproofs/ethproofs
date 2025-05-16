@@ -73,7 +73,6 @@ const config = {
           best: "hsla(var(--level-best))",
           middle: "hsla(var(--level-middle))",
           worst: "hsla(var(--level-worst))",
-          none: "hsla(var(--level-none))",
         },
         border: "hsla(var(--border))",
       },

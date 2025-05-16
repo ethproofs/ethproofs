@@ -53,7 +53,7 @@ const Pizza = ({
     green: "text-level-best",
     yellow: "text-level-middle",
     red: "text-level-worst",
-    none: "text-level-none",
+    none: "text-body-secondary",
   }
 
   const GROUP_HOVER = [
