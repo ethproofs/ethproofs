@@ -10,7 +10,7 @@ export default async function CloudInstancesPage() {
   const instances = await getInstances()
 
   return (
-    <div className="flex flex-col gap-8">
+    <div className="flex w-full flex-col gap-8">
       <div className="flex flex-col gap-4">
         <h1 className="text-2xl font-bold">Cloud Instances</h1>
         <div className="flex flex-col gap-2">
@@ -27,7 +27,9 @@ export default async function CloudInstancesPage() {
         </div>
       </div>
 
-      <CloudInstancesTable providers={providers} instances={instances} />
+      <div className="overflow-x-auto">
+        <CloudInstancesTable providers={providers} instances={instances} />
+      </div>
     </div>
   )
 }
