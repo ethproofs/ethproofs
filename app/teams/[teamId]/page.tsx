@@ -57,8 +57,9 @@ export default async function TeamDetailsPage({
     if (!team) {
       // if team is not found, try to get vendor
       // NOTE: edge case for handling only vendor pages
-      // @ts-expect-error expected: vendor does not have `storage_quota_bytes`
-      team = await getVendorByIdOrSlug(teamId)
+      const vendor = await getVendorByIdOrSlug(teamId)
+      // Convert to Team interface: vendor does not have `storage_quota_bytes`
+      if (vendor) team = { ...vendor, storage_quota_bytes: null }
     }
 
     if (!team) {
