@@ -1,5 +1,4 @@
 import { type Metadata } from "next"
-import Image from "next/image"
 import { notFound } from "next/navigation"
 
 import type { SummaryItem, Team, Zkvm } from "@/lib/types"
@@ -17,17 +16,15 @@ import { HeroBody, HeroItem, HeroItemLabel } from "@/components/ui/hero"
 import Link from "@/components/ui/link"
 import VendorsAside from "@/components/VendorsAside"
 
-import { cn } from "@/lib/utils"
-
 import { SITE_NAME } from "@/lib/constants"
 
 import { getActiveClusters } from "@/lib/api/clusters"
 import { getTeamSummary } from "@/lib/api/stats"
-import { getVendorByUserId } from "@/lib/api/vendor"
+import { getVendor } from "@/lib/api/vendors"
 import { getZkvmsByVendorId } from "@/lib/api/zkvms"
 import { getMetadata } from "@/lib/metadata"
 import { formatUsd } from "@/lib/number"
-import { getTeamByIdOrSlug } from "@/lib/teams"
+import { getTeamByIdOrSlug, getVendorByIdOrSlug } from "@/lib/teams"
 import { prettyMs } from "@/lib/time"
 import { getHost, getTwitterHandle } from "@/lib/url"
 
@@ -57,14 +54,24 @@ export default async function TeamDetailsPage({
   let team: Team | undefined
   try {
     team = await getTeamByIdOrSlug(teamId)
-    if (!team) throw new Error()
+    if (!team) {
+      // if team is not found, try to get vendor
+      // NOTE: edge case for handling only vendor pages
+      const vendor = await getVendorByIdOrSlug(teamId)
+      // Convert to Team interface: vendor does not have `storage_quota_bytes`
+      if (vendor) team = { ...vendor, storage_quota_bytes: null }
+    }
+
+    if (!team) {
+      throw new Error()
+    }
   } catch {
     return notFound()
   }
 
   const [teamSummary, vendor, clusters] = await Promise.all([
     getTeamSummary(team.id),
-    getVendorByUserId(team.id),
+    getVendor(team.id),
     getActiveClusters({ teamId: team.id }),
   ])
 
@@ -87,12 +94,12 @@ export default async function TeamDetailsPage({
     {
       key: "total-proofs",
       label: "proofs",
-      value: teamSummary.total_proofs_single || <Null />,
+      value: teamSummary?.total_proofs_single || <Null />,
     },
     {
       key: "avg-cost",
       label: "avg cost",
-      value: teamSummary.avg_cost_per_proof_single ? (
+      value: teamSummary?.avg_cost_per_proof_single ? (
         formatUsd(teamSummary.avg_cost_per_proof_single)
       ) : (
         <Null />
@@ -102,8 +109,8 @@ export default async function TeamDetailsPage({
       key: "avg-time",
       label: "avg time",
       value:
-        Number(teamSummary.avg_proving_time_single) > 0 ? (
-          prettyMs(Number(teamSummary.avg_proving_time_single))
+        Number(teamSummary?.avg_proving_time_single) > 0 ? (
+          prettyMs(Number(teamSummary?.avg_proving_time_single))
         ) : (
           <Null />
         ),
@@ -114,13 +121,13 @@ export default async function TeamDetailsPage({
     {
       key: "total-proofs",
       label: "proofs",
-      value: teamSummary.total_proofs_multi || <Null />,
+      value: teamSummary?.total_proofs_multi || <Null />,
     },
     {
       key: "avg-cost",
       label: "avg cost",
-      value: teamSummary.avg_cost_per_proof_multi ? (
-        formatUsd(teamSummary.avg_cost_per_proof_multi)
+      value: teamSummary?.avg_cost_per_proof_multi ? (
+        formatUsd(teamSummary?.avg_cost_per_proof_multi)
       ) : (
         <Null />
       ),
@@ -129,8 +136,8 @@ export default async function TeamDetailsPage({
       key: "avg-time",
       label: "avg time",
       value:
-        Number(teamSummary.avg_proving_time_multi) > 0 ? (
-          prettyMs(Number(teamSummary.avg_proving_time_multi))
+        Number(teamSummary?.avg_proving_time_multi) > 0 ? (
+          prettyMs(Number(teamSummary?.avg_proving_time_multi))
         ) : (
           <Null />
         ),
