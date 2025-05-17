@@ -147,7 +147,7 @@ export default async function TeamDetailsPage({
   return (
     <div className="px-6 md:px-8">
       <div id="hero-section" className="mb-24 mt-16 md:mt-24">
-        <h1 className="text-shadow flex justify-center text-center font-serif text-4xl font-semibold">
+        <h1 className="text-shadow flex justify-center pb-6 text-center font-serif text-4xl font-semibold">
           <DisplayTeam team={team} height={48} />
         </h1>
 
