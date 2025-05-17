@@ -6,7 +6,7 @@ export const uploadProofBinary = async (
   filename: string,
   binaryBuffer: Buffer
 ) => {
-  const supabase = createClient()
+  const supabase = await createClient()
 
   const { data, error } = await supabase.storage
     .from(PROOF_BINARY_BUCKET)
@@ -24,7 +24,7 @@ export const uploadProofBinary = async (
 }
 
 export const getProofBinary = async (filename: string) => {
-  const supabase = createClient()
+  const supabase = await createClient()
 
   const { data } = supabase.storage
     .from(PROOF_BINARY_BUCKET)
@@ -34,7 +34,7 @@ export const getProofBinary = async (filename: string) => {
 }
 
 export const downloadProofBinary = async (filename: string) => {
-  const supabase = createClient()
+  const supabase = await createClient()
 
   const { data, error } = await supabase.storage
     .from(PROOF_BINARY_BUCKET)

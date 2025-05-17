@@ -17,7 +17,7 @@ export const withAuth = (
   withTelemetry(async (request: Request) => {
     const timestamp = new Date().toISOString()
 
-    const headerStore = headers()
+    const headerStore = await headers()
     const authHeader = headerStore.get("authorization")
     const apiKey = authHeader ? authHeader.split(" ")[1] : ""
     const hashedKey = await hashToken(apiKey)

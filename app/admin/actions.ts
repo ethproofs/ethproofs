@@ -96,7 +96,7 @@ export async function createUser(_prevState: unknown, formData: FormData) {
     validatedFields.data
 
   try {
-    const supabase = createClient()
+    const supabase = await createClient()
 
     // check if logged user is using the correct role
     const {
@@ -195,7 +195,7 @@ export async function generateApiKey(_prevState: unknown, formData: FormData) {
   const { team: teamId } = validatedFields.data
 
   try {
-    const supabase = createClient()
+    const supabase = await createClient()
 
     // check if logged user is using the correct role
     const {

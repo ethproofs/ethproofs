@@ -1,4 +1,4 @@
-import { AnchorHTMLAttributes, forwardRef } from "react"
+import { AnchorHTMLAttributes } from "react"
 import NextLink, { type LinkProps as NextLinkProps } from "next/link"
 
 import ExternalLink from "@/components/svgs/external-link.svg"
@@ -9,6 +9,7 @@ type BaseProps = {
   hideArrow?: boolean
   isPartiallyActive?: boolean
   activeClassName?: string
+  ref?: React.Ref<HTMLAnchorElement>
 }
 
 export type LinkProps = BaseProps &
@@ -24,10 +25,14 @@ export type LinkProps = BaseProps &
  * - External links
  * e.g. <Link href="https://example.com/">
  */
-export const BaseLink = forwardRef<HTMLAnchorElement, LinkProps>(function Link(
-  { href, children, className, hideArrow, ...props }: LinkProps,
-  ref
-) {
+export const BaseLink = function Link({
+  href,
+  children,
+  className,
+  hideArrow,
+  ref,
+  ...props
+}: LinkProps) {
   if (!href) {
     console.warn("Link component is missing href prop")
     return <a {...props} />
@@ -63,20 +68,18 @@ export const BaseLink = forwardRef<HTMLAnchorElement, LinkProps>(function Link(
     )
 
   return <NextLink {...commonProps}>{children}</NextLink>
-})
+}
 BaseLink.displayName = "BaseLink"
 
-const InlineLink = forwardRef<HTMLAnchorElement, LinkProps>(
-  (props: LinkProps, ref) => {
-    return (
-      <BaseLink
-        className="font-body text-primary visited:text-primary-visited hover:text-primary-light"
-        ref={ref}
-        {...props}
-      />
-    )
-  }
-)
+const InlineLink = (props: LinkProps) => {
+  return (
+    <BaseLink
+      className="font-body text-primary visited:text-primary-visited hover:text-primary-light"
+      {...props}
+    />
+  )
+}
+
 InlineLink.displayName = "InlineLink"
 
 export default InlineLink

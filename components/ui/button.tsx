@@ -73,34 +73,30 @@ export interface ButtonProps
    * `NOTE`: Does not apply to the `Solid` or `Link` variants
    */
   isSecondary?: boolean
+  ref?: React.Ref<HTMLButtonElement>
 }
 
-const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
-  (
-    {
-      className,
-      variant,
-      size,
-      isSecondary = false,
-      asChild = false,
-      ...props
-    },
-    ref
-  ) => {
-    const Comp = asChild ? Slot : "button"
-    return (
-      <Comp
-        className={cn(buttonVariants({ variant, size, className }))}
-        ref={ref}
-        {...checkIsSecondary({
-          variant,
-          isSecondary,
-        })}
-        {...props}
-      />
-    )
-  }
-)
+const Button = ({
+  className,
+  variant,
+  size,
+  isSecondary = false,
+  asChild = false,
+  ...props
+}: ButtonProps) => {
+  const Comp = asChild ? Slot : "button"
+  return (
+    <Comp
+      className={cn(buttonVariants({ variant, size, className }))}
+      {...checkIsSecondary({
+        variant,
+        isSecondary,
+      })}
+      {...props}
+    />
+  )
+}
+
 Button.displayName = "Button"
 
 type ButtonLinkProps = LinkProps &
@@ -111,42 +107,37 @@ type ButtonLinkProps = LinkProps &
     buttonProps?: Omit<ButtonProps, "size" | "variant">
   }
 
-const ButtonLink = React.forwardRef<HTMLAnchorElement, ButtonLinkProps>(
-  (
-    {
-      size,
-      variant,
-      isSecondary,
-      buttonProps,
-      children,
-      className,
-      ...linkProps
-    },
-    ref
-  ) => {
-    return (
-      <Button
-        asChild
-        size={size}
-        variant={variant}
-        isSecondary={isSecondary}
-        {...buttonProps}
+const ButtonLink = ({
+  size,
+  variant,
+  isSecondary,
+  buttonProps,
+  children,
+  className,
+  ...linkProps
+}: ButtonLinkProps) => {
+  return (
+    <Button
+      asChild
+      size={size}
+      variant={variant}
+      isSecondary={isSecondary}
+      {...buttonProps}
+    >
+      <Link
+        hideArrow
+        className={cn(
+          "font-body font-bold no-underline hover:no-underline",
+          className
+        )}
+        {...linkProps}
       >
-        <Link
-          ref={ref}
-          hideArrow
-          className={cn(
-            "font-body font-bold no-underline hover:no-underline",
-            className
-          )}
-          {...linkProps}
-        >
-          {children}
-        </Link>
-      </Button>
-    )
-  }
-)
+        {children}
+      </Link>
+    </Button>
+  )
+}
+
 ButtonLink.displayName = "ButtonLink"
 
 export { Button, ButtonLink, buttonVariants }

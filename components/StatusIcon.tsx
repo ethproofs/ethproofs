@@ -16,20 +16,21 @@ const statusVariants = cva("self-center text-2xl text-body-secondary", {
   },
 })
 
-const StatusIcon = React.forwardRef<
-  SVGElement,
-  React.HTMLAttributes<SVGElement> & VariantProps<typeof statusVariants>
->(({ className, status, ...props }, ref) => {
+const StatusIcon = ({
+  className,
+  status,
+  ...props
+}: React.HTMLAttributes<SVGElement> & VariantProps<typeof statusVariants>) => {
   const Icon = status === "queued" ? BoxDashed : Box
   return (
     <Icon
-      ref={ref}
       strokeWidth="1"
       className={cn(statusVariants({ status, className }))}
       {...props}
     />
   )
-})
+}
+
 StatusIcon.displayName = "StatusIcon"
 
 export default StatusIcon
