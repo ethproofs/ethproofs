@@ -12,13 +12,15 @@ import HexTarget from "@/components/svgs/hex-target.svg"
 import LightningBolt from "@/components/svgs/lightning-bolt.svg"
 import Team from "@/components/svgs/team.svg"
 import TrendUpChart from "@/components/svgs/trend-up-chart.svg"
+import Twitter from "@/components/svgs/twitter.svg"
+import Link from "@/components/ui/link"
 
+import { URL_GITHUB_REPO, URL_TWITTER } from "@/lib/constants"
 import { SITE_REPO } from "@/lib/constants"
 
 import SearchInput from "./header/SearchInput"
 import ThemeSwitch from "./header/ThemeSwitch"
 import { DrawerClose } from "./ui/drawer"
-import Link from "./ui/link"
 import {
   SidebarContent,
   SidebarFooter,
@@ -181,6 +183,15 @@ const AppNavigationMenu = ({ insideDrawer }: AppNavigationMenuProps) => {
       </SidebarContent>
 
       <SidebarFooter>
+        <div className="flex items-center gap-x-6 pb-2 font-sans font-bold [&>a]:text-2xl [&>a]:text-body">
+          <Link href={URL_GITHUB_REPO} hideArrow>
+            <GitHub />
+          </Link>
+          <Link href={URL_TWITTER} hideArrow>
+            <Twitter />
+          </Link>
+        </div>
+
         <div>
           Built with{" "}
           <Heart className="mb-0.5 inline text-xl text-primary motion-safe:animate-heart-beat" />{" "}
