@@ -6,9 +6,9 @@ import { getTeam } from "@/lib/api/teams"
 
 export async function GET(
   _request: Request,
-  { params }: { params: { block: string } }
+  { params }: { params: Promise<{ block: string }> }
 ) {
-  const { block } = params
+  const { block } = await params
 
   const proofRows = await db.query.proofs.findMany({
     columns: {

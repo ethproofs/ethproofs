@@ -22,12 +22,7 @@ type PizzaProps = React.ComponentProps<"div"> & {
  *
  * @returns {JSX.Element} A JSX element representing the pizza visualization.
  */
-const Pizza = ({
-  slices,
-  disableEffects,
-  className,
-  ...props
-}: PizzaProps): JSX.Element => {
+const Pizza = ({ slices, disableEffects, className, ...props }: PizzaProps) => {
   // Restrict hover effect to the slice itself
   const clipPath =
     "polygon(46% 100%, 0% 21%, 0% 10%, 16% 0%, 84% 0%, 100% 10%, 100% 21%, 54% 100%)"
