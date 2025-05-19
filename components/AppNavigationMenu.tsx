@@ -157,7 +157,7 @@ const AppNavigationMenu = ({ insideDrawer }: AppNavigationMenuProps) => {
             <SidebarGroupLabel>Contribute</SidebarGroupLabel>
             <MenuItem>
               <Link
-                href={new URL(SITE_REPO, "https://github.com").toString()}
+                href={URL_GITHUB_REPO}
                 className="inline-flex text-body hover:text-primary [&>svg:first-child]:me-2 [&>svg:first-child]:size-6"
                 hideArrow
               >
