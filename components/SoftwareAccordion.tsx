@@ -115,7 +115,8 @@ const SoftwareAccordion = async () => {
         <MetricBox className="col-start-2">
           <MetricLabel>
             <MetricInfo label="Latest version">
-              TODO: Popover details
+              The most recent version of this zkVM being used by teams on
+              ethproofs.org
             </MetricInfo>
           </MetricLabel>
         </MetricBox>
@@ -134,7 +135,7 @@ const SoftwareAccordion = async () => {
         <MetricBox className="col-start-4">
           <MetricLabel>
             <MetricInfo label="Used by">
-              Defines the number of clusters that use this zkVM on ethproofs.org
+              Number of active clusters that use this zkVM on ethproofs.org
             </MetricInfo>
           </MetricLabel>
         </MetricBox>

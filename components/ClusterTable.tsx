@@ -26,7 +26,12 @@ const ClusterRowItem = ({ cluster }: ClusterRowItemProps) => (
     <div className="row-span-2 grid grid-cols-1 grid-rows-subgrid px-6 py-4 text-center">
       <MetricBox className="py-0">
         <MetricLabel>
-          <MetricInfo label="zkVM">TODO: Popover details</MetricInfo>
+          <MetricInfo label="zkVM">
+            Zero-Knowledge Virtual Machine
+            <br />
+            The virtual machine implementation used by this cluster to generate
+            zero-knowledge proofs.
+          </MetricInfo>
         </MetricLabel>
       </MetricBox>
       <Link href={`/zkvms/${cluster.versions[0].zkvm_version.zkvm.slug}`}>
@@ -39,7 +44,9 @@ const ClusterRowItem = ({ cluster }: ClusterRowItemProps) => (
           <MetricInfo label="ISA">
             Instruction Set Architecture
             <br />
-            TODO: Popover details
+            Defines the instruction set this zkVM implements to generate
+            zero-knowledge proofs for Ethereum transactions. The ISA determines
+            which EVM operations can be efficiently proven and verified on-chain
           </MetricInfo>
         </MetricLabel>
       </MetricBox>
@@ -48,7 +55,12 @@ const ClusterRowItem = ({ cluster }: ClusterRowItemProps) => (
     <div className="row-span-2 grid grid-cols-1 grid-rows-subgrid px-6 py-4 text-center">
       <MetricBox className="py-0">
         <MetricLabel>
-          <MetricInfo label="proof type">TODO: Popover details</MetricInfo>
+          <MetricInfo label="proof type">
+            Zero-Knowledge Proof System
+            <br />
+            The cryptographic protocol used to generate and verify
+            zero-knowledge proofs.
+          </MetricInfo>
         </MetricLabel>
       </MetricBox>
       <div className="">{cluster.proof_type}</div>
