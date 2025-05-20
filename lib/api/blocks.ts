@@ -95,7 +95,11 @@ export const fetchBlock = cache(
                 cluster_machines: {
                   with: {
                     machine: true,
-                    cloud_instance: true,
+                    cloud_instance: {
+                      with: {
+                        provider: true,
+                      },
+                    },
                   },
                 },
                 zkvm_version: {

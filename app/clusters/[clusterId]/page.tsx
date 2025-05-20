@@ -14,6 +14,7 @@ import { Card } from "@/components/ui/card"
 import Link from "@/components/ui/link"
 import MachineDetails from "@/components/ui/MachineDetails"
 import { MetricBox, MetricInfo, MetricLabel } from "@/components/ui/metric"
+import { TooltipContentHeader } from "@/components/ui/tooltip"
 
 import { cn } from "@/lib/utils"
 
@@ -173,7 +174,10 @@ export default async function ClusterDetailsPage({
               <MetricInfo label="ISA">
                 Instruction Set Architecture
                 <br />
-                TODO: Popover details
+                Defines the instruction set this zkVM implements to generate
+                zero-knowledge proofs for Ethereum transactions. The ISA
+                determines which EVM operations can be efficiently proven and
+                verified on-chain
               </MetricInfo>
             </MetricLabel>
           </MetricBox>
@@ -203,38 +207,99 @@ export default async function ClusterDetailsPage({
           >
             {clusterMachines
               .sort((a, b) => b.machine_count - a.machine_count)
-              .map((clusterMachine) => (
-                <div
-                  key={clusterMachine.id}
-                  className="relative flex flex-col justify-end -space-y-4"
-                >
-                  <MachineDetails
-                    machine={clusterMachine.machine}
-                    className="rounded-2xl border border-primary-border bg-background px-8"
-                  />
-                  {Array.from({ length: clusterMachine.machine_count - 1 }).map(
-                    (_, i) => (
+              .map((clusterMachine) => {
+                const {
+                  id,
+                  machine,
+                  machine_count,
+                  cloud_instance,
+                  cloud_instance_count,
+                } = clusterMachine
+
+                const {
+                  provider,
+                  memory,
+                  disk_name,
+                  disk_space,
+                  instance_name,
+                  region,
+                  cpu_cores,
+                  hourly_price,
+                } = cloud_instance
+
+                const totalPrice = hourly_price * cloud_instance_count
+
+                return (
+                  <div
+                    key={id}
+                    className="relative flex flex-col justify-end -space-y-4"
+                  >
+                    <MachineDetails
+                      machine={machine}
+                      className="rounded-2xl border border-primary-border bg-background px-8"
+                    />
+                    {Array.from({
+                      length: machine_count - 1,
+                    }).map((_, i) => (
                       <div
                         key={i}
                         className="h-6 rounded-b-2xl border border-primary-border border-t-transparent"
                       />
-                    )
-                  )}
-                  <div className="!mt-2 inline-flex justify-center">
-                    <MetricBox className="py-0">
-                      <MetricLabel>
-                        <MetricInfo
-                          label={`${clusterMachine.machine_count} machine${clusterMachine.machine_count === 1 ? "" : "s"} @ ${formatUsd(
-                            clusterMachine.cloud_instance.hourly_price
-                          )}/h`}
-                        >
-                          TODO: Popover details
-                        </MetricInfo>
-                      </MetricLabel>
-                    </MetricBox>
+                    ))}
+                    <div className="!mt-2 inline-flex justify-center">
+                      <MetricBox className="py-0">
+                        <MetricLabel>
+                          <MetricInfo
+                            label={`${machine_count} machine${machine_count === 1 ? "" : "s"} @ ${formatUsd(totalPrice)}/h`}
+                          >
+                            <TooltipContentHeader>
+                              Cloud Equivalency
+                            </TooltipContentHeader>
+
+                            <div className="flex flex-col divide-y-2 overflow-hidden rounded bg-background">
+                              <div className="flex gap-8">
+                                <div className="flex-1 space-y-2 p-2">
+                                  {memory && <p>Memory: {memory} GB</p>}
+                                  {disk_name && (
+                                    <p>
+                                      Storage: {disk_name} {disk_space} GB
+                                    </p>
+                                  )}
+                                  {instance_name && (
+                                    <p>
+                                      Type: {instance_name} (
+                                      {provider.display_name})
+                                    </p>
+                                  )}
+                                  {region && <p>Region: {region}</p>}
+                                  {cpu_cores && <p>vCPU: {cpu_cores}</p>}
+                                </div>
+                                {cloud_instance_count && (
+                                  <div className="grid h-fit place-items-center rounded-bl bg-primary-dark px-4 py-2 text-xl font-bold text-background-highlight">
+                                    x{cloud_instance_count}
+                                  </div>
+                                )}
+                              </div>
+                              {hourly_price && (
+                                <div className="p-2">
+                                  Hourly price per instance:{" "}
+                                  {formatUsd(hourly_price)}
+                                </div>
+                              )}
+                              {totalPrice && (
+                                <div className="p-2">
+                                  <strong>Total hourly price</strong>:{" "}
+                                  {formatUsd(totalPrice)}
+                                </div>
+                              )}
+                            </div>
+                          </MetricInfo>
+                        </MetricLabel>
+                      </MetricBox>
+                    </div>
                   </div>
-                </div>
-              ))}
+                )
+              })}
           </div>
         </section>
       )}

@@ -1,6 +1,11 @@
 import {
   BlockBase,
-  ClusterVersion,
+  CloudInstanceBase,
+  CloudProvider,
+  ClusterBase,
+  ClusterMachineBase,
+  ClusterVersionBase,
+  MachineBase,
   ProofBase,
   Team,
   Zkvm,
@@ -32,10 +37,19 @@ import { prettyMs } from "@/lib/time"
 type ProofRowProps = {
   proof: ProofBase & {
     team: Team
-    cluster_version: ClusterVersion & {
+    cluster_version: ClusterVersionBase & {
+      cluster: ClusterBase
       zkvm_version: ZkvmVersion & {
         zkvm: Zkvm
       }
+      cluster_machines: Array<
+        ClusterMachineBase & {
+          cloud_instance: CloudInstanceBase & {
+            provider: CloudProvider
+          }
+          machine: MachineBase
+        }
+      >
     }
   }
   block: BlockBase
@@ -243,7 +257,7 @@ const ProofRow = ({ proof, block }: ProofRowProps) => {
 
                   <hr className="my-4 bg-body-secondary" />
 
-                  <TooltipContentHeader>AWS Equivalency</TooltipContentHeader>
+                  <TooltipContentHeader>Cloud Equivalency</TooltipContentHeader>
 
                   <div className="w-fit space-y-4">
                     {machines.map(
@@ -253,6 +267,7 @@ const ProofRow = ({ proof, block }: ProofRowProps) => {
                         cloud_instance,
                       }) => {
                         const {
+                          provider,
                           memory,
                           disk_name,
                           disk_space,
@@ -277,7 +292,12 @@ const ProofRow = ({ proof, block }: ProofRowProps) => {
                                     Storage: {disk_name} {disk_space} GB
                                   </p>
                                 )}
-                                {instance_name && <p>Type: {instance_name}</p>}
+                                {instance_name && (
+                                  <p>
+                                    Type: {instance_name} (
+                                    {provider.display_name})
+                                  </p>
+                                )}
                                 {region && <p>Region: {region}</p>}
                                 {cpu_cores && <p>vCPU: {cpu_cores}</p>}
                               </div>

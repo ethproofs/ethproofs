@@ -124,13 +124,18 @@ const SoftwareAccordion = async () => {
             <MetricInfo label="ISA">
               Instruction set architecture
               <br />
-              TODO: Popover details
+              Defines the instruction set this zkVM implements to generate
+              zero-knowledge proofs for Ethereum transactions. The ISA
+              determines which EVM operations can be efficiently proven and
+              verified on-chain
             </MetricInfo>
           </MetricLabel>
         </MetricBox>
         <MetricBox className="col-start-4">
           <MetricLabel>
-            <MetricInfo label="Used by">TODO: Popover details</MetricInfo>
+            <MetricInfo label="Used by">
+              Defines the number of clusters that use this zkVM on ethproofs.org
+            </MetricInfo>
           </MetricLabel>
         </MetricBox>
       </div>
