@@ -1,4 +1,4 @@
-import { and, count, desc, eq, exists, gt, sql } from "drizzle-orm"
+import { and, desc, eq, exists, gt, sql, sum } from "drizzle-orm"
 import { unstable_cache as cache } from "next/cache"
 
 import { db } from "@/db"
@@ -175,7 +175,7 @@ export const getActiveMachineCount = cache(async () => {
   const sevenDaysAgo = sql`NOW() - INTERVAL '7 days'`
 
   const [machineCount] = await db
-    .select({ count: count() })
+    .select({ count: sum(clusterMachines.machine_count) })
     .from(clusterMachines)
     .where(
       exists(

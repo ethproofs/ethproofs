@@ -8,7 +8,7 @@ import { ButtonLink } from "@/components/ui/button"
 import { Divider } from "@/components/ui/divider"
 import Link from "@/components/ui/link"
 
-import { SITE_REPO } from "@/lib/constants"
+import { URL_GITHUB_REPO } from "@/lib/constants"
 
 import { getBlockValueType } from "@/lib/blocks"
 import { formatNumber } from "@/lib/number"
@@ -41,10 +41,7 @@ export default function NotFound() {
       </p>
       <p className="text-lg">
         If this a bug please report on our{" "}
-        <Link href={new URL(SITE_REPO, "https://github.com").toString()}>
-          GitHub
-        </Link>{" "}
-        repo
+        <Link href={URL_GITHUB_REPO}>GitHub</Link> repo
       </p>
       <Divider className="my-6" />
       <ButtonLink href="/blocks" size="lg">

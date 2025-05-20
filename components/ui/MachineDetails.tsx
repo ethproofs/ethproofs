@@ -31,7 +31,7 @@ const MachineDetails = ({
           const gpuMemory = machine.gpu_memory_gb?.[index] || 0
 
           return (
-            <div key={gpuModel}>
+            <div key={`${gpuModel}-${index}`}>
               <div className="text-center font-mono text-lg text-primary">
                 {gpuModel}
               </div>

@@ -24,6 +24,7 @@ import {
 import { ButtonLink } from "./ui/button"
 import Link from "./ui/link"
 import { MetricBox, MetricInfo, MetricLabel } from "./ui/metric"
+import { TooltipContentHeader } from "./ui/tooltip"
 import ClusterMachineSummary from "./ClusterMachineSummary"
 import { DisplayTeamLink } from "./DisplayTeamLink"
 import HardwareGrid from "./HardwareGrid"
@@ -118,7 +119,7 @@ const ClusterAccordionItem = ({
         <div className="col-start-4">{formatUsd(clusterDetails.avg_cost)}</div>
         <div className="col-start-5">{prettyMs(clusterDetails.avg_time)}</div>
 
-        <AccordionTrigger className="col-start-6 my-2 h-fit gap-2 rounded-full border-2 border-primary bg-background-highlight p-1 text-primary [&>svg]:size-6">
+        <AccordionTrigger className="relative col-start-6 my-2 h-fit gap-2 rounded-full border-2 border-primary bg-background-highlight p-1 text-primary [&>svg]:size-6">
           <span className="sr-only">Toggle details</span>
         </AccordionTrigger>
       </div>
@@ -189,28 +190,44 @@ const ClusterAccordion = ({ clusters }: ClusterAccordionProps) => (
         <div className="col-span-6 grid grid-cols-subgrid text-center">
           <MetricBox className="col-start-2">
             <MetricLabel>
-              <MetricInfo label="open source">TODO: Popover details</MetricInfo>
+              <MetricInfo label="open source">
+                <TooltipContentHeader>open source</TooltipContentHeader>
+                Indicates whether the zkVM is open source or not
+              </MetricInfo>
             </MetricLabel>
           </MetricBox>
           <MetricBox className="col-start-3">
             <MetricLabel>
               <MetricInfo label="binary available">
-                TODO: Popover details
+                <TooltipContentHeader>binary available</TooltipContentHeader>
+                Indicates whether the necessary zkVM binary is available for
+                verification. This binary contains the compiled circuit and
+                verification keys essential for validating proofs
               </MetricInfo>
             </MetricLabel>
           </MetricBox>
           <MetricBox className="col-start-4">
             <MetricLabel>
               <MetricInfo label="avg cost">
-                Instruction set architecture
-                <br />
-                TODO: Popover details
+                <TooltipContentHeader>average cost</TooltipContentHeader>
+                Is calculated by multiplying the hourly cloud rate for
+                equivalent hardware by the number of instances used, then
+                multiplying by proof generation time (converted from
+                milliseconds to hours by dividing by 3,600,000)
               </MetricInfo>
             </MetricLabel>
           </MetricBox>
           <MetricBox className="col-start-5">
             <MetricLabel>
-              <MetricInfo label="avg time">TODO: Popover details</MetricInfo>
+              <MetricInfo label="avg time">
+                <TooltipContentHeader>average time</TooltipContentHeader>
+                <p>
+                  Is the average duration of computation time during the proof
+                  generation process, self reported by proving teams in
+                  milliseconds
+                </p>
+                <p className="text-sm">Time spent generating proof of execution</p>
+              </MetricInfo>
             </MetricLabel>
           </MetricBox>
         </div>
