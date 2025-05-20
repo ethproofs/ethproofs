@@ -3,22 +3,24 @@ import { Suspense } from "react"
 import Bomb from "@/components/svgs/bomb.svg"
 import Box from "@/components/svgs/box.svg"
 import Bug from "@/components/svgs/bug.svg"
+import CPU from "@/components/svgs/cpu.svg"
 import Document from "@/components/svgs/document.svg"
 import EthProofsLogo from "@/components/svgs/eth-proofs-logo.svg"
 import GitHub from "@/components/svgs/github.svg"
 import Heart from "@/components/svgs/heart.svg"
 import HexTarget from "@/components/svgs/hex-target.svg"
 import LightningBolt from "@/components/svgs/lightning-bolt.svg"
-import ProofCheck from "@/components/svgs/proof-check.svg"
 import Team from "@/components/svgs/team.svg"
 import TrendUpChart from "@/components/svgs/trend-up-chart.svg"
+import Twitter from "@/components/svgs/twitter.svg"
+import Link from "@/components/ui/link"
 
+import { URL_GITHUB_REPO, URL_TWITTER } from "@/lib/constants"
 import { SITE_REPO } from "@/lib/constants"
 
 import SearchInput from "./header/SearchInput"
 import ThemeSwitch from "./header/ThemeSwitch"
 import { DrawerClose } from "./ui/drawer"
-import Link from "./ui/link"
 import {
   SidebarContent,
   SidebarFooter,
@@ -98,7 +100,7 @@ const AppNavigationMenu = ({ insideDrawer }: AppNavigationMenuProps) => {
                 href="/clusters"
                 className="inline-flex text-body hover:text-primary [&>svg:first-child]:me-2 [&>svg:first-child]:size-6"
               >
-                <ProofCheck />
+                <CPU />
                 clusters
               </Link>
             </MenuItem>
@@ -155,7 +157,7 @@ const AppNavigationMenu = ({ insideDrawer }: AppNavigationMenuProps) => {
             <SidebarGroupLabel>Contribute</SidebarGroupLabel>
             <MenuItem>
               <Link
-                href={new URL(SITE_REPO, "https://github.com").toString()}
+                href={URL_GITHUB_REPO}
                 className="inline-flex text-body hover:text-primary [&>svg:first-child]:me-2 [&>svg:first-child]:size-6"
                 hideArrow
               >
@@ -181,9 +183,18 @@ const AppNavigationMenu = ({ insideDrawer }: AppNavigationMenuProps) => {
       </SidebarContent>
 
       <SidebarFooter>
+        <div className="flex items-center gap-x-6 pb-2 font-sans font-bold [&>a]:text-2xl [&>a]:text-body">
+          <Link href={URL_GITHUB_REPO} hideArrow>
+            <GitHub />
+          </Link>
+          <Link href={URL_TWITTER} hideArrow>
+            <Twitter />
+          </Link>
+        </div>
+
         <div>
           Built with{" "}
-          <Heart className="mb-0.5 inline animate-heart-beat text-xl text-primary" />{" "}
+          <Heart className="mb-0.5 inline text-xl text-primary motion-safe:animate-heart-beat" />{" "}
           by the
           <br />
           <Link

@@ -10,7 +10,7 @@ type LoadingProps = Pick<
 const Loading = ({ className, children }: LoadingProps) => (
   <div
     className={cn(
-      "text-[250px] text-primary opacity-25 [&>svg]:animate-write-on-off",
+      "text-[250px] text-primary opacity-25 [&>svg]:motion-safe:animate-write-on-off",
       className
     )}
     role="status"

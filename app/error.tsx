@@ -23,7 +23,7 @@ export default function Error() {
       <Divider className="my-6" />
       <div className="flex flex-col gap-6">
         <Button onClick={handleRefresh} size="lg">
-          <RefreshCW className={cn(refreshing && "animate-spin")} />
+          <RefreshCW className={cn(refreshing && "motion-safe:animate-spin")} />
           Refresh page
         </Button>
         <ButtonLink href="/" variant="outline" size="lg">

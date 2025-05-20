@@ -1,3 +1,4 @@
+import { ChevronRight } from "lucide-react"
 import { type AccordionItemProps } from "@radix-ui/react-accordion"
 
 import type { Vendor, Zkvm, ZkvmMetrics, ZkvmVersion } from "@/lib/types"
@@ -17,7 +18,7 @@ import Pizza from "./Pizza"
 import SoftwareDetails from "./SoftwareDetails"
 
 import { formatShortDate } from "@/lib/date"
-import { getSoftwareDetailItems, getZkvmsMetrics } from "@/lib/metrics"
+import { getSoftwareDetailItems, getZkvmsMetricsByZkvmId } from "@/lib/metrics"
 import { getSlices, getZkvmsWithUsage } from "@/lib/zkvms"
 
 const SoftwareAccordionItem = ({
@@ -31,7 +32,7 @@ const SoftwareAccordionItem = ({
     totalClusters: number
     activeClusters: number
   }
-  metrics: ZkvmMetrics
+  metrics: Partial<ZkvmMetrics>
 }) => {
   const detailItems = getSoftwareDetailItems(metrics)
 
@@ -82,7 +83,8 @@ const SoftwareAccordionItem = ({
             href={`/zkvms/${zkvm.slug}`}
             className="col-start-2 mx-auto"
           >
-            Details
+            details for {zkvm.name}
+            <ChevronRight className="-mx-2 size-4" />
           </ButtonLink>
           <div className="col-start-3 text-end">
             <span className="text-xs italic text-body-secondary">
@@ -99,10 +101,10 @@ const SoftwareAccordionItem = ({
 }
 
 const SoftwareAccordion = async () => {
-  const [zkvms, metricsByZkvmId] = await Promise.all([
-    getZkvmsWithUsage(),
-    getZkvmsMetrics(),
-  ])
+  const zkvms = await getZkvmsWithUsage()
+  const metricsByZkvmId = await getZkvmsMetricsByZkvmId({
+    zkvmIds: zkvms.map((zkvm) => zkvm.id),
+  })
 
   return (
     <Accordion
@@ -137,7 +139,7 @@ const SoftwareAccordion = async () => {
           key={zkvm.id}
           value={"item-" + zkvm.id}
           zkvm={zkvm}
-          metrics={metricsByZkvmId[zkvm.id]}
+          metrics={metricsByZkvmId.get(zkvm.id) || {}}
         />
       ))}
     </Accordion>

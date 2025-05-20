@@ -1,3 +1,4 @@
+import { ChevronRight } from "lucide-react"
 import type { Metadata } from "next"
 
 import { metrics } from "@/components/Metrics"
@@ -91,7 +92,8 @@ export default async function TeamsPage() {
                           </div>
                         </div>
                         <ButtonLink href={`/teams/${slug}`} variant="outline">
-                          + details for {team_name}
+                          details for {team_name}
+                          <ChevronRight className="-mx-2 size-4" />
                         </ButtonLink>
                       </>
                     )}

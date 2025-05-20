@@ -108,7 +108,7 @@ const SearchInput = ({
       </div>
 
       {!!query.length && (
-        <div className="absolute inset-x-0 top-px z-10 flex h-fit flex-col rounded-b-2xl rounded-t-3xl border border-primary-border bg-background px-2 pb-2 pt-[3.5rem] lg:m-0">
+        <div className="absolute inset-x-0 top-1/2 z-10 flex h-fit flex-col rounded-b-2xl rounded-t-none border border-primary-light bg-background px-2 pb-2 pt-8 dark:border-primary-border lg:m-0">
           {blockMatch ? (
             <ResultLink
               href={`/blocks/${blockMatch[isHash(query) ? "hash" : "block_number"]}`}

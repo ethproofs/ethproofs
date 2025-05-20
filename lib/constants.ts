@@ -5,6 +5,13 @@ export const SITE_DESCRIPTION = "Building a fully SNARKed Ethereum"
 export const SITE_URL = process.env.SITE_URL || "https://ethproofs.org"
 export const SITE_PREVIEW_URL = "https://staging--ethproofs.netlify.app"
 export const SITE_REPO = "ethproofs/ethproofs"
+export const SITE_TWITTER = "eth_proofs"
+
+export const URL_GITHUB_REPO = new URL(
+  SITE_REPO,
+  "https://github.com/"
+).toString()
+export const URL_TWITTER = new URL(SITE_TWITTER, "https://x.com/").toString()
 
 // Beacon chain timing constants
 export const BEACON_CHAIN_GENESIS_TIME = 1606824023_000 // 2020-12-01T12:00:23Z

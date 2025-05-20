@@ -7,8 +7,8 @@ import { Divider } from "../ui/divider"
 
 export const MarkdownComponents: Components = {
   a: ({ children, href }) => <Link href={href}>{children}</Link>,
-  img: ({ src, alt }) => (
-    <Image className="mx-auto block" src={src || ""} alt={alt || ""} />
+  img: ({ src = "", alt = "" }) => (
+    <Image className="mx-auto block" src={src as string} alt={alt} />
   ),
   h2: ({ children }) => (
     <div>
