@@ -89,7 +89,7 @@ export const fetchProofsPerStatusCount = async (
     },
     keyParts,
     {
-      revalidate: 60 * 60 * 24, // daily
+      revalidate: 60 * 60 * 1, // hourly
       tags: ["proofs"],
     }
   )(from, to)
@@ -108,36 +108,45 @@ export const fetchProvedProofsByClusterId = async (
   clusterId: string,
   { limit = 10 }: { limit?: number } = {}
 ) => {
-  const lastProvedProof = await db.query.proofs.findMany({
-    with: {
-      block: true,
-      team: true,
-      cluster_version: {
+  return cache(
+    async (clusterId: string) => {
+      const lastProvedProof = await db.query.proofs.findMany({
         with: {
-          cluster: true,
-          cluster_machines: {
+          block: true,
+          team: true,
+          cluster_version: {
             with: {
-              cloud_instance: true,
-              machine: true,
+              cluster: true,
+              cluster_machines: {
+                with: {
+                  cloud_instance: true,
+                  machine: true,
+                },
+              },
             },
           },
         },
-      },
-    },
-    where: (proofs, { eq, and, inArray }) =>
-      and(
-        eq(proofs.proof_status, "proved"),
-        inArray(
-          proofs.cluster_version_id,
-          db
-            .select({ id: clusterVersions.id })
-            .from(clusterVersions)
-            .where(eq(clusterVersions.cluster_id, clusterId))
-        )
-      ),
-    orderBy: (proofs, { desc }) => [desc(proofs.created_at)],
-    limit,
-  })
+        where: (proofs, { eq, and, inArray }) =>
+          and(
+            eq(proofs.proof_status, "proved"),
+            inArray(
+              proofs.cluster_version_id,
+              db
+                .select({ id: clusterVersions.id })
+                .from(clusterVersions)
+                .where(eq(clusterVersions.cluster_id, clusterId))
+            )
+          ),
+        orderBy: (proofs, { desc }) => [desc(proofs.created_at)],
+        limit,
+      })
 
-  return lastProvedProof
+      return lastProvedProof
+    },
+    ["cluster-proofs", clusterId],
+    {
+      revalidate: 60 * 60 * 24, // daily
+      tags: [`cluster-proofs-${clusterId}`],
+    }
+  )(clusterId)
 }

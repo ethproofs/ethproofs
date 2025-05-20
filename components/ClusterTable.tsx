@@ -5,6 +5,7 @@ import { cn } from "@/lib/utils"
 import { ButtonLink } from "./ui/button"
 import Link from "./ui/link"
 import { MetricBox, MetricInfo, MetricLabel } from "./ui/metric"
+import { TooltipContentHeader } from "./ui/tooltip"
 import { ClusterWithRelations } from "./ClusterAccordion"
 import NoData from "./NoData"
 
@@ -26,7 +27,13 @@ const ClusterRowItem = ({ cluster }: ClusterRowItemProps) => (
     <div className="row-span-2 grid grid-cols-1 grid-rows-subgrid px-6 py-4 text-center">
       <MetricBox className="py-0">
         <MetricLabel>
-          <MetricInfo label="zkVM">TODO: Popover details</MetricInfo>
+          <MetricInfo label="zkVM">
+            <TooltipContentHeader>
+              zero-knowledge virtual machine
+            </TooltipContentHeader>
+            The virtual machine implementation used by this cluster to generate
+            zero-knowledge proofs
+          </MetricInfo>
         </MetricLabel>
       </MetricBox>
       <Link href={`/zkvms/${cluster.versions[0].zkvm_version.zkvm.slug}`}>
@@ -37,9 +44,12 @@ const ClusterRowItem = ({ cluster }: ClusterRowItemProps) => (
       <MetricBox className="py-0">
         <MetricLabel>
           <MetricInfo label="ISA">
-            Instruction Set Architecture
-            <br />
-            TODO: Popover details
+            <TooltipContentHeader>
+              instruction set architecture
+            </TooltipContentHeader>
+            Defines the instruction set this zkVM implements to generate
+            zero-knowledge proofs for Ethereum transactions. The ISA determines
+            which EVM operations can be efficiently proven and verified on-chain
           </MetricInfo>
         </MetricLabel>
       </MetricBox>
@@ -48,7 +58,13 @@ const ClusterRowItem = ({ cluster }: ClusterRowItemProps) => (
     <div className="row-span-2 grid grid-cols-1 grid-rows-subgrid px-6 py-4 text-center">
       <MetricBox className="py-0">
         <MetricLabel>
-          <MetricInfo label="proof type">TODO: Popover details</MetricInfo>
+          <MetricInfo label="proof type">
+            <TooltipContentHeader>
+              zero-knowledge proof system
+            </TooltipContentHeader>
+            The cryptographic protocol used to generate and verify
+            zero-knowledge proofs
+          </MetricInfo>
         </MetricLabel>
       </MetricBox>
       <div className="">{cluster.proof_type}</div>
