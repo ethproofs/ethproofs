@@ -87,7 +87,7 @@ const ProofRow = ({ proof, block }: ProofRowProps) => {
         <div className="flex flex-col gap-2">
           {team?.name && (
             <Link
-              href={"/teams/" + team?.id}
+              href={"/teams/" + team?.slug}
               className="text-2xl hover:text-primary-light hover:underline"
             >
               {team.name}
