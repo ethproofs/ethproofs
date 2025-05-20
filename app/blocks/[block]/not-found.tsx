@@ -8,7 +8,7 @@ import { ButtonLink } from "@/components/ui/button"
 import { Divider } from "@/components/ui/divider"
 import Link from "@/components/ui/link"
 
-import { SITE_REPO, URL_GITHUB_REPO } from "@/lib/constants"
+import { URL_GITHUB_REPO } from "@/lib/constants"
 
 import { getBlockValueType } from "@/lib/blocks"
 import { formatNumber } from "@/lib/number"
