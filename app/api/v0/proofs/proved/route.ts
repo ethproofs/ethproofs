@@ -191,6 +191,8 @@ export const POST = withAuth(async ({ request, user, timestamp }) => {
     // invalidate cache
     revalidateTag("proofs")
     revalidateTag("blocks")
+    revalidateTag(`cluster-proofs-${cluster.id}`)
+    revalidateTag(`block-${block_number}`)
 
     // return the generated proof_id
     return Response.json(newProof)
