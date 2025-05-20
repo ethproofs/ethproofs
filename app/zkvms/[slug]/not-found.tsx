@@ -7,7 +7,7 @@ import { ButtonLink } from "@/components/ui/button"
 import { Divider } from "@/components/ui/divider"
 import Link from "@/components/ui/link"
 
-import { SITE_REPO } from "@/lib/constants"
+import { URL_GITHUB_REPO } from "@/lib/constants"
 
 export default function NotFound() {
   const slug = useParams().slug as string
@@ -20,10 +20,7 @@ export default function NotFound() {
       </h1>
       <p className="text-lg">
         If this a bug please report on our{" "}
-        <Link href={new URL(SITE_REPO, "https://github.com").toString()}>
-          GitHub
-        </Link>{" "}
-        repo
+        <Link href={URL_GITHUB_REPO}>GitHub</Link> repo
       </p>
       <Divider className="my-6" />
       <ButtonLink href="/zkvms" size="lg">
