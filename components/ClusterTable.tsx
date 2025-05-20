@@ -5,6 +5,7 @@ import { cn } from "@/lib/utils"
 import { ButtonLink } from "./ui/button"
 import Link from "./ui/link"
 import { MetricBox, MetricInfo, MetricLabel } from "./ui/metric"
+import { TooltipContentHeader } from "./ui/tooltip"
 import { ClusterWithRelations } from "./ClusterAccordion"
 import NoData from "./NoData"
 
@@ -27,10 +28,11 @@ const ClusterRowItem = ({ cluster }: ClusterRowItemProps) => (
       <MetricBox className="py-0">
         <MetricLabel>
           <MetricInfo label="zkVM">
-            Zero-Knowledge Virtual Machine
-            <br />
+            <TooltipContentHeader>
+              zero-knowledge virtual machine
+            </TooltipContentHeader>
             The virtual machine implementation used by this cluster to generate
-            zero-knowledge proofs.
+            zero-knowledge proofs
           </MetricInfo>
         </MetricLabel>
       </MetricBox>
@@ -42,8 +44,9 @@ const ClusterRowItem = ({ cluster }: ClusterRowItemProps) => (
       <MetricBox className="py-0">
         <MetricLabel>
           <MetricInfo label="ISA">
-            Instruction Set Architecture
-            <br />
+            <TooltipContentHeader>
+              instruction set architecture
+            </TooltipContentHeader>
             Defines the instruction set this zkVM implements to generate
             zero-knowledge proofs for Ethereum transactions. The ISA determines
             which EVM operations can be efficiently proven and verified on-chain
@@ -56,10 +59,11 @@ const ClusterRowItem = ({ cluster }: ClusterRowItemProps) => (
       <MetricBox className="py-0">
         <MetricLabel>
           <MetricInfo label="proof type">
-            Zero-Knowledge Proof System
-            <br />
+            <TooltipContentHeader>
+              zero-knowledge proof system
+            </TooltipContentHeader>
             The cryptographic protocol used to generate and verify
-            zero-knowledge proofs.
+            zero-knowledge proofs
           </MetricInfo>
         </MetricLabel>
       </MetricBox>

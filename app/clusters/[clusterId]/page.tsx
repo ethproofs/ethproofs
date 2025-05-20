@@ -172,8 +172,9 @@ export default async function ClusterDetailsPage({
           <MetricBox className="py-0">
             <MetricLabel>
               <MetricInfo label="ISA">
-                Instruction Set Architecture
-                <br />
+                <TooltipContentHeader>
+                  instruction set architecture
+                </TooltipContentHeader>
                 Defines the instruction set this zkVM implements to generate
                 zero-knowledge proofs for Ethereum transactions. The ISA
                 determines which EVM operations can be efficiently proven and

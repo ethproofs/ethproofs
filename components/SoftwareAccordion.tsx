@@ -13,6 +13,7 @@ import { ButtonLink } from "./ui/button"
 import Link from "./ui/link"
 import { MetricBox, MetricInfo, MetricLabel } from "./ui/metric"
 import { Progress } from "./ui/progress"
+import { TooltipContentHeader } from "./ui/tooltip"
 import { DisplayTeamLink } from "./DisplayTeamLink"
 import Pizza from "./Pizza"
 import SoftwareDetails from "./SoftwareDetails"
@@ -115,6 +116,7 @@ const SoftwareAccordion = async () => {
         <MetricBox className="col-start-2">
           <MetricLabel>
             <MetricInfo label="Latest version">
+              <TooltipContentHeader>latest version</TooltipContentHeader>
               The most recent version of this zkVM being used by teams on
               ethproofs.org
             </MetricInfo>
@@ -123,8 +125,9 @@ const SoftwareAccordion = async () => {
         <MetricBox className="col-start-3">
           <MetricLabel>
             <MetricInfo label="ISA">
-              Instruction set architecture
-              <br />
+              <TooltipContentHeader>
+                instruction set architecture
+              </TooltipContentHeader>
               Defines the instruction set this zkVM implements to generate
               zero-knowledge proofs for Ethereum transactions. The ISA
               determines which EVM operations can be efficiently proven and
@@ -135,6 +138,9 @@ const SoftwareAccordion = async () => {
         <MetricBox className="col-start-4">
           <MetricLabel>
             <MetricInfo label="Used by">
+              <TooltipContentHeader>
+                number of active clusters
+              </TooltipContentHeader>{" "}
               Number of active clusters that use this zkVM on ethproofs.org
             </MetricInfo>
           </MetricLabel>
