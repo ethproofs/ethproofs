@@ -226,7 +226,7 @@ const ClusterAccordion = ({ clusters }: ClusterAccordionProps) => (
                   generation process, self reported by proving teams in
                   milliseconds
                 </p>
-                <small>Time spent generating proof of execution</small>
+                <p className="text-sm">Time spent generating proof of execution</p>
               </MetricInfo>
             </MetricLabel>
           </MetricBox>
