@@ -18,29 +18,34 @@ const LevelMeter = ({
   const valueXPosition = (() => {
     const THIRD = 100 / 3
     const TWO_THIRDS = 2 * THIRD
-    // Best threshold is at 66%, worst threshold is at 33%
-    if (value <= bestThreshold) {
-      // Value is better than or equal to best threshold (positioned at or right of 66%)
-      // When value = bestThreshold, position = 66%
-      // When value < bestThreshold, position moves toward 100% proportionally
+
+    // Use log2 scale for value, bestThreshold, and worstThreshold
+    // Clamp to avoid log2(0) or negative numbers
+    const safeValue = Math.max(value, 1e-9)
+    const safeBest = Math.max(bestThreshold, 1e-9)
+    const safeWorst = Math.max(worstThreshold, 1e-9)
+
+    const logBest = Math.log2(safeBest)
+    const logWorst = Math.log2(safeWorst)
+    const logValue = Math.log2(safeValue)
+
+    if (logValue <= logBest) {
+      // Value is better than or equal to best threshold (right of 66%)
       const betterRatio = Math.min(
         1,
-        Math.max(0, (bestThreshold - value) / bestThreshold)
+        Math.max(0, (logBest - logValue) / Math.abs(logBest - logWorst))
       )
       return TWO_THIRDS + betterRatio * THIRD // 66% to 100%
-    } else if (value >= worstThreshold) {
-      // Value is worse than or equal to worst threshold (positioned at or left of 33%)
-      // When value = worstThreshold, position = 33%
-      // When value > worstThreshold, position moves toward 0% proportionally
+    } else if (logValue >= logWorst) {
+      // Value is worse than or equal to worst threshold (left of 33%)
       const worseRatio = Math.min(
         1,
-        Math.max(0, (value - worstThreshold) / worstThreshold)
+        Math.max(0, (logValue - logWorst) / Math.abs(logWorst - logBest))
       )
       return Math.max(0, THIRD - worseRatio * THIRD) // 33% to 0%
     } else {
-      // Value is between thresholds (positioned between 33% and 66%)
-      // Linear interpolation between worst (33%) and best (66%)
-      const ratio = (worstThreshold - value) / (worstThreshold - bestThreshold)
+      // Value is between thresholds (33% to 66%)
+      const ratio = (logWorst - logValue) / (logWorst - logBest)
       return THIRD + ratio * THIRD // 33% to 66%
     }
   })()
