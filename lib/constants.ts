@@ -75,4 +75,7 @@ export const TAGS = {
   TEAMS: "teams",
   PROOFS: "proofs",
   BLOCKS: "blocks",
+  CLUSTER_SUMMARY: "cluster-summary",
+  RECENT_SUMMARY: "recent-summary",
+  TEAM_SUMMARY: "team-summary",
 } as const
