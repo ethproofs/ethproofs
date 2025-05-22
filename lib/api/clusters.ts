@@ -12,36 +12,45 @@ import {
   zkvmVersions,
 } from "@/db/schema"
 
-export const getCluster = cache(async (id: string) => {
-  const cluster = await db.query.clusters.findFirst({
-    where: (clusters, { eq }) => eq(clusters.id, id),
-    with: {
-      team: true,
-      versions: {
-        orderBy: desc(clusterVersions.created_at),
+export const getCluster = async (id: string) => {
+  return cache(
+    async (id: string) => {
+      const cluster = await db.query.clusters.findFirst({
+        where: (clusters, { eq }) => eq(clusters.id, id),
         with: {
-          zkvm_version: {
+          team: true,
+          versions: {
+            orderBy: desc(clusterVersions.created_at),
             with: {
-              zkvm: true,
-            },
-          },
-          cluster_machines: {
-            with: {
-              machine: true,
-              cloud_instance: {
+              zkvm_version: {
                 with: {
-                  provider: true,
+                  zkvm: true,
+                },
+              },
+              cluster_machines: {
+                with: {
+                  machine: true,
+                  cloud_instance: {
+                    with: {
+                      provider: true,
+                    },
+                  },
                 },
               },
             },
           },
         },
-      },
-    },
-  })
+      })
 
-  return cluster
-})
+      return cluster
+    },
+    ["cluster", id],
+    {
+      revalidate: false,
+      tags: [`cluster-${id}`],
+    }
+  )(id)
+}
 
 export const getActiveClusters = cache(
   async (filters?: { teamId?: string; zkvmId?: number }) => {

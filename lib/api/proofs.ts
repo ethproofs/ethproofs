@@ -145,8 +145,8 @@ export const fetchProvedProofsByClusterId = async (
     },
     ["cluster-proofs", clusterId],
     {
-      revalidate: 60 * 60 * 24, // daily
-      tags: [`cluster-proofs-${clusterId}`],
+      revalidate: false,
+      tags: [`cluster-${clusterId}`],
     }
   )(clusterId)
 }
