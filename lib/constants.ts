@@ -69,3 +69,10 @@ export const ZKVM_THRESHOLDS = {
     green: Number.MAX_SAFE_INTEGER,
   },
 } as const satisfies Record<string, MetricThresholds>
+
+export const TAGS = {
+  CLUSTERS: "clusters",
+  TEAMS: "teams",
+  PROOFS: "proofs",
+  BLOCKS: "blocks",
+} as const

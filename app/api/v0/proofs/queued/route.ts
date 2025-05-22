@@ -1,6 +1,8 @@
 import { revalidateTag } from "next/cache"
 import { ZodError } from "zod"
 
+import { TAGS } from "@/lib/constants"
+
 import { db } from "@/db"
 import { blocks, proofs } from "@/db/schema"
 import { fetchBlockData } from "@/lib/blocks"
@@ -130,7 +132,7 @@ export const POST = withAuth(async ({ request, user, timestamp }) => {
       .returning({ proof_id: proofs.proof_id })
 
     // invalidate cache
-    revalidateTag("blocks")
+    revalidateTag(TAGS.BLOCKS)
     revalidateTag(`cluster-${cluster.id}`)
     revalidateTag(`block-${block_number}`)
 

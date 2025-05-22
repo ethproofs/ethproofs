@@ -1,6 +1,8 @@
 import { and, desc, eq, exists, gt, sql, sum } from "drizzle-orm"
 import { unstable_cache as cache } from "next/cache"
 
+import { TAGS } from "@/lib/constants"
+
 import { db } from "@/db"
 import {
   clusterMachines,
@@ -52,128 +54,155 @@ export const getCluster = async (id: string) => {
   )(id)
 }
 
-export const getActiveClusters = cache(
-  async (filters?: { teamId?: string; zkvmId?: number }) => {
-    const { teamId, zkvmId } = filters ?? {}
-    const sevenDaysAgo = sql`NOW() - INTERVAL '7 days'`
+export const getActiveClusters = async (filters?: {
+  teamId?: string
+  zkvmId?: number
+}) => {
+  const { teamId, zkvmId } = filters ?? {}
+  const cacheKey = `active-clusters-${teamId}-${zkvmId}`
 
-    const existsConditions = [
-      eq(clusterVersions.cluster_id, clusters.id),
-      eq(proofs.proof_status, "proved"),
-      gt(proofs.proved_timestamp, sevenDaysAgo),
-    ]
+  return cache(
+    async (filters?: { teamId?: string; zkvmId?: number }) => {
+      const { teamId, zkvmId } = filters ?? {}
+      const sevenDaysAgo = sql`NOW() - INTERVAL '7 days'`
 
-    if (zkvmId) {
-      existsConditions.push(eq(zkvms.id, zkvmId))
-    }
+      const existsConditions = [
+        eq(clusterVersions.cluster_id, clusters.id),
+        eq(proofs.proof_status, "proved"),
+        gt(proofs.proved_timestamp, sevenDaysAgo),
+      ]
 
-    const whereConditions = [
-      exists(
-        db
-          .select()
-          .from(proofs)
-          .innerJoin(
-            clusterVersions,
-            eq(proofs.cluster_version_id, clusterVersions.id)
-          )
-          .innerJoin(
-            zkvmVersions,
-            eq(clusterVersions.zkvm_version_id, zkvmVersions.id)
-          )
-          .innerJoin(zkvms, eq(zkvmVersions.zkvm_id, zkvms.id))
-          .where(and(...existsConditions))
-      ),
-    ]
+      if (zkvmId) {
+        existsConditions.push(eq(zkvms.id, zkvmId))
+      }
 
-    if (teamId) {
-      whereConditions.push(eq(clusters.team_id, teamId))
-    }
+      const whereConditions = [
+        exists(
+          db
+            .select()
+            .from(proofs)
+            .innerJoin(
+              clusterVersions,
+              eq(proofs.cluster_version_id, clusterVersions.id)
+            )
+            .innerJoin(
+              zkvmVersions,
+              eq(clusterVersions.zkvm_version_id, zkvmVersions.id)
+            )
+            .innerJoin(zkvms, eq(zkvmVersions.zkvm_id, zkvms.id))
+            .where(and(...existsConditions))
+        ),
+      ]
 
-    return db.query.clusters.findMany({
-      where: and(...whereConditions),
-      with: {
-        team: true,
-        versions: {
-          orderBy: desc(clusterVersions.created_at),
-          with: {
-            zkvm_version: {
-              with: {
-                zkvm: true,
+      if (teamId) {
+        whereConditions.push(eq(clusters.team_id, teamId))
+      }
+
+      return db.query.clusters.findMany({
+        where: and(...whereConditions),
+        with: {
+          team: true,
+          versions: {
+            orderBy: desc(clusterVersions.created_at),
+            with: {
+              zkvm_version: {
+                with: {
+                  zkvm: true,
+                },
               },
-            },
-            cluster_machines: {
-              with: {
-                machine: true,
+              cluster_machines: {
+                with: {
+                  machine: true,
+                },
               },
             },
           },
         },
-      },
-    })
+      })
+    },
+    [cacheKey],
+    {
+      revalidate: 60 * 60 * 24, // daily
+      tags: [TAGS.CLUSTERS],
+    }
+  )(filters)
+}
+
+export const getActiveClusterCountByZkvmId = cache(
+  async () => {
+    const sevenDaysAgo = sql`NOW() - INTERVAL '7 days'`
+
+    const result = await db
+      .select({
+        zkvm_id: zkvms.id,
+        active_clusters: sql<number>`CAST(COUNT(DISTINCT ${clusters.id}) AS int)`,
+      })
+      .from(zkvms)
+      .innerJoin(zkvmVersions, eq(zkvms.id, zkvmVersions.zkvm_id))
+      .innerJoin(
+        clusterVersions,
+        eq(zkvmVersions.id, clusterVersions.zkvm_version_id)
+      )
+      .innerJoin(clusters, eq(clusterVersions.cluster_id, clusters.id))
+      .where(
+        exists(
+          db
+            .select()
+            .from(proofs)
+            .where(
+              and(
+                eq(proofs.cluster_version_id, clusterVersions.id),
+                eq(proofs.proof_status, "proved"),
+                gt(proofs.proved_timestamp, sevenDaysAgo)
+              )
+            )
+        )
+      )
+      .groupBy(zkvms.id)
+
+    return result
+  },
+  ["active-clusters-by-zkvm-id"],
+  {
+    revalidate: 60 * 60 * 24, // daily
+    tags: [TAGS.CLUSTERS],
   }
 )
 
-export const getActiveClusterCountByZkvmId = cache(async () => {
-  const sevenDaysAgo = sql`NOW() - INTERVAL '7 days'`
+export const getActiveMachineCount = cache(
+  async () => {
+    const sevenDaysAgo = sql`NOW() - INTERVAL '7 days'`
 
-  const result = await db
-    .select({
-      zkvm_id: zkvms.id,
-      active_clusters: sql<number>`CAST(COUNT(DISTINCT ${clusters.id}) AS int)`,
-    })
-    .from(zkvms)
-    .innerJoin(zkvmVersions, eq(zkvms.id, zkvmVersions.zkvm_id))
-    .innerJoin(
-      clusterVersions,
-      eq(zkvmVersions.id, clusterVersions.zkvm_version_id)
-    )
-    .innerJoin(clusters, eq(clusterVersions.cluster_id, clusters.id))
-    .where(
-      exists(
-        db
-          .select()
-          .from(proofs)
-          .where(
-            and(
-              eq(proofs.cluster_version_id, clusterVersions.id),
-              eq(proofs.proof_status, "proved"),
-              gt(proofs.proved_timestamp, sevenDaysAgo)
+    const [machineCount] = await db
+      .select({ count: sum(clusterMachines.machine_count) })
+      .from(clusterMachines)
+      .where(
+        exists(
+          db
+            .select()
+            .from(proofs)
+            .innerJoin(
+              clusterVersions,
+              eq(proofs.cluster_version_id, clusterVersions.id)
             )
-          )
-      )
-    )
-    .groupBy(zkvms.id)
-
-  return result
-})
-
-export const getActiveMachineCount = cache(async () => {
-  const sevenDaysAgo = sql`NOW() - INTERVAL '7 days'`
-
-  const [machineCount] = await db
-    .select({ count: sum(clusterMachines.machine_count) })
-    .from(clusterMachines)
-    .where(
-      exists(
-        db
-          .select()
-          .from(proofs)
-          .innerJoin(
-            clusterVersions,
-            eq(proofs.cluster_version_id, clusterVersions.id)
-          )
-          .where(
-            and(
-              eq(clusterMachines.cluster_version_id, clusterVersions.id),
-              eq(proofs.proof_status, "proved"),
-              gt(proofs.proved_timestamp, sevenDaysAgo)
+            .where(
+              and(
+                eq(clusterMachines.cluster_version_id, clusterVersions.id),
+                eq(proofs.proof_status, "proved"),
+                gt(proofs.proved_timestamp, sevenDaysAgo)
+              )
             )
-          )
+        )
       )
-    )
 
-  return machineCount.count
-})
+    return machineCount.count
+  },
+  ["active-machine-count"],
+  {
+    revalidate: 60 * 60 * 24, // daily
+    tags: [TAGS.CLUSTERS],
+  }
+)
 
 export const getClustersBenchmarks = cache(async () => {
   const clusters = await db.query.clusters.findMany({
