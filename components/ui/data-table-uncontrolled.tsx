@@ -15,6 +15,7 @@ type Props<TData, TValue> = {
   data: TData[]
   columns: ColumnDef<TData, TValue>[]
   sorting?: { id: string; desc: boolean }[]
+  hidePagination?: boolean
 }
 
 const DataTableUncontrolled = <TData, TValue>({
@@ -22,6 +23,7 @@ const DataTableUncontrolled = <TData, TValue>({
   columns,
   className,
   sorting = [],
+  hidePagination = false,
 }: Props<TData, TValue>) => {
   const table = useReactTable({
     data,
@@ -39,7 +41,13 @@ const DataTableUncontrolled = <TData, TValue>({
     },
   })
 
-  return <DataTable className={className} table={table} />
+  return (
+    <DataTable
+      className={className}
+      table={table}
+      hidePagination={hidePagination}
+    />
+  )
 }
 
 export default DataTableUncontrolled

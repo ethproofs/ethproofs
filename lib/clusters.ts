@@ -1,29 +1,14 @@
-// We had to shorten the names of the relations to avoid a bug in
-// drizzle: https://github.com/drizzle-team/drizzle-orm/issues/2066
-// TODO: remove it once it's fixed
+import type { ClusterMachineBase, MachineBase } from "./types"
 
-export const tmp_renameClusterConfiguration = <
-  T extends object,
-  U extends object,
-  V extends object,
->(
-  cluster: T & {
-    cc: (U & { ci: V })[]
-  }
-) => {
-  const { cc, ...clusterWithoutCC } = cluster
-  return {
-    ...clusterWithoutCC,
-    cluster_configuration: cc.map(tmp_renameCloudInstances),
-  }
+export const hasPhysicalMachines = (clusterMachines: ClusterMachineBase[]) => {
+  return clusterMachines.some((cm) => cm.machine_id !== null)
 }
 
-export const tmp_renameCloudInstances = <T extends object, U extends object>(
-  clusterConfig: T & { ci: U }
+export const isMultiMachineCluster = (
+  clusterMachines: ClusterMachineBase[]
 ) => {
-  const { ci, ...clusterConfigWithoutCI } = clusterConfig
-  return {
-    ...clusterConfigWithoutCI,
-    cloud_instance: ci,
-  }
+  return (
+    clusterMachines.length > 1 ||
+    clusterMachines.some((config) => config.machine_count > 1)
+  )
 }

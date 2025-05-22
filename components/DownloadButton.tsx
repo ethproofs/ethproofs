@@ -2,7 +2,7 @@
 
 import prettyBytes from "pretty-bytes"
 
-import type { Proof } from "@/lib/types"
+import type { Proof, Team } from "@/lib/types"
 
 import ArrowDown from "@/components/svgs/arrow-down.svg"
 
@@ -12,10 +12,17 @@ import { Button } from "./ui/button"
 import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover"
 import StatusIcon from "./StatusIcon"
 
+export type ProofForDownload = Required<
+  Pick<Proof, "proof_status" | "proof_id" | "size_bytes">
+> & {
+  team: Required<Pick<Team, "name">>
+}
+
 type DownloadButtonProps = {
-  proof: Proof
+  proof: ProofForDownload
   className?: string
   containerClass?: string
+  containerStyle?: React.CSSProperties
   labelClass?: string
 }
 
@@ -23,6 +30,7 @@ const DownloadButton = ({
   className,
   proof,
   containerClass = "flex-col",
+  containerStyle,
   labelClass,
 }: DownloadButtonProps) => {
   const { proof_status, proof_id, size_bytes, team } = proof
@@ -37,24 +45,26 @@ const DownloadButton = ({
     labelClass
   )
 
-  const sizingClassName = "h-8 gap-2 self-center text-2xl"
+  const sizingClassName = "gap-2 self-center"
 
   if (proof_status === "proved")
     return (
-      <div className={cn("flex items-center gap-x-2 gap-y-1", containerClass)}>
+      <div
+        className={cn("flex items-center gap-x-2 gap-y-1", containerClass)}
+        style={containerStyle}
+      >
         <Button
           variant="outline"
           className={cn(sizingClassName, className)}
-          size="icon"
           asChild
         >
           <a href={`/api/v0/proofs/download/${proof_id}`} download>
-            <ArrowDown />
-            <span className={labelClassName}>Download proof</span>
+            <ArrowDown className="size-4" />
+            <span className={labelClassName}>download</span>
           </a>
         </Button>
         <span className="text-xs text-body-secondary">
-          {size_bytes ? prettyBytes(size_bytes) : ""}
+          ({size_bytes ? prettyBytes(size_bytes) : ""})
         </span>
       </div>
     )
@@ -62,8 +72,8 @@ const DownloadButton = ({
   if (proof_status === "proving")
     return (
       <Popover>
-        <PopoverTrigger>
-          <Button size="icon" variant="outline" asChild>
+        <PopoverTrigger style={containerStyle}>
+          <Button variant="outline" asChild>
             <div
               className={cn(sizingClassName, fakeButtonClassName, className)}
             >
@@ -83,8 +93,8 @@ const DownloadButton = ({
   if (proof_status === "queued")
     return (
       <Popover>
-        <PopoverTrigger>
-          <Button size="icon" variant="outline" asChild>
+        <PopoverTrigger style={containerStyle}>
+          <Button variant="outline" asChild>
             <div
               className={cn(sizingClassName, fakeButtonClassName, className)}
             >

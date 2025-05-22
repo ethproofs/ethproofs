@@ -1,18 +1,16 @@
 "use client"
 
-import Link from "next/link"
 import { ColumnDef } from "@tanstack/react-table"
 
 import type { Block, Proof, ProofWithCluster } from "@/lib/types"
 
+import BlockNumber from "@/components/BlockNumber"
 import { ColumnHeader } from "@/components/ColumnHeader"
 import { metrics } from "@/components/Metrics"
 import Null from "@/components/Null"
 import ArrowRight from "@/components/svgs/arrow-right.svg"
 import { ButtonLink } from "@/components/ui/button"
 import * as Info from "@/components/ui/info"
-
-import { cn } from "@/lib/utils"
 
 import { BLOCK_GAS_LIMIT } from "@/lib/constants"
 
@@ -39,7 +37,10 @@ export const columns: ColumnDef<Block>[] = [
     id: "block_number",
     accessorKey: "block_number",
     header: () => (
-      <ColumnHeader label={<metrics.blockNumber.Label />} className="text-left">
+      <ColumnHeader
+        label={<metrics.blockNumber.Label />}
+        className="text-center"
+      >
         <metrics.blockNumber.Details />
         <TooltipContentFooter className="space-y-3">
           <p className="font-bold">Time since block published</p>
@@ -63,13 +64,8 @@ export const columns: ColumnDef<Block>[] = [
         : "pending"
 
       return (
-        <div className="text-start">
-          <Link
-            href={`/block/${blockNumber}`}
-            className="text-lg tracking-wide hover:text-primary-light hover:underline"
-          >
-            <HidePunctuation>{formatNumber(blockNumber)}</HidePunctuation>
-          </Link>
+        <div className="text-center">
+          <BlockNumber blockNumber={blockNumber} />
           <div className="font-sans text-xs text-body-secondary">
             {formattedTimestamp}
           </div>
@@ -115,10 +111,7 @@ export const columns: ColumnDef<Block>[] = [
           <HidePunctuation>{formatted}</HidePunctuation>
           <Progress
             value={percentGasUsage}
-            className={cn(
-              percentGasUsage < 50 && "[&>div]:bg-primary-light",
-              "mx-auto my-2 h-1 max-w-32"
-            )}
+            className="mx-auto my-2 h-1.5 max-w-32"
           />
         </>
       )
@@ -225,10 +218,10 @@ export const columns: ColumnDef<Block>[] = [
       return (
         <div className="flex h-12 items-center">
           <ButtonLink
-            href={`/block/${blockNumber}`}
+            href={`/blocks/${blockNumber}`}
             variant="outline"
             size="icon"
-            className="ms-auto"
+            className="ms-auto h-auto p-1.5 text-lg"
           >
             <ArrowRight />
           </ButtonLink>

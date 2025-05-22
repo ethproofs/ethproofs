@@ -1,0 +1,1 @@
+ALTER TABLE "clusters" ADD COLUMN "is_open_source" boolean DEFAULT false NOT NULL;

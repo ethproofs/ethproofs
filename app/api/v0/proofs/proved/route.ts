@@ -1,6 +1,7 @@
-import { eq, sql } from "drizzle-orm"
-import { revalidatePath } from "next/cache"
+import { revalidateTag } from "next/cache"
 import { ZodError } from "zod"
+
+import { TAGS } from "@/lib/constants"
 
 import { db } from "@/db"
 import { blocks, programs, proofs } from "@/db/schema"
@@ -63,13 +64,16 @@ export const POST = withAuth(async ({ request, user, timestamp }) => {
     try {
       // create block
       console.log("creating block", block_number)
-      await db.insert(blocks).values({
-        block_number,
-        gas_used: Number(blockData.gasUsed),
-        transaction_count: blockData.txsCount,
-        timestamp: new Date(Number(blockData.timestamp) * 1000).toISOString(),
-        hash: blockData.hash,
-      })
+      await db
+        .insert(blocks)
+        .values({
+          block_number,
+          gas_used: Number(blockData.gasUsed),
+          transaction_count: blockData.txsCount,
+          timestamp: new Date(Number(blockData.timestamp) * 1000).toISOString(),
+          hash: blockData.hash,
+        })
+        .onConflictDoNothing()
     } catch (error) {
       console.error("error creating block", error)
       return new Response("Internal server error", { status: 500 })
@@ -186,8 +190,11 @@ export const POST = withAuth(async ({ request, user, timestamp }) => {
       return newProof
     })
 
-    // invalidate home page cache
-    revalidatePath("/")
+    // invalidate cache
+    revalidateTag(TAGS.PROOFS)
+    revalidateTag(TAGS.BLOCKS)
+    revalidateTag(`cluster-${cluster.id}`)
+    revalidateTag(`block-${block_number}`)
 
     // return the generated proof_id
     return Response.json(newProof)

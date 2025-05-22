@@ -15,3 +15,14 @@ export const isMobile = (): boolean => {
 export const base64ToHex = (base64: string) => {
   return Buffer.from(base64, "base64").toString("hex")
 }
+
+export const sumArray = (arr?: number[] | null) => {
+  if (!arr) return 0
+  return arr.reduce((sum, count) => sum + count, 0)
+}
+
+export const isUUID = (value: string) => {
+  const uuidRegex =
+    /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
+  return uuidRegex.test(value)
+}
