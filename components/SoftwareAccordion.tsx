@@ -115,7 +115,7 @@ const SoftwareAccordion = async () => {
       <div className="col-span-5 grid grid-cols-subgrid text-center">
         <MetricBox className="col-start-2">
           <MetricLabel>
-            <MetricInfo label="Latest version">
+            <MetricInfo label="latest version">
               <TooltipContentHeader>latest version</TooltipContentHeader>
               The most recent version of this zkVM being used by teams on
               ethproofs.org
@@ -137,7 +137,7 @@ const SoftwareAccordion = async () => {
         </MetricBox>
         <MetricBox className="col-start-4">
           <MetricLabel>
-            <MetricInfo label="Used by">
+            <MetricInfo label="used by">
               <TooltipContentHeader>
                 number of active clusters
               </TooltipContentHeader>{" "}

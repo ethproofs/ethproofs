@@ -19,7 +19,7 @@ export const MS_PER_SLOT = 12_000
 export const SLOTS_PER_EPOCH = 32 // 2^5
 
 // Execution constants
-export const BLOCK_GAS_LIMIT = 30_000_000 // TODO: Fetch from execution block
+export const BLOCK_GAS_LIMIT = 36_000_000 // TODO: Fetch from execution block
 
 // Prover cluster constants
 export const FALLBACK_TEAM_LOGO_SRC =
@@ -69,3 +69,10 @@ export const ZKVM_THRESHOLDS = {
     green: Number.MAX_SAFE_INTEGER,
   },
 } as const satisfies Record<string, MetricThresholds>
+
+export const TAGS = {
+  CLUSTERS: "clusters",
+  TEAMS: "teams",
+  PROOFS: "proofs",
+  BLOCKS: "blocks",
+} as const

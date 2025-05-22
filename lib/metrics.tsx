@@ -1,3 +1,5 @@
+import prettyBytes from "pretty-bytes"
+
 import ZkvmPopoverDetails from "@/components/ZkvmPopoverDetails"
 
 import {
@@ -189,8 +191,8 @@ export const getSoftwareDetailItems = (
       chartInfo: {
         bestThreshold: ZKVM_THRESHOLDS.verification_ms.yellow,
         worstThreshold: ZKVM_THRESHOLDS.verification_ms.red,
-        unit: "ms",
         value: Number(metrics.verification_ms),
+        formatValue: (value) => `${value}ms`,
         disabled: !metrics.verification_ms,
       },
       className: "px-8",
@@ -214,10 +216,10 @@ export const getSoftwareDetailItems = (
       severity: severityLevels.proofSize,
       position: 0,
       chartInfo: {
-        bestThreshold: ZKVM_THRESHOLDS.size_bytes.yellow / 1024,
-        worstThreshold: ZKVM_THRESHOLDS.size_bytes.red / 1024,
-        unit: "kB",
-        value: Number(metrics.size_bytes) / 1024,
+        bestThreshold: ZKVM_THRESHOLDS.size_bytes.yellow,
+        worstThreshold: ZKVM_THRESHOLDS.size_bytes.red,
+        value: Number(metrics.size_bytes),
+        formatValue: (value) => prettyBytes(value, { space: false }),
         disabled: !metrics.size_bytes,
       },
       className: "px-8",
