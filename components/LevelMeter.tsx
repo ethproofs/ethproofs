@@ -4,7 +4,7 @@ export type LevelMeterProps = React.ComponentProps<"div"> & {
   bestThreshold: number
   worstThreshold: number
   value: number
-  unit: string
+  formatValue?: (value: number) => string
   disabled?: boolean
 }
 const LevelMeter = ({
@@ -12,7 +12,7 @@ const LevelMeter = ({
   bestThreshold,
   worstThreshold,
   value,
-  unit,
+  formatValue,
   disabled,
 }: LevelMeterProps) => {
   const valueXPosition = (() => {
@@ -71,16 +71,14 @@ const LevelMeter = ({
         data-label="worst-threshold"
         className="col-span-2 col-start-2 row-start-2 text-center text-body-secondary"
       >
-        {worstThreshold}
-        {unit}
+        {formatValue ? formatValue(worstThreshold) : worstThreshold}
       </div>
 
       <div
         data-label="best-threshold"
         className="col-span-2 col-start-4 row-start-2 text-center text-body-secondary"
       >
-        {bestThreshold}
-        {unit}
+        {formatValue ? formatValue(bestThreshold) : bestThreshold}
       </div>
 
       {!disabled && (
@@ -90,8 +88,7 @@ const LevelMeter = ({
           style={{ insetInlineStart: valueXPosition + "%" }}
         >
           <span className="absolute -translate-x-1/2 -translate-y-9 font-mono">
-            {value}
-            {unit}
+            {formatValue ? formatValue(value) : value}
             <div className="relative flex w-full flex-col">
               <div className="col-span-2 place-items-center">
                 <div className="absolute bottom-full start-1/2 size-1 -translate-x-1/2 rounded-full bg-body" />
