@@ -134,6 +134,13 @@
       "when": 1747146840536,
       "tag": "0018_indexes",
       "breakpoints": true
+    },
+    {
+      "idx": 19,
+      "version": "7",
+      "when": 1747919719785,
+      "tag": "0019_cluster-is-active-flag",
+      "breakpoints": true
     }
   ]
 }
