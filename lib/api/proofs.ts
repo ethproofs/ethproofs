@@ -4,6 +4,8 @@ import { count } from "drizzle-orm"
 import { unstable_cache as cache } from "next/cache"
 import { PaginationState } from "@tanstack/react-table"
 
+import { TAGS } from "../constants"
+
 import { db } from "@/db"
 import { clusterVersions, proofs } from "@/db/schema"
 
@@ -90,7 +92,7 @@ export const fetchProofsPerStatusCount = async (
     keyParts,
     {
       revalidate: 60 * 60 * 1, // hourly
-      tags: ["proofs"],
+      tags: [TAGS.PROOFS],
     }
   )(from, to)
 }
@@ -145,8 +147,8 @@ export const fetchProvedProofsByClusterId = async (
     },
     ["cluster-proofs", clusterId],
     {
-      revalidate: 60 * 60 * 24, // daily
-      tags: [`cluster-proofs-${clusterId}`],
+      revalidate: false,
+      tags: [`cluster-${clusterId}`],
     }
   )(clusterId)
 }

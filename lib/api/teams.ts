@@ -1,6 +1,8 @@
 import { count, notIlike } from "drizzle-orm"
 import { unstable_cache as cache } from "next/cache"
 
+import { TAGS } from "@/lib/constants"
+
 import { db } from "@/db"
 import { teams } from "@/db/schema"
 
@@ -20,7 +22,7 @@ export const getTeams = cache(
   ["teams"],
   {
     revalidate: 60 * 60 * 24, // daily
-    tags: ["teams"],
+    tags: [TAGS.TEAMS],
   }
 )
 
@@ -44,6 +46,6 @@ export const getTeamsCount = cache(
   ["teams-count"],
   {
     revalidate: 60 * 60 * 24, // daily
-    tags: ["teams"],
+    tags: [TAGS.TEAMS],
   }
 )
