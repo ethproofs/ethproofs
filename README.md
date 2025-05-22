@@ -63,3 +63,9 @@ Sync the database schema with the seed file.
 ```bash
 pnpm seed:sync
 ```
+
+## Scheduled cluster status updates
+
+This project uses the [`pg_cron`](https://supabase.com/docs/guides/database/extensions/pgcron) extension in Supabase to automatically update the `is_active` status of clusters daily. **You must ensure that the Cron extension is installed and enabled in your Supabase project** for these updates to run correctly.
+
+More info: https://supabase.com/docs/guides/cron
