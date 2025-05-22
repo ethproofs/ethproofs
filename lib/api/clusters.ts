@@ -43,31 +43,6 @@ export const getCluster = cache(async (id: string) => {
   return cluster
 })
 
-export const getClusters = cache(async () => {
-  const clusters = await db.query.clusters.findMany({
-    with: {
-      team: true,
-      versions: {
-        orderBy: desc(clusterVersions.created_at),
-        with: {
-          zkvm_version: {
-            with: {
-              zkvm: true,
-            },
-          },
-          cluster_machines: {
-            with: {
-              machine: true,
-            },
-          },
-        },
-      },
-    },
-  })
-
-  return clusters
-})
-
 export const getActiveClusters = cache(
   async (filters?: { teamId?: string; zkvmId?: number }) => {
     const { teamId, zkvmId } = filters ?? {}
@@ -128,14 +103,6 @@ export const getActiveClusters = cache(
     })
   }
 )
-
-export const getClustersByTeamId = cache(async (teamId: string) => {
-  const clusters = await db.query.clusters.findMany({
-    where: (clusters, { eq }) => eq(clusters.team_id, teamId),
-  })
-
-  return clusters
-})
 
 export const getActiveClusterCountByZkvmId = cache(async () => {
   const sevenDaysAgo = sql`NOW() - INTERVAL '7 days'`
