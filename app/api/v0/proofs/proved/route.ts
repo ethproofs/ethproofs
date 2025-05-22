@@ -195,6 +195,7 @@ export const POST = withAuth(async ({ request, user, timestamp }) => {
 
         // invalidate active clusters stats
         revalidateTag(TAGS.CLUSTERS)
+        revalidateTag(TAGS.CLUSTER_SUMMARY)
       }
 
       if (!storageQuotaExceeded) {
