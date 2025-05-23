@@ -1,6 +1,6 @@
 import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover"
 
-import { renderTimestamp } from "@/lib/date"
+import { formatShortDate, formatTimeAgo, renderTimestamp } from "@/lib/date"
 
 type RenderTimestampProps = React.HTMLAttributes<HTMLSpanElement> & {
   children: string
@@ -8,7 +8,9 @@ type RenderTimestampProps = React.HTMLAttributes<HTMLSpanElement> & {
 const Timestamp = ({ children, ...props }: RenderTimestampProps) => (
   <Popover>
     <PopoverTrigger>
-      <span {...props}>{renderTimestamp(children)}</span>
+      <span {...props}>
+        {formatTimeAgo(children)} ({formatShortDate(children)})
+      </span>
     </PopoverTrigger>
     <PopoverContent>{renderTimestamp(children, "UTC")}</PopoverContent>
   </Popover>

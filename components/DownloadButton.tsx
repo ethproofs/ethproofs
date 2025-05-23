@@ -79,7 +79,7 @@ const DownloadButton = ({
             >
               <StatusIcon status="proving" className="animate-pulse" />
               <span className={cn(labelClassName, "text-body-secondary")}>
-                Proving
+                proving
               </span>
             </div>
           </Button>
@@ -100,7 +100,7 @@ const DownloadButton = ({
             >
               <StatusIcon status="queued" />
               <span className={cn(labelClassName, "text-body-secondary")}>
-                Queued
+                queued
               </span>
             </div>
           </Button>
