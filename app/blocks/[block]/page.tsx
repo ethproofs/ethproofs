@@ -154,21 +154,31 @@ export default async function BlockDetailsPage({
           <HeroItemLabel>
             <Cpu /> Gas used
           </HeroItemLabel>
-          {gas_used}
+          <p className="font-mono tracking-wide">
+            <HidePunctuation>{formatNumber(gas_used)}</HidePunctuation>
+          </p>
         </HeroItem>
 
         <HeroItem className="row-span-2 grid grid-rows-subgrid place-items-center gap-y-1">
           <HeroItemLabel>
             <Layers /> Slot
           </HeroItemLabel>
-          {timestampToSlot(timestamp)}
+          <p className="font-mono tracking-wide">
+            <HidePunctuation>
+              {formatNumber(timestampToSlot(timestamp))}
+            </HidePunctuation>
+          </p>
         </HeroItem>
 
         <HeroItem className="row-span-2 grid grid-rows-subgrid place-items-center gap-y-1">
           <HeroItemLabel>
             <BookOpen /> Epoch
           </HeroItemLabel>
-          {timestampToEpoch(timestamp)}
+          <p className="font-mono tracking-wide">
+            <HidePunctuation>
+              {formatNumber(timestampToEpoch(timestamp))}
+            </HidePunctuation>
+          </p>
         </HeroItem>
       </section>
 
