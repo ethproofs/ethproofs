@@ -276,7 +276,7 @@ const main = async () => {
             refDate: new Date(),
           })
 
-          let proving_timestamp = null
+          let proving_timestamp: Date | null = null
           if (status === "proving") {
             proving_timestamp = setSeconds(
               queued_timestamp,
@@ -284,7 +284,7 @@ const main = async () => {
             )
           }
 
-          let proved_timestamp = null
+          let proved_timestamp: Date | null = null
           if (status === "proved") {
             proving_timestamp = setSeconds(
               queued_timestamp,
