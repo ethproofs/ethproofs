@@ -92,7 +92,9 @@ const SoftwareAccordionItem = ({
               Last updated
             </span>{" "}
             <span className="text-xs uppercase text-body">
-              {formatShortDate(new Date(zkvm.created_at))}
+              {metrics.updated_at
+                ? formatShortDate(new Date(metrics.updated_at))
+                : "N/A"}
             </span>
           </div>
         </div>
