@@ -176,14 +176,12 @@ const ProofRow = ({ proof, block }: ProofRowProps) => {
           <MetricInfo
             label={
               <div>
-                <span className="normal-case">{team?.name}</span> zk
-                <span className="uppercase">VM</span> cycles
+                <span className="normal-case">{zkvm.name}</span> cycles
               </div>
             }
           >
             <TooltipContentHeader>
-              <span className="normal-case">{team?.name}</span> zk
-              <span className="uppercase">VM</span> cycles
+              <span className="normal-case">{zkvm.name}</span> cycles
             </TooltipContentHeader>
             <Info.Derivation>
               <Info.Term type="internal">proving cycles</Info.Term>

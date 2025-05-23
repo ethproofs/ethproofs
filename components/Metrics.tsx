@@ -16,6 +16,8 @@ const METRICS = {
     </>
   ),
   costPerProof: "cost per proof",
+  avgCostPerCluster: "avg cost",
+  avgProvingTimePerCluster: "avg time",
   gasUsed: "gas used",
   provingTime: "proving time",
   totalTTP: "total time to proof",
@@ -51,8 +53,8 @@ const metrics: Record<Metric, MetricDetails> = {
         <Info.Description>
           A cluster is composed of one or more sets of hardware working together
           to generate a proof. For cost comparisons, clusters are broken down
-          using closest-equivalent AWS hardware instances, each with it&apos;s
-          own pricing as reported by AWS.
+          using closest-equivalent cloud provider hardware instances, each with
+          its own pricing as reported by the selected cloud provider.
         </Info.Description>
       </>
     ),
@@ -95,6 +97,28 @@ const metrics: Record<Metric, MetricDetails> = {
       </>
     ),
   },
+  avgCostPerCluster: {
+    Label: () => METRICS.avgCostPerCluster,
+    Details: () => (
+      <>
+        <Info.Derivation>
+          <computed.avgCostPerCluster.Term />
+        </Info.Derivation>
+
+        <computed.avgCostPerCluster.Definition />
+
+        <Info.Description className="font-bold">
+          Cost per proof
+        </Info.Description>
+
+        <Info.Derivation>
+          <computed.provingCosts.Term />
+        </Info.Derivation>
+
+        <computed.provingCosts.Definition />
+      </>
+    ),
+  },
   gasUsed: {
     Label: () => METRICS.gasUsed,
     Details: () => (
@@ -112,6 +136,18 @@ const metrics: Record<Metric, MetricDetails> = {
           Proportional to the amount of computational effort a block outputs.
           Less gas = less computationally intense = easier to prove.
         </Info.Description>
+      </>
+    ),
+  },
+  avgProvingTimePerCluster: {
+    Label: () => METRICS.avgProvingTimePerCluster,
+    Details: () => (
+      <>
+        <Info.Derivation>
+          <computed.avgProvingTimePerCluster.Term />
+        </Info.Derivation>
+
+        <computed.avgProvingTimePerCluster.Definition />
       </>
     ),
   },
