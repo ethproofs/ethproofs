@@ -22,12 +22,14 @@ import {
   AccordionTrigger,
 } from "./ui/accordion"
 import { ButtonLink } from "./ui/button"
+import * as Info from "./ui/info"
 import Link from "./ui/link"
 import { MetricBox, MetricInfo, MetricLabel } from "./ui/metric"
 import { TooltipContentHeader } from "./ui/tooltip"
 import ClusterMachineSummary from "./ClusterMachineSummary"
 import { DisplayTeamLink } from "./DisplayTeamLink"
 import HardwareGrid from "./HardwareGrid"
+import { metrics } from "./Metrics"
 import NoData from "./NoData"
 
 import { hasPhysicalMachines, isMultiMachineCluster } from "@/lib/clusters"
@@ -208,25 +210,21 @@ const ClusterAccordion = ({ clusters }: ClusterAccordionProps) => (
           </MetricBox>
           <MetricBox className="col-start-4">
             <MetricLabel>
-              <MetricInfo label="avg cost">
-                <TooltipContentHeader>average cost</TooltipContentHeader>
-                Is calculated by multiplying the hourly cloud rate for
-                equivalent hardware by the number of instances used, then
-                multiplying by proof generation time (converted from
-                milliseconds to hours by dividing by 3,600,000)
+              <MetricInfo label={<metrics.avgCostPerCluster.Label />}>
+                <Info.Label className="lowercase">
+                  {metrics.avgCostPerCluster.Label()}
+                </Info.Label>
+                <metrics.avgCostPerCluster.Details />
               </MetricInfo>
             </MetricLabel>
           </MetricBox>
           <MetricBox className="col-start-5">
             <MetricLabel>
-              <MetricInfo label="avg time">
-                <TooltipContentHeader>average time</TooltipContentHeader>
-                <p>
-                  Is the average duration of computation time during the proof
-                  generation process, self reported by proving teams in
-                  milliseconds
-                </p>
-                <p className="text-sm">Time spent generating proof of execution</p>
+              <MetricInfo label={<metrics.avgProvingTimePerCluster.Label />}>
+                <Info.Label className="lowercase">
+                  {metrics.avgProvingTimePerCluster.Label()}
+                </Info.Label>
+                <metrics.avgProvingTimePerCluster.Details />
               </MetricInfo>
             </MetricLabel>
           </MetricBox>

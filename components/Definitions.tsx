@@ -30,8 +30,9 @@ const primitives: Record<Primitive, DefinitionDetails> = {
         <Info.Term type="internal">
           {PRIMITIVES.hourlyPricePerInstance}
         </Info.Term>{" "}
-        is the per-hour USD rate charged by AWS for one instance of the cluster
-        of hardware most-equivalent to that being used by the prover
+        is the per-hour USD rate charged by the selected cloud provider for one
+        instance of the cluster of hardware most-equivalent to that being used
+        by the prover
       </p>
     ),
   },
@@ -42,8 +43,8 @@ const primitives: Record<Primitive, DefinitionDetails> = {
     Definition: () => (
       <p>
         <Info.Term type="internal">{PRIMITIVES.instanceCount}</Info.Term> is the
-        number of AWS-equivalent instances of a given type being used within a
-        cluster of hardware responsible for generating a proof
+        number of cloud provider-equivalent instances of a given type being used
+        within a cluster of hardware responsible for generating a proof
       </p>
     ),
   },
@@ -107,8 +108,8 @@ const primitives: Record<Primitive, DefinitionDetails> = {
         </p>
         <p>
           Hardware, cycle type, and description of setup are all self-reported
-          by proving teams, along with a selected AWS setup that best matches
-          their own, used for price comparison
+          by proving teams, along with a selected cloud provider setup that best
+          matches their own, used for price comparison
         </p>
       </>
     ),
@@ -189,6 +190,32 @@ const computed = {
         <primitives.gasUsed.Definition />
         <conversions.gasPerMgas.Definition />
       </>
+    ),
+  },
+  avgProvingTimePerCluster: {
+    Term: () => (
+      <>
+        avg(
+        <primitives.provingTime.Term />)
+      </>
+    ),
+    Definition: () => (
+      <>
+        <primitives.provingTime.Definition />
+        <p>
+          The average is calculated using the historical data of all proofs that
+          have been reported for the <primitives.cluster.Term />.
+        </p>
+      </>
+    ),
+  },
+  avgCostPerCluster: {
+    Term: () => <>avg(cost per proof)</>,
+    Definition: () => (
+      <p>
+        The average is calculated using the historical data of all proofs that
+        have been reported for the <primitives.cluster.Term />.
+      </p>
     ),
   },
 } as const satisfies Record<string, DefinitionDetails>
