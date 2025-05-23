@@ -1,3 +1,4 @@
+import { setSeconds } from "date-fns"
 import { copycat, faker } from "@snaplet/copycat"
 import { createSeedClient } from "@snaplet/seed"
 
@@ -153,6 +154,14 @@ const main = async () => {
     }
   )
 
+  // zkvm metrics
+  await seed.zkvm_performance_metrics((x) => x(zkvmsData.length), {
+    connect: { zkvms },
+  })
+  await seed.zkvm_security_metrics((x) => x(zkvmsData.length), {
+    connect: { zkvms },
+  })
+
   // add zkvm_versions, set 2 versions for each zkvm
   const { zkvm_versions } = await seed.zkvm_versions(
     (x) =>
@@ -214,6 +223,9 @@ const main = async () => {
             hardware: faker.lorem.sentence(),
             cycle_type: faker.lorem.word().slice(0, 2).toUpperCase() + index,
             proof_type: copycat.oneOfString(seed, ["STARK", "SNARK"]),
+            is_multi_machine: copycat.bool(seed),
+            is_open_source: copycat.bool(seed),
+            software_link: copycat.oneOf(seed, [faker.internet.url(), null]),
           }
         }),
       {
@@ -250,21 +262,56 @@ const main = async () => {
       { connect: { machines, cluster_versions, cloud_instances } }
     )
 
-    const { proofs } = await seed.proofs(
+    await seed.proofs(
       (x) =>
-        x(200, () => ({
-          proof_id: ({ seed }) => copycat.int(seed, { min: 1, max: 1000000 }),
-          proving_time: ({ seed }) =>
-            copycat.int(seed, { min: 1000, max: 10000 }),
-          proof_status: ({ seed }) =>
-            copycat.oneOfString(seed, ["proved", "proving", "queued"]),
-          proving_cycles: ({ seed }) =>
-            copycat.int(seed, { min: 100000, max: 1000000 }),
-          size_bytes: ({ seed }) =>
-            copycat.int(seed, { min: 2 ** 15, max: 2 ** 23 }),
-          team_id: user.id,
-        })),
-      { connect: { blocks, cluster_versions } }
+        x(blocks.length, ({ seed }) => {
+          const status = copycat.oneOfString(seed, [
+            "proved",
+            "proving",
+            "queued",
+          ])
+
+          const queued_timestamp = faker.date.recent({
+            days: 10,
+            refDate: new Date(),
+          })
+
+          let proving_timestamp = null
+          if (status === "proving") {
+            proving_timestamp = setSeconds(
+              queued_timestamp,
+              copycat.int(seed, { min: 1, max: 10 })
+            )
+          }
+
+          let proved_timestamp = null
+          if (status === "proved") {
+            proving_timestamp = setSeconds(
+              queued_timestamp,
+              copycat.int(seed, { min: 1, max: 10 })
+            )
+            proved_timestamp = setSeconds(
+              proving_timestamp!,
+              copycat.int(seed + 1, { min: 1, max: 10 })
+            )
+          }
+
+          return {
+            proof_id: ({ seed }) => copycat.int(seed, { min: 1, max: 1000000 }),
+            proving_time: ({ seed }) =>
+              copycat.int(seed, { min: 1000, max: 10000 }),
+            proof_status: status,
+            proving_cycles: ({ seed }) =>
+              copycat.int(seed, { min: 100000, max: 1000000 }),
+            size_bytes: ({ seed }) =>
+              copycat.int(seed, { min: 2 ** 15, max: 2 ** 23 }),
+            team_id: user.id,
+            proved_timestamp: () => proved_timestamp?.toISOString() ?? null,
+            proving_timestamp: () => proving_timestamp?.toISOString() ?? null,
+            queued_timestamp: () => queued_timestamp.toISOString(),
+          }
+        }),
+      { connect: { blocks, cluster_versions, teams: [{ id: user.id }] } }
     )
   }
 
