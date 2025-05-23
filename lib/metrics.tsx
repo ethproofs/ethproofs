@@ -148,8 +148,8 @@ export const getZkvmsMetricsByZkvmId = async ({
   const metricsByZkvmId = new Map<number, Partial<ZkvmMetrics>>()
 
   for (const zkvm of zkvmsWithMetrics) {
-    const securityMetricsUpdatedAt = zkvm.security_metrics.updated_at
-    const performanceMetricsUpdatedAt = zkvm.performance_metrics.updated_at
+    const securityMetricsUpdatedAt = zkvm.security_metrics?.updated_at
+    const performanceMetricsUpdatedAt = zkvm.performance_metrics?.updated_at
 
     const lastUpdated =
       securityMetricsUpdatedAt > performanceMetricsUpdatedAt
@@ -177,7 +177,7 @@ export const getZkvmMetrics = async (zkvmId: number) => {
 }
 
 export const getSoftwareDetailItems = (
-  metrics: Partial<ZkvmMetrics>
+  metrics: Partial<ZkvmMetrics> = {}
 ): SoftwareDetailItem[] => {
   const severityLevels = getZkvmMetricSeverityLevels(metrics)
 
