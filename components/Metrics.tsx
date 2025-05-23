@@ -107,7 +107,10 @@ const metrics: Record<Metric, MetricDetails> = {
 
         <computed.avgCostPerCluster.Definition />
 
-        <p className="font-bold">Cost per proof</p>
+        <Info.Description className="font-bold">
+          Cost per proof
+        </Info.Description>
+
         <Info.Derivation>
           <computed.provingCosts.Term />
         </Info.Derivation>
