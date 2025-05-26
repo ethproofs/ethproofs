@@ -107,6 +107,9 @@ const SoftwareAccordion = async () => {
     zkvmIds: zkvms.map((zkvm) => zkvm.id),
   })
 
+  // sort zkvms by usage
+  const sortedZkvms = zkvms.sort((a, b) => b.activeClusters - a.activeClusters)
+
   return (
     <Accordion
       type="multiple"
@@ -146,7 +149,7 @@ const SoftwareAccordion = async () => {
           </MetricLabel>
         </MetricBox>
       </div>
-      {zkvms.map((zkvm) => (
+      {sortedZkvms.map((zkvm) => (
         <SoftwareAccordionItem
           key={zkvm.id}
           value={"item-" + zkvm.id}
