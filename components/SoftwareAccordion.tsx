@@ -33,7 +33,7 @@ const SoftwareAccordionItem = ({
     totalClusters: number
     activeClusters: number
   }
-  metrics: Partial<ZkvmMetrics>
+  metrics: Partial<ZkvmMetrics> | undefined
 }) => {
   const detailItems = getSoftwareDetailItems(metrics)
 
@@ -87,14 +87,16 @@ const SoftwareAccordionItem = ({
             details for {zkvm.name}
             <ChevronRight className="-mx-2 size-4" />
           </ButtonLink>
-          <div className="col-start-3 text-end">
-            <span className="text-xs italic text-body-secondary">
-              Last updated
-            </span>{" "}
-            <span className="text-xs uppercase text-body">
-              {formatShortDate(new Date(zkvm.created_at))}
-            </span>
-          </div>
+          {metrics?.updated_at && (
+            <div className="col-start-3 text-end">
+              <span className="text-xs italic text-body-secondary">
+                Last updated
+              </span>{" "}
+              <span className="text-xs uppercase text-body">
+                {formatShortDate(new Date(metrics.updated_at))}
+              </span>
+            </div>
+          )}
         </div>
       </AccordionContent>
     </AccordionItem>
@@ -154,7 +156,7 @@ const SoftwareAccordion = async () => {
           key={zkvm.id}
           value={"item-" + zkvm.id}
           zkvm={zkvm}
-          metrics={metricsByZkvmId.get(zkvm.id) || {}}
+          metrics={metricsByZkvmId.get(zkvm.id)}
         />
       ))}
     </Accordion>
