@@ -4,7 +4,7 @@ ALTER TABLE "clusters" ADD COLUMN "is_active" boolean DEFAULT false NOT NULL;
 create or replace function update_cluster_active_status()
 returns void
 language plpgsql
-security definer
+security definer set search_path = ''
 as $$
 begin
     update clusters c
@@ -18,10 +18,3 @@ begin
     );
 end;
 $$;
-
--- Schedule the job (every day at 00:00)
-select cron.schedule(
-    'update-cluster-active-status',
-    '0 0 * * *',
-    'select update_cluster_active_status();'
-);
