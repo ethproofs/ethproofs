@@ -6,18 +6,16 @@ import MachineTabs from "../MachineTabs"
 import { ButtonLink } from "../ui/button"
 import { Card, CardHeader, CardTitle } from "../ui/card"
 
-import { getActiveClusters, getActiveMachineCount } from "@/lib/api/clusters"
+import { getActiveClusters } from "@/lib/api/clusters"
 import { getClusterSummary } from "@/lib/api/stats"
 import { getTeamsCount } from "@/lib/api/teams"
 
 const ClustersSection = async () => {
-  const [teamsCount, clusterSummary, machineCount, activeClusters] =
-    await Promise.all([
-      getTeamsCount(),
-      getClusterSummary(),
-      getActiveMachineCount(),
-      getActiveClusters(),
-    ])
+  const [teamsCount, clusterSummary, activeClusters] = await Promise.all([
+    getTeamsCount(),
+    getClusterSummary(),
+    getActiveClusters(),
+  ])
 
   const clustersSummary: SummaryItem[] = [
     {
@@ -26,9 +24,9 @@ const ClustersSection = async () => {
       value: teamsCount,
     },
     {
-      key: "proving-machines",
-      label: "proving machines",
-      value: machineCount,
+      key: "clusters",
+      label: "clusters",
+      value: activeClusters.length,
     },
   ]
 
