@@ -1,6 +1,6 @@
 import * as Info from "@/components/ui/info"
 
-import { SITE_NAME } from "@/lib/constants"
+import { AVERAGE_LABEL, SITE_NAME } from "@/lib/constants"
 
 type DefinitionDetails = {
   Term: () => React.ReactNode
@@ -16,6 +16,7 @@ const PRIMITIVES = {
   proofSubmissionTime: "proof submission time",
   timestamp: "timestamp",
   cluster: "cluster",
+  costPerProof: "cost per proof",
 } as const
 
 type Primitive = keyof typeof PRIMITIVES
@@ -114,6 +115,15 @@ const primitives: Record<Primitive, DefinitionDetails> = {
       </>
     ),
   },
+  costPerProof: {
+    Term: () => <Info.Term>{PRIMITIVES.costPerProof}</Info.Term>,
+    Definition: () => (
+      <p>
+        <Info.Term type="internal">{PRIMITIVES.costPerProof}</Info.Term>{" "}
+        reported for the <primitives.cluster.Term />.
+      </p>
+    ),
+  },
 }
 
 const conversions = {
@@ -195,26 +205,33 @@ const computed = {
   avgProvingTimePerCluster: {
     Term: () => (
       <>
-        avg(
-        <primitives.provingTime.Term />)
+        {AVERAGE_LABEL} <primitives.provingTime.Term /> (per{" "}
+        <primitives.cluster.Term />)
       </>
     ),
     Definition: () => (
       <>
         <primitives.provingTime.Definition />
         <p>
-          The average is calculated using the historical data of all proofs that
-          have been reported for the <primitives.cluster.Term />.
+          The average <primitives.provingTime.Term /> is calculated using the
+          historical data of all proofs that have been reported for the{" "}
+          <primitives.cluster.Term />.
         </p>
       </>
     ),
   },
   avgCostPerCluster: {
-    Term: () => <>avg(cost per proof)</>,
+    Term: () => (
+      <>
+        {AVERAGE_LABEL} <primitives.costPerProof.Term /> (per{" "}
+        <primitives.cluster.Term />)
+      </>
+    ),
     Definition: () => (
       <p>
-        The average is calculated using the historical data of all proofs that
-        have been reported for the <primitives.cluster.Term />.
+        The average <primitives.costPerProof.Term /> is calculated using the
+        historical data of all proofs that have been reported for the{" "}
+        <primitives.cluster.Term />.
       </p>
     ),
   },
