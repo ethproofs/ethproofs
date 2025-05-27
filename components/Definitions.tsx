@@ -99,11 +99,11 @@ const primitives: Record<Primitive, DefinitionDetails> = {
     ),
   },
   cluster: {
-    Term: () => <Info.Term type="codeTerm">{PRIMITIVES.cluster}</Info.Term>,
+    Term: () => <Info.Term type="internal">{PRIMITIVES.cluster}</Info.Term>,
     Definition: () => (
       <>
         <p>
-          <Info.Term type="codeTerm">{PRIMITIVES.cluster}</Info.Term> is the
+          <Info.Term type="internal">{PRIMITIVES.cluster}</Info.Term> is the
           name given to a particular set of hardware being used to compute the
           proofs.
         </p>
