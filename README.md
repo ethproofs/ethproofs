@@ -66,13 +66,14 @@ pnpm seed:sync
 
 ## Cron jobs
 
-This project uses the [`pg_cron`](https://supabase.com/docs/guides/database/extensions/pgcron) extension in Supabase to automate important database maintenance tasks.  
+This project uses the [`pg_cron`](https://github.com/citusdata/pg_cron) extension within Supabase to automate important database maintenance tasks.  
+
 **You must ensure that the Cron extension is installed and enabled in your Supabase project** for these jobs to run correctly.
 
 ### Requirements
 
 1. **Install the pg_cron extension**  
-   Follow the [Supabase pg_cron documentation](https://supabase.com/docs/guides/database/extensions/pgcron) to enable the extension in your project.
+   Follow the [Supabase pg_cron documentation](https://supabase.com/docs/guides/cron/install) to enable the extension in your project.
 
 2. **Schedule the required jobs**  
    Use the SQL commands below to schedule each job in your Supabase database.
