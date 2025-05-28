@@ -186,7 +186,7 @@ export const POST = withAuth(async ({ request, user, timestamp }) => {
 
       // handle active cluster status and updates
       if (!clusterVersion.cluster.is_active) {
-        await db
+        await tx
           .update(clusters)
           .set({
             is_active: true,
