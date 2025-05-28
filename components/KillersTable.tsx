@@ -127,9 +127,9 @@ const KillersTable = ({
           key={benchmark.id}
           className="flex flex-col items-center font-sans"
         >
-          <MetricInfo label={benchmark.operation_type}>
+          {/* <MetricInfo label={benchmark.operation_type}>
             TODO: Popover details for killer type
-          </MetricInfo>
+          </MetricInfo> */}
           <div className="text-center text-level-worst">
             {benchmark.display_name}
           </div>

@@ -26,7 +26,7 @@ const DownloadAllButton = async ({
     <Button className={cn(sizingClassName, className)} size="icon" asChild>
       <a href={`/api/v0/proofs/download/all/${blockNumber}`} download>
         <ArrowDown />
-        <span className={labelClassName}>Download all proofs</span>
+        <span className={labelClassName}>download all proofs</span>
         <span className="inline-block text-nowrap text-xs font-bold"></span>
       </a>
     </Button>
