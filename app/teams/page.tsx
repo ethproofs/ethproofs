@@ -1,3 +1,4 @@
+import { ChevronRight } from "lucide-react"
 import type { Metadata } from "next"
 
 import { metrics } from "@/components/Metrics"
@@ -22,7 +23,7 @@ export default async function TeamsPage() {
 
   return (
     <>
-      <h1 className="text-shadow my-12 px-6 text-center font-mono text-3xl font-semibold md:my-24 md:px-8">
+      <h1 className="text-shadow mb-24 mt-16 px-6 text-center font-mono text-3xl font-semibold md:mt-24 md:px-8">
         proving teams
       </h1>
 
@@ -91,7 +92,8 @@ export default async function TeamsPage() {
                           </div>
                         </div>
                         <ButtonLink href={`/teams/${slug}`} variant="outline">
-                          + details for {team_name}
+                          details for {team_name}
+                          <ChevronRight className="-mx-2 size-4" />
                         </ButtonLink>
                       </>
                     )}

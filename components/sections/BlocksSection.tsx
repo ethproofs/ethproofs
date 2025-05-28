@@ -80,8 +80,8 @@ const BlocksSection = async () => {
       />
 
       <div className="flex justify-center">
-        <ButtonLink variant="outline" href="/blocks">
-          See all
+        <ButtonLink variant="outline" href="/blocks" className="min-w-40">
+          see all
         </ButtonLink>
       </div>
     </Card>

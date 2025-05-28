@@ -10,6 +10,7 @@ import type {
 import { cn } from "@/lib/utils"
 
 import Link from "./ui/link"
+import { MetricInfo } from "./ui/metric"
 import { DisplayTeamLink } from "./DisplayTeamLink"
 import NoData from "./NoData"
 
@@ -126,7 +127,9 @@ const KillersTable = ({
           key={benchmark.id}
           className="flex flex-col items-center font-sans"
         >
-          <div className="text-center">{benchmark.operation_type}</div>
+          {/* <MetricInfo label={benchmark.operation_type}>
+            TODO: Popover details for killer type
+          </MetricInfo> */}
           <div className="text-center text-level-worst">
             {benchmark.display_name}
           </div>

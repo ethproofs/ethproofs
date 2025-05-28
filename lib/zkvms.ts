@@ -31,6 +31,7 @@ export const getZkvmsWithUsage = async () => {
     const totalClusters = totalActiveClusters
     return { ...zkvm, totalClusters, activeClusters }
   })
+
   return zkvmsWithUsage
 }
 

@@ -72,7 +72,7 @@ export default async function ZkvmDetailsPage({
 
   return (
     <>
-      <div className="mt-12 space-y-4 px-6 text-center font-mono md:mt-24 md:px-8">
+      <div className="mb-24 mt-16 space-y-4 px-6 text-center font-mono md:mt-24 md:px-8">
         <h1 className="text-shadow text-3xl font-semibold">{zkvm.name}</h1>
 
         <div className="flex items-center justify-center gap-3">
@@ -111,8 +111,8 @@ export default async function ZkvmDetailsPage({
         </div>
       </div>
 
-      <div className="bg-gradient-to-b from-background to-background-active">
-        <div className="mx-auto max-w-screen-xl">
+      <div className="bg-gradient-to-t from-background-active/20">
+        <div className="mx-auto max-w-screen-xl pb-6">
           <h2 className="sr-only">zkVM software details</h2>
           <SoftwareDetails detailItems={getSoftwareDetailItems(zkvmMetrics)} />
         </div>

@@ -121,8 +121,8 @@ export default async function BlockDetailsPage({
   const multiMachineBlockFeeMetrics = getBlockFeeMetrics(multiMachineStats)
 
   return (
-    <div className="mx-auto mt-12 max-w-screen-xl space-y-20 px-6 md:mt-24 md:px-8 [&>section]:w-full">
-      <HeroTitle className="mx-auto w-fit items-center gap-4">
+    <div className="mx-auto max-w-screen-xl space-y-20 px-6 md:px-8 [&>section]:w-full">
+      <HeroTitle className="mx-auto mb-24 mt-16 w-fit items-center gap-4 md:mt-24">
         <Box strokeWidth="1" className="size-[4.5rem] shrink-0 text-primary" />
         <div className="max-w-[14rem]">
           <h1 className="font-mono">
@@ -154,21 +154,31 @@ export default async function BlockDetailsPage({
           <HeroItemLabel>
             <Cpu /> Gas used
           </HeroItemLabel>
-          {gas_used}
+          <p className="font-mono tracking-wide">
+            <HidePunctuation>{formatNumber(gas_used)}</HidePunctuation>
+          </p>
         </HeroItem>
 
         <HeroItem className="row-span-2 grid grid-rows-subgrid place-items-center gap-y-1">
           <HeroItemLabel>
             <Layers /> Slot
           </HeroItemLabel>
-          {timestampToSlot(timestamp)}
+          <p className="font-mono tracking-wide">
+            <HidePunctuation>
+              {formatNumber(timestampToSlot(timestamp))}
+            </HidePunctuation>
+          </p>
         </HeroItem>
 
         <HeroItem className="row-span-2 grid grid-rows-subgrid place-items-center gap-y-1">
           <HeroItemLabel>
             <BookOpen /> Epoch
           </HeroItemLabel>
-          {timestampToEpoch(timestamp)}
+          <p className="font-mono tracking-wide">
+            <HidePunctuation>
+              {formatNumber(timestampToEpoch(timestamp))}
+            </HidePunctuation>
+          </p>
         </HeroItem>
       </section>
 
@@ -306,10 +316,12 @@ export default async function BlockDetailsPage({
           <h2 className="flex items-center gap-2 text-lg font-normal text-primary">
             <ProofCircle /> Proofs
           </h2>
-          <DownloadAllButton
-            blockNumber={blockNumber}
-            className="max-md:hidden"
-          />
+          {proofs.length >= 1 && (
+            <DownloadAllButton
+              blockNumber={blockNumber}
+              className="max-md:hidden"
+            />
+          )}
         </div>
 
         <MachineTabs

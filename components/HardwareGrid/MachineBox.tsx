@@ -1,6 +1,6 @@
-import type { MachineBase } from "@/lib/types"
+import * as PopoverPrimitive from "@radix-ui/react-popover"
 
-import { cn } from "@/lib/utils"
+import type { MachineBase } from "@/lib/types"
 
 import MachineDetails from "../ui/MachineDetails"
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover"
@@ -8,13 +8,16 @@ import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover"
 const MachineBox = ({
   machine,
   className,
-}: {
+  style,
+}: Pick<
+  React.ComponentPropsWithoutRef<typeof PopoverPrimitive.Trigger>,
+  "style" | "className"
+> & {
   machine: MachineBase
-  className?: string
 }) => {
   return (
     <Popover>
-      <PopoverTrigger className={cn("size-6 rounded-[4px]", className)} />
+      <PopoverTrigger style={style} className={className} />
       <PopoverContent asChild>
         <MachineDetails machine={machine} />
       </PopoverContent>

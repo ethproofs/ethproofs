@@ -1,6 +1,11 @@
 import {
   BlockBase,
-  ClusterVersion,
+  CloudInstanceBase,
+  CloudProvider,
+  ClusterBase,
+  ClusterMachineBase,
+  ClusterVersionBase,
+  MachineBase,
   ProofBase,
   Team,
   Zkvm,
@@ -32,10 +37,19 @@ import { prettyMs } from "@/lib/time"
 type ProofRowProps = {
   proof: ProofBase & {
     team: Team
-    cluster_version: ClusterVersion & {
+    cluster_version: ClusterVersionBase & {
+      cluster: ClusterBase
       zkvm_version: ZkvmVersion & {
         zkvm: Zkvm
       }
+      cluster_machines: Array<
+        ClusterMachineBase & {
+          cloud_instance: CloudInstanceBase & {
+            provider: CloudProvider
+          }
+          machine: MachineBase
+        }
+      >
     }
   }
   block: BlockBase
@@ -87,7 +101,7 @@ const ProofRow = ({ proof, block }: ProofRowProps) => {
         <div className="flex flex-col gap-2">
           {team?.name && (
             <Link
-              href={"/teams/" + team?.id}
+              href={"/teams/" + team?.slug}
               className="text-2xl hover:text-primary-light hover:underline"
             >
               {team.name}
@@ -162,14 +176,12 @@ const ProofRow = ({ proof, block }: ProofRowProps) => {
           <MetricInfo
             label={
               <div>
-                <span className="normal-case">{team?.name}</span> zk
-                <span className="uppercase">VM</span> cycles
+                <span className="normal-case">{zkvm.name}</span> cycles
               </div>
             }
           >
             <TooltipContentHeader>
-              <span className="normal-case">{team?.name}</span> zk
-              <span className="uppercase">VM</span> cycles
+              <span className="normal-case">{zkvm.name}</span> cycles
             </TooltipContentHeader>
             <Info.Derivation>
               <Info.Term type="internal">proving cycles</Info.Term>
@@ -221,7 +233,7 @@ const ProofRow = ({ proof, block }: ProofRowProps) => {
             <metrics.costPerProof.Details />
           </MetricInfo>
         </MetricLabel>
-        <MetricValue className="font-normal">
+        <MetricValue className="font-normal md:flex">
           {isAvailable && provingCost ? (
             <Popover>
               <PopoverTrigger className="flex items-center gap-2">
@@ -243,7 +255,7 @@ const ProofRow = ({ proof, block }: ProofRowProps) => {
 
                   <hr className="my-4 bg-body-secondary" />
 
-                  <TooltipContentHeader>AWS Equivalency</TooltipContentHeader>
+                  <TooltipContentHeader>Cloud Equivalency</TooltipContentHeader>
 
                   <div className="w-fit space-y-4">
                     {machines.map(
@@ -253,6 +265,7 @@ const ProofRow = ({ proof, block }: ProofRowProps) => {
                         cloud_instance,
                       }) => {
                         const {
+                          provider,
                           memory,
                           disk_name,
                           disk_space,
@@ -277,7 +290,12 @@ const ProofRow = ({ proof, block }: ProofRowProps) => {
                                     Storage: {disk_name} {disk_space} GB
                                   </p>
                                 )}
-                                {instance_name && <p>Type: {instance_name}</p>}
+                                {instance_name && (
+                                  <p>
+                                    Type: {instance_name} (
+                                    {provider.display_name})
+                                  </p>
+                                )}
                                 {region && <p>Region: {region}</p>}
                                 {cpu_cores && <p>vCPU: {cpu_cores}</p>}
                               </div>

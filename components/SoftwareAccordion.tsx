@@ -1,3 +1,4 @@
+import { ChevronRight } from "lucide-react"
 import { type AccordionItemProps } from "@radix-ui/react-accordion"
 
 import type { Vendor, Zkvm, ZkvmMetrics, ZkvmVersion } from "@/lib/types"
@@ -12,12 +13,13 @@ import { ButtonLink } from "./ui/button"
 import Link from "./ui/link"
 import { MetricBox, MetricInfo, MetricLabel } from "./ui/metric"
 import { Progress } from "./ui/progress"
+import { TooltipContentHeader } from "./ui/tooltip"
 import { DisplayTeamLink } from "./DisplayTeamLink"
 import Pizza from "./Pizza"
 import SoftwareDetails from "./SoftwareDetails"
 
 import { formatShortDate } from "@/lib/date"
-import { getSoftwareDetailItems, getZkvmsMetrics } from "@/lib/metrics"
+import { getSoftwareDetailItems, getZkvmsMetricsByZkvmId } from "@/lib/metrics"
 import { getSlices, getZkvmsWithUsage } from "@/lib/zkvms"
 
 const SoftwareAccordionItem = ({
@@ -31,7 +33,7 @@ const SoftwareAccordionItem = ({
     totalClusters: number
     activeClusters: number
   }
-  metrics: ZkvmMetrics
+  metrics: Partial<ZkvmMetrics> | undefined
 }) => {
   const detailItems = getSoftwareDetailItems(metrics)
 
@@ -82,16 +84,19 @@ const SoftwareAccordionItem = ({
             href={`/zkvms/${zkvm.slug}`}
             className="col-start-2 mx-auto"
           >
-            See all details
+            details for {zkvm.name}
+            <ChevronRight className="-mx-2 size-4" />
           </ButtonLink>
-          <div className="col-start-3 text-end">
-            <span className="text-xs italic text-body-secondary">
-              Last updated
-            </span>{" "}
-            <span className="text-xs uppercase text-body">
-              {formatShortDate(new Date(zkvm.created_at))}
-            </span>
-          </div>
+          {metrics?.updated_at && (
+            <div className="col-start-3 text-end">
+              <span className="text-xs italic text-body-secondary">
+                Last updated
+              </span>{" "}
+              <span className="text-xs uppercase text-body">
+                {formatShortDate(new Date(metrics.updated_at))}
+              </span>
+            </div>
+          )}
         </div>
       </AccordionContent>
     </AccordionItem>
@@ -99,10 +104,13 @@ const SoftwareAccordionItem = ({
 }
 
 const SoftwareAccordion = async () => {
-  const [zkvms, metricsByZkvmId] = await Promise.all([
-    getZkvmsWithUsage(),
-    getZkvmsMetrics(),
-  ])
+  const zkvms = await getZkvmsWithUsage()
+  const metricsByZkvmId = await getZkvmsMetricsByZkvmId({
+    zkvmIds: zkvms.map((zkvm) => zkvm.id),
+  })
+
+  // sort zkvms by usage
+  const sortedZkvms = zkvms.sort((a, b) => b.activeClusters - a.activeClusters)
 
   return (
     <Accordion
@@ -112,32 +120,43 @@ const SoftwareAccordion = async () => {
       <div className="col-span-5 grid grid-cols-subgrid text-center">
         <MetricBox className="col-start-2">
           <MetricLabel>
-            <MetricInfo label="Latest version">
-              TODO: Popover details
+            <MetricInfo label="latest version">
+              <TooltipContentHeader>latest version</TooltipContentHeader>
+              The most recent version of this zkVM being used by teams on
+              ethproofs.org
             </MetricInfo>
           </MetricLabel>
         </MetricBox>
         <MetricBox className="col-start-3">
           <MetricLabel>
             <MetricInfo label="ISA">
-              Instruction set architecture
-              <br />
-              TODO: Popover details
+              <TooltipContentHeader>
+                instruction set architecture
+              </TooltipContentHeader>
+              Defines the instruction set this zkVM implements to generate
+              zero-knowledge proofs for Ethereum transactions. The ISA
+              determines which EVM operations can be efficiently proven and
+              verified on-chain
             </MetricInfo>
           </MetricLabel>
         </MetricBox>
         <MetricBox className="col-start-4">
           <MetricLabel>
-            <MetricInfo label="Used by">TODO: Popover details</MetricInfo>
+            <MetricInfo label="used by">
+              <TooltipContentHeader>
+                number of active clusters
+              </TooltipContentHeader>{" "}
+              Number of active clusters that use this zkVM on ethproofs.org
+            </MetricInfo>
           </MetricLabel>
         </MetricBox>
       </div>
-      {zkvms.map((zkvm) => (
+      {sortedZkvms.map((zkvm) => (
         <SoftwareAccordionItem
           key={zkvm.id}
           value={"item-" + zkvm.id}
           zkvm={zkvm}
-          metrics={metricsByZkvmId[zkvm.id]}
+          metrics={metricsByZkvmId.get(zkvm.id)}
         />
       ))}
     </Accordion>

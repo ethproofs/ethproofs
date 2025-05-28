@@ -82,39 +82,111 @@ export const fetchBlocksPaginated = async (
   }
 }
 
-export const fetchBlock = cache(
-  async ({ blockNumber, hash }: { blockNumber?: number; hash?: string }) => {
-    const block = await db.query.blocks.findFirst({
-      with: {
-        proofs: {
-          with: {
-            team: true,
-            cluster_version: {
-              with: {
-                cluster: true,
-                cluster_machines: {
-                  with: {
-                    machine: true,
-                    cloud_instance: true,
+export const fetchBlock = async ({
+  blockNumber,
+  hash,
+}: {
+  blockNumber?: number
+  hash?: string
+}) => {
+  const cacheTag = blockNumber?.toString() || hash || ""
+
+  return cache(
+    async ({ blockNumber, hash }: { blockNumber?: number; hash?: string }) => {
+      const block = await db.query.blocks.findFirst({
+        with: {
+          proofs: {
+            with: {
+              team: true,
+              cluster_version: {
+                with: {
+                  cluster: true,
+                  cluster_machines: {
+                    with: {
+                      machine: true,
+                      cloud_instance: {
+                        with: {
+                          provider: true,
+                        },
+                      },
+                    },
                   },
-                },
-                zkvm_version: {
-                  with: {
-                    zkvm: true,
+                  zkvm_version: {
+                    with: {
+                      zkvm: true,
+                    },
                   },
                 },
               },
             },
           },
         },
+        where: (blocks, { eq, or }) =>
+          or(
+            blockNumber ? eq(blocks.block_number, blockNumber) : undefined,
+            hash ? eq(blocks.hash, hash) : undefined
+          ),
+      })
+
+      return block
+    },
+    ["block", blockNumber?.toString() || hash || ""],
+    {
+      revalidate: 60 * 60 * 24, // daily
+      tags: [`block-${cacheTag}`],
+    }
+  )({ blockNumber, hash })
+}
+
+export const fetchBlocks = cache(
+  async (machineType: MachineType = "all", limit: number = 10) => {
+    const blocksRows = await db.query.blocks.findMany({
+      with: {
+        proofs: {
+          with: {
+            cluster_version: {
+              with: {
+                cluster: true,
+                cluster_machines: {
+                  with: {
+                    cloud_instance: true,
+                    machine: true,
+                  },
+                },
+              },
+            },
+          },
+          // Filter proofs by cluster type
+          where:
+            machineType === "all"
+              ? undefined
+              : (proofs, { exists, eq, and }) =>
+                  exists(
+                    db
+                      .select()
+                      .from(clusterVersions)
+                      .innerJoin(
+                        clusters,
+                        eq(clusterVersions.cluster_id, clusters.id)
+                      )
+                      .where(
+                        and(
+                          eq(clusterVersions.id, proofs.cluster_version_id),
+                          eq(clusters.is_multi_machine, machineType === "multi")
+                        )
+                      )
+                  ),
+        },
       },
-      where: (blocks, { eq, or }) =>
-        or(
-          blockNumber ? eq(blocks.block_number, blockNumber) : undefined,
-          hash ? eq(blocks.hash, hash) : undefined
-        ),
+      orderBy: (blocks, { desc }) => [desc(blocks.block_number)],
+      limit,
     })
 
-    return block
+    return blocksRows
+  },
+  ["blocks-top-list"],
+  {
+    revalidate: 60, // every minute
+    tags: ["blocks"],
   }
 )

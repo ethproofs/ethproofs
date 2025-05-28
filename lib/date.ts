@@ -79,7 +79,11 @@ export const renderTimestamp = (timestamp: string, timeZone?: string): string =>
     timeZone,
   }).format(new Date(timestamp))
 
-export function formatShortDate(date: Date): string {
+export function formatShortDate(date: Date | string): string {
+  if (typeof date === "string") {
+    date = new Date(date)
+  }
+
   return date.toLocaleDateString("en-US", {
     month: "short",
     day: "2-digit",

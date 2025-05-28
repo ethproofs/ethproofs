@@ -1,7 +1,7 @@
 import { columns } from "./BlocksTable/columns"
 import DataTableUncontrolled from "./ui/data-table-uncontrolled"
 
-import { fetchBlocksPaginated, MachineType } from "@/lib/api/blocks"
+import { fetchBlocks, MachineType } from "@/lib/api/blocks"
 import { getTeams } from "@/lib/api/teams"
 import { mergeBlocksWithTeams } from "@/lib/blocks"
 
@@ -12,12 +12,9 @@ type Props = {
 
 const SimpleBlocksTable = async ({ className, machineType }: Props) => {
   const teams = await getTeams()
-  const blocks = await fetchBlocksPaginated(
-    { pageIndex: 0, pageSize: 5 },
-    machineType
-  )
+  const blocks = await fetchBlocks(machineType, 5)
 
-  const blocksWithTeams = mergeBlocksWithTeams(blocks.rows, teams)
+  const blocksWithTeams = mergeBlocksWithTeams(blocks, teams)
 
   return (
     <DataTableUncontrolled

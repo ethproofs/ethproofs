@@ -1,5 +1,6 @@
 import { addDays, startOfDay } from "date-fns"
 import { and, asc, eq, notIlike, sql } from "drizzle-orm"
+import { unstable_cache as cache } from "next/cache"
 
 import { db } from "@/db"
 import {
@@ -47,48 +48,78 @@ export const fetchProverDailyStats = async (teamId: string, days: number) => {
   })
 }
 
-export const getRecentSummary = async () => {
-  const [recentSummary] = await db.select().from(recentSummaryView).limit(1)
+export const getRecentSummary = cache(
+  async () => {
+    const [recentSummary] = await db.select().from(recentSummaryView).limit(1)
 
-  return recentSummary
-}
+    return recentSummary
+  },
+  ["recent-summary"],
+  {
+    revalidate: 60 * 60 * 1, // hourly
+    tags: ["recent-summary"],
+  }
+)
 
-export const getClusterSummary = async () => {
-  const clusterSummary = await db.select().from(clusterSummaryView)
+export const getClusterSummary = cache(
+  async () => {
+    const clusterSummary = await db.select().from(clusterSummaryView)
 
-  return clusterSummary
-}
+    return clusterSummary
+  },
+  ["cluster-summary"],
+  {
+    revalidate: 60 * 60 * 1, // hourly
+    tags: ["cluster-summary"],
+  }
+)
 
 export const getClusterSummaryById = async (id: string) => {
-  const [clusterSummary] = await db
-    .select()
-    .from(clusterSummaryView)
-    .where(eq(clusterSummaryView.cluster_id, id))
-    .limit(1)
+  return cache(
+    async (id: string) => {
+      const [clusterSummary] = await db
+        .select()
+        .from(clusterSummaryView)
+        .where(eq(clusterSummaryView.cluster_id, id))
+        .limit(1)
 
-  return clusterSummary
+      return clusterSummary
+    },
+    ["cluster-summary", id],
+    {
+      revalidate: 60 * 60 * 1, // hourly
+      tags: ["cluster-summary"],
+    }
+  )(id)
 }
 
-export const getTeamsSummary = async () => {
-  const teamsSummary = await db
-    .select()
-    .from(teamsSummaryView)
-    .innerJoin(teams, eq(teamsSummaryView.team_id, teams.id))
-    // hide test teams from the provers list
-    .where(notIlike(teamsSummaryView.team_name, "%test%"))
-    // sort by avg_proving_time, leave nulls or 0 last
-    .orderBy(
-      asc(
-        sql`CASE WHEN ${teamsSummaryView.avg_proving_time} IS NULL OR ${teamsSummaryView.avg_proving_time} = 0 THEN 1 ELSE 0 END`
-      ),
-      asc(teamsSummaryView.avg_proving_time)
-    )
+export const getTeamsSummary = cache(
+  async () => {
+    const teamsSummary = await db
+      .select()
+      .from(teamsSummaryView)
+      .innerJoin(teams, eq(teamsSummaryView.team_id, teams.id))
+      // hide test teams from the provers list
+      .where(notIlike(teamsSummaryView.team_name, "%test%"))
+      // sort by avg_proving_time, leave nulls or 0 last
+      .orderBy(
+        asc(
+          sql`CASE WHEN ${teamsSummaryView.avg_proving_time} IS NULL OR ${teamsSummaryView.avg_proving_time} = 0 THEN 1 ELSE 0 END`
+        ),
+        asc(teamsSummaryView.avg_proving_time)
+      )
 
-  return teamsSummary.map(({ teams, teams_summary }) => ({
-    ...teams_summary,
-    ...teams,
-  }))
-}
+    return teamsSummary.map(({ teams, teams_summary }) => ({
+      ...teams_summary,
+      ...teams,
+    }))
+  },
+  ["teams-summary"],
+  {
+    revalidate: 60 * 60 * 1, // hourly
+    tags: ["teams-summary"],
+  }
+)
 
 export const getTeamSummary = async (teamId: string) => {
   const [teamSummary] = await db

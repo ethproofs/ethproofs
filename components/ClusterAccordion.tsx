@@ -1,6 +1,5 @@
 import { Fragment } from "react"
-import { Check, X as RedX } from "lucide-react"
-import Image from "next/image"
+import { Check, ChevronRight, X as RedX } from "lucide-react"
 import { type AccordionItemProps } from "@radix-ui/react-accordion"
 
 import type {
@@ -13,7 +12,7 @@ import type {
   ZkvmVersion,
 } from "@/lib/types"
 
-import { cn, sumArray } from "@/lib/utils"
+import { cn } from "@/lib/utils"
 
 import { getBoxIndexColor } from "./HardwareGrid/utils"
 import {
@@ -23,13 +22,15 @@ import {
   AccordionTrigger,
 } from "./ui/accordion"
 import { ButtonLink } from "./ui/button"
+import * as Info from "./ui/info"
 import Link from "./ui/link"
 import { MetricBox, MetricInfo, MetricLabel } from "./ui/metric"
+import { TooltipContentHeader } from "./ui/tooltip"
 import ClusterMachineSummary from "./ClusterMachineSummary"
 import { DisplayTeamLink } from "./DisplayTeamLink"
 import HardwareGrid from "./HardwareGrid"
+import { metrics } from "./Metrics"
 import NoData from "./NoData"
-import Null from "./Null"
 
 import { hasPhysicalMachines, isMultiMachineCluster } from "@/lib/clusters"
 import { formatShortDate } from "@/lib/date"
@@ -120,7 +121,7 @@ const ClusterAccordionItem = ({
         <div className="col-start-4">{formatUsd(clusterDetails.avg_cost)}</div>
         <div className="col-start-5">{prettyMs(clusterDetails.avg_time)}</div>
 
-        <AccordionTrigger className="col-start-6 my-2 h-fit gap-2 rounded-full border-2 border-primary bg-background-highlight p-1 text-primary [&>svg]:size-6">
+        <AccordionTrigger className="relative col-start-6 my-2 h-fit gap-2 rounded-full border-2 border-primary bg-background-highlight p-1 text-primary [&>svg]:size-6">
           <span className="sr-only">Toggle details</span>
         </AccordionTrigger>
       </div>
@@ -153,14 +154,15 @@ const ClusterAccordionItem = ({
             )}
           </div>
         ) : (
-          <div className="flex min-h-[80px] items-center justify-center italic text-body-secondary">
+          <div className="flex min-h-[80px] items-center justify-center text-body-secondary">
             No hardware specifications available.
           </div>
         )}
 
         <div className="grid place-items-center">
           <ButtonLink variant="outline" href={`/clusters/${clusterDetails.id}`}>
-            See all details
+            details for {clusterDetails.nickname}
+            <ChevronRight className="-mx-2 size-4" />
           </ButtonLink>
         </div>
 
@@ -185,43 +187,57 @@ const ClusterAccordion = ({ clusters }: ClusterAccordionProps) => (
     type="multiple"
     className="grid w-full grid-cols-[1fr_repeat(5,_auto)] overflow-x-auto"
   >
-    <div className="col-span-6 grid grid-cols-subgrid text-center">
-      <MetricBox className="col-start-2">
-        <MetricLabel>
-          <MetricInfo label="open source">TODO: Popover details</MetricInfo>
-        </MetricLabel>
-      </MetricBox>
-      <MetricBox className="col-start-3">
-        <MetricLabel>
-          <MetricInfo label="binary available">
-            TODO: Popover details
-          </MetricInfo>
-        </MetricLabel>
-      </MetricBox>
-      <MetricBox className="col-start-4">
-        <MetricLabel>
-          <MetricInfo label="avg cost">
-            Instruction set architecture
-            <br />
-            TODO: Popover details
-          </MetricInfo>
-        </MetricLabel>
-      </MetricBox>
-      <MetricBox className="col-start-5">
-        <MetricLabel>
-          <MetricInfo label="avg time">TODO: Popover details</MetricInfo>
-        </MetricLabel>
-      </MetricBox>
-    </div>
-
     {clusters.length ? (
-      clusters.map((cluster, i) => (
-        <ClusterAccordionItem
-          key={i}
-          value={"item-" + i}
-          clusterDetails={cluster}
-        />
-      ))
+      <>
+        <div className="col-span-6 grid grid-cols-subgrid text-center">
+          <MetricBox className="col-start-2">
+            <MetricLabel>
+              <MetricInfo label="open source">
+                <TooltipContentHeader>open source</TooltipContentHeader>
+                Indicates whether the zkVM is open source or not
+              </MetricInfo>
+            </MetricLabel>
+          </MetricBox>
+          <MetricBox className="col-start-3">
+            <MetricLabel>
+              <MetricInfo label="binary available">
+                <TooltipContentHeader>binary available</TooltipContentHeader>
+                Indicates whether the necessary zkVM binary is available for
+                verification. This binary contains the compiled circuit and
+                verification keys essential for validating proofs
+              </MetricInfo>
+            </MetricLabel>
+          </MetricBox>
+          <MetricBox className="col-start-4">
+            <MetricLabel>
+              <MetricInfo label={<metrics.avgCostPerCluster.Label />}>
+                <Info.Label className="lowercase">
+                  {metrics.avgCostPerCluster.Label()}
+                </Info.Label>
+                <metrics.avgCostPerCluster.Details />
+              </MetricInfo>
+            </MetricLabel>
+          </MetricBox>
+          <MetricBox className="col-start-5">
+            <MetricLabel>
+              <MetricInfo label={<metrics.avgProvingTimePerCluster.Label />}>
+                <Info.Label className="lowercase">
+                  {metrics.avgProvingTimePerCluster.Label()}
+                </Info.Label>
+                <metrics.avgProvingTimePerCluster.Details />
+              </MetricInfo>
+            </MetricLabel>
+          </MetricBox>
+        </div>
+
+        {clusters.map((cluster, i) => (
+          <ClusterAccordionItem
+            key={i}
+            value={"item-" + i}
+            clusterDetails={cluster}
+          />
+        ))}
+      </>
     ) : (
       <NoData />
     )}

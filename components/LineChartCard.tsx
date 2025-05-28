@@ -79,7 +79,7 @@ const LineChartCard = ({
   className,
   title,
   data,
-  initialDayRange = CHART_RANGES[0],
+  initialDayRange = CHART_RANGES[1],
   isLoading = false,
   totalAvg,
   totalMedian,
@@ -206,7 +206,7 @@ const LineChartCard = ({
           </ChartContainer>
         )}
       </CardContent>
-      <CardFooter className="gap-4">
+      <CardFooter className="flex-wrap justify-between gap-4 max-[480px]:flex-col">
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button className="group flex h-6 w-fit items-center gap-2 rounded-full border bg-background-highlight px-2 py-1.5 text-sm text-body hover:bg-primary-light hover:text-background [&[data-state=open]]:bg-primary-light [&[data-state=open]]:text-background">
@@ -234,7 +234,7 @@ const LineChartCard = ({
           </DropdownMenuContent>
         </DropdownMenu>
 
-        <div className="mx-auto flex w-fit flex-wrap items-center justify-center gap-x-1 gap-y-2 rounded-xl bg-background-highlight px-1 py-1">
+        <div className="flex w-fit flex-wrap items-center justify-center gap-x-1 gap-y-2 rounded-xl bg-background-highlight px-1 py-1">
           {CHART_RANGES.map((range) => (
             <Button
               key={range}

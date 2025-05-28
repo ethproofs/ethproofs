@@ -5,6 +5,13 @@ export const SITE_DESCRIPTION = "Building a fully SNARKed Ethereum"
 export const SITE_URL = process.env.SITE_URL || "https://ethproofs.org"
 export const SITE_PREVIEW_URL = "https://staging--ethproofs.netlify.app"
 export const SITE_REPO = "ethproofs/ethproofs"
+export const SITE_TWITTER = "eth_proofs"
+
+export const URL_GITHUB_REPO = new URL(
+  SITE_REPO,
+  "https://github.com/"
+).toString()
+export const URL_TWITTER = new URL(SITE_TWITTER, "https://x.com/").toString()
 
 // Beacon chain timing constants
 export const BEACON_CHAIN_GENESIS_TIME = 1606824023_000 // 2020-12-01T12:00:23Z
@@ -12,7 +19,7 @@ export const MS_PER_SLOT = 12_000
 export const SLOTS_PER_EPOCH = 32 // 2^5
 
 // Execution constants
-export const BLOCK_GAS_LIMIT = 30_000_000 // TODO: Fetch from execution block
+export const BLOCK_GAS_LIMIT = 36_000_000 // TODO: Fetch from execution block
 
 // Prover cluster constants
 export const FALLBACK_TEAM_LOGO_SRC =
@@ -62,3 +69,10 @@ export const ZKVM_THRESHOLDS = {
     green: Number.MAX_SAFE_INTEGER,
   },
 } as const satisfies Record<string, MetricThresholds>
+
+export const TAGS = {
+  CLUSTERS: "clusters",
+  TEAMS: "teams",
+  PROOFS: "proofs",
+  BLOCKS: "blocks",
+} as const

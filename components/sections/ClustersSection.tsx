@@ -6,28 +6,27 @@ import MachineTabs from "../MachineTabs"
 import { ButtonLink } from "../ui/button"
 import { Card, CardHeader, CardTitle } from "../ui/card"
 
-import { getActiveClusters, getActiveMachineCount } from "@/lib/api/clusters"
-import { getClusterSummary, getTeamsSummary } from "@/lib/api/stats"
+import { getActiveClusters } from "@/lib/api/clusters"
+import { getClusterSummary } from "@/lib/api/stats"
+import { getTeamsCount } from "@/lib/api/teams"
 
 const ClustersSection = async () => {
-  const [teamsSummary, clusterSummary, machineCount, activeClusters] =
-    await Promise.all([
-      getTeamsSummary(),
-      getClusterSummary(),
-      getActiveMachineCount(),
-      getActiveClusters(),
-    ])
+  const [teamsCount, clusterSummary, activeClusters] = await Promise.all([
+    getTeamsCount(),
+    getClusterSummary(),
+    getActiveClusters(),
+  ])
 
   const clustersSummary: SummaryItem[] = [
     {
       key: "teams",
       label: "teams",
-      value: teamsSummary.length,
+      value: teamsCount,
     },
     {
-      key: "proving-machines",
-      label: "proving machines",
-      value: machineCount,
+      key: "clusters",
+      label: "clusters",
+      value: activeClusters.length,
     },
   ]
 
@@ -69,8 +68,8 @@ const ClustersSection = async () => {
       />
 
       <div className="flex justify-center">
-        <ButtonLink variant="outline" href="/clusters">
-          See all
+        <ButtonLink variant="outline" href="/clusters" className="min-w-40">
+          see all
         </ButtonLink>
       </div>
     </Card>

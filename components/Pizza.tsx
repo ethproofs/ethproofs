@@ -14,7 +14,7 @@ type PizzaProps = React.ComponentProps<"div"> & {
  * Each slice can have different levels and hover effects.
  *
  * @param {PizzaProps} props - The properties for the Pizza component.
- * @param {Array<{ level: SeverityLevel }>} props.slices - An array of slice objects, each containing a `level` property
+ * @param {Array<{Slices}>} props.slices - An array of slice objects, each containing a `level` property
  * indicating the slice's level (e.g., "green", "yellow", "red").
  * @param {boolean} [props.disableEffects] - If true, disables hover effects on the slices.
  * @param {string} [props.className] - Additional CSS class names to apply to the pizza container.
@@ -22,12 +22,7 @@ type PizzaProps = React.ComponentProps<"div"> & {
  *
  * @returns {JSX.Element} A JSX element representing the pizza visualization.
  */
-const Pizza = ({
-  slices,
-  disableEffects,
-  className,
-  ...props
-}: PizzaProps): JSX.Element => {
+const Pizza = ({ slices, disableEffects, className, ...props }: PizzaProps) => {
   // Restrict hover effect to the slice itself
   const clipPath =
     "polygon(46% 100%, 0% 21%, 0% 10%, 16% 0%, 84% 0%, 100% 10%, 100% 21%, 54% 100%)"
@@ -49,10 +44,11 @@ const Pizza = ({
     "rotate-[337.5deg]",
   ] as const
 
-  const COLORS: { [key in SeverityLevel]: string } = {
+  const COLORS: { [key in SeverityLevel | "none"]: string } = {
     green: "text-level-best",
     yellow: "text-level-middle",
     red: "text-level-worst",
+    none: "text-body-secondary",
   }
 
   const GROUP_HOVER = [
@@ -80,7 +76,7 @@ const Pizza = ({
           className={cn(
             sharedClasses,
             ROTATIONS[idx % ROTATIONS.length],
-            COLORS[level],
+            COLORS[level || "none"],
             !disableEffects && GROUP_HOVER[idx]
           )}
           key={idx}

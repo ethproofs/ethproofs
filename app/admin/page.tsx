@@ -8,7 +8,7 @@ import { teams } from "@/db/schema"
 import { createClient } from "@/utils/supabase/server"
 
 export default async function AdminPage() {
-  const supabase = createClient()
+  const supabase = await createClient()
 
   const {
     data: { user },
