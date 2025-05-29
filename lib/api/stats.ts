@@ -2,6 +2,8 @@ import { addDays, startOfDay } from "date-fns"
 import { and, asc, eq, notIlike, sql } from "drizzle-orm"
 import { unstable_cache as cache } from "next/cache"
 
+import { TAGS } from "@/lib/constants"
+
 import { db } from "@/db"
 import {
   clusterSummary as clusterSummaryView,
@@ -57,7 +59,7 @@ export const getRecentSummary = cache(
   ["recent-summary"],
   {
     revalidate: 60 * 60 * 1, // hourly
-    tags: ["recent-summary"],
+    tags: [TAGS.RECENT_SUMMARY],
   }
 )
 
@@ -70,7 +72,7 @@ export const getClusterSummary = cache(
   ["cluster-summary"],
   {
     revalidate: 60 * 60 * 1, // hourly
-    tags: ["cluster-summary"],
+    tags: [TAGS.CLUSTER_SUMMARY],
   }
 )
 
@@ -88,7 +90,7 @@ export const getClusterSummaryById = async (id: string) => {
     ["cluster-summary", id],
     {
       revalidate: 60 * 60 * 1, // hourly
-      tags: ["cluster-summary"],
+      tags: [TAGS.CLUSTER_SUMMARY],
     }
   )(id)
 }
@@ -117,7 +119,7 @@ export const getTeamsSummary = cache(
   ["teams-summary"],
   {
     revalidate: 60 * 60 * 1, // hourly
-    tags: ["teams-summary"],
+    tags: [TAGS.TEAM_SUMMARY],
   }
 )
 
