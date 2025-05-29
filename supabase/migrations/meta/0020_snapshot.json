@@ -1,6 +1,6 @@
 {
-  "id": "90de402e-4509-4d09-a350-52f0c4ab9cda",
-  "prevId": "0af77bc5-383b-43fb-85d1-fa38c4ec4260",
+  "id": "96ee178a-50e5-463f-af1c-0d6e11291f7d",
+  "prevId": "90de402e-4509-4d09-a350-52f0c4ab9cda",
   "version": "7",
   "dialect": "postgresql",
   "tables": {
@@ -48,25 +48,25 @@
         "api_auth_tokens_team_id_teams_id_fk": {
           "name": "api_auth_tokens_team_id_teams_id_fk",
           "tableFrom": "api_auth_tokens",
+          "tableTo": "teams",
           "columnsFrom": [
             "team_id"
           ],
-          "tableTo": "teams",
           "columnsTo": [
             "id"
           ],
-          "onUpdate": "cascade",
-          "onDelete": "cascade"
+          "onDelete": "cascade",
+          "onUpdate": "cascade"
         }
       },
       "compositePrimaryKeys": {},
       "uniqueConstraints": {
         "api_auth_tokens_token_unique": {
           "name": "api_auth_tokens_token_unique",
+          "nullsNotDistinct": false,
           "columns": [
             "token"
-          ],
-          "nullsNotDistinct": false
+          ]
         }
       },
       "policies": {
@@ -93,15 +93,15 @@
           "primaryKey": true,
           "notNull": true,
           "identity": {
+            "type": "byDefault",
             "name": "benchmarks_id_seq",
+            "schema": "public",
             "increment": "1",
+            "startWith": "1",
             "minValue": "1",
             "maxValue": "9223372036854775807",
-            "startWith": "1",
             "cache": "1",
-            "cycle": false,
-            "schema": "public",
-            "type": "byDefault"
+            "cycle": false
           }
         },
         "operation_type": {
@@ -210,15 +210,15 @@
           "primaryKey": true,
           "notNull": true,
           "identity": {
+            "type": "byDefault",
             "name": "cloud_instances_id_seq",
+            "schema": "public",
             "increment": "1",
+            "startWith": "1",
             "minValue": "1",
             "maxValue": "9223372036854775807",
-            "startWith": "1",
             "cache": "1",
-            "cycle": false,
-            "schema": "public",
-            "type": "byDefault"
+            "cycle": false
           }
         },
         "provider_id": {
@@ -336,25 +336,25 @@
         "cloud_instances_provider_id_cloud_providers_id_fk": {
           "name": "cloud_instances_provider_id_cloud_providers_id_fk",
           "tableFrom": "cloud_instances",
+          "tableTo": "cloud_providers",
           "columnsFrom": [
             "provider_id"
           ],
-          "tableTo": "cloud_providers",
           "columnsTo": [
             "id"
           ],
-          "onUpdate": "cascade",
-          "onDelete": "cascade"
+          "onDelete": "cascade",
+          "onUpdate": "cascade"
         }
       },
       "compositePrimaryKeys": {},
       "uniqueConstraints": {
         "cloud_instances_instance_name_unique": {
           "name": "cloud_instances_instance_name_unique",
+          "nullsNotDistinct": false,
           "columns": [
             "instance_name"
-          ],
-          "nullsNotDistinct": false
+          ]
         }
       },
       "policies": {
@@ -381,15 +381,15 @@
           "primaryKey": true,
           "notNull": true,
           "identity": {
+            "type": "byDefault",
             "name": "cloud_providers_id_seq",
+            "schema": "public",
             "increment": "1",
+            "startWith": "1",
             "minValue": "1",
             "maxValue": "9223372036854775807",
-            "startWith": "1",
             "cache": "1",
-            "cycle": false,
-            "schema": "public",
-            "type": "byDefault"
+            "cycle": false
           }
         },
         "name": {
@@ -418,10 +418,10 @@
       "uniqueConstraints": {
         "cloud_providers_name_unique": {
           "name": "cloud_providers_name_unique",
+          "nullsNotDistinct": false,
           "columns": [
             "name"
-          ],
-          "nullsNotDistinct": false
+          ]
         }
       },
       "policies": {},
@@ -438,15 +438,15 @@
           "primaryKey": true,
           "notNull": true,
           "identity": {
+            "type": "byDefault",
             "name": "cluster_benchmarks_id_seq",
+            "schema": "public",
             "increment": "1",
+            "startWith": "1",
             "minValue": "1",
             "maxValue": "9223372036854775807",
-            "startWith": "1",
             "cache": "1",
-            "cycle": false,
-            "schema": "public",
-            "type": "byDefault"
+            "cycle": false
           }
         },
         "cluster_id": {
@@ -486,28 +486,28 @@
         "cluster_benchmarks_cluster_id_clusters_id_fk": {
           "name": "cluster_benchmarks_cluster_id_clusters_id_fk",
           "tableFrom": "cluster_benchmarks",
+          "tableTo": "clusters",
           "columnsFrom": [
             "cluster_id"
           ],
-          "tableTo": "clusters",
           "columnsTo": [
             "id"
           ],
-          "onUpdate": "cascade",
-          "onDelete": "cascade"
+          "onDelete": "cascade",
+          "onUpdate": "cascade"
         },
         "cluster_benchmarks_benchmark_id_benchmarks_id_fk": {
           "name": "cluster_benchmarks_benchmark_id_benchmarks_id_fk",
           "tableFrom": "cluster_benchmarks",
+          "tableTo": "benchmarks",
           "columnsFrom": [
             "benchmark_id"
           ],
-          "tableTo": "benchmarks",
           "columnsTo": [
             "id"
           ],
-          "onUpdate": "cascade",
-          "onDelete": "cascade"
+          "onDelete": "cascade",
+          "onUpdate": "cascade"
         }
       },
       "compositePrimaryKeys": {},
@@ -526,15 +526,15 @@
           "primaryKey": true,
           "notNull": true,
           "identity": {
+            "type": "byDefault",
             "name": "cluster_machines_id_seq",
+            "schema": "public",
             "increment": "1",
+            "startWith": "1",
             "minValue": "1",
             "maxValue": "9223372036854775807",
-            "startWith": "1",
             "cache": "1",
-            "cycle": false,
-            "schema": "public",
-            "type": "byDefault"
+            "cycle": false
           }
         },
         "cluster_version_id": {
@@ -580,9 +580,9 @@
             }
           ],
           "isUnique": false,
-          "with": {},
+          "concurrently": false,
           "method": "btree",
-          "concurrently": false
+          "with": {}
         },
         "cluster_machines_cloud_instance_id_idx": {
           "name": "cluster_machines_cloud_instance_id_idx",
@@ -595,50 +595,50 @@
             }
           ],
           "isUnique": false,
-          "with": {},
+          "concurrently": false,
           "method": "btree",
-          "concurrently": false
+          "with": {}
         }
       },
       "foreignKeys": {
         "cluster_machines_cluster_version_id_cluster_versions_id_fk": {
           "name": "cluster_machines_cluster_version_id_cluster_versions_id_fk",
           "tableFrom": "cluster_machines",
+          "tableTo": "cluster_versions",
           "columnsFrom": [
             "cluster_version_id"
           ],
-          "tableTo": "cluster_versions",
           "columnsTo": [
             "id"
           ],
-          "onUpdate": "cascade",
-          "onDelete": "cascade"
+          "onDelete": "cascade",
+          "onUpdate": "cascade"
         },
         "cluster_machines_machine_id_machines_id_fk": {
           "name": "cluster_machines_machine_id_machines_id_fk",
           "tableFrom": "cluster_machines",
+          "tableTo": "machines",
           "columnsFrom": [
             "machine_id"
           ],
-          "tableTo": "machines",
           "columnsTo": [
             "id"
           ],
-          "onUpdate": "cascade",
-          "onDelete": "cascade"
+          "onDelete": "cascade",
+          "onUpdate": "cascade"
         },
         "cluster_machines_cloud_instance_id_cloud_instances_id_fk": {
           "name": "cluster_machines_cloud_instance_id_cloud_instances_id_fk",
           "tableFrom": "cluster_machines",
+          "tableTo": "cloud_instances",
           "columnsFrom": [
             "cloud_instance_id"
           ],
-          "tableTo": "cloud_instances",
           "columnsTo": [
             "id"
           ],
-          "onUpdate": "no action",
-          "onDelete": "no action"
+          "onDelete": "no action",
+          "onUpdate": "no action"
         }
       },
       "compositePrimaryKeys": {},
@@ -675,15 +675,15 @@
           "primaryKey": true,
           "notNull": true,
           "identity": {
+            "type": "byDefault",
             "name": "cluster_versions_id_seq",
+            "schema": "public",
             "increment": "1",
+            "startWith": "1",
             "minValue": "1",
             "maxValue": "9223372036854775807",
-            "startWith": "1",
             "cache": "1",
-            "cycle": false,
-            "schema": "public",
-            "type": "byDefault"
+            "cycle": false
           }
         },
         "cluster_id": {
@@ -730,37 +730,37 @@
             }
           ],
           "isUnique": false,
-          "with": {},
+          "concurrently": false,
           "method": "btree",
-          "concurrently": false
+          "with": {}
         }
       },
       "foreignKeys": {
         "cluster_versions_cluster_id_clusters_id_fk": {
           "name": "cluster_versions_cluster_id_clusters_id_fk",
           "tableFrom": "cluster_versions",
+          "tableTo": "clusters",
           "columnsFrom": [
             "cluster_id"
           ],
-          "tableTo": "clusters",
           "columnsTo": [
             "id"
           ],
-          "onUpdate": "cascade",
-          "onDelete": "cascade"
+          "onDelete": "cascade",
+          "onUpdate": "cascade"
         },
         "cluster_versions_zkvm_version_id_zkvm_versions_id_fk": {
           "name": "cluster_versions_zkvm_version_id_zkvm_versions_id_fk",
           "tableFrom": "cluster_versions",
+          "tableTo": "zkvm_versions",
           "columnsFrom": [
             "zkvm_version_id"
           ],
-          "tableTo": "zkvm_versions",
           "columnsTo": [
             "id"
           ],
-          "onUpdate": "cascade",
-          "onDelete": "cascade"
+          "onDelete": "cascade",
+          "onUpdate": "cascade"
         }
       },
       "compositePrimaryKeys": {},
@@ -836,6 +836,13 @@
           "notNull": true,
           "default": false
         },
+        "is_active": {
+          "name": "is_active",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": false
+        },
         "software_link": {
           "name": "software_link",
           "type": "text",
@@ -855,15 +862,15 @@
         "clusters_team_id_teams_id_fk": {
           "name": "clusters_team_id_teams_id_fk",
           "tableFrom": "clusters",
+          "tableTo": "teams",
           "columnsFrom": [
             "team_id"
           ],
-          "tableTo": "teams",
           "columnsTo": [
             "id"
           ],
-          "onUpdate": "cascade",
-          "onDelete": "cascade"
+          "onDelete": "cascade",
+          "onUpdate": "cascade"
         }
       },
       "compositePrimaryKeys": {},
@@ -900,15 +907,15 @@
           "primaryKey": true,
           "notNull": true,
           "identity": {
+            "type": "byDefault",
             "name": "machines_id_seq",
+            "schema": "public",
             "increment": "1",
+            "startWith": "1",
             "minValue": "1",
             "maxValue": "9223372036854775807",
-            "startWith": "1",
             "cache": "1",
-            "cycle": false,
-            "schema": "public",
-            "type": "byDefault"
+            "cycle": false
           }
         },
         "cpu_model": {
@@ -1021,15 +1028,15 @@
           "primaryKey": true,
           "notNull": true,
           "identity": {
+            "type": "byDefault",
             "name": "programs_id_seq",
+            "schema": "public",
             "increment": "1",
+            "startWith": "1",
             "minValue": "1",
             "maxValue": "9223372036854775807",
-            "startWith": "1",
             "cache": "1",
-            "cycle": false,
-            "schema": "public",
-            "type": "byDefault"
+            "cycle": false
           }
         },
         "verifier_id": {
@@ -1052,10 +1059,10 @@
       "uniqueConstraints": {
         "programs_verifier_id_unique": {
           "name": "programs_verifier_id_unique",
+          "nullsNotDistinct": false,
           "columns": [
             "verifier_id"
-          ],
-          "nullsNotDistinct": false
+          ]
         }
       },
       "policies": {
@@ -1090,15 +1097,15 @@
           "primaryKey": true,
           "notNull": true,
           "identity": {
+            "type": "byDefault",
             "name": "proofs_proof_id_seq",
+            "schema": "public",
             "increment": "1",
+            "startWith": "1",
             "minValue": "1",
             "maxValue": "2147483647",
-            "startWith": "1",
             "cache": "1",
-            "cycle": false,
-            "schema": "public",
-            "type": "byDefault"
+            "cycle": false
           }
         },
         "block_number": {
@@ -1187,9 +1194,9 @@
             }
           ],
           "isUnique": false,
-          "with": {},
+          "concurrently": false,
           "method": "btree",
-          "concurrently": false
+          "with": {}
         },
         "proofs_proved_timestamp_idx": {
           "name": "proofs_proved_timestamp_idx",
@@ -1202,9 +1209,9 @@
             }
           ],
           "isUnique": false,
-          "with": {},
+          "concurrently": false,
           "method": "btree",
-          "concurrently": false
+          "with": {}
         },
         "proofs_created_at_idx": {
           "name": "proofs_created_at_idx",
@@ -1217,74 +1224,74 @@
             }
           ],
           "isUnique": false,
-          "with": {},
+          "concurrently": false,
           "method": "btree",
-          "concurrently": false
+          "with": {}
         }
       },
       "foreignKeys": {
         "proofs_block_number_blocks_block_number_fk": {
           "name": "proofs_block_number_blocks_block_number_fk",
           "tableFrom": "proofs",
+          "tableTo": "blocks",
           "columnsFrom": [
             "block_number"
           ],
-          "tableTo": "blocks",
           "columnsTo": [
             "block_number"
           ],
-          "onUpdate": "no action",
-          "onDelete": "no action"
+          "onDelete": "no action",
+          "onUpdate": "no action"
         },
         "proofs_team_id_teams_id_fk": {
           "name": "proofs_team_id_teams_id_fk",
           "tableFrom": "proofs",
+          "tableTo": "teams",
           "columnsFrom": [
             "team_id"
           ],
-          "tableTo": "teams",
           "columnsTo": [
             "id"
           ],
-          "onUpdate": "cascade",
-          "onDelete": "cascade"
+          "onDelete": "cascade",
+          "onUpdate": "cascade"
         },
         "proofs_cluster_version_id_cluster_versions_id_fk": {
           "name": "proofs_cluster_version_id_cluster_versions_id_fk",
           "tableFrom": "proofs",
+          "tableTo": "cluster_versions",
           "columnsFrom": [
             "cluster_version_id"
           ],
-          "tableTo": "cluster_versions",
           "columnsTo": [
             "id"
           ],
-          "onUpdate": "cascade",
-          "onDelete": "cascade"
+          "onDelete": "cascade",
+          "onUpdate": "cascade"
         },
         "proofs_program_id_programs_id_fk": {
           "name": "proofs_program_id_programs_id_fk",
           "tableFrom": "proofs",
+          "tableTo": "programs",
           "columnsFrom": [
             "program_id"
           ],
-          "tableTo": "programs",
           "columnsTo": [
             "id"
           ],
-          "onUpdate": "cascade",
-          "onDelete": "set null"
+          "onDelete": "set null",
+          "onUpdate": "cascade"
         }
       },
       "compositePrimaryKeys": {},
       "uniqueConstraints": {
         "unique_block_cluster_version": {
           "name": "unique_block_cluster_version",
+          "nullsNotDistinct": false,
           "columns": [
             "block_number",
             "cluster_version_id"
-          ],
-          "nullsNotDistinct": false
+          ]
         }
       },
       "policies": {
@@ -1332,15 +1339,15 @@
           "primaryKey": true,
           "notNull": true,
           "identity": {
+            "type": "byDefault",
             "name": "proofs_daily_stats_id_seq",
+            "schema": "public",
             "increment": "1",
+            "startWith": "1",
             "minValue": "1",
             "maxValue": "9223372036854775807",
-            "startWith": "1",
             "cache": "1",
-            "cycle": false,
-            "schema": "public",
-            "type": "byDefault"
+            "cycle": false
           }
         },
         "date": {
@@ -1386,10 +1393,10 @@
       "uniqueConstraints": {
         "proofs_daily_stats_date_key": {
           "name": "proofs_daily_stats_date_key",
+          "nullsNotDistinct": false,
           "columns": [
             "date"
-          ],
-          "nullsNotDistinct": false
+          ]
         }
       },
       "policies": {},
@@ -1406,15 +1413,15 @@
           "primaryKey": true,
           "notNull": true,
           "identity": {
+            "type": "byDefault",
             "name": "prover_daily_stats_id_seq",
+            "schema": "public",
             "increment": "1",
+            "startWith": "1",
             "minValue": "1",
             "maxValue": "9223372036854775807",
-            "startWith": "1",
             "cache": "1",
-            "cycle": false,
-            "schema": "public",
-            "type": "byDefault"
+            "cycle": false
           }
         },
         "date": {
@@ -1465,26 +1472,26 @@
         "prover_daily_stats_team_id_teams_id_fk": {
           "name": "prover_daily_stats_team_id_teams_id_fk",
           "tableFrom": "prover_daily_stats",
+          "tableTo": "teams",
           "columnsFrom": [
             "team_id"
           ],
-          "tableTo": "teams",
           "columnsTo": [
             "id"
           ],
-          "onUpdate": "cascade",
-          "onDelete": "cascade"
+          "onDelete": "cascade",
+          "onUpdate": "cascade"
         }
       },
       "compositePrimaryKeys": {},
       "uniqueConstraints": {
         "prover_daily_stats_date_team_key": {
           "name": "prover_daily_stats_date_team_key",
+          "nullsNotDistinct": false,
           "columns": [
             "date",
             "team_id"
-          ],
-          "nullsNotDistinct": false
+          ]
         }
       },
       "policies": {},
@@ -1501,15 +1508,15 @@
           "primaryKey": true,
           "notNull": true,
           "identity": {
+            "type": "byDefault",
             "name": "recursive_root_proofs_root_proof_id_seq",
+            "schema": "public",
             "increment": "1",
+            "startWith": "1",
             "minValue": "1",
             "maxValue": "2147483647",
-            "startWith": "1",
             "cache": "1",
-            "cycle": false,
-            "schema": "public",
-            "type": "byDefault"
+            "cycle": false
           }
         },
         "block_number": {
@@ -1548,28 +1555,28 @@
         "recursive_root_proofs_block_number_blocks_block_number_fk": {
           "name": "recursive_root_proofs_block_number_blocks_block_number_fk",
           "tableFrom": "recursive_root_proofs",
+          "tableTo": "blocks",
           "columnsFrom": [
             "block_number"
           ],
-          "tableTo": "blocks",
           "columnsTo": [
             "block_number"
           ],
-          "onUpdate": "cascade",
-          "onDelete": "cascade"
+          "onDelete": "cascade",
+          "onUpdate": "cascade"
         },
         "recursive_root_proofs_team_id_teams_id_fk": {
           "name": "recursive_root_proofs_team_id_teams_id_fk",
           "tableFrom": "recursive_root_proofs",
+          "tableTo": "teams",
           "columnsFrom": [
             "team_id"
           ],
-          "tableTo": "teams",
           "columnsTo": [
             "id"
           ],
-          "onUpdate": "cascade",
-          "onDelete": "cascade"
+          "onDelete": "cascade",
+          "onUpdate": "cascade"
         }
       },
       "compositePrimaryKeys": {},
@@ -1653,26 +1660,26 @@
         "teams_id_users_id_fk": {
           "name": "teams_id_users_id_fk",
           "tableFrom": "teams",
+          "tableTo": "users",
+          "schemaTo": "auth",
           "columnsFrom": [
             "id"
           ],
-          "tableTo": "users",
-          "schemaTo": "auth",
           "columnsTo": [
             "id"
           ],
-          "onUpdate": "cascade",
-          "onDelete": "cascade"
+          "onDelete": "cascade",
+          "onUpdate": "cascade"
         }
       },
       "compositePrimaryKeys": {},
       "uniqueConstraints": {
         "teams_slug_unique": {
           "name": "teams_slug_unique",
+          "nullsNotDistinct": false,
           "columns": [
             "slug"
-          ],
-          "nullsNotDistinct": false
+          ]
         }
       },
       "policies": {
@@ -1755,26 +1762,26 @@
         "vendors_user_id_users_id_fk": {
           "name": "vendors_user_id_users_id_fk",
           "tableFrom": "vendors",
+          "tableTo": "users",
+          "schemaTo": "auth",
           "columnsFrom": [
             "user_id"
           ],
-          "tableTo": "users",
-          "schemaTo": "auth",
           "columnsTo": [
             "id"
           ],
-          "onUpdate": "cascade",
-          "onDelete": "cascade"
+          "onDelete": "cascade",
+          "onUpdate": "cascade"
         }
       },
       "compositePrimaryKeys": {},
       "uniqueConstraints": {
         "vendors_slug_unique": {
           "name": "vendors_slug_unique",
+          "nullsNotDistinct": false,
           "columns": [
             "slug"
-          ],
-          "nullsNotDistinct": false
+          ]
         }
       },
       "policies": {},
@@ -1791,15 +1798,15 @@
           "primaryKey": true,
           "notNull": true,
           "identity": {
+            "type": "byDefault",
             "name": "zkvm_performance_metrics_id_seq",
+            "schema": "public",
             "increment": "1",
+            "startWith": "1",
             "minValue": "1",
             "maxValue": "9223372036854775807",
-            "startWith": "1",
             "cache": "1",
-            "cycle": false,
-            "schema": "public",
-            "type": "byDefault"
+            "cycle": false
           }
         },
         "zkvm_id": {
@@ -1840,25 +1847,25 @@
         "zkvm_performance_metrics_zkvm_id_zkvms_id_fk": {
           "name": "zkvm_performance_metrics_zkvm_id_zkvms_id_fk",
           "tableFrom": "zkvm_performance_metrics",
+          "tableTo": "zkvms",
           "columnsFrom": [
             "zkvm_id"
           ],
-          "tableTo": "zkvms",
           "columnsTo": [
             "id"
           ],
-          "onUpdate": "cascade",
-          "onDelete": "cascade"
+          "onDelete": "cascade",
+          "onUpdate": "cascade"
         }
       },
       "compositePrimaryKeys": {},
       "uniqueConstraints": {
         "zkvm_performance_metrics_zkvm_id_unique": {
           "name": "zkvm_performance_metrics_zkvm_id_unique",
+          "nullsNotDistinct": false,
           "columns": [
             "zkvm_id"
-          ],
-          "nullsNotDistinct": false
+          ]
         }
       },
       "policies": {
@@ -1885,15 +1892,15 @@
           "primaryKey": true,
           "notNull": true,
           "identity": {
+            "type": "byDefault",
             "name": "zkvm_security_metrics_id_seq",
+            "schema": "public",
             "increment": "1",
+            "startWith": "1",
             "minValue": "1",
             "maxValue": "9223372036854775807",
-            "startWith": "1",
             "cache": "1",
-            "cycle": false,
-            "schema": "public",
-            "type": "byDefault"
+            "cycle": false
           }
         },
         "zkvm_id": {
@@ -1969,25 +1976,25 @@
         "zkvm_security_metrics_zkvm_id_zkvms_id_fk": {
           "name": "zkvm_security_metrics_zkvm_id_zkvms_id_fk",
           "tableFrom": "zkvm_security_metrics",
+          "tableTo": "zkvms",
           "columnsFrom": [
             "zkvm_id"
           ],
-          "tableTo": "zkvms",
           "columnsTo": [
             "id"
           ],
-          "onUpdate": "cascade",
-          "onDelete": "cascade"
+          "onDelete": "cascade",
+          "onUpdate": "cascade"
         }
       },
       "compositePrimaryKeys": {},
       "uniqueConstraints": {
         "zkvm_security_metrics_zkvm_id_unique": {
           "name": "zkvm_security_metrics_zkvm_id_unique",
+          "nullsNotDistinct": false,
           "columns": [
             "zkvm_id"
-          ],
-          "nullsNotDistinct": false
+          ]
         }
       },
       "policies": {
@@ -2014,15 +2021,15 @@
           "primaryKey": true,
           "notNull": true,
           "identity": {
+            "type": "byDefault",
             "name": "zkvm_versions_id_seq",
+            "schema": "public",
             "increment": "1",
+            "startWith": "1",
             "minValue": "1",
             "maxValue": "9223372036854775807",
-            "startWith": "1",
             "cache": "1",
-            "cycle": false,
-            "schema": "public",
-            "type": "byDefault"
+            "cycle": false
           }
         },
         "zkvm_id": {
@@ -2056,15 +2063,15 @@
         "zkvm_versions_zkvm_id_zkvms_id_fk": {
           "name": "zkvm_versions_zkvm_id_zkvms_id_fk",
           "tableFrom": "zkvm_versions",
+          "tableTo": "zkvms",
           "columnsFrom": [
             "zkvm_id"
           ],
-          "tableTo": "zkvms",
           "columnsTo": [
             "id"
           ],
-          "onUpdate": "cascade",
-          "onDelete": "cascade"
+          "onDelete": "cascade",
+          "onUpdate": "cascade"
         }
       },
       "compositePrimaryKeys": {},
@@ -2083,15 +2090,15 @@
           "primaryKey": true,
           "notNull": true,
           "identity": {
+            "type": "byDefault",
             "name": "zkvms_id_seq",
+            "schema": "public",
             "increment": "1",
+            "startWith": "1",
             "minValue": "1",
             "maxValue": "9223372036854775807",
-            "startWith": "1",
             "cache": "1",
-            "cycle": false,
-            "schema": "public",
-            "type": "byDefault"
+            "cycle": false
           }
         },
         "vendor_id": {
@@ -2164,25 +2171,25 @@
         "zkvms_vendor_id_vendors_id_fk": {
           "name": "zkvms_vendor_id_vendors_id_fk",
           "tableFrom": "zkvms",
+          "tableTo": "vendors",
           "columnsFrom": [
             "vendor_id"
           ],
-          "tableTo": "vendors",
           "columnsTo": [
             "id"
           ],
-          "onUpdate": "cascade",
-          "onDelete": "cascade"
+          "onDelete": "cascade",
+          "onUpdate": "cascade"
         }
       },
       "compositePrimaryKeys": {},
       "uniqueConstraints": {
         "zkvms_slug_unique": {
           "name": "zkvms_slug_unique",
+          "nullsNotDistinct": false,
           "columns": [
             "slug"
-          ],
-          "nullsNotDistinct": false
+          ]
         }
       },
       "policies": {},
@@ -2212,10 +2219,11 @@
     }
   },
   "schemas": {},
+  "sequences": {},
+  "roles": {},
+  "policies": {},
   "views": {
     "public.cluster_summary": {
-      "name": "cluster_summary",
-      "schema": "public",
       "columns": {
         "cluster_id": {
           "name": "cluster_id",
@@ -2249,15 +2257,15 @@
         }
       },
       "definition": "\n    SELECT c.id as cluster_id,\n      c.nickname as cluster_nickname,\n      c.team_id,\n      COALESCE(sum(cm.cloud_instance_count::double precision * ci.hourly_price * (p.proving_time::numeric / (1000.0 * 60::numeric * 60::numeric))::double precision) / NULLIF(count(p.proof_id), 0)::double precision, 0::double precision) AS avg_cost_per_proof,\n      avg(p.proving_time) AS avg_proving_time\n    FROM clusters c\n    LEFT JOIN cluster_versions cv ON c.id = cv.cluster_id\n    LEFT JOIN proofs p ON cv.id = p.cluster_version_id AND p.proof_status = 'proved'::text\n    LEFT JOIN cluster_machines cm ON cv.id = cm.cluster_version_id\n    LEFT JOIN cloud_instances ci ON cm.cloud_instance_id = ci.id\n    GROUP BY c.id",
-      "materialized": false,
+      "name": "cluster_summary",
+      "schema": "public",
+      "isExisting": false,
       "with": {
         "securityInvoker": true
       },
-      "isExisting": false
+      "materialized": false
     },
     "public.recent_summary": {
-      "name": "recent_summary",
-      "schema": "public",
       "columns": {
         "total_proven_blocks": {
           "name": "total_proven_blocks",
@@ -2291,15 +2299,15 @@
         }
       },
       "definition": "\n    SELECT count(DISTINCT b.block_number) AS total_proven_blocks,\n      -- Calculate average cost per proof\n      COALESCE(avg(cm.cloud_instance_count::double precision * ci.hourly_price * p.proving_time::double precision / (1000.0 * 60::numeric * 60::numeric)::double precision), 0::numeric::double precision) AS avg_cost_per_proof,\n      -- Calculate median cost per proof\n      COALESCE(PERCENTILE_CONT(0.5) WITHIN GROUP (ORDER BY cm.cloud_instance_count::double precision * ci.hourly_price * p.proving_time::double precision / (1000.0 * 60::numeric * 60::numeric)::double precision), 0::numeric::double precision) AS median_cost_per_proof,\n      -- Calculate average latency\n      COALESCE(avg(p.proving_time), 0::numeric) AS avg_proving_time,\n      -- Calculate median latency\n      COALESCE(PERCENTILE_CONT(0.5) WITHIN GROUP (ORDER BY p.proving_time), 0::numeric) AS median_proving_time\n    FROM blocks b\n    INNER JOIN proofs p ON b.block_number = p.block_number AND p.proof_status = 'proved'::text\n    INNER JOIN cluster_versions cv ON p.cluster_version_id = cv.id\n    INNER JOIN cluster_machines cm ON cv.id = cm.cluster_version_id\n    INNER JOIN cloud_instances ci ON cm.cloud_instance_id = ci.id\n    WHERE b.\"timestamp\" >= (now() - '30 days'::interval)",
-      "materialized": false,
+      "name": "recent_summary",
+      "schema": "public",
+      "isExisting": false,
       "with": {
         "securityInvoker": true
       },
-      "isExisting": false
+      "materialized": false
     },
     "public.teams_summary": {
-      "name": "teams_summary",
-      "schema": "public",
       "columns": {
         "team_id": {
           "name": "team_id",
@@ -2375,16 +2383,15 @@
         }
       },
       "definition": "\n    SELECT t.id as team_id,\n      t.name as team_name,\n      t.logo_url,\n      -- All proofs\n      COALESCE(sum(cm.cloud_instance_count::double precision * ci.hourly_price * (p.proving_time::numeric / (1000.0 * 60::numeric * 60::numeric))::double precision) / NULLIF(count(p.proof_id), 0)::double precision, 0::double precision) AS avg_cost_per_proof,\n      COALESCE(avg(p.proving_time), 0::numeric) AS avg_proving_time,\n      count(p.proof_id) AS total_proofs,\n      -- Multi-machine proofs\n      COALESCE(sum(CASE WHEN c.is_multi_machine THEN (cm.cloud_instance_count::double precision * ci.hourly_price * (p.proving_time::numeric / (1000.0 * 60::numeric * 60::numeric))::double precision) ELSE 0 END) / NULLIF(sum(CASE WHEN c.is_multi_machine THEN 1 ELSE 0 END), 0)::double precision, 0::double precision) AS avg_cost_per_proof_multi,\n      COALESCE(avg(CASE WHEN c.is_multi_machine THEN p.proving_time ELSE NULL END), 0::numeric) AS avg_proving_time_multi,\n      sum(CASE WHEN c.is_multi_machine THEN 1 ELSE 0 END) AS total_proofs_multi,\n      -- Single-machine proofs\n      COALESCE(sum(CASE WHEN NOT c.is_multi_machine THEN (cm.cloud_instance_count::double precision * ci.hourly_price * (p.proving_time::numeric / (1000.0 * 60::numeric * 60::numeric))::double precision) ELSE 0 END) / NULLIF(sum(CASE WHEN NOT c.is_multi_machine THEN 1 ELSE 0 END), 0)::double precision, 0::double precision) AS avg_cost_per_proof_single,\n      COALESCE(avg(CASE WHEN NOT c.is_multi_machine THEN p.proving_time ELSE NULL END), 0::numeric) AS avg_proving_time_single,\n      sum(CASE WHEN NOT c.is_multi_machine THEN 1 ELSE 0 END) AS total_proofs_single\n    FROM teams t \n    LEFT JOIN proofs p ON t.id = p.team_id AND p.proof_status = 'proved'::text \n    LEFT JOIN cluster_versions cv ON p.cluster_version_id = cv.id\n    LEFT JOIN clusters c ON cv.cluster_id = c.id\n    LEFT JOIN cluster_machines cm ON cv.id = cm.cluster_version_id\n    LEFT JOIN cloud_instances ci ON cm.cloud_instance_id = ci.id \n    GROUP BY t.id",
-      "materialized": false,
+      "name": "teams_summary",
+      "schema": "public",
+      "isExisting": false,
       "with": {
         "securityInvoker": true
       },
-      "isExisting": false
+      "materialized": false
     }
   },
-  "sequences": {},
-  "roles": {},
-  "policies": {},
   "_meta": {
     "columns": {},
     "schemas": {},

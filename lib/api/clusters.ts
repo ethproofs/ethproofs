@@ -14,23 +14,6 @@ import {
   zkvmVersions,
 } from "@/db/schema"
 
-// Helper function for active proofs
-const createActiveProofConditions = () => {
-  const sevenDaysAgo = sql`NOW() - INTERVAL '7 days'`
-  return [
-    eq(proofs.proof_status, "proved"),
-    gt(proofs.proved_timestamp, sevenDaysAgo),
-  ]
-}
-
-// Helper function for active proofs with cluster version
-const createActiveProofConditionsWithClusterVersion = (
-  clusterVersionId = clusterVersions.id
-) => [
-  eq(proofs.cluster_version_id, clusterVersionId),
-  ...createActiveProofConditions(),
-]
-
 export const getCluster = async (id: string) => {
   return cache(
     async (id: string) => {
@@ -84,7 +67,7 @@ export const getActiveClusters = async (filters?: {
 
       const existsConditions = [
         eq(clusterVersions.cluster_id, clusters.id),
-        ...createActiveProofConditions(),
+        eq(clusters.is_active, true),
       ]
 
       if (zkvmId) {
@@ -95,11 +78,7 @@ export const getActiveClusters = async (filters?: {
         exists(
           db
             .select()
-            .from(proofs)
-            .innerJoin(
-              clusterVersions,
-              eq(proofs.cluster_version_id, clusterVersions.id)
-            )
+            .from(clusterVersions)
             .innerJoin(
               zkvmVersions,
               eq(clusterVersions.zkvm_version_id, zkvmVersions.id)
@@ -157,15 +136,7 @@ export const getActiveClusterCountByZkvmId = cache(
         eq(zkvmVersions.id, clusterVersions.zkvm_version_id)
       )
       .innerJoin(clusters, eq(clusterVersions.cluster_id, clusters.id))
-      .where(
-        exists(
-          db
-            .select()
-            .from(proofs)
-            .where(and(...createActiveProofConditionsWithClusterVersion()))
-            .limit(1)
-        )
-      )
+      .where(eq(clusters.is_active, true))
       .groupBy(zkvms.id)
 
     return result
@@ -182,24 +153,12 @@ export const getActiveMachineCount = cache(
     const [machineCount] = await db
       .select({ count: sum(clusterMachines.machine_count) })
       .from(clusterMachines)
-      .where(
-        exists(
-          db
-            .select()
-            .from(proofs)
-            .innerJoin(
-              clusterVersions,
-              eq(proofs.cluster_version_id, clusterVersions.id)
-            )
-            .where(
-              and(
-                eq(clusterMachines.cluster_version_id, clusterVersions.id),
-                ...createActiveProofConditionsWithClusterVersion()
-              )
-            )
-            .limit(1)
-        )
+      .innerJoin(
+        clusterVersions,
+        eq(clusterMachines.cluster_version_id, clusterVersions.id)
       )
+      .innerJoin(clusters, eq(clusterVersions.cluster_id, clusters.id))
+      .where(eq(clusters.is_active, true))
 
     return machineCount.count
   },
@@ -218,6 +177,7 @@ export const getClustersBenchmarks = cache(async () => {
     },
     where: (clusters, { and, exists, notIlike }) =>
       and(
+        eq(clusters.is_active, true),
         // hide test teams from the provers list
         exists(
           db
@@ -229,23 +189,6 @@ export const getClustersBenchmarks = cache(async () => {
                 notIlike(teams.name, "%test%")
               )
             )
-        ),
-        // only include active clusters
-        exists(
-          db
-            .select()
-            .from(proofs)
-            .innerJoin(
-              clusterVersions,
-              eq(proofs.cluster_version_id, clusterVersions.id)
-            )
-            .where(
-              and(
-                eq(clusterVersions.cluster_id, clusters.id),
-                ...createActiveProofConditions()
-              )
-            )
-            .limit(1)
         )
       ),
     // order by the clusters that have benchmarks first
