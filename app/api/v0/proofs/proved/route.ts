@@ -1,10 +1,11 @@
+import { eq } from "drizzle-orm"
 import { revalidateTag } from "next/cache"
 import { ZodError } from "zod"
 
 import { TAGS } from "@/lib/constants"
 
 import { db } from "@/db"
-import { blocks, programs, proofs } from "@/db/schema"
+import { blocks, clusters, programs, proofs } from "@/db/schema"
 import { uploadProofBinary } from "@/lib/api/proof_binaries"
 import { isStorageQuotaExceeded } from "@/lib/api/storage"
 import { getTeam } from "@/lib/api/teams"
@@ -99,6 +100,9 @@ export const POST = withAuth(async ({ request, user, timestamp }) => {
     columns: {
       id: true,
     },
+    with: {
+      cluster: true,
+    },
     where: (clusterVersions, { eq }) =>
       eq(clusterVersions.cluster_id, cluster.id),
     orderBy: (clusterVersions, { desc }) => [desc(clusterVersions.created_at)],
@@ -179,6 +183,20 @@ export const POST = withAuth(async ({ request, user, timestamp }) => {
           },
         })
         .returning({ proof_id: proofs.proof_id })
+
+      // handle active cluster status and updates
+      if (!clusterVersion.cluster.is_active) {
+        await tx
+          .update(clusters)
+          .set({
+            is_active: true,
+          })
+          .where(eq(clusters.id, cluster.id))
+
+        // invalidate active clusters stats
+        revalidateTag(TAGS.CLUSTERS)
+        revalidateTag(TAGS.CLUSTER_SUMMARY)
+      }
 
       if (!storageQuotaExceeded) {
         const team = await getTeam(user.id)
