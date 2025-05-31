@@ -11,6 +11,8 @@ const Tooltip = TooltipPrimitive.Root
 
 const TooltipTrigger = TooltipPrimitive.Trigger
 
+const TooltipPortal = TooltipPrimitive.Portal
+
 const TooltipContentHeader = React.forwardRef<
   HTMLDivElement,
   React.HTMLAttributes<HTMLDivElement>
@@ -59,6 +61,7 @@ export {
   TooltipContent,
   TooltipContentFooter,
   TooltipContentHeader,
+  TooltipPortal,
   TooltipProvider,
   TooltipTrigger,
 }
