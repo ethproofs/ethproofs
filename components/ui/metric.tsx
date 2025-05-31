@@ -3,7 +3,12 @@ import { Info } from "lucide-react"
 
 import { cn } from "@/lib/utils"
 
-import { Popover, PopoverContent, PopoverTrigger } from "./popover"
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipPortal,
+  TooltipTrigger,
+} from "./tooltip"
 
 const MetricBox = React.forwardRef<
   HTMLDivElement,
@@ -35,25 +40,27 @@ type MetricInfoProps = React.HTMLAttributes<HTMLDivElement> & {
 }
 const MetricInfo = React.forwardRef<HTMLDivElement, MetricInfoProps>(
   ({ label, trigger, className, children, ...props }, ref) => (
-    <Popover>
-      <PopoverTrigger className="hover:animate-pulse">
+    <Tooltip>
+      <TooltipTrigger className="hover:opacity-80">
         {trigger || (
           <div className="flex items-center gap-2">
             <span className="text-nowrap text-start">{label}</span>
             <Info className="-mb-0.5 size-3 shrink-0" />
           </div>
         )}
-      </PopoverTrigger>
-      <PopoverContent className="max-w-80 sm:max-w-96">
-        <div
-          ref={ref}
-          className={cn("space-y-2 text-start", className)}
-          {...props}
-        >
-          {children}
-        </div>
-      </PopoverContent>
-    </Popover>
+      </TooltipTrigger>
+      <TooltipPortal>
+        <TooltipContent className="max-w-80 sm:max-w-96">
+          <div
+            ref={ref}
+            className={cn("space-y-2 text-start", className)}
+            {...props}
+          >
+            {children}
+          </div>
+        </TooltipContent>
+      </TooltipPortal>
+    </Tooltip>
   )
 )
 MetricInfo.displayName = "MetricInfo"
