@@ -1,6 +1,7 @@
 import { Suspense } from "react"
 import type { Metadata } from "next"
 
+import GrantsBanner from "@/components/GrantsBanner"
 import ProofsStats from "@/components/ProofsStats"
 import BlocksSection from "@/components/sections/BlocksSection"
 import ClustersSection from "@/components/sections/ClustersSection"
@@ -21,6 +22,12 @@ export default async function Index() {
       <h1 className="text-shadow mb-24 mt-16 px-6 text-center font-mono text-3xl font-semibold md:mt-24 md:px-8">
         Building a fully SNARKed <span className="text-primary">Ethereum</span>
       </h1>
+
+      <div className="mx-auto mb-16 flex max-w-screen-xl flex-col items-center px-6 md:px-8 [&>section]:w-full">
+        <section id="banner">
+          <GrantsBanner />
+        </section>
+      </div>
 
       <div className="mx-auto flex max-w-screen-xl flex-col items-center gap-20 px-6 md:px-8 [&>section]:w-full">
         <ProofsStats recentSummary={recentSummary} />
