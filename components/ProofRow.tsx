@@ -26,7 +26,7 @@ import { cn } from "@/lib/utils"
 
 import { MetricInfo, MetricLabel, MetricValue } from "./ui/metric"
 import { MetricBox } from "./ui/metric"
-import DownloadButton from "./DownloadButton"
+import DownloadButton from "./proof-buttons/DownloadButton"
 import { metrics } from "./Metrics"
 import Null from "./Null"
 

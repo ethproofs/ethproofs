@@ -125,6 +125,37 @@ const config = {
             transform: "translate(0, 0)",
           },
         },
+        "fade-in": {
+          from: {
+            opacity: "0",
+            transform: "translateY(-5px)",
+          },
+          to: {
+            opacity: "1",
+            transform: "translateY(0)",
+          },
+        },
+        "success-pulse": {
+          "0%": {
+            opacity: "0.1",
+          },
+          "50%": {
+            opacity: "0.2",
+          },
+          "100%": {
+            opacity: "0.1",
+          },
+        },
+        "success-ring": {
+          "0%": {
+            transform: "scale(0.8)",
+            opacity: "0.2",
+          },
+          "100%": {
+            transform: "scale(1.1)",
+            opacity: "0",
+          },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
@@ -132,6 +163,9 @@ const config = {
         "heart-beat": "heart-beat 1s infinite",
         "write-on-off": "write-on-off 2s ease-in-out infinite",
         brownian: "brownian-motion 0.2s infinite",
+        "fade-in": "fade-in 0.3s forwards",
+        "success-pulse": "success-pulse 1.2s ease-in-out 2 forwards",
+        "success-ring": "success-ring 1s ease-out forwards",
       },
     },
   },

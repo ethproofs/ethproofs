@@ -3,7 +3,7 @@ import { differenceInMilliseconds } from "date-fns"
 import { Block, ProofWithCluster, Team } from "@/lib/types"
 
 import BlockNumber from "@/components/BlockNumber"
-import DownloadButton from "@/components/DownloadButton"
+import DownloadButton from "@/components/proof-buttons/DownloadButton"
 import Null from "@/components/Null"
 import CalendarCheck from "@/components/svgs/calendar-check.svg"
 import { Button } from "@/components/ui/button"
