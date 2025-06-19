@@ -1,27 +1,31 @@
 import { useCallback, useEffect, useState } from "react"
 
 export function useDownloadProof() {
-  const [downloadSpeed, setDownloadSpeed] = useState("")
+  const [downloadSpeed, setDownloadSpeed] = useState("0")
   const [isDownloading, setIsDownloading] = useState(false)
   const [downloadProgress, setDownloadProgress] = useState(0)
 
+  // Simulate download for button animation
+  const simulateDownload = useCallback(async () => {
+    for (let i = 0; i <= 100; i += 10) {
+      const speed = 100 + Math.random() * 900
+      setDownloadSpeed((speed / 1000).toFixed(1)) // MB/s
+      setDownloadProgress(i)
+      await new Promise((resolve) => setTimeout(resolve, 100))
+    }
+  }, [])
+
   const downloadProof = useCallback(
-    async (proof_id: number) => {
+    async (proofId: number) => {
       if (isDownloading) return
       setDownloadProgress(0)
       setIsDownloading(true)
       setDownloadSpeed("")
 
-      // Simulate download for button animation
-      for (let i = 0; i <= 100; i += 10) {
-        const speed = 100 + Math.random() * 900
-        setDownloadSpeed((speed / 1000).toFixed(1))
-        setDownloadProgress(i)
-        await new Promise((resolve) => setTimeout(resolve, 100))
-      }
+      await simulateDownload()
 
       try {
-        const response = await fetch(`/api/v0/proofs/download/${proof_id}`)
+        const response = await fetch(`/api/v0/proofs/download/${proofId}`)
         const blob = await response.blob()
 
         const downloadUrl = URL.createObjectURL(blob)
@@ -32,8 +36,6 @@ export function useDownloadProof() {
         a.click()
         a.remove()
         URL.revokeObjectURL(downloadUrl)
-
-        return response
       } catch (err) {
         console.error("Error downloading proof:", err)
         setIsDownloading(false)

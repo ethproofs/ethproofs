@@ -12,11 +12,11 @@ import type {
 } from "@/lib/types"
 
 import { ColumnHeader } from "@/components/ColumnHeader"
+import { metrics } from "@/components/Metrics"
+import Null from "@/components/Null"
 import DownloadButton, {
   ProofForDownload,
 } from "@/components/proof-buttons/DownloadButton"
-import { metrics } from "@/components/Metrics"
-import Null from "@/components/Null"
 import { HidePunctuation } from "@/components/StylePunctuation"
 import Cpu from "@/components/svgs/cpu.svg"
 import { MetricInfo } from "@/components/ui/metric"

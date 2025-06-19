@@ -1,23 +1,19 @@
 "use client"
 
 import { useState } from "react"
-import { ArrowDown, Check, Download } from "lucide-react"
-import prettyBytes from "pretty-bytes"
-import { toast } from "sonner"
+import { ArrowDown, CalendarCheck, Check } from "lucide-react"
 
 import type { Proof, Team } from "@/lib/types"
 
 import { cn } from "@/lib/utils"
 
-import StatusIcon from "../StatusIcon"
 import { Button } from "../ui/button"
 
 import { useDownloadProof } from "./useDownloadProof"
 import {
-  getProofButtonClasses,
   getProofButtonLabel,
-  getProofButtonTextColorClass,
   ProofButtonState,
+  proofButtonStateMap,
 } from "./utils"
 
 import { useAnimateCheckmark } from "@/hooks/useAnimateCheckmark"
@@ -28,40 +24,39 @@ export type ProofForDownload = Required<
   team: Required<Pick<Team, "name">>
 }
 
-interface DownloadButtonProps {
+interface VerifyButtonProps {
   proof: ProofForDownload
   className?: string
   containerClass?: string
-  containerStyle?: React.CSSProperties
   labelClass?: string
 }
 
-const DownloadButton = ({
+// This button is temporarily disabled
+const VerifyButton = ({
   className,
   proof,
   containerClass = "flex-col",
   labelClass,
-}: DownloadButtonProps) => {
+}: VerifyButtonProps) => {
   const { proof_status, proof_id, size_bytes, team } = proof
-  const [buttonState, setButtonState] = useState<ProofButtonState>("download")
+  const [buttonState, setButtonState] = useState<ProofButtonState>("verify")
   const { downloadProof, downloadProgress, downloadSpeed } = useDownloadProof()
   const { checkRef, checkmarkAnimation } = useAnimateCheckmark(buttonState)
 
-  async function onDownloadProof(proofId: number) {
-    try {
-      setButtonState("downloading")
-      await downloadProof(proofId)
-      setButtonState("success")
-    } catch (err) {
-      console.log(err)
-      setButtonState("error")
-    }
+  // TODO: Implement in-browser proof verification
+  async function onVerifyProof(proof_id: number) {
+    // Downloading proof
+    console.log("Downloading proof...")
+    setButtonState(proofButtonStateMap.downloading)
+    const proof = await downloadProof(proof_id)
+    if (!proof) return setButtonState(proofButtonStateMap.error)
+    console.log("Proof downloaded:", proof)
+    // Verifying proof
+    console.log("Verifying proof...")
+    setButtonState(proofButtonStateMap.verifying)
+    // const result = verifyProof(proof)
+    return
   }
-
-  const teamName = team?.name ? team.name : "Team"
-
-  const fakeButtonClassName =
-    "bg-body-secondary/10 hover:bg-body-secondary/10 cursor-auto"
 
   const labelClassName = cn(
     "inline-block text-nowrap text-xs font-bold font-body",
@@ -72,23 +67,25 @@ const DownloadButton = ({
 
   if (proof_status === "proved")
     return (
-      <div className={cn("flex items-center gap-x-2 gap-y-1", containerClass)}>
+      <div className={cn("flex items-center gap-y-1", containerClass)}>
         <Button
-          asChild
-          variant="outline"
-          className={cn(
-            sizingClassName,
-            getProofButtonClasses(buttonState),
-            className
-          )}
-          onClick={() => onDownloadProof(proof_id)}
+          disabled
+          variant="solid"
+          className={cn(sizingClassName, className)}
+          onClick={() => onVerifyProof(proof_id)}
         >
-          <div>
+          <div className="flex items-center gap-x-2">
             {/* Progress bars */}
             {buttonState === "downloading" && (
               <div
                 className="absolute left-0 top-0 h-full bg-green-300/20 transition-all duration-100"
                 style={{ width: `${downloadProgress}%` }}
+              />
+            )}
+            {buttonState === "verifying" && (
+              <div
+                className="absolute left-0 top-0 h-full bg-green-500/20 transition-all duration-100"
+                // style={{ width: `${verificationProgress}%` }}
               />
             )}
             {buttonState === "success" && (
@@ -98,9 +95,7 @@ const DownloadButton = ({
               </>
             )}
 
-            {buttonState === "download" && (
-              <ArrowDown className="size-5 text-primary" />
-            )}
+            {buttonState === "verify" && <CalendarCheck className="size-5" />}
             {buttonState === "downloading" && (
               <ArrowDown className="size-5 animate-pulse text-green-300" />
             )}
@@ -113,8 +108,8 @@ const DownloadButton = ({
             )}
             <span
               className={cn(
-                labelClassName,
-                getProofButtonTextColorClass(buttonState)
+                labelClassName
+                // getProofButtonTextColorClass(buttonState)
               )}
             >
               {getProofButtonLabel(buttonState)}
@@ -130,49 +125,11 @@ const DownloadButton = ({
           </span>
         ) : (
           <span className="animate-fade-in text-xs text-body-secondary">
-            {size_bytes ? prettyBytes(size_bytes) : ""}
+            in-browser (soon™)
           </span>
         )}
       </div>
     )
-
-  if (proof_status === "proving")
-    return (
-      <Button
-        asChild
-        variant="outline"
-        className={cn(sizingClassName, fakeButtonClassName, className)}
-        onClick={() =>
-          toast(`${teamName} is generating the proof for this block`)
-        }
-      >
-        <div>
-          <StatusIcon status="proving" className="size-5 animate-pulse" />
-          <span className={cn(labelClassName, "text-body-secondary")}>
-            proving
-          </span>
-        </div>
-      </Button>
-    )
-
-  if (proof_status === "queued")
-    return (
-      <Button
-        asChild
-        variant="outline"
-        className={cn(sizingClassName, fakeButtonClassName, className)}
-        onClick={() =>
-          toast(`${teamName} has indicated intent to prove this block`)
-        }
-      >
-        <div>
-          <StatusIcon status="queued" className="size-5" />
-          <span className={cn(labelClassName, "text-body-secondary")}>
-            queued
-          </span>
-        </div>
-      </Button>
-    )
 }
 
-export default DownloadButton
+export default VerifyButton

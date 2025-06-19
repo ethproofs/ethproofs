@@ -9,6 +9,7 @@ import Hamburger from "@/components/svgs/hamburger.svg"
 import { Button } from "@/components/ui/button"
 import { Drawer, DrawerContent, DrawerTrigger } from "@/components/ui/drawer"
 import { Sidebar } from "@/components/ui/sidebar"
+import { Toaster } from "@/components/ui/sonner"
 
 import { cn } from "@/lib/utils"
 
@@ -106,6 +107,7 @@ export default function RootLayout({
             <main className="isolate min-h-[50vh]">{children}</main>
           </div>
         </Providers>
+        <Toaster />
       </body>
     </html>
   )
