@@ -1,54 +1,70 @@
 import { useCallback, useEffect, useState } from "react"
 
+import { delay } from "@/utils/delay"
+
 export function useDownloadProof() {
-  const [downloadSpeed, setDownloadSpeed] = useState("")
+  const [downloadSpeed, setDownloadSpeed] = useState("0")
   const [isDownloading, setIsDownloading] = useState(false)
   const [downloadProgress, setDownloadProgress] = useState(0)
 
+  // Simulate download progress for UX feedback bc downloads are fast
+  const simulateDownload = useCallback(async () => {
+    for (let i = 0; i <= 100; i += 10) {
+      const speed = 100 + Math.random() * 900
+      setDownloadSpeed((speed / 1000).toFixed(1)) // MB/s
+      setDownloadProgress(i)
+      await delay(100)
+    }
+  }, [])
+
   const downloadProof = useCallback(
-    async (proof_id: number) => {
+    async (proofId: number) => {
       if (isDownloading) return
       setDownloadProgress(0)
       setIsDownloading(true)
-      setDownloadSpeed("")
+      setDownloadSpeed("0")
 
-      // Simulate download for button animation
-      for (let i = 0; i <= 100; i += 10) {
-        const speed = 100 + Math.random() * 900
-        setDownloadSpeed((speed / 1000).toFixed(1))
-        setDownloadProgress(i)
-        await new Promise((resolve) => setTimeout(resolve, 100))
-      }
+      await simulateDownload()
 
       try {
-        const response = await fetch(`/api/v0/proofs/download/${proof_id}`)
+        const response = await fetch(`/api/v0/proofs/download/${proofId}`)
+        if (!response.ok) {
+          throw new Error(
+            `Failed to download proof: ${response.status} ${response.statusText}`
+          )
+        }
         const blob = await response.blob()
+        const contentDisposition = response.headers.get("Content-Disposition")
+        const filename =
+          contentDisposition?.match(/filename="?([^"]*)"?/)?.[1] ||
+          `proof_${proofId}.txt`
 
         const downloadUrl = URL.createObjectURL(blob)
         const a = document.createElement("a")
         a.href = downloadUrl
-        a.download = `${response.url.split("proof_binaries/")[1]}`
+        a.download = filename
         document.body.appendChild(a)
         a.click()
         a.remove()
         URL.revokeObjectURL(downloadUrl)
-
-        return response
+        // TODO: return proof to verifier
+        return null
       } catch (err) {
         console.error("Error downloading proof:", err)
-        setIsDownloading(false)
+      } finally {
         setDownloadProgress(0)
-        return null
+        setIsDownloading(false)
+        setDownloadSpeed("0")
       }
     },
-    [isDownloading]
+    [isDownloading, simulateDownload]
   )
 
   useEffect(() => {
     return () => {
-      setIsDownloading(false)
       setDownloadProgress(0)
-      setDownloadSpeed("")
+      setIsDownloading(false)
+      setDownloadSpeed("0")
     }
   }, [])
 

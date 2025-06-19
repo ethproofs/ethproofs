@@ -1,13 +1,23 @@
-import { ProofButtonState } from "@/components/proof-buttons/utils"
 import { useEffect, useRef, useState } from "react"
+
+import { ProofButtonState } from "@/components/proof-buttons/utils"
 
 export function useAnimateCheckmark(buttonState: ProofButtonState) {
   const [checkmarkProgress, setCheckmarkProgress] = useState(0)
+  const [pathLength, setPathLength] = useState(0)
   const checkRef = useRef<SVGSVGElement | null>(null)
 
   useEffect(() => {
     if (buttonState === "success") {
       setCheckmarkProgress(0)
+
+      if (checkRef.current) {
+        const path = checkRef.current.querySelector("path")
+        if (path) {
+          setPathLength(path.getTotalLength())
+        }
+      }
+
       const checkmarkAnimation = setInterval(() => {
         setCheckmarkProgress((prev) => {
           if (prev >= 100) {
@@ -25,18 +35,10 @@ export function useAnimateCheckmark(buttonState: ProofButtonState) {
   return {
     checkRef,
     checkmarkAnimation() {
-      let length = 0
-      let drawLength = 0
-      if (checkRef.current) {
-        const path = checkRef.current.querySelector("path")
-        if (path) {
-          length = path.getTotalLength()
-          drawLength = (checkmarkProgress / 100) * length
-        }
-      }
+      const drawLength = (checkmarkProgress / 100) * pathLength
       return {
-        strokeDasharray: length,
-        strokeDashoffset: length - drawLength,
+        strokeDasharray: pathLength,
+        strokeDashoffset: pathLength - drawLength,
       }
     },
   }

@@ -18,6 +18,7 @@ type Props = {
   teamId: string
 }
 
+// TODO: Remove? This component appears unused?
 const TeamProofsTable = ({ className, teamId }: Props) => {
   const [pagination, setPagination] =
     useState<PaginationState>(DEFAULT_PAGE_STATE)

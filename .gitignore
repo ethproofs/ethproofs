@@ -8,6 +8,7 @@
 
 # testing
 /coverage
+/supabase/proof_binaries
 
 # next.js
 /.next/
