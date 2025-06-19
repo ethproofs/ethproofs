@@ -33,12 +33,12 @@ export function getProofButtonLabel(buttonState: ProofButtonState) {
 
 export function getProofButtonClasses(buttonState: ProofButtonState) {
   const baseClasses =
-    "w-full h-full rounded-full border-2 relative overflow-hidden transition-all duration-300 ease-out flex items-center justify-center"
+    "overflow-hidden transition-all duration-300 ease-out flex items-center justify-center"
 
   switch (buttonState) {
     case "download":
     case "verify":
-      return `${baseClasses} border-green-500 bg-transparent hover:bg-green-500/10`
+      return `${baseClasses} border-primary bg-transparent hover:bg-green-500/10`
     case "downloading":
       return `${baseClasses} border-green-300 bg-transparent`
     case "verifying":
@@ -57,7 +57,7 @@ export function getProofButtonTextColorClass(buttonState: ProofButtonState) {
   switch (buttonState) {
     case "download":
     case "verify":
-      return "text-green-500"
+      return "text-primary"
     case "downloading":
       return "text-green-300"
     case "verifying":
@@ -68,6 +68,6 @@ export function getProofButtonTextColorClass(buttonState: ProofButtonState) {
     case "error":
       return "text-red-500"
     default:
-      return "text-green-500"
+      return "text-primary"
   }
 }

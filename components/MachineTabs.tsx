@@ -13,13 +13,13 @@ const MachineTabs = ({ multiContent, singleContent }: MachineTabsProps) => {
           className="w-full hover:bg-gradient-to-b hover:from-primary/10 hover:to-primary/10"
           value="multi"
         >
-          Multi-machine
+          multi-GPU
         </TabsTrigger>
         <TabsTrigger
           className="w-full hover:bg-gradient-to-b hover:from-primary/10 hover:to-primary/10"
           value="single"
         >
-          Single machine
+          single 4090
         </TabsTrigger>
       </TabsList>
       <TabsContent value="multi">{multiContent}</TabsContent>

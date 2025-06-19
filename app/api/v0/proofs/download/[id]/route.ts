@@ -1,5 +1,5 @@
 import { db } from "@/db"
-import { getProofBinary } from "@/lib/api/proof_binaries"
+import { downloadProofBinary } from "@/lib/api/proof_binaries"
 import { getTeam } from "@/lib/api/teams"
 
 export async function GET(
@@ -39,12 +39,20 @@ export async function GET(
     : proofRow.cluster_version.cluster.id.split("-")[0]
   const filename = `${proofRow.block_number}_${teamName}_${id}.txt`
 
-  const data = await getProofBinary(filename)
+  const blob = await downloadProofBinary(filename)
 
-  if (!data) {
+  if (!blob) {
     return new Response("No proof binary found", { status: 404 })
   }
 
-  // redirect to the public url
-  return Response.redirect(data.publicUrl)
+  const arrayBuffer = await blob.arrayBuffer()
+  const buffer = Buffer.from(arrayBuffer)
+
+  return new Response(buffer, {
+    status: 200,
+    headers: {
+      "Content-Type": "application/octet-stream",
+      "Content-Disposition": `attachment; filename="${filename}"`,
+    },
+  })
 }
