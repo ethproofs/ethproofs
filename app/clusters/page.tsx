@@ -1,7 +1,7 @@
 import type { Metadata } from "next"
 
+import BasicTabs from "@/components/BasicTabs"
 import ClusterAccordion from "@/components/ClusterAccordion"
-import MachineTabs from "@/components/MachineTabs"
 
 import { getActiveClusters } from "@/lib/api/clusters"
 import { getClusterSummary } from "@/lib/api/stats"
@@ -44,11 +44,9 @@ export default async function ClustersPage() {
 
       <div className="mx-auto mt-20 flex max-w-screen-lg flex-1 flex-col items-center gap-20 [&>section]:w-full">
         <section>
-          <MachineTabs
-            singleContent={
-              <ClusterAccordion clusters={singleMachineClusters} />
-            }
-            multiContent={<ClusterAccordion clusters={multiMachineClusters} />}
+          <BasicTabs
+            contentRight={<ClusterAccordion clusters={singleMachineClusters} />}
+            contentLeft={<ClusterAccordion clusters={multiMachineClusters} />}
           />
         </section>
       </div>

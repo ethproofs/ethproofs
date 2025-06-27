@@ -7,8 +7,8 @@ import {
 
 import type { SummaryItem } from "@/lib/types"
 
+import BasicTabs from "../BasicTabs"
 import KPIs from "../KPIs"
-import MachineTabs from "../MachineTabs"
 import SimpleBlockTable from "../SimpleBlockTable"
 import { ButtonLink } from "../ui/button"
 import { Card, CardHeader, CardTitle } from "../ui/card"
@@ -74,9 +74,9 @@ const BlocksSection = async () => {
         </div>
       </CardHeader>
 
-      <MachineTabs
-        singleContent={<SimpleBlockTable machineType="single" />}
-        multiContent={<SimpleBlockTable machineType="multi" />}
+      <BasicTabs
+        contentRight={<SimpleBlockTable machineType="single" />}
+        contentLeft={<SimpleBlockTable machineType="multi" />}
       />
 
       <div className="flex justify-center">

@@ -36,7 +36,7 @@ const ZkvmsSection = async () => {
       </CardHeader>
 
       <div className="overflow-x-auto">
-        <SoftwareAccordion />
+        <SoftwareAccordion type="active" />
       </div>
 
       <div className="flex justify-center">
