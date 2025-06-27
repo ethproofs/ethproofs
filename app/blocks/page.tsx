@@ -5,8 +5,8 @@ import {
   QueryClient,
 } from "@tanstack/react-query"
 
+import BasicTabs from "@/components/BasicTabs"
 import BlocksTable from "@/components/BlocksTable"
-import MachineTabs from "@/components/MachineTabs"
 
 import { DEFAULT_PAGE_STATE } from "@/lib/constants"
 
@@ -51,8 +51,8 @@ export default async function BlocksPage() {
         </section> */}
 
         <section>
-          <MachineTabs
-            singleContent={
+          <BasicTabs
+            contentRight={
               <HydrationBoundary state={dehydrate(queryClient)}>
                 <BlocksTable
                   teams={teams}
@@ -61,7 +61,7 @@ export default async function BlocksPage() {
                 />
               </HydrationBoundary>
             }
-            multiContent={
+            contentLeft={
               <HydrationBoundary state={dehydrate(queryClient)}>
                 <BlocksTable
                   teams={teams}

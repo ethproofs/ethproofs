@@ -1,8 +1,8 @@
 import type { SummaryItem } from "@/lib/types"
 
+import BasicTabs from "../BasicTabs"
 import ClusterAccordion from "../ClusterAccordion"
 import KPIs from "../KPIs"
-import MachineTabs from "../MachineTabs"
 import { ButtonLink } from "../ui/button"
 import { Card, CardHeader, CardTitle } from "../ui/card"
 
@@ -62,9 +62,9 @@ const ClustersSection = async () => {
         </div>
       </CardHeader>
 
-      <MachineTabs
-        singleContent={<ClusterAccordion clusters={singleMachineClusters} />}
-        multiContent={<ClusterAccordion clusters={multiMachineClusters} />}
+      <BasicTabs
+        contentRight={<ClusterAccordion clusters={singleMachineClusters} />}
+        contentLeft={<ClusterAccordion clusters={multiMachineClusters} />}
       />
 
       <div className="flex justify-center">

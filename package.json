@@ -12,7 +12,7 @@
     "format": "prettier \"**/*.{js,jsx,ts,tsx}\" --write",
     "lint": "next lint",
     "lint:fix": "next lint --fix",
-    "type-check": "tsc --noEmit",
+    "typecheck": "tsc --noEmit",
     "db:start": "supabase start",
     "db:stop": "supabase stop",
     "db:reset": "supabase db reset",
