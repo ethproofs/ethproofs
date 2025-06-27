@@ -148,6 +148,13 @@
       "when": 1748426789848,
       "tag": "0020_cluster-is-active-flag",
       "breakpoints": true
+    },
+    {
+      "idx": 21,
+      "version": "7",
+      "when": 1750694873031,
+      "tag": "0021_zkvms-is-active-flag",
+      "breakpoints": true
     }
   ]
 }

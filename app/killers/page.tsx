@@ -1,7 +1,7 @@
 import type { Metadata } from "next"
 
+import BasicTabs from "@/components/BasicTabs"
 import KillersTable from "@/components/KillersTable"
-import MachineTabs from "@/components/MachineTabs"
 
 import { getBenchmarks } from "@/lib/api/benchmarks"
 import { getClustersBenchmarks } from "@/lib/api/clusters"
@@ -36,14 +36,14 @@ export default async function KillersPage() {
 
       <div className="mx-auto mt-20 flex max-w-screen-xl flex-1 flex-col items-center gap-20 px-6 md:px-8 [&>section]:w-full">
         <section>
-          <MachineTabs
-            singleContent={
+          <BasicTabs
+            contentRight={
               <KillersTable
                 benchmarks={benchmarks}
                 clusters={singleMachineBenchmarks}
               />
             }
-            multiContent={
+            contentLeft={
               <KillersTable
                 benchmarks={benchmarks}
                 clusters={multiMachineBenchmarks}

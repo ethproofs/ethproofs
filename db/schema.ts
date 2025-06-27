@@ -390,6 +390,7 @@ export const teams = pgTable(
   ]
 )
 
+// TODO: rename to teams
 export const vendors = pgTable("vendors", {
   id: uuid().defaultRandom().primaryKey().notNull(),
   user_id: uuid()
@@ -422,12 +423,16 @@ export const zkvms = pgTable("zkvms", {
     }),
   name: text().notNull(),
   slug: text("slug").notNull().unique(),
-  isa: text().notNull(),
-  repo_url: text().notNull(),
   continuations: boolean().notNull().default(false),
+  dual_license: boolean().notNull().default(false),
+  frontend: text().notNull(),
+  isa: text().notNull(),
+  is_active: boolean().notNull().default(false),
+  is_open_source: boolean().notNull().default(false),
+  is_proving_mainnet: boolean().notNull().default(false),
   parallelizable_proving: boolean().notNull().default(false),
   precompiles: boolean().notNull().default(false),
-  frontend: text().notNull(),
+  repo_url: text().notNull(),
   created_at: timestamp("created_at", {
     withTimezone: true,
     mode: "string",
@@ -701,12 +706,12 @@ export const teamsSummary = pgView("teams_summary", {
       COALESCE(sum(CASE WHEN NOT c.is_multi_machine THEN (cm.cloud_instance_count::double precision * ci.hourly_price * (p.proving_time::numeric / (1000.0 * 60::numeric * 60::numeric))::double precision) ELSE 0 END) / NULLIF(sum(CASE WHEN NOT c.is_multi_machine THEN 1 ELSE 0 END), 0)::double precision, 0::double precision) AS avg_cost_per_proof_single,
       COALESCE(avg(CASE WHEN NOT c.is_multi_machine THEN p.proving_time ELSE NULL END), 0::numeric) AS avg_proving_time_single,
       sum(CASE WHEN NOT c.is_multi_machine THEN 1 ELSE 0 END) AS total_proofs_single
-    FROM teams t 
-    LEFT JOIN proofs p ON t.id = p.team_id AND p.proof_status = 'proved'::text 
+    FROM teams t
+    LEFT JOIN proofs p ON t.id = p.team_id AND p.proof_status = 'proved'::text
     LEFT JOIN cluster_versions cv ON p.cluster_version_id = cv.id
     LEFT JOIN clusters c ON cv.cluster_id = c.id
     LEFT JOIN cluster_machines cm ON cv.id = cm.cluster_version_id
-    LEFT JOIN cloud_instances ci ON cm.cloud_instance_id = ci.id 
+    LEFT JOIN cloud_instances ci ON cm.cloud_instance_id = ci.id
     GROUP BY t.id`
   )
 
