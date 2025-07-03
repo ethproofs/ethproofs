@@ -1,9 +1,9 @@
 "use client"
 
+import { Box } from "lucide-react"
 import { useParams } from "next/navigation"
 
 import { HidePunctuation } from "@/components/StylePunctuation"
-import Box from "@/components/svgs/box.svg"
 import { ButtonLink } from "@/components/ui/button"
 import { Divider } from "@/components/ui/divider"
 import Link from "@/components/ui/link"

@@ -148,6 +148,13 @@
       "when": 1748426789848,
       "tag": "0020_cluster-is-active-flag",
       "breakpoints": true
+    },
+    {
+      "idx": 21,
+      "version": "7",
+      "when": 1751551599876,
+      "tag": "0021_add-tracker-columns-to-vkvms",
+      "breakpoints": true
     }
   ]
 }

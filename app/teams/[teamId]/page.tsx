@@ -3,10 +3,10 @@ import { notFound } from "next/navigation"
 
 import type { SummaryItem, Team, Zkvm } from "@/lib/types"
 
+import BasicTabs from "@/components/BasicTabs"
 import ClusterTable from "@/components/ClusterTable"
 import { DisplayTeam } from "@/components/DisplayTeamLink"
 import KPIs from "@/components/KPIs"
-import MachineTabs from "@/components/MachineTabs"
 import Null from "@/components/Null"
 import GitHub from "@/components/svgs/github.svg"
 import Globe from "@/components/svgs/globe.svg"
@@ -215,9 +215,9 @@ export default async function TeamDetailsPage({
 
         {isVendor && zkvms && <VendorsAside team={team} zkvms={zkvms} />}
 
-        <MachineTabs
-          singleContent={<ClusterTable clusters={singleMachineClusters} />}
-          multiContent={<ClusterTable clusters={multiMachineClusters} />}
+        <BasicTabs
+          contentRight={<ClusterTable clusters={singleMachineClusters} />}
+          contentLeft={<ClusterTable clusters={multiMachineClusters} />}
         />
       </div>
     </div>

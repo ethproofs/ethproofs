@@ -2,9 +2,9 @@ import { Box } from "lucide-react"
 import type { Metadata } from "next"
 import { notFound } from "next/navigation"
 
+import BasicTabs from "@/components/BasicTabs"
 import CopyButton from "@/components/CopyButton"
-import DownloadAllButton from "@/components/DownloadAllButton"
-import MachineTabs from "@/components/MachineTabs"
+import DownloadAllButton from "@/components/proof-buttons/DownloadAllButton"
 import ProofList from "@/components/ProofList"
 import ProofStatus, { ProofStatusInfo } from "@/components/ProofStatus"
 import { HidePunctuation } from "@/components/StylePunctuation"
@@ -324,9 +324,9 @@ export default async function BlockDetailsPage({
           )}
         </div>
 
-        <MachineTabs
-          multiContent={<ProofList proofs={multiMachineProofs} block={block} />}
-          singleContent={
+        <BasicTabs
+          contentLeft={<ProofList proofs={multiMachineProofs} block={block} />}
+          contentRight={
             <ProofList proofs={singleMachineProofs} block={block} />
           }
         />
