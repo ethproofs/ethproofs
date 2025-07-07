@@ -51,7 +51,7 @@ export const ActiveSoftwareAccordionItem = ({
         <div id="version" className="col-start-2">
           {zkvm.versions[0].version}
         </div>
-        <div id="isa" className="col-start-3">
+        <div id="isa" className="col-start-3 min-w-14">
           {zkvm.isa}
         </div>
         <div id="used-by" className="relative col-start-4 min-w-16">

@@ -4,11 +4,7 @@ import { Accordion } from "../ui/accordion"
 import { MetricBox, MetricInfo, MetricLabel } from "../ui/metric"
 import { TooltipContentHeader } from "../ui/tooltip"
 
-import { ActiveSoftwareAccordionItem } from "./ActiveSoftwareAccordionItem"
 import { InactiveSoftwareAccordionItem } from "./InactiveSoftwareAccordionItem"
-
-import { getZkvmsMetricsByZkvmId } from "@/lib/metrics"
-import { getZkvmsWithUsage } from "@/lib/zkvms"
 
 export type InactiveZkvm = Zkvm & {
   versions: ZkvmVersion[]
@@ -17,12 +13,10 @@ export type InactiveZkvm = Zkvm & {
 
 interface InactiveSoftwareAccordionProps {
   zkvms: InactiveZkvm[]
-  metrics: Map<number, Partial<ZkvmMetrics>>
 }
 
 export const InactiveSoftwareAccordion = ({
   zkvms,
-  metrics,
 }: InactiveSoftwareAccordionProps) => {
   return (
     <Accordion
@@ -77,7 +71,6 @@ export const InactiveSoftwareAccordion = ({
           key={zkvm.id}
           value={"item-" + zkvm.id}
           zkvm={zkvm}
-          metrics={metrics.get(zkvm.id)}
         />
       ))}
     </Accordion>

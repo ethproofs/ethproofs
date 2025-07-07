@@ -81,13 +81,9 @@ export default async function ClusterDetailsPage({
 
   const BooleanIcon = ({ bool }: { bool: boolean }) =>
     bool ? (
-      <Check
-        className="text-level-best"
-        strokeLinejoin="miter"
-        strokeLinecap="square"
-      />
+      <Check className="text-level-best" />
     ) : (
-      <RedX className="text-level-worst" strokeLinecap="square" />
+      <RedX className="text-level-worst" />
     )
 
   const clusterSummaryItems: SummaryItem[] = [
