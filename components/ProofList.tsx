@@ -1,4 +1,4 @@
-import { ComponentProps } from "react"
+import { ComponentProps, useMemo } from "react"
 
 import type { BlockBase } from "@/lib/types"
 
@@ -12,10 +12,17 @@ type ProofListProps = {
 }
 
 const ProofList = ({ proofs, block }: ProofListProps) => {
+  const sortedProofs = useMemo(() => {
+    return [...proofs].sort((a, b) => {
+      if (a.proving_time === null) return 1
+      if (b.proving_time === null) return -1
+      return a.proving_time - b.proving_time
+    })
+  }, [proofs])
   return (
     <div>
-      {proofs.length ? (
-        proofs.map((proof) => (
+      {sortedProofs.length ? (
+        sortedProofs.map((proof) => (
           <ProofRow key={proof.proof_id} proof={proof} block={block} />
         ))
       ) : (

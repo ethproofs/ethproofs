@@ -3,12 +3,12 @@ import { differenceInMilliseconds } from "date-fns"
 import { Block, ProofWithCluster, Team } from "@/lib/types"
 
 import BlockNumber from "@/components/BlockNumber"
-import DownloadButton from "@/components/DownloadButton"
 import Null from "@/components/Null"
-import CalendarCheck from "@/components/svgs/calendar-check.svg"
-import { Button } from "@/components/ui/button"
+import DownloadButton from "@/components/proof-buttons/DownloadButton"
 
 import { cn } from "@/lib/utils"
+
+import VerifyButton from "./proof-buttons/VerifyButton"
 
 import { formatTimeAgo } from "@/lib/date"
 import { formatUsd } from "@/lib/number"
@@ -99,23 +99,12 @@ export const ClusterProofRow = ({ proof }: ClusterProofRowProps) => {
         </div>
       </div>
 
-      <DownloadButton
-        proof={proof}
-        className="w-full"
-        containerStyle={{ gridArea: "download" }}
-      />
+      <div style={{ gridArea: "download" }}>
+        <DownloadButton proof={proof} className="w-40" />
+      </div>
 
-      <div
-        className="my-auto flex flex-col items-center"
-        style={{ gridArea: "verify" }}
-      >
-        <Button disabled variant="solid" className="w-full py-0.5">
-          <CalendarCheck className="text-lg" />
-          verify
-        </Button>
-        <div className="text-center font-sans text-xs text-body-secondary">
-          in-browser (soon™)
-        </div>
+      <div style={{ gridArea: "verify" }}>
+        <VerifyButton proof={proof} className="w-40" />
       </div>
     </div>
   )

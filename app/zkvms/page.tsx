@@ -1,5 +1,6 @@
 import type { Metadata } from "next"
 
+import BasicTabs from "@/components/BasicTabs"
 import SoftwareAccordion from "@/components/SoftwareAccordion"
 
 import { getMetadata } from "@/lib/metadata"
@@ -28,7 +29,13 @@ export default async function ZkvmsPage() {
         </section> */}
 
         <section className="overflow-x-auto">
-          <SoftwareAccordion />
+          <BasicTabs
+            defaultTab="left"
+            contentLeft={<SoftwareAccordion type="active" />}
+            contentLeftTitle="active"
+            contentRight={<SoftwareAccordion type="inactive" />}
+            contentRightTitle="coming soon"
+          />
         </section>
       </div>
     </>
