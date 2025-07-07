@@ -23,10 +23,7 @@ const SoftwareAccordion = async ({ type }: SoftwareAccordionProps) => {
   return type === "active" ? (
     <ActiveSoftwareAccordion zkvms={activeZkvms} metrics={metricsByZkvmId} />
   ) : hasInactiveZkvms ? (
-    <InactiveSoftwareAccordion
-      zkvms={inactiveZkvms}
-      metrics={metricsByZkvmId}
-    />
+    <InactiveSoftwareAccordion zkvms={inactiveZkvms} />
   ) : null
 }
 

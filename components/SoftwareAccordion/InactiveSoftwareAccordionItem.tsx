@@ -1,7 +1,7 @@
-import { Check } from "lucide-react"
+import { Check, X as RedX } from "lucide-react"
 import { type AccordionItemProps } from "@radix-ui/react-accordion"
 
-import type { ZkvmMetrics } from "@/lib/types"
+import type { Slices, ZkvmMetrics } from "@/lib/types"
 
 import { DisplayTeamLink } from "../DisplayTeamLink"
 import Pizza from "../Pizza"
@@ -11,19 +11,23 @@ import { Progress } from "../ui/progress"
 
 import { InactiveZkvm } from "./InactiveSoftwareAccordion"
 
-import { getSoftwareDetailItems } from "@/lib/metrics"
-import { getSlices } from "@/lib/zkvms"
+const disabledSlices: Slices = [
+  { level: undefined },
+  { level: undefined },
+  { level: undefined },
+  { level: undefined },
+  { level: undefined },
+  { level: undefined },
+  { level: undefined },
+  { level: undefined },
+]
 
 export const InactiveSoftwareAccordionItem = ({
   value,
   zkvm,
-  metrics,
 }: Pick<AccordionItemProps, "value"> & {
   zkvm: InactiveZkvm
-  metrics: Partial<ZkvmMetrics> | undefined
 }) => {
-  const detailItems = getSoftwareDetailItems(metrics)
-
   return (
     <AccordionItem value={value} className="col-span-8 grid grid-cols-subgrid">
       <div className="col-span-8 grid grid-cols-subgrid items-center justify-items-center gap-12 text-nowrap border-b p-px px-6">
@@ -42,18 +46,30 @@ export const InactiveSoftwareAccordionItem = ({
           </div>
         </div>
         <div id="is-open-source" className="col-start-2">
-          {zkvm.is_open_source ? <Check className="text-primary" /> : null}
+          {zkvm.is_open_source ? (
+            <Check className="text-level-best" />
+          ) : (
+            <RedX className="text-level-worst" />
+          )}
         </div>
         <div id="dual-licenses" className="col-start-3">
-          {zkvm.dual_licenses ? <Check className="text-primary" /> : null}
+          {zkvm.dual_licenses ? (
+            <Check className="text-level-best" />
+          ) : (
+            <RedX className="text-level-worst" />
+          )}
         </div>
         <div id="is-proving-mainnet" className="col-start-4">
-          {zkvm.is_proving_mainnet ? <Check className="text-primary" /> : null}
+          {zkvm.is_proving_mainnet ? (
+            <Check className="text-level-best" />
+          ) : (
+            <RedX className="text-level-worst" />
+          )}
         </div>
         <div id="version" className="col-start-5">
           {zkvm.versions[0].version}
         </div>
-        <div id="isa" className="col-start-6">
+        <div id="isa" className="col-start-6 min-w-14 text-center">
           {zkvm.isa}
         </div>
         <div id="used-by" className="relative col-start-7 min-w-16">
@@ -71,7 +87,7 @@ export const InactiveSoftwareAccordionItem = ({
           disabled
           className="col-start-8 my-4 h-fit gap-2 rounded-full border-2 bg-background-highlight p-0.5 pe-2 text-4xl text-border [&>svg]:size-6"
         >
-          <Pizza slices={getSlices(detailItems)} disableEffects />
+          <Pizza slices={disabledSlices} disableEffects />
         </AccordionTrigger>
       </div>
     </AccordionItem>
