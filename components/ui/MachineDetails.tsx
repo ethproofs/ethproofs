@@ -22,7 +22,16 @@ const MachineDetails = ({
         </div>
         <div className="flex flex-1 flex-col items-center p-2">
           <div className="text-nowrap text-body-secondary">CPU RAM</div>
-          <div className="">{sumArray(machine.memory_size_gb)} GB</div>
+          <div className="">
+            <div className="">
+              {machine.memory_size_gb?.reduce(
+                (total, size, i) =>
+                  total + size * (machine.memory_count?.[i] || 0),
+                0
+              ) ?? 0}{" "}
+              GB
+            </div>
+          </div>
         </div>
       </div>
       <div className="flex flex-col gap-y-3">
