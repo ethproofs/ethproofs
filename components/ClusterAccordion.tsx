@@ -106,16 +106,16 @@ const ClusterAccordionItem = ({
         </div>
         <div className="col-start-2 flex justify-center">
           {clusterDetails.is_open_source ? (
-            <Check className="text-level-best" strokeLinecap="square" />
+            <Check className="text-level-best" />
           ) : (
-            <RedX className="text-level-worst" strokeLinecap="square" />
+            <RedX className="text-level-worst" />
           )}
         </div>
         <div className="col-start-3 flex justify-center">
           {clusterDetails.software_link ? (
-            <Check className="text-level-best" strokeLinecap="square" />
+            <Check className="text-level-best" />
           ) : (
-            <RedX className="text-level-worst" strokeLinecap="square" />
+            <RedX className="text-level-worst" />
           )}
         </div>
         <div className="col-start-4">{formatUsd(clusterDetails.avg_cost)}</div>

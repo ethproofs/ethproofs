@@ -1,7 +1,7 @@
 import { Suspense } from "react"
+import { Box } from "lucide-react"
 
 import Bomb from "@/components/svgs/bomb.svg"
-import Box from "@/components/svgs/box.svg"
 import Bug from "@/components/svgs/bug.svg"
 import CPU from "@/components/svgs/cpu.svg"
 import Document from "@/components/svgs/document.svg"
