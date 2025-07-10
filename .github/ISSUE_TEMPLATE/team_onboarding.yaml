@@ -1,0 +1,105 @@
+name: Team Onboarding
+description: Track team onboarding progress
+title: "Team Onboarding: [TEAM_NAME] | [ZKVM_NAME]"
+labels: [onboarding]
+assignees: []
+
+body:
+  - type: input
+    id: team_name
+    attributes:
+      label: Team name
+      description: Enter your team name
+      placeholder: Team name
+
+  - type: input
+    id: twitter_handle
+    attributes:
+      label: Twitter handle
+      description: Enter your team Twitter handle
+      placeholder: "@exampleteam"
+
+  - type: input
+    id: website
+    attributes:
+      label: Website
+      description: Enter your team website
+      placeholder: https://example.org
+
+  - type: input
+    id: github_org
+    attributes:
+      label: GitHub organization
+      description: Enter your team GitHub organization
+      placeholder: example-org
+
+  - type: input
+    id: zkvm_name
+    attributes:
+      label: zkVM name
+      description: Enter your zkVM name (if applicable)
+      placeholder: zkVM name
+
+  - type: input
+    id: repo_url
+    attributes:
+      label: zkVM repository
+      description: Enter your zkVM repository (if applicable)
+      placeholder: github.com/example-org/example-repository
+
+  - type: checkboxes
+    id: pre_staging
+    attributes:
+      label: Pre-staging
+      description: Preparing to join the staging site
+      options:
+        - label: Completed the zkVM overview survey (if applicable)
+        - label: Provided team GitHub org, Twitter handle, and website
+        - label: Provided .svg of team logo (black fill)
+        - label: Received staging API key
+        - label: Received staging zkvm_version_id
+
+  - type: checkboxes
+    id: on_staging
+    attributes:
+      label: On Staging
+      description: Submitting proofs on staging
+      options:
+        - label: Submitting proofs for every 100 blocks (ending in '00')
+        - label: Submitting proofs for every 10 blocks (ending in '0')
+
+  - type: checkboxes
+    id: pre_production
+    attributes:
+      label: Pre-production
+      description: Preparing to join production
+      options:
+        - label: Completed the single-machine prover survey
+        - label: Completed the multi-machine prover survey (if applicable)
+        - label: Received production API key
+        - label: Received production zkvm_version_id
+
+  - type: checkboxes
+    id: on_production
+    attributes:
+      label: On Production
+      description: Submitting proofs to production
+      options:
+        - label: Submitting single-machine proofs for every 100 blocks (ending in '00')
+        - label: Submitting multi-machine proofs for every 100 blocks (ending in '00')
+        - label: Submitting single-machine proofs for every 10 blocks (ending in '0')
+        - label: Submitting multi-machine proofs for every 10 blocks (ending in '0')
+
+  - type: textarea
+    id: notes
+    attributes:
+      label: Notes
+      description: Use this section for any additional notes, blockers, or communication
+
+  - type: checkboxes
+    id: assignees
+    attributes:
+      label: Assignees
+      options:
+        - label: Assign to team representative
+        - label: Assign to Ethproofs team lead
