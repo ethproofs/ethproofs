@@ -10,9 +10,9 @@ interface BasicTabsProps {
 
 const BasicTabs = ({
   contentLeft,
-  contentLeftTitle = "multi-machine",
+  contentLeftTitle = "multi-GPU",
   contentRight,
-  contentRightTitle = "single machine",
+  contentRightTitle = "1x 4090",
   defaultTab = "right",
 }: BasicTabsProps) => {
   return (
