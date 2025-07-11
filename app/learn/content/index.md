@@ -61,6 +61,7 @@ There are [list of zkVMs](https://github.com/rkdud007/awesome-zkvm?tab=readme-ov
 - [continuations: scaling in zkvm](https://www.youtube.com/watch?v=h1qWnf-M5lo)
 - [Getting the bugs out of SNARKs: The road ahead](https://a16zcrypto.com/posts/article/getting-bugs-out-of-snarks/)
 - [~tacryt-socryp on Zorp, the Nock zkVM | Reassembly23](https://www.youtube.com/watch?v=zD45V6GAD00)
+- [zkVM 系列课程 | Coset](https://youtube.com/playlist?list=PLbQFt1T_44DwyjIN_Jqoiq_WlYZAMw_vq)
 
 ### Tutorials
 
