@@ -17,6 +17,9 @@
   ],
   "tags": [
     {
+      "name": "Blocks"
+    },
+    {
       "name": "Clusters"
     },
     {
@@ -30,6 +33,123 @@
     }
   ],
   "paths": {
+    "/blocks/{block}": {
+      "get": {
+        "tags": [
+          "Blocks"
+        ],
+        "summary": "Get block details",
+        "description": "Retrieve metadata for a specific block.",
+        "parameters": [
+          {
+            "name": "block",
+            "in": "path",
+            "description": "The block number to retrieve",
+            "required": true,
+            "schema": {
+              "type": "string"
+            },
+            "example": "12345"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Block details retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "block_number": {
+                      "type": "number"
+                    },
+                    "timestamp": {
+                      "type": "string"
+                    },
+                    "gas_used": {
+                      "type": "number"
+                    },
+                    "transaction_count": {
+                      "type": "number"
+                    },
+                    "hash": {
+                      "type": "string"
+                    },
+                    "created_at": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "block_number",
+                    "timestamp",
+                    "gas_used",
+                    "transaction_count",
+                    "hash",
+                    "created_at"
+                  ]
+                },
+                "example": {
+                  "block_number": 12345,
+                  "timestamp": "2025-01-15T12:00:00Z",
+                  "gas_used": 15000000,
+                  "transaction_count": 250,
+                  "hash": "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef",
+                  "created_at": "2025-01-15T12:00:00Z"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid block number"
+          },
+          "404": {
+            "description": "Block not found"
+          },
+          "422": {
+            "description": "Validation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "code": {
+                        "type": "string"
+                      },
+                      "message": {
+                        "type": "string"
+                      },
+                      "path": {
+                        "type": "array",
+                        "items": {
+                          "anyOf": [
+                            {
+                              "type": "string"
+                            },
+                            {
+                              "type": "number"
+                            }
+                          ]
+                        }
+                      }
+                    },
+                    "required": [
+                      "code",
+                      "message",
+                      "path"
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
     "/clusters": {
       "post": {
         "tags": [
@@ -772,6 +892,235 @@
           },
           "401": {
             "description": "Invalid API key"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/proofs": {
+      "get": {
+        "tags": [
+          "Proofs"
+        ],
+        "summary": "List proofs",
+        "description": "Retrieve a filtered and paginated list of proofs.",
+        "parameters": [
+          {
+            "name": "team",
+            "in": "query",
+            "description": "Filter by team slug",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "block",
+            "in": "query",
+            "description": "Filter by specific block number",
+            "required": false,
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "Number of proofs to return (default: 100, max: 1000)",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "default": 100,
+              "minimum": 1,
+              "maximum": 1000
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "description": "Number of proofs to skip for pagination (default: 0)",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "default": 0,
+              "minimum": 0
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of proofs retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "proofs": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "proof_id": {
+                            "type": "number"
+                          },
+                          "block_number": {
+                            "type": "number"
+                          },
+                          "status": {
+                            "type": "string",
+                            "enum": [
+                              "queued",
+                              "proving",
+                              "proved"
+                            ]
+                          },
+                          "proving_time_s": {
+                            "type": [
+                              "number",
+                              "null"
+                            ]
+                          },
+                          "cost_usd": {
+                            "type": [
+                              "number",
+                              "null"
+                            ]
+                          },
+                          "cycles": {
+                            "type": [
+                              "number",
+                              "null"
+                            ]
+                          },
+                          "team": {
+                            "type": [
+                              "object",
+                              "null"
+                            ],
+                            "properties": {
+                              "slug": {
+                                "type": "string"
+                              },
+                              "name": {
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "slug",
+                              "name"
+                            ]
+                          },
+                          "cluster": {
+                            "type": [
+                              "object",
+                              "null"
+                            ],
+                            "properties": {
+                              "id": {
+                                "type": "string"
+                              },
+                              "name": {
+                                "type": "string"
+                              },
+                              "is_multi_machine": {
+                                "type": "boolean"
+                              }
+                            },
+                            "required": [
+                              "id",
+                              "name",
+                              "is_multi_machine"
+                            ]
+                          },
+                          "zkvm": {
+                            "type": [
+                              "object",
+                              "null"
+                            ],
+                            "properties": {
+                              "name": {
+                                "type": "string"
+                              },
+                              "version": {
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "name",
+                              "version"
+                            ]
+                          },
+                          "timestamps": {
+                            "type": "object",
+                            "properties": {
+                              "created": {
+                                "type": "string"
+                              },
+                              "queued": {
+                                "type": [
+                                  "string",
+                                  "null"
+                                ]
+                              },
+                              "proving": {
+                                "type": [
+                                  "string",
+                                  "null"
+                                ]
+                              },
+                              "proved": {
+                                "type": [
+                                  "string",
+                                  "null"
+                                ]
+                              }
+                            },
+                            "required": [
+                              "created",
+                              "queued",
+                              "proving",
+                              "proved"
+                            ]
+                          }
+                        },
+                        "required": [
+                          "proof_id",
+                          "block_number",
+                          "status",
+                          "proving_time_s",
+                          "cost_usd",
+                          "cycles",
+                          "team",
+                          "cluster",
+                          "zkvm",
+                          "timestamps"
+                        ]
+                      }
+                    },
+                    "total": {
+                      "type": "number"
+                    },
+                    "limit": {
+                      "type": "number"
+                    },
+                    "offset": {
+                      "type": "number"
+                    }
+                  },
+                  "required": [
+                    "proofs",
+                    "total",
+                    "limit",
+                    "offset"
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid query parameters"
           },
           "500": {
             "description": "Internal server error"
