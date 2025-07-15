@@ -2,6 +2,7 @@ import type { NextRequest } from "next/server"
 
 import { fetchProofsFiltered } from "@/lib/api/proofs"
 import { getProvingCost } from "@/lib/proofs"
+import { ProofWithCluster } from "@/lib/types"
 
 export async function GET(request: NextRequest) {
   const searchParams = request.nextUrl.searchParams
@@ -31,7 +32,7 @@ export async function GET(request: NextRequest) {
 
     // Transform the data
     const transformedProofs = rows.map((proof) => {
-      const cost = proof.cluster_version ? getProvingCost(proof as any) : null
+      const cost = proof.cluster_version ? getProvingCost(proof as ProofWithCluster) : null
 
       return {
         proof_id: proof.proof_id,
