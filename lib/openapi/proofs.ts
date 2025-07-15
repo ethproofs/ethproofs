@@ -63,8 +63,10 @@ export const proofsPaths: ZodOpenApiPathsObject = {
           description: "Number of proofs to return (default: 100, max: 1000)",
           required: false,
           schema: {
-            type: "string",
-            default: "100",
+            type: "integer",
+            default: 100,
+            minimum: 1,
+            maximum: 1000,
           },
         },
         {
@@ -73,8 +75,9 @@ export const proofsPaths: ZodOpenApiPathsObject = {
           description: "Number of proofs to skip for pagination (default: 0)",
           required: false,
           schema: {
-            type: "string",
-            default: "0",
+            type: "integer",
+            default: 0,
+            minimum: 0,
           },
         },
       ],
