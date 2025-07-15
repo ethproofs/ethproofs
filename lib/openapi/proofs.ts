@@ -54,7 +54,7 @@ export const proofsPaths: ZodOpenApiPathsObject = {
           description: "Filter by specific block number",
           required: false,
           schema: {
-            type: "string",
+            type: "number",
           },
         },
         {
