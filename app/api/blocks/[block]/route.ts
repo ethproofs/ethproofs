@@ -13,11 +13,12 @@ const routeContextSchema = z.object({
 
 export async function GET(
   req: Request,
-  context: z.infer<typeof routeContextSchema>
+  context: { params: Promise<{ block: string }> }
 ) {
   try {
-    const { params } = routeContextSchema.parse(context)
-    const blockNumber = parseInt(params.block, 10)
+    const params = await context.params
+    const { params: validatedParams } = routeContextSchema.parse({ params })
+    const blockNumber = parseInt(validatedParams.block, 10)
 
     if (isNaN(blockNumber)) {
       return new Response("Invalid block number", { status: 400 })
@@ -29,27 +30,30 @@ export async function GET(
       return new Response("Block not found", { status: 404 })
     }
 
-    const prover_performance: Record<string, any> = {}
+    const prover_performance: Record<string, any[]> = {}
 
     const proofs = block.proofs
 
     for (const proof of proofs) {
       if (!proof.team) continue
       const teamSlug = proof.team.slug
-      // If we already have a proof for this team, skip.
-      // This is a simplification, as a team could have multiple proofs.
-      if (prover_performance[teamSlug]) {
-        continue
+      
+      // Initialize array for team if it doesn't exist
+      if (!prover_performance[teamSlug]) {
+        prover_performance[teamSlug] = []
       }
 
       const cost = getProvingCost(proof)
 
-      prover_performance[teamSlug] = {
+      // Add this proof to the team's array
+      prover_performance[teamSlug].push({
+        proof_id: proof.proof_id,
         proof_time_s: proof.proving_time ? proof.proving_time / 1000 : null,
         cost_usd: cost,
         cycles: proof.proving_cycles,
         status: proof.proof_status,
-      }
+        created_at: proof.created_at,
+      })
     }
 
     const response = {
