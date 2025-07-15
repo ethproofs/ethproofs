@@ -1,33 +1,34 @@
 import type { NextRequest } from "next/server"
+import { z } from "zod"
 
 import { fetchProofsFiltered } from "@/lib/api/proofs"
 import { getProvingCost } from "@/lib/proofs"
 import { ProofWithCluster } from "@/lib/types"
 
+const queryParamsSchema = z.object({
+  team: z.string().optional(),
+  block: z.coerce.number().int().positive().optional(),
+  limit: z.coerce.number().int().positive().max(1000).default(100),
+  offset: z.coerce.number().int().min(0).default(0),
+})
+
 export async function GET(request: NextRequest) {
   const searchParams = request.nextUrl.searchParams
 
-  const teamSlug = searchParams.get("team") || undefined
-  const blockParam = searchParams.get("block")
-  const limit = Number(searchParams.get("limit") || "100")
-  const offset = Number(searchParams.get("offset") || "0")
-
-  const blockNumber = blockParam ? parseInt(blockParam, 10) : undefined
-
-  if (blockParam && isNaN(blockNumber!)) {
-    return new Response("Invalid block number", { status: 400 })
-  }
-
-  if (isNaN(limit) || isNaN(offset)) {
-    return new Response("Invalid limit or offset", { status: 400 })
-  }
-
   try {
+    // Parse and validate query parameters
+    const params = queryParamsSchema.parse({
+      team: searchParams.get("team") || undefined,
+      block: searchParams.get("block") || undefined,
+      limit: searchParams.get("limit") || undefined,
+      offset: searchParams.get("offset") || undefined,
+    })
+
     const { rows, rowCount } = await fetchProofsFiltered({
-      teamSlug,
-      blockNumber,
-      limit,
-      offset,
+      teamSlug: params.team,
+      blockNumber: params.block,
+      limit: params.limit,
+      offset: params.offset,
     })
 
     // Transform the data
@@ -72,10 +73,14 @@ export async function GET(request: NextRequest) {
     return Response.json({
       proofs: transformedProofs,
       total: rowCount,
-      limit,
-      offset,
+      limit: params.limit,
+      offset: params.offset,
     })
   } catch (error) {
+    if (error instanceof z.ZodError) {
+      return new Response(JSON.stringify(error.issues), { status: 422 })
+    }
+    
     console.error("Error fetching proofs:", error)
     return new Response("Internal server error", { status: 500 })
   }
