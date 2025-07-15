@@ -5,6 +5,15 @@ import { fetchBlock } from "@/lib/api/blocks"
 import { getProvingCost } from "@/lib/proofs"
 import { ProofWithCluster } from "@/lib/types"
 
+interface ProverPerformanceEntry {
+  proof_id: number
+  proof_time_s: number | null
+  cost_usd: number | null
+  cycles: number | null
+  status: string
+  created_at: string
+}
+
 const routeContextSchema = z.object({
   params: z.object({
     block: z.string(),
@@ -30,7 +39,7 @@ export async function GET(
       return new Response("Block not found", { status: 404 })
     }
 
-    const prover_performance: Record<string, any[]> = {}
+    const prover_performance: Record<string, ProverPerformanceEntry[]> = {}
 
     const proofs = block.proofs
 
