@@ -62,7 +62,7 @@ export async function GET(
     }
 
     return NextResponse.json(response)
-  } catch (error: any) {
+  } catch (error: unknown) {
     if (error instanceof z.ZodError) {
       return new Response(JSON.stringify(error.issues), { status: 422 })
     }
