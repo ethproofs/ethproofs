@@ -3,16 +3,10 @@ import { Slices, SoftwareDetailItem } from "./types"
 import { getActiveClusterCountByZkvmId } from "@/lib/api/clusters"
 import { getZkvm, getZkvms } from "@/lib/api/zkvms"
 
-export const getZkvmsStats = async () => {
-  const zkvms = await getZkvms()
-  const zkvmsCount = zkvms.length
-
-  const isas = new Set(zkvms.map((zkvm) => zkvm.isa))
-
-  return {
-    count: zkvmsCount,
-    isas: Array.from(isas),
-  }
+export const getActiveZkvms = async () => {
+  const zkvms = await getZkvmsWithUsage()
+  const activeZkvms = zkvms.filter((zkvm) => zkvm.activeClusters > 0)
+  return activeZkvms
 }
 
 export const getZkvmsWithUsage = async () => {
@@ -62,6 +56,18 @@ export const getZkvmWithUsage = async ({
     ...zkvm,
     totalClusters,
     activeClusters,
+  }
+}
+
+export const getZkvmsStats = async () => {
+  const zkvms = await getActiveZkvms()
+  const zkvmsCount = zkvms.length
+
+  const isas = new Set(zkvms.map((zkvm) => zkvm.isa))
+
+  return {
+    count: zkvmsCount,
+    isas: Array.from(isas),
   }
 }
 
