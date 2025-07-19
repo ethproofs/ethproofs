@@ -14,17 +14,16 @@ import TwitterLogo from "@/components/svgs/x-logo.svg"
 import { Card, CardContent, CardHeader } from "@/components/ui/card"
 import { HeroBody, HeroItem, HeroItemLabel } from "@/components/ui/hero"
 import Link from "@/components/ui/link"
-import VendorsAside from "@/components/VendorsAside"
+import ZkvmProvidersAside from "@/components/ZkvmProvidersAside"
 
 import { SITE_NAME } from "@/lib/constants"
 
 import { getActiveClusters } from "@/lib/api/clusters"
 import { getTeamSummary } from "@/lib/api/stats"
-import { getVendor } from "@/lib/api/vendors"
-import { getZkvmsByVendorId } from "@/lib/api/zkvms"
+import { getZkvmsByTeamId } from "@/lib/api/zkvms"
 import { getMetadata } from "@/lib/metadata"
 import { formatUsd } from "@/lib/number"
-import { getTeamByIdOrSlug, getVendorByIdOrSlug } from "@/lib/teams"
+import { getTeamByIdOrSlug } from "@/lib/teams"
 import { prettyMs } from "@/lib/time"
 import { getHost, getTwitterHandle } from "@/lib/url"
 
@@ -55,32 +54,18 @@ export default async function TeamDetailsPage({
   try {
     team = await getTeamByIdOrSlug(teamId)
     if (!team) {
-      // if team is not found, try to get vendor
-      // NOTE: edge case for handling only vendor pages
-      const vendor = await getVendorByIdOrSlug(teamId)
-      // Convert to Team interface: vendor does not have `storage_quota_bytes`
-      if (vendor) team = { ...vendor, storage_quota_bytes: null }
-    }
-
-    if (!team) {
       throw new Error()
     }
   } catch {
     return notFound()
   }
 
-  const [teamSummary, vendor, clusters] = await Promise.all([
+  const [teamSummary, clusters] = await Promise.all([
     getTeamSummary(team.id),
-    getVendor(team.id),
     getActiveClusters({ teamId: team.id }),
   ])
 
-  const isVendor = !!vendor
-
-  let zkvms: Zkvm[] | undefined
-  if (isVendor) {
-    zkvms = await getZkvmsByVendorId(vendor.id)
-  }
+  const zkvms: Zkvm[] = (await getZkvmsByTeamId(team.id)) ?? []
 
   const singleMachineClusters = clusters.filter(
     (cluster) => !cluster.is_multi_machine
@@ -213,7 +198,7 @@ export default async function TeamDetailsPage({
           </Card>
         </section>
 
-        {isVendor && zkvms && <VendorsAside team={team} zkvms={zkvms} />}
+        {zkvms.length > 0 && <ZkvmProvidersAside team={team} zkvms={zkvms} />}
 
         <BasicTabs
           contentRight={<ClusterTable clusters={singleMachineClusters} />}

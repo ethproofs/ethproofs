@@ -6,21 +6,21 @@ import Link from "@/components/ui/link"
 
 import { cn } from "@/lib/utils"
 
-const VendorsAside = ({ team, zkvms }: { team: Team; zkvms: Zkvm[] }) => {
+const ZkvmProvidersAside = ({ team, zkvms }: { team: Team; zkvms: Zkvm[] }) => {
   return (
     <div className="flex flex-col gap-4">
       {zkvms.map((zkvm) =>
         team.name === "MatterLabs" ? (
-          <VendorAsideMatterLabs key={zkvm.id} team={team} zkvm={zkvm} />
+          <ZkvmProviderAsideMatterLabs key={zkvm.id} team={team} zkvm={zkvm} />
         ) : (
-          <VendorAside key={zkvm.id} team={team} zkvm={zkvm} />
+          <ZkvmProviderAside key={zkvm.id} team={team} zkvm={zkvm} />
         )
       )}
     </div>
   )
 }
 
-const VendorAside = ({ team, zkvm }: { team: Team; zkvm: Zkvm }) => {
+const ZkvmProviderAside = ({ team, zkvm }: { team: Team; zkvm: Zkvm }) => {
   return (
     <aside className="flex flex-col gap-4 rounded bg-primary-dark px-6 py-4 text-center text-white">
       <div className="flex items-center justify-center gap-2">
@@ -48,7 +48,13 @@ const VendorAside = ({ team, zkvm }: { team: Team; zkvm: Zkvm }) => {
 }
 
 // TODO: Handle special request from MatterLabs, but this should be offered to all teams
-const VendorAsideMatterLabs = ({ team, zkvm }: { team: Team; zkvm: Zkvm }) => {
+const ZkvmProviderAsideMatterLabs = ({
+  team,
+  zkvm,
+}: {
+  team: Team
+  zkvm: Zkvm
+}) => {
   return (
     <aside className="flex flex-col gap-4 rounded bg-primary-dark px-6 py-4 text-center text-white">
       <div className="flex items-center justify-center gap-2">
@@ -84,4 +90,4 @@ const VendorAsideMatterLabs = ({ team, zkvm }: { team: Team; zkvm: Zkvm }) => {
   )
 }
 
-export default VendorsAside
+export default ZkvmProvidersAside

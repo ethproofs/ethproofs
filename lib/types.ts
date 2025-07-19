@@ -21,7 +21,6 @@ import {
   severityLevel,
   teams,
   teamsSummary,
-  vendors,
   zkvmPerformanceMetrics,
   zkvms,
   zkvmSecurityMetrics,
@@ -77,11 +76,6 @@ export type ProofBase = typeof proofs.$inferSelect
  * Represents a row in the teams table.
  */
 export type Team = typeof teams.$inferSelect
-
-/**
- * Represents a row in the vendors table.
- */
-export type Vendor = typeof vendors.$inferSelect
 
 /**
  * Represents a row in the zkvms table.

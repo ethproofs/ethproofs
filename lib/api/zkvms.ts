@@ -10,7 +10,7 @@ export const getZkvms = cache(async ({ limit }: { limit?: number } = {}) => {
       versions: {
         orderBy: desc(zkvmVersions.release_date),
       },
-      vendor: true,
+      team: true,
     },
     limit,
   })
@@ -35,16 +35,16 @@ export const getZkvm = cache(
         versions: {
           orderBy: desc(zkvmVersions.release_date),
         },
-        vendor: true,
+        team: true,
       },
     })
     return zkvm
   }
 )
 
-export const getZkvmsByVendorId = async (vendorId: string) => {
+export const getZkvmsByTeamId = async (teamId: string) => {
   const zkvms = await db.query.zkvms.findMany({
-    where: (zkvms, { eq }) => eq(zkvms.vendor_id, vendorId),
+    where: (zkvms, { eq }) => eq(zkvms.team_id, teamId),
   })
   return zkvms
 }
