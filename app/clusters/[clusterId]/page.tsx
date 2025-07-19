@@ -162,7 +162,12 @@ export default async function ClusterDetailsPage({
       <section className="!mt-16 flex w-full flex-wrap justify-evenly gap-x-8 border-b">
         <div className="flex flex-col items-center gap-1 p-4">
           <div className="font-sans text-sm text-body-secondary">zkVM</div>
-          <div className="font-mono text-lg text-primary">{zkvm.name}</div>
+          <Link
+            href={`/zkvms/${zkvm.slug}`}
+            className="font-mono text-lg text-primary hover:underline"
+          >
+            {zkvm.name}
+          </Link>
         </div>
         <div className="flex flex-col items-center gap-1 p-4">
           <MetricBox className="py-0">

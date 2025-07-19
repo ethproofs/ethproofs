@@ -76,7 +76,12 @@ const ClusterMachineSummary = ({
           <span className="block font-mono text-xl text-body">
             {sumArray(
               machines.map(
-                (m) => sumArray(m.machine.memory_size_gb) * m.machine_count
+                (m) =>
+                  (m.machine.memory_size_gb?.reduce(
+                    (total, size, i) =>
+                      total + size * (m.machine.memory_count?.[i] || 0),
+                    0
+                  ) ?? 0) * m.machine_count
               )
             )}{" "}
             GB
