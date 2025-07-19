@@ -1,5 +1,4 @@
 import { getTeam, getTeamBySlug } from "./api/teams"
-import { getVendor, getVendorBySlug } from "./api/vendors"
 import type { TeamSummary } from "./types"
 import { isUUID } from "./utils"
 
@@ -17,11 +16,4 @@ export const getTeamByIdOrSlug = async (idOrSlug: string) => {
     return getTeam(idOrSlug)
   }
   return getTeamBySlug(idOrSlug)
-}
-
-export const getVendorByIdOrSlug = async (idOrSlug: string) => {
-  if (isUUID(idOrSlug)) {
-    return getVendor(idOrSlug)
-  }
-  return getVendorBySlug(idOrSlug)
 }
