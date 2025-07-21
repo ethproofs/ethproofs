@@ -13,7 +13,6 @@ export const getZkvmsWithUsage = async () => {
   const zkvms = await getZkvms({ limit: 10 })
 
   const clusterCount = await getActiveClusterCountByZkvmId()
-
   const totalActiveClusters = clusterCount.reduce(
     (acc, curr) => acc + curr.active_clusters,
     0

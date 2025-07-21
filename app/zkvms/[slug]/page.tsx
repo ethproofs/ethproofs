@@ -78,7 +78,7 @@ export default async function ZkvmDetailsPage({
           <span className="inline-block font-mono italic text-body-secondary">
             by
           </span>
-          <DisplayTeamLink team={zkvm.vendor} height={24} />
+          <DisplayTeamLink team={zkvm.team} height={24} />
         </div>
       </div>
 

@@ -356,7 +356,6 @@ export const recursiveRootProofs = pgTable(
   ]
 )
 
-// TODO: rename to provers
 export const teams = pgTable(
   "teams",
   {
@@ -373,6 +372,8 @@ export const teams = pgTable(
     twitter_handle: text("twitter_handle"),
     website_url: text("website_url"),
     storage_quota_bytes: bigint("storage_quota_bytes", { mode: "number" }),
+    is_prover: boolean().notNull().default(false),
+    is_zkvm_provider: boolean().notNull().default(false),
     created_at: timestamp("created_at", {
       withTimezone: true,
       mode: "string",
@@ -390,6 +391,7 @@ export const teams = pgTable(
   ]
 )
 
+// TODO: Remove
 export const vendors = pgTable("vendors", {
   id: uuid().defaultRandom().primaryKey().notNull(),
   user_id: uuid()
@@ -417,6 +419,12 @@ export const zkvms = pgTable("zkvms", {
   vendor_id: uuid()
     .notNull()
     .references(() => vendors.id, {
+      onDelete: "cascade",
+      onUpdate: "cascade",
+    }),
+  team_id: uuid()
+    .notNull()
+    .references(() => teams.id, {
       onDelete: "cascade",
       onUpdate: "cascade",
     }),

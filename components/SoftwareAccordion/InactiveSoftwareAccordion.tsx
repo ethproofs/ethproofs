@@ -1,11 +1,11 @@
-import { Vendor, Zkvm, ZkvmVersion } from "@/lib/types"
+import { Team, Zkvm, ZkvmVersion } from "@/lib/types"
 
 import { InactiveSoftwareAccordionItem } from "./InactiveSoftwareAccordionItem"
 import SoftwareAccordionLayout from "./SoftwareAccordion.layout"
 
 export type InactiveZkvm = Zkvm & {
   versions: ZkvmVersion[]
-  vendor: Vendor
+  team: Team
   totalClusters: number
   activeClusters: number
 }

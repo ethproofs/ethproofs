@@ -155,6 +155,13 @@
       "when": 1751551599876,
       "tag": "0021_add-tracker-columns-to-vkvms",
       "breakpoints": true
+    },
+    {
+      "idx": 22,
+      "version": "7",
+      "when": 1753036886957,
+      "tag": "0022_add-team-to-zkvms",
+      "breakpoints": true
     }
   ]
 }
