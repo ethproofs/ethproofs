@@ -101,7 +101,7 @@ const AppNavigationMenu = ({ insideDrawer }: AppNavigationMenuProps) => {
                 className="inline-flex text-body hover:text-primary [&>svg:first-child]:me-2 [&>svg:first-child]:size-6"
               >
                 <CPU />
-                clusters
+                provers
               </Link>
             </MenuItem>
             <MenuItem>

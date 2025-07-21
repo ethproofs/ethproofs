@@ -2,7 +2,9 @@ import { setSeconds } from "date-fns"
 import { copycat, faker } from "@snaplet/copycat"
 import { createSeedClient } from "@snaplet/seed"
 
-const vendorsProfiles = [
+// TODO: Needs updating
+
+const zkvmProviderProfiles = [
   {
     name: "Succinct",
     logo_url:
@@ -99,16 +101,16 @@ const zkvmsData = [
 const main = async () => {
   const seed = await createSeedClient({ dryRun: true })
 
-  // create users for each vendors & provers profile
+  // create users for each team
   const { users } = await seed.users((x) =>
-    x([...vendorsProfiles, ...proversProfiles].length, ({ index }) => {
+    x([...zkvmProviderProfiles, ...proversProfiles].length, ({ index }) => {
       const profile =
-        index < vendorsProfiles.length
-          ? vendorsProfiles[index]
-          : proversProfiles[index - vendorsProfiles.length]
+        index < zkvmProviderProfiles.length
+          ? zkvmProviderProfiles[index]
+          : proversProfiles[index - zkvmProviderProfiles.length]
       return {
         email: `${profile.name.toLowerCase()}@${
-          index < vendorsProfiles.length ? "vendor" : "prover"
+          index < zkvmProviderProfiles.length ? "vendor" : "prover"
         }.com`,
         name: profile.name,
         aud: "authenticated",
@@ -120,21 +122,6 @@ const main = async () => {
         encrypted_password: "password",
       }
     })
-  )
-
-  // add vendors
-  const { vendors } = await seed.vendors(
-    (x) =>
-      x(vendorsProfiles.length, ({ index }) => ({
-        name: vendorsProfiles[index].name,
-        logo_url: vendorsProfiles[index].logo_url,
-        website_url: vendorsProfiles[index].website_url,
-        twitter_handle: vendorsProfiles[index].twitter_handle,
-        github_org: vendorsProfiles[index].github_org,
-      })),
-    {
-      connect: { users: users },
-    }
   )
 
   // add zkvms
@@ -150,7 +137,7 @@ const main = async () => {
         precompiles: zkvmsData[index].precompiles,
       })),
     {
-      connect: { vendors },
+      // connect: { teams },
     }
   )
 

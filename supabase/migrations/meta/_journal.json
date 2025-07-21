@@ -162,6 +162,13 @@
       "when": 1753036886957,
       "tag": "0022_add-team-to-zkvms",
       "breakpoints": true
+    },
+    {
+      "idx": 23,
+      "version": "7",
+      "when": 1753128679795,
+      "tag": "0023_remove-vendors",
+      "breakpoints": true
     }
   ]
 }
