@@ -372,8 +372,6 @@ export const teams = pgTable(
     twitter_handle: text("twitter_handle"),
     website_url: text("website_url"),
     storage_quota_bytes: bigint("storage_quota_bytes", { mode: "number" }),
-    is_prover: boolean().notNull().default(false),
-    is_zkvm_provider: boolean().notNull().default(false),
     created_at: timestamp("created_at", {
       withTimezone: true,
       mode: "string",
@@ -391,37 +389,8 @@ export const teams = pgTable(
   ]
 )
 
-// TODO: Remove
-export const vendors = pgTable("vendors", {
-  id: uuid().defaultRandom().primaryKey().notNull(),
-  user_id: uuid()
-    .notNull()
-    .references(() => authUsers.id, {
-      onDelete: "cascade",
-      onUpdate: "cascade",
-    }),
-  name: text().notNull(),
-  slug: text("slug").notNull().unique(),
-  github_org: text("github_org"),
-  logo_url: text("logo_url"),
-  twitter_handle: text("twitter_handle"),
-  website_url: text("website_url"),
-  created_at: timestamp("created_at", {
-    withTimezone: true,
-    mode: "string",
-  })
-    .defaultNow()
-    .notNull(),
-})
-
 export const zkvms = pgTable("zkvms", {
   id: bigint({ mode: "number" }).primaryKey().generatedByDefaultAsIdentity(),
-  vendor_id: uuid()
-    .notNull()
-    .references(() => vendors.id, {
-      onDelete: "cascade",
-      onUpdate: "cascade",
-    }),
   team_id: uuid()
     .notNull()
     .references(() => teams.id, {
