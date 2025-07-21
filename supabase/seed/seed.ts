@@ -2,7 +2,7 @@ import { setSeconds } from "date-fns"
 import { copycat, faker } from "@snaplet/copycat"
 import { createSeedClient } from "@snaplet/seed"
 
-const vendorsProfiles = [
+const zkvmProviderProfiles = [
   {
     name: "Succinct",
     logo_url:
@@ -101,14 +101,14 @@ const main = async () => {
 
   // create users for each vendors & provers profile
   const { users } = await seed.users((x) =>
-    x([...vendorsProfiles, ...proversProfiles].length, ({ index }) => {
+    x([...zkvmProviderProfiles, ...proversProfiles].length, ({ index }) => {
       const profile =
-        index < vendorsProfiles.length
-          ? vendorsProfiles[index]
-          : proversProfiles[index - vendorsProfiles.length]
+        index < zkvmProviderProfiles.length
+          ? zkvmProviderProfiles[index]
+          : proversProfiles[index - zkvmProviderProfiles.length]
       return {
         email: `${profile.name.toLowerCase()}@${
-          index < vendorsProfiles.length ? "vendor" : "prover"
+          index < zkvmProviderProfiles.length ? "vendor" : "prover"
         }.com`,
         name: profile.name,
         aud: "authenticated",
@@ -125,12 +125,12 @@ const main = async () => {
   // add vendors
   const { vendors } = await seed.vendors(
     (x) =>
-      x(vendorsProfiles.length, ({ index }) => ({
-        name: vendorsProfiles[index].name,
-        logo_url: vendorsProfiles[index].logo_url,
-        website_url: vendorsProfiles[index].website_url,
-        twitter_handle: vendorsProfiles[index].twitter_handle,
-        github_org: vendorsProfiles[index].github_org,
+      x(zkvmProviderProfiles.length, ({ index }) => ({
+        name: zkvmProviderProfiles[index].name,
+        logo_url: zkvmProviderProfiles[index].logo_url,
+        website_url: zkvmProviderProfiles[index].website_url,
+        twitter_handle: zkvmProviderProfiles[index].twitter_handle,
+        github_org: zkvmProviderProfiles[index].github_org,
       })),
     {
       connect: { users: users },
