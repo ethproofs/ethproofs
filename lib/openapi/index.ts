@@ -2,6 +2,7 @@ import { createDocument } from "zod-openapi"
 
 import { SITE_NAME, SITE_PREVIEW_URL, SITE_URL } from "../constants"
 
+import { blocksPaths } from "./blocks"
 import { cloudInstancesPaths } from "./cloud-instances"
 import { clustersPaths } from "./clusters"
 import { proofsPaths } from "./proofs"
@@ -32,6 +33,9 @@ export const document = createDocument({
   ],
   tags: [
     {
+      name: "Blocks",
+    },
+    {
       name: "Clusters",
     },
     {
@@ -45,6 +49,7 @@ export const document = createDocument({
     },
   ],
   paths: {
+    ...blocksPaths,
     ...clustersPaths,
     ...singleMachinePaths,
     ...proofsPaths,
