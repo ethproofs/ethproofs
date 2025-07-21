@@ -74,7 +74,7 @@ const ClusterRowItem = ({ cluster }: ClusterRowItemProps) => (
         size="icon"
         variant="outline"
         className="h-fit bg-background-highlight p-1"
-        href={`/clusters/${cluster.id}`}
+        href={`/provers/${cluster.id}`}
       >
         <ChevronRight />
       </ButtonLink>

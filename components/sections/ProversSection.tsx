@@ -10,7 +10,7 @@ import { getActiveClusters } from "@/lib/api/clusters"
 import { getClusterSummary } from "@/lib/api/stats"
 import { getTeamsCount } from "@/lib/api/teams"
 
-const ClustersSection = async () => {
+const ProversSection = async () => {
   const [teamsCount, clusterSummary, activeClusters] = await Promise.all([
     getTeamsCount(),
     getClusterSummary(),
@@ -54,7 +54,7 @@ const ClustersSection = async () => {
     <Card className="!p-0 !pb-6 md:!pb-8">
       <CardHeader className="flex flex-wrap items-center justify-between px-6 pb-0 sm:flex-row md:px-12 max-sm:[&>div]:w-full">
         <CardTitle className="text-3xl font-normal tracking-[1px] max-sm:pt-8">
-          clusters
+          provers
         </CardTitle>
 
         <div className="py-4">
@@ -68,7 +68,7 @@ const ClustersSection = async () => {
       />
 
       <div className="flex justify-center">
-        <ButtonLink variant="outline" href="/clusters" className="min-w-40">
+        <ButtonLink variant="outline" href="/provers" className="min-w-40">
           see all
         </ButtonLink>
       </div>
@@ -76,4 +76,4 @@ const ClustersSection = async () => {
   )
 }
 
-export default ClustersSection
+export default ProversSection

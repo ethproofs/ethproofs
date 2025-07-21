@@ -82,7 +82,7 @@ const RowItem = ({
         className="-m-2 block p-2"
       />
       <Link
-        href={`/clusters/${cluster.id}`}
+        href={`/provers/${cluster.id}`}
         className="block font-sans text-primary hover:underline"
       >
         {cluster.nickname}

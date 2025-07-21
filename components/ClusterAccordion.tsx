@@ -80,7 +80,7 @@ const ClusterAccordionItem = ({
       <div className="col-span-6 grid grid-cols-subgrid items-center gap-12 px-6 py-4 hover:bg-primary/5 dark:hover:bg-primary/10">
         <div className="col-start-1 flex flex-col gap-1">
           <Link
-            href={`/clusters/${clusterDetails.id}`}
+            href={`/provers/${clusterDetails.id}`}
             className="text-xl text-primary hover:text-primary-light hover:underline"
           >
             {clusterDetails.nickname}
@@ -160,7 +160,7 @@ const ClusterAccordionItem = ({
         )}
 
         <div className="grid place-items-center">
-          <ButtonLink variant="outline" href={`/clusters/${clusterDetails.id}`}>
+          <ButtonLink variant="outline" href={`/provers/${clusterDetails.id}`}>
             details for {clusterDetails.nickname}
             <ChevronRight className="-mx-2 size-4" />
           </ButtonLink>

@@ -24,7 +24,7 @@ export default async function TeamsPage() {
   return (
     <>
       <h1 className="text-shadow mb-24 mt-16 px-6 text-center font-mono text-3xl font-semibold md:mt-24 md:px-8">
-        proving teams
+        teams
       </h1>
 
       <div className="mx-auto mt-20 grid max-w-screen-xl gap-y-12 px-6 text-center md:gap-x-12 md:px-8 lg:grid-cols-[repeat(2,_auto)] xl:gap-x-32">

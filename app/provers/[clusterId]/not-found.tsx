@@ -33,7 +33,7 @@ export default function NotFound() {
         <Link href={URL_GITHUB_REPO}>GitHub</Link> repo
       </p>
       <Divider className="my-6" />
-      <ButtonLink href="/clusters" size="lg">
+      <ButtonLink href="/provers" size="lg">
         Explore all clusters
       </ButtonLink>
       <ButtonLink href="/" variant="outline" size="lg">
