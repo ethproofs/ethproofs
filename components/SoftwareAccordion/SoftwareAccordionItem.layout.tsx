@@ -33,7 +33,7 @@ const SoftwareAccordionItemLayout = ({
             by
           </span>
           <div className="min-w-24">
-            <DisplayTeamLink team={zkvm.vendor} className="block" />
+            <DisplayTeamLink team={zkvm.team} className="block" />
           </div>
         </div>
         <div id="is-open-source" className="col-start-2">

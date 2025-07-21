@@ -1,6 +1,6 @@
 import { Fragment } from "react"
 
-import type { Vendor, Zkvm, ZkvmVersion } from "@/lib/types"
+import type { Team, Zkvm, ZkvmVersion } from "@/lib/types"
 
 import Link from "@/components/ui/link"
 import {
@@ -15,7 +15,7 @@ import {
 export function ZkvmsTable({
   zkvms,
 }: {
-  zkvms: (Zkvm & { versions: ZkvmVersion[]; vendor: Vendor })[]
+  zkvms: (Zkvm & { versions: ZkvmVersion[]; team: Team })[]
 }) {
   return (
     <Table>
