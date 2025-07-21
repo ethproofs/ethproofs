@@ -39,7 +39,7 @@ export default async function ClustersPage() {
     <>
       <div className="mb-24 mt-16 space-y-12 text-center font-mono font-semibold md:mt-24">
         <h1 className="text-shadow text-3xl">provers</h1>
-        <div>Multi or single machine clusters</div>
+        <div>multi or single machine clusters</div>
       </div>
 
       <div className="mx-auto mt-20 flex max-w-screen-lg flex-1 flex-col items-center gap-20 [&>section]:w-full">

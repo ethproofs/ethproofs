@@ -20,8 +20,8 @@ export default async function Index() {
   return (
     <>
       <h1 className="text-shadow mb-24 mt-16 px-6 text-center font-mono text-3xl font-semibold md:mt-24 md:px-8">
-        Race to Real-Time Proving on{" "}
-        <span className="text-primary">Ethereum</span>
+        race to prove <span className="text-primary">Ethereum</span> in
+        real-time
       </h1>
 
       <div className="mx-auto mb-16 flex max-w-screen-xl flex-col items-center px-6 md:px-8 [&>section]:w-full">
