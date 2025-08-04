@@ -35,7 +35,7 @@ export default async function ZkvmsPage() {
             The <span className="text-primary-light">ID column</span> in this
             table serves as a unique identifier for each zkVM version and must
             be used when creating or modifying clusters through the{" "}
-            <Link href="/api">API</Link> endpoints.
+            <Link href="/api.html">API</Link> endpoints.
           </p>
         </div>
       </div>
