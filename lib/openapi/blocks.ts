@@ -6,7 +6,7 @@ export const blocksPaths: ZodOpenApiPathsObject = {
     get: {
       tags: ["Blocks"],
       summary: "Get block details",
-      description: "Retrieve detailed information about a specific block including prover performance data.",
+      description: "Retrieve metadata for a specific block.",
       parameters: [
         {
           name: "block",
@@ -26,42 +26,19 @@ export const blocksPaths: ZodOpenApiPathsObject = {
             "application/json": {
               schema: z.object({
                 block_number: z.number(),
-                prover_performance: z.record(
-                  z.string(),
-                  z.array(
-                    z.object({
-                      proof_id: z.number(),
-                      proof_time_s: z.number().nullable(),
-                      cost_usd: z.number().nullable(),
-                      cycles: z.number().nullable(),
-                      status: z.enum(["queued", "proving", "proved"]),
-                      created_at: z.string(),
-                    })
-                  )
-                ),
+                timestamp: z.string(),
+                gas_used: z.number(),
+                transaction_count: z.number(),
+                hash: z.string(),
+                created_at: z.string(),
               }),
               example: {
                 block_number: 12345,
-                prover_performance: {
-                  "team-slug": [
-                    {
-                      proof_id: 1001,
-                      proof_time_s: 123.45,
-                      cost_usd: 10.50,
-                      cycles: 1000000,
-                      status: "proved",
-                      created_at: "2025-01-15T12:00:00Z",
-                    },
-                    {
-                      proof_id: 1002,
-                      proof_time_s: 125.30,
-                      cost_usd: 10.75,
-                      cycles: 1050000,
-                      status: "proved",
-                      created_at: "2025-01-15T12:05:00Z",
-                    },
-                  ],
-                },
+                timestamp: "2025-01-15T12:00:00Z",
+                gas_used: 15000000,
+                transaction_count: 250,
+                hash: "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef",
+                created_at: "2025-01-15T12:00:00Z",
               },
             },
           },

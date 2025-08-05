@@ -39,7 +39,7 @@
           "Blocks"
         ],
         "summary": "Get block details",
-        "description": "Retrieve detailed information about a specific block including prover performance data.",
+        "description": "Retrieve metadata for a specific block.",
         "parameters": [
           {
             "name": "block",
@@ -63,85 +63,38 @@
                     "block_number": {
                       "type": "number"
                     },
-                    "prover_performance": {
-                      "type": "object",
-                      "additionalProperties": {
-                        "type": "array",
-                        "items": {
-                          "type": "object",
-                          "properties": {
-                            "proof_id": {
-                              "type": "number"
-                            },
-                            "proof_time_s": {
-                              "type": [
-                                "number",
-                                "null"
-                              ]
-                            },
-                            "cost_usd": {
-                              "type": [
-                                "number",
-                                "null"
-                              ]
-                            },
-                            "cycles": {
-                              "type": [
-                                "number",
-                                "null"
-                              ]
-                            },
-                            "status": {
-                              "type": "string",
-                              "enum": [
-                                "queued",
-                                "proving",
-                                "proved"
-                              ]
-                            },
-                            "created_at": {
-                              "type": "string"
-                            }
-                          },
-                          "required": [
-                            "proof_id",
-                            "proof_time_s",
-                            "cost_usd",
-                            "cycles",
-                            "status",
-                            "created_at"
-                          ]
-                        }
-                      }
+                    "timestamp": {
+                      "type": "string"
+                    },
+                    "gas_used": {
+                      "type": "number"
+                    },
+                    "transaction_count": {
+                      "type": "number"
+                    },
+                    "hash": {
+                      "type": "string"
+                    },
+                    "created_at": {
+                      "type": "string"
                     }
                   },
                   "required": [
                     "block_number",
-                    "prover_performance"
+                    "timestamp",
+                    "gas_used",
+                    "transaction_count",
+                    "hash",
+                    "created_at"
                   ]
                 },
                 "example": {
                   "block_number": 12345,
-                  "prover_performance": {
-                    "team-slug": [
-                      {
-                        "proof_id": 1001,
-                        "proof_time_s": 123.45,
-                        "cost_usd": 10.5,
-                        "cycles": 1000000,
-                        "status": "proved",
-                        "created_at": "2025-01-15T12:00:00Z"
-                      },
-                      {
-                        "proof_id": 1002,
-                        "proof_time_s": 125.3,
-                        "cost_usd": 10.75,
-                        "cycles": 1050000,
-                        "status": "proved",
-                        "created_at": "2025-01-15T12:05:00Z"
-                      }
-                    ]
-                  }
+                  "timestamp": "2025-01-15T12:00:00Z",
+                  "gas_used": 15000000,
+                  "transaction_count": 250,
+                  "hash": "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef",
+                  "created_at": "2025-01-15T12:00:00Z"
                 }
               }
             }
