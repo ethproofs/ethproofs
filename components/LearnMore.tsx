@@ -13,7 +13,7 @@ export default function LearnMore() {
           <h3 className="max-w-72 text-3xl md:max-w-96">
             Why do we need to verify each block?
           </h3>
-          <Link href="/TODO-ADD-LINK" className="font-body">
+          <Link href="/learn" className="font-body">
             Learn more
           </Link>
         </div>
@@ -23,7 +23,7 @@ export default function LearnMore() {
           <h3 className="max-w-72 text-3xl md:max-w-96">
             How do the proofs work?
           </h3>
-          <Link href="/TODO-ADD-LINK" className="font-body">
+          <Link href="/learn" className="font-body">
             Learn more
           </Link>
         </div>
