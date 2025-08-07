@@ -37,6 +37,7 @@ BEGIN
     CREATE TEMP TABLE IF NOT EXISTS missing_proofs_temp (
         team_name TEXT,
         cluster_nickname TEXT,
+        cluster_id_suffix TEXT,
         block_number BIGINT
     );
 
@@ -44,8 +45,8 @@ BEGIN
     DELETE FROM missing_proofs_temp;
 
     -- Find all missing proofs from the previous day
-    INSERT INTO missing_proofs_temp (team_name, cluster_nickname, block_number)
-    SELECT c.team_name, c.nickname, b.block_number
+    INSERT INTO missing_proofs_temp (team_name, cluster_nickname, cluster_id_suffix, block_number)
+    SELECT c.team_name, c.nickname, RIGHT(c.id::text, 6), b.block_number
     FROM blocks b
     CROSS JOIN LATERAL (
         SELECT c.id, c.nickname, c.team_id, t.name as team_name
@@ -76,7 +77,7 @@ BEGIN
         
         -- Group missing proofs by team and cluster for better readability
         FOR cluster IN
-            SELECT DISTINCT team_name, cluster_nickname
+            SELECT DISTINCT team_name, cluster_nickname, cluster_id_suffix
             FROM missing_proofs_temp
             ORDER BY team_name, cluster_nickname
         LOOP
@@ -85,9 +86,10 @@ BEGIN
             INTO team_missing_blocks
             FROM missing_proofs_temp
             WHERE team_name = cluster.team_name 
-              AND cluster_nickname = cluster.cluster_nickname;
+              AND cluster_nickname = cluster.cluster_nickname
+              AND cluster_id_suffix = cluster.cluster_id_suffix;
             
-            message_text := message_text || '*' || cluster.team_name || '* - ' || cluster.cluster_nickname || E'\n';
+            message_text := message_text || '*' || cluster.team_name || '* - ' || cluster.cluster_nickname || ' (...' || cluster.cluster_id_suffix || ')' || E'\n';
             message_text := message_text || 'Missing blocks: ' || team_missing_blocks || E'\n\n';
         END LOOP;
         
