@@ -8,18 +8,13 @@ LANGUAGE plpgsql
 SECURITY DEFINER
 AS $$
 DECLARE
-    proof_block RECORD;
     cluster RECORD;
-    existing_proof_count INTEGER;
     missing_count INTEGER := 0;
     message_text TEXT := '';
     telegram_response RECORD;
     telegram_url TEXT;
     telegram_bot_token TEXT;
     telegram_chat_id TEXT;
-    missing_by_team TEXT := '';
-    current_team TEXT := '';
-    current_cluster TEXT := '';
     team_missing_blocks TEXT := '';
 BEGIN
     -- Get Telegram configuration from Vault
@@ -48,40 +43,29 @@ BEGIN
     -- Clear temp table
     DELETE FROM missing_proofs_temp;
 
-    -- Get blocks from last 24 hours that end in 00 (proof submission blocks)
-    FOR proof_block IN 
-        SELECT block_number, timestamp
-        FROM blocks 
-        WHERE timestamp >= (NOW() - INTERVAL '24 hours')
-          AND block_number % 100 = 0
-        ORDER BY block_number
-    LOOP
-        RAISE LOG 'Checking block %', proof_block.block_number;
-        
-        -- For each proof block, check each active cluster
-        FOR cluster IN
-            SELECT c.id, c.nickname, c.team_id, t.name as team_name
-            FROM clusters c
-            JOIN teams t ON c.team_id = t.id
-            WHERE c.is_active = true
-        LOOP
-            -- Check if this cluster has submitted a proof for this block
-            SELECT COUNT(*)
-            INTO existing_proof_count
-            FROM proofs p
-            JOIN cluster_versions cv ON p.cluster_version_id = cv.id
-            WHERE p.block_number = proof_block.block_number
-              AND cv.cluster_id = cluster.id
-              AND p.proof_status IN ('proved');
-            
-            -- If no proof found, add to missing list
-            IF existing_proof_count = 0 THEN
-                INSERT INTO missing_proofs_temp (team_name, cluster_nickname, block_number)
-                VALUES (cluster.team_name, cluster.nickname, proof_block.block_number);
-                missing_count := missing_count + 1;
-            END IF;
-        END LOOP;
-    END LOOP;
+    -- Find all missing proofs
+    INSERT INTO missing_proofs_temp (team_name, cluster_nickname, block_number)
+    SELECT c.team_name, c.nickname, b.block_number
+    FROM blocks b
+    CROSS JOIN LATERAL (
+        SELECT c.id, c.nickname, c.team_id, t.name as team_name
+        FROM clusters c
+        JOIN teams t ON t.id = c.team_id
+        WHERE c.is_active = true
+    ) c
+    WHERE b.timestamp >= NOW() - INTERVAL '24 hours'
+      AND b.block_number % 100 = 0
+      AND NOT EXISTS (
+          SELECT 1
+          FROM proofs p
+          JOIN cluster_versions cv ON cv.id = p.cluster_version_id
+          WHERE p.block_number = b.block_number
+            AND cv.cluster_id = c.id
+            AND p.proof_status = 'proved'
+      );
+    
+    -- Get the count of missing proofs
+    SELECT COUNT(*) INTO missing_count FROM missing_proofs_temp;
 
     RAISE LOG 'Found % missing proofs', missing_count;
 
