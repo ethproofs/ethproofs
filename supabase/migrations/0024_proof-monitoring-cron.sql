@@ -43,7 +43,7 @@ BEGIN
     -- Clear temp table
     DELETE FROM missing_proofs_temp;
 
-    -- Find all missing proofs
+    -- Find all missing proofs from the previous day
     INSERT INTO missing_proofs_temp (team_name, cluster_nickname, block_number)
     SELECT c.team_name, c.nickname, b.block_number
     FROM blocks b
@@ -53,7 +53,8 @@ BEGIN
         JOIN teams t ON t.id = c.team_id
         WHERE c.is_active = true
     ) c
-    WHERE b.timestamp >= NOW() - INTERVAL '24 hours'
+    WHERE b.timestamp >= CURRENT_DATE - INTERVAL '1 day'
+      AND b.timestamp < CURRENT_DATE
       AND b.block_number % 100 = 0
       AND NOT EXISTS (
           SELECT 1
