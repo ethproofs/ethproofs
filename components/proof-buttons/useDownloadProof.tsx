@@ -1,5 +1,7 @@
 import { useCallback, useEffect, useState } from "react"
 
+import { handleBlobRead } from "./utils"
+
 import { delay } from "@/utils/delay"
 
 export function useDownloadProof() {
@@ -18,7 +20,7 @@ export function useDownloadProof() {
   }, [])
 
   const downloadProof = useCallback(
-    async (proofId: number) => {
+    async (proofId: number, saveToFile: boolean = false) => {
       if (isDownloading) return
       setDownloadProgress(0)
       setIsDownloading(true)
@@ -34,21 +36,24 @@ export function useDownloadProof() {
           )
         }
         const blob = await response.blob()
-        const contentDisposition = response.headers.get("Content-Disposition")
-        const filename =
-          contentDisposition?.match(/filename="?([^"]*)"?/)?.[1] ||
-          `proof_${proofId}.txt`
+        const proofBytes = await handleBlobRead(blob)
 
-        const downloadUrl = URL.createObjectURL(blob)
-        const a = document.createElement("a")
-        a.href = downloadUrl
-        a.download = filename
-        document.body.appendChild(a)
-        a.click()
-        a.remove()
-        URL.revokeObjectURL(downloadUrl)
-        // TODO: return proof to verifier
-        return null
+        if (saveToFile) {
+          const contentDisposition = response.headers.get("Content-Disposition")
+          const filename =
+            contentDisposition?.match(/filename="?([^"]*)"?/)?.[1] ||
+            `proof_${proofId}.txt`
+
+          const downloadUrl = URL.createObjectURL(blob)
+          const a = document.createElement("a")
+          a.href = downloadUrl
+          a.download = filename
+          document.body.appendChild(a)
+          a.click()
+          a.remove()
+          URL.revokeObjectURL(downloadUrl)
+        }
+        return proofBytes
       } catch (err) {
         console.error("Error downloading proof:", err)
       } finally {

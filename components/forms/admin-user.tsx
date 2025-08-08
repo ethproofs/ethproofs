@@ -53,7 +53,7 @@ export function AdminUserForm() {
         <p className="text-secondary text-sm">
           SVG file. Fill color black.{" "}
           <Link
-            href="https://ndjfbkojyebmdbckigbe.supabase.co/storage/v1/object/public/public-assets/succinct-logo-new.svg"
+            href="https://ndjfbkojyebmdbckigbe.supabase.co/storage/v1/object/public/public-assets/succinct-logo.svg"
             target="_blank"
             rel="noopener noreferrer"
             className="text-sm text-primary-light"
