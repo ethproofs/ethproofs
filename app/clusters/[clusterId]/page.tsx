@@ -25,6 +25,7 @@ import { hasPhysicalMachines, isMultiMachineCluster } from "@/lib/clusters"
 import { getMetadata } from "@/lib/metadata"
 import { formatUsd } from "@/lib/number"
 import { prettyMs } from "@/lib/time"
+import { isUnverifiableZkvm } from "@/lib/zkvms"
 
 export type ClusterDetailsPageProps = {
   params: Promise<{ clusterId: string }>
@@ -146,6 +147,14 @@ export default async function ClusterDetailsPage({
       <Card className="mx-auto w-fit">
         <KPIs items={clusterSummaryItems} layout="flipped" />
       </Card>
+
+      {/* TODO: Track this metric */}
+      {isUnverifiableZkvm(zkvm.slug) && (
+        <aside className="flex items-center justify-center gap-2 rounded border border-level-worst bg-background-accent px-6 py-4 text-center text-level-worst">
+          disclaimer: this cluster is submitting proofs that cannot be
+          independently verified
+        </aside>
+      )}
 
       {cluster.software_link && (
         <aside className="flex items-center justify-center gap-2 rounded bg-background-accent px-6 py-4 text-center">
