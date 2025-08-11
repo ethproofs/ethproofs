@@ -1,7 +1,6 @@
 "use client"
 
 import { useCallback, useEffect, useState } from "react"
-import { main, verify_koalabear } from "@ethproofs/pico-wasm-stark-verifier"
 
 export interface VerificationResult {
   error?: string
@@ -10,6 +9,9 @@ export interface VerificationResult {
 }
 
 export function useVerifyProof() {
+  const [wasmModule, setWasmModule] = useState<
+    typeof import("@ethproofs/pico-wasm-stark-verifier") | null
+  >(null)
   const [isInitialized, setIsInitialized] = useState(false)
   const [isInitializing, setIsInitializing] = useState(true)
   const [initError, setInitError] = useState<string | null>(null)
@@ -21,9 +23,11 @@ export function useVerifyProof() {
     async function initializeWasm() {
       try {
         console.log("Initializing WASM module...")
-        main()
+        const loadedModule = await import("@ethproofs/pico-wasm-stark-verifier")
+        loadedModule.main()
 
         if (mounted) {
+          setWasmModule(loadedModule)
           setIsInitialized(true)
           setIsInitializing(false)
           console.log("WASM module initialized")
@@ -50,13 +54,13 @@ export function useVerifyProof() {
       proofBytes: Uint8Array,
       vkBytes: Uint8Array
     ): Promise<VerificationResult> => {
-      if (!isInitialized) {
+      if (!wasmModule || !isInitialized) {
         return { isValid: false, error: "WASM module not initialized" }
       }
 
       try {
         const startTime = performance.now()
-        const result = verify_koalabear(proofBytes, vkBytes)
+        const result = wasmModule.verify_koalabear(proofBytes, vkBytes)
         const duration = performance.now() - startTime
         setVerifyTime(duration.toFixed(2))
 
@@ -70,7 +74,7 @@ export function useVerifyProof() {
         }
       }
     },
-    [isInitialized]
+    [wasmModule, isInitialized]
   )
 
   return {

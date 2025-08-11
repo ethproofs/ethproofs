@@ -45,3 +45,6 @@ robots.txt
 # cursor
 .cursorrules
 .cursor
+
+# Local Netlify folder
+.netlify
