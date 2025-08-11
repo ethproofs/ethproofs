@@ -41,6 +41,7 @@ export const isNetlifyProduction = process.env.CONTEXT === "production"
 // Supabase storage buckets
 export const PROOF_BINARY_BUCKET = "proof_binaries"
 export const PUBLIC_ASSETS_BUCKET = "public-assets"
+export const VERIFICATION_KEYS_BUCKET = "verification-keys"
 
 export const CHART_RANGES = [7, 30, 90] as const
 

@@ -1,4 +1,10 @@
+export const handleBlobRead = async (blob: Blob): Promise<Uint8Array> => {
+  const buf = await blob.arrayBuffer()
+  return new Uint8Array(buf)
+}
+
 export const proofButtonStateMap = {
+  disabled: "disabled",
   download: "download",
   verify: "verify",
   downloading: "downloading",
@@ -14,6 +20,7 @@ export function getProofButtonLabel(buttonState: ProofButtonState) {
   switch (buttonState) {
     case "download":
       return "download"
+    case "disabled":
     case "verify":
       return "verify"
     case "downloading":
@@ -36,6 +43,8 @@ export function getProofButtonClasses(buttonState: ProofButtonState) {
     "overflow-hidden transition-all duration-300 ease-out flex items-center justify-center"
 
   switch (buttonState) {
+    case "disabled":
+      return `${baseClasses} bg-body-secondary/10`
     case "download":
     case "verify":
       return `${baseClasses} border-primary bg-transparent hover:bg-green-500/10`
@@ -49,12 +58,14 @@ export function getProofButtonClasses(buttonState: ProofButtonState) {
     case "error":
       return `${baseClasses} border-red-500 bg-transparent`
     default:
-      return `${baseClasses} border-green-500 bg-transparent hover:bg-green-500/10`
+      return `${baseClasses} border-primary bg-transparent hover:bg-green-500/10`
   }
 }
 
 export function getProofButtonTextColorClass(buttonState: ProofButtonState) {
   switch (buttonState) {
+    case "disabled":
+      return "text-body-secondary"
     case "download":
     case "verify":
       return "text-primary"
@@ -68,6 +79,6 @@ export function getProofButtonTextColorClass(buttonState: ProofButtonState) {
     case "error":
       return "text-red-500"
     default:
-      return "text-primary"
+      return "text-body-secondary"
   }
 }

@@ -82,7 +82,12 @@ enabled = true
 public = true
 file_size_limit = "50MiB"
 allowed_mime_types = ["text/plain", "application/octet-stream"]
-objects_path = "./proof_binaries"
+objects_path = "./buckets/proof-binaries"
+
+[storage.buckets.verification-keys]
+public = true
+file_size_limit = "50MiB"
+objects_path = "./buckets/verification-keys"
 
 [auth]
 enabled = true

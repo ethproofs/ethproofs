@@ -74,3 +74,8 @@ export const getSlices = (items: SoftwareDetailItem[]) =>
   items
     .sort((a, b) => a.position - b.position)
     .map((item) => ({ level: item.severity })) as Slices
+
+export const UNVERIFIABLE_ZKVM_SLUGS = new Set<string>(["sp1-hypercube"])
+export function isUnverifiableZkvm(slug: string): boolean {
+  return UNVERIFIABLE_ZKVM_SLUGS.has(slug)
+}

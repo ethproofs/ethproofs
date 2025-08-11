@@ -1,7 +1,8 @@
 "use client"
 
-import { useState } from "react"
-import { ArrowDown, CalendarCheck, Check } from "lucide-react"
+import { useEffect, useState } from "react"
+import { ArrowDown, CalendarCheck, Check, Loader2 } from "lucide-react"
+import prettyBytes from "pretty-bytes"
 
 import type { Proof, Team } from "@/lib/types"
 
@@ -10,13 +11,18 @@ import { cn } from "@/lib/utils"
 import { Button } from "../ui/button"
 
 import { useDownloadProof } from "./useDownloadProof"
+import { useDownloadVerificationKey } from "./useDownloadVerificationKey"
+import { useVerifyProof } from "./useVerifyProof"
 import {
+  getProofButtonClasses,
   getProofButtonLabel,
+  getProofButtonTextColorClass,
   ProofButtonState,
   proofButtonStateMap,
 } from "./utils"
 
 import { useAnimateCheckmark } from "@/hooks/useAnimateCheckmark"
+import { delay } from "@/utils/delay"
 
 export type ProofForDownload = Required<
   Pick<Proof, "proof_status" | "proof_id" | "size_bytes">
@@ -31,31 +37,46 @@ interface VerifyButtonProps {
   labelClass?: string
 }
 
-// This button is temporarily disabled
 const VerifyButton = ({
   className,
   proof,
   containerClass = "flex-col",
   labelClass,
 }: VerifyButtonProps) => {
-  const { proof_status, proof_id } = proof
+  const { proof_status, proof_id, size_bytes } = proof
   const [buttonState, setButtonState] = useState<ProofButtonState>("verify")
   const { downloadProof, downloadProgress, downloadSpeed } = useDownloadProof()
+  const downloadVerificationKey = useDownloadVerificationKey()
+  const { verifyProof, verifyTime } = useVerifyProof()
   const { checkRef, checkmarkAnimation } = useAnimateCheckmark(buttonState)
 
-  // TODO: Implement in-browser proof verification
+  useEffect(() => {
+    setButtonState((prev) => {
+      if (prev !== "verify" && prev !== "disabled") return prev
+      return proof.team.name === "Brevis" ? "verify" : "disabled"
+    })
+  }, [proof.team.name])
+
   async function onVerifyProof(proof_id: number) {
     // Downloading proof
     console.log("Downloading proof...")
     setButtonState(proofButtonStateMap.downloading)
-    const proof = await downloadProof(proof_id)
-    if (!proof) return setButtonState(proofButtonStateMap.error)
-    console.log("Proof downloaded:", proof)
+    const [proofBytes, vkBytes] = await Promise.all([
+      downloadProof(proof_id),
+      downloadVerificationKey(proof_id),
+    ])
+    if (!proofBytes || !vkBytes)
+      return setButtonState(proofButtonStateMap.error)
     // Verifying proof
-    console.log("Verifying proof...")
     setButtonState(proofButtonStateMap.verifying)
-    // const result = verifyProof(proof)
-    return
+    await delay(100)
+    console.log("Verifying proof...")
+    const result = await verifyProof(proofBytes, vkBytes)
+    setButtonState(
+      result.isValid ? proofButtonStateMap.success : proofButtonStateMap.failed
+    )
+    await delay(2000)
+    setButtonState("verify")
   }
 
   const labelClassName = cn(
@@ -64,14 +85,19 @@ const VerifyButton = ({
   )
 
   const sizingClassName = "relative h-8 gap-2 self-center text-2xl"
+  const textColorClassName = getProofButtonTextColorClass(buttonState)
 
   if (proof_status === "proved")
     return (
       <div className={cn("flex items-center gap-x-2 gap-y-1", containerClass)}>
         <Button
-          disabled
-          variant="solid"
-          className={cn(sizingClassName, className)}
+          disabled={buttonState === "disabled" || buttonState !== "verify"} // TODO: Handle multiple zkVM verifiers
+          variant={buttonState === "disabled" ? "solid" : "outline"}
+          className={cn(
+            sizingClassName,
+            getProofButtonClasses(buttonState),
+            className
+          )}
           onClick={() => onVerifyProof(proof_id)}
         >
           {/* Progress bars */}
@@ -84,7 +110,7 @@ const VerifyButton = ({
           {buttonState === "verifying" && (
             <div
               className="absolute left-0 top-0 h-full bg-green-500/20 transition-all duration-100"
-              // style={{ width: `${verificationProgress}%` }}
+              style={{ width: `${downloadProgress}%` }}
             />
           )}
           {buttonState === "success" && (
@@ -94,9 +120,14 @@ const VerifyButton = ({
             </>
           )}
 
-          {buttonState === "verify" && <CalendarCheck className="size-5" />}
+          {(buttonState === "disabled" || buttonState === "verify") && (
+            <CalendarCheck className={cn("size-5", textColorClassName)} />
+          )}
           {buttonState === "downloading" && (
             <ArrowDown className="size-5 animate-pulse text-green-300" />
+          )}
+          {buttonState === "verifying" && (
+            <Loader2 className="size-5 animate-spin text-green-400" />
           )}
           {buttonState === "success" && (
             <Check
@@ -105,25 +136,29 @@ const VerifyButton = ({
               style={checkmarkAnimation()}
             />
           )}
-          <span
-            className={cn(
-              labelClassName
-              // getProofButtonTextColorClass(buttonState)
-            )}
-          >
+          <span className={cn(labelClassName, textColorClassName)}>
             {getProofButtonLabel(buttonState)}
           </span>
         </Button>
 
+        {buttonState === "verify" && (
+          <span className="text-xs text-body-secondary">in-browser</span>
+        )}
         {buttonState === "downloading" &&
-        downloadProgress > 5 &&
-        downloadProgress < 98 ? (
-          <span className="text-xs text-green-300 opacity-80">
-            {downloadSpeed} MB/s
-          </span>
-        ) : (
+          downloadProgress > 5 &&
+          downloadProgress < 98 && (
+            <span className="text-xs text-green-300 opacity-80">
+              {downloadSpeed} MB/s
+            </span>
+          )}
+        {buttonState === "verifying" && (
           <span className="animate-fade-in text-xs text-body-secondary">
-            in-browser (soon™)
+            {size_bytes ? prettyBytes(size_bytes) : ""}
+          </span>
+        )}
+        {buttonState === "success" && (
+          <span className="animate-fade-in text-xs text-body-secondary">
+            {`${verifyTime}ms`}
           </span>
         )}
       </div>

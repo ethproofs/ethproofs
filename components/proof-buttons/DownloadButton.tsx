@@ -51,7 +51,7 @@ const DownloadButton = ({
   async function onDownloadProof(proofId: number) {
     try {
       setButtonState("downloading")
-      await downloadProof(proofId)
+      await downloadProof(proofId, true)
       setButtonState("success")
       await delay(2000)
       setButtonState("download")
@@ -77,6 +77,7 @@ const DownloadButton = ({
     return (
       <div className={cn("flex items-center gap-x-2 gap-y-1", containerClass)}>
         <Button
+          disabled={buttonState !== "download"}
           variant="outline"
           className={cn(
             sizingClassName,

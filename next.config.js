@@ -15,6 +15,11 @@ const nextConfig = {
       use: ["@svgr/webpack"],
     })
 
+    config.experiments = {
+      ...config.experiments,
+      asyncWebAssembly: true,
+    }
+
     return config
   },
   images: {
