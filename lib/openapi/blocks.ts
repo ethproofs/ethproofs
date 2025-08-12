@@ -1,6 +1,8 @@
 import { z } from "zod"
 import { ZodOpenApiPathsObject } from "zod-openapi"
 
+import { blockSchema } from "../zod/schemas/block"
+
 export const blocksPaths: ZodOpenApiPathsObject = {
   "/blocks/{block}": {
     get: {
@@ -14,9 +16,18 @@ export const blocksPaths: ZodOpenApiPathsObject = {
           description: "The block number to retrieve",
           required: true,
           schema: {
-            type: "string",
+            oneOf: [
+              {
+                type: "integer",
+                minimum: 0,
+              },
+              {
+                type: "string",
+                pattern: "^0x[a-fA-F0-9]{64}$",
+              },
+            ],
           },
-          example: "12345",
+          example: 12345,
         },
       ],
       responses: {
@@ -24,14 +35,7 @@ export const blocksPaths: ZodOpenApiPathsObject = {
           description: "Block details retrieved successfully",
           content: {
             "application/json": {
-              schema: z.object({
-                block_number: z.number(),
-                timestamp: z.string(),
-                gas_used: z.number(),
-                transaction_count: z.number(),
-                hash: z.string(),
-                created_at: z.string(),
-              }),
+              schema: blockSchema,
               example: {
                 block_number: 12345,
                 timestamp: "2025-01-15T12:00:00Z",
@@ -69,4 +73,4 @@ export const blocksPaths: ZodOpenApiPathsObject = {
       },
     },
   },
-} 
+}

@@ -1,9 +1,9 @@
 import z from ".."
 
-import { CloudInstancesSchema } from "./cloud-instance"
-import { MachineSchema } from "./machine"
+import { cloudInstanceSchema } from "./cloud-instance"
+import { machineSchema } from "./machine"
 
-export const ClusterSchema = z.object({
+export const clusterSchema = z.object({
   id: z.number().nullable(),
   nickname: z.string(),
   description: z.string().optional().nullable(),
@@ -13,15 +13,15 @@ export const ClusterSchema = z.object({
   proof_type: z.string().optional().nullable(),
   machines: z.array(
     z.object({
-      machine: MachineSchema,
+      machine: machineSchema,
       machine_count: z.number().int().positive(),
-      cloud_instance: CloudInstancesSchema,
+      cloud_instance: cloudInstanceSchema,
       cloud_instance_count: z.number().int().positive(),
     })
   ),
 })
 
-export type Cluster = z.infer<typeof ClusterSchema>
+export type Cluster = z.infer<typeof clusterSchema>
 
 const baseClusterSchema = z.object({
   nickname: z.string().max(50).openapi({
@@ -58,7 +58,7 @@ export const createClusterSchema = baseClusterSchema.extend({
   configuration: z
     .array(
       z.object({
-        machine: MachineSchema.openapi({
+        machine: machineSchema.openapi({
           description: "Physical hardware specifications of the machine",
         }),
         machine_count: z.number().int().positive().openapi({
@@ -80,7 +80,7 @@ export const createClusterSchema = baseClusterSchema.extend({
 })
 
 export const singleMachineSchema = baseClusterSchema.extend({
-  machine: MachineSchema.openapi({
+  machine: machineSchema.openapi({
     description: "Physical hardware specifications of the machine",
   }),
   cloud_instance_name: z.string().openapi({

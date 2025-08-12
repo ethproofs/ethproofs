@@ -1,6 +1,6 @@
-import z from "zod"
+import z from ".."
 
-export const MachineSchema = z.object({
+export const machineSchema = z.object({
   cpu_model: z.string().max(200).openapi({
     description: "CPU model",
     example: "Intel(R) Xeon(R) CPU @ 2.20GHz",
@@ -49,4 +49,4 @@ export const MachineSchema = z.object({
   }),
 })
 
-export type Machine = z.infer<typeof MachineSchema>
+export type Machine = z.infer<typeof machineSchema>
