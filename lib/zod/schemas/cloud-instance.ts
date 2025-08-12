@@ -1,6 +1,6 @@
 import z from ".."
 
-export const CloudInstancesSchema = z.object({
+export const cloudInstanceSchema = z.object({
   id: z.number(),
   provider: z.string(),
   instance_name: z.string(),
@@ -22,10 +22,10 @@ export const CloudInstancesSchema = z.object({
   snapshot_date: z.string().optional(),
 })
 
-export type CloudInstance = z.infer<typeof CloudInstancesSchema>
+export type CloudInstance = z.infer<typeof cloudInstanceSchema>
 
-export const CloudInstancesQuerySchema = z.object({
+export const cloudInstancesQuerySchema = z.object({
   provider: z.string().optional(),
 })
 
-export type CloudInstancesQuery = z.infer<typeof CloudInstancesQuerySchema>
+export type CloudInstancesQuery = z.infer<typeof cloudInstancesQuerySchema>
