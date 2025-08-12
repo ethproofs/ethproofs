@@ -5,12 +5,12 @@ import { fetchBlock } from "@/lib/api/blocks"
 
 const routeContextSchema = z.object({
   params: z.object({
-    block: z.coerce.number().int().positive(),
+    block: z.coerce.number().int().nonnegative(),
   }),
 })
 
 export async function GET(
-  req: Request,
+  _req: Request,
   context: { params: Promise<{ block: string }> }
 ) {
   try {
@@ -36,10 +36,9 @@ export async function GET(
     return NextResponse.json(response)
   } catch (error: unknown) {
     if (error instanceof z.ZodError) {
-      return new Response(JSON.stringify(error.issues), { status: 422 })
+      return NextResponse.json(error.issues, { status: 422 })
     }
-
     console.error(error)
     return new Response("Internal Server Error", { status: 500 })
   }
-} 
+}

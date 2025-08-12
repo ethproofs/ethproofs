@@ -2,6 +2,7 @@ import { z } from "zod"
 import { ZodOpenApiPathsObject } from "zod-openapi"
 
 import {
+  proofListSchema,
   provedProofSchema,
   provingProofSchema,
   queuedProofSchema,
@@ -86,51 +87,26 @@ export const proofsPaths: ZodOpenApiPathsObject = {
           description: "List of proofs retrieved successfully",
           content: {
             "application/json": {
-              schema: z.object({
-                proofs: z.array(
-                  z.object({
-                    proof_id: z.number(),
-                    block_number: z.number(),
-                    status: z.enum(["queued", "proving", "proved"]),
-                    proving_time_s: z.number().nullable(),
-                    cost_usd: z.number().nullable(),
-                    cycles: z.number().nullable(),
-                    team: z
-                      .object({
-                        slug: z.string(),
-                        name: z.string(),
-                      })
-                      .nullable(),
-                    cluster: z
-                      .object({
-                        id: z.string(),
-                        name: z.string(),
-                        is_multi_machine: z.boolean(),
-                      })
-                      .nullable(),
-                    zkvm: z
-                      .object({
-                        name: z.string(),
-                        version: z.string(),
-                      })
-                      .nullable(),
-                    timestamps: z.object({
-                      created: z.string(),
-                      queued: z.string().nullable(),
-                      proving: z.string().nullable(),
-                      proved: z.string().nullable(),
-                    }),
-                  })
-                ),
-                total: z.number(),
-                limit: z.number(),
-                offset: z.number(),
-              }),
+              schema: proofListSchema,
             },
           },
         },
         "400": {
           description: "Invalid query parameters",
+        },
+        "422": {
+          description: "Validation error",
+          content: {
+            "application/json": {
+              schema: z.array(
+                z.object({
+                  code: z.string(),
+                  message: z.string(),
+                  path: z.array(z.union([z.string(), z.number()])),
+                })
+              ),
+            },
+          },
         },
         "500": {
           description: "Internal server error",

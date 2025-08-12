@@ -29,6 +29,7 @@ export async function GET(req: Request) {
       offset: validatedQuery.offset,
     })
 
+    // Just return the proof
     return NextResponse.json({
       proofs: result.rows,
       total_count: result.rowCount,
@@ -37,10 +38,10 @@ export async function GET(req: Request) {
     })
   } catch (error: unknown) {
     if (error instanceof z.ZodError) {
-      return new Response(JSON.stringify(error.issues), { status: 422 })
+      return NextResponse.json(error.issues, { status: 422 })
     }
 
     console.error(error)
     return new Response("Internal Server Error", { status: 500 })
   }
-} 
+}

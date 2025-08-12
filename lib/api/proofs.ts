@@ -166,8 +166,8 @@ export const fetchProofsFiltered = async ({
 }) => {
   // Build where conditions
   const conditions = []
-  
-  if (blockNumber) {
+
+  if (blockNumber !== undefined) {
     conditions.push(eq(proofs.block_number, blockNumber))
   }
 
@@ -175,7 +175,7 @@ export const fetchProofsFiltered = async ({
   let teamId: string | null = null
   if (teamSlug) {
     const team = await db.query.teams.findFirst({
-      where: (teams, { eq }) => eq(teams.slug, teamSlug)
+      where: (teams, { eq }) => eq(teams.slug, teamSlug),
     })
     if (team) {
       teamId = team.id
