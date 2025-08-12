@@ -2,6 +2,7 @@ import { z } from "zod"
 import { ZodOpenApiPathsObject } from "zod-openapi"
 
 import {
+  proofListSchema,
   provedProofSchema,
   provingProofSchema,
   queuedProofSchema,
@@ -33,6 +34,86 @@ const commonResponses = {
 }
 
 export const proofsPaths: ZodOpenApiPathsObject = {
+  "/proofs": {
+    get: {
+      tags: ["Proofs"],
+      summary: "List proofs",
+      description: "Retrieve a filtered and paginated list of proofs.",
+      parameters: [
+        {
+          name: "team",
+          in: "query",
+          description: "Filter by team slug",
+          required: false,
+          schema: {
+            type: "string",
+          },
+        },
+        {
+          name: "block",
+          in: "query",
+          description: "Filter by specific block number",
+          required: false,
+          schema: {
+            type: "number",
+          },
+        },
+        {
+          name: "limit",
+          in: "query",
+          description: "Number of proofs to return (default: 100, max: 1000)",
+          required: false,
+          schema: {
+            type: "integer",
+            default: 100,
+            minimum: 1,
+            maximum: 1000,
+          },
+        },
+        {
+          name: "offset",
+          in: "query",
+          description: "Number of proofs to skip for pagination (default: 0)",
+          required: false,
+          schema: {
+            type: "integer",
+            default: 0,
+            minimum: 0,
+          },
+        },
+      ],
+      responses: {
+        "200": {
+          description: "List of proofs retrieved successfully",
+          content: {
+            "application/json": {
+              schema: proofListSchema,
+            },
+          },
+        },
+        "400": {
+          description: "Invalid query parameters",
+        },
+        "422": {
+          description: "Validation error",
+          content: {
+            "application/json": {
+              schema: z.array(
+                z.object({
+                  code: z.string(),
+                  message: z.string(),
+                  path: z.array(z.union([z.string(), z.number()])),
+                })
+              ),
+            },
+          },
+        },
+        "500": {
+          description: "Internal server error",
+        },
+      },
+    },
+  },
   "/proofs/queued": {
     post: {
       tags: ["Proofs"],

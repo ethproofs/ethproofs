@@ -1,7 +1,7 @@
 import { z } from "zod"
 import { ZodOpenApiPathsObject } from "zod-openapi"
 
-import { ClusterSchema, createClusterSchema } from "../zod/schemas/cluster"
+import { clusterSchema, createClusterSchema } from "../zod/schemas/cluster"
 
 export const clustersPaths: ZodOpenApiPathsObject = {
   "/clusters": {
@@ -45,7 +45,7 @@ export const clustersPaths: ZodOpenApiPathsObject = {
           description: "Clusters list",
           content: {
             "application/json": {
-              schema: z.array(ClusterSchema),
+              schema: z.array(clusterSchema),
             },
           },
         },

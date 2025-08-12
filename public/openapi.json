@@ -17,6 +17,9 @@
   ],
   "tags": [
     {
+      "name": "Blocks"
+    },
+    {
       "name": "Clusters"
     },
     {
@@ -30,6 +33,135 @@
     }
   ],
   "paths": {
+    "/blocks/{block}": {
+      "get": {
+        "tags": [
+          "Blocks"
+        ],
+        "summary": "Get block details",
+        "description": "Retrieve metadata for a specific block.",
+        "parameters": [
+          {
+            "name": "block",
+            "in": "path",
+            "description": "The block number to retrieve",
+            "required": true,
+            "schema": {
+              "oneOf": [
+                {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                {
+                  "type": "string",
+                  "pattern": "^0x[a-fA-F0-9]{64}$"
+                }
+              ]
+            },
+            "example": 12345
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Block details retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "block_number": {
+                      "type": "integer"
+                    },
+                    "hash": {
+                      "type": "string"
+                    },
+                    "timestamp": {
+                      "type": "string"
+                    },
+                    "gas_used": {
+                      "type": "integer"
+                    },
+                    "transaction_count": {
+                      "type": "integer"
+                    },
+                    "created_at": {
+                      "type": "string"
+                    },
+                    "updated_at": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "block_number",
+                    "hash",
+                    "timestamp",
+                    "gas_used",
+                    "transaction_count",
+                    "created_at"
+                  ]
+                },
+                "example": {
+                  "block_number": 12345,
+                  "timestamp": "2025-01-15T12:00:00Z",
+                  "gas_used": 15000000,
+                  "transaction_count": 250,
+                  "hash": "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef",
+                  "created_at": "2025-01-15T12:00:00Z"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid block number"
+          },
+          "404": {
+            "description": "Block not found"
+          },
+          "422": {
+            "description": "Validation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "code": {
+                        "type": "string"
+                      },
+                      "message": {
+                        "type": "string"
+                      },
+                      "path": {
+                        "type": "array",
+                        "items": {
+                          "anyOf": [
+                            {
+                              "type": "string"
+                            },
+                            {
+                              "type": "number"
+                            }
+                          ]
+                        }
+                      }
+                    },
+                    "required": [
+                      "code",
+                      "message",
+                      "path"
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
     "/clusters": {
       "post": {
         "tags": [
@@ -772,6 +904,479 @@
           },
           "401": {
             "description": "Invalid API key"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/proofs": {
+      "get": {
+        "tags": [
+          "Proofs"
+        ],
+        "summary": "List proofs",
+        "description": "Retrieve a filtered and paginated list of proofs.",
+        "parameters": [
+          {
+            "name": "team",
+            "in": "query",
+            "description": "Filter by team slug",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "block",
+            "in": "query",
+            "description": "Filter by specific block number",
+            "required": false,
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "Number of proofs to return (default: 100, max: 1000)",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "default": 100,
+              "minimum": 1,
+              "maximum": 1000
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "description": "Number of proofs to skip for pagination (default: 0)",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "default": 0,
+              "minimum": 0
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of proofs retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "proofs": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "proof_id": {
+                            "type": "integer"
+                          },
+                          "block_number": {
+                            "type": "integer",
+                            "minimum": 0
+                          },
+                          "proof_status": {
+                            "type": "string",
+                            "enum": [
+                              "queued",
+                              "proving",
+                              "proved"
+                            ]
+                          },
+                          "proving_cycles": {
+                            "type": "integer"
+                          },
+                          "team_id": {
+                            "type": "string",
+                            "format": "uuid"
+                          },
+                          "created_at": {
+                            "type": "string"
+                          },
+                          "proved_timestamp": {
+                            "type": "string"
+                          },
+                          "proving_timestamp": {
+                            "type": "string"
+                          },
+                          "queued_timestamp": {
+                            "type": "string"
+                          },
+                          "cluster_version_id": {
+                            "type": "integer"
+                          },
+                          "proving_time": {
+                            "type": "integer"
+                          },
+                          "program_id": {
+                            "type": "integer"
+                          },
+                          "size_bytes": {
+                            "type": "integer"
+                          },
+                          "proof": {
+                            "type": "string"
+                          },
+                          "verifier_id": {
+                            "type": "string"
+                          },
+                          "team": {
+                            "type": "object",
+                            "properties": {
+                              "id": {
+                                "type": "string",
+                                "format": "uuid"
+                              },
+                              "name": {
+                                "type": "string"
+                              },
+                              "slug": {
+                                "type": "string"
+                              },
+                              "created_at": {
+                                "type": "string"
+                              },
+                              "updated_at": {
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "id",
+                              "name",
+                              "slug",
+                              "created_at"
+                            ]
+                          },
+                          "block": {
+                            "type": "object",
+                            "properties": {
+                              "block_number": {
+                                "type": "integer"
+                              },
+                              "hash": {
+                                "type": "string"
+                              },
+                              "timestamp": {
+                                "type": "string"
+                              },
+                              "gas_used": {
+                                "type": "integer"
+                              },
+                              "transaction_count": {
+                                "type": "integer"
+                              },
+                              "created_at": {
+                                "type": "string"
+                              },
+                              "updated_at": {
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "block_number",
+                              "hash",
+                              "timestamp",
+                              "gas_used",
+                              "transaction_count",
+                              "created_at"
+                            ]
+                          },
+                          "cluster_version": {
+                            "type": "object",
+                            "properties": {
+                              "id": {
+                                "type": "integer"
+                              },
+                              "cluster_id": {
+                                "type": "string",
+                                "format": "uuid"
+                              },
+                              "version": {
+                                "type": "string"
+                              },
+                              "created_at": {
+                                "type": "string"
+                              },
+                              "updated_at": {
+                                "type": "string"
+                              },
+                              "cluster": {
+                                "type": "object",
+                                "properties": {
+                                  "id": {
+                                    "type": "string",
+                                    "format": "uuid"
+                                  },
+                                  "name": {
+                                    "type": "string"
+                                  },
+                                  "nickname": {
+                                    "type": "string"
+                                  },
+                                  "created_at": {
+                                    "type": "string"
+                                  },
+                                  "updated_at": {
+                                    "type": "string"
+                                  }
+                                },
+                                "required": [
+                                  "id",
+                                  "name",
+                                  "created_at"
+                                ]
+                              },
+                              "zkvm_version": {
+                                "type": "object",
+                                "properties": {
+                                  "id": {
+                                    "type": "integer"
+                                  },
+                                  "version": {
+                                    "type": "string"
+                                  },
+                                  "zkvm_id": {
+                                    "type": "integer"
+                                  },
+                                  "release_date": {
+                                    "type": "string"
+                                  },
+                                  "created_at": {
+                                    "type": "string"
+                                  },
+                                  "zkvm": {
+                                    "type": "object",
+                                    "properties": {
+                                      "id": {
+                                        "type": "integer"
+                                      },
+                                      "name": {
+                                        "type": "string"
+                                      },
+                                      "slug": {
+                                        "type": "string"
+                                      },
+                                      "isa": {
+                                        "type": "string"
+                                      },
+                                      "team_id": {
+                                        "type": "string",
+                                        "format": "uuid"
+                                      },
+                                      "created_at": {
+                                        "type": "string"
+                                      }
+                                    },
+                                    "required": [
+                                      "id",
+                                      "name",
+                                      "slug",
+                                      "isa",
+                                      "team_id",
+                                      "created_at"
+                                    ]
+                                  }
+                                },
+                                "required": [
+                                  "id",
+                                  "version",
+                                  "zkvm_id",
+                                  "release_date",
+                                  "created_at"
+                                ]
+                              },
+                              "cluster_machines": {
+                                "type": "array",
+                                "items": {
+                                  "type": "object",
+                                  "properties": {
+                                    "id": {
+                                      "type": "integer"
+                                    },
+                                    "cluster_version_id": {
+                                      "type": "integer"
+                                    },
+                                    "machine_id": {
+                                      "type": "integer"
+                                    },
+                                    "cloud_instance_id": {
+                                      "type": "integer"
+                                    },
+                                    "created_at": {
+                                      "type": "string"
+                                    },
+                                    "cloud_instance": {
+                                      "type": "object",
+                                      "properties": {
+                                        "id": {
+                                          "type": "integer"
+                                        },
+                                        "instance_id": {
+                                          "type": "string"
+                                        },
+                                        "provider_id": {
+                                          "type": "integer"
+                                        },
+                                        "region": {
+                                          "type": "string"
+                                        },
+                                        "instance_type": {
+                                          "type": "string"
+                                        },
+                                        "created_at": {
+                                          "type": "string"
+                                        },
+                                        "provider": {
+                                          "type": "object",
+                                          "properties": {
+                                            "id": {
+                                              "type": "integer"
+                                            },
+                                            "name": {
+                                              "type": "string"
+                                            },
+                                            "created_at": {
+                                              "type": "string"
+                                            }
+                                          },
+                                          "required": [
+                                            "id",
+                                            "name",
+                                            "created_at"
+                                          ]
+                                        }
+                                      },
+                                      "required": [
+                                        "id",
+                                        "instance_id",
+                                        "provider_id",
+                                        "region",
+                                        "instance_type",
+                                        "created_at"
+                                      ]
+                                    },
+                                    "machine": {
+                                      "type": "object",
+                                      "properties": {
+                                        "id": {
+                                          "type": "integer"
+                                        },
+                                        "name": {
+                                          "type": "string"
+                                        },
+                                        "cpu_count": {
+                                          "type": "integer"
+                                        },
+                                        "memory_gb": {
+                                          "type": "number"
+                                        },
+                                        "created_at": {
+                                          "type": "string"
+                                        }
+                                      },
+                                      "required": [
+                                        "id",
+                                        "name",
+                                        "cpu_count",
+                                        "memory_gb",
+                                        "created_at"
+                                      ]
+                                    }
+                                  },
+                                  "required": [
+                                    "id",
+                                    "cluster_version_id",
+                                    "machine_id",
+                                    "created_at"
+                                  ]
+                                }
+                              }
+                            },
+                            "required": [
+                              "id",
+                              "cluster_id",
+                              "version",
+                              "created_at"
+                            ]
+                          }
+                        },
+                        "required": [
+                          "proof_id",
+                          "block_number",
+                          "proof_status",
+                          "team_id",
+                          "created_at",
+                          "cluster_version_id"
+                        ]
+                      }
+                    },
+                    "total_count": {
+                      "type": "integer"
+                    },
+                    "limit": {
+                      "type": "integer"
+                    },
+                    "offset": {
+                      "type": "integer"
+                    }
+                  },
+                  "required": [
+                    "proofs",
+                    "total_count",
+                    "limit",
+                    "offset"
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid query parameters"
+          },
+          "422": {
+            "description": "Validation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "code": {
+                        "type": "string"
+                      },
+                      "message": {
+                        "type": "string"
+                      },
+                      "path": {
+                        "type": "array",
+                        "items": {
+                          "anyOf": [
+                            {
+                              "type": "string"
+                            },
+                            {
+                              "type": "number"
+                            }
+                          ]
+                        }
+                      }
+                    },
+                    "required": [
+                      "code",
+                      "message",
+                      "path"
+                    ]
+                  }
+                }
+              }
+            }
           },
           "500": {
             "description": "Internal server error"
