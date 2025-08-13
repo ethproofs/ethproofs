@@ -62,7 +62,8 @@ const AppNavigationMenu = ({ insideDrawer }: AppNavigationMenuProps) => {
           </Suspense>
         </div>
         <SearchInput
-          placeholder="Search by block"
+          aria-label="search by block"
+          placeholder="search by block"
           insideDrawer={insideDrawer}
         />
       </SidebarHeader>
@@ -73,7 +74,7 @@ const AppNavigationMenu = ({ insideDrawer }: AppNavigationMenuProps) => {
           className="gap-y-2 bg-background-accent/35 px-6 py-10"
         >
           <SidebarGroup>
-            <SidebarGroupLabel>Home</SidebarGroupLabel>
+            <SidebarGroupLabel>home</SidebarGroupLabel>
             <MenuItem>
               <Link
                 href="/"
@@ -85,7 +86,7 @@ const AppNavigationMenu = ({ insideDrawer }: AppNavigationMenuProps) => {
             </MenuItem>
           </SidebarGroup>
           <SidebarGroup>
-            <SidebarGroupLabel>Explore</SidebarGroupLabel>
+            <SidebarGroupLabel>explore</SidebarGroupLabel>
             <MenuItem>
               <Link
                 href="/zkvms"
@@ -133,7 +134,7 @@ const AppNavigationMenu = ({ insideDrawer }: AppNavigationMenuProps) => {
             </MenuItem>
           </SidebarGroup>
           <SidebarGroup>
-            <SidebarGroupLabel>Learn</SidebarGroupLabel>
+            <SidebarGroupLabel>learn</SidebarGroupLabel>
             <MenuItem>
               <Link
                 href="/learn"
@@ -154,7 +155,7 @@ const AppNavigationMenu = ({ insideDrawer }: AppNavigationMenuProps) => {
             </MenuItem>
           </SidebarGroup>
           <SidebarGroup>
-            <SidebarGroupLabel>Contribute</SidebarGroupLabel>
+            <SidebarGroupLabel>contribute</SidebarGroupLabel>
             <MenuItem>
               <Link
                 href={URL_GITHUB_REPO}
@@ -193,7 +194,7 @@ const AppNavigationMenu = ({ insideDrawer }: AppNavigationMenuProps) => {
         </div>
 
         <div>
-          Built with{" "}
+          built with{" "}
           <Heart className="mb-0.5 inline text-xl text-primary motion-safe:animate-heart-beat" />{" "}
           by the
           <br />
@@ -206,7 +207,7 @@ const AppNavigationMenu = ({ insideDrawer }: AppNavigationMenuProps) => {
           </Link>{" "}
           team
         </div>
-        <div className="text-primary">Public goods are good</div>
+        <div className="text-primary">public goods are good</div>
       </SidebarFooter>
     </>
   )

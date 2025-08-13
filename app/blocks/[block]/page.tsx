@@ -127,7 +127,7 @@ export default async function BlockDetailsPage({
         <div className="max-w-[14rem]">
           <h1 className="font-mono">
             <p className="font-sans text-sm font-normal text-body-secondary">
-              Block Height
+              block Height
             </p>
             <p className="text-3xl font-semibold tracking-wide">
               <HidePunctuation>{formatNumber(block_number)}</HidePunctuation>
@@ -145,14 +145,14 @@ export default async function BlockDetailsPage({
       <section className="grid w-fit grid-cols-2 gap-x-8 gap-y-4 px-6 md:grid-cols-[auto,auto,auto,auto]">
         <HeroItem className="row-span-2 grid grid-rows-subgrid place-items-center gap-y-1">
           <HeroItemLabel>
-            <Clock /> Timestamp
+            <Clock /> timestamp
           </HeroItemLabel>
           <Timestamp>{timestamp}</Timestamp>
         </HeroItem>
 
         <HeroItem className="row-span-2 grid grid-rows-subgrid place-items-center gap-y-1">
           <HeroItemLabel>
-            <Cpu /> Gas used
+            <Cpu /> gas used
           </HeroItemLabel>
           <p className="font-mono tracking-wide">
             <HidePunctuation>{formatNumber(gas_used)}</HidePunctuation>
@@ -161,7 +161,7 @@ export default async function BlockDetailsPage({
 
         <HeroItem className="row-span-2 grid grid-rows-subgrid place-items-center gap-y-1">
           <HeroItemLabel>
-            <Layers /> Slot
+            <Layers /> slot
           </HeroItemLabel>
           <p className="font-mono tracking-wide">
             <HidePunctuation>
@@ -172,7 +172,7 @@ export default async function BlockDetailsPage({
 
         <HeroItem className="row-span-2 grid grid-rows-subgrid place-items-center gap-y-1">
           <HeroItemLabel>
-            <BookOpen /> Epoch
+            <BookOpen /> epoch
           </HeroItemLabel>
           <p className="font-mono tracking-wide">
             <HidePunctuation>
@@ -186,13 +186,13 @@ export default async function BlockDetailsPage({
         <Card className="flex-1">
           <CardHeader className="flex h-16 flex-row justify-between space-y-0">
             <CardTitle className="flex items-center gap-2 font-mono text-lg font-normal [&>svg]:shrink-0">
-              <Timer /> Proof availability
+              <Timer /> proof availability
             </CardTitle>
 
             <MetricBox className="py-0">
               <MetricLabel>
-                <MetricInfo label="Status of proofs">
-                  <ProofStatusInfo title="Status of proofs" />
+                <MetricInfo label="status of proofs">
+                  <ProofStatusInfo title="status of proofs" />
                 </MetricInfo>
               </MetricLabel>
               <MetricValue className="font-normal">
@@ -255,7 +255,7 @@ export default async function BlockDetailsPage({
         <Card className="flex-1">
           <CardHeader className="flex h-16 flex-row items-center">
             <CardTitle className="flex items-center gap-2 font-mono text-lg font-normal [&>svg]:shrink-0">
-              <DollarSign /> Proof costs
+              <DollarSign /> proof costs
             </CardTitle>
           </CardHeader>
 
@@ -314,7 +314,7 @@ export default async function BlockDetailsPage({
       <section>
         <div className="flex justify-between md:mb-4">
           <h2 className="flex items-center gap-2 text-lg font-normal text-primary">
-            <ProofCircle /> Proofs
+            <ProofCircle /> proofs
           </h2>
           {proofs.length >= 1 && (
             <DownloadAllButton
