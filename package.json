@@ -3,10 +3,6 @@
   "version": "0.2.0",
   "license": "MIT",
   "private": true,
-  "engineStrict": true,
-  "engines": {
-    "node": ">=20.0.0"
-  },
   "scripts": {
     "postinstall": "pnpm seed:generate",
     "dev": "next dev",
