@@ -145,7 +145,8 @@ DECLARE
     telegram_response RECORD;
     telegram_bot_token TEXT;
     telegram_chat_id TEXT;
-    team_missing_blocks TEXT;
+    missing_blocks TEXT[];
+    display_blocks TEXT;
 BEGIN
     -- Get Telegram configuration
     telegram_bot_token := get_telegram_bot_token();
@@ -172,15 +173,20 @@ BEGIN
         ORDER BY team_name, cluster_nickname
     LOOP
         -- Get missing blocks for this team/cluster combination
-        SELECT string_agg(block_number::text, ', ' ORDER BY block_number)
-        INTO team_missing_blocks
+        SELECT array_agg(block_number ORDER BY block_number) INTO missing_blocks
         FROM missing_proofs_temp
         WHERE team_name = cluster.team_name 
           AND cluster_nickname = cluster.cluster_nickname
           AND cluster_id_suffix = cluster.cluster_id_suffix;
 
+        IF array_length(missing_blocks, 1) > 3 THEN
+            display_blocks := missing_blocks[1] || ', ' || missing_blocks[2] || ', ' || missing_blocks[3] || ' +' || (array_length(missing_blocks, 1) - 3) || ' more';
+        ELSE
+            display_blocks := array_to_string(missing_blocks, ', ');
+        END IF;
+
         message_text := message_text || E'▪️ *' || escape_markdown_v2(cluster.team_name) || '* \- ' || escape_markdown_v2(cluster.cluster_nickname) || ' \(…' || escape_markdown_v2(cluster.cluster_id_suffix) || E'\\)\n';
-        message_text := message_text || E'   Missing blocks: `' || team_missing_blocks || E'`\n\n';
+        message_text := message_text || E'   Missing blocks: `' || display_blocks || E'`\n\n';
     END LOOP;
     
     -- Send to internal Telegram chat
