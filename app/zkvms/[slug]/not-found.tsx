@@ -16,18 +16,18 @@ export default function NotFound() {
     <div className="mt-40 flex flex-col items-center gap-4 text-center">
       <LightningBolt className="size-40 stroke-[0.5px] text-body-secondary" />
       <h1 className="mb-4 font-mono text-3xl text-primary">
-        No zkVM found with name {decodeURIComponent(slug)}
+        no zkVM found with name {decodeURIComponent(slug)}
       </h1>
       <p className="text-lg">
-        If this a bug please report on our{" "}
-        <Link href={URL_GITHUB_REPO}>GitHub</Link> repo
+        ...if this is a bug, please report it{" "}
+        <Link href={URL_GITHUB_REPO}>here</Link>
       </p>
       <Divider className="my-6" />
       <ButtonLink href="/zkvms" size="lg">
-        Explore all zkVMs
+        explore all zkVMs
       </ButtonLink>
       <ButtonLink href="/" variant="outline" size="lg">
-        Back to homepage
+        back to homepage
       </ButtonLink>
     </div>
   )

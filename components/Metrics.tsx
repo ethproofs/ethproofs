@@ -36,7 +36,7 @@ const metrics: Record<Metric, MetricDetails> = {
 
         <primitives.blockNumber.Definition />
 
-        <Info.Description>Block height number</Info.Description>
+        <Info.Description>block height number</Info.Description>
       </>
     ),
   },
@@ -71,7 +71,7 @@ const metrics: Record<Metric, MetricDetails> = {
         <computed.mgas.Definition />
 
         <Info.Description>
-          Proving costs in USD per million gas units proven
+          Proving costs in USD per million gas units proven.
         </Info.Description>
         <Info.Description>
           Normalized USD cost per gas unit to allow comparison amongst proofs of
@@ -92,7 +92,7 @@ const metrics: Record<Metric, MetricDetails> = {
         <computed.provingCosts.Definition />
 
         <Info.Description>
-          Proving costs in USD to prove execution of entire block
+          Proving costs in USD to prove execution of entire block.
         </Info.Description>
       </>
     ),
@@ -108,7 +108,7 @@ const metrics: Record<Metric, MetricDetails> = {
         <computed.avgCostPerCluster.Definition />
 
         <Info.Description className="font-bold">
-          Cost per proof
+          cost per proof
         </Info.Description>
 
         <Info.Derivation>
@@ -126,11 +126,9 @@ const metrics: Record<Metric, MetricDetails> = {
         <Info.Derivation>
           <primitives.gasUsed.Term />
         </Info.Derivation>
-
         <primitives.gasUsed.Definition />
-
         <Info.Description>
-          Total gas units executed within block
+          Total gas units executed within block.
         </Info.Description>
         <Info.Description>
           Proportional to the amount of computational effort a block outputs.
@@ -164,13 +162,13 @@ const metrics: Record<Metric, MetricDetails> = {
         <primitives.provingTime.Definition />
 
         <Info.Description>
-          Time spent generating proof of execution
+          Time spent generating proof of execution.
         </Info.Description>
 
         {average ? (
           <Info.Description>
             Average reported proving time for all completed proofs submitted for
-            this block
+            this block.
           </Info.Description>
         ) : null}
       </>

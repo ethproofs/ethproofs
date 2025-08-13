@@ -12,12 +12,12 @@ const ClusterDetails = ({ proof }: { proof: ProofWithCluster }) => {
       )}
       {hardware && (
         <span className="block">
-          <span className="font-semibold">Hardware:</span> {hardware}
+          <span className="font-semibold">hardware:</span> {hardware}
         </span>
       )}
       {description && (
         <span className="block">
-          <span className="font-semibold">Description:</span> {description}
+          <span className="font-semibold">description:</span> {description}
         </span>
       )}
     </div>

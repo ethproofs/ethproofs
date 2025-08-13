@@ -43,7 +43,7 @@ export const columns: ColumnDef<Block>[] = [
       >
         <metrics.blockNumber.Details />
         <TooltipContentFooter className="space-y-3">
-          <p className="font-bold">Time since block published</p>
+          <p className="font-bold">time since block published</p>
           <Info.Derivation>
             <span className="font-mono text-primary-light">now</span> -{" "}
             <span className="font-mono text-primary-light">timestamp</span>
@@ -81,7 +81,7 @@ export const columns: ColumnDef<Block>[] = [
       <ColumnHeader label={<metrics.gasUsed.Label />}>
         <metrics.gasUsed.Details />
         <TooltipContentFooter className="space-y-3">
-          <p className="font-bold">Percentage of block gas limit</p>
+          <p className="font-bold">percentage of block gas limit</p>
           <Info.Derivation>
             <span className="font-mono text-primary-light">gas_used</span> /{" "}
             <span className="font-mono text-primary-light">gas_limit</span> x{" "}

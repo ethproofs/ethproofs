@@ -114,13 +114,13 @@ const LineChartCard = ({
         {!hideKPIs && (
           <div className="flex">
             <div className="flex flex-1 flex-col items-center border-e text-center">
-              <span className="block text-sm font-bold uppercase">avg</span>
+              <span className="block text-sm font-bold">avg</span>
               <span className="block font-mono text-2xl text-primary sm:text-3xl md:text-2xl xl:text-3xl">
                 {formatValue ? formatValue(totalAvg) : totalAvg}
               </span>
             </div>
             <div className="flex flex-1 flex-col items-center text-center">
-              <span className="block text-sm font-bold uppercase">median</span>
+              <span className="block text-sm font-bold">median</span>
               <span className="block font-mono text-2xl text-primary sm:text-3xl md:text-2xl xl:text-3xl">
                 {formatValue ? formatValue(totalMedian) : totalMedian}
               </span>
@@ -210,7 +210,7 @@ const LineChartCard = ({
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button className="group flex h-6 w-fit items-center gap-2 rounded-full border bg-background-highlight px-2 py-1.5 text-sm text-body hover:bg-primary-light hover:text-background [&[data-state=open]]:bg-primary-light [&[data-state=open]]:text-background">
-              Options
+              options
               <ArrowDropdown className="transition-transform duration-100 group-[&[data-state=open]]:-scale-y-100" />
             </Button>
           </DropdownMenuTrigger>
@@ -221,13 +221,13 @@ const LineChartCard = ({
               checked={lineVisibility.avg}
               onCheckedChange={() => toggleLineVisibility("avg")}
             >
-              Average
+              average
             </DropdownMenuCheckboxItem>
             <DropdownMenuCheckboxItem
               checked={lineVisibility.median}
               onCheckedChange={() => toggleLineVisibility("median")}
             >
-              Median
+              median
             </DropdownMenuCheckboxItem>
             {/* <DropdownMenuSeparator /> */}
             {/* // TODO: Add individual teams */}
@@ -240,7 +240,7 @@ const LineChartCard = ({
               key={range}
               onClick={setTimeRangeValue(range)}
               className={cn(
-                "text-nowrap rounded-full px-2 py-0 font-sans text-xs font-bold uppercase text-body-secondary",
+                "text-nowrap rounded-full px-2 py-0 font-sans text-xs font-bold text-body-secondary",
                 dayRange === range && "bg-background-active text-primary"
               )}
               variant="ghost"
