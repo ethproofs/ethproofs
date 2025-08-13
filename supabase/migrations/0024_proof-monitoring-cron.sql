@@ -112,7 +112,7 @@ BEGIN
         SELECT c.id, c.nickname, c.team_id, t.name as team_name
         FROM clusters c
         JOIN teams t ON t.id = c.team_id
-        -- WHERE c.is_active = true
+        WHERE c.is_active = true
     ) c
     WHERE b.timestamp >= CURRENT_DATE - INTERVAL '1 day'
       AND b.timestamp < CURRENT_DATE
@@ -133,7 +133,6 @@ BEGIN
 END;
 $$;
 
--- Modified version that doesn't manage temp table lifecycle
 CREATE OR REPLACE FUNCTION send_internal_summary_from_temp()
 RETURNS void
 LANGUAGE plpgsql
@@ -232,7 +231,6 @@ BEGIN
 
         -- Add header with title and date context
         message_text := E'🚨 *Missing Proof Alert*\n\n' ||
-                        -- E'*Date:* ' || escape_markdown_v2(to_char(CURRENT_DATE - INTERVAL '1 day', 'YYYY-MM-DD')) || E'\n\n' ||
                         E'_Found *' || total_missing || '* missing proofs from yesterday \(' || escape_markdown_v2(to_char(CURRENT_DATE - INTERVAL '1 day', 'YYYY-MM-DD')) || E'\\)_\n';
         cluster_count := 0;
         
@@ -307,7 +305,7 @@ BEGIN
     
     RAISE LOG 'Found % missing proofs, sending alerts...', missing_count;
     
-    -- PERFORM send_internal_summary_from_temp();
+    PERFORM send_internal_summary_from_temp();
     
     -- 1 second delay before team alerts to avoid rate limits
     PERFORM pg_sleep(1);
