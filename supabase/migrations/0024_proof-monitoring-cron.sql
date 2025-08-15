@@ -176,9 +176,7 @@ BEGIN
         -- Get missing blocks for this team/cluster combination
         SELECT array_agg(block_number ORDER BY block_number) INTO missing_blocks
         FROM missing_proofs_temp
-        WHERE team_name = cluster.team_name 
-          AND cluster_nickname = cluster.cluster_nickname
-          AND cluster_id_suffix = cluster.cluster_id_suffix;
+        WHERE cluster_id = cluster.cluster_id;
 
         IF array_length(missing_blocks, 1) > 3 THEN
             display_blocks := '`' || missing_blocks[1] || '`, `' || missing_blocks[2] || '`, `' || missing_blocks[3] || '` +' || (array_length(missing_blocks, 1) - 3) || ' more';
