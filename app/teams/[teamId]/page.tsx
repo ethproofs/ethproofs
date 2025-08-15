@@ -182,7 +182,7 @@ export default async function TeamDetailsPage({
         <section className="grid grid-cols-1 gap-6 md:grid-cols-2">
           <Card className="!space-y-0">
             <CardHeader className="font-mono">
-              Multi-machine performance
+              multi-machine performance
             </CardHeader>
             <CardContent>
               <KPIs items={multiMachineSummary} layout="flipped" />
@@ -190,7 +190,7 @@ export default async function TeamDetailsPage({
           </Card>
           <Card className="!space-y-0">
             <CardHeader className="font-mono">
-              Single machine performance
+              single machine performance
             </CardHeader>
             <CardContent>
               <KPIs items={singleMachineSummary} layout="flipped" />

@@ -20,25 +20,25 @@ export default function NotFound() {
       {isUUID(teamId) ? (
         <>
           <h1 className="mb-4 font-mono text-3xl text-primary">
-            No proving team found
+            no proving team found
           </h1>
-          <p className="text-lg">ID: {teamId}</p>
+          <p className="text-lg">id: {teamId}</p>
         </>
       ) : (
         <h1 className="mb-4 font-mono text-3xl text-primary">
-          Proving team not recognized
+          proving team not recognized
         </h1>
       )}
       <p className="text-lg">
-        If this a bug please report on our{" "}
-        <Link href={URL_GITHUB_REPO}>GitHub</Link> repo
+        ...if this is a bug, please report it{" "}
+        <Link href={URL_GITHUB_REPO}>here</Link>
       </p>
       <Divider className="my-6" />
       <ButtonLink href="/teams" size="lg">
-        Explore all proving teams
+        explore all proving teams
       </ButtonLink>
       <ButtonLink href="/" variant="outline" size="lg">
-        Back to homepage
+        back to homepage
       </ButtonLink>
     </div>
   )

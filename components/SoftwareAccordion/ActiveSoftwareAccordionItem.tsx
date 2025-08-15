@@ -49,7 +49,7 @@ export const ActiveSoftwareAccordionItem = ({
             {metrics?.updated_at && (
               <div className="col-start-3 text-end">
                 <span className="text-xs italic text-body-secondary">
-                  Last updated
+                  last updated
                 </span>{" "}
                 <span className="text-xs uppercase text-body">
                   {formatShortDate(new Date(metrics.updated_at))}

@@ -23,7 +23,7 @@ function SoftwareAccordionLayout({ children }: { children: React.ReactNode }) {
             <MetricInfo label="latest version">
               <TooltipContentHeader>latest version</TooltipContentHeader>
               The most recent version of this zkVM being used by teams on
-              ethproofs.org
+              ethproofs.org.
             </MetricInfo>
           </MetricLabel>
         </MetricBox>
@@ -31,12 +31,12 @@ function SoftwareAccordionLayout({ children }: { children: React.ReactNode }) {
           <MetricLabel>
             <MetricInfo label="ISA">
               <TooltipContentHeader>
-                instruction set architecture
+                Instruction Set Architecture (ISA)
               </TooltipContentHeader>
               Defines the instruction set this zkVM implements to generate
               zero-knowledge proofs for Ethereum transactions. The ISA
               determines which EVM operations can be efficiently proven and
-              verified on-chain
+              verified on-chain.
             </MetricInfo>
           </MetricLabel>
         </MetricBox>
@@ -46,7 +46,7 @@ function SoftwareAccordionLayout({ children }: { children: React.ReactNode }) {
               <TooltipContentHeader>
                 number of active clusters
               </TooltipContentHeader>
-              Number of active clusters that use this zkVM on ethproofs.org
+              Number of active clusters that use this zkVM on ethproofs.org.
             </MetricInfo>
           </MetricLabel>
         </MetricBox>

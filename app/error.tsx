@@ -19,15 +19,15 @@ export default function Error() {
     <div className="mt-40 flex flex-col items-center gap-4 text-center">
       <ProofCircle className="size-40 -translate-x-4 stroke-[1.25px] text-primary" />
       <h1 className="mb-4 font-mono font-normal text-primary">500</h1>
-      <p className="text-lg">Internal server error</p>
+      <p className="text-lg">internal server error</p>
       <Divider className="my-6" />
       <div className="flex flex-col gap-6">
         <Button onClick={handleRefresh} size="lg">
           <RefreshCW className={cn(refreshing && "motion-safe:animate-spin")} />
-          Refresh page
+          refresh page
         </Button>
         <ButtonLink href="/" variant="outline" size="lg">
-          Back to homepage
+          back to homepage
         </ButtonLink>
       </div>
     </div>

@@ -13,21 +13,21 @@ export default function Error() {
     <div className="mt-40 flex flex-col items-center gap-4 text-center">
       <Box className="size-40 stroke-[0.5px] text-body-secondary" />
       <h1 className="mb-4 font-mono text-3xl text-primary">
-        Block not recognized
+        block not recognized
       </h1>
       <p className="text-lg">
-        The block provided is not a valid number or a hash
+        the block provided is not a valid number or a hash
       </p>
       <p className="text-lg">
-        If this a bug please report on our{" "}
-        <Link href={URL_GITHUB_REPO}>GitHub</Link> repo
+        ...if this is a bug, please report it{" "}
+        <Link href={URL_GITHUB_REPO}>here</Link>
       </p>
       <Divider className="my-6" />
       <ButtonLink href="/blocks" size="lg">
-        Explore all blocks
+        explore all blocks
       </ButtonLink>
       <ButtonLink href="/" variant="outline" size="lg">
-        Back to homepage
+        back to homepage
       </ButtonLink>
     </div>
   )
