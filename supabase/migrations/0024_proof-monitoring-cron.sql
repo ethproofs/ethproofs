@@ -147,6 +147,7 @@ DECLARE
     telegram_chat_id TEXT;
     missing_blocks TEXT[];
     display_blocks TEXT;
+    cluster_link TEXT;
 BEGIN
     -- Get Telegram configuration
     telegram_bot_token := get_telegram_bot_token();
@@ -168,25 +169,26 @@ BEGIN
     message_text := E'🚨 *Missing Proof Alert*\n\nFound ' || missing_count || E' missing proofs on ' || escape_markdown_v2(to_char(CURRENT_DATE - INTERVAL '1 day', 'YYYY-MM-DD')) || E':\n\n';
     
     FOR cluster IN
-        SELECT DISTINCT team_name, cluster_nickname, cluster_id_suffix
+        SELECT DISTINCT team_name, cluster_nickname, cluster_id_suffix, cluster_id
         FROM missing_proofs_temp
         ORDER BY team_name, cluster_nickname
     LOOP
         -- Get missing blocks for this team/cluster combination
         SELECT array_agg(block_number ORDER BY block_number) INTO missing_blocks
         FROM missing_proofs_temp
-        WHERE team_name = cluster.team_name 
-          AND cluster_nickname = cluster.cluster_nickname
-          AND cluster_id_suffix = cluster.cluster_id_suffix;
+        WHERE cluster_id = cluster.cluster_id;
 
         IF array_length(missing_blocks, 1) > 3 THEN
-            display_blocks := missing_blocks[1] || ', ' || missing_blocks[2] || ', ' || missing_blocks[3] || ' +' || (array_length(missing_blocks, 1) - 3) || ' more';
+            display_blocks := '`' || missing_blocks[1] || '`, `' || missing_blocks[2] || '`, `' || missing_blocks[3] || '` +' || (array_length(missing_blocks, 1) - 3) || ' more';
         ELSE
-            display_blocks := array_to_string(missing_blocks, ', ');
+            display_blocks := '`' || array_to_string(missing_blocks, '`, `') || '`';
         END IF;
 
-        message_text := message_text || E'▪️ *' || escape_markdown_v2(cluster.team_name) || '* \- ' || escape_markdown_v2(cluster.cluster_nickname) || ' \(…' || escape_markdown_v2(cluster.cluster_id_suffix) || E'\\)\n';
-        message_text := message_text || E'   Missing proofs for blocks: `' || display_blocks || E'`\n\n';
+        cluster_link := E'https://ethproofs.com/cluster/' || cluster.cluster_id;
+        cluster_link := escape_markdown_v2(cluster_link);
+
+        message_text := message_text || E'▪️ *' || escape_markdown_v2(cluster.team_name) || '* \- [' || escape_markdown_v2(cluster.cluster_nickname) || ' \(…' || escape_markdown_v2(cluster.cluster_id_suffix) || E'\\)\](' || cluster_link || E')\n';
+        message_text := message_text || E'   Missing proofs for blocks: ' || display_blocks || E'\n\n';
     END LOOP;
     
     -- Send to internal Telegram chat
@@ -256,9 +258,9 @@ BEGIN
               AND cluster_id = cluster_record.cluster_id;
             
             IF array_length(missing_blocks, 1) > 3 THEN
-                display_blocks := missing_blocks[1] || ', ' || missing_blocks[2] || ', ' || missing_blocks[3] || ' +' || (array_length(missing_blocks, 1) - 3) || ' more';
+                display_blocks := '`' || missing_blocks[1] || '`, `' || missing_blocks[2] || '`, `' || missing_blocks[3] || '` +' || (array_length(missing_blocks, 1) - 3) || ' more';
             ELSE
-                display_blocks := array_to_string(missing_blocks, ', ');
+                display_blocks := '`' || array_to_string(missing_blocks, '`, `') || '`';
             END IF;
             
             IF cluster_count = 1 THEN
@@ -269,7 +271,7 @@ BEGIN
             cluster_link := escape_markdown_v2(cluster_link);
 
             message_text := message_text || E' • [*' || cluster_record.cluster_nickname || '* \(…' || cluster_record.cluster_id_suffix || '\)](' || cluster_link || E')\n' ||
-                           E'   Missing blocks: `' || display_blocks || E'`\n';
+                           E'   Missing blocks: ' || display_blocks || E'\n';
             
             IF cluster_count < (SELECT COUNT(DISTINCT cluster_id) FROM missing_proofs_temp WHERE team_id = team_record.team_id) THEN
                 message_text := message_text || E'\n';
