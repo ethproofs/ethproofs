@@ -147,6 +147,7 @@ DECLARE
     telegram_chat_id TEXT;
     missing_blocks TEXT[];
     display_blocks TEXT;
+    cluster_link TEXT;
 BEGIN
     -- Get Telegram configuration
     telegram_bot_token := get_telegram_bot_token();
@@ -168,7 +169,7 @@ BEGIN
     message_text := E'🚨 *Missing Proof Alert*\n\nFound ' || missing_count || E' missing proofs on ' || escape_markdown_v2(to_char(CURRENT_DATE - INTERVAL '1 day', 'YYYY-MM-DD')) || E':\n\n';
     
     FOR cluster IN
-        SELECT DISTINCT team_name, cluster_nickname, cluster_id_suffix
+        SELECT DISTINCT team_name, cluster_nickname, cluster_id_suffix, cluster_id
         FROM missing_proofs_temp
         ORDER BY team_name, cluster_nickname
     LOOP
@@ -185,7 +186,10 @@ BEGIN
             display_blocks := '`' || array_to_string(missing_blocks, '`, `') || '`';
         END IF;
 
-        message_text := message_text || E'▪️ *' || escape_markdown_v2(cluster.team_name) || '* \- ' || escape_markdown_v2(cluster.cluster_nickname) || ' \(…' || escape_markdown_v2(cluster.cluster_id_suffix) || E'\\)\n';
+        cluster_link := E'https://ethproofs.com/cluster/' || cluster.cluster_id;
+        cluster_link := escape_markdown_v2(cluster_link);
+
+        message_text := message_text || E'▪️ *' || escape_markdown_v2(cluster.team_name) || '* \- [' || escape_markdown_v2(cluster.cluster_nickname) || ' \(…' || escape_markdown_v2(cluster.cluster_id_suffix) || E'\\)\](' || cluster_link || E')\n';
         message_text := message_text || E'   Missing proofs for blocks: ' || display_blocks || E'\n\n';
     END LOOP;
     
