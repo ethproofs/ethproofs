@@ -186,7 +186,7 @@ BEGIN
         END IF;
 
         message_text := message_text || E'▪️ *' || escape_markdown_v2(cluster.team_name) || '* \- ' || escape_markdown_v2(cluster.cluster_nickname) || ' \(…' || escape_markdown_v2(cluster.cluster_id_suffix) || E'\\)\n';
-        message_text := message_text || E'   Missing blocks: `' || display_blocks || E'`\n\n';
+        message_text := message_text || E'   Missing proofs for blocks: `' || display_blocks || E'`\n\n';
     END LOOP;
     
     -- Send to internal Telegram chat
@@ -237,7 +237,7 @@ BEGIN
 
         -- Add header with title and date context
         message_text := E'🚨 *Missing Proof Alert*\n\n' ||
-                        E'_Found *' || total_missing || '* missing proofs from yesterday \(' || escape_markdown_v2(to_char(CURRENT_DATE - INTERVAL '1 day', 'YYYY-MM-DD')) || E'\\)_\n';
+                        E'Missing proofs for *' || total_missing || '* blocks from yesterday \(' || escape_markdown_v2(to_char(CURRENT_DATE - INTERVAL '1 day', 'YYYY-MM-DD')) || E'\\) have been detected\\. \n';
         cluster_count := 0;
         
         -- Process each cluster for this team
@@ -275,6 +275,8 @@ BEGIN
                 message_text := message_text || E'\n';
             END IF;
         END LOOP;
+
+        message_text := message_text || E'\nPlease confirm your prover is online and submitting proofs for every 100 blocks\\.';
         
         -- Send to team's Telegram chat
         telegram_response := send_telegram_message(team_record.chat_id, message_text, telegram_bot_token);
