@@ -180,13 +180,13 @@ BEGIN
           AND cluster_id_suffix = cluster.cluster_id_suffix;
 
         IF array_length(missing_blocks, 1) > 3 THEN
-            display_blocks := missing_blocks[1] || ', ' || missing_blocks[2] || ', ' || missing_blocks[3] || ' +' || (array_length(missing_blocks, 1) - 3) || ' more';
+            display_blocks := '`' || missing_blocks[1] || '`, `' || missing_blocks[2] || '`, `' || missing_blocks[3] || '` +' || (array_length(missing_blocks, 1) - 3) || ' more';
         ELSE
-            display_blocks := array_to_string(missing_blocks, ', ');
+            display_blocks := '`' || array_to_string(missing_blocks, '`, `') || '`';
         END IF;
 
         message_text := message_text || E'▪️ *' || escape_markdown_v2(cluster.team_name) || '* \- ' || escape_markdown_v2(cluster.cluster_nickname) || ' \(…' || escape_markdown_v2(cluster.cluster_id_suffix) || E'\\)\n';
-        message_text := message_text || E'   Missing proofs for blocks: `' || display_blocks || E'`\n\n';
+        message_text := message_text || E'   Missing proofs for blocks: ' || display_blocks || E'\n\n';
     END LOOP;
     
     -- Send to internal Telegram chat
@@ -256,9 +256,9 @@ BEGIN
               AND cluster_id = cluster_record.cluster_id;
             
             IF array_length(missing_blocks, 1) > 3 THEN
-                display_blocks := missing_blocks[1] || ', ' || missing_blocks[2] || ', ' || missing_blocks[3] || ' +' || (array_length(missing_blocks, 1) - 3) || ' more';
+                display_blocks := '`' || missing_blocks[1] || '`, `' || missing_blocks[2] || '`, `' || missing_blocks[3] || '` +' || (array_length(missing_blocks, 1) - 3) || ' more';
             ELSE
-                display_blocks := array_to_string(missing_blocks, ', ');
+                display_blocks := '`' || array_to_string(missing_blocks, '`, `') || '`';
             END IF;
             
             IF cluster_count = 1 THEN
@@ -269,7 +269,7 @@ BEGIN
             cluster_link := escape_markdown_v2(cluster_link);
 
             message_text := message_text || E' • [*' || cluster_record.cluster_nickname || '* \(…' || cluster_record.cluster_id_suffix || '\)](' || cluster_link || E')\n' ||
-                           E'   Missing blocks: `' || display_blocks || E'`\n';
+                           E'   Missing blocks: ' || display_blocks || E'\n';
             
             IF cluster_count < (SELECT COUNT(DISTINCT cluster_id) FROM missing_proofs_temp WHERE team_id = team_record.team_id) THEN
                 message_text := message_text || E'\n';
