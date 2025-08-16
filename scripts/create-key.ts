@@ -18,11 +18,11 @@ async function main() {
   console.log({ token })
   const hashedKey = await hashToken(token)
 
-  const { error } = await client.from("api_auth_tokens").insert({
+  const { error } = await client.from("api_auth_tokens").insert([
     token: hashedKey,
     mode: "all",
     user_id: "...",
-  })
+  ])
 
   if (error) {
     console.error("Error creating key", error)
