@@ -16,7 +16,7 @@ function SoftwareAccordionLayout({ children }: { children: React.ReactNode }) {
           <MetricLabel>dual license</MetricLabel>
         </MetricBox>
         <MetricBox className="col-start-4">
-          <MetricLabel className="normal-case">proving L1</MetricLabel>
+          <MetricLabel className="normal-case">mainnet capable</MetricLabel>
         </MetricBox>
         <MetricBox className="col-start-5">
           <MetricLabel>

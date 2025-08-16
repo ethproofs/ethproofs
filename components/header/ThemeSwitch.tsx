@@ -40,17 +40,17 @@ const ThemeSwitch = () => {
   const items = [
     {
       id: "light",
-      label: "Light",
+      label: "light",
       icon: Sun,
     },
     {
       id: "dark",
-      label: "Dark",
+      label: "dark",
       icon: Moon,
     },
     {
       id: "system",
-      label: "System",
+      label: "system",
       icon: System,
     },
   ]

@@ -122,7 +122,7 @@ const SearchInput = ({
                   {blockMatch.block_number}
                 </span>
                 <span className="block text-sm text-primary">
-                  <span className="font-body">Proofs:</span>{" "}
+                  <span className="font-body">proofs:</span>{" "}
                   {
                     blockMatch.proofs.filter((p) => p.proof_status === "proved")
                       .length
