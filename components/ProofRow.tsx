@@ -246,16 +246,18 @@ const ProofRow = ({ proof, block }: ProofRowProps) => {
                   </TooltipContentHeader>
 
                   <div className="space-y-2">
-                    {cluster.hardware && <p>Hardware: {cluster.hardware}</p>}
+                    {cluster.hardware && <p>hardware: {cluster.hardware}</p>}
                     {cluster.cycle_type && (
-                      <p>Cycle type: {cluster.cycle_type}</p>
+                      <p>cycle type: {cluster.cycle_type}</p>
                     )}
-                    {cluster.description && <p>{cluster.description}</p>}
+                    {cluster.description && (
+                      <p>description: {cluster.description}</p>
+                    )}
                   </div>
 
                   <hr className="my-4 bg-body-secondary" />
 
-                  <TooltipContentHeader>Cloud Equivalency</TooltipContentHeader>
+                  <TooltipContentHeader>cloud equivalency</TooltipContentHeader>
 
                   <div className="w-fit space-y-4">
                     {machines.map(
@@ -284,19 +286,19 @@ const ProofRow = ({ proof, block }: ProofRowProps) => {
                           >
                             <div className="flex gap-8">
                               <div className="flex-1 space-y-2 p-2">
-                                {memory && <p>Memory: {memory} GB</p>}
+                                {memory && <p>memory: {memory} GB</p>}
                                 {disk_name && (
                                   <p>
-                                    Storage: {disk_name} {disk_space} GB
+                                    storage: {disk_name} {disk_space} GB
                                   </p>
                                 )}
                                 {instance_name && (
                                   <p>
-                                    Type: {instance_name} (
+                                    type: {instance_name} (
                                     {provider.display_name})
                                   </p>
                                 )}
-                                {region && <p>Region: {region}</p>}
+                                {region && <p>region: {region}</p>}
                                 {cpu_cores && <p>vCPU: {cpu_cores}</p>}
                               </div>
                               {cloud_instance_count && (
@@ -307,13 +309,13 @@ const ProofRow = ({ proof, block }: ProofRowProps) => {
                             </div>
                             {hourly_price && (
                               <div className="p-2">
-                                Hourly price per instance:{" "}
+                                hourly price per instance:{" "}
                                 {formatUsd(hourly_price)}
                               </div>
                             )}
                             {total_price && (
                               <div className="p-2">
-                                <strong>Total hourly price</strong>:{" "}
+                                <strong>total hourly price</strong>:{" "}
                                 {formatUsd(total_price)}
                               </div>
                             )}

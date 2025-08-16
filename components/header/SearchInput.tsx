@@ -19,7 +19,7 @@ import Link, { LinkProps } from "../ui/link"
 import useSearchKeyboardShortcuts from "@/hooks/useSearchKeyboardShortcuts"
 
 const DEBOUNCE = 250 // ms delay before querying database
-const PLACEHOLDER = "Search by block number or hash"
+const PLACEHOLDER = "search by block number or hash"
 
 const SearchInput = ({
   className,
@@ -92,6 +92,7 @@ const SearchInput = ({
           ref={inputRef}
           type="search"
           onChange={(e) => setQuery(e.target.value)}
+          aria-label={placeholder}
           placeholder={placeholder}
           value={query}
           className={cn("px-4 py-1.5", "border-transparent bg-transparent")}
@@ -117,11 +118,11 @@ const SearchInput = ({
             >
               <div className="flex justify-between">
                 <span className="block text-sm text-primary">
-                  <span className="font-body">Block: </span>
+                  <span className="font-body">block: </span>
                   {blockMatch.block_number}
                 </span>
                 <span className="block text-sm text-primary">
-                  <span className="font-body">Proofs:</span>{" "}
+                  <span className="font-body">proofs:</span>{" "}
                   {
                     blockMatch.proofs.filter((p) => p.proof_status === "proved")
                       .length
@@ -132,13 +133,13 @@ const SearchInput = ({
                 </span>
               </div>
               <span className="block text-sm text-primary">
-                <span className="font-body">Hash: </span>
+                <span className="font-body">hash: </span>
                 <span className="block truncate">{blockMatch.hash}</span>
               </span>
             </ResultLink>
           ) : (
             <div className="rounded-lg border border-primary-light bg-background-active p-2">
-              {isLoading ? "Loading" : "No results"}
+              {isLoading ? "loading" : "no results"}
             </div>
           )}
         </div>

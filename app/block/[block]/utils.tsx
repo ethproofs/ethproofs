@@ -31,7 +31,7 @@ export const getAvailabilityMetrics = (stats: Props) => [
         <metrics.provingTime.Details />
         <Info.Description>
           Fastest reported proving time for any of the proofs submitted for this
-          block
+          block.
         </Info.Description>
       </>
     ),
@@ -70,10 +70,10 @@ export const getAvailabilityMetrics = (stats: Props) => [
         <metrics.totalTTP.Details />
         <Info.Description>
           Total time delay between execution block timestamp and completion and
-          publishing of proof
+          publishing of proof.
         </Info.Description>
         <Info.Description>
-          Fastest time to proof for any of the proofs submitted for this block
+          Fastest time to proof for any of the proofs submitted for this block.
         </Info.Description>
       </>
     ),
@@ -94,10 +94,10 @@ export const getAvailabilityMetrics = (stats: Props) => [
         <metrics.totalTTP.Details average />
         <Info.Description>
           Total time delay between execution block timestamp and completion and
-          publishing of proof
+          publishing of proof.
         </Info.Description>
         <Info.Description>
-          Average time to proof for all of the proofs submitted for this block
+          Average time to proof for all of the proofs submitted for this block.
         </Info.Description>
       </>
     ),

@@ -53,9 +53,9 @@ const primitives: Record<Primitive, DefinitionDetails> = {
     Term: () => <Info.Term type="internal">{PRIMITIVES.provingTime}</Info.Term>,
     Definition: () => (
       <p>
-        <Info.Term type="internal">{PRIMITIVES.provingTime}</Info.Term> is
-        duration of computation time during the proof generation process, self
-        reported by proving teams in milliseconds
+        <Info.Term type="internal">{PRIMITIVES.provingTime}</Info.Term> is the
+        duration of computation time during the proof generation process,
+        self-reported by proving teams in milliseconds
       </p>
     ),
   },
@@ -108,7 +108,7 @@ const primitives: Record<Primitive, DefinitionDetails> = {
           proofs.
         </p>
         <p>
-          Hardware, cycle type, and description of setup are all self-reported
+          hardware, cycle type, and description of setup are all self-reported
           by proving teams, along with a selected cloud provider setup that best
           matches their own, used for price comparison
         </p>
@@ -116,7 +116,9 @@ const primitives: Record<Primitive, DefinitionDetails> = {
     ),
   },
   costPerProof: {
-    Term: () => <Info.Term>{PRIMITIVES.costPerProof}</Info.Term>,
+    Term: () => (
+      <Info.Term type="internal">{PRIMITIVES.costPerProof}</Info.Term>
+    ),
     Definition: () => (
       <p>
         <Info.Term type="internal">{PRIMITIVES.costPerProof}</Info.Term>{" "}
@@ -139,7 +141,7 @@ const conversions = {
         <Info.Term type="codeTerm">
           10<sup>6</sup>
         </Info.Term>{" "}
-        to convert gas to megagas (Mgas)
+        to convert gas to megagas (Mgas).
       </p>
     ),
   },
@@ -148,7 +150,7 @@ const conversions = {
     Definition: () => (
       <p>
         Divide by <Info.Term type="codeTerm">(1000 * 60 * 60)</Info.Term> to
-        convert milliseconds to hours
+        convert milliseconds to hours.
       </p>
     ),
   },
@@ -169,7 +171,7 @@ const computed = {
         <primitives.instanceCount.Definition />
         <p>
           The above products are summed up to calculate the total hourly cost
-          for the cluster
+          for the cluster.
         </p>
       </>
     ),
@@ -213,9 +215,9 @@ const computed = {
       <>
         <primitives.provingTime.Definition />
         <p>
-          The average <primitives.provingTime.Term /> is calculated using the
+          average <primitives.provingTime.Term /> is calculated using the
           historical data of all proofs that have been reported for the{" "}
-          <primitives.cluster.Term />.
+          <primitives.cluster.Term />
         </p>
       </>
     ),
@@ -229,9 +231,9 @@ const computed = {
     ),
     Definition: () => (
       <p>
-        The average <primitives.costPerProof.Term /> is calculated using the
+        average <primitives.costPerProof.Term /> is calculated using the
         historical data of all proofs that have been reported for the{" "}
-        <primitives.cluster.Term />.
+        <primitives.cluster.Term />
       </p>
     ),
   },

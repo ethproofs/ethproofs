@@ -52,7 +52,7 @@ export function CloudInstancesTable({
         </Select>
 
         <p className="text-secondary text-sm">
-          Snapshot taken on{" "}
+          snapshot taken on{" "}
           {snapshotDate
             ? new Date(snapshotDate).toLocaleDateString("en-US", {
                 year: "numeric",
@@ -66,15 +66,15 @@ export function CloudInstancesTable({
       <Table>
         <TableHeader>
           <TableRow>
-            <TableHead>Instance Name</TableHead>
-            <TableHead>CPU Name</TableHead>
-            <TableHead>CPU Cores</TableHead>
+            <TableHead>instance name</TableHead>
+            <TableHead>CPU name</TableHead>
+            <TableHead>CPU cores</TableHead>
             <TableHead>GPU</TableHead>
-            <TableHead>Memory</TableHead>
-            <TableHead>Disk Name</TableHead>
-            <TableHead>Disk Space</TableHead>
-            <TableHead>Region</TableHead>
-            <TableHead>Price (USD/hr)</TableHead>
+            <TableHead>memory</TableHead>
+            <TableHead>disk name</TableHead>
+            <TableHead>disk space</TableHead>
+            <TableHead>region</TableHead>
+            <TableHead>price (USD/hr)</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>

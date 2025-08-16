@@ -20,11 +20,11 @@ export default async function ZkvmsPage() {
   return (
     <div className="flex w-full flex-col gap-8">
       <div className="flex flex-col gap-4">
-        <h1 className="text-2xl font-bold">ZKVMs</h1>
+        <h1 className="text-2xl font-bold">zkVMs</h1>
         <div className="flex flex-col gap-2">
           <p>
-            This is the current list of Zero-Knowledge Virtual Machines (zkVMs)
-            tracked in ethproofs. The list is maintained in sync with the{" "}
+            This is the current list of zero-knowledge Virtual Machines (zkVMs)
+            tracked in Ethproofs. The list is maintained in sync with the{" "}
             <Link href="https://github.com/rkdud007/awesome-zkvm">
               awesome-zkvm
             </Link>{" "}
@@ -32,7 +32,7 @@ export default async function ZkvmsPage() {
             resources.
           </p>
           <p>
-            The <span className="text-primary-light">ID column</span> in this
+            The <span className="text-primary-light">id column</span> in this
             table serves as a unique identifier for each zkVM version and must
             be used when creating or modifying clusters through the{" "}
             <Link href="/api.html">API</Link> endpoints.

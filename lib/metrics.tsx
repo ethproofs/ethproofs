@@ -22,9 +22,9 @@ const protocolLabels: Record<SeverityLevel, string> = {
 }
 
 const quantumLabels: Record<SeverityLevel, string> = {
-  red: "curve-based",
-  yellow: "lattice-based",
-  green: "hash-based",
+  red: "uses curves",
+  yellow: "",
+  green: "only hashes and lattices",
 }
 
 const sizeLabels: Record<SeverityLevel, string> = {
@@ -212,9 +212,9 @@ export const getSoftwareDetailItems = (
       popoverDetails: (
         <ZkvmPopoverDetails
           breakdown={{
-            green: "< 32 KiB",
-            yellow: "< 512 KiB",
             red: "≥ 512 KiB",
+            yellow: "< 512 KiB",
+            green: "< 32 KiB",
           }}
           activeSeverity={severityLevels.proofSize}
         >
@@ -240,9 +240,9 @@ export const getSoftwareDetailItems = (
       popoverDetails: (
         <ZkvmPopoverDetails
           breakdown={{
-            green: "formally verified",
-            yellow: "fully audited",
             red: "not fully audited",
+            yellow: "fully audited",
+            green: "formally verified",
           }}
           activeSeverity={severityLevels.protocolSoundness}
         >
@@ -263,9 +263,9 @@ export const getSoftwareDetailItems = (
       popoverDetails: (
         <ZkvmPopoverDetails
           breakdown={{
-            green: "formally verified",
-            yellow: "fully audited",
             red: "not fully audited",
+            yellow: "fully audited",
+            green: "formally verified",
           }}
           activeSeverity={severityLevels.implementationSoundness}
         >
@@ -286,9 +286,9 @@ export const getSoftwareDetailItems = (
       popoverDetails: (
         <ZkvmPopoverDetails
           breakdown={{
-            green: "formally verified",
-            yellow: "fully audited",
             red: "not fully audited",
+            yellow: "fully audited",
+            green: "formally verified",
           }}
           activeSeverity={severityLevels.evmStfBytecode}
         >
@@ -310,14 +310,14 @@ export const getSoftwareDetailItems = (
       popoverDetails: (
         <ZkvmPopoverDetails
           breakdown={{
-            green: "≥ 128 bits",
-            yellow: "≥ 100 bits",
             red: "< 100 bits",
+            yellow: "≥ 100 bits",
+            green: "≥ 128 bits",
           }}
           activeSeverity={severityLevels.securityTarget}
         >
-          The security target of the zkVM, measured in bits, represents the
-          level of cryptographic security provided by the system.
+          The security target of the zkVM measured in bits, represents the level
+          of cryptographic security provided by the system.
         </ZkvmPopoverDetails>
       ),
       severity: severityLevels.securityTarget,
@@ -333,14 +333,15 @@ export const getSoftwareDetailItems = (
       popoverDetails: (
         <ZkvmPopoverDetails
           breakdown={{
-            green: "hash-based",
-            yellow: "lattice-based",
-            red: "curve-based",
+            red: "uses curves",
+            yellow: "",
+            green: "only hashes and lattices",
           }}
           activeSeverity={severityLevels.quantumSecurity}
+          inactiveSeverity="yellow"
         >
           The quantum security level of the zkVM, indicating its resistance to
-          attacks by quantum computers. Hash-based is post-quantum and indicates
+          attacks by quantum computers. Hash-based is PQ-secure and indicates
           &ge; 64 bits of QROM-provable security.
         </ZkvmPopoverDetails>
       ),
@@ -357,9 +358,9 @@ export const getSoftwareDetailItems = (
       popoverDetails: (
         <ZkvmPopoverDetails
           breakdown={{
-            green: "≥ $1M for critical bugs",
-            yellow: "≥ $64k for critical bugs",
             red: "< $64k for critical bugs",
+            yellow: "≥ $64k for critical bugs",
+            green: "≥ $1M for critical bugs",
           }}
         >
           The maximum bounty amount offered for critical vulnerabilities in the

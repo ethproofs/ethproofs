@@ -19,25 +19,25 @@ export default function NotFound() {
       {isUUID(clusterId) ? (
         <>
           <h1 className="mb-4 font-mono text-3xl text-primary">
-            No cluster found
+            no cluster found
           </h1>
-          <p className="text-lg">ID: {clusterId}</p>
+          <p className="text-lg">id: {clusterId}</p>
         </>
       ) : (
         <h1 className="mb-4 font-mono text-3xl text-primary">
-          Cluster not recognized
+          cluster not recognized
         </h1>
       )}
       <p className="text-lg">
-        If this a bug please report on our{" "}
-        <Link href={URL_GITHUB_REPO}>GitHub</Link> repo
+        ...if this is a bug, please report it{" "}
+        <Link href={URL_GITHUB_REPO}>here</Link>
       </p>
       <Divider className="my-6" />
       <ButtonLink href="/clusters" size="lg">
-        Explore all clusters
+        explore all clusters
       </ButtonLink>
       <ButtonLink href="/" variant="outline" size="lg">
-        Back to homepage
+        back to homepage
       </ButtonLink>
     </div>
   )
