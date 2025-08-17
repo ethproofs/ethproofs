@@ -179,7 +179,7 @@ BEGIN
         WHERE cluster_id = cluster.cluster_id;
 
         IF array_length(missing_blocks, 1) > 3 THEN
-            display_blocks := '`' || missing_blocks[1] || '`, `' || missing_blocks[2] || '`, `' || missing_blocks[3] || '` +' || (array_length(missing_blocks, 1) - 3) || ' more';
+            display_blocks := '`' || missing_blocks[1] || '`, `' || missing_blocks[2] || '`, `' || missing_blocks[3] || '` \+' || (array_length(missing_blocks, 1) - 3) || ' more';
         ELSE
             display_blocks := '`' || array_to_string(missing_blocks, '`, `') || '`';
         END IF;
@@ -258,7 +258,7 @@ BEGIN
               AND cluster_id = cluster_record.cluster_id;
             
             IF array_length(missing_blocks, 1) > 3 THEN
-                display_blocks := '`' || missing_blocks[1] || '`, `' || missing_blocks[2] || '`, `' || missing_blocks[3] || '` +' || (array_length(missing_blocks, 1) - 3) || ' more';
+                display_blocks := '`' || missing_blocks[1] || '`, `' || missing_blocks[2] || '`, `' || missing_blocks[3] || '` \+' || (array_length(missing_blocks, 1) - 3) || ' more';
             ELSE
                 display_blocks := '`' || array_to_string(missing_blocks, '`, `') || '`';
             END IF;
