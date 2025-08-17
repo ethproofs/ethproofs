@@ -10,11 +10,13 @@ type Breakdown = {
 type ZkvmPopoverDetailsProps = React.HTMLAttributes<HTMLDivElement> & {
   breakdown: Breakdown
   activeSeverity?: SeverityLevel
+  inactiveSeverity?: SeverityLevel
 }
 
 const ZkvmPopoverDetails = ({
   breakdown,
   activeSeverity,
+  inactiveSeverity,
   children,
   className,
 }: ZkvmPopoverDetailsProps) => {
@@ -27,6 +29,7 @@ const ZkvmPopoverDetails = ({
   }
 
   const getSliceColorClass = (level: SeverityLevel) => {
+    if (level === inactiveSeverity) return "text-body-secondary"
     if (level === "red") return "text-level-worst"
     if (level === "yellow") return "text-level-middle"
     if (level === "green") return "text-level-best"

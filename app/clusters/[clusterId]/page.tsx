@@ -183,12 +183,12 @@ export default async function ClusterDetailsPage({
             <MetricLabel>
               <MetricInfo label="ISA">
                 <TooltipContentHeader>
-                  instruction set architecture
+                  Instruction Set Architecture (ISA)
                 </TooltipContentHeader>
                 Defines the instruction set this zkVM implements to generate
                 zero-knowledge proofs for Ethereum transactions. The ISA
                 determines which EVM operations can be efficiently proven and
-                verified on-chain
+                verified on-chain.
               </MetricInfo>
             </MetricLabel>
           </MetricBox>
@@ -264,25 +264,25 @@ export default async function ClusterDetailsPage({
                             label={`${machine_count} machine${machine_count === 1 ? "" : "s"} @ ${formatUsd(totalPrice)}/h`}
                           >
                             <TooltipContentHeader>
-                              Cloud Equivalency
+                              cloud equivalency
                             </TooltipContentHeader>
 
                             <div className="flex flex-col divide-y-2 overflow-hidden rounded bg-background">
                               <div className="flex gap-8">
                                 <div className="flex-1 space-y-2 p-2">
-                                  {memory && <p>Memory: {memory} GB</p>}
+                                  {memory && <p>memory: {memory} GB</p>}
                                   {disk_name && (
                                     <p>
-                                      Storage: {disk_name} {disk_space} GB
+                                      storage: {disk_name} {disk_space} GB
                                     </p>
                                   )}
                                   {instance_name && (
                                     <p>
-                                      Type: {instance_name} (
+                                      type: {instance_name} (
                                       {provider.display_name})
                                     </p>
                                   )}
-                                  {region && <p>Region: {region}</p>}
+                                  {region && <p>region: {region}</p>}
                                   {cpu_cores && <p>vCPU: {cpu_cores}</p>}
                                 </div>
                                 {cloud_instance_count && (
@@ -293,13 +293,13 @@ export default async function ClusterDetailsPage({
                               </div>
                               {hourly_price && (
                                 <div className="p-2">
-                                  Hourly price per instance:{" "}
+                                  hourly price per instance:{" "}
                                   {formatUsd(hourly_price)}
                                 </div>
                               )}
                               {totalPrice && (
                                 <div className="p-2">
-                                  <strong>Total hourly price</strong>:{" "}
+                                  <strong>total hourly price</strong>:{" "}
                                   {formatUsd(totalPrice)}
                                 </div>
                               )}

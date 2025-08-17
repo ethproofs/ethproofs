@@ -29,10 +29,10 @@ const ClusterRowItem = ({ cluster }: ClusterRowItemProps) => (
         <MetricLabel>
           <MetricInfo label="zkVM">
             <TooltipContentHeader>
-              zero-knowledge virtual machine
+              zero-knowledge Virtual Machine (zkVM)
             </TooltipContentHeader>
             The virtual machine implementation used by this cluster to generate
-            zero-knowledge proofs
+            zero-knowledge proofs.
           </MetricInfo>
         </MetricLabel>
       </MetricBox>
@@ -45,11 +45,12 @@ const ClusterRowItem = ({ cluster }: ClusterRowItemProps) => (
         <MetricLabel>
           <MetricInfo label="ISA">
             <TooltipContentHeader>
-              instruction set architecture
+              Instruction Set Architecture (ISA)
             </TooltipContentHeader>
             Defines the instruction set this zkVM implements to generate
             zero-knowledge proofs for Ethereum transactions. The ISA determines
-            which EVM operations can be efficiently proven and verified on-chain
+            which EVM operations can be efficiently proven and verified
+            on-chain.
           </MetricInfo>
         </MetricLabel>
       </MetricBox>
@@ -63,7 +64,7 @@ const ClusterRowItem = ({ cluster }: ClusterRowItemProps) => (
               zero-knowledge proof system
             </TooltipContentHeader>
             The cryptographic protocol used to generate and verify
-            zero-knowledge proofs
+            zero-knowledge proofs.
           </MetricInfo>
         </MetricLabel>
       </MetricBox>

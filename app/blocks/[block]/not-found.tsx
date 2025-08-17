@@ -21,10 +21,10 @@ export default function NotFound() {
     <div className="mt-40 flex flex-col items-center gap-4 text-center">
       <Box className="size-40 stroke-[0.5px] text-body-secondary" />
       <h1 className="mb-4 font-mono text-3xl text-primary">
-        No block found with proofs
+        no block found with proofs
       </h1>
       <p className="max-w-screen-lg text-lg">
-        The block{" "}
+        the block{" "}
         {blockType === "hash" ? (
           <>
             with hash{" "}
@@ -40,15 +40,15 @@ export default function NotFound() {
         does not have proofs or was not proven by any of our supported providers
       </p>
       <p className="text-lg">
-        If this a bug please report on our{" "}
-        <Link href={URL_GITHUB_REPO}>GitHub</Link> repo
+        ...if this is a bug, please report it{" "}
+        <Link href={URL_GITHUB_REPO}>here</Link>
       </p>
       <Divider className="my-6" />
       <ButtonLink href="/blocks" size="lg">
-        Explore all blocks
+        explore all blocks
       </ButtonLink>
       <ButtonLink href="/" variant="outline" size="lg">
-        Back to homepage
+        back to homepage
       </ButtonLink>
     </div>
   )

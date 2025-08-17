@@ -22,13 +22,13 @@ export function ZkvmsTable({
       <TableHeader>
         <TableRow>
           <TableHead>zkVM</TableHead>
-          <TableHead>ID</TableHead>
-          <TableHead>Version</TableHead>
+          <TableHead>id</TableHead>
+          <TableHead>version</TableHead>
           <TableHead>ISA</TableHead>
-          <TableHead>Continuations</TableHead>
-          <TableHead>Parallelizable Proving</TableHead>
-          <TableHead>Precompiles</TableHead>
-          <TableHead>Frontend</TableHead>
+          <TableHead>continuations</TableHead>
+          <TableHead>parallelizable proving</TableHead>
+          <TableHead>precompiles</TableHead>
+          <TableHead>frontend</TableHead>
         </TableRow>
       </TableHeader>
       <TableBody>

@@ -155,7 +155,7 @@ const ClusterAccordionItem = ({
           </div>
         ) : (
           <div className="flex min-h-[80px] items-center justify-center text-body-secondary">
-            No hardware specifications available.
+            no hardware specifications available
           </div>
         )}
 
@@ -168,7 +168,7 @@ const ClusterAccordionItem = ({
 
         <div className="absolute bottom-6 right-6">
           <span className="text-xs italic text-body-secondary">
-            Last updated
+            last updated
           </span>{" "}
           <span className="text-xs uppercase text-body">
             {formatShortDate(new Date(lastVersion.created_at))}
@@ -194,7 +194,7 @@ const ClusterAccordion = ({ clusters }: ClusterAccordionProps) => (
             <MetricLabel>
               <MetricInfo label="open source">
                 <TooltipContentHeader>open source</TooltipContentHeader>
-                Indicates whether the zkVM is open source or not
+                Indicates whether the zkVM is open source or not.
               </MetricInfo>
             </MetricLabel>
           </MetricBox>
@@ -202,9 +202,7 @@ const ClusterAccordion = ({ clusters }: ClusterAccordionProps) => (
             <MetricLabel>
               <MetricInfo label="binary available">
                 <TooltipContentHeader>binary available</TooltipContentHeader>
-                Indicates whether the necessary zkVM binary is available for
-                verification. This binary contains the compiled circuit and
-                verification keys essential for validating proofs
+                Indicates whether the necessary zkVM prover binary is available.
               </MetricInfo>
             </MetricLabel>
           </MetricBox>

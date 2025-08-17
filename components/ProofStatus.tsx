@@ -11,9 +11,9 @@ import StatusIcon from "./StatusIcon"
 const ORDERED_STATUSES = ["proved", "proving", "queued"] as const
 
 const DESCRIPTIONS = {
-  proved: "Completed proofs published",
-  proving: "Current proofs in progress",
-  queued: "Queued for proving",
+  proved: "completed proofs published",
+  proving: "current proofs in progress",
+  queued: "queued for proving",
 } as Record<(typeof ORDERED_STATUSES)[number], string>
 
 export const ProofStatusInfo = ({ title }: { title?: string }) => (
@@ -27,7 +27,7 @@ export const ProofStatusInfo = ({ title }: { title?: string }) => (
         </Fragment>
       ))}
     </div>
-    <Info.Description>Current status of proofs</Info.Description>
+    <Info.Description>current status of proofs</Info.Description>
   </>
 )
 

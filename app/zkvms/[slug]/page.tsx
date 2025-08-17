@@ -69,6 +69,8 @@ export default async function ZkvmDetailsPage({
     }
   })
 
+  console.log("here", zkvm.versions)
+
   return (
     <>
       <div className="mb-24 mt-16 space-y-4 px-6 text-center font-mono md:mt-24 md:px-8">

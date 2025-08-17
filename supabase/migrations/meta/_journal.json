@@ -169,6 +169,13 @@
       "when": 1753128679795,
       "tag": "0023_remove-vendors",
       "breakpoints": true
+    },
+    {
+      "idx": 24,
+      "version": "7",
+      "when": 1754503525807,
+      "tag": "0024_proof-monitoring-cron",
+      "breakpoints": true
     }
   ]
 }

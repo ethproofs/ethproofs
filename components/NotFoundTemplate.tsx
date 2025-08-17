@@ -13,7 +13,7 @@ type NotFoundsTemplateProps = Partial<
 const NotFoundTemplate = ({
   children = "View all proofs",
   href = "/",
-  label = "Page",
+  label = "page",
   icon,
 }: NotFoundsTemplateProps) => {
   return (

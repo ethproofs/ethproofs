@@ -67,7 +67,7 @@ const DataTable = <TData,>({
                 colSpan={table.getHeaderGroups()[0].headers.length}
                 className="h-24 text-center"
               >
-                No results.
+                no results
               </TableCell>
             </TableRow>
           )}
@@ -85,9 +85,9 @@ const DataTable = <TData,>({
           >
             Previous
           </Button>
-          <span className="flex items-center gap-1 font-mono uppercase text-body-secondary">
+          <span className="flex items-center gap-1 font-mono text-body-secondary">
             <div>
-              Page {table.getState().pagination.pageIndex + 1} of{" "}
+              page {table.getState().pagination.pageIndex + 1} of{" "}
               {table.getPageCount() === 0
                 ? 1
                 : table.getPageCount().toLocaleString()}

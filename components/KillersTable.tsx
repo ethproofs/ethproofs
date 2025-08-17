@@ -42,7 +42,7 @@ const DataCell = ({ timeMs, costUsd, color }: BenchmarkItemProps) => (
         CELL_COLOR_CLASSES[color || "none"]
       )}
     >
-      {timeMs ? prettyMs(timeMs) : "Soon™"}
+      {timeMs ? prettyMs(timeMs) : "soon™"}
     </div>
     <div className="text-center font-sans text-xs text-body-secondary">
       {costUsd

@@ -1,12 +1,10 @@
-## What is Ethproofs?
+### What is Ethproofs?
 
 Ethproofs is a block proof explorer for Ethereum. It aggregates data from various zkVM teams to provide a comprehensive overview of proven blocks, including key metrics such as cost, latency, and proving time.
 
-Users can compare proofs by block, download them, and explore various proof metadata(size, clock cycle, type) to better understand the individual zkVMs and its proof generation process.
+Users can compare proofs by block, download them, and explore various proof metadata (size, clock cycle, type) to better understand the individual zkVMs and its proof generation process.
 
 The aim is to establish a public good that evolves into the standard for Ethereum block execution proof for zkVMs, ultimately expanding to encompass all Ethereum blocks while maintaining reasonable costs and latency. This project may also support multiple-proof systems in the future.
-
-## Overview
 
 ### What is zkVM?
 
@@ -17,29 +15,27 @@ A zkVM (Zero-Knowledge Virtual Machine) is a virtual machine that leverages [zer
 SNARK stands for Succinct Non-interactive ARgument of Knowledge. It is a cryptographic proof that allows one party to demonstrate to another party that they know a particular piece of information without revealing the information itself.
 
 **Key features of SNARKs:**
+
 - **Succinct:** The proofs are very short and can be verified quickly, even if the original computation is complex.
 - **Non-interactive:** The proof is provided in a single communication, with no need for multiple rounds of exchange between the prover and verifier.
 - **Argument of Knowledge:** The prover demonstrates that they actually possess knowledge of the solution, not just that a solution exists.
 
-
 In blockchain and Ethereum, SNARKs can be used to verify state or computations off-chain, improving scalability and privacy by reducing the amount of data that needs to be processed on-chain.
 
-### Potential benefits and use cases
+### What are potential benefits?
 
-- **Enabling full ZK light clients of Ethereum to run on low powered devices** (eg. smartphones). Syncing with the network can be done via a single ZK proof verification (once we combine block execution ZK proofs with Sync Committee ZK proofs).
-- **Reduce the time and resources** necessary for a new node or wallet to participate in the Ethereum network.
-- **Validate any current or historic Ethereum state** with a single proof.
+- **Enable full ZK light clients** of Ethereum to run on low powered devices (eg. smartphones). Syncing with the network can be done via a single ZK proof verification (once we combine block execution ZK proofs with Sync Committee ZK proofs).
+- **Reduce time and resources** necessary for a new node or wallet to participate in the Ethereum network.
+- **Validate Ethereum state** with a single proof.
 - **Lay the groundwork** for multi-client & multi-proof ZK proofs of Ethereum.
-- Start tests of Ethereum enshrinement. These proofs will provide a large corpus of data for **further research into performance improvements**, gas/proving fee schedules, and more for the larger ZK community.
-- **Empower the Ethereum Ecosystem** to take this powerful new ZK technology
+- **Test Ethereum enshrinement** by providing a large corpus of data for further research into performance improvements, gas/proving fee schedules, and more for the larger ZK community.
+- **Empower the Ethereum Ecosystem** to take control of this powerful technology.
 
+### Want to learn about zkVMs?
 
-## Learn about zkVMs
+Here is a [list of zkVMs](https://github.com/rkdud007/awesome-zkvm?tab=readme-ov-file) that have been designed through various approaches.
 
-There are [list of zkVMs](https://github.com/rkdud007/awesome-zkvm?tab=readme-ov-file) that are designed in various approaches.
-
-
-### More resources
+### more resources
 
 - [a zero-knowledge paradigm series](https://www.lita.foundation/blog/zero-knowledge-paradigm-zkvm)
 - [cairo – a turing-complete stark-friendly cpu architecture - shahar papini](https://www.youtube.com/watch?v=vVgHL5vpJxY&t=33s)
@@ -62,7 +58,7 @@ There are [list of zkVMs](https://github.com/rkdud007/awesome-zkvm?tab=readme-ov
 - [Getting the bugs out of SNARKs: The road ahead](https://a16zcrypto.com/posts/article/getting-bugs-out-of-snarks/)
 - [~tacryt-socryp on Zorp, the Nock zkVM | Reassembly23](https://www.youtube.com/watch?v=zD45V6GAD00)
 
-### Tutorials
+### tutorials
 
 - [brainfuck tutorial](https://neptune.cash/learn/brainfuck-tutorial/)
 - [chip0](https://github.com/shuklaayush/chip0)
