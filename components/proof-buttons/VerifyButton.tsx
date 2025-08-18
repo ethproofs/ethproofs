@@ -27,7 +27,12 @@ import { delay } from "@/utils/delay"
 export type ProofForDownload = Required<
   Pick<Proof, "proof_status" | "proof_id" | "size_bytes">
 > & {
-  team: Required<Pick<Team, "name">>
+  team: Required<Pick<Team, "name" | "slug">>
+}
+
+const VERIFIABLE_PROVER_TEAM_SLUGS = new Set<string>(["brevis", "zkm"])
+function isVerifiableProverTeam(slug: string): boolean {
+  return VERIFIABLE_PROVER_TEAM_SLUGS.has(slug)
 }
 
 interface VerifyButtonProps {
@@ -47,15 +52,17 @@ const VerifyButton = ({
   const [buttonState, setButtonState] = useState<ProofButtonState>("verify")
   const { downloadProof, downloadProgress, downloadSpeed } = useDownloadProof()
   const downloadVerificationKey = useDownloadVerificationKey()
-  const { verifyProof, verifyTime } = useVerifyProof()
   const { checkRef, checkmarkAnimation } = useAnimateCheckmark(buttonState)
+
+  const prover = proof.team.slug.toLowerCase()
+  const { verifyProof, verifyTime } = useVerifyProof(prover)
 
   useEffect(() => {
     setButtonState((prev) => {
       if (prev !== "verify" && prev !== "disabled") return prev
-      return proof.team.name === "Brevis" ? "verify" : "disabled"
+      return isVerifiableProverTeam(prover) ? "verify" : "disabled"
     })
-  }, [proof.team.name])
+  }, [prover])
 
   async function onVerifyProof(proof_id: number) {
     // Downloading proof
@@ -91,7 +98,7 @@ const VerifyButton = ({
     return (
       <div className={cn("flex items-center gap-x-2 gap-y-1", containerClass)}>
         <Button
-          disabled={buttonState === "disabled" || buttonState !== "verify"} // TODO: Handle multiple zkVM verifiers
+          disabled={buttonState === "disabled" || buttonState !== "verify"}
           variant={buttonState === "disabled" ? "solid" : "outline"}
           className={cn(
             sizingClassName,

@@ -26,7 +26,7 @@ import { delay } from "@/utils/delay"
 export type ProofForDownload = Required<
   Pick<Proof, "proof_status" | "proof_id" | "size_bytes">
 > & {
-  team: Required<Pick<Team, "name">>
+  team: Required<Pick<Team, "name" | "slug">>
 }
 
 interface DownloadButtonProps {
