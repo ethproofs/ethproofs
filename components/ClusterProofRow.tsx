@@ -28,7 +28,7 @@ export type RowProof = Required<
   >
 > & {
   block: Required<Pick<Block, "timestamp" | "gas_used">>
-  team: Required<Pick<Team, "name">>
+  team: Required<Pick<Team, "name" | "slug">>
 }
 
 export type ClusterProofRowProps = {
