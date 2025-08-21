@@ -92,7 +92,7 @@ export default async function StatusPage() {
                       </div>
 
                       <div className="text-sm text-body">
-                        Missing proofs for blocks:{" "}
+                        missing proofs for blocks:{" "}
                         {cluster.missing_blocks
                           .slice(0, 5)
                           .map((blockNum, index) => (
