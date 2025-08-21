@@ -5,7 +5,7 @@ import Link from "next/link"
 import { Alert } from "@/components/ui/alert"
 import { Card } from "@/components/ui/card"
 
-import { fetchMissingProofsStatus } from "@/lib/api/status"
+import { fetchMissingProofsStatus, MissingProofsStatus } from "@/lib/api/status"
 import { getMetadata } from "@/lib/metadata"
 
 export const metadata: Metadata = getMetadata({
@@ -14,9 +14,12 @@ export const metadata: Metadata = getMetadata({
 })
 
 export default async function StatusPage() {
-  const statusData = await fetchMissingProofsStatus(1)
+  const statusData = await fetchMissingProofsStatus()
 
   const hasIssues = statusData.total_missing > 0
+  const checkedAt = new Date(statusData.checked_at)
+  const timeRangeStart = new Date(statusData.time_range.start)
+  const timeRangeEnd = new Date(statusData.time_range.end)
 
   return (
     <>
@@ -28,9 +31,21 @@ export default async function StatusPage() {
         {/* Summary Card */}
         <Card className="mb-8 p-6">
           <div className="text-center">
-            <h2 className="mb-2 text-xl font-semibold">
-              status for {statusData.date}
-            </h2>
+            <h2 className="mb-4 text-xl font-semibold">current status</h2>
+
+            <div className="mb-4 text-sm text-body-secondary">
+              <div>checked at: {checkedAt.toLocaleString()}</div>
+              <div>
+                monitoring last 6 hours: {timeRangeStart.toLocaleString()} →{" "}
+                {timeRangeEnd.toLocaleString()}
+              </div>
+              {statusData.block_range.start && statusData.block_range.end && (
+                <div>
+                  block range: #{statusData.block_range.start} - #
+                  {statusData.block_range.end}
+                </div>
+              )}
+            </div>
 
             {hasIssues ? (
               <Alert className="mb-4">
@@ -47,7 +62,6 @@ export default async function StatusPage() {
             )}
           </div>
         </Card>
-
         {/* Missing Proofs Details */}
         {hasIssues && (
           <div className="space-y-6">
@@ -96,10 +110,10 @@ export default async function StatusPage() {
                                 ) && ", "}
                             </span>
                           ))}
-                        {cluster.missing_blocks.length > 3 && (
+                        {cluster.missing_blocks.length > 5 && (
                           <span className="text-body-secondary">
                             {" "}
-                            +{cluster.missing_blocks.length - 3} more
+                            +{cluster.missing_blocks.length - 5} more
                           </span>
                         )}
                       </div>
