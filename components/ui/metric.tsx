@@ -1,6 +1,5 @@
 import React from "react"
-
-import InfoCircle from "@/components/svgs/info-circle.svg"
+import { Info } from "lucide-react"
 
 import { cn } from "@/lib/utils"
 
@@ -41,7 +40,7 @@ const MetricInfo = React.forwardRef<HTMLDivElement, MetricInfoProps>(
         {trigger || (
           <div className="flex items-center gap-2">
             <span className="text-nowrap text-start">{label}</span>
-            <InfoCircle className="-mb-0.5 shrink-0" />
+            <Info className="-mb-0.5 size-3 shrink-0" />
           </div>
         )}
       </PopoverTrigger>

@@ -1,4 +1,4 @@
-import { CircleCheckBigIcon, TriangleAlertIcon } from "lucide-react"
+import { CircleCheckBig, TriangleAlert } from "lucide-react"
 import type { Metadata } from "next"
 import Link from "next/link"
 
@@ -35,13 +35,13 @@ export default async function StatusPage() {
             {hasIssues ? (
               <Alert className="mb-4">
                 <div className="flex items-center justify-center gap-2 text-lg font-semibold text-level-worst">
-                  <TriangleAlertIcon className="size-5" />{" "}
+                  <TriangleAlert className="size-5" />{" "}
                   {statusData.total_missing} missing proofs detected
                 </div>
               </Alert>
             ) : (
               <div className="flex items-center justify-center gap-2 text-lg font-semibold text-level-best">
-                <CircleCheckBigIcon className="size-5" />
+                <CircleCheckBig className="size-5" />
                 all clusters are up to date
               </div>
             )}

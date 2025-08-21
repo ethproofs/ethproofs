@@ -1,8 +1,8 @@
 "use client"
 
+import { Zap } from "lucide-react"
 import { useParams } from "next/navigation"
 
-import LightningBolt from "@/components/svgs/lightning-bolt.svg"
 import { ButtonLink } from "@/components/ui/button"
 import { Divider } from "@/components/ui/divider"
 import Link from "@/components/ui/link"
@@ -14,7 +14,7 @@ export default function NotFound() {
 
   return (
     <div className="mt-40 flex flex-col items-center gap-4 text-center">
-      <LightningBolt className="size-40 stroke-[0.5px] text-body-secondary" />
+      <Zap className="size-40 stroke-[0.5px] text-body-secondary" />
       <h1 className="mb-4 font-mono text-3xl text-primary">
         no zkVM found with name {decodeURIComponent(slug)}
       </h1>
