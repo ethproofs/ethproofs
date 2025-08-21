@@ -42,12 +42,13 @@ export default async function StatusPage() {
                 monitoring last 6 hours: {timeRangeStart.toLocaleString()} →{" "}
                 {timeRangeEnd.toLocaleString()}
               </div>
-              {statusData.block_range.start && statusData.block_range.end && (
-                <div>
-                  block range: #{statusData.block_range.start} - #
-                  {statusData.block_range.end}
-                </div>
-              )}
+              {statusData.total_block_range.start &&
+                statusData.total_block_range.end && (
+                  <div>
+                    block range: #{statusData.total_block_range.start} - #
+                    {statusData.total_block_range.end}
+                  </div>
+                )}
             </div>
 
             {hasIssues ? (
