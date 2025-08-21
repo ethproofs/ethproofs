@@ -1,12 +1,10 @@
 "use client"
 
 import { useEffect, useState } from "react"
+import { Monitor, Moon, Sun } from "lucide-react"
 import { useTheme } from "next-themes"
 
 import ArrowDropdown from "@/components/svgs/arrow-dropdown.svg"
-import System from "@/components/svgs/monitor.svg"
-import Moon from "@/components/svgs/moon.svg"
-import Sun from "@/components/svgs/sun.svg"
 
 import { cn } from "@/lib/utils"
 
@@ -51,13 +49,13 @@ const ThemeSwitch = () => {
     {
       id: "system",
       label: "system",
-      icon: System,
+      icon: Monitor,
     },
   ]
   return (
     <DropdownMenu>
       <DropdownMenuTrigger className="group box-content flex h-6 w-fit items-center gap-2 rounded-full border border-primary-dark px-2 py-1.5 text-primary-dark [&[data-state=open]]:bg-background-highlight">
-        <ThemeIcon className="!text-body" />
+        <ThemeIcon className="size-4 !text-body" />
         <ArrowDropdown className="transition-transform duration-100 group-[&[data-state=open]]:-scale-y-100" />
       </DropdownMenuTrigger>
 

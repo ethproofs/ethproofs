@@ -1,17 +1,20 @@
 import { Suspense } from "react"
-import { Box } from "lucide-react"
+import {
+  Bomb,
+  Box,
+  Bug,
+  Cpu,
+  Heart,
+  HeartPulse,
+  Library,
+  Target,
+  TrendingUp,
+  Users,
+  Zap,
+} from "lucide-react"
 
-import Bomb from "@/components/svgs/bomb.svg"
-import Bug from "@/components/svgs/bug.svg"
-import CPU from "@/components/svgs/cpu.svg"
-import Document from "@/components/svgs/document.svg"
 import EthProofsLogo from "@/components/svgs/eth-proofs-logo.svg"
 import GitHub from "@/components/svgs/github.svg"
-import Heart from "@/components/svgs/heart.svg"
-import HexTarget from "@/components/svgs/hex-target.svg"
-import LightningBolt from "@/components/svgs/lightning-bolt.svg"
-import Team from "@/components/svgs/team.svg"
-import TrendUpChart from "@/components/svgs/trend-up-chart.svg"
 import Twitter from "@/components/svgs/twitter.svg"
 import Link from "@/components/ui/link"
 
@@ -49,6 +52,10 @@ const AppNavigationMenu = ({ insideDrawer }: AppNavigationMenuProps) => {
   const verticalFade = {
     mask: `linear-gradient(to bottom, transparent 0rem, white 2rem, white calc(100% - 2rem), transparent 100%)`,
   }
+
+  const menuItemLinkClass =
+    "inline-flex items-center text-body hover:text-primary [&>svg:first-child]:me-2 [&>svg:first-child]:size-4"
+
   return (
     <>
       <SidebarHeader className="mt-11 space-y-10">
@@ -76,11 +83,8 @@ const AppNavigationMenu = ({ insideDrawer }: AppNavigationMenuProps) => {
           <SidebarGroup>
             <SidebarGroupLabel>home</SidebarGroupLabel>
             <MenuItem>
-              <Link
-                href="/"
-                className="inline-flex text-body hover:text-primary [&>svg:first-child]:me-2 [&>svg:first-child]:size-6"
-              >
-                <TrendUpChart />
+              <Link href="/" className={menuItemLinkClass}>
+                <TrendingUp />
                 dashboard
               </Link>
             </MenuItem>
@@ -88,68 +92,53 @@ const AppNavigationMenu = ({ insideDrawer }: AppNavigationMenuProps) => {
           <SidebarGroup>
             <SidebarGroupLabel>explore</SidebarGroupLabel>
             <MenuItem>
-              <Link
-                href="/zkvms"
-                className="inline-flex text-body hover:text-primary [&>svg:first-child]:me-2 [&>svg:first-child]:size-6"
-              >
-                <LightningBolt />
+              <Link href="/zkvms" className={menuItemLinkClass}>
+                <Zap />
                 zkVMs
               </Link>
             </MenuItem>
             <MenuItem>
-              <Link
-                href="/clusters"
-                className="inline-flex text-body hover:text-primary [&>svg:first-child]:me-2 [&>svg:first-child]:size-6"
-              >
-                <CPU />
+              <Link href="/clusters" className={menuItemLinkClass}>
+                <Cpu />
                 provers
               </Link>
             </MenuItem>
             <MenuItem>
-              <Link
-                href="/blocks"
-                className="inline-flex text-body hover:text-primary [&>svg:first-child]:me-2 [&>svg:first-child]:size-6"
-              >
-                <Box strokeWidth="1" />
+              <Link href="/blocks" className={menuItemLinkClass}>
+                <Box />
                 blocks
               </Link>
             </MenuItem>
             <MenuItem>
-              <Link
-                href="/killers"
-                className="inline-flex text-body hover:text-primary [&>svg:first-child]:me-2 [&>svg:first-child]:size-6"
-              >
+              <Link href="/killers" className={menuItemLinkClass}>
                 <Bomb />
                 killers
               </Link>
             </MenuItem>
             <MenuItem>
-              <Link
-                href="/teams"
-                className="inline-flex text-body hover:text-primary [&>svg:first-child]:me-2 [&>svg:first-child]:size-6"
-              >
-                <Team />
+              <Link href="/teams" className={menuItemLinkClass}>
+                <Users />
                 teams
+              </Link>
+            </MenuItem>
+            <MenuItem>
+              <Link href="/status" className={menuItemLinkClass}>
+                <HeartPulse />
+                status
               </Link>
             </MenuItem>
           </SidebarGroup>
           <SidebarGroup>
             <SidebarGroupLabel>learn</SidebarGroupLabel>
             <MenuItem>
-              <Link
-                href="/learn"
-                className="inline-flex text-body hover:text-primary [&>svg:first-child]:me-2 [&>svg:first-child]:size-6"
-              >
-                <Document />
+              <Link href="/learn" className={menuItemLinkClass}>
+                <Library />
                 learn
               </Link>
             </MenuItem>
             <MenuItem>
-              <Link
-                href="/api.html"
-                className="inline-flex text-body hover:text-primary [&>svg:first-child]:me-2 [&>svg:first-child]:size-6"
-              >
-                <HexTarget />
+              <Link href="/api.html" className={menuItemLinkClass}>
+                <Target />
                 API
               </Link>
             </MenuItem>
@@ -159,10 +148,10 @@ const AppNavigationMenu = ({ insideDrawer }: AppNavigationMenuProps) => {
             <MenuItem>
               <Link
                 href={URL_GITHUB_REPO}
-                className="inline-flex text-body hover:text-primary [&>svg:first-child]:me-2 [&>svg:first-child]:size-6"
+                className={menuItemLinkClass}
                 hideArrow
               >
-                <GitHub className="p-1" />
+                <GitHub />
                 build Ethproofs
               </Link>
             </MenuItem>
@@ -172,7 +161,7 @@ const AppNavigationMenu = ({ insideDrawer }: AppNavigationMenuProps) => {
                   SITE_REPO + "/issues/new/choose/",
                   "https://github.com"
                 ).toString()}
-                className="inline-flex text-body hover:text-primary [&>svg:first-child]:me-2 [&>svg:first-child]:size-6"
+                className={menuItemLinkClass}
                 hideArrow
               >
                 <Bug />
@@ -195,7 +184,7 @@ const AppNavigationMenu = ({ insideDrawer }: AppNavigationMenuProps) => {
 
         <div>
           built with{" "}
-          <Heart className="mb-0.5 inline text-xl text-primary motion-safe:animate-heart-beat" />{" "}
+          <Heart className="mb-0.5 inline size-4 text-xl text-primary motion-safe:animate-heart-beat" />{" "}
           by the
           <br />
           <Link

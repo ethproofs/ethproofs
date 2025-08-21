@@ -1,4 +1,14 @@
-import { Box } from "lucide-react"
+import {
+  BookOpen,
+  Box,
+  CircleDollarSign,
+  Clock,
+  Coins,
+  Cpu,
+  Hourglass,
+  Layers,
+  Timer,
+} from "lucide-react"
 import type { Metadata } from "next"
 import { notFound } from "next/navigation"
 
@@ -8,13 +18,7 @@ import DownloadAllButton from "@/components/proof-buttons/DownloadAllButton"
 import ProofList from "@/components/ProofList"
 import ProofStatus, { ProofStatusInfo } from "@/components/ProofStatus"
 import { HidePunctuation } from "@/components/StylePunctuation"
-import BookOpen from "@/components/svgs/book-open.svg"
-import Clock from "@/components/svgs/clock.svg"
-import Cpu from "@/components/svgs/cpu.svg"
-import DollarSign from "@/components/svgs/dollar-sign.svg"
-import Layers from "@/components/svgs/layers.svg"
 import ProofCircle from "@/components/svgs/proof-circle.svg"
-import Timer from "@/components/svgs/timer.svg"
 import Timestamp from "@/components/Timestamp"
 import { Card, CardHeader, CardTitle } from "@/components/ui/card"
 import { HeroItem, HeroItemLabel, HeroTitle } from "@/components/ui/hero"
@@ -145,14 +149,14 @@ export default async function BlockDetailsPage({
       <section className="grid w-fit grid-cols-2 gap-x-8 gap-y-4 px-6 md:grid-cols-[auto,auto,auto,auto]">
         <HeroItem className="row-span-2 grid grid-rows-subgrid place-items-center gap-y-1">
           <HeroItemLabel>
-            <Clock /> timestamp
+            <Clock className="size-4" /> timestamp
           </HeroItemLabel>
           <Timestamp>{timestamp}</Timestamp>
         </HeroItem>
 
         <HeroItem className="row-span-2 grid grid-rows-subgrid place-items-center gap-y-1">
           <HeroItemLabel>
-            <Cpu /> gas used
+            <Cpu className="size-4" /> gas used
           </HeroItemLabel>
           <p className="font-mono tracking-wide">
             <HidePunctuation>{formatNumber(gas_used)}</HidePunctuation>
@@ -161,7 +165,7 @@ export default async function BlockDetailsPage({
 
         <HeroItem className="row-span-2 grid grid-rows-subgrid place-items-center gap-y-1">
           <HeroItemLabel>
-            <Layers /> slot
+            <Layers className="size-4" /> slot
           </HeroItemLabel>
           <p className="font-mono tracking-wide">
             <HidePunctuation>
@@ -172,7 +176,7 @@ export default async function BlockDetailsPage({
 
         <HeroItem className="row-span-2 grid grid-rows-subgrid place-items-center gap-y-1">
           <HeroItemLabel>
-            <BookOpen /> epoch
+            <Hourglass className="size-4" /> epoch
           </HeroItemLabel>
           <p className="font-mono tracking-wide">
             <HidePunctuation>
@@ -186,7 +190,7 @@ export default async function BlockDetailsPage({
         <Card className="flex-1">
           <CardHeader className="flex h-16 flex-row justify-between space-y-0">
             <CardTitle className="flex items-center gap-2 font-mono text-lg font-normal [&>svg]:shrink-0">
-              <Timer /> proof availability
+              <Timer className="size-5" /> proof availability
             </CardTitle>
 
             <MetricBox className="py-0">
@@ -255,7 +259,7 @@ export default async function BlockDetailsPage({
         <Card className="flex-1">
           <CardHeader className="flex h-16 flex-row items-center">
             <CardTitle className="flex items-center gap-2 font-mono text-lg font-normal [&>svg]:shrink-0">
-              <DollarSign /> proof costs
+              <Coins className="size-5" /> proof costs
             </CardTitle>
           </CardHeader>
 
