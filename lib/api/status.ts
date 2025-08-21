@@ -23,24 +23,32 @@ export interface MissingProofsStatus {
   date: string
   total_missing: number
   teams: MissingProofTeam[]
+  checked_at: string
+  block_range: {
+    start: number | null
+    end: number | null
+  }
+  time_range: {
+    start: string
+    end: string
+  }
 }
 
 export const fetchMissingProofsStatus = async (
-  daysBack: number = 1
+  daysBack: number = 0
 ): Promise<MissingProofsStatus> => {
-  const targetDate = new Date()
-  // TODO: Check status more frequently
-  targetDate.setDate(targetDate.getDate() - daysBack)
-  const startOfDay = new Date(
-    targetDate.getFullYear(),
-    targetDate.getMonth(),
-    targetDate.getDate()
-  )
-  const endOfDay = new Date(startOfDay.getTime() + 24 * 60 * 60 * 1000)
+  // Check the last 6 hours, or go back to specified days
+  const now = new Date()
+  const hoursBack = daysBack === 0 ? 6 : daysBack * 24
+
+  // Bucket endTime to 5-minute windows for stable cache keys
+  const BUCKET_MS = 5 * 60 * 1000
+  const endTime = new Date(Math.floor(now.getTime() / BUCKET_MS) * BUCKET_MS)
+  const startTime = new Date(endTime.getTime() - hoursBack * 60 * 60 * 1000)
 
   return cache(
-    async (startOfDay: Date, endOfDay: Date) => {
-      // Find all missing proofs for the target date
+    async (startTime: Date, endTime: Date) => {
+      // Find all missing proofs for the time range
       const missingProofsData = await db
         .select({
           team_id: teams.id,
@@ -49,14 +57,15 @@ export const fetchMissingProofsStatus = async (
           cluster_nickname: clusters.nickname,
           cluster_id_suffix: sql<string>`RIGHT(${clusters.id}::text, 6)`,
           block_number: blocks.block_number,
+          block_timestamp: blocks.timestamp,
         })
         .from(blocks)
         .innerJoin(clusters, and(eq(clusters.is_active, true)))
         .innerJoin(teams, eq(teams.id, clusters.team_id))
         .where(
           and(
-            gte(blocks.timestamp, startOfDay.toISOString()),
-            lt(blocks.timestamp, endOfDay.toISOString()),
+            gte(blocks.timestamp, startTime.toISOString()),
+            lt(blocks.timestamp, endTime.toISOString()),
             sql`${blocks.block_number} % 100 = 0`,
             notExists(
               db
@@ -76,6 +85,16 @@ export const fetchMissingProofsStatus = async (
             )
           )
         )
+        .orderBy(blocks.block_number)
+
+      // Calculate block range for metadata
+      const blockNumbers = missingProofsData.map((row) =>
+        Number(row.block_number)
+      )
+      const blockRange = {
+        start: blockNumbers.length > 0 ? Math.min(...blockNumbers) : null,
+        end: blockNumbers.length > 0 ? Math.max(...blockNumbers) : null,
+      }
 
       // Group data by team and cluster
       const teamsMap = new Map<string, MissingProofTeam>()
@@ -113,20 +132,25 @@ export const fetchMissingProofsStatus = async (
       }
 
       return {
-        date: startOfDay.toISOString().split("T")[0],
+        date: startTime.toISOString().split("T")[0],
         total_missing: missingProofsData.length,
         teams: Array.from(teamsMap.values()),
+        checked_at: new Date().toISOString(),
+        block_range: blockRange,
+        time_range: {
+          start: startTime.toISOString(),
+          end: endTime.toISOString(),
+        },
       }
     },
     [
-      `missing-proofs-status-${daysBack}`,
-      startOfDay.toISOString(),
-      endOfDay.toISOString(),
+      `missing-proofs-status:v1:days=${daysBack}:hours=${hoursBack}:end=${endTime.toISOString()}`,
+      startTime.toISOString(),
+      endTime.toISOString(),
     ],
     {
-      // revalidate: 60 * 60, // 1 hour
-      revalidate: 60 * 60 * 24, // daily
-      tags: [TAGS.PROOFS, TAGS.BLOCKS],
+      revalidate: 60 * 60 * 3, // 3 hours
+      tags: [TAGS.PROOFS, TAGS.BLOCKS, TAGS.CLUSTERS, TAGS.TEAMS],
     }
-  )(startOfDay, endOfDay)
+  )(startTime, endTime)
 }
