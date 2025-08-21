@@ -8,7 +8,10 @@ The aim is to establish a public good that evolves into the standard for Ethereu
 
 ### What is zkVM?
 
-A zkVM (Zero-Knowledge Virtual Machine) is a virtual machine that leverages [zero-knowledge proofs](https://ethereum.org/en/zero-knowledge-proofs/) for private and verifiable computation on generic programs. It is a broader concept than a zkEVM (Zero-Knowledge Ethereum Virtual Machine), which is a specific type of zkVM designed to execute Ethereum smart contracts.
+A Zero-Knowledge Virtual Machine (zkVM) is a virtual machine that leverages SNARKs to enable cryptographic proofs (SNARKs) of the execution of a guest program that can then be publicly verified without the need to re-execute the computation.
+This is a broader concept than a zkEVM, which is a specific type of zkVM tailored to the EVM rather than a general purpose ISA such as RISC-V, although the use of a zkVM to prove execution of the EVM is a common use case, and the EVM running as guest program on a zkVM may be referred to as a zkEVM.
+
+It is important to note that while we refer to zkVMs, it should not be assumed that the proofs they produce are zero-knowledge.
 
 ### What are SNARKs?
 
