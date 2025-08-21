@@ -1,3 +1,5 @@
+import { Cpu } from "lucide-react"
+
 import {
   BlockBase,
   CloudInstanceBase,
@@ -12,7 +14,6 @@ import {
   ZkvmVersion,
 } from "@/lib/types"
 
-import Cpu from "@/components/svgs/cpu.svg"
 import * as Info from "@/components/ui/info"
 import Link from "@/components/ui/link"
 import {
@@ -237,7 +238,7 @@ const ProofRow = ({ proof, block }: ProofRowProps) => {
           {isAvailable && provingCost ? (
             <Popover>
               <PopoverTrigger className="flex items-center gap-2">
-                {formatUsd(provingCost)} <Cpu />
+                {formatUsd(provingCost)} <Cpu className="size-5" />
               </PopoverTrigger>
               {cluster && machines && (
                 <PopoverContent>
