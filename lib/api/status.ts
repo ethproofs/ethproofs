@@ -24,7 +24,11 @@ export interface MissingProofsStatus {
   total_missing: number
   teams: MissingProofTeam[]
   checked_at: string
-  block_range: {
+  missing_block_range: {
+    start: number | null
+    end: number | null
+  }
+  total_block_range: {
     start: number | null
     end: number | null
   }
@@ -87,13 +91,37 @@ export const fetchMissingProofsStatus = async (
         )
         .orderBy(blocks.block_number)
 
-      // Calculate block range for metadata
-      const blockNumbers = missingProofsData.map((row) =>
+      // Get total block range that was checked (all blocks in time range)
+      const totalBlocksData = await db
+        .select({
+          block_number: blocks.block_number,
+        })
+        .from(blocks)
+        .where(
+          and(
+            gte(blocks.timestamp, startTime.toISOString()),
+            lt(blocks.timestamp, endTime.toISOString()),
+            sql`${blocks.block_number} % 100 = 0`
+          )
+        )
+        .orderBy(blocks.block_number)
+
+      // Calculate block ranges for metadata
+      const missingBlockNumbers = missingProofsData.map((row) =>
         Number(row.block_number)
       )
-      const blockRange = {
-        start: blockNumbers.length > 0 ? Math.min(...blockNumbers) : null,
-        end: blockNumbers.length > 0 ? Math.max(...blockNumbers) : null,
+      const totalBlockNumbers = totalBlocksData.map((row) =>
+        Number(row.block_number)
+      )
+      
+      const missingBlockRange = {
+        start: missingBlockNumbers.length > 0 ? Math.min(...missingBlockNumbers) : null,
+        end: missingBlockNumbers.length > 0 ? Math.max(...missingBlockNumbers) : null,
+      }
+      
+      const totalBlockRange = {
+        start: totalBlockNumbers.length > 0 ? Math.min(...totalBlockNumbers) : null,
+        end: totalBlockNumbers.length > 0 ? Math.max(...totalBlockNumbers) : null,
       }
 
       // Group data by team and cluster
@@ -136,7 +164,8 @@ export const fetchMissingProofsStatus = async (
         total_missing: missingProofsData.length,
         teams: Array.from(teamsMap.values()),
         checked_at: new Date().toISOString(),
-        block_range: blockRange,
+        missing_block_range: missingBlockRange,
+        total_block_range: totalBlockRange,
         time_range: {
           start: startTime.toISOString(),
           end: endTime.toISOString(),
