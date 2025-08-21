@@ -5,7 +5,7 @@ import Link from "next/link"
 import { Alert } from "@/components/ui/alert"
 import { Card } from "@/components/ui/card"
 
-import { fetchMissingProofsStatus, MissingProofsStatus } from "@/lib/api/status"
+import { fetchMissingProofsStatus } from "@/lib/api/status"
 import { getMetadata } from "@/lib/metadata"
 
 export const metadata: Metadata = getMetadata({
@@ -34,7 +34,10 @@ export default async function StatusPage() {
             <h2 className="mb-4 text-xl font-semibold">current status</h2>
 
             <div className="mb-4 text-sm text-body-secondary">
-              <div>checked at: {checkedAt.toLocaleString()}</div>
+              <div>
+                checked at: {checkedAt.toLocaleString()} (
+                {Intl.DateTimeFormat().resolvedOptions().timeZone})
+              </div>
               <div>
                 monitoring last 6 hours: {timeRangeStart.toLocaleString()} →{" "}
                 {timeRangeEnd.toLocaleString()}
