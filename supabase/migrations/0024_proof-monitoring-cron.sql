@@ -179,13 +179,13 @@ BEGIN
         WHERE cluster_id = cluster.cluster_id;
 
         IF array_length(missing_blocks, 1) > 3 THEN
-            display_blocks := '[' || missing_blocks[1] || '](https://ethproofs\.com/block/' || missing_blocks[1] || '), [' || missing_blocks[2] || '](https://ethproofs\.com/block/' || missing_blocks[2] || '), [' || missing_blocks[3] || '](https://ethproofs\.com/block/' || missing_blocks[3] || ') \+' || (array_length(missing_blocks, 1) - 3);
+            display_blocks := '[' || missing_blocks[1] || '](https://ethproofs\.org/block/' || missing_blocks[1] || '), [' || missing_blocks[2] || '](https://ethproofs\.org/block/' || missing_blocks[2] || '), [' || missing_blocks[3] || '](https://ethproofs\.org/block/' || missing_blocks[3] || ') \+' || (array_length(missing_blocks, 1) - 3);
         ELSE
-            SELECT string_agg('[' || block_num || '](https://ethproofs\.com/block/' || block_num || ')', ', ') INTO display_blocks
+            SELECT string_agg('[' || block_num || '](https://ethproofs\.org/block/' || block_num || ')', ', ') INTO display_blocks
             FROM unnest(missing_blocks) AS block_num;
         END IF;
 
-        cluster_link := E'https://ethproofs.com/cluster/' || cluster.cluster_id;
+        cluster_link := E'https://ethproofs.org/cluster/' || cluster.cluster_id;
         cluster_link := escape_markdown_v2(cluster_link);
 
         message_text := message_text || E'▪️ *' || escape_markdown_v2(cluster.team_name) || '* \- [' || escape_markdown_v2(cluster.cluster_nickname) || ' \(…' || escape_markdown_v2(cluster.cluster_id_suffix) || E'\\)\](' || cluster_link || E')\n';
@@ -259,9 +259,9 @@ BEGIN
               AND cluster_id = cluster_record.cluster_id;
 
             IF array_length(missing_blocks, 1) > 3 THEN
-                display_blocks := '[' || missing_blocks[1] || '](https://ethproofs\.com/block/' || missing_blocks[1] || '), [' || missing_blocks[2] || '](https://ethproofs\.com/block/' || missing_blocks[2] || '), [' || missing_blocks[3] || '](https://ethproofs\.com/block/' || missing_blocks[3] || ') \+' || (array_length(missing_blocks, 1) - 3);
+                display_blocks := '[' || missing_blocks[1] || '](https://ethproofs\.org/block/' || missing_blocks[1] || '), [' || missing_blocks[2] || '](https://ethproofs\.org/block/' || missing_blocks[2] || '), [' || missing_blocks[3] || '](https://ethproofs\.org/block/' || missing_blocks[3] || ') \+' || (array_length(missing_blocks, 1) - 3);
             ELSE
-                SELECT string_agg('[' || block_num || '](https://ethproofs\.com/block/' || block_num || ')', ', ') INTO display_blocks
+                SELECT string_agg('[' || block_num || '](https://ethproofs\.org/block/' || block_num || ')', ', ') INTO display_blocks
                 FROM unnest(missing_blocks) AS block_num;
             END IF;
 
@@ -269,7 +269,7 @@ BEGIN
                 message_text := message_text || E'\n';
             END IF;
 
-            cluster_link := E'https://ethproofs.com/cluster/' || cluster_record.cluster_id;
+            cluster_link := E'https://ethproofs.org/cluster/' || cluster_record.cluster_id;
             cluster_link := escape_markdown_v2(cluster_link);
 
             message_text := message_text || E' • [*' || cluster_record.cluster_nickname || '* \(…' || cluster_record.cluster_id_suffix || '\)](' || cluster_link || E')\n' ||

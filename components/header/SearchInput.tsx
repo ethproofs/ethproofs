@@ -1,6 +1,7 @@
 "use client"
 
 import { useRef, useState } from "react"
+import { Search } from "lucide-react"
 import { useRouter } from "next/navigation"
 import { useDebounceValue, useEventListener } from "usehooks-ts"
 import { isHash } from "viem"
@@ -8,7 +9,6 @@ import { useQuery } from "@tanstack/react-query"
 
 import type { BlockBase } from "@/lib/types"
 
-import Magnifier from "@/components/svgs/magnifier.svg"
 import { Input } from "@/components/ui/input"
 
 import { cn } from "@/lib/utils"
@@ -104,7 +104,7 @@ const SearchInput = ({
             !!query.length && "hidden"
           )}
         >
-          <Magnifier className="text-primary" />
+          <Search className="size-4 rotate-90 text-primary" />
         </div>
       </div>
 
