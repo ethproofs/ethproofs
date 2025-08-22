@@ -470,13 +470,6 @@ export const proofs = pgTable(
       .references(() => blocks.block_number),
     proof_status: text("proof_status").notNull(),
     proving_cycles: bigint("proving_cycles", { mode: "number" }),
-    // TODO: drop this ref, will be replaced by cluster_version_id
-    team_id: uuid()
-      .notNull()
-      .references(() => teams.id, {
-        onDelete: "cascade",
-        onUpdate: "cascade",
-      }),
     created_at: timestamp("created_at", {
       withTimezone: true,
       mode: "string",
@@ -682,9 +675,9 @@ export const teamsSummary = pgView("teams_summary", {
       COALESCE(avg(CASE WHEN NOT c.is_multi_machine THEN p.proving_time ELSE NULL END), 0::numeric) AS avg_proving_time_single,
       sum(CASE WHEN NOT c.is_multi_machine THEN 1 ELSE 0 END) AS total_proofs_single
     FROM teams t
-    LEFT JOIN proofs p ON t.id = p.team_id AND p.proof_status = 'proved'::text
-    LEFT JOIN cluster_versions cv ON p.cluster_version_id = cv.id
-    LEFT JOIN clusters c ON cv.cluster_id = c.id
+    LEFT JOIN clusters c ON t.id = c.team_id
+    LEFT JOIN cluster_versions cv ON c.id = cv.cluster_id
+    LEFT JOIN proofs p ON cv.id = p.cluster_version_id AND p.proof_status = 'proved'::text
     LEFT JOIN cluster_machines cm ON cv.id = cm.cluster_version_id
     LEFT JOIN cloud_instances ci ON cm.cloud_instance_id = ci.id
     GROUP BY t.id`
