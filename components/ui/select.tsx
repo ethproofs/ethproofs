@@ -4,8 +4,6 @@ import * as React from "react"
 import { Check, ChevronDown, ChevronUp } from "lucide-react"
 import * as SelectPrimitive from "@radix-ui/react-select"
 
-import ArrowDropdown from "@/components/svgs/arrow-dropdown.svg"
-
 import { cn } from "@/lib/utils"
 
 const Select = SelectPrimitive.Root
@@ -29,7 +27,7 @@ const SelectTrigger = React.forwardRef<
   >
     {children}
     <SelectPrimitive.Icon asChild>
-      <ArrowDropdown className="size-4" />
+      <ChevronDown className="size-4" />
     </SelectPrimitive.Icon>
   </SelectPrimitive.Trigger>
 ))

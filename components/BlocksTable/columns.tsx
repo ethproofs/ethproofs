@@ -1,5 +1,6 @@
 "use client"
 
+import { ArrowRight } from "lucide-react"
 import { ColumnDef } from "@tanstack/react-table"
 
 import type { Block, Proof, ProofWithCluster } from "@/lib/types"
@@ -8,7 +9,6 @@ import BlockNumber from "@/components/BlockNumber"
 import { ColumnHeader } from "@/components/ColumnHeader"
 import { metrics } from "@/components/Metrics"
 import Null from "@/components/Null"
-import ArrowRight from "@/components/svgs/arrow-right.svg"
 import { ButtonLink } from "@/components/ui/button"
 import * as Info from "@/components/ui/info"
 
