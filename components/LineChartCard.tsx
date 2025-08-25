@@ -230,7 +230,7 @@ const LineChartCard = ({
               median
             </DropdownMenuCheckboxItem>
             {/* <DropdownMenuSeparator /> */}
-            {/* // TODO: Add individual teams */}
+            {/* // TODO:TEAM - add individual teams */}
           </DropdownMenuContent>
         </DropdownMenu>
 

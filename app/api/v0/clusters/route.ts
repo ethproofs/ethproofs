@@ -137,7 +137,7 @@ export const POST = withAuth(async ({ request, user }) => {
       .values({
         cluster_id: cluster.id,
         zkvm_version_id,
-        // TODO: remove this once we have a real version management system for users
+        // TODO:TEAM - remove this once we have a real version management system for users
         version: "v0.1",
       })
       .returning({ id: clusterVersions.id })

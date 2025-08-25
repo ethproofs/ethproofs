@@ -26,8 +26,7 @@ const BlocksSection = async () => {
     fetchProofsPerStatusCount(yesterday, now),
   ])
 
-  // TODO: run this in parallel with the other queries once we fix
-  // performance issues
+  // TODO:TEAM - run this in parallel with the other queries once we fix performance issues
   const recentProofsPerStatusCount = await fetchProofsPerStatusCount(
     thirtyDaysAgo,
     now

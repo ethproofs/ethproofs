@@ -33,7 +33,7 @@ type BenchmarkItemProps = {
 }
 
 const DataCell = ({ timeMs, costUsd, color }: BenchmarkItemProps) => (
-  // TODO: Add Popover for remaining details of benchmark block
+  // TODO:TEAM - add popover for remaining details of benchmark block
   <div className="flex flex-col">
     <div
       className={cn(
@@ -127,9 +127,9 @@ const KillersTable = ({
           key={benchmark.id}
           className="flex flex-col items-center font-sans"
         >
-          {/* <MetricInfo label={benchmark.operation_type}>
-            TODO: Popover details for killer type
-          </MetricInfo> */}
+          <MetricInfo label={benchmark.operation_type}>
+            TODO:TEAM - popover details for killer type
+          </MetricInfo>
           <div className="text-center text-level-worst">
             {benchmark.display_name}
           </div>

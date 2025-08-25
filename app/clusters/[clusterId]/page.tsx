@@ -75,7 +75,7 @@ export default async function ClusterDetailsPage({
   const clusterMachines = lastVersion.cluster_machines
   const isMultiMachine = isMultiMachineCluster(clusterMachines)
 
-  // TODO: Replace with killer-block proofs data
+  // TODO:TEAM - replace with killer-block proofs data
   const killerBlockProofs = [] as RowProof[]
 
   const hasPhysicalMachinesInCluster = hasPhysicalMachines(clusterMachines)
@@ -143,12 +143,11 @@ export default async function ClusterDetailsPage({
         )}
       </div>
 
-      {/* TODO: Refactor to use Card */}
       <Card className="mx-auto w-fit">
         <KPIs items={clusterSummaryItems} layout="flipped" />
       </Card>
 
-      {/* TODO: Track this metric */}
+      {/* TODO:TEAM - track this metric */}
       {isUnverifiableZkvm(zkvm.slug) && (
         <aside className="flex items-center justify-center gap-2 rounded border border-level-worst bg-background-accent px-6 py-4 text-center text-level-worst">
           disclaimer: this cluster is submitting proofs that cannot be
@@ -329,7 +328,7 @@ export default async function ClusterDetailsPage({
         )}
       </section>
 
-      {/* // TODO: Mobile responsiveness */}
+      {/* TODO:TEAM - mobile responsiveness */}
       <section className="flex flex-col">
         <div className="flex items-center gap-2 px-6">
           <Box strokeWidth="1" className="size-11" />
