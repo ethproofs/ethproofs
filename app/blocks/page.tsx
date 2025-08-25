@@ -37,37 +37,16 @@ export default async function BlocksPage() {
         blocks
       </h1>
       <div className="mx-auto flex max-w-screen-xl flex-1 flex-col items-center gap-20 [&>section]:w-full">
-        {/* <section id="chart">
-          <LineChartCard
-            id="cost-chart"
-            className="w-full"
-            title="cost"
-            hideKPIs
-            format="currency"
-            data={[]}
-            totalAvg={0}
-            totalMedian={0}
-          />
-        </section> */}
-
         <section>
           <BasicTabs
             contentRight={
               <HydrationBoundary state={dehydrate(queryClient)}>
-                <BlocksTable
-                  teams={teams}
-                  className="px-6"
-                  machineType="single"
-                />
+                <BlocksTable teams={teams} machineType="single" />
               </HydrationBoundary>
             }
             contentLeft={
               <HydrationBoundary state={dehydrate(queryClient)}>
-                <BlocksTable
-                  teams={teams}
-                  className="px-6"
-                  machineType="multi"
-                />
+                <BlocksTable teams={teams} machineType="multi" />
               </HydrationBoundary>
             }
           />
