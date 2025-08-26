@@ -45,7 +45,7 @@ export default function Providers({ children }: { children: React.ReactNode }) {
   return (
     <QueryClientProvider client={queryClient}>
       <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-        <SidebarProvider>{children}</SidebarProvider>
+        <SidebarProvider defaultOpen={true}>{children}</SidebarProvider>
       </ThemeProvider>
     </QueryClientProvider>
   )
