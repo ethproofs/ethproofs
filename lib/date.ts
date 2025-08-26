@@ -66,7 +66,7 @@ export function intervalToReadable(interval: string): string {
  */
 export function timestampWithinDays(
   timestamp?: string | null,
-  days = 5 * 365 // TODO: Change back to 30-day default for production
+  days = 30
 ): boolean {
   if (!timestamp) return false
   return Date.now() - new Date(timestamp).getTime() < days * 24 * 60 * 60 * 1000
