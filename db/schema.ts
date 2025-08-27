@@ -106,6 +106,7 @@ export const clusters = pgTable(
         onUpdate: "cascade",
       }),
     description: text(),
+    // TODO:TEAM - remove this field
     // DEPRECATED: use cluster_hardware table instead
     hardware: text(),
     cycle_type: varchar("cycle_type"),
@@ -470,7 +471,7 @@ export const proofs = pgTable(
       .references(() => blocks.block_number),
     proof_status: text("proof_status").notNull(),
     proving_cycles: bigint("proving_cycles", { mode: "number" }),
-    // TODO: drop this ref, will be replaced by cluster_version_id
+    // TODO:TEAM - drop this ref, has it been replaced by cluster_version_id?
     team_id: uuid()
       .notNull()
       .references(() => teams.id, {

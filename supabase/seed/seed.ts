@@ -2,7 +2,7 @@ import { setSeconds } from "date-fns"
 import { copycat, faker } from "@snaplet/copycat"
 import { createSeedClient } from "@snaplet/seed"
 
-// TODO: Needs updating
+// TODO:TEAM - needs updating
 
 const zkvmProviderProfiles = [
   {

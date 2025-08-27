@@ -1559,12 +1559,12 @@
                   "proving_time": {
                     "type": "number",
                     "exclusiveMinimum": 0,
-                    "description": "Milliseconds taken to generate the proof"
+                    "description": "Time in milliseconds taken to generate the proof including witness generation. It excludes time taken for data fetching and any latency to submit the proof."
                   },
                   "proving_cycles": {
                     "type": "integer",
                     "exclusiveMinimum": 0,
-                    "description": "Number of cycles taken to generate the proof"
+                    "description": "Number of cycles taken to generate the proof."
                   },
                   "proof": {
                     "type": "string",

@@ -3,7 +3,7 @@ import { cva, type VariantProps } from "class-variance-authority"
 
 import { cn } from "@/lib/utils"
 
-import { TooltipContentHeader } from "../ui/tooltip"
+import { TooltipContentHeader } from "./tooltip"
 
 type LabelProps = {
   className?: string

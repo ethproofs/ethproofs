@@ -1,0 +1,5 @@
+[[redirects]]
+  from = "https://ethproofs.com/*"
+  to = "https://ethproofs.org/:splat"
+  status = 301
+  force = true
