@@ -162,7 +162,9 @@ const metrics: Record<Metric, MetricDetails> = {
         <primitives.provingTime.Definition />
 
         <Info.Description>
-          Time spent generating proof of execution.
+          Time spent to generate the proof including witness generation. It
+          excludes data fetching from the EL node and any latency to submit the
+          proof.
         </Info.Description>
 
         {average ? (

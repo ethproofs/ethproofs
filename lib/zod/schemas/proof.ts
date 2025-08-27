@@ -17,13 +17,15 @@ export const provedProofSchema = baseProofSchema.extend({
   proving_time: z
     .number()
     .positive("proving_time must be a positive number")
-    .describe("Milliseconds taken to generate the proof"),
+    .describe(
+      "Time in milliseconds taken to generate the proof including witness generation. It excludes time taken for data fetching and any latency to submit the proof."
+    ),
   proving_cycles: z
     .number()
     .int()
     .positive("proving_cycles must be a positive integer")
     .optional()
-    .describe("Number of cycles taken to generate the proof"),
+    .describe("Number of cycles taken to generate the proof."),
   proof: z
     .string()
     // Temporarily disable proof validation to test if its giving maximum call stack error

@@ -11,7 +11,7 @@ const client = createClient(
 )
 
 // Temporary script to create keys manually
-// TODO: Replace with a proper auth system
+// TODO:TEAM - replace with a proper auth system
 
 async function main() {
   const token = nanoid(24)

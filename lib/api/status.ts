@@ -113,15 +113,23 @@ export const fetchMissingProofsStatus = async (
       const totalBlockNumbers = totalBlocksData.map((row) =>
         Number(row.block_number)
       )
-      
+
       const missingBlockRange = {
-        start: missingBlockNumbers.length > 0 ? Math.min(...missingBlockNumbers) : null,
-        end: missingBlockNumbers.length > 0 ? Math.max(...missingBlockNumbers) : null,
+        start:
+          missingBlockNumbers.length > 0
+            ? Math.min(...missingBlockNumbers)
+            : null,
+        end:
+          missingBlockNumbers.length > 0
+            ? Math.max(...missingBlockNumbers)
+            : null,
       }
-      
+
       const totalBlockRange = {
-        start: totalBlockNumbers.length > 0 ? Math.min(...totalBlockNumbers) : null,
-        end: totalBlockNumbers.length > 0 ? Math.max(...totalBlockNumbers) : null,
+        start:
+          totalBlockNumbers.length > 0 ? Math.min(...totalBlockNumbers) : null,
+        end:
+          totalBlockNumbers.length > 0 ? Math.max(...totalBlockNumbers) : null,
       }
 
       // Group data by team and cluster

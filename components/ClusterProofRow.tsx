@@ -41,7 +41,7 @@ export const ClusterProofRow = ({ proof }: ClusterProofRowProps) => {
     ? costPerProof / (proof.block.gas_used / 1e6)
     : null
 
-  // TODO: Mobile responsiveness
+  // TODO:TEAM - mobile responsiveness
   return (
     <div
       data-grid-template-areas="cluster-proof"

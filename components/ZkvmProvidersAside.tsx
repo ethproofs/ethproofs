@@ -47,7 +47,7 @@ const ZkvmProviderAside = ({ team, zkvm }: { team: Team; zkvm: Zkvm }) => {
   )
 }
 
-// TODO: Handle special request from MatterLabs, but this should be offered to all teams
+// TODO:TEAM - handle special case requests for any team
 const ZkvmProviderAsideMatterLabs = ({
   team,
   zkvm,

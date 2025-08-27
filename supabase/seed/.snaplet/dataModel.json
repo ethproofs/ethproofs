@@ -201,12 +201,8 @@
           "isRequired": true,
           "kind": "object",
           "relationName": "api_auth_tokensToteams",
-          "relationFromFields": [
-            "team_id"
-          ],
-          "relationToFields": [
-            "id"
-          ],
+          "relationFromFields": ["team_id"],
+          "relationToFields": ["id"],
           "isList": false,
           "isId": false,
           "isGenerated": false,
@@ -217,16 +213,12 @@
       "uniqueConstraints": [
         {
           "name": "api_auth_tokens_pkey",
-          "fields": [
-            "id"
-          ],
+          "fields": ["id"],
           "nullNotDistinct": false
         },
         {
           "name": "api_auth_tokens_token_unique",
-          "fields": [
-            "token"
-          ],
+          "fields": ["token"],
           "nullNotDistinct": false
         }
       ]
@@ -392,9 +384,7 @@
       "uniqueConstraints": [
         {
           "name": "benchmarks_pkey",
-          "fields": [
-            "id"
-          ],
+          "fields": ["id"],
           "nullNotDistinct": false
         }
       ]
@@ -520,9 +510,7 @@
       "uniqueConstraints": [
         {
           "name": "blocks_pkey",
-          "fields": [
-            "block_number"
-          ],
+          "fields": ["block_number"],
           "nullNotDistinct": false
         }
       ]
@@ -732,9 +720,7 @@
       "uniqueConstraints": [
         {
           "name": "bname",
-          "fields": [
-            "name"
-          ],
+          "fields": ["name"],
           "nullNotDistinct": false
         }
       ]
@@ -1020,12 +1006,8 @@
           "isRequired": true,
           "kind": "object",
           "relationName": "cloud_instancesTocloud_providers",
-          "relationFromFields": [
-            "provider_id"
-          ],
-          "relationToFields": [
-            "id"
-          ],
+          "relationFromFields": ["provider_id"],
+          "relationToFields": ["id"],
           "isList": false,
           "isId": false,
           "isGenerated": false,
@@ -1050,16 +1032,12 @@
       "uniqueConstraints": [
         {
           "name": "cloud_instances_instance_name_unique",
-          "fields": [
-            "instance_name"
-          ],
+          "fields": ["instance_name"],
           "nullNotDistinct": false
         },
         {
           "name": "cloud_instances_pkey",
-          "fields": [
-            "id"
-          ],
+          "fields": ["id"],
           "nullNotDistinct": false
         }
       ]
@@ -1147,16 +1125,12 @@
       "uniqueConstraints": [
         {
           "name": "cloud_providers_name_unique",
-          "fields": [
-            "name"
-          ],
+          "fields": ["name"],
           "nullNotDistinct": false
         },
         {
           "name": "cloud_providers_pkey",
-          "fields": [
-            "id"
-          ],
+          "fields": ["id"],
           "nullNotDistinct": false
         }
       ]
@@ -1260,12 +1234,8 @@
           "isRequired": true,
           "kind": "object",
           "relationName": "cluster_benchmarksTobenchmarks",
-          "relationFromFields": [
-            "benchmark_id"
-          ],
-          "relationToFields": [
-            "id"
-          ],
+          "relationFromFields": ["benchmark_id"],
+          "relationToFields": ["id"],
           "isList": false,
           "isId": false,
           "isGenerated": false,
@@ -1278,12 +1248,8 @@
           "isRequired": true,
           "kind": "object",
           "relationName": "cluster_benchmarksToclusters",
-          "relationFromFields": [
-            "cluster_id"
-          ],
-          "relationToFields": [
-            "id"
-          ],
+          "relationFromFields": ["cluster_id"],
+          "relationToFields": ["id"],
           "isList": false,
           "isId": false,
           "isGenerated": false,
@@ -1294,9 +1260,7 @@
       "uniqueConstraints": [
         {
           "name": "cluster_benchmarks_pkey",
-          "fields": [
-            "id"
-          ],
+          "fields": ["id"],
           "nullNotDistinct": false
         }
       ]
@@ -1400,12 +1364,8 @@
           "isRequired": true,
           "kind": "object",
           "relationName": "cluster_machinesTocloud_instances",
-          "relationFromFields": [
-            "cloud_instance_id"
-          ],
-          "relationToFields": [
-            "id"
-          ],
+          "relationFromFields": ["cloud_instance_id"],
+          "relationToFields": ["id"],
           "isList": false,
           "isId": false,
           "isGenerated": false,
@@ -1418,12 +1378,8 @@
           "isRequired": true,
           "kind": "object",
           "relationName": "cluster_machinesTocluster_versions",
-          "relationFromFields": [
-            "cluster_version_id"
-          ],
-          "relationToFields": [
-            "id"
-          ],
+          "relationFromFields": ["cluster_version_id"],
+          "relationToFields": ["id"],
           "isList": false,
           "isId": false,
           "isGenerated": false,
@@ -1436,12 +1392,8 @@
           "isRequired": false,
           "kind": "object",
           "relationName": "cluster_machinesTomachines",
-          "relationFromFields": [
-            "machine_id"
-          ],
-          "relationToFields": [
-            "id"
-          ],
+          "relationFromFields": ["machine_id"],
+          "relationToFields": ["id"],
           "isList": false,
           "isId": false,
           "isGenerated": false,
@@ -1452,9 +1404,7 @@
       "uniqueConstraints": [
         {
           "name": "cluster_configurations_pkey",
-          "fields": [
-            "id"
-          ],
+          "fields": ["id"],
           "nullNotDistinct": false
         }
       ]
@@ -1558,12 +1508,8 @@
           "isRequired": true,
           "kind": "object",
           "relationName": "cluster_versionsToclusters",
-          "relationFromFields": [
-            "cluster_id"
-          ],
-          "relationToFields": [
-            "id"
-          ],
+          "relationFromFields": ["cluster_id"],
+          "relationToFields": ["id"],
           "isList": false,
           "isId": false,
           "isGenerated": false,
@@ -1576,12 +1522,8 @@
           "isRequired": true,
           "kind": "object",
           "relationName": "cluster_versionsTozkvm_versions",
-          "relationFromFields": [
-            "zkvm_version_id"
-          ],
-          "relationToFields": [
-            "id"
-          ],
+          "relationFromFields": ["zkvm_version_id"],
+          "relationToFields": ["id"],
           "isList": false,
           "isId": false,
           "isGenerated": false,
@@ -1620,9 +1562,7 @@
       "uniqueConstraints": [
         {
           "name": "cluster_versions_pkey",
-          "fields": [
-            "id"
-          ],
+          "fields": ["id"],
           "nullNotDistinct": false
         }
       ]
@@ -1820,12 +1760,8 @@
           "isRequired": true,
           "kind": "object",
           "relationName": "clustersToteams",
-          "relationFromFields": [
-            "team_id"
-          ],
-          "relationToFields": [
-            "id"
-          ],
+          "relationFromFields": ["team_id"],
+          "relationToFields": ["id"],
           "isList": false,
           "isId": false,
           "isGenerated": false,
@@ -1864,9 +1800,7 @@
       "uniqueConstraints": [
         {
           "name": "clusters_pkey",
-          "fields": [
-            "id"
-          ],
+          "fields": ["id"],
           "nullNotDistinct": false
         }
       ]
@@ -1966,12 +1900,8 @@
           "isRequired": false,
           "kind": "object",
           "relationName": "extensionsTotenants",
-          "relationFromFields": [
-            "tenant_external_id"
-          ],
-          "relationToFields": [
-            "external_id"
-          ],
+          "relationFromFields": ["tenant_external_id"],
+          "relationToFields": ["external_id"],
           "isList": false,
           "isId": false,
           "isGenerated": false,
@@ -1982,10 +1912,7 @@
       "uniqueConstraints": [
         {
           "name": "extensions_tenant_external_id_type_index",
-          "fields": [
-            "tenant_external_id",
-            "type"
-          ],
+          "fields": ["tenant_external_id", "type"],
           "nullNotDistinct": false
         }
       ]
@@ -2263,9 +2190,7 @@
       "uniqueConstraints": [
         {
           "name": "hooks_pkey",
-          "fields": [
-            "id"
-          ],
+          "fields": ["id"],
           "nullNotDistinct": false
         }
       ]
@@ -2503,12 +2428,8 @@
           "isRequired": true,
           "kind": "object",
           "relationName": "identitiesTousers",
-          "relationFromFields": [
-            "user_id"
-          ],
-          "relationToFields": [
-            "id"
-          ],
+          "relationFromFields": ["user_id"],
+          "relationToFields": ["id"],
           "isList": false,
           "isId": false,
           "isGenerated": false,
@@ -2519,10 +2440,7 @@
       "uniqueConstraints": [
         {
           "name": "identities_provider_id_provider_unique",
-          "fields": [
-            "provider",
-            "provider_id"
-          ],
+          "fields": ["provider", "provider_id"],
           "nullNotDistinct": false
         }
       ]
@@ -2814,9 +2732,7 @@
       "uniqueConstraints": [
         {
           "name": "machines_pkey",
-          "fields": [
-            "id"
-          ],
+          "fields": ["id"],
           "nullNotDistinct": false
         }
       ]
@@ -2942,10 +2858,7 @@
       "uniqueConstraints": [
         {
           "name": "messages_pkey",
-          "fields": [
-            "id",
-            "inserted_at"
-          ],
+          "fields": ["id", "inserted_at"],
           "nullNotDistinct": false
         }
       ]
@@ -3031,12 +2944,8 @@
           "isRequired": true,
           "kind": "object",
           "relationName": "mfa_amr_claimsTosessions",
-          "relationFromFields": [
-            "session_id"
-          ],
-          "relationToFields": [
-            "id"
-          ],
+          "relationFromFields": ["session_id"],
+          "relationToFields": ["id"],
           "isList": false,
           "isId": false,
           "isGenerated": false,
@@ -3047,10 +2956,7 @@
       "uniqueConstraints": [
         {
           "name": "mfa_amr_claims_session_id_authentication_method_pkey",
-          "fields": [
-            "authentication_method",
-            "session_id"
-          ],
+          "fields": ["authentication_method", "session_id"],
           "nullNotDistinct": false
         }
       ]
@@ -3164,12 +3070,8 @@
           "isRequired": true,
           "kind": "object",
           "relationName": "mfa_challengesTomfa_factors",
-          "relationFromFields": [
-            "factor_id"
-          ],
-          "relationToFields": [
-            "id"
-          ],
+          "relationFromFields": ["factor_id"],
+          "relationToFields": ["id"],
           "isList": false,
           "isId": false,
           "isGenerated": false,
@@ -3358,12 +3260,8 @@
           "isRequired": true,
           "kind": "object",
           "relationName": "mfa_factorsTousers",
-          "relationFromFields": [
-            "user_id"
-          ],
-          "relationToFields": [
-            "id"
-          ],
+          "relationFromFields": ["user_id"],
+          "relationToFields": ["id"],
           "isList": false,
           "isId": false,
           "isGenerated": false,
@@ -3388,25 +3286,17 @@
       "uniqueConstraints": [
         {
           "name": "mfa_factors_last_challenged_at_key",
-          "fields": [
-            "last_challenged_at"
-          ],
+          "fields": ["last_challenged_at"],
           "nullNotDistinct": false
         },
         {
           "name": "mfa_factors_user_friendly_name_unique",
-          "fields": [
-            "friendly_name",
-            "user_id"
-          ],
+          "fields": ["friendly_name", "user_id"],
           "nullNotDistinct": false
         },
         {
           "name": "unique_phone_factor_per_user",
-          "fields": [
-            "phone",
-            "user_id"
-          ],
+          "fields": ["phone", "user_id"],
           "nullNotDistinct": false
         }
       ]
@@ -3476,9 +3366,7 @@
       "uniqueConstraints": [
         {
           "name": "migrations_name_key",
-          "fields": [
-            "name"
-          ],
+          "fields": ["name"],
           "nullNotDistinct": false
         }
       ]
@@ -3520,9 +3408,7 @@
       "uniqueConstraints": [
         {
           "name": "migrations_pkey",
-          "fields": [
-            "version"
-          ],
+          "fields": ["version"],
           "nullNotDistinct": false
         }
       ]
@@ -3720,12 +3606,8 @@
           "isRequired": false,
           "kind": "object",
           "relationName": "objectsTobuckets",
-          "relationFromFields": [
-            "bucket_id"
-          ],
-          "relationToFields": [
-            "id"
-          ],
+          "relationFromFields": ["bucket_id"],
+          "relationToFields": ["id"],
           "isList": false,
           "isId": false,
           "isGenerated": false,
@@ -3736,28 +3618,17 @@
       "uniqueConstraints": [
         {
           "name": "bucketid_objname",
-          "fields": [
-            "bucket_id",
-            "name"
-          ],
+          "fields": ["bucket_id", "name"],
           "nullNotDistinct": false
         },
         {
           "name": "idx_name_bucket_level_unique",
-          "fields": [
-            "bucket_id",
-            "level",
-            "name"
-          ],
+          "fields": ["bucket_id", "level", "name"],
           "nullNotDistinct": false
         },
         {
           "name": "objects_bucket_id_level_idx",
-          "fields": [
-            "bucket_id",
-            "level",
-            "name"
-          ],
+          "fields": ["bucket_id", "level", "name"],
           "nullNotDistinct": false
         }
       ]
@@ -3871,12 +3742,8 @@
           "isRequired": true,
           "kind": "object",
           "relationName": "one_time_tokensTousers",
-          "relationFromFields": [
-            "user_id"
-          ],
-          "relationToFields": [
-            "id"
-          ],
+          "relationFromFields": ["user_id"],
+          "relationToFields": ["id"],
           "isList": false,
           "isId": false,
           "isGenerated": false,
@@ -3887,10 +3754,7 @@
       "uniqueConstraints": [
         {
           "name": "one_time_tokens_user_id_token_type_key",
-          "fields": [
-            "token_type",
-            "user_id"
-          ],
+          "fields": ["token_type", "user_id"],
           "nullNotDistinct": false
         }
       ]
@@ -3976,12 +3840,8 @@
           "isRequired": true,
           "kind": "object",
           "relationName": "prefixesTobuckets",
-          "relationFromFields": [
-            "bucket_id"
-          ],
-          "relationToFields": [
-            "id"
-          ],
+          "relationFromFields": ["bucket_id"],
+          "relationToFields": ["id"],
           "isList": false,
           "isId": false,
           "isGenerated": false,
@@ -4060,16 +3920,12 @@
       "uniqueConstraints": [
         {
           "name": "programs_pkey",
-          "fields": [
-            "id"
-          ],
+          "fields": ["id"],
           "nullNotDistinct": false
         },
         {
           "name": "programs_verifier_id_unique",
-          "fields": [
-            "verifier_id"
-          ],
+          "fields": ["verifier_id"],
           "nullNotDistinct": false
         }
       ]
@@ -4271,12 +4127,8 @@
           "isRequired": true,
           "kind": "object",
           "relationName": "proofsToblocks",
-          "relationFromFields": [
-            "block_number"
-          ],
-          "relationToFields": [
-            "block_number"
-          ],
+          "relationFromFields": ["block_number"],
+          "relationToFields": ["block_number"],
           "isList": false,
           "isId": false,
           "isGenerated": false,
@@ -4289,12 +4141,8 @@
           "isRequired": true,
           "kind": "object",
           "relationName": "proofsTocluster_versions",
-          "relationFromFields": [
-            "cluster_version_id"
-          ],
-          "relationToFields": [
-            "id"
-          ],
+          "relationFromFields": ["cluster_version_id"],
+          "relationToFields": ["id"],
           "isList": false,
           "isId": false,
           "isGenerated": false,
@@ -4307,12 +4155,8 @@
           "isRequired": false,
           "kind": "object",
           "relationName": "proofsToprograms",
-          "relationFromFields": [
-            "program_id"
-          ],
-          "relationToFields": [
-            "id"
-          ],
+          "relationFromFields": ["program_id"],
+          "relationToFields": ["id"],
           "isList": false,
           "isId": false,
           "isGenerated": false,
@@ -4325,12 +4169,8 @@
           "isRequired": true,
           "kind": "object",
           "relationName": "proofsToteams",
-          "relationFromFields": [
-            "team_id"
-          ],
-          "relationToFields": [
-            "id"
-          ],
+          "relationFromFields": ["team_id"],
+          "relationToFields": ["id"],
           "isList": false,
           "isId": false,
           "isGenerated": false,
@@ -4341,17 +4181,12 @@
       "uniqueConstraints": [
         {
           "name": "proofs_pkey",
-          "fields": [
-            "proof_id"
-          ],
+          "fields": ["proof_id"],
           "nullNotDistinct": false
         },
         {
           "name": "unique_block_cluster_version",
-          "fields": [
-            "block_number",
-            "cluster_version_id"
-          ],
+          "fields": ["block_number", "cluster_version_id"],
           "nullNotDistinct": false
         }
       ]
@@ -4467,16 +4302,12 @@
       "uniqueConstraints": [
         {
           "name": "proofs_daily_stats_date_key",
-          "fields": [
-            "date"
-          ],
+          "fields": ["date"],
           "nullNotDistinct": false
         },
         {
           "name": "proofs_daily_stats_pkey",
-          "fields": [
-            "id"
-          ],
+          "fields": ["id"],
           "nullNotDistinct": false
         }
       ]
@@ -4608,12 +4439,8 @@
           "isRequired": true,
           "kind": "object",
           "relationName": "prover_daily_statsToteams",
-          "relationFromFields": [
-            "team_id"
-          ],
-          "relationToFields": [
-            "id"
-          ],
+          "relationFromFields": ["team_id"],
+          "relationToFields": ["id"],
           "isList": false,
           "isId": false,
           "isGenerated": false,
@@ -4624,17 +4451,12 @@
       "uniqueConstraints": [
         {
           "name": "prover_daily_stats_date_team_key",
-          "fields": [
-            "date",
-            "team_id"
-          ],
+          "fields": ["date", "team_id"],
           "nullNotDistinct": false
         },
         {
           "name": "prover_daily_stats_pkey",
-          "fields": [
-            "id"
-          ],
+          "fields": ["id"],
           "nullNotDistinct": false
         }
       ]
@@ -4738,12 +4560,8 @@
           "isRequired": false,
           "kind": "object",
           "relationName": "recursive_root_proofsToblocks",
-          "relationFromFields": [
-            "block_number"
-          ],
-          "relationToFields": [
-            "block_number"
-          ],
+          "relationFromFields": ["block_number"],
+          "relationToFields": ["block_number"],
           "isList": false,
           "isId": false,
           "isGenerated": false,
@@ -4756,12 +4574,8 @@
           "isRequired": true,
           "kind": "object",
           "relationName": "recursive_root_proofsToteams",
-          "relationFromFields": [
-            "team_id"
-          ],
-          "relationToFields": [
-            "id"
-          ],
+          "relationFromFields": ["team_id"],
+          "relationToFields": ["id"],
           "isList": false,
           "isId": false,
           "isGenerated": false,
@@ -4772,9 +4586,7 @@
       "uniqueConstraints": [
         {
           "name": "recursive_root_proofs_pkey",
-          "fields": [
-            "root_proof_id"
-          ],
+          "fields": ["root_proof_id"],
           "nullNotDistinct": false
         }
       ]
@@ -4920,12 +4732,8 @@
           "isRequired": false,
           "kind": "object",
           "relationName": "refresh_tokensTosessions",
-          "relationFromFields": [
-            "session_id"
-          ],
-          "relationToFields": [
-            "id"
-          ],
+          "relationFromFields": ["session_id"],
+          "relationToFields": ["id"],
           "isList": false,
           "isId": false,
           "isGenerated": false,
@@ -4936,9 +4744,7 @@
       "uniqueConstraints": [
         {
           "name": "refresh_tokens_token_unique",
-          "fields": [
-            "token"
-          ],
+          "fields": ["token"],
           "nullNotDistinct": false
         }
       ]
@@ -5080,12 +4886,8 @@
           "isRequired": true,
           "kind": "object",
           "relationName": "s3_multipart_uploadsTobuckets",
-          "relationFromFields": [
-            "bucket_id"
-          ],
-          "relationToFields": [
-            "id"
-          ],
+          "relationFromFields": ["bucket_id"],
+          "relationToFields": ["id"],
           "isList": false,
           "isId": false,
           "isGenerated": false,
@@ -5260,12 +5062,8 @@
           "isRequired": true,
           "kind": "object",
           "relationName": "s3_multipart_uploads_partsTobuckets",
-          "relationFromFields": [
-            "bucket_id"
-          ],
-          "relationToFields": [
-            "id"
-          ],
+          "relationFromFields": ["bucket_id"],
+          "relationToFields": ["id"],
           "isList": false,
           "isId": false,
           "isGenerated": false,
@@ -5278,12 +5076,8 @@
           "isRequired": true,
           "kind": "object",
           "relationName": "s3_multipart_uploads_partsTos3_multipart_uploads",
-          "relationFromFields": [
-            "upload_id"
-          ],
-          "relationToFields": [
-            "id"
-          ],
+          "relationFromFields": ["upload_id"],
+          "relationToFields": ["id"],
           "isList": false,
           "isId": false,
           "isGenerated": false,
@@ -5430,12 +5224,8 @@
           "isRequired": true,
           "kind": "object",
           "relationName": "saml_providersTosso_providers",
-          "relationFromFields": [
-            "sso_provider_id"
-          ],
-          "relationToFields": [
-            "id"
-          ],
+          "relationFromFields": ["sso_provider_id"],
+          "relationToFields": ["id"],
           "isList": false,
           "isId": false,
           "isGenerated": false,
@@ -5446,9 +5236,7 @@
       "uniqueConstraints": [
         {
           "name": "saml_providers_entity_id_key",
-          "fields": [
-            "entity_id"
-          ],
+          "fields": ["entity_id"],
           "nullNotDistinct": false
         }
       ]
@@ -5576,12 +5364,8 @@
           "isRequired": false,
           "kind": "object",
           "relationName": "saml_relay_statesToflow_state",
-          "relationFromFields": [
-            "flow_state_id"
-          ],
-          "relationToFields": [
-            "id"
-          ],
+          "relationFromFields": ["flow_state_id"],
+          "relationToFields": ["id"],
           "isList": false,
           "isId": false,
           "isGenerated": false,
@@ -5594,12 +5378,8 @@
           "isRequired": true,
           "kind": "object",
           "relationName": "saml_relay_statesTosso_providers",
-          "relationFromFields": [
-            "sso_provider_id"
-          ],
-          "relationToFields": [
-            "id"
-          ],
+          "relationFromFields": ["sso_provider_id"],
+          "relationToFields": ["id"],
           "isList": false,
           "isId": false,
           "isGenerated": false,
@@ -5754,9 +5534,7 @@
       "uniqueConstraints": [
         {
           "name": "schema_migrations_pkey",
-          "fields": [
-            "version"
-          ],
+          "fields": ["version"],
           "nullNotDistinct": false
         }
       ]
@@ -5882,9 +5660,7 @@
       "uniqueConstraints": [
         {
           "name": "secrets_name_idx",
-          "fields": [
-            "name"
-          ],
+          "fields": ["name"],
           "nullNotDistinct": false
         }
       ]
@@ -5926,9 +5702,7 @@
       "uniqueConstraints": [
         {
           "name": "seed_files_pkey",
-          "fields": [
-            "path"
-          ],
+          "fields": ["path"],
           "nullNotDistinct": false
         }
       ]
@@ -6098,12 +5872,8 @@
           "isRequired": true,
           "kind": "object",
           "relationName": "sessionsTousers",
-          "relationFromFields": [
-            "user_id"
-          ],
-          "relationToFields": [
-            "id"
-          ],
+          "relationFromFields": ["user_id"],
+          "relationToFields": ["id"],
           "isList": false,
           "isId": false,
           "isGenerated": false,
@@ -6222,12 +5992,8 @@
           "isRequired": true,
           "kind": "object",
           "relationName": "sso_domainsTosso_providers",
-          "relationFromFields": [
-            "sso_provider_id"
-          ],
-          "relationToFields": [
-            "id"
-          ],
+          "relationFromFields": ["sso_provider_id"],
+          "relationToFields": ["id"],
           "isList": false,
           "isId": false,
           "isGenerated": false,
@@ -6454,11 +6220,7 @@
       "uniqueConstraints": [
         {
           "name": "subscription_subscription_id_entity_filters_key",
-          "fields": [
-            "entity",
-            "filters",
-            "subscription_id"
-          ],
+          "fields": ["entity", "filters", "subscription_id"],
           "nullNotDistinct": false
         }
       ]
@@ -6600,12 +6362,8 @@
           "isRequired": true,
           "kind": "object",
           "relationName": "teamsTousers",
-          "relationFromFields": [
-            "id"
-          ],
-          "relationToFields": [
-            "id"
-          ],
+          "relationFromFields": ["id"],
+          "relationToFields": ["id"],
           "isList": false,
           "isId": false,
           "isGenerated": false,
@@ -6700,16 +6458,12 @@
       "uniqueConstraints": [
         {
           "name": "teams_pkey",
-          "fields": [
-            "id"
-          ],
+          "fields": ["id"],
           "nullNotDistinct": false
         },
         {
           "name": "teams_slug_unique",
-          "fields": [
-            "slug"
-          ],
+          "fields": ["slug"],
           "nullNotDistinct": false
         }
       ]
@@ -6989,9 +6743,7 @@
       "uniqueConstraints": [
         {
           "name": "tenants_external_id_index",
-          "fields": [
-            "external_id"
-          ],
+          "fields": ["external_id"],
           "nullNotDistinct": false
         }
       ]
@@ -7565,51 +7317,37 @@
       "uniqueConstraints": [
         {
           "name": "confirmation_token_idx",
-          "fields": [
-            "confirmation_token"
-          ],
+          "fields": ["confirmation_token"],
           "nullNotDistinct": false
         },
         {
           "name": "email_change_token_current_idx",
-          "fields": [
-            "email_change_token_current"
-          ],
+          "fields": ["email_change_token_current"],
           "nullNotDistinct": false
         },
         {
           "name": "email_change_token_new_idx",
-          "fields": [
-            "email_change_token_new"
-          ],
+          "fields": ["email_change_token_new"],
           "nullNotDistinct": false
         },
         {
           "name": "reauthentication_token_idx",
-          "fields": [
-            "reauthentication_token"
-          ],
+          "fields": ["reauthentication_token"],
           "nullNotDistinct": false
         },
         {
           "name": "recovery_token_idx",
-          "fields": [
-            "recovery_token"
-          ],
+          "fields": ["recovery_token"],
           "nullNotDistinct": false
         },
         {
           "name": "users_email_partial_key",
-          "fields": [
-            "email"
-          ],
+          "fields": ["email"],
           "nullNotDistinct": false
         },
         {
           "name": "users_phone_key",
-          "fields": [
-            "phone"
-          ],
+          "fields": ["phone"],
           "nullNotDistinct": false
         }
       ]
@@ -7713,12 +7451,8 @@
           "isRequired": true,
           "kind": "object",
           "relationName": "zkvm_performance_metricsTozkvms",
-          "relationFromFields": [
-            "zkvm_id"
-          ],
-          "relationToFields": [
-            "id"
-          ],
+          "relationFromFields": ["zkvm_id"],
+          "relationToFields": ["id"],
           "isList": false,
           "isId": false,
           "isGenerated": false,
@@ -7729,16 +7463,12 @@
       "uniqueConstraints": [
         {
           "name": "zkvm_performance_metrics_pkey",
-          "fields": [
-            "id"
-          ],
+          "fields": ["id"],
           "nullNotDistinct": false
         },
         {
           "name": "zkvm_performance_metrics_zkvm_id_unique",
-          "fields": [
-            "zkvm_id"
-          ],
+          "fields": ["zkvm_id"],
           "nullNotDistinct": false
         }
       ]
@@ -7912,12 +7642,8 @@
           "isRequired": true,
           "kind": "object",
           "relationName": "zkvm_security_metricsTozkvms",
-          "relationFromFields": [
-            "zkvm_id"
-          ],
-          "relationToFields": [
-            "id"
-          ],
+          "relationFromFields": ["zkvm_id"],
+          "relationToFields": ["id"],
           "isList": false,
           "isId": false,
           "isGenerated": false,
@@ -7928,16 +7654,12 @@
       "uniqueConstraints": [
         {
           "name": "zkvm_security_metrics_pkey",
-          "fields": [
-            "id"
-          ],
+          "fields": ["id"],
           "nullNotDistinct": false
         },
         {
           "name": "zkvm_security_metrics_zkvm_id_unique",
-          "fields": [
-            "zkvm_id"
-          ],
+          "fields": ["zkvm_id"],
           "nullNotDistinct": false
         }
       ]
@@ -8027,12 +7749,8 @@
           "isRequired": true,
           "kind": "object",
           "relationName": "zkvm_versionsTozkvms",
-          "relationFromFields": [
-            "zkvm_id"
-          ],
-          "relationToFields": [
-            "id"
-          ],
+          "relationFromFields": ["zkvm_id"],
+          "relationToFields": ["id"],
           "isList": false,
           "isId": false,
           "isGenerated": false,
@@ -8057,9 +7775,7 @@
       "uniqueConstraints": [
         {
           "name": "zkvm_versions_pkey",
-          "fields": [
-            "id"
-          ],
+          "fields": ["id"],
           "nullNotDistinct": false
         }
       ]
@@ -8275,12 +7991,8 @@
           "isRequired": true,
           "kind": "object",
           "relationName": "zkvmsToteams",
-          "relationFromFields": [
-            "team_id"
-          ],
-          "relationToFields": [
-            "id"
-          ],
+          "relationFromFields": ["team_id"],
+          "relationToFields": ["id"],
           "isList": false,
           "isId": false,
           "isGenerated": false,
@@ -8333,16 +8045,12 @@
       "uniqueConstraints": [
         {
           "name": "zkvms_pkey",
-          "fields": [
-            "id"
-          ],
+          "fields": ["id"],
           "nullNotDistinct": false
         },
         {
           "name": "zkvms_slug_unique",
-          "fields": [
-            "slug"
-          ],
+          "fields": ["slug"],
           "nullNotDistinct": false
         }
       ]
