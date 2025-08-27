@@ -46,18 +46,16 @@ const getRequestBody = async (request: Request) => {
 
   let body: string | undefined
   try {
-    // Try JSON parsing first with a fresh clone
-    const jsonRequest = request.clone()
-    const json = await jsonRequest.json()
-    body = JSON.stringify(json)
-  } catch {
+    const jsonClone = request.clone()
+    const textClone = request.clone()
     try {
-      // If JSON fails, try text parsing with a fresh clone
-      const textRequest = request.clone()
-      body = await textRequest.text()
-    } catch (error) {
-      console.warn("Could not parse request body:", error)
+      const parsed = await jsonClone.json()
+      body = JSON.stringify(parsed)
+    } catch {
+      body = await textClone.text()
     }
+  } catch (error) {
+    console.warn("Could not parse request body:", error)
   }
 
   return body
