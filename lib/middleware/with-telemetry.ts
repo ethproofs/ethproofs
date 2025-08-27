@@ -46,12 +46,13 @@ const getRequestBody = async (request: Request) => {
 
   let body: string | undefined
   try {
-    const jsonClone = request.clone()
-    const textClone = request.clone()
+    const clonedRequest = request.clone()
     try {
-      const parsed = await jsonClone.json()
+      const parsed = await clonedRequest.json()
       body = JSON.stringify(parsed)
     } catch {
+      // If JSON parsing fails, clone again for text parsing
+      const textClone = request.clone()
       body = await textClone.text()
     }
   } catch (error) {
