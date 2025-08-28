@@ -3,6 +3,7 @@ import {
   Bomb,
   Box,
   Bug,
+  ChartColumn,
   Cpu,
   Heart,
   HeartPulse,
@@ -81,16 +82,13 @@ const AppNavigationMenu = ({ insideDrawer }: AppNavigationMenuProps) => {
           className="gap-y-2 bg-background-accent/35 px-6 py-10"
         >
           <SidebarGroup>
-            <SidebarGroupLabel>home</SidebarGroupLabel>
+            <SidebarGroupLabel>race</SidebarGroupLabel>
             <MenuItem>
               <Link href="/" className={menuItemLinkClass}>
                 <TrendingUp />
-                dashboard
+                RTP
               </Link>
             </MenuItem>
-          </SidebarGroup>
-          <SidebarGroup>
-            <SidebarGroupLabel>explore</SidebarGroupLabel>
             <MenuItem>
               <Link href="/zkvms" className={menuItemLinkClass}>
                 <Zap />
@@ -104,21 +102,24 @@ const AppNavigationMenu = ({ insideDrawer }: AppNavigationMenuProps) => {
               </Link>
             </MenuItem>
             <MenuItem>
-              <Link href="/blocks" className={menuItemLinkClass}>
-                <Box />
-                blocks
-              </Link>
-            </MenuItem>
-            <MenuItem>
-              <Link href="/killers" className={menuItemLinkClass}>
-                <Bomb />
-                killers
+              <Link href="/benchmarks" className={menuItemLinkClass}>
+                <ChartColumn />
+                benchmarks
               </Link>
             </MenuItem>
             <MenuItem>
               <Link href="/teams" className={menuItemLinkClass}>
                 <Users />
                 teams
+              </Link>
+            </MenuItem>
+          </SidebarGroup>
+          <SidebarGroup>
+            <SidebarGroupLabel>proofs</SidebarGroupLabel>
+            <MenuItem>
+              <Link href="/blocks" className={menuItemLinkClass}>
+                <Box />
+                blocks
               </Link>
             </MenuItem>
             <MenuItem>
@@ -129,7 +130,7 @@ const AppNavigationMenu = ({ insideDrawer }: AppNavigationMenuProps) => {
             </MenuItem>
           </SidebarGroup>
           <SidebarGroup>
-            <SidebarGroupLabel>learn</SidebarGroupLabel>
+            <SidebarGroupLabel>explore</SidebarGroupLabel>
             <MenuItem>
               <Link href="/learn" className={menuItemLinkClass}>
                 <Library />
@@ -175,10 +176,10 @@ const AppNavigationMenu = ({ insideDrawer }: AppNavigationMenuProps) => {
       <SidebarFooter>
         <div className="flex items-center gap-x-6 pb-2 font-sans font-bold [&>a]:text-2xl [&>a]:text-body">
           <Link href={URL_GITHUB_REPO} hideArrow>
-            <GitHub />
+            <GitHub width={18} height={18} />
           </Link>
           <Link href={URL_TWITTER} hideArrow>
-            <Twitter />
+            <Twitter width={16} height={16} />
           </Link>
         </div>
 

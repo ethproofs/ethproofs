@@ -1,10 +1,10 @@
 "use client"
 
 import { useState } from "react"
-
-import Close from "@/components/svgs/close.svg"
+import { X as Close } from "lucide-react"
 
 import { Alert, AlertTitle } from "./ui/alert"
+import { Button } from "./ui/button"
 import Link from "./ui/link"
 
 const learnMoreLink = "https://x.com/eth_proofs/status/1930244636582334473"
@@ -29,9 +29,9 @@ const GrantsBanner = () => {
             here
           </Link>
         </AlertTitle>
-        <button onClick={onDismiss}>
-          <Close />
-        </button>
+        <Button variant="ghost" size="icon" onClick={onDismiss}>
+          <Close className="size-4 text-primary" />
+        </Button>
       </Alert>
     )
   )
