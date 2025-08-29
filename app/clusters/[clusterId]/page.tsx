@@ -75,9 +75,6 @@ export default async function ClusterDetailsPage({
   const clusterMachines = lastVersion.cluster_machines
   const isMultiMachine = isMultiMachineCluster(clusterMachines)
 
-  // TODO:TEAM - replace with killer-block proofs data
-  const killerBlockProofs = [] as RowProof[]
-
   const hasPhysicalMachinesInCluster = hasPhysicalMachines(clusterMachines)
 
   const BooleanIcon = ({ bool }: { bool: boolean }) =>
@@ -321,21 +318,6 @@ export default async function ClusterDetailsPage({
         </div>
         {latestProofs.length ? (
           latestProofs.map((proof) => (
-            <ClusterProofRow key={proof.proof_id} proof={proof} />
-          ))
-        ) : (
-          <NoData>for this cluster</NoData>
-        )}
-      </section>
-
-      {/* TODO:TEAM - mobile responsiveness */}
-      <section className="flex flex-col">
-        <div className="flex items-center gap-2 px-6">
-          <Box strokeWidth="1" className="size-11" />
-          <div className="font-mono text-xl">killer-block proofs</div>
-        </div>
-        {killerBlockProofs.length ? (
-          killerBlockProofs.map((proof) => (
             <ClusterProofRow key={proof.proof_id} proof={proof} />
           ))
         ) : (

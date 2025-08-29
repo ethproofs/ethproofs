@@ -194,7 +194,7 @@ const ClusterAccordion = ({ clusters }: ClusterAccordionProps) => (
             <MetricLabel>
               <MetricInfo label="open source">
                 <TooltipContentHeader>open source</TooltipContentHeader>
-                Indicates whether the zkVM is open source or not.
+                Indicates whether the zkVM prover is open source or not.
               </MetricInfo>
             </MetricLabel>
           </MetricBox>
