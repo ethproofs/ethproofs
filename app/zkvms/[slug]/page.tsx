@@ -69,7 +69,9 @@ export default async function ZkvmDetailsPage({
     }
   })
 
-  console.log("here", zkvm.versions)
+  const latestVersion = zkvm.versions.reduce((latest, version) =>
+    version.id > latest.id ? version : latest
+  )
 
   return (
     <>
@@ -87,7 +89,7 @@ export default async function ZkvmDetailsPage({
       <div className="mx-auto mb-20 grid w-fit max-w-screen-xl grid-cols-1 gap-x-20 gap-y-8 max-sm:gap-y-4 sm:grid-cols-2 md:px-24 lg:grid-cols-4">
         <div className="row-span-2 grid grid-cols-subgrid place-items-center gap-y-1 text-nowrap">
           <div className="text-body-secondary">latest version</div>
-          <div className="">{zkvm.versions[0].version}</div>
+          <div className="">{latestVersion.version}</div>
         </div>
         <div className="row-span-2 grid grid-cols-subgrid place-items-center gap-y-1 text-nowrap">
           <div className="text-body-secondary">release date</div>
