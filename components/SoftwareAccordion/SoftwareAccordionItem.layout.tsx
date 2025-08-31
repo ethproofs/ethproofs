@@ -19,6 +19,9 @@ const SoftwareAccordionItemLayout = ({
   trigger: React.ReactNode
   content?: React.ReactNode
 }) => {
+  const latestVersion = zkvm.versions.reduce((latest, version) =>
+    version.id > latest.id ? version : latest
+  )
   return (
     <AccordionItem value={value} className="col-span-8 grid grid-cols-subgrid">
       <div className="col-span-8 grid grid-cols-subgrid items-center justify-items-center gap-12 text-nowrap border-b p-px px-6">
@@ -58,7 +61,7 @@ const SoftwareAccordionItemLayout = ({
           )}
         </div>
         <div id="version" className="col-start-5">
-          {zkvm.versions[0]?.version || "N/A"}
+          {latestVersion.version || "N/A"}
         </div>
         <div id="isa" className="col-start-6 min-w-14 text-center">
           {zkvm.isa}

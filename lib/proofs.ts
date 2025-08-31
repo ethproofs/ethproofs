@@ -47,9 +47,9 @@ export const hasProvedTimestamp = (p: Proof) => {
 export const hasProvingTime = (p: Proof) => !!p.proving_time
 
 /**
- * Determines if a proof has a proved_timestamp, a block has a timestamp, and the block came first.
+ * Determines if a proof has a proved_timestamp and that it occurs after the given block timestamp.
  * @param {Proof} p - The proof object.
- * @param {Block} b - The block object.
+ * @param {string} timestamp - The block timestamp (ISO string or parsable date string).
  * @returns {boolean} - True if the proof has a proved timestamp and the proof came after the block, false otherwise.
  */
 export const timeToProofInfoAvailable = (p: Proof, timestamp: string) =>
@@ -71,6 +71,14 @@ export const getProofsAvgProvingTime = (proofs: Proof[]): number | null => {
   )
 }
 
+/**
+ * Calculates the average proved timestamp across proofs (ms since epoch).
+ * Note: Despite the name, this returns the mean of `proved_timestamp` values,
+ * not an average duration. Duration is derived elsewhere by subtracting a block timestamp.
+ *
+ * @param {Proof[]} proofs - An array of proofs with defined `proved_timestamp`.
+ * @returns {number} - The average proved timestamp in milliseconds.
+ */
 export const getProofsAvgTimeToProof = (proofs: Proof[]) => {
   const averageProvedTime =
     proofs.reduce((acc, proof) => {
