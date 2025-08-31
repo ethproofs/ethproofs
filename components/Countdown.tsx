@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useCallback, useEffect, useState } from "react"
 
 import { cn } from "@/lib/utils"
 
@@ -23,54 +23,48 @@ const Countdown = ({
   onComplete,
 }: CountdownProps) => {
   const [timeLeft, setTimeLeft] = useState<TimeUnit[]>([])
-  const [isComplete, setIsComplete] = useState(false)
 
-  useEffect(() => {
-    const calculateTimeLeft = () => {
-      const now = new Date().getTime()
-      const target = targetDate.getTime()
-      const difference = target - now
+  const calculateTimeLeft = useCallback(() => {
+    const now = new Date().getTime()
+    const target = targetDate.getTime()
+    const difference = target - now
 
-      if (difference <= 0) {
-        setIsComplete(true)
-        setTimeLeft([])
-        onComplete?.()
-        return
-      }
-
-      const days = Math.floor(difference / (1000 * 60 * 60 * 24))
-      const hours = Math.floor(
-        (difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
-      )
-      const minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60))
-      const seconds = Math.floor((difference % (1000 * 60)) / 1000)
-
-      const units: TimeUnit[] = []
-
-      if (days > 0) units.push({ value: days, label: "days" })
-      if (hours > 0 || days > 0) units.push({ value: hours, label: "hours" })
-      if (minutes > 0 || hours > 0 || days > 0)
-        units.push({
-          value: minutes,
-          label: "minutes",
-        })
-      units.push({
-        value: seconds,
-        label: "seconds",
-      })
-
-      setTimeLeft(units)
+    if (difference <= 0) {
+      setTimeLeft([])
+      onComplete?.()
+      return
     }
 
+    const days = Math.floor(difference / (1000 * 60 * 60 * 24))
+    const hours = Math.floor(
+      (difference % (1000 * 60 * 60 * 24)) / (1000 * 60 * 60)
+    )
+    const minutes = Math.floor((difference % (1000 * 60 * 60)) / (1000 * 60))
+    const seconds = Math.floor((difference % (1000 * 60)) / 1000)
+
+    const units: TimeUnit[] = []
+
+    if (days > 0) units.push({ value: days, label: "days" })
+    if (hours > 0 || days > 0) units.push({ value: hours, label: "hours" })
+    if (minutes > 0 || hours > 0 || days > 0)
+      units.push({
+        value: minutes,
+        label: "minutes",
+      })
+    units.push({
+      value: seconds,
+      label: "seconds",
+    })
+
+    setTimeLeft(units)
+  }, [targetDate, onComplete])
+
+  useEffect(() => {
     calculateTimeLeft()
     const timer = setInterval(calculateTimeLeft, 1000)
 
     return () => clearInterval(timer)
-  }, [targetDate, onComplete])
-
-  if (isComplete) {
-    return null
-  }
+  }, [calculateTimeLeft])
 
   return (
     <div className={cn("text-center", className)}>

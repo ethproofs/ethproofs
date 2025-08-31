@@ -39,6 +39,7 @@ const CountdownBanner = () => {
             <Countdown
               targetDate={countdownDate}
               className="origin-center scale-75"
+              onComplete={onDismiss}
             />
           </div>
         </AlertTitle>
