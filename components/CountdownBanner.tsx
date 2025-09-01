@@ -21,20 +21,20 @@ const CountdownBanner = () => {
 
   return (
     isOpen && (
-      <Alert className="flex w-full items-center justify-between rounded-2xl border-[1.48px] border-primary-border bg-background-highlight px-6 py-4 text-body">
+      <Alert className="flex w-full flex-col items-start justify-between gap-4 rounded-2xl border-[1.48px] border-primary-border bg-background-highlight px-4 py-4 text-body sm:flex-row sm:items-center sm:px-6 sm:gap-2">
         <AlertTitle className="w-full text-base">
-          <div className="flex items-center justify-between gap-4">
-            <div className="flex items-center gap-1">
-              <span>
+          <div className="flex flex-col items-start gap-3 sm:flex-row sm:items-center sm:justify-between sm:gap-4">
+            <div className="flex flex-col items-start gap-1 sm:flex-row sm:items-center">
+              <span className="leading-relaxed">
                 Ethproofs is making open-source verifiers a requirement. 60 day
-                countdown. Learn more
+                countdown. Learn more{" "}
+                <Link
+                  className="text-primary hover:text-primary-light"
+                  href={learnMoreLink}
+                >
+                  here
+                </Link>
               </span>
-              <Link
-                className="text-primary hover:text-primary-light"
-                href={learnMoreLink}
-              >
-                here
-              </Link>
             </div>
             <Countdown
               targetDate={countdownDate}
@@ -43,7 +43,12 @@ const CountdownBanner = () => {
             />
           </div>
         </AlertTitle>
-        <Button variant="ghost" onClick={onDismiss} size="icon">
+        <Button 
+          variant="ghost" 
+          onClick={onDismiss} 
+          size="icon"
+          className="absolute right-2 top-2 sm:relative sm:right-0 sm:top-0"
+        >
           <Close className="size-4" />
         </Button>
       </Alert>
