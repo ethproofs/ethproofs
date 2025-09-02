@@ -191,12 +191,7 @@ const ClusterAccordion = ({ clusters }: ClusterAccordionProps) => (
       <>
         <div className="col-span-6 grid grid-cols-subgrid text-center">
           <MetricBox className="col-start-2">
-            <MetricLabel>
-              <MetricInfo label="open source">
-                <TooltipContentHeader>open source</TooltipContentHeader>
-                Indicates whether the zkVM prover is open source or not.
-              </MetricInfo>
-            </MetricLabel>
+            <MetricLabel>prover open source</MetricLabel>
           </MetricBox>
           <MetricBox className="col-start-3">
             <MetricLabel>

@@ -18,16 +18,16 @@ const GrantsBanner = () => {
 
   return (
     isOpen && (
-      <Alert 
+      <Alert
         role="region"
         aria-label="Grants banner"
-        className="relative flex w-full flex-col items-start justify-between gap-4 rounded-2xl border-[1.48px] border-primary-border bg-background-highlight px-4 py-4 text-body sm:flex-row sm:items-center sm:px-6 sm:gap-2"
+        className="relative flex w-full flex-col items-start justify-between gap-4 rounded-2xl border-[1.48px] border-primary-border bg-background-highlight px-4 py-4 text-body sm:flex-row sm:items-center sm:gap-2 sm:px-6"
       >
         <AlertDescription className="w-full text-sm sm:text-base">
-          <div className="flex flex-col items-start gap-1 sm:flex-row sm:items-center">
+          <div className="flex flex-col items-start gap-1 pr-9 sm:flex-row sm:items-center">
             <span className="leading-relaxed">
               Ethproofs is accelerating real-time proving with $300k in grants
-              to incentivize breakthrough performance.{" "}
+              to incentivize breakthrough performance. Learn more{" "}
               <Link
                 className="text-primary hover:text-primary-light"
                 href={learnMoreLink}
@@ -35,13 +35,13 @@ const GrantsBanner = () => {
                 rel="noopener noreferrer"
                 aria-label="Learn more about the $300k grants"
               >
-                Learn more
+                here
               </Link>
             </span>
           </div>
         </AlertDescription>
-        <Button 
-          onClick={onDismiss} 
+        <Button
+          onClick={onDismiss}
           size="icon"
           className="absolute right-2 top-2 sm:relative sm:right-0 sm:top-0"
           type="button"
