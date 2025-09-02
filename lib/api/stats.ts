@@ -17,8 +17,9 @@ import {
  * @param days - Number of days to include (e.g., 7, 30, 90, 365)
  */
 export const fetchProofsDailyStats = async (days: number) => {
+  const safeDays = Number.isFinite(days) ? Math.max(0, Math.floor(days)) : 0
   const endDate = new Date()
-  const startDate = startOfDay(addDays(endDate, -days))
+  const startDate = startOfDay(addDays(endDate, -safeDays))
 
   return db.query.proofsDailyStats.findMany({
     where: (stats, { and, gte, lte }) =>
@@ -36,8 +37,9 @@ export const fetchProofsDailyStats = async (days: number) => {
  * @param days - Number of days to include (e.g., 7, 30, 90, 365)
  */
 export const fetchProverDailyStats = async (teamId: string, days: number) => {
+  const safeDays = Number.isFinite(days) ? Math.max(0, Math.floor(days)) : 0
   const endDate = new Date()
-  const startDate = startOfDay(addDays(endDate, -days))
+  const startDate = startOfDay(addDays(endDate, -safeDays))
 
   return db.query.proverDailyStats.findMany({
     where: (stats, { and, eq, gte, lte }) =>
