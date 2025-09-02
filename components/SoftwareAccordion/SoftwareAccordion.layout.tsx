@@ -10,7 +10,7 @@ function SoftwareAccordionLayout({ children }: { children: React.ReactNode }) {
     >
       <div className="col-span-8 grid grid-cols-subgrid gap-4 text-center">
         <MetricBox className="col-start-2">
-          <MetricLabel>open source</MetricLabel>
+          <MetricLabel>verifier open source</MetricLabel>
         </MetricBox>
         <MetricBox className="col-start-3">
           <MetricLabel>dual license</MetricLabel>
