@@ -3,7 +3,7 @@
 import { useState } from "react"
 import { X as Close } from "lucide-react"
 
-import { Alert, AlertTitle } from "./ui/alert"
+import { Alert, AlertDescription } from "./ui/alert"
 import { Button } from "./ui/button"
 import Link from "./ui/link"
 
@@ -18,23 +18,37 @@ const GrantsBanner = () => {
 
   return (
     isOpen && (
-      <Alert className="flex w-full items-center justify-between rounded-2xl border-[1.48px] border-primary-border bg-background-highlight px-6 py-4 text-body">
-        <AlertTitle className="text-base">
-          <div className="flex items-center gap-1">
-            <span>
+      <Alert
+        role="region"
+        aria-label="Grants banner"
+        className="relative flex w-full flex-col items-start justify-between gap-4 rounded-2xl border-[1.48px] border-primary-border bg-background-highlight px-4 py-4 text-body sm:flex-row sm:items-center sm:gap-2 sm:px-6"
+      >
+        <AlertDescription className="w-full text-sm sm:text-base">
+          <div className="flex flex-col items-start gap-1 pr-9 sm:flex-row sm:items-center">
+            <span className="leading-relaxed">
               Ethproofs is accelerating real-time proving with $300k in grants
-              to incentivize breakthrough performance. Learn more
+              to incentivize breakthrough performance. Learn more{" "}
+              <Link
+                className="text-primary hover:text-primary-light"
+                href={learnMoreLink}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Learn more about the $300k grants"
+              >
+                here
+              </Link>
             </span>
-            <Link
-              className="text-primary hover:text-primary-light"
-              href={learnMoreLink}
-            >
-              here
-            </Link>
           </div>
-        </AlertTitle>
-        <Button variant="ghost" onClick={onDismiss} size="icon">
-          <Close className="size-4" />
+        </AlertDescription>
+        <Button
+          onClick={onDismiss}
+          size="icon"
+          className="absolute right-2 top-2 sm:relative sm:right-0 sm:top-0"
+          type="button"
+          aria-label="Dismiss grants banner"
+          variant="ghost"
+        >
+          <Close className="size-4" aria-hidden="true" />
         </Button>
       </Alert>
     )
