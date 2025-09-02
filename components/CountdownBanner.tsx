@@ -27,7 +27,7 @@ const CountdownBanner = () => {
             <div className="flex flex-col items-start gap-1 sm:flex-row sm:items-center">
               <span className="leading-relaxed">
                 Ethproofs is making open-source verifiers a requirement. 60 day
-                countdown. Learn more{" "}
+                countdown.{" "}
                 <Link
                   className="text-primary hover:text-primary-light"
                   href={learnMoreLink}
@@ -35,7 +35,7 @@ const CountdownBanner = () => {
                   rel="noopener noreferrer"
                   aria-label="Learn more about the verifier requirement"
                 >
-                  here
+                  Learn more
                 </Link>
               </span>
             </div>
@@ -54,7 +54,7 @@ const CountdownBanner = () => {
           size="icon"
           className="absolute right-2 top-2 sm:relative sm:right-0 sm:top-0"
         >
-          <Close className="size-4" />
+          <Close className="size-4" aria-hidden="true" />
         </Button>
       </Alert>
     )
