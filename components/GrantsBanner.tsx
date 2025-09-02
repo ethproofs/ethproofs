@@ -24,15 +24,15 @@ const GrantsBanner = () => {
           <div className="flex flex-col items-start gap-1 sm:flex-row sm:items-center">
             <span className="leading-relaxed">
               Ethproofs is accelerating real-time proving with $300k in grants
-              to incentivize breakthrough performance. Learn more{" "}
+              to incentivize breakthrough performance.{" "}
               <Link
                 className="text-primary hover:text-primary-light"
                 href={learnMoreLink}
                 target="_blank"
                 rel="noopener noreferrer"
-                aria-label="Learn more about the $300k grants (opens in a new tab)"
+                aria-label="Learn more about the $300k grants"
               >
-                here
+                Learn more
               </Link>
             </span>
           </div>
@@ -45,7 +45,7 @@ const GrantsBanner = () => {
           aria-label="Dismiss grants banner"
           variant="ghost"
         >
-          <Close className="size-4" />
+          <Close className="size-4" aria-hidden="true" />
         </Button>
       </Alert>
     )
