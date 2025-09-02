@@ -21,7 +21,11 @@ const CountdownBanner = () => {
 
   return (
     isOpen && (
-      <Alert className="relative flex w-full flex-col items-start justify-between gap-4 rounded-2xl border-[1.48px] border-primary-border bg-background-highlight px-4 py-4 text-body sm:flex-row sm:items-center sm:px-6 sm:gap-2">
+      <Alert 
+        role="region"
+        aria-label="Open‑source verifier requirement countdown"
+        className="relative flex w-full flex-col items-start justify-between gap-4 rounded-2xl border-[1.48px] border-primary-border bg-background-highlight px-4 py-4 text-body sm:flex-row sm:items-center sm:px-6 sm:gap-2"
+      >
         <AlertDescription className="w-full text-base">
           <div className="flex flex-col items-start gap-3 sm:flex-row sm:items-center sm:justify-between sm:gap-4">
             <div className="flex flex-col items-start gap-1 sm:flex-row sm:items-center">
