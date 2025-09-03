@@ -66,7 +66,6 @@ const ThemeSwitch = () => {
             onClick={() => setTheme(item.id)}
             className={cn(
               "rounded-none",
-              "hover:cursor-pointer",
               "first-of-type:rounded-t-[calc(1rem_-_1px)]",
               "last-of-type:rounded-b-[calc(1rem_-_1px)]",
               theme === item.id && "bg-background-active"
