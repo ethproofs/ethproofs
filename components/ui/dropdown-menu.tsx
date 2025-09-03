@@ -102,7 +102,7 @@ const DropdownMenuCheckboxItem = React.forwardRef<
   <DropdownMenuPrimitive.CheckboxItem
     ref={ref}
     className={cn(
-      "relative flex cursor-default hover:cursor-pointer select-none items-center rounded py-1 pe-2 ps-8 text-sm outline-none transition-colors focus:bg-background-highlight focus:text-body data-[disabled]:pointer-events-none data-[disabled]:opacity-50",
+      "relative flex cursor-default hover:cursor-pointer select-none items-center rounded py-1 pe-2 ps-8 text-sm outline-none transition-colors focus:bg-background-highlight focus:text-body data-[disabled]:pointer-events-none data-[disabled]:cursor-not-allowed data-[disabled]:opacity-50",
       className
     )}
     checked={checked}
@@ -131,7 +131,7 @@ const DropdownMenuRadioItem = React.forwardRef<
   <DropdownMenuPrimitive.RadioItem
     ref={ref}
     className={cn(
-      "relative flex cursor-default hover:cursor-pointer select-none items-center rounded-sm py-1.5 pl-8 pr-2 text-sm outline-none transition-colors focus:bg-background-highlight focus:text-body data-[disabled]:pointer-events-none data-[disabled]:opacity-50",
+      "relative flex cursor-default hover:cursor-pointer select-none items-center rounded-sm py-1.5 pl-8 pr-2 text-sm outline-none transition-colors focus:bg-background-highlight focus:text-body data-[disabled]:pointer-events-none data-[disabled]:cursor-not-allowed data-[disabled]:opacity-50",
       className
     )}
     {...props}
