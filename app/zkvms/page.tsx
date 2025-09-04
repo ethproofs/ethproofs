@@ -5,7 +5,7 @@ import SoftwareAccordion from "@/components/SoftwareAccordion"
 
 import { getMetadata } from "@/lib/metadata"
 
-export const metadata: Metadata = getMetadata({ title: "ZKVMs" })
+export const metadata: Metadata = getMetadata({ title: "zkVMs" })
 
 export default async function ZkvmsPage() {
   return (
