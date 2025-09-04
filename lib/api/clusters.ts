@@ -1,4 +1,4 @@
-import { and, desc, eq, exists, gt, sql, sum } from "drizzle-orm"
+import { and, desc, eq, exists, sql, sum } from "drizzle-orm"
 import { unstable_cache as cache } from "next/cache"
 
 import { TAGS } from "@/lib/constants"
@@ -8,7 +8,6 @@ import {
   clusterMachines,
   clusters,
   clusterVersions,
-  proofs,
   teams,
   zkvms,
   zkvmVersions,
@@ -52,6 +51,39 @@ export const getCluster = async (id: string) => {
       tags: [`cluster-${id}`],
     }
   )(id)
+}
+
+export const getClustersByTeamId = async (teamId: string) => {
+  return cache(
+    async (teamId: string) => {
+      return db.query.clusters.findMany({
+        where: eq(clusters.team_id, teamId),
+        with: {
+          team: true,
+          versions: {
+            orderBy: desc(clusterVersions.created_at),
+            with: {
+              zkvm_version: {
+                with: {
+                  zkvm: true,
+                },
+              },
+              cluster_machines: {
+                with: {
+                  machine: true,
+                },
+              },
+            },
+          },
+        },
+      })
+    },
+    ["clusters-by-team-id", teamId],
+    {
+      revalidate: false,
+      tags: [`clusters-by-team-id-${teamId}`],
+    }
+  )(teamId)
 }
 
 export const getActiveClusters = async (filters?: {

@@ -2,11 +2,11 @@
 
 import * as React from "react"
 import { useMemo } from "react"
+import { ChevronDown } from "lucide-react"
 import { CartesianGrid, Line, LineChart, XAxis } from "recharts"
 
 import type { DayRange } from "@/lib/types"
 
-import ArrowDropdown from "@/components/svgs/arrow-dropdown.svg"
 import {
   Card,
   CardContent,
@@ -211,7 +211,7 @@ const LineChartCard = ({
           <DropdownMenuTrigger asChild>
             <Button className="group flex h-6 w-fit items-center gap-2 rounded-full border bg-background-highlight px-2 py-1.5 text-sm text-body hover:bg-primary-light hover:text-background [&[data-state=open]]:bg-primary-light [&[data-state=open]]:text-background">
               options
-              <ArrowDropdown className="transition-transform duration-100 group-[&[data-state=open]]:-scale-y-100" />
+              <ChevronDown className="size-4 transition-transform duration-100 group-[&[data-state=open]]:-scale-y-100" />
             </Button>
           </DropdownMenuTrigger>
 
