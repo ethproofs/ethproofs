@@ -16,7 +16,7 @@ import { getMetadata } from "@/lib/metadata"
 import { formatUsd } from "@/lib/number"
 import { prettyMs } from "@/lib/time"
 
-export const metadata: Metadata = getMetadata()
+export const metadata: Metadata = getMetadata({ title: "Proving Teams" })
 
 export default async function TeamsPage() {
   const teamsSummary = await getTeamsSummary()
