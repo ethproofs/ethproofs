@@ -3,9 +3,9 @@
 import { useState } from "react"
 import { X as Close } from "lucide-react"
 
-import { Alert, AlertDescription } from "./ui/alert"
-import { Button } from "./ui/button"
-import Link from "./ui/link"
+import { Alert, AlertDescription } from "../ui/alert"
+import { Button } from "../ui/button"
+import Link from "../ui/link"
 
 const learnMoreLink = "https://x.com/eth_proofs/status/1930244636582334473"
 
