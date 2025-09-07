@@ -30,7 +30,7 @@ export type ProofForDownload = Required<
   team: Required<Pick<Team, "name" | "slug">>
 }
 
-const VERIFIABLE_PROVER_TEAM_SLUGS = new Set<string>(["brevis", "zkm"])
+const VERIFIABLE_PROVER_TEAM_SLUGS = new Set<string>(["brevis", "zkm", "zisk"])
 function isVerifiableProverTeam(slug: string): boolean {
   return VERIFIABLE_PROVER_TEAM_SLUGS.has(slug)
 }
