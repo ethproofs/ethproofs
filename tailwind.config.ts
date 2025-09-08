@@ -13,18 +13,15 @@ const config = {
     container: {
       center: true,
       padding: "2rem",
-      screens: {
-        "2xl": "1400px",
-      },
+      screens: { "2xl": "1400px" },
     },
     extend: {
       fontFamily: {
-        heading: "var(--font-ibm-plex-sans)",
-        body: "var(--font-ibm-plex-sans)",
-        mono: "var(--font-ibm-plex-mono)",
+        heading: "var(--font-lock-sans)", // TODO:TEAM - Unused?
+        body: "var(--font-lock-sans)",
+        mono: "var(--font-lock-sans)", // TODO:TEAM - Remove mono font?
       },
       fontSize: {
-        // Ex: "name": ["font-size", "line-height"]
         "6xl": ["4rem", "4.5rem"],
         "5xl": ["3.25rem", "4rem"],
         "4xl": ["2.75rem", "3.25rem"],
@@ -36,48 +33,117 @@ const config = {
         sm: ["0.875rem", "1.375rem"],
         xs: ["0.75rem", "1.125rem"],
       },
-      gridTemplateColumns: {
-        "6-auto": "repeat(5, 1fr) auto",
-      },
       colors: {
-        background: {
-          DEFAULT: "hsla(var(--background))",
-          highlight: "hsla(var(--background-highlight))",
-          active: "hsla(var(--background-active))",
-          accent: "hsla(var(--background-accent))",
-          modal: "hsla(var(--background-modal))",
-        },
+        border: "hsl(var(--border))",
+        input: "hsl(var(--input))",
+
+        /* shadcn */
+        ring: "hsl(var(--ring))",
+        background: "hsla(var(--background))",
+        foreground: "hsl(var(--foreground))",
         primary: {
-          DEFAULT: "hsla(var(--primary))",
-          light: "hsla(var(--primary-light))",
-          dark: "hsla(var(--primary-dark))",
-          visited: "hsla(var(--primary-visited))",
+          DEFAULT: "hsl(var(--primary))",
+          foreground: "hsl(var(--primary-foreground))",
+          light: "hsl(var(--primary-light))",
+          dark: "hsl(var(--primary-dark))",
+          visited: "hsl(var(--primary-visited))",
           border: "hsla(var(--primary-border))",
         },
-        body: {
-          DEFAULT: "hsla(var(--body))",
-          secondary: "hsla(var(--body-secondary))",
+        secondary: {
+          DEFAULT: "hsl(var(--secondary))",
+          foreground: "hsl(var(--secondary-foreground))",
         },
-        sidebar: {
-          DEFAULT: "hsla(var(--sidebar))",
+        destructive: {
+          DEFAULT: "hsl(var(--destructive))",
+          foreground: "hsl(var(--destructive-foreground))",
         },
+        muted: {
+          DEFAULT: "hsl(var(--muted))",
+          foreground: "hsl(var(--muted-foreground))",
+        },
+        accent: {
+          DEFAULT: "hsl(var(--accent))",
+          foreground: "hsl(var(--accent-foreground))",
+        },
+        popover: {
+          DEFAULT: "hsl(var(--popover))",
+          foreground: "hsl(var(--popover-foreground))",
+        },
+        card: {
+          DEFAULT: "hsl(var(--card))",
+          foreground: "hsl(var(--card-foreground))",
+        },
+
+        /* Brand (emerald) */
+        brand: {
+          secondary: "hsl(var(--brand-secondary))",
+          "secondary-foreground": "hsl(var(--brand-secondary-foreground))",
+        },
+
+        /* States */
+        success: {
+          DEFAULT: "hsl(var(--success))",
+          foreground: "hsl(var(--success-foreground))",
+        },
+        warning: {
+          DEFAULT: "hsl(var(--warning))",
+          foreground: "hsl(var(--warning-foreground))",
+        },
+        info: {
+          DEFAULT: "hsl(var(--info))",
+          foreground: "hsl(var(--info-foreground))",
+        },
+
+        /* Typography */
+        heading: "hsl(var(--heading))",
+        "heading-sub": "hsl(var(--heading-sub))",
+        subtitle: "hsl(var(--subtitle))",
+        "body-text": "hsl(var(--body-text))",
+        "body-muted": "hsl(var(--body-muted))",
+        "label-foreground": "hsl(var(--label-foreground))",
+        "caption-foreground": "hsl(var(--caption-foreground))",
+        "code-foreground": "hsl(var(--code-foreground))",
+
+        /* Charts */
         chart: {
-          1: "hsla(var(--chart-1))",
-          2: "hsla(var(--chart-2))",
-          3: "hsla(var(--chart-3))",
-          4: "hsla(var(--chart-4))",
-          5: "hsla(var(--chart-5))",
-          border: "hsla(var(--chart-border))",
+          1: "hsl(var(--chart-1))",
+          2: "hsl(var(--chart-2))",
+          3: "hsl(var(--chart-3))",
+          4: "hsl(var(--chart-4))",
+          5: "hsl(var(--chart-5))",
+          6: "hsl(var(--chart-6))",
+          7: "hsl(var(--chart-7))",
+          grid: "hsl(var(--chart-grid))",
+          axis: "hsl(var(--chart-axis))",
+          border: "hsl(var(--chart-border))",
         },
+
+        /* Custom */
+        sidebar: "hsl(var(--sidebar))",
+        "background-highlight": "hsl(var(--background-highlight))",
+        "background-active": "hsl(var(--background-active))",
+        "background-accent": "hsl(var(--background-accent))",
+        "background-modal": "hsl(var(--background-modal))",
+        selection: "hsl(var(--selection))",
+        focus: "hsl(var(--focus))",
+        placeholder: "hsl(var(--placeholder))",
+
+        /* Legacy compatibility (v2) */
         level: {
-          best: "hsla(var(--level-best))",
-          middle: "hsla(var(--level-middle))",
-          worst: "hsla(var(--level-worst))",
+          best: "hsl(var(--level-best))",
+          middle: "hsl(var(--level-middle))",
+          worst: "hsl(var(--level-worst))",
         },
-        border: "hsla(var(--border))",
+        body: {
+          DEFAULT: "hsl(var(--body-text))", // Maps to new semantic token
+          secondary: "hsl(var(--body-muted))", // Maps to new semantic token
+        },
       },
       borderRadius: {
         "4xl": "2rem",
+        lg: "var(--radius)",
+        md: "calc(var(--radius) - 2px)",
+        sm: "calc(var(--radius) - 4px)",
       },
       keyframes: {
         "accordion-down": {
