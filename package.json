@@ -68,6 +68,7 @@
     "@snaplet/copycat": "^5.0.0",
     "@snaplet/seed": "^0.98.0",
     "@svgr/webpack": "^8.1.0",
+    "@tailwindcss/postcss": "^4.1.13",
     "@types/adm-zip": "^0.5.7",
     "@types/node": "20.11.5",
     "@types/pg": "^8.11.10",
