@@ -2,23 +2,184 @@
 @tailwind components;
 @tailwind utilities;
 
-@import "@/styles/colors.css";
-@import "@/styles/fonts.css";
-@import "@/styles/semantic-tokens.css";
-
 @layer base {
+  :root {
+    /* Surfaces & Neutrals (zinc) */
+    --background: 0, 0%, 98.04%; /* #FAFAFA (zinc-50) */
+    --foreground: 240, 10%, 3.92%; /* #09090B (zinc-950) */
+    --card: 0 0 100%; /* #FFFFFF */
+    --card-foreground: 240, 10%, 3.92%; /* #09090B (zinc-950) */
+    --popover: 0 0 100%; /* #FFFFFF */
+    --popover-foreground: 240, 10%, 3.92%; /* #09090B (zinc-950) */
+    --muted: 240, 4.76%, 95.88%; /* #F4F4F5 (zinc-100) */
+    --muted-foreground: 240, 5.2%, 33.92%; /* #52525B (zinc-600) */
+    --accent: 240, 4.76%, 95.88%; /* #F4F4F5 (zinc-100) */
+    --accent-foreground: 240, 5.88%, 10%; /* #18181B (zinc-900) */
+    --secondary: 0, 0%, 98.04%; /* #FAFAFA (zinc-50) */
+    --secondary-foreground: 240, 5.88%, 10%; /* #18181B (zinc-900) */
+
+    /* Border & Input */
+    --border: 240, 5.88%, 90%; /* #E4E4E7 (zinc-200) */
+    --input: 240, 5.88%, 90%; /* #E4E4E7 (zinc-200) */
+    --ring: 240, 5.03%, 64.9%; /* #A1A1AA (zinc-400) */
+    --placeholder: 240, 3.83%, 46.08%; /* #71717A (zinc-500) */
+
+    /* Brand (emerald) */
+    --primary: 162.93, 93.55%, 24.31%; /* #047857 (emerald-700) */
+    --primary-foreground: 0, 0%, 98.04%; /* #FAFAFA (zinc-50) */
+    --primary-light: 161.38, 93.55%, 30.39%; /* #059669 (emerald-600) */
+    --primary-dark: 163.15, 88.12%, 19.8%; /* #065F46 (emerald-800) */
+    --primary-visited: 161.38, 93.55%, 30.39%; /* #059669 (emerald-600) */
+    --primary-border: 163.15, 88.12%, 19.8%; /* #065F46 (emerald-800) */
+    --brand-secondary: 238.73, 83.53%, 66.67%; /* #6366F1 (indigo-500) */
+    --brand-secondary-foreground: 0, 0%, 98.04%; /* #FAFAFA (zinc-50) */
+
+    /* States */
+    --success: 142.13, 76.22%, 36.27%; /* #16A34A (green-600) */
+    --success-foreground: 0 0 100%; /* #FFFFFF */
+    --warning: 32.13, 94.62%, 43.73%; /* #D97706 (amber-600) */
+    --warning-foreground: 0 0 100%; /* #FFFFFF */
+    --destructive: 0, 72.22%, 50.59%; /* #DC2626 (red-600) */
+    --destructive-foreground: 0 0 100%; /* #FFFFFF */
+    --info: 221.21, 83.19%, 53.33%; /* #2563EB (blue-600) */
+    --info-foreground: 0 0 100%; /* #FFFFFF */
+
+    /* Typography */
+    --heading: 240, 10%, 3.92%; /* #09090B (zinc-950) */
+    --heading-sub: 240, 3.7%, 15.88%; /* #27272A (zinc-800) */
+    --subtitle: 240, 5.26%, 26.08%; /* #3F3F46 (zinc-700) */
+    --body-text: 240, 3.7%, 15.88%; /* #27272A (zinc-800) */
+    --body-muted: 240, 5.2%, 33.92%; /* #52525B (zinc-600) */
+    --label-foreground: 240, 5.88%, 10%; /* #18181B (zinc-900) */
+    --caption-foreground: 240, 5.2%, 33.92%; /* #52525B (zinc-600) */
+    --code-foreground: 240, 3.7%, 15.88%; /* #27272A (zinc-800) */
+
+    /* Charts */
+    --chart-1: 198.63, 88.66%, 48.43%; /* #0EA5E9 (sky-500) */
+    --chart-2: 160.12, 84.08%, 39.41%; /* #10B981 (emerald-500) */
+    --chart-3: 224.44, 64.29%, 32.94%; /* #1E3A8A (blue-900) */
+    --chart-4: 47.95, 95.82%, 53.14%; /* #FACC15 (yellow-400) */
+    --chart-5: 24.58, 94.98%, 53.14%; /* #F97316 (orange-500) */
+    --chart-6: 40.61, 96.12%, 40.39%; /* #CA8A04 (yellow-600) */
+    --chart-7: 346.84, 77.17%, 49.8%; /* #E11D48 (rose-600) */
+    --chart-grid: 240, 5.88%, 90%; /* #E4E4E7 (zinc-200) */
+    --chart-axis: 240, 5.26%, 26.08%; /* #3F3F46 (zinc-700) */
+    --chart-border: 240, 5.88%, 90%; /* #E4E4E7 (zinc-200) */
+
+    /* Custom */
+    --sidebar: 240, 4.76%, 95.88%; /* #F4F4F5 (zinc-100) */
+    --background-highlight: 240, 4.76%, 95.88%; /* #F4F4F5 (zinc-100) */
+    --background-active: 240, 5.88%, 90%; /* #E4E4E7 (zinc-200) */
+    --background-accent: 213.33, 96.92%, 87.25%; /* #DBEAFE (blue-200) */
+    --background-modal: 0, 0%, 98.04%; /* #FAFAFA (zinc-50) */
+    --selection: 226.45, 100%, 93.92%; /* #E0E7FF (indigo-100) */
+    --focus: 156.2, 71.6%, 66.86%; /* #6EE7B7 (emerald-300) */
+
+    /* Level Indicators (v2) TODO: TEAM - Remove */
+    --level-best: 136 100% 38%;
+    --level-middle: 54 100% 50%;
+    --level-worst: 0 100% 40%;
+
+    /* Font Variables */
+    --font-lock-sans: "Lock Sans", sans-serif;
+    --font-ibm-plex-mono: "IBM Plex Mono", Courier, monospace;
+
+    --radius: 0.5rem;
+  }
+
+  .dark {
+    /* Surfaces & Neutrals (zinc) */
+    --background: 240, 10%, 3.92%; /* #09090B (zinc-950) */
+    --foreground: hsl(0, 0%, 98.04%); /* #FAFAFA (zinc-50) */
+    --card: 240, 10%, 3.92%; /* #09090B (zinc-950) */
+    --card-foreground: 0, 0%, 98.04%; /* #FAFAFA (zinc-50) */
+    --popover: 240, 10%, 3.92%; /* #09090B (zinc-950) */
+    --popover-foreground: 0, 0%, 98.04%; /* #FAFAFA (zinc-50) */
+    --muted: 240, 3.7%, 15.88%; /* #27272A (zinc-800) */
+    --muted-foreground: 240, 5.03%, 64.9%; /* #A1A1AA (zinc-400) */
+    --accent: 240, 3.7%, 15.88%; /* #27272A (zinc-800) */
+    --accent-foreground: 0, 0%, 98.04%; /* #FAFAFA (zinc-50) */
+    --secondary: 240, 5.88%, 10%; /* #18181B (zinc-900) */
+    --secondary-foreground: 0, 0%, 98.04%; /* #FAFAFA (zinc-50) */
+
+    /* Border & Input */
+    --border: 240, 5.26%, 26.08%; /* #3F3F46 (zinc-700) */
+    --input: 240, 5.26%, 26.08%; /* #3F3F46 (zinc-700) */
+    --ring: 240, 4.88%, 83.92%; /* #D4D4D8 (zinc-300) */
+    --placeholder: 240, 5.03%, 64.9%; /* #A1A1AA (zinc-400) */
+
+    /* Brand (emerald) */
+    --primary: 160.12, 84.08%, 39.41%; /* #10B981 (emerald-500) */
+    --primary-foreground: 240, 10%, 3.92%; /* #09090B (zinc-950) */
+    --primary-light: 158.11, 64.37%, 51.57%; /* #34D399 (emerald-400) */
+    --primary-dark: 162.93, 93.55%, 24.31%; /* #047857 (emerald-700) */
+    --primary-visited: 161.38, 93.55%, 30.39%; /* #059669 (emerald-600) */
+    --primary-border: 162.93, 93.55%, 24.31%; /* #047857 (emerald-700) */
+    --brand-secondary: 229.66, 93.55%, 81.76%; /* #A5B4FC (indigo-300) */
+    --brand-secondary-foreground: 240, 10%, 3.92%; /* #09090B (zinc-950) */
+
+    /* States */
+    --success: 141.89, 69.16%, 58.04%; /* #4ADE80 (green-400) */
+    --success-foreground: 240, 10%, 3.92%; /* #09090B (zinc-950) */
+    --warning: 43.26, 96.41%, 56.27%; /* #FBBF24 (amber-400) */
+    --warning-foreground: 240, 10%, 3.92%; /* #09090B (zinc-950) */
+    --destructive: 0, 90.6%, 70.78%; /* #F87171 (red-400) */
+    --destructive-foreground: 240, 10%, 3.92%; /* #09090B (zinc-950) */
+    --info: 213.12, 93.9%, 67.84%; /* #60A5FA (blue-400) */
+    --info-foreground: 240, 10%, 3.92%; /* #09090B (zinc-950) */
+
+    /* Typography */
+    --heading: 0, 0%, 98.04%; /* #FAFAFA (zinc-50) */
+    --heading-sub: 240, 5.88%, 90%; /* #E4E4E7 (zinc-200) */
+    --subtitle: 240, 4.88%, 83.92%; /* #D4D4D8 (zinc-300) */
+    --body-text: 240, 5.88%, 90%; /* #E4E4E7 (zinc-200) */
+    --body-muted: 240, 5.03%, 64.9%; /* #A1A1AA (zinc-400) */
+    --label-foreground: 0, 0%, 98.04%; /* #FAFAFA (zinc-50) */
+    --caption-foreground: 240, 5.03%, 64.9%; /* #A1A1AA (zinc-400) */
+    --code-foreground: 240, 5.88%, 90%; /* #E4E4E7 (zinc-200) */
+
+    /* Charts */
+    --chart-1: 198.44, 93.2%, 59.61%; /* #38BDF8 (sky-400) */
+    --chart-2: 160.12, 84.08%, 39.41%; /* #10B981 (emerald-500) */
+    --chart-3: 30.66, 97.16%, 72.35%; /* #FDBA74 (orange-300) */
+    --chart-4: 270, 95.24%, 75.29%; /* #C084FC (purple-400) */
+    --chart-5: 328.62, 85.53%, 70.2%; /* #F472B6 (pink-400) */
+    --chart-6: 47.95, 95.82%, 53.14%; /* #FACC15 (yellow-400) */
+    --chart-7: 351.3, 94.52%, 71.37%; /* #FB7185 (rose-400) */
+    --chart-grid: 240, 3.7%, 15.88%; /* #27272A (zinc-800) */
+    --chart-axis: 240, 4.88%, 83.92%; /* #D4D4D8 (zinc-300) */
+    --chart-border: 240, 3.7%, 15.88%; /* #27272A (zinc-800) */
+
+    /* Custom */
+    --sidebar: 240, 5.88%, 10%; /* #18181B (zinc-900) */
+    --background-highlight: 143.81, 61.17%, 20.2%; /* #14532D (green-900) */
+    --background-active: 142.78, 64.23%, 24.12%; /* #166534 (green-800) */
+    --background-accent: 225.93, 70.73%, 40.2%; /* #1E40AF (blue-800) */
+    --background-modal: 144.88, 80.39%, 10%; /* #052E16 (green-950) */
+    --selection: 243.65, 54.5%, 41.37%; /* #3730A3 (indigo-800) */
+    --focus: 158.11, 64.37%, 51.57%; /* #34D399 (emerald-400) */
+
+    /* Level Indicators (v2) TODO:TEAM - Remove */
+    --level-best: 142 77% 73%; /* Brighter green */
+    --level-middle: 54 100% 50%; /* Same as light */
+    --level-worst: 0 100% 60%; /* Brighter red */
+  }
+
+  /* ===== BASE STYLES ===== */
   * {
     @apply border-border;
+  }
+
+  body {
+    @apply bg-background text-foreground;
+    font-family: "Lock Sans", sans-serif;
   }
 
   html {
     @apply scroll-smooth;
   }
 
-  body {
-    @apply bg-background font-body text-body;
-  }
-
+  /* ===== TYPOGRAPHY ===== */
   h1,
   h2,
   h3,
@@ -61,36 +222,170 @@
   }
 
   ol {
-    @apply list-decimal;
+    @apply list-decimal list-inside;
   }
 
   ul {
-    @apply list-disc;
-  }
-
-  ol,
-  ul {
-    @apply list-inside;
+    @apply list-disc list-inside;
   }
 
   section {
     @apply scroll-m-20;
   }
 
+  /* ===== CUSTOM UTILITIES ===== */
   .text-shadow {
     text-shadow:
-      0 0 3rem hsla(var(--background)),
-      0 0 2rem hsla(var(--background)),
-      0 0 1rem hsla(var(--background));
+      0 0 3rem hsl(var(--background)),
+      0 0 2rem hsl(var(--background)),
+      0 0 1rem hsl(var(--background));
   }
 
   .dev-ring {
     @apply ring ring-red-500 sm:ring-orange-500 md:ring-yellow-500 lg:ring-green-500 xl:ring-blue-500 2xl:ring-violet-500;
   }
+
+  /* ===== FONT FACES ===== */
+  /* Lock Sans (Primary Font Family) */
+  @font-face {
+    font-family: "Lock Sans";
+    font-style: normal;
+    font-weight: 200;
+    src: url(/fonts/lock-sans/LockSansTRIAL-ExtraLight.otf) format("opentype");
+    unicode-range: U+0000-00FF;
+  }
+
+  @font-face {
+    font-family: "Lock Sans";
+    font-style: normal;
+    font-weight: 300;
+    src: url(/fonts/lock-sans/LockSansTRIAL-Light.otf) format("opentype");
+    unicode-range: U+0000-00FF;
+  }
+
+  @font-face {
+    font-family: "Lock Sans";
+    font-style: normal;
+    font-weight: 400;
+    src: url(/fonts/lock-sans/LockSansTRIAL-Regular.otf) format("opentype");
+    unicode-range: U+0000-00FF;
+  }
+
+  @font-face {
+    font-family: "Lock Sans";
+    font-style: normal;
+    font-weight: 500;
+    src: url(/fonts/lock-sans/LockSansTRIAL-Medium.otf) format("opentype");
+    unicode-range: U+0000-00FF;
+  }
+
+  @font-face {
+    font-family: "Lock Sans";
+    font-style: normal;
+    font-weight: 700;
+    src: url(/fonts/lock-sans/LockSansTRIAL-Bold.otf) format("opentype");
+    unicode-range: U+0000-00FF;
+  }
+
+  @font-face {
+    font-family: "Lock Sans";
+    font-style: normal;
+    font-weight: 900;
+    src: url(/fonts/lock-sans/LockSansTRIAL-Black.otf) format("opentype");
+    unicode-range: U+0000-00FF;
+  }
+
+  @font-face {
+    font-family: "IBM Plex Mono";
+    font-style: normal;
+    font-weight: 400;
+    src:
+      url(/fonts/ibm-plex-mono/IBMPlexMono-Regular.woff2) format("woff2"),
+      url(/fonts/ibm-plex-mono/IBMPlexMono-Regular.woff) format("woff"),
+      url(/fonts/ibm-plex-mono/IBMPlexMono-Regular.ttf) format("truetype");
+    unicode-range: U+0000-00FF;
+  }
+
+  @font-face {
+    font-family: "IBM Plex Mono";
+    font-style: italic;
+    font-weight: 400;
+    src:
+      url(/fonts/ibm-plex-mono/IBMPlexMono-Italic.woff2) format("woff2"),
+      url(/fonts/ibm-plex-mono/IBMPlexMono-Italic.woff) format("woff"),
+      url(/fonts/ibm-plex-mono/IBMPlexMono-Italic.ttf) format("truetype");
+    unicode-range: U+0000-00FF;
+  }
+
+  @font-face {
+    font-family: "IBM Plex Mono";
+    font-style: normal;
+    font-weight: 500;
+    src:
+      url(/fonts/ibm-plex-mono/IBMPlexMono-Medium.woff2) format("woff2"),
+      url(/fonts/ibm-plex-mono/IBMPlexMono-Medium.woff) format("woff"),
+      url(/fonts/ibm-plex-mono/IBMPlexMono-Medium.ttf) format("truetype");
+    unicode-range: U+0000-00FF;
+  }
+
+  @font-face {
+    font-family: "IBM Plex Mono";
+    font-style: italic;
+    font-weight: 500;
+    src:
+      url(/fonts/ibm-plex-mono/IBMPlexMono-MediumItalic.woff2) format("woff2"),
+      url(/fonts/ibm-plex-mono/IBMPlexMono-MediumItalic.woff) format("woff"),
+      url(/fonts/ibm-plex-mono/IBMPlexMono-MediumItalic.ttf) format("truetype");
+    unicode-range: U+0000-00FF;
+  }
+
+  @font-face {
+    font-family: "IBM Plex Mono";
+    font-style: normal;
+    font-weight: 600;
+    src:
+      url(/fonts/ibm-plex-mono/IBMPlexMono-SemiBold.woff2) format("woff2"),
+      url(/fonts/ibm-plex-mono/IBMPlexMono-SemiBold.woff) format("woff"),
+      url(/fonts/ibm-plex-mono/IBMPlexMono-SemiBold.ttf) format("truetype");
+    unicode-range: U+0000-00FF;
+  }
+
+  @font-face {
+    font-family: "IBM Plex Mono";
+    font-style: italic;
+    font-weight: 600;
+    src:
+      url(/fonts/ibm-plex-mono/IBMPlexMono-SemiBoldItalic.woff2) format("woff2"),
+      url(/fonts/ibm-plex-mono/IBMPlexMono-SemiBoldItalic.woff) format("woff"),
+      url(/fonts/ibm-plex-mono/IBMPlexMono-SemiBoldItalic.ttf) format("truetype");
+    unicode-range: U+0000-00FF;
+  }
+
+  @font-face {
+    font-family: "IBM Plex Mono";
+    font-style: normal;
+    font-weight: 700;
+    src:
+      url(/fonts/ibm-plex-mono/IBMPlexMono-Bold.woff2) format("woff2"),
+      url(/fonts/ibm-plex-mono/IBMPlexMono-Bold.woff) format("woff"),
+      url(/fonts/ibm-plex-mono/IBMPlexMono-Bold.ttf) format("truetype");
+    unicode-range: U+0000-00FF;
+  }
+
+  @font-face {
+    font-family: "IBM Plex Mono";
+    font-style: italic;
+    font-weight: 700;
+    src:
+      url(/fonts/ibm-plex-mono/IBMPlexMono-BoldItalic.woff2) format("woff2"),
+      url(/fonts/ibm-plex-mono/IBMPlexMono-BoldItalic.woff) format("woff"),
+      url(/fonts/ibm-plex-mono/IBMPlexMono-BoldItalic.ttf) format("truetype");
+    unicode-range: U+0000-00FF;
+  }
 }
 
 @layer components {
-  /* base */
+  /* ===== GRID TEMPLATES ===== */
   [data-grid-template-areas="cluster-proof"] {
     grid-template-areas:
       "block block"
@@ -108,7 +403,7 @@
       "position4 position3";
   }
 
-  /* sm */
+  /* ===== RESPONSIVE GRID TEMPLATES ===== */
   @media (min-width: 640px) {
     [data-grid-template-areas="software-details"] {
       grid-template-areas:
@@ -119,7 +414,6 @@
     }
   }
 
-  /* md */
   @media (min-width: 768px) {
     [data-grid-template-areas="cluster-proof"] {
       grid-template-areas:
@@ -128,7 +422,6 @@
     }
   }
 
-  /* lg */
   @media (min-width: 1024px) {
     [data-grid-template-areas="cluster-proof"] {
       grid-template-areas:
@@ -137,7 +430,6 @@
     }
   }
 
-  /* xl */
   @media (min-width: 1280px) {
     [data-grid-template-areas="cluster-proof"] {
       grid-template-areas: "block time cost download verify";
