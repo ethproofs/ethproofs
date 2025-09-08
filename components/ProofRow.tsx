@@ -87,7 +87,7 @@ const ProofRow = ({ proof, block }: ProofRowProps) => {
     <div
       className={cn(
         "grid grid-flow-dense grid-cols-4 grid-rows-3 max-md:py-4",
-        "xl:grid-cols-6-auto xl:grid-rows-1"
+        "grid-cols-[1fr_repeat(5,_auto)] xl:grid-rows-1"
       )}
       key={proof_id}
     >

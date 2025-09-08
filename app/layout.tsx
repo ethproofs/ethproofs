@@ -27,9 +27,9 @@ export default function RootLayout({
       <head>
         <link
           rel="preload"
-          href="/fonts/ibm-plex-mono/IBMPlexMono-Regular.woff2"
+          href="/fonts/lock-sans/LockSansTRIAL-Regular.otf"
           as="font"
-          type="font/woff2"
+          type="font/otf"
           crossOrigin="anonymous"
         />
         {/* https://nextjs.org/docs/app/api-reference/file-conventions/metadata/app-icons */}
