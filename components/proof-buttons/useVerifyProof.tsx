@@ -4,6 +4,7 @@ import { useCallback, useEffect, useState } from "react"
 
 import { usePicoVerifier } from "./verifier-hooks/usePicoVerifier"
 import { useZirenVerifier } from "./verifier-hooks/useZirenVerifier"
+import { useZiskVerifier } from "./verifier-hooks/useZiskVerifier"
 
 export interface VerificationResult {
   error?: string
@@ -15,6 +16,7 @@ export function useVerifyProof(prover: string) {
   const [verifyTime, setVerifyTime] = useState("")
   const verifyPicoProof = usePicoVerifier(prover === "brevis")
   const verifyZirenProof = useZirenVerifier(prover === "zkm")
+  const verifyZiskProof = useZiskVerifier(prover === "zisk")
 
   const verifyProof = useCallback(
     async (
@@ -28,6 +30,8 @@ export function useVerifyProof(prover: string) {
           result = verifyPicoProof(proofBytes, vkBytes)
         } else if (prover === "zkm") {
           result = verifyZirenProof(proofBytes, vkBytes)
+        } else if (prover === "zisk") {
+          result = verifyZiskProof(proofBytes, vkBytes)
         } else {
           result = { isValid: false, error: "Proof cannot be verified" }
         }
@@ -41,7 +45,7 @@ export function useVerifyProof(prover: string) {
         }
       }
     },
-    [prover, verifyPicoProof, verifyZirenProof]
+    [prover, verifyPicoProof, verifyZirenProof, verifyZiskProof]
   )
 
   return {
