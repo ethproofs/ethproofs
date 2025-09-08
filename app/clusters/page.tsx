@@ -7,7 +7,7 @@ import { getActiveClusters } from "@/lib/api/clusters"
 import { getClusterSummary } from "@/lib/api/stats"
 import { getMetadata } from "@/lib/metadata"
 
-export const metadata: Metadata = getMetadata()
+export const metadata: Metadata = getMetadata({ title: "Provers" })
 
 export default async function ClustersPage() {
   const [clusterSummary, activeClusters] = await Promise.all([

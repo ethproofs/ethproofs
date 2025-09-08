@@ -7,7 +7,7 @@ import { getBenchmarks } from "@/lib/api/benchmarks"
 import { getClustersBenchmarks } from "@/lib/api/clusters"
 import { getMetadata } from "@/lib/metadata"
 
-export const metadata: Metadata = getMetadata()
+export const metadata: Metadata = getMetadata({ title: "Killers" })
 
 export default async function KillersPage() {
   const [clusters, benchmarks] = await Promise.all([

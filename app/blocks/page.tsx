@@ -14,7 +14,7 @@ import { fetchBlocksPaginated } from "@/lib/api/blocks"
 import { getTeams } from "@/lib/api/teams"
 import { getMetadata } from "@/lib/metadata"
 
-export const metadata: Metadata = getMetadata()
+export const metadata: Metadata = getMetadata({ title: "Blocks" })
 
 export default async function BlocksPage() {
   const queryClient = new QueryClient()
