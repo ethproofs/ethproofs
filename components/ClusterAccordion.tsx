@@ -127,13 +127,13 @@ const ClusterAccordionItem = ({
       </div>
       <AccordionContent className="relative col-span-full flex flex-col gap-12 p-6">
         {hasPhysicalMachinesInCluster ? (
-          <div className="flex items-center gap-x-20">
+          <div className="flex w-full flex-row items-center justify-center gap-x-20">
             <ClusterMachineSummary machines={lastVersion.cluster_machines} />
 
             {isMultiMachine && (
-              <div className="flex flex-1 flex-col space-y-4 overflow-x-hidden">
+              <div className="flex flex-col space-y-4 overflow-x-hidden">
                 <HardwareGrid clusterMachines={lastVersion.cluster_machines} />
-                <div className="flex items-center gap-3 self-end">
+                <div className="flex items-center gap-3">
                   <span className="me-4">GPUs</span>
                   {Array(6)
                     .fill(0)
