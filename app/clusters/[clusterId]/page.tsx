@@ -5,7 +5,7 @@ import { notFound } from "next/navigation"
 import { SummaryItem } from "@/lib/types"
 
 import ClusterMachineSummary from "@/components/ClusterMachineSummary"
-import ClusterProofRow, { type RowProof } from "@/components/ClusterProofRow"
+import ClusterProofRow from "@/components/ClusterProofRow"
 import { DisplayTeam } from "@/components/DisplayTeamLink"
 import KPIs from "@/components/KPIs"
 import NoData from "@/components/NoData"
@@ -87,7 +87,7 @@ export default async function ClusterDetailsPage({
   const clusterSummaryItems: SummaryItem[] = [
     {
       key: "open-source",
-      label: "open source",
+      label: "prover open source",
       value: <BooleanIcon bool={cluster.is_open_source} />,
     },
     {
@@ -201,7 +201,7 @@ export default async function ClusterDetailsPage({
       </section>
 
       {hasPhysicalMachinesInCluster && (
-        <section className="flex gap-x-16 gap-y-8 max-sm:flex-col max-sm:items-center">
+        <section className="flex justify-center gap-x-16 gap-y-8 max-sm:flex-col max-sm:items-center">
           {isMultiMachine && (
             <ClusterMachineSummary machines={clusterMachines} />
           )}
@@ -241,18 +241,20 @@ export default async function ClusterDetailsPage({
                     key={id}
                     className="relative flex flex-col justify-end -space-y-4"
                   >
-                    <MachineDetails
-                      machine={machine}
-                      className="rounded-2xl border border-primary-border bg-background px-8"
-                    />
-                    {Array.from({
-                      length: machine_count - 1,
-                    }).map((_, i) => (
-                      <div
-                        key={i}
-                        className="h-6 rounded-b-2xl border border-primary-border border-t-transparent"
+                    <div className="relative flex flex-row">
+                      <MachineDetails
+                        machine={machine}
+                        className="rounded-2xl border border-primary-border bg-background px-8"
                       />
-                    ))}
+                      {Array.from({
+                        length: Math.max(0, (machine_count ?? 0) - 1),
+                      }).map((_, i) => (
+                        <div
+                          key={i}
+                          className="w-4 rounded-r-2xl border border-primary-border border-l-transparent"
+                        />
+                      ))}
+                    </div>
                     <div className="!mt-2 inline-flex justify-center">
                       <MetricBox className="py-0">
                         <MetricLabel>
