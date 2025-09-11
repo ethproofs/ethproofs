@@ -42,11 +42,11 @@ export const KPI = ({ item, layout = "default" }: KPIProps) => {
       {/* Row 1 - Metric icon and value */}
       <div className="col-span-1 row-span-1 flex h-full flex-col items-center justify-center gap-x-2 md:flex-row">
         {item.icon && (
-          <p className="whitespace-nowrap font-mono text-3xl font-medium text-primary lg:text-4xl">
+          <p className="whitespace-nowrap text-3xl font-medium text-primary lg:text-4xl">
             {item.icon}
           </p>
         )}
-        <p className="h-auto whitespace-nowrap text-nowrap text-center font-mono text-3xl font-medium text-primary lg:text-4xl">
+        <p className="h-auto whitespace-nowrap text-nowrap text-center text-3xl font-medium text-primary lg:text-4xl">
           {item.value}
         </p>
       </div>

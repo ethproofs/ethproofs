@@ -20,17 +20,13 @@ export default function NotFound() {
   return (
     <div className="mt-40 flex flex-col items-center gap-4 text-center">
       <Box className="size-40 stroke-[0.5px] text-body-secondary" />
-      <h1 className="mb-4 font-mono text-3xl text-primary">
-        no block found with proofs
-      </h1>
+      <h1 className="mb-4 text-3xl text-primary">no block found with proofs</h1>
       <p className="max-w-screen-lg text-lg">
         the block{" "}
         {blockType === "hash" ? (
           <>
             with hash{" "}
-            <span className="break-all font-mono text-body-secondary">
-              {block}
-            </span>
+            <span className="break-all text-body-secondary">{block}</span>
           </>
         ) : (
           <span className="text-body-secondary">

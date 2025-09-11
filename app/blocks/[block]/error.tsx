@@ -12,9 +12,7 @@ export default function Error() {
   return (
     <div className="mt-40 flex flex-col items-center gap-4 text-center">
       <Box className="size-40 stroke-[0.5px] text-body-secondary" />
-      <h1 className="mb-4 font-mono text-3xl text-primary">
-        block not recognized
-      </h1>
+      <h1 className="mb-4 text-3xl text-primary">block not recognized</h1>
       <p className="text-lg">
         the block provided is not a valid number or a hash
       </p>

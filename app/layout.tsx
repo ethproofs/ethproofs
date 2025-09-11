@@ -1,18 +1,13 @@
-import Link from "next/link"
+import { Suspense } from "react"
+import { Heart, Moon } from "lucide-react"
 import Script from "next/script"
 
-import AppNavigationMenu from "@/components/AppNavigationMenu"
-import HeaderScrollEffects from "@/components/header/HeaderScrollEffects"
-import LampEffect from "@/components/LampEffect"
-import EthProofsLogo from "@/components/svgs/eth-proofs-logo.svg"
-import {
-  SidebarInset,
-  SidebarProvider,
-  SidebarTrigger,
-} from "@/components/ui/sidebar"
-import { Toaster } from "@/components/ui/sonner"
+import AppSidebar from "@/components/sidebar/AppSidebar"
+import SearchInput from "@/components/header/SearchInput"
+import ThemeSwitch from "@/components/header/ThemeSwitch"
+import { SidebarInset, SidebarTrigger } from "@/components/ui/sidebar"
 
-import { cn } from "@/lib/utils"
+import { Toaster } from "@/components/ui/sonner"
 
 import Providers from "./providers"
 
@@ -60,20 +55,37 @@ export default function RootLayout({
         />
       </head>
 
-      <body className="pb-80">
+      <body>
         <Providers>
-          <AppNavigationMenu />
-          <SidebarInset>
-            <header className="group-has-data-[collapsible=icon]/sidebar-wrapper:h-12 flex h-16 shrink-0 items-center gap-2 border-b px-4 transition-[width,height] ease-linear">
-              <SidebarTrigger className="hover:text-secondary -ml-1 hover:bg-transparent" />
+          <AppSidebar />
+          <SidebarInset className="flex min-h-screen flex-col">
+            <header className="group-has-data-[collapsible=icon]/sidebar-wrapper:h-12 flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear">
+              <div className="flex w-full items-center justify-between px-4">
+                <SidebarTrigger className="-ml-1 text-primary hover:bg-transparent hover:text-primary-light" />
+                <div className="flex items-center gap-2">
+                  <Suspense
+                    fallback={
+                      <div className="flex h-fit items-center gap-2">
+                        <Moon className="animate-pulse text-primary" />
+                      </div>
+                    }
+                  >
+                    <ThemeSwitch />
+                  </Suspense>
+                  <SearchInput
+                    aria-label="search by block"
+                    placeholder="search by block"
+                  />
+                </div>
+              </div>
               {/* <HeaderScrollEffects />
               <Link href="/" className="md:hidden">
                 <EthProofsLogo className="text-3xl" />
               </Link> */}
             </header>
 
-            <div className="relative w-full">
-              <div
+            <div className="relative w-full flex-1">
+              {/* <div
                 className={cn(
                   "max-md:hidden",
                   "bg-[url('/images/blocks-and-hashes.svg')] bg-no-repeat dark:bg-[url('/images/blocks-and-hashes.svg')]",
@@ -82,12 +94,19 @@ export default function RootLayout({
                   "pointer-events-none absolute -z-[0] h-1/3 w-full"
                 )}
                 style={{ backgroundPosition: "calc(50% + 20rem) -6rem" }}
-              />
+              /> */}
 
               {/* <LampEffect /> */}
 
               <main className="isolate min-h-[50vh]">{children}</main>
             </div>
+            <footer className="mt-20 flex h-20 flex-col items-center justify-center border-t">
+              <div className="flex flex-row items-center justify-center gap-2">
+                made with{" "}
+                <Heart className="mb-0.5 inline size-4 text-xl text-primary motion-safe:animate-heart-beat" />{" "}
+                by the Ethereum Foundation
+              </div>
+            </footer>
           </SidebarInset>
         </Providers>
         <Toaster />

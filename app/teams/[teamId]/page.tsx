@@ -8,9 +8,8 @@ import ClusterTable from "@/components/ClusterTable"
 import { DisplayTeam } from "@/components/DisplayTeamLink"
 import KPIs from "@/components/KPIs"
 import Null from "@/components/Null"
-import GitHub from "@/components/svgs/github.svg"
-import Globe from "@/components/svgs/globe.svg"
-import TwitterLogo from "@/components/svgs/x-logo.svg"
+import GitHubLogo from "@/components/svgs/github-logo.svg"
+import XLogo from "@/components/svgs/x-logo.svg"
 import { Card, CardContent, CardHeader } from "@/components/ui/card"
 import { HeroBody, HeroItem, HeroItemLabel } from "@/components/ui/hero"
 import Link from "@/components/ui/link"
@@ -26,6 +25,7 @@ import { formatUsd } from "@/lib/number"
 import { getTeamByIdOrSlug } from "@/lib/teams"
 import { prettyMs } from "@/lib/time"
 import { getHost, getTwitterHandle } from "@/lib/url"
+import { Globe } from "lucide-react"
 
 export type TeamDetailsPageProps = {
   params: Promise<{ teamId: string }>
@@ -141,7 +141,7 @@ export default async function TeamDetailsPage({
             <HeroItem className="hover:underline">
               <Link hideArrow className="text-body" href={team.website_url}>
                 <HeroItemLabel className="gap-x-2 text-body">
-                  <Globe />
+                  <Globe className="size-4" />
                   {getHost(team.website_url)}
                 </HeroItemLabel>
               </Link>
@@ -155,7 +155,7 @@ export default async function TeamDetailsPage({
                 href={new URL(team.twitter_handle, "https://x.com/").toString()}
               >
                 <HeroItemLabel className="gap-x-2 text-body">
-                  <TwitterLogo />
+                  <XLogo className="h-3 w-auto" />
                   {getTwitterHandle(team.twitter_handle)}
                 </HeroItemLabel>
               </Link>
@@ -169,7 +169,7 @@ export default async function TeamDetailsPage({
                 href={new URL(team.github_org, "https://github.com").toString()}
               >
                 <HeroItemLabel className="gap-x-2 text-body">
-                  <GitHub />
+                  <GitHubLogo className="size-4" />
                   {team.github_org}
                 </HeroItemLabel>
               </Link>
@@ -181,17 +181,13 @@ export default async function TeamDetailsPage({
       <div className="mx-auto max-w-screen-xl space-y-20 [&>section]:w-full">
         <section className="grid grid-cols-1 gap-6 md:grid-cols-2">
           <Card className="!space-y-0">
-            <CardHeader className="font-mono">
-              multi-machine performance
-            </CardHeader>
+            <CardHeader className="">multi-machine performance</CardHeader>
             <CardContent>
               <KPIs items={multiMachineSummary} layout="flipped" />
             </CardContent>
           </Card>
           <Card className="!space-y-0">
-            <CardHeader className="font-mono">
-              single machine performance
-            </CardHeader>
+            <CardHeader className="">single machine performance</CardHeader>
             <CardContent>
               <KPIs items={singleMachineSummary} layout="flipped" />
             </CardContent>

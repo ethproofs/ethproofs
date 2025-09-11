@@ -13,13 +13,14 @@ const config = {
     container: {
       center: true,
       padding: "2rem",
-      screens: { "2xl": "1400px" },
+      screens: {
+        "2xl": "1400px",
+      },
     },
     extend: {
       fontFamily: {
-        heading: "var(--font-lock-sans)", // TODO:TEAM - Unused?
+        heading: "var(--font-lock-sans-stencil)",
         body: "var(--font-lock-sans)",
-        mono: "var(--font-lock-sans)", // TODO:TEAM - Remove mono font?
       },
       fontSize: {
         "6xl": ["4rem", "4.5rem"],
@@ -34,109 +35,97 @@ const config = {
         xs: ["0.75rem", "1.125rem"],
       },
       colors: {
-        border: "hsl(var(--border))",
-        input: "hsl(var(--input))",
-
-        /* shadcn */
-        ring: "hsl(var(--ring))",
+        border: "hsla(var(--border))",
+        input: "hsla(var(--input))",
+        ring: "hsla(var(--ring))",
         background: "hsla(var(--background))",
-        foreground: "hsl(var(--foreground))",
+        foreground: "hsla(var(--foreground))",
         primary: {
-          DEFAULT: "hsl(var(--primary))",
-          foreground: "hsl(var(--primary-foreground))",
-          light: "hsl(var(--primary-light))",
-          dark: "hsl(var(--primary-dark))",
-          visited: "hsl(var(--primary-visited))",
+          DEFAULT: "hsla(var(--primary))",
+          foreground: "hsla(var(--primary-foreground))",
+          light: "hsla(var(--primary-light))",
+          dark: "hsla(var(--primary-dark))",
+          visited: "hsla(var(--primary-visited))",
           border: "hsla(var(--primary-border))",
         },
         secondary: {
-          DEFAULT: "hsl(var(--secondary))",
-          foreground: "hsl(var(--secondary-foreground))",
+          DEFAULT: "hsla(var(--secondary))",
+          foreground: "hsla(var(--secondary-foreground))",
         },
         destructive: {
-          DEFAULT: "hsl(var(--destructive))",
-          foreground: "hsl(var(--destructive-foreground))",
+          DEFAULT: "hsla(var(--destructive))",
+          foreground: "hsla(var(--destructive-foreground))",
         },
         muted: {
-          DEFAULT: "hsl(var(--muted))",
-          foreground: "hsl(var(--muted-foreground))",
+          DEFAULT: "hsla(var(--muted))",
+          foreground: "hsla(var(--muted-foreground))",
         },
         accent: {
-          DEFAULT: "hsl(var(--accent))",
-          foreground: "hsl(var(--accent-foreground))",
+          DEFAULT: "hsla(var(--accent))",
+          foreground: "hsla(var(--accent-foreground))",
         },
         popover: {
-          DEFAULT: "hsl(var(--popover))",
-          foreground: "hsl(var(--popover-foreground))",
+          DEFAULT: "hsla(var(--popover))",
+          foreground: "hsla(var(--popover-foreground))",
         },
         card: {
-          DEFAULT: "hsl(var(--card))",
-          foreground: "hsl(var(--card-foreground))",
+          DEFAULT: "hsla(var(--card))",
+          foreground: "hsla(var(--card-foreground))",
         },
-
-        /* Brand (emerald) */
         brand: {
-          secondary: "hsl(var(--brand-secondary))",
-          "secondary-foreground": "hsl(var(--brand-secondary-foreground))",
+          secondary: "hsla(var(--brand-secondary))",
+          "secondary-foreground": "hsla(var(--brand-secondary-foreground))",
         },
-
-        /* States */
         success: {
-          DEFAULT: "hsl(var(--success))",
-          foreground: "hsl(var(--success-foreground))",
+          DEFAULT: "hsla(var(--success))",
+          foreground: "hsla(var(--success-foreground))",
         },
         warning: {
-          DEFAULT: "hsl(var(--warning))",
-          foreground: "hsl(var(--warning-foreground))",
+          DEFAULT: "hsla(var(--warning))",
+          foreground: "hsla(var(--warning-foreground))",
         },
         info: {
-          DEFAULT: "hsl(var(--info))",
-          foreground: "hsl(var(--info-foreground))",
+          DEFAULT: "hsla(var(--info))",
+          foreground: "hsla(var(--info-foreground))",
         },
-
-        /* Typography */
-        heading: "hsl(var(--heading))",
-        "heading-sub": "hsl(var(--heading-sub))",
-        subtitle: "hsl(var(--subtitle))",
-        "body-text": "hsl(var(--body-text))",
-        "body-muted": "hsl(var(--body-muted))",
-        "label-foreground": "hsl(var(--label-foreground))",
-        "caption-foreground": "hsl(var(--caption-foreground))",
-        "code-foreground": "hsl(var(--code-foreground))",
-
-        /* Charts */
+        // heading: "hsla(var(--heading))",
+        // "heading-sub": "hsla(var(--heading-sub))",
+        // subtitle: "hsla(var(--subtitle))",
+        // "body-foreground": "hsla(var(--body-foreground))",
+        // "body-muted": "hsla(var(--body-muted))",
+        // "label-foreground": "hsla(var(--label-foreground))",
+        // "caption-foreground": "hsla(var(--caption-foreground))",
+        // "code-foreground": "hsla(var(--code-foreground))",
         chart: {
-          1: "hsl(var(--chart-1))",
-          2: "hsl(var(--chart-2))",
-          3: "hsl(var(--chart-3))",
-          4: "hsl(var(--chart-4))",
-          5: "hsl(var(--chart-5))",
-          6: "hsl(var(--chart-6))",
-          7: "hsl(var(--chart-7))",
-          grid: "hsl(var(--chart-grid))",
-          axis: "hsl(var(--chart-axis))",
-          border: "hsl(var(--chart-border))",
+          "1": "hsla(var(--chart-1))",
+          "2": "hsla(var(--chart-2))",
+          "3": "hsla(var(--chart-3))",
+          "4": "hsla(var(--chart-4))",
+          "5": "hsla(var(--chart-5))",
+          border: "hsla(var(--chart-border))",
         },
-
-        /* Custom */
-        sidebar: "hsl(var(--sidebar))",
-        "background-highlight": "hsl(var(--background-highlight))",
-        "background-active": "hsl(var(--background-active))",
-        "background-accent": "hsl(var(--background-accent))",
-        "background-modal": "hsl(var(--background-modal))",
-        selection: "hsl(var(--selection))",
-        focus: "hsl(var(--focus))",
-        placeholder: "hsl(var(--placeholder))",
-
-        /* Legacy compatibility (v2) */
+        sidebar: {
+          DEFAULT: "hsla(var(--sidebar))",
+          foreground: "hsla(var(--sidebar-foreground))",
+          primary: "hsla(var(--primary))",
+          "primary-foreground": "hsla(var(--primary-foreground))",
+          accent: "hsla(var(--accent))",
+          "accent-foreground": "hsla(var(--accent-foreground))",
+          border: "hsla(var(--border))",
+          ring: "hsla(var(--ring))",
+        },
+        "background-highlight": "hsla(var(--background-highlight))",
+        "background-active": "hsla(var(--background-active))",
+        "background-accent": "hsla(var(--background-accent))",
+        placeholder: "hsla(var(--placeholder))",
         level: {
-          best: "hsl(var(--level-best))",
-          middle: "hsl(var(--level-middle))",
-          worst: "hsl(var(--level-worst))",
+          best: "hsla(var(--level-best))",
+          middle: "hsla(var(--level-middle))",
+          worst: "hsla(var(--level-worst))",
         },
         body: {
-          DEFAULT: "hsl(var(--body-text))", // Maps to new semantic token
-          secondary: "hsl(var(--body-muted))", // Maps to new semantic token
+          DEFAULT: "hsla(var(--body-foreground))",
+          secondary: "hsla(var(--body-muted))",
         },
       },
       borderRadius: {
@@ -147,12 +136,20 @@ const config = {
       },
       keyframes: {
         "accordion-down": {
-          from: { height: "0" },
-          to: { height: "var(--radix-accordion-content-height)" },
+          from: {
+            height: "0",
+          },
+          to: {
+            height: "var(--radix-accordion-content-height)",
+          },
         },
         "accordion-up": {
-          from: { height: "var(--radix-accordion-content-height)" },
-          to: { height: "0" },
+          from: {
+            height: "var(--radix-accordion-content-height)",
+          },
+          to: {
+            height: "0",
+          },
         },
         "heart-beat": {
           "0%, 25%": {
