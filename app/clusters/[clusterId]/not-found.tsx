@@ -18,15 +18,11 @@ export default function NotFound() {
       <Cpu className="size-40 stroke-[0.5px] text-body-secondary" />
       {isUUID(clusterId) ? (
         <>
-          <h1 className="mb-4 font-mono text-3xl text-primary">
-            no cluster found
-          </h1>
+          <h1 className="mb-4 text-3xl text-primary">no cluster found</h1>
           <p className="text-lg">id: {clusterId}</p>
         </>
       ) : (
-        <h1 className="mb-4 font-mono text-3xl text-primary">
-          cluster not recognized
-        </h1>
+        <h1 className="mb-4 text-3xl text-primary">cluster not recognized</h1>
       )}
       <p className="text-lg">
         ...if this is a bug, please report it{" "}

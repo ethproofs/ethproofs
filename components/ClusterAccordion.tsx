@@ -92,9 +92,7 @@ const ClusterAccordionItem = ({
             >
               {lastVersion.zkvm_version.zkvm.name}
             </Link>{" "}
-            <span className="font-mono text-sm italic text-body-secondary">
-              by
-            </span>{" "}
+            <span className="text-sm italic text-body-secondary">by</span>{" "}
             <div className="min-w-24">
               <DisplayTeamLink
                 team={clusterDetails.team}
@@ -167,9 +165,7 @@ const ClusterAccordionItem = ({
         </div>
 
         <div className="absolute bottom-6 right-6">
-          <span className="text-xs italic text-body-secondary">
-            last updated
-          </span>{" "}
+          <span className="text-xs text-body-secondary">last updated:</span>{" "}
           <span className="text-xs uppercase text-body">
             {formatShortDate(new Date(lastVersion.created_at))}
           </span>

@@ -4,8 +4,6 @@ import { useEffect, useState } from "react"
 import { Monitor, Moon, Sun } from "lucide-react"
 import { useTheme } from "next-themes"
 
-import ArrowDropdown from "@/components/svgs/arrow-dropdown.svg"
-
 import { cn } from "@/lib/utils"
 
 import {
@@ -54,9 +52,8 @@ const ThemeSwitch = () => {
   ]
   return (
     <DropdownMenu>
-      <DropdownMenuTrigger className="group box-content flex h-6 w-fit items-center gap-2 rounded-full border border-primary-dark px-2 py-1.5 text-primary-dark [&[data-state=open]]:bg-background-highlight">
-        <ThemeIcon className="size-4 !text-body" />
-        <ArrowDropdown className="transition-transform duration-100 group-[&[data-state=open]]:-scale-y-100" />
+      <DropdownMenuTrigger className="[&[data-state=open]]:text-primary-active group box-content flex h-fit items-center gap-2 rounded-full p-2 text-primary hover:text-primary-light">
+        <ThemeIcon />
       </DropdownMenuTrigger>
 
       <DropdownMenuContent className="space-y-0 p-px">
