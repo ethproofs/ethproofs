@@ -13,16 +13,13 @@ import {
   Zap,
 } from "lucide-react"
 
-import EthproofsIcon from "@/components/svgs/ethproofs-icon.svg"
-import GitHub from "@/components/svgs/github.svg"
-import Twitter from "@/components/svgs/twitter.svg"
+import GitHub from "@/components/svgs/github-logo.svg"
+import XLogo from "@/components/svgs/x-logo.svg"
 import Link from "@/components/ui/link"
 
 import { URL_GITHUB_REPO, URL_TWITTER } from "@/lib/constants"
 import { SITE_REPO } from "@/lib/constants"
 
-import SearchInput from "./header/SearchInput"
-import ThemeSwitch from "./header/ThemeSwitch"
 import {
   Sidebar,
   SidebarContent,
@@ -35,7 +32,7 @@ import {
   SidebarMenuItem,
   SidebarRail,
 } from "./ui/sidebar"
-import { Skeleton } from "./ui/skeleton"
+import EthproofsLogomark from "./EthproofsLogomark"
 
 const AppNavigationMenu = () => {
   const verticalFade = {
@@ -50,23 +47,9 @@ const AppNavigationMenu = () => {
       collapsible="icon"
       className="bg-gradient-to-b from-sidebar to-background font-body"
     >
-      <SidebarHeader className="mt-11 space-y-10">
-        <div className="flex items-end gap-2">
-          <EthproofsIcon />
-          <Link className="text-2xl font-bold italic text-body" href="/">
-            Ethproofs
-          </Link>
-
-          {/* <Suspense fallback={<Skeleton className="h-8 w-12 rounded-full" />}>
-            <ThemeSwitch />
-          </Suspense> */}
-        </div>
-        {/* <SearchInput
-          aria-label="search by block"
-          placeholder="search by block"
-        /> */}
+      <SidebarHeader className="h-16">
+        <EthproofsLogomark />
       </SidebarHeader>
-
       <SidebarContent style={verticalFade}>
         <SidebarMenu
           style={verticalFade}
@@ -160,37 +143,20 @@ const AppNavigationMenu = () => {
                 <span>spot a bug?</span>
               </Link>
             </SidebarMenuItem>
+            <SidebarMenuItem>
+              <Link
+                className="inline-flex items-center text-body hover:text-primary"
+                href={URL_TWITTER}
+                hideArrow
+              >
+                <XLogo className="me-2 h-3 w-4" />
+                <span>follow us</span>
+              </Link>
+            </SidebarMenuItem>
           </SidebarGroup>
         </SidebarMenu>
       </SidebarContent>
-
-      {/* <SidebarFooter>
-        <div className="flex items-center gap-x-6 pb-2 font-sans font-bold [&>a]:text-2xl [&>a]:text-body">
-          <Link href={URL_GITHUB_REPO} hideArrow>
-            <GitHub />
-          </Link>
-          <Link href={URL_TWITTER} hideArrow>
-            <Twitter />
-          </Link>
-        </div>
-
-        <div>
-          built with{" "}
-          <Heart className="mb-0.5 inline size-4 text-xl text-primary motion-safe:animate-heart-beat" />{" "}
-          by the
-          <br />
-          <Link
-            href="https://ethereum.org"
-            hideArrow
-            className="text-sm hover:text-primary-light"
-          >
-            ethereum.org
-          </Link>{" "}
-          team
-        </div>
-        <div className="text-primary">public goods are good</div>
-      </SidebarFooter> */}
-      {/* <SidebarRail /> */}
+      <SidebarRail />
     </Sidebar>
   )
 }

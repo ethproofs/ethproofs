@@ -17,9 +17,8 @@ const config = {
     },
     extend: {
       fontFamily: {
-        heading: "var(--font-lock-sans)", // TODO:TEAM - Unused?
+        heading: "var(--font-lock-sans-stencil)",
         body: "var(--font-lock-sans)",
-        mono: "var(--font-lock-sans)", // TODO:TEAM - Remove mono font?
       },
       fontSize: {
         "6xl": ["4rem", "4.5rem"],

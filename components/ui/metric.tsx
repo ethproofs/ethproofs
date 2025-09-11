@@ -71,7 +71,7 @@ const MetricValue = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <div
     ref={ref}
-    className={cn("font-mono text-2xl font-semibold", className)}
+    className={cn("text-2xl font-semibold", className)}
     {...props}
   />
 ))

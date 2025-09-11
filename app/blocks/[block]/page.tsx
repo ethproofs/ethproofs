@@ -18,7 +18,7 @@ import DownloadAllButton from "@/components/proof-buttons/DownloadAllButton"
 import ProofList from "@/components/ProofList"
 import ProofStatus, { ProofStatusInfo } from "@/components/ProofStatus"
 import { HidePunctuation } from "@/components/StylePunctuation"
-import ProofCircle from "@/components/svgs/proof-circle.svg"
+import EthproofsIcon from "@/components/svgs/ethproofs-icon.svg"
 import Timestamp from "@/components/Timestamp"
 import { Card, CardHeader, CardTitle } from "@/components/ui/card"
 import { HeroItem, HeroItemLabel, HeroTitle } from "@/components/ui/hero"
@@ -129,7 +129,7 @@ export default async function BlockDetailsPage({
       <HeroTitle className="mx-auto mb-24 mt-16 w-fit items-center gap-4 md:mt-24">
         <Box strokeWidth="1" className="size-[4.5rem] shrink-0 text-primary" />
         <div className="max-w-[14rem]">
-          <h1 className="font-mono">
+          <h1 className="">
             <p className="font-sans text-sm font-normal text-body-secondary">
               block Height
             </p>
@@ -158,7 +158,7 @@ export default async function BlockDetailsPage({
           <HeroItemLabel>
             <Cpu className="size-4" /> gas used
           </HeroItemLabel>
-          <p className="font-mono tracking-wide">
+          <p className="tracking-wide">
             <HidePunctuation>{formatNumber(gas_used)}</HidePunctuation>
           </p>
         </HeroItem>
@@ -167,7 +167,7 @@ export default async function BlockDetailsPage({
           <HeroItemLabel>
             <Layers className="size-4" /> slot
           </HeroItemLabel>
-          <p className="font-mono tracking-wide">
+          <p className="tracking-wide">
             <HidePunctuation>
               {formatNumber(timestampToSlot(timestamp))}
             </HidePunctuation>
@@ -178,7 +178,7 @@ export default async function BlockDetailsPage({
           <HeroItemLabel>
             <Hourglass className="size-4" /> epoch
           </HeroItemLabel>
-          <p className="font-mono tracking-wide">
+          <p className="tracking-wide">
             <HidePunctuation>
               {formatNumber(timestampToEpoch(timestamp))}
             </HidePunctuation>
@@ -189,7 +189,7 @@ export default async function BlockDetailsPage({
       <section className="flex flex-col gap-8 xl:flex-row">
         <Card className="flex-1">
           <CardHeader className="flex h-16 flex-row justify-between space-y-0">
-            <CardTitle className="flex items-center gap-2 font-mono text-lg font-normal [&>svg]:shrink-0">
+            <CardTitle className="flex items-center gap-2 text-lg font-normal [&>svg]:shrink-0">
               <Timer className="size-5" /> proof availability
             </CardTitle>
 
@@ -206,7 +206,7 @@ export default async function BlockDetailsPage({
           </CardHeader>
 
           <div>
-            <div className="text-center font-mono text-sm text-primary sm:text-start">
+            <div className="text-center text-sm text-primary sm:text-start">
               multi-machine performance
             </div>
             <div className="grid grid-cols-1 place-items-center gap-x-8 text-center sm:grid-cols-2 sm:place-items-start sm:text-start lg:grid-cols-4 xl:grid-cols-2">
@@ -229,7 +229,7 @@ export default async function BlockDetailsPage({
           </div>
 
           <div>
-            <div className="text-center font-mono text-sm text-primary sm:text-start">
+            <div className="text-center text-sm text-primary sm:text-start">
               single machine performance
             </div>
             <div className="grid grid-cols-1 place-items-center gap-x-8 text-center sm:grid-cols-2 sm:place-items-start sm:text-start lg:grid-cols-4 xl:grid-cols-2">
@@ -258,13 +258,13 @@ export default async function BlockDetailsPage({
 
         <Card className="flex-1">
           <CardHeader className="flex h-16 flex-row items-center">
-            <CardTitle className="flex items-center gap-2 font-mono text-lg font-normal [&>svg]:shrink-0">
+            <CardTitle className="flex items-center gap-2 text-lg font-normal [&>svg]:shrink-0">
               <Coins className="size-5" /> proof costs
             </CardTitle>
           </CardHeader>
 
           <div>
-            <div className="text-center font-mono text-sm text-primary sm:text-start">
+            <div className="text-center text-sm text-primary sm:text-start">
               multi-machine performance
             </div>
             <div className="grid grid-cols-1 place-items-center gap-x-8 text-center sm:grid-cols-2 sm:place-items-start sm:text-start lg:grid-cols-4 xl:grid-cols-2">
@@ -289,7 +289,7 @@ export default async function BlockDetailsPage({
           </div>
 
           <div>
-            <div className="text-center font-mono text-sm text-primary sm:text-start">
+            <div className="text-center text-sm text-primary sm:text-start">
               single machine performance
             </div>
             <div className="grid grid-cols-1 place-items-center gap-x-8 text-center sm:grid-cols-2 sm:place-items-start sm:text-start lg:grid-cols-4 xl:grid-cols-2">
@@ -318,7 +318,7 @@ export default async function BlockDetailsPage({
       <section>
         <div className="flex justify-between md:mb-4">
           <h2 className="flex items-center gap-2 text-lg font-normal text-primary">
-            <ProofCircle /> proofs
+            <EthproofsIcon /> proofs
           </h2>
           {proofs.length >= 1 && (
             <DownloadAllButton
