@@ -11,7 +11,7 @@ const MachineDetails = ({
   ...props
 }: MachineDetailsProps) => (
   <div className={cn("flex flex-col gap-y-3 p-4", className)} {...props}>
-    <span className="block text-center font-mono text-lg text-primary">
+    <span className="block text-center text-lg text-primary">
       {machine.cpu_model}
     </span>
     <div className="flex flex-col items-center gap-y-3">
@@ -41,9 +41,7 @@ const MachineDetails = ({
 
           return (
             <div key={`${gpuModel}-${index}`}>
-              <div className="text-center font-mono text-lg text-primary">
-                {gpuModel}
-              </div>
+              <div className="text-center text-lg text-primary">{gpuModel}</div>
 
               <div className="flex gap-x-3 text-center text-sm">
                 <div className="flex flex-1 flex-col items-center p-2">

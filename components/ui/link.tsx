@@ -3,6 +3,7 @@ import { ExternalLink } from "lucide-react"
 import NextLink, { type LinkProps as NextLinkProps } from "next/link"
 
 import * as url from "@/lib/url"
+import { ExternalLink } from "lucide-react"
 
 type BaseProps = {
   hideArrow?: boolean
@@ -65,7 +66,7 @@ export const BaseLink = forwardRef<HTMLAnchorElement, LinkProps>(function Link(
 })
 BaseLink.displayName = "BaseLink"
 
-const InlineLink = forwardRef<HTMLAnchorElement, LinkProps>(
+const Link = forwardRef<HTMLAnchorElement, LinkProps>(
   (props: LinkProps, ref) => {
     return (
       <BaseLink
@@ -76,6 +77,6 @@ const InlineLink = forwardRef<HTMLAnchorElement, LinkProps>(
     )
   }
 )
-InlineLink.displayName = "InlineLink"
+Link.displayName = "Link"
 
-export default InlineLink
+export default Link
