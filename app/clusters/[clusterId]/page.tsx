@@ -121,7 +121,7 @@ export default async function ClusterDetailsPage({
   return (
     <div className="mx-auto mt-16 max-w-screen-xl space-y-8 px-6 md:mt-24 md:px-8 [&>section]:w-full">
       <div id="hero-section" className="flex flex-col items-center gap-2">
-        <h1 className="text-shadow font-mono text-4xl font-semibold">
+        <h1 className="text-shadow text-4xl font-semibold">
           {cluster.nickname}
         </h1>
 
@@ -157,7 +157,7 @@ export default async function ClusterDetailsPage({
           download the binary
           <Link
             href={cluster.software_link}
-            className="text-primary-light hover:underline"
+            className="text-primary hover:text-primary-light"
           >
             here
           </Link>
@@ -169,7 +169,7 @@ export default async function ClusterDetailsPage({
           <div className="font-sans text-sm text-body-secondary">zkVM</div>
           <Link
             href={`/zkvms/${zkvm.slug}`}
-            className="font-mono text-lg text-primary hover:underline"
+            className="text-lg text-primary hover:underline"
           >
             {zkvm.name}
           </Link>
@@ -188,15 +188,13 @@ export default async function ClusterDetailsPage({
               </MetricInfo>
             </MetricLabel>
           </MetricBox>
-          <div className="font-mono text-lg text-primary">{zkvm.isa}</div>
+          <div className="text-lg text-primary">{zkvm.isa}</div>
         </div>
         <div className="flex flex-col items-center gap-1 p-4">
           <div className="font-sans text-sm text-body-secondary">
             proof type
           </div>
-          <div className="font-mono text-lg text-primary">
-            {cluster.proof_type}
-          </div>
+          <div className="text-lg text-primary">{cluster.proof_type}</div>
         </div>
       </section>
 
@@ -316,7 +314,7 @@ export default async function ClusterDetailsPage({
       <section className="flex flex-col">
         <div className="flex items-center gap-2 px-6">
           <Box strokeWidth="1" className="size-11" />
-          <div className="font-mono text-xl">latest proofs</div>
+          <div className="text-xl">latest proofs</div>
         </div>
         {latestProofs.length ? (
           latestProofs.map((proof) => (

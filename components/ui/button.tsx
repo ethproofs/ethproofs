@@ -1,101 +1,52 @@
 import * as React from "react"
-import { cva, type VariantProps } from "class-variance-authority"
 import { Slot } from "@radix-ui/react-slot"
-
-import Link, { type LinkProps } from "@/components/ui/link"
+import { cva, type VariantProps } from "class-variance-authority"
 
 import { cn } from "@/lib/utils"
+import Link, { LinkProps } from "./link"
 
 const buttonVariants = cva(
-  cn(
-    // Sizing and positioning classes:
-    "inline-flex gap-4 items-center justify-center rounded-full border border-solid transition [&>svg]:shrink-0",
-    // Base default styling is "outline" pattern, primary color for text, border matches, no bg
-    "text-primary border-current",
-    // Hover: Default hover changes bg to --background-active
-    "hover:bg-background-active",
-    // Disabled: Pointer events none, text (border) to --body-secondary, bg to --body-secondary/10
-    "disabled:pointer-events-none disabled:text-body-secondary disabled:bg-body-secondary/10",
-    // isSecondary: Switch text (border) to --body instead of --primary
-    "[&[data-secondary='true']]:text-body"
-  ),
+  "inline-flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 [&_svg]:pointer-events-none [&_svg]:size-4 [&_svg]:shrink-0",
   {
     variants: {
       variant: {
-        solid: cn(
-          "text-background bg-primary !border-transparent",
-          "hover:bg-primary-light dark:hover:bg-green-300"
-        ),
-        outline: "",
-        ghost: "border-transparent hover:shadow-none",
-        link: "border-transparent hover:shadow-none underline py-0 px-1 active:text-primary",
-        text: "border-transparent hover:shadow-none text-body hover:bg-transparent",
+        default: "bg-primary text-primary-foreground hover:bg-primary/90",
+        destructive:
+          "bg-destructive text-destructive-foreground hover:bg-destructive/90",
+        outline:
+          "border border-input bg-background hover:bg-accent hover:text-accent-foreground",
+        secondary:
+          "bg-secondary text-secondary-foreground hover:bg-secondary/80",
+        ghost: "hover:bg-accent hover:text-accent-foreground",
+        link: "text-primary underline-offset-4 hover:underline",
       },
       size: {
-        lg: "py-2 px-[1.375rem]",
-        md: "text-sm py-1 px-[1.125rem]",
-        sm: "px-3 py-1 text-xs",
-        icon: "p-0.5 h-6 w-auto aspect-square",
-        text: "p-0 text-start",
+        default: "h-10 px-4 py-2",
+        sm: "h-9 rounded-md px-3",
+        lg: "h-11 rounded-md px-8",
+        icon: "h-10 w-10",
       },
     },
     defaultVariants: {
-      variant: "solid",
-      size: "md",
+      variant: "default",
+      size: "default",
     },
   }
 )
-
-type ButtonVariantProps = VariantProps<typeof buttonVariants>
-
-export const checkIsSecondary = ({
-  variant,
-  isSecondary,
-}: {
-  variant: ButtonVariantProps["variant"]
-  isSecondary: boolean
-}) => {
-  // These two variants do not have secondary styling, so prevent overrides
-  return {
-    "data-secondary":
-      !["solid", "link"].includes(variant || "solid") && isSecondary,
-  }
-}
 
 export interface ButtonProps
   extends React.ButtonHTMLAttributes<HTMLButtonElement>,
     VariantProps<typeof buttonVariants> {
   asChild?: boolean
-  /**
-   * Custom theme prop. If true, `body` color is used instead of
-   * `primary` color in the theming.
-   *
-   * `NOTE`: Does not apply to the `Solid` or `Link` variants
-   */
-  isSecondary?: boolean
 }
 
 const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
-  (
-    {
-      className,
-      variant,
-      size,
-      isSecondary = false,
-      asChild = false,
-      ...props
-    },
-    ref
-  ) => {
+  ({ className, variant, size, asChild = false, ...props }, ref) => {
     const Comp = asChild ? Slot : "button"
     return (
       <Comp
         className={cn(buttonVariants({ variant, size, className }))}
         ref={ref}
-        {...checkIsSecondary({
-          variant,
-          isSecondary,
-        })}
         {...props}
       />
     )
@@ -104,37 +55,17 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
 Button.displayName = "Button"
 
 type ButtonLinkProps = LinkProps &
-  Pick<
-    ButtonProps,
-    "size" | "variant" | "isSecondary" | "children" | "className"
-  > & {
+  Pick<ButtonProps, "size" | "variant" | "children" | "className"> & {
     buttonProps?: Omit<ButtonProps, "size" | "variant">
   }
 
 const ButtonLink = React.forwardRef<HTMLAnchorElement, ButtonLinkProps>(
-  (
-    {
-      size,
-      variant,
-      isSecondary,
-      buttonProps,
-      children,
-      className,
-      ...linkProps
-    },
-    ref
-  ) => {
+  ({ size, variant, buttonProps, children, className, ...linkProps }, ref) => {
     return (
-      <Button
-        asChild
-        size={size}
-        variant={variant}
-        isSecondary={isSecondary}
-        {...buttonProps}
-      >
+      <Button asChild size={size} variant={variant} {...buttonProps}>
         <Link
-          ref={ref}
           hideArrow
+          ref={ref}
           className={cn(
             "font-body font-bold no-underline hover:no-underline",
             className

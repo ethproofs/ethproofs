@@ -1,4 +1,4 @@
-import { CircleCheckBig, TriangleAlert } from "lucide-react"
+import { CheckCheck, TriangleAlert } from "lucide-react"
 import type { Metadata } from "next"
 import Link from "next/link"
 
@@ -23,7 +23,7 @@ export default async function StatusPage() {
 
   return (
     <>
-      <h1 className="text-shadow mb-12 mt-16 px-6 text-center font-mono text-3xl font-semibold md:mt-24 md:px-8">
+      <h1 className="text-shadow mb-12 mt-16 px-6 text-center text-3xl font-semibold md:mt-24 md:px-8">
         proof status monitor
       </h1>
 
@@ -59,8 +59,8 @@ export default async function StatusPage() {
                 </div>
               </Alert>
             ) : (
-              <div className="flex items-center justify-center gap-2 text-lg font-semibold text-level-best">
-                <CircleCheckBig className="size-5" />
+              <div className="flex items-center justify-center gap-2 text-lg font-semibold text-primary">
+                <CheckCheck className="size-5" />
                 all clusters are up to date
               </div>
             )}
