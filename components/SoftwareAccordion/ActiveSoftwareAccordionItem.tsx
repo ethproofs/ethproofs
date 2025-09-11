@@ -48,8 +48,8 @@ export const ActiveSoftwareAccordionItem = ({
             </ButtonLink>
             {metrics?.updated_at && (
               <div className="col-start-3 text-end">
-                <span className="text-xs italic text-body-secondary">
-                  last updated
+                <span className="text-xs text-body-secondary">
+                  last updated:
                 </span>{" "}
                 <span className="text-xs uppercase text-body">
                   {formatShortDate(new Date(metrics.updated_at))}

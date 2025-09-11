@@ -3,12 +3,7 @@ import { Info } from "lucide-react"
 
 import { cn } from "@/lib/utils"
 
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipPortal,
-  TooltipTrigger,
-} from "./tooltip"
+import { Tooltip, TooltipContent, TooltipTrigger } from "./tooltip"
 
 const MetricBox = React.forwardRef<
   HTMLDivElement,
@@ -49,17 +44,15 @@ const MetricInfo = React.forwardRef<HTMLDivElement, MetricInfoProps>(
           </div>
         )}
       </TooltipTrigger>
-      <TooltipPortal>
-        <TooltipContent className="max-w-80 sm:max-w-96">
-          <div
-            ref={ref}
-            className={cn("space-y-2 text-start", className)}
-            {...props}
-          >
-            {children}
-          </div>
-        </TooltipContent>
-      </TooltipPortal>
+      <TooltipContent className="max-w-80 sm:max-w-96">
+        <div
+          ref={ref}
+          className={cn("space-y-2 text-start", className)}
+          {...props}
+        >
+          {children}
+        </div>
+      </TooltipContent>
     </Tooltip>
   )
 )
@@ -71,7 +64,7 @@ const MetricValue = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <div
     ref={ref}
-    className={cn("font-mono text-2xl font-semibold", className)}
+    className={cn("text-2xl font-semibold", className)}
     {...props}
   />
 ))

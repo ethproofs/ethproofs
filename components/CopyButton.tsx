@@ -1,7 +1,7 @@
 "use client"
 
-import ClipboardCheck from "@/components/svgs/clipboard-check.svg"
-import Copy from "@/components/svgs/copy.svg"
+// import ClipboardCheck from "@/components/svgs/clipboard-check.svg"
+// import Copy from "@/components/svgs/copy.svg"
 
 import { cn } from "@/lib/utils"
 
@@ -14,6 +14,7 @@ import {
 } from "./ui/tooltip"
 
 import { useClipboard } from "@/hooks/useClipboard"
+import { ClipboardCheck, Copy } from "lucide-react"
 
 type CopyButtonProps = React.HTMLAttributes<HTMLButtonElement> & {
   message: string
@@ -32,7 +33,11 @@ const CopyButton = ({ message, className }: CopyButtonProps) => {
             type="button"
             onClick={onCopy(message)}
           >
-            {hasCopied ? <ClipboardCheck /> : <Copy />}
+            {hasCopied ? (
+              <ClipboardCheck className="size-4" />
+            ) : (
+              <Copy className="size-4" />
+            )}
           </Button>
         </TooltipTrigger>
         <TooltipContent>
