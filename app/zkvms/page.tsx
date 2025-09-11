@@ -10,7 +10,7 @@ export const metadata: Metadata = getMetadata({ title: "zkVMs" })
 export default async function ZkvmsPage() {
   return (
     <>
-      <h1 className="text-shadow mb-24 mt-16 px-6 text-center font-mono text-3xl font-semibold md:mt-24 md:px-8">
+      <h1 className="text-shadow mb-24 mt-16 px-6 text-center text-3xl font-semibold md:mt-24 md:px-8">
         zkVMs
       </h1>
 

@@ -46,7 +46,7 @@ const DataTable = <TData,>({
           ))}
         </TableHeader>
 
-        <TableBody className="font-mono">
+        <TableBody className="">
           {table.getRowModel().rows?.length ? (
             table.getRowModel().rows.map((row) => (
               <TableRow
@@ -85,7 +85,7 @@ const DataTable = <TData,>({
           >
             Previous
           </Button>
-          <span className="flex items-center gap-1 font-mono text-body-secondary">
+          <span className="flex items-center gap-1 text-body-secondary">
             <div>
               page {table.getState().pagination.pageIndex + 1} of{" "}
               {table.getPageCount() === 0

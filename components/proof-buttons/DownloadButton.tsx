@@ -89,14 +89,14 @@ const DownloadButton = ({
           {/* Progress bars */}
           {buttonState === "downloading" && (
             <div
-              className="absolute left-0 top-0 h-full bg-green-300/20 transition-all duration-100"
+              className="absolute left-0 top-0 h-full bg-emerald-300/20 transition-all duration-100"
               style={{ width: `${downloadProgress}%` }}
             />
           )}
           {buttonState === "success" && (
             <>
-              <div className="absolute inset-0 animate-success-pulse bg-green-500 opacity-20" />
-              <div className="absolute -inset-4 animate-success-ring rounded-full border border-green-500/30" />
+              <div className="absolute inset-0 animate-success-pulse bg-emerald-500 opacity-20" />
+              <div className="absolute -inset-4 animate-success-ring rounded-full border border-emerald-500/30" />
             </>
           )}
 
@@ -104,12 +104,12 @@ const DownloadButton = ({
             <ArrowDown className="size-5 text-primary" />
           )}
           {buttonState === "downloading" && (
-            <ArrowDown className="size-5 animate-pulse text-green-300" />
+            <ArrowDown className="size-5 animate-pulse text-emerald-300" />
           )}
           {buttonState === "success" && (
             <Check
               ref={checkRef}
-              className="size-5 text-green-500"
+              className="size-5 text-emerald-500"
               style={checkmarkAnimation()}
             />
           )}
@@ -126,7 +126,7 @@ const DownloadButton = ({
         {buttonState === "downloading" &&
         downloadProgress > 5 &&
         downloadProgress < 98 ? (
-          <span className="text-xs text-green-300 opacity-80">
+          <span className="text-xs text-emerald-300 opacity-80">
             {downloadSpeed} MB/s
           </span>
         ) : (
