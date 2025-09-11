@@ -15,7 +15,7 @@ export default function NotFound() {
   return (
     <div className="mt-40 flex flex-col items-center gap-4 text-center">
       <Zap className="size-40 stroke-[0.5px] text-body-secondary" />
-      <h1 className="mb-4 font-mono text-3xl text-primary">
+      <h1 className="mb-4 text-3xl text-primary">
         no zkVM found with name {decodeURIComponent(slug)}
       </h1>
       <p className="text-lg">

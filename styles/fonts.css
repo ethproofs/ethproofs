@@ -1,0 +1,106 @@
+@tailwind base;
+
+@layer base {
+  :root {
+    --font-lock-sans: "Lock Sans", sans-serif;
+    --font-lock-sans-stencil: "Lock Sans Stencil", sans-serif;
+  }
+}
+
+/* Lock Sans (Primary) */
+@font-face {
+  font-family: "Lock Sans";
+  font-style: normal;
+  font-weight: 200;
+  src: url(/fonts/lock-sans/LockSansTRIAL-ExtraLight.otf) format("opentype");
+  unicode-range: U+0000-00FF;
+}
+
+@font-face {
+  font-family: "Lock Sans";
+  font-style: normal;
+  font-weight: 300;
+  src: url(/fonts/lock-sans/LockSansTRIAL-Light.otf) format("opentype");
+  unicode-range: U+0000-00FF;
+}
+
+@font-face {
+  font-family: "Lock Sans";
+  font-style: normal;
+  font-weight: 400;
+  src: url(/fonts/lock-sans/LockSansTRIAL-Regular.otf) format("opentype");
+  unicode-range: U+0000-00FF;
+}
+
+@font-face {
+  font-family: "Lock Sans";
+  font-style: normal;
+  font-weight: 500;
+  src: url(/fonts/lock-sans/LockSansTRIAL-Medium.otf) format("opentype");
+  unicode-range: U+0000-00FF;
+}
+
+@font-face {
+  font-family: "Lock Sans";
+  font-style: normal;
+  font-weight: 700;
+  src: url(/fonts/lock-sans/LockSansTRIAL-Bold.otf) format("opentype");
+  unicode-range: U+0000-00FF;
+}
+
+@font-face {
+  font-family: "Lock Sans";
+  font-style: normal;
+  font-weight: 900;
+  src: url(/fonts/lock-sans/LockSansTRIAL-Black.otf) format("opentype");
+  unicode-range: U+0000-00FF;
+}
+
+/* Lock Sans Stencil (Brand) */
+@font-face {
+  font-family: "Lock Sans Stencil";
+  font-style: normal;
+  font-weight: 200;
+  src: url(/fonts/lock-sans-stencil/LockSansStencilTRIAL-ExtraLight.otf) format("opentype");
+  unicode-range: U+0000-00FF;
+}
+
+@font-face {
+  font-family: "Lock Sans Stencil";
+  font-style: normal;
+  font-weight: 300;
+  src: url(/fonts/lock-sans-stencil/LockSansStencilTRIAL-Light.otf) format("opentype");
+  unicode-range: U+0000-00FF;
+}
+
+@font-face {
+  font-family: "Lock Sans Stencil";
+  font-style: normal;
+  font-weight: 400;
+  src: url(/fonts/lock-sans-stencil/LockSansStencilTRIAL-Regular.otf) format("opentype");
+  unicode-range: U+0000-00FF;
+}
+
+@font-face {
+  font-family: "Lock Sans Stencil";
+  font-style: normal;
+  font-weight: 500;
+  src: url(/fonts/lock-sans-stencil/LockSansStencilTRIAL-Medium.otf) format("opentype");
+  unicode-range: U+0000-00FF;
+}
+
+@font-face {
+  font-family: "Lock Sans Stencil";
+  font-style: normal;
+  font-weight: 700;
+  src: url(/fonts/lock-sans-stencil/LockSansStencilTRIAL-Bold.otf) format("opentype");
+  unicode-range: U+0000-00FF;
+}
+
+@font-face {
+  font-family: "Lock Sans Stencil";
+  font-style: normal;
+  font-weight: 900;
+  src: url(/fonts/lock-sans-stencil/LockSansStencilTRIAL-Black.otf) format("opentype");
+  unicode-range: U+0000-00FF;
+}

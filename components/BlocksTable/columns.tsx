@@ -45,12 +45,12 @@ export const columns: ColumnDef<Block>[] = [
         <TooltipContentFooter className="space-y-3">
           <p className="font-bold">time since block published</p>
           <Info.Derivation>
-            <span className="font-mono text-primary-light">now</span> -{" "}
-            <span className="font-mono text-primary-light">timestamp</span>
+            <span className="text-primary-light">now</span> -{" "}
+            <span className="text-primary-light">timestamp</span>
           </Info.Derivation>
           <p>
-            <span className="font-mono text-primary-light">timestamp</span>{" "}
-            value from execution block header
+            <span className="text-primary-light">timestamp</span> value from
+            execution block header
           </p>
         </TooltipContentFooter>
       </ColumnHeader>
@@ -83,17 +83,17 @@ export const columns: ColumnDef<Block>[] = [
         <TooltipContentFooter className="space-y-3">
           <p className="font-bold">percentage of block gas limit</p>
           <Info.Derivation>
-            <span className="font-mono text-primary-light">gas_used</span> /{" "}
-            <span className="font-mono text-primary-light">gas_limit</span> x{" "}
-            <span className="font-mono text-primary-light">100</span>
+            <span className="text-primary-light">gas_used</span> /{" "}
+            <span className="text-primary-light">gas_limit</span> x{" "}
+            <span className="text-primary-light">100</span>
           </Info.Derivation>
           <p>
-            <span className="font-mono text-primary-light">gas_used</span> value
-            from execution block header
+            <span className="text-primary-light">gas_used</span> value from
+            execution block header
           </p>
           <p>
-            <span className="font-mono text-primary-light">gas_limit</span>{" "}
-            value from execution block header
+            <span className="text-primary-light">gas_limit</span> value from
+            execution block header
           </p>
         </TooltipContentFooter>
       </ColumnHeader>

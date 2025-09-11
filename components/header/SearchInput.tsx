@@ -81,8 +81,8 @@ const SearchInput = ({
     <div ref={searchContainerRef} className={cn("relative w-full", className)}>
       <div
         className={cn(
-          "z-20",
-          "relative rounded-full",
+          "z-50",
+          "relative rounded-full border border-primary",
           "before:absolute before:inset-0 before:-z-[2] before:rounded-full before:bg-gradient-to-tl before:from-primary before:to-primary/10",
           "after:absolute after:inset-px after:-z-[1] after:rounded-[calc(100vmax_-_1px)] after:bg-background",
           "[&>input:focus-visible]:after:bg-gradient-to-tl [&>input:focus-visible]:after:to-background-active"
