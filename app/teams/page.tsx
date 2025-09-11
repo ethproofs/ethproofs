@@ -23,7 +23,7 @@ export default async function TeamsPage() {
 
   return (
     <>
-      <h1 className="text-shadow mb-24 mt-16 px-6 text-center font-mono text-3xl font-semibold md:mt-24 md:px-8">
+      <h1 className="text-shadow mb-24 mt-16 px-6 text-center text-3xl font-semibold md:mt-24 md:px-8">
         proving teams
       </h1>
 
@@ -64,8 +64,8 @@ export default async function TeamsPage() {
 
                     <div className="mx-auto flex flex-col items-center gap-6">
                       {isNewTeam ? (
-                        <div className="py-8 text-center font-mono text-lg uppercase text-body-secondary">
-                          Proving soon
+                        <div className="py-8 text-center text-lg text-body-secondary">
+                          proving soon
                         </div>
                       ) : (
                         <>
@@ -74,7 +74,7 @@ export default async function TeamsPage() {
                               <div className="flex items-center gap-1 text-body-secondary">
                                 {AVERAGE_LABEL} <metrics.provingTime.Label />
                               </div>
-                              <div className="font-mono text-lg">
+                              <div className="text-lg">
                                 {prettyMs(Number(avg_proving_time) || 0)}
                               </div>
                             </div>
@@ -82,7 +82,7 @@ export default async function TeamsPage() {
                               <div className="flex items-center gap-1 text-body-secondary">
                                 {AVERAGE_LABEL} <metrics.costPerProof.Label />
                               </div>
-                              <div className="font-mono text-lg">
+                              <div className="text-lg">
                                 {avg_cost_per_proof !== null &&
                                 avg_cost_per_proof !== 0 &&
                                 isFinite(avg_cost_per_proof) ? (

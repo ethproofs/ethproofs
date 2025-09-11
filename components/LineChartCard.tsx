@@ -115,13 +115,13 @@ const LineChartCard = ({
           <div className="flex">
             <div className="flex flex-1 flex-col items-center border-e text-center">
               <span className="block text-sm font-bold">avg</span>
-              <span className="block font-mono text-2xl text-primary sm:text-3xl md:text-2xl xl:text-3xl">
+              <span className="block text-2xl text-primary sm:text-3xl md:text-2xl xl:text-3xl">
                 {formatValue ? formatValue(totalAvg) : totalAvg}
               </span>
             </div>
             <div className="flex flex-1 flex-col items-center text-center">
               <span className="block text-sm font-bold">median</span>
-              <span className="block font-mono text-2xl text-primary sm:text-3xl md:text-2xl xl:text-3xl">
+              <span className="block text-2xl text-primary sm:text-3xl md:text-2xl xl:text-3xl">
                 {formatValue ? formatValue(totalMedian) : totalMedian}
               </span>
             </div>
@@ -193,7 +193,7 @@ const LineChartCard = ({
                 <Line
                   dataKey="median"
                   type="monotone"
-                  stroke="hsla(var(--chart-3))"
+                  stroke="hsla(var(--chart-1))"
                   strokeWidth={2}
                   dot={false}
                 />

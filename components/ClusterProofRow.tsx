@@ -70,7 +70,7 @@ export const ClusterProofRow = ({ proof }: ClusterProofRowProps) => {
         className="my-auto flex flex-col items-center"
         style={{ gridArea: "time" }}
       >
-        <div className="text-nowrap font-mono text-sm">
+        <div className="text-nowrap text-sm">
           proving:{" "}
           {proof.proving_time ? prettyMs(proof.proving_time) : <Null />}
         </div>
@@ -93,7 +93,7 @@ export const ClusterProofRow = ({ proof }: ClusterProofRowProps) => {
         className="my-auto flex flex-col items-center"
         style={{ gridArea: "cost" }}
       >
-        <div className="text-nowrap font-mono text-sm">
+        <div className="text-nowrap text-sm">
           per proof: {costPerProof ? formatUsd(costPerProof) : <Null />}
         </div>
         <div className="font-sans text-xs text-body-secondary">

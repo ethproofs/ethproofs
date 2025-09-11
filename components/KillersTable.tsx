@@ -38,7 +38,7 @@ const DataCell = ({ timeMs, costUsd, color }: BenchmarkItemProps) => (
     <div
       className={cn(
         "rounded-sm border-b bg-gradient-to-t text-center",
-        "font-mono text-sm",
+        "text-sm",
         CELL_COLOR_CLASSES[color || "none"]
       )}
     >

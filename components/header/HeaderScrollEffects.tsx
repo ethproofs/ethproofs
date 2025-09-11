@@ -2,6 +2,7 @@
 
 import { useScrollPosition } from "@/hooks/useScrollPosition"
 
+// TODO:TEAM - What is this component?
 const HeaderScrollEffects = () => {
   const scrollPosition = useScrollPosition()
   const distance = 4 * 16 // 4rem, 64px
