@@ -1,0 +1,128 @@
+@tailwind base;
+
+@layer base {
+  :root {
+    --background: var(--zinc-50);
+    --foreground: var(--zinc-950);
+    --card: var(--white);
+    --card-foreground: var(--zinc-950);
+    --popover: var(--white);
+    --popover-foreground: var(--zinc-950);
+    --muted: var(--zinc-100);
+    --muted-foreground: var(--zinc-600);
+    --accent: var(--zinc-100);
+    --accent-foreground: var(--zinc-900);
+    --secondary: var(--zinc-50);
+    --secondary-foreground: var(--zinc-900);
+    --border: var(--zinc-200);
+    --input: var(--zinc-200);
+    --ring: var(--zinc-400);
+    --placeholder: var(--zinc-500);
+
+    /* Brand (emerald) */
+    --primary: var(--emerald-700);
+    --primary-foreground: var(--zinc-50);
+    --primary-light: var(--emerald-600);
+    --primary-dark: var(--emerald-800);
+    --primary-visited: var(--emerald-600);
+    --primary-border: var(--emerald-800);
+    --brand-secondary: var(--indigo-500);
+    --brand-secondary-foreground: var(--zinc-50);
+
+    /* States */
+    --success: var(--green-500);
+    --success-foreground: var(--white);
+    --warning: var(--amber-500);
+    --warning-foreground: var(--white);
+    --destructive: var(--red-500);
+    --destructive-foreground: var(--white);
+    --info: var(--blue-500);
+    --info-foreground: var(--white);
+
+    /* Charts */
+    --chart-1: var(--sky-500);
+    --chart-2: var(--pink-500);
+    --chart-3: var(--blue-500);
+    --chart-4: var(--yellow-500);
+    --chart-5: var(--orange-500);
+    --chart-border: var(--zinc-200);
+
+    /* Sidebar */
+    --sidebar: var(--zinc-100);
+
+    /* Custom (v2) */
+    --background-highlight: var(--zinc-100);
+    --background-active: var(--zinc-200);
+    --background-accent: var(--blue-500);
+
+    /* Level Indicators (v2) TODO: TEAM - Remove */
+    --level-best: 136 100% 38%;
+    --level-middle: 54 100% 50%;
+    --level-worst: 0 100% 40%;
+
+    --radius: 0.5rem;
+  }
+
+  .dark {
+    --background: var(--zinc-950);
+    --foreground: var(--zinc-50);
+    --card: var(--zinc-950);
+    --card-foreground: var(--zinc-50);
+    --popover: var(--zinc-950);
+    --popover-foreground: var(--zinc-50);
+    --muted: var(--zinc-800);
+    --muted-foreground: var(--zinc-500);
+    --accent: var(--zinc-800);
+    --accent-foreground: var(--zinc-50);
+    --secondary: var(--zinc-900);
+    --secondary-foreground: var(--zinc-50);
+    --border: var(--zinc-700);
+    --input: var(--zinc-700);
+    --ring: var(--zinc-300);
+    --placeholder: var(--zinc-400);
+
+    /* Brand (emerald) */
+    --primary: var(--emerald-300);
+    --primary-foreground: var(--zinc-950);
+    --primary-light: var(--emerald-200);
+    --primary-dark: var(--emerald-500);
+    --primary-visited: var(--emerald-400);
+    --primary-border: var(--emerald-500);
+    --brand-secondary: var(--indigo-300);
+    --brand-secondary-foreground: var(--zinc-950);
+
+    /* States */
+    --success: var(--green-500);
+    --success-foreground: var(--zinc-950);
+    --warning: var(--amber-500);
+    --warning-foreground: var(--zinc-950);
+    --destructive: var(--red-500);
+    --destructive-foreground: var(--zinc-950);
+    --info: var(--blue-500);
+    --info-foreground: var(--zinc-950);
+
+    /* Charts */
+    --chart-1: var(--sky-500);
+    --chart-2: var(--pink-500);
+    --chart-3: var(--blue-500);
+    --chart-4: var(--yellow-500);
+    --chart-5: var(--orange-500);
+    --chart-border: var(--zinc-800);
+
+    /* Sidebar */
+    --sidebar: var(--zinc-900);
+    --sidebar-foreground: var(--zinc-100);
+
+    /* Custom (v2) */
+    --body-foreground: var(--zinc-200);
+    --body-muted: var(--zinc-400);
+    --background-highlight: var(--emerald-900);
+    --background-active: var(--emerald-800);
+    --background-accent: var(--zinc-800);
+
+    /* Level Indicators (v2) */
+    --level-best: var(--green-500);
+    --level-middle: var(--yellow-500);
+    --level-worst: var(--red-500);
+  }
+}

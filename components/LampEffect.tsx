@@ -2,6 +2,7 @@ import { cn } from "@/lib/utils"
 
 type LampEffectProps = Pick<React.HTMLAttributes<HTMLDivElement>, "className">
 
+// TODO:TEAM - Remove this component?
 export const LampEffect = ({ className }: LampEffectProps) => {
   const getBgImage = (intensity: string, spread: string) =>
     `radial-gradient(

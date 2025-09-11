@@ -32,9 +32,7 @@ const SoftwareAccordionItemLayout = ({
           >
             {zkvm.name}
           </Link>
-          <span className="block font-mono text-sm italic text-body-secondary">
-            by
-          </span>
+          <span className="block text-sm italic text-body-secondary">by</span>
           <div className="min-w-24">
             <DisplayTeamLink team={zkvm.team} className="block" />
           </div>
