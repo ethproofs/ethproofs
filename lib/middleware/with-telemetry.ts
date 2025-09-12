@@ -19,7 +19,7 @@ const sendReport = async (message: string, report: Report) => {
     ${md.codeBlock(formattedReport, "json")}
   `
 
-  // send to telegram
+  // Send to telegram
   const telegramUrl = `https://api.telegram.org/bot${process.env.TELEGRAM_BOT_TOKEN}/sendMessage`
   const response = await fetch(telegramUrl, {
     method: "POST",
@@ -46,13 +46,14 @@ const getRequestBody = async (request: Request) => {
 
   let body: string | undefined
   try {
-    const clonedRequest = request.clone()
+    // Create both clones before consuming either stream
+    const jsonClone = request.clone()
+    const textClone = request.clone()
+
     try {
-      const parsed = await clonedRequest.json()
+      const parsed = await jsonClone.json()
       body = JSON.stringify(parsed)
     } catch {
-      // If JSON parsing fails, clone again for text parsing
-      const textClone = request.clone()
       body = await textClone.text()
     }
   } catch (error) {
@@ -76,7 +77,7 @@ export const withTelemetry = (
       requestBody,
     }
 
-    // create timeout to send report if lambda timeout is imminent
+    // Create timeout to send report if lambda timeout is imminent
     const timeoutChecker = setTimeout(async () => {
       report.endTime = new Date().getTime()
       report.durationMs = report.endTime - report.startTime
@@ -85,7 +86,7 @@ export const withTelemetry = (
 
       const message = `[timeout warning] ${request.method} ${request.url} ${report.statusCode} in ${report.durationMs}ms ${report.date}`
       await sendReport(message, report)
-    }, LAMBDA_TIMEOUT_MS - 2000) // send report 2 seconds before timeout
+    }, LAMBDA_TIMEOUT_MS - 2000) // Send report 2 seconds before timeout
 
     try {
       const response = await handler(request)
@@ -121,7 +122,7 @@ export const withTelemetry = (
 
       console.log(message)
 
-      // forward error to next handler
+      // Forward error to next handler
       throw error
     }
   }
