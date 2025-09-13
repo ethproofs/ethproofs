@@ -49,12 +49,9 @@ export const POST = withAuth(async ({ request, user, timestamp }) => {
       blockData = await fetchBlockData(block_number)
     } catch (error) {
       console.error("error fetching block data", error)
-      return new Response(
-        `Failed to fetch block data for block ${block_number}`,
-        {
-          status: 500,
-        }
-      )
+      return new Response("Block not found", {
+        status: 500,
+      })
     }
 
     try {
@@ -138,6 +135,6 @@ export const POST = withAuth(async ({ request, user, timestamp }) => {
     return Response.json(proof)
   } catch (error) {
     console.error("error adding proof", error)
-    return new Response("Error adding queued proof", { status: 500 })
+    return new Response("Internal server error", { status: 500 })
   }
 })

@@ -214,6 +214,6 @@ export const POST = withAuth(async ({ request, user, timestamp }) => {
     return Response.json(newProof)
   } catch (error) {
     console.error("error adding proof", error)
-    return new Response("Error adding proved proof", { status: 500 })
+    return new Response("Internal server error", { status: 500 })
   }
 })
