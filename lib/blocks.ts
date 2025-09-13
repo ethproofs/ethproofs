@@ -10,18 +10,36 @@ const client = createPublicClient({
   transport: http(rpcUrl),
 })
 
-export const fetchBlockData = async (block_number: number) => {
-  const block = await client.getBlock({
-    blockNumber: BigInt(block_number),
-    includeTransactions: true,
-  })
+export const fetchBlockData = async (block_number: number, maxRetries = 3) => {
+  let lastError: Error | null = null
+  
+  for (let attempt = 1; attempt <= maxRetries; attempt++) {
+    try {
+      const block = await client.getBlock({
+        blockNumber: BigInt(block_number),
+        includeTransactions: true,
+      })
 
-  return {
-    gasUsed: block.gasUsed,
-    txsCount: block.transactions.length,
-    timestamp: block.timestamp,
-    hash: block.hash,
+      return {
+        gasUsed: block.gasUsed,
+        txsCount: block.transactions.length,
+        timestamp: block.timestamp,
+        hash: block.hash,
+      }
+    } catch (error) {
+      lastError = error instanceof Error ? error : new Error(String(error))
+      console.warn(`Attempt ${attempt}/${maxRetries} failed for block ${block_number}:`, lastError.message)
+      
+      // Don't retry on final attempt
+      if (attempt < maxRetries) {
+        // Exponential backoff: 1s, 2s, 4s
+        const delay = Math.pow(2, attempt - 1) * 1000
+        await new Promise(resolve => setTimeout(resolve, delay))
+      }
+    }
   }
+  
+  throw new Error(`Failed to fetch block ${block_number} after ${maxRetries} attempts: ${lastError?.message}`)
 }
 
 /**

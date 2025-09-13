@@ -10,11 +10,10 @@ import { withAuth } from "@/lib/middleware/with-auth"
 import { queuedProofSchema } from "@/lib/zod/schemas/proof"
 
 // TODO:TEAM - refactor code to use baseProofHandler and abstract out the logic
-
 export const POST = withAuth(async ({ request, user, timestamp }) => {
   const payload = await request.json()
 
-  // validate payload schema
+  // Validate payload schema
   let proofPayload
   try {
     proofPayload = queuedProofSchema.parse(payload)
@@ -33,7 +32,7 @@ export const POST = withAuth(async ({ request, user, timestamp }) => {
 
   const { block_number, cluster_id } = proofPayload
 
-  // validate block_number exists
+  // Validate block_number exists
   console.log("validating block_number", block_number)
   const block = await db.query.blocks.findFirst({
     columns: {
@@ -42,7 +41,7 @@ export const POST = withAuth(async ({ request, user, timestamp }) => {
     where: (blocks, { eq }) => eq(blocks.block_number, block_number),
   })
 
-  // if block is new (not in db), fetch block data from block explorer and create block record
+  // If block is new (not in db), fetch block data from block explorer and create block record
   if (!block) {
     console.log("block not found, fetching block data", block_number)
     let blockData
@@ -50,13 +49,15 @@ export const POST = withAuth(async ({ request, user, timestamp }) => {
       blockData = await fetchBlockData(block_number)
     } catch (error) {
       console.error("error fetching block data", error)
-      return new Response("Block not found", {
-        status: 500,
-      })
+      return new Response(
+        `Failed to fetch block data for block ${block_number}`,
+        {
+          status: 500,
+        }
+      )
     }
 
     try {
-      // create block
       console.log("creating block", block_number)
       await db
         .insert(blocks)
@@ -70,11 +71,11 @@ export const POST = withAuth(async ({ request, user, timestamp }) => {
         .onConflictDoNothing()
     } catch (error) {
       console.error("error creating block", error)
-      return new Response("Internal server error", { status: 500 })
+      return new Response("Error creating block", { status: 500 })
     }
   }
 
-  // get cluster uuid from cluster_id
+  // Get cluster uuid from cluster_id
   const cluster = await db.query.clusters.findFirst({
     columns: {
       id: true,
@@ -88,7 +89,7 @@ export const POST = withAuth(async ({ request, user, timestamp }) => {
     return new Response("Cluster not found", { status: 404 })
   }
 
-  // get the last cluster_version_id from cluster_id
+  // Get the last cluster_version_id from cluster_id
   const clusterVersion = await db.query.clusterVersions.findFirst({
     columns: {
       id: true,
@@ -103,7 +104,7 @@ export const POST = withAuth(async ({ request, user, timestamp }) => {
     return new Response("Cluster version not found", { status: 404 })
   }
 
-  // add proof
+  // Add proof
   const dataToInsert = {
     ...proofPayload,
     block_number,
@@ -128,15 +129,15 @@ export const POST = withAuth(async ({ request, user, timestamp }) => {
       })
       .returning({ proof_id: proofs.proof_id })
 
-    // invalidate cache
+    // Invalidate cache
     revalidateTag(TAGS.BLOCKS)
     revalidateTag(`cluster-${cluster.id}`)
     revalidateTag(`block-${block_number}`)
 
-    // return the generated proof_id
+    // Return the generated proof_id
     return Response.json(proof)
   } catch (error) {
     console.error("error adding proof", error)
-    return new Response("Internal server error", { status: 500 })
+    return new Response("Error adding queued proof", { status: 500 })
   }
 })
