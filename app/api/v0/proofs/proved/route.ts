@@ -149,7 +149,7 @@ export const POST = withAuth(async ({ request, user, timestamp }) => {
 
   if (storageQuotaExceeded) {
     console.log(
-      `[Storage Quota] team ${user.id} has reached quota. Skipping binary upload.`
+      `[storage quota] team ${user.id} has reached quota. Skipping binary upload.`
     )
   }
 

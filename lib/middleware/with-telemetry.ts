@@ -21,7 +21,8 @@ type Report = {
   statusCode?: number
   errorMessage?: string
   sampled?: boolean
-  requestBodySnippet?: string
+  // TODO:TEAM - add requestBodySnippet later if needed
+  // requestBodySnippet?: string
 }
 
 const sample = (rate: number) => {
@@ -61,31 +62,6 @@ const sendReport = async (message: string, report: Report) => {
   }
 }
 
-const getRequestBody = async (request: Request) => {
-  if (!request.body) {
-    return
-  }
-
-  let body: string | undefined
-  try {
-    // Create both clones upfront before consuming either stream
-    const jsonClone = request.clone()
-    const textClone = request.clone()
-    
-    try {
-      const parsed = await jsonClone.json()
-      body = JSON.stringify(parsed)
-    } catch {
-      // If JSON parsing fails, use the fresh text clone
-      body = await textClone.text()
-    }
-  } catch (error) {
-    console.warn("Could not parse request body:", error)
-  }
-
-  return body
-}
-
 export const withTelemetry = (
   handler: (request: Request) => Promise<Response>,
   opts?: { sampleRate?: number } // e.g., 0.02 for 2% of non-5xx
@@ -95,7 +71,6 @@ export const withTelemetry = (
   return async (request: Request) => {
     const t0 = performance.now()
     const nowIso = new Date().toISOString()
-    const requestBodySnippet = await getRequestBody(request)
     const url = new URL(request.url)
 
     const reportBase: Report = {
@@ -105,7 +80,6 @@ export const withTelemetry = (
       durationMs: 0,
       method: request.method,
       path: url.pathname,
-      requestBodySnippet,
     }
 
     // Pre-timeout warning
