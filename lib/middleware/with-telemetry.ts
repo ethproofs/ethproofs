@@ -34,6 +34,8 @@ const safeSend = (p: Promise<unknown>) => {
 }
 
 const sendReport = async (message: string, report: Report) => {
+  if (!process.env.TELEGRAM_BOT_TOKEN || !process.env.TELEGRAM_CHAT_ID) return
+
   const formattedReport = JSON.stringify(report, null, 4)
   const text = md`
     ${md.bold(message)}
@@ -66,14 +68,15 @@ const getRequestBody = async (request: Request) => {
 
   let body: string | undefined
   try {
-    // Create both clones before consuming either stream
+    // Create both clones upfront before consuming either stream
     const jsonClone = request.clone()
     const textClone = request.clone()
-
+    
     try {
       const parsed = await jsonClone.json()
       body = JSON.stringify(parsed)
     } catch {
+      // If JSON parsing fails, use the fresh text clone
       body = await textClone.text()
     }
   } catch (error) {
@@ -92,7 +95,7 @@ export const withTelemetry = (
   return async (request: Request) => {
     const t0 = performance.now()
     const nowIso = new Date().toISOString()
-    const requestBodySnippet = await getRequestBody(request.clone())
+    const requestBodySnippet = await getRequestBody(request)
     const url = new URL(request.url)
 
     const reportBase: Report = {
