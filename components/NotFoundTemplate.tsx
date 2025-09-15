@@ -2,7 +2,7 @@ import { ButtonLink } from "./ui/button"
 import { HeroSection } from "./ui/hero"
 import { type LinkProps } from "./ui/link"
 
-type NotFoundsTemplateProps = Partial<
+type NotFoundTemplateProps = Partial<
   Pick<React.HTMLAttributes<HTMLDivElement>, "children"> &
     Pick<LinkProps, "href"> & {
       icon: React.ReactNode
@@ -15,7 +15,7 @@ const NotFoundTemplate = ({
   href = "/",
   label = "page",
   icon,
-}: NotFoundsTemplateProps) => {
+}: NotFoundTemplateProps) => {
   return (
     <>
       <HeroSection className="space-y-4">
