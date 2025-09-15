@@ -14,13 +14,13 @@ export async function GET(request: NextRequest) {
     return new Response("query search param is required", { status: 400 })
   }
 
+  // Check if query is a valid block number (decimal only)
+  const isBlockNumber = /^[0-9]+$/.test(query)
+  
   // if the query is not a hash or a block number, return null
-  if (!isHash(query) && !/^[0-9]+$/.test(query)) {
+  if (!isHash(query) && !isBlockNumber) {
     return Response.json(null)
   }
-
-  // Build query based on whether query is a hash or a decimal block number
-  const isBlockNumber = /^[0-9]+$/.test(query)
   
   const result = await db
     .select({
