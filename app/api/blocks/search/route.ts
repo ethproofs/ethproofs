@@ -19,6 +19,9 @@ export async function GET(request: NextRequest) {
     return Response.json(null)
   }
 
+  // Build query based on whether query is a hash or block number
+  const isBlockNumber = !isHash(query) && Number.isInteger(Number(query))
+  
   const result = await db
     .select({
       block: blocks,
@@ -26,7 +29,7 @@ export async function GET(request: NextRequest) {
     })
     .from(blocks)
     .innerJoin(proofs, eq(blocks.block_number, proofs.block_number))
-    .where(eq(isHash(query) ? blocks.hash : blocks.block_number, query))
+    .where(isBlockNumber ? eq(blocks.block_number, Number(query)) : eq(blocks.hash, query))
 
   if (!result.length) {
     return Response.json(null)
