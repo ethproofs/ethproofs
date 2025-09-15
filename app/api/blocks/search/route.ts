@@ -15,12 +15,12 @@ export async function GET(request: NextRequest) {
   }
 
   // if the query is not a hash or a block number, return null
-  if (!isHash(query) && !Number.isInteger(Number(query))) {
+  if (!isHash(query) && !/^[0-9]+$/.test(query)) {
     return Response.json(null)
   }
 
-  // Build query based on whether query is a hash or block number
-  const isBlockNumber = !isHash(query) && Number.isInteger(Number(query))
+  // Build query based on whether query is a hash or a decimal block number
+  const isBlockNumber = /^[0-9]+$/.test(query)
   
   const result = await db
     .select({
