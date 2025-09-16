@@ -2,7 +2,7 @@ import type { Config } from "tailwindcss"
 import tailwindcssAnimate from "tailwindcss-animate"
 
 const config = {
-  darkMode: ["class"],
+  darkMode: "class",
   content: [
     "./pages/**/*.{ts,tsx}",
     "./components/**/*.{ts,tsx}",
@@ -88,14 +88,6 @@ const config = {
           DEFAULT: "hsla(var(--info))",
           foreground: "hsla(var(--info-foreground))",
         },
-        // heading: "hsla(var(--heading))",
-        // "heading-sub": "hsla(var(--heading-sub))",
-        // subtitle: "hsla(var(--subtitle))",
-        // "body-foreground": "hsla(var(--body-foreground))",
-        // "body-muted": "hsla(var(--body-muted))",
-        // "label-foreground": "hsla(var(--label-foreground))",
-        // "caption-foreground": "hsla(var(--caption-foreground))",
-        // "code-foreground": "hsla(var(--code-foreground))",
         chart: {
           "1": "hsla(var(--chart-1))",
           "2": "hsla(var(--chart-2))",
