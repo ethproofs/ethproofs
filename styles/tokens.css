@@ -4,16 +4,16 @@
   :root {
     --background: var(--zinc-50);
     --foreground: var(--zinc-950);
-    --card: var(--white);
+    --card: var(--zinc-50);
     --card-foreground: var(--zinc-950);
-    --popover: var(--white);
+    --popover: var(--zinc-50);
     --popover-foreground: var(--zinc-950);
     --muted: var(--zinc-100);
     --muted-foreground: var(--zinc-600);
     --accent: var(--zinc-100);
-    --accent-foreground: var(--zinc-900);
-    --secondary: var(--zinc-50);
-    --secondary-foreground: var(--zinc-900);
+    --accent-foreground: var(--zinc-950);
+    --secondary: var(--zinc-200);
+    --secondary-foreground: var(--zinc-950);
     --border: var(--zinc-200);
     --input: var(--zinc-200);
     --ring: var(--zinc-400);
@@ -30,25 +30,32 @@
     --brand-secondary-foreground: var(--zinc-50);
 
     /* States */
-    --success: var(--green-500);
-    --success-foreground: var(--white);
-    --warning: var(--amber-500);
-    --warning-foreground: var(--white);
-    --destructive: var(--red-500);
-    --destructive-foreground: var(--white);
-    --info: var(--blue-500);
-    --info-foreground: var(--white);
+    --success: var(--green-600);
+    --success-foreground: var(--zinc-50);
+    --warning: var(--amber-600);
+    --warning-foreground: var(--zinc-50);
+    --destructive: var(--red-600);
+    --destructive-foreground: var(--zinc-50);
+    --info: var(--blue-600);
+    --info-foreground: var(--zinc-50);
 
     /* Charts */
-    --chart-1: var(--sky-500);
-    --chart-2: var(--pink-500);
-    --chart-3: var(--blue-500);
-    --chart-4: var(--yellow-500);
-    --chart-5: var(--orange-500);
+    --chart-1: var(--orange-500);
+    --chart-2: var(--yellow-500);
+    --chart-3: var(--green-500);
+    --chart-4: var(--blue-500);
+    --chart-5: var(--purple-500);
     --chart-border: var(--zinc-200);
 
     /* Sidebar */
     --sidebar: var(--zinc-100);
+    --sidebar-foreground: var(--zinc-900);
+    --sidebar-primary: var(--emerald-700);
+    --sidebar-primary-foreground: var(--zinc-50);
+    --sidebar-accent: var(--zinc-200);
+    --sidebar-accent-foreground: var(--zinc-950);
+    --sidebar-border: var(--zinc-200);
+    --sidebar-ring: var(--zinc-400);
 
     /* Custom (v2) */
     --background-highlight: var(--zinc-100);
@@ -92,26 +99,32 @@
     --brand-secondary-foreground: var(--zinc-950);
 
     /* States */
-    --success: var(--green-500);
-    --success-foreground: var(--zinc-950);
-    --warning: var(--amber-500);
-    --warning-foreground: var(--zinc-950);
-    --destructive: var(--red-500);
-    --destructive-foreground: var(--zinc-950);
-    --info: var(--blue-500);
-    --info-foreground: var(--zinc-950);
+    --success: var(--green-400);
+    --success-foreground: var(--zinc-50);
+    --warning: var(--amber-400);
+    --warning-foreground: var(--zinc-50);
+    --destructive: var(--red-400);
+    --destructive-foreground: var(--zinc-50);
+    --info: var(--blue-400);
+    --info-foreground: var(--zinc-50);
 
     /* Charts */
-    --chart-1: var(--sky-500);
-    --chart-2: var(--pink-500);
-    --chart-3: var(--blue-500);
-    --chart-4: var(--yellow-500);
-    --chart-5: var(--orange-500);
+    --chart-1: var(--orange-500);
+    --chart-2: var(--yellow-500);
+    --chart-3: var(--green-500);
+    --chart-4: var(--blue-500);
+    --chart-5: var(--purple-500);
     --chart-border: var(--zinc-800);
 
     /* Sidebar */
     --sidebar: var(--zinc-900);
     --sidebar-foreground: var(--zinc-100);
+    --sidebar-primary: var(--emerald-300);
+    --sidebar-primary-foreground: var(--zinc-950);
+    --sidebar-accent: var(--zinc-800);
+    --sidebar-accent-foreground: var(--zinc-50);
+    --sidebar-border: var(--zinc-700);
+    --sidebar-ring: var(--zinc-300);
 
     /* Custom (v2) */
     --body-foreground: var(--zinc-200);
