@@ -20,7 +20,9 @@
     "seed:sync": "snaplet-seed sync --config supabase/seed/seed.config.ts",
     "seed:generate": "snaplet-seed generate --config supabase/seed/seed.config.ts",
     "api:docs": "tsx scripts/generate-openapi.ts & npx @redocly/cli build-docs public/openapi.json --output=public/api.html",
-    "prepare": "husky"
+    "prepare": "husky",
+    "storybook": "storybook dev -p 6006",
+    "build-storybook": "storybook build"
   },
   "dependencies": {
     "@ethproofs/pico-wasm-stark-verifier": "^0.1.6",
@@ -71,6 +73,8 @@
     "@commitlint/config-conventional": "^20.0.0",
     "@snaplet/copycat": "^5.0.0",
     "@snaplet/seed": "^0.98.0",
+    "@storybook/addon-themes": "^9.1.6",
+    "@storybook/nextjs": "^9.1.6",
     "@svgr/webpack": "^8.1.0",
     "@tailwindcss/postcss": "^4.1.13",
     "@types/adm-zip": "^0.5.7",
@@ -90,6 +94,7 @@
     "eslint-config-next": "^15.3.2",
     "eslint-config-prettier": "^9.1.0",
     "eslint-plugin-simple-import-sort": "^12.1.1",
+    "eslint-plugin-storybook": "^9.1.6",
     "eslint-plugin-unused-imports": "^4.1.4",
     "gray-matter": "^4.0.3",
     "husky": "^9.1.7",
@@ -99,6 +104,7 @@
     "prettier": "^3.3.3",
     "prettier-plugin-tailwindcss": "^0.6.6",
     "react-markdown": "^9.0.1",
+    "storybook": "^9.1.6",
     "supabase": "^2.54.11",
     "tailwindcss": "3.4.1",
     "tsx": "^4.19.2",
