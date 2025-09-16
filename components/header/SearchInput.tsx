@@ -80,13 +80,13 @@ const SearchInput = ({
   return (
     <div ref={searchContainerRef} className={cn("relative w-full", className)}>
       <div
-        className={cn(
-          "z-50",
-          "relative rounded-full border border-primary",
-          "before:absolute before:inset-0 before:-z-[2] before:rounded-full before:bg-gradient-to-tl before:from-primary before:to-primary/10",
-          "after:absolute after:inset-px after:-z-[1] after:rounded-[calc(100vmax_-_1px)] after:bg-background",
-          "[&>input:focus-visible]:after:bg-gradient-to-tl [&>input:focus-visible]:after:to-background-active"
-        )}
+      // className={cn(
+      //   "z-50",
+      //   "relative rounded-full border border-primary",
+      //   "before:absolute before:inset-0 before:-z-[2] before:rounded-full before:bg-gradient-to-tl before:from-primary before:to-primary/10",
+      //   "after:absolute after:inset-px after:-z-[1] after:rounded-[calc(100vmax_-_1px)] after:bg-background",
+      //   "[&>input:focus-visible]:after:bg-gradient-to-tl [&>input:focus-visible]:after:to-background-active"
+      // )}
       >
         <Input
           ref={inputRef}
@@ -95,19 +95,9 @@ const SearchInput = ({
           aria-label={placeholder}
           placeholder={placeholder}
           value={query}
-          className={cn("px-4 py-1.5", "border-transparent bg-transparent")}
+          className={cn("min-w-[300px]")}
         />
-
-        <div
-          className={cn(
-            "pointer-events-none absolute inset-y-0 end-0 flex items-center pe-4 lg:m-0",
-            !!query.length && "hidden"
-          )}
-        >
-          <Search className="size-4 rotate-90 text-primary" />
-        </div>
       </div>
-
       {!!query.length && (
         <div className="absolute inset-x-0 top-1/2 z-10 flex h-fit flex-col rounded-b-2xl rounded-t-none border border-primary-light bg-background px-2 pb-2 pt-8 dark:border-primary-border lg:m-0">
           {blockMatch ? (

@@ -63,42 +63,41 @@ const navigationItems = [
     href: "/status",
     icon: <HeartPulse />,
   },
-  {
-    label: "learn",
-    href: "/learn",
-    icon: <Library />,
-  },
-  {
-    label: "API",
-    href: "/api.html",
-    icon: <Target />,
-  },
-  {
-    label: "build Ethproofs",
-    href: URL_GITHUB_REPO,
-    icon: <GitHub />,
-  },
-  {
-    label: "spot a bug?",
-    href: new URL(
-      SITE_REPO + "/issues/new/choose/",
-      "https://github.com"
-    ).toString(),
-    icon: <Bug />,
-  },
-  {
-    label: "follow us",
-    href: URL_TWITTER,
-    icon: <XLogo className="h-3 w-auto" />,
-  },
+  // {
+  //   label: "API",
+  //   href: "/api.html",
+  //   icon: <Target />,
+  // },
+  // {
+  //   label: "learn",
+  //   href: "/learn",
+  //   icon: <Library />,
+  // },
+  // {
+  // {
+  //   label: "build Ethproofs",
+  //   href: URL_GITHUB_REPO,
+  //   icon: <GitHub />,
+  // },
+  // {
+  //   label: "spot a bug?",
+  //   href: new URL(
+  //     SITE_REPO + "/issues/new/choose/",
+  //     "https://github.com"
+  //   ).toString(),
+  //   icon: <Bug />,
+  // },
+  // {
+  //   label: "follow us",
+  //   href: URL_TWITTER,
+  //   icon: <XLogo className="h-3 w-auto" />,
+  // },
 ]
 
 const AppNavigation = () => {
   return (
     <SidebarGroup>
-      <SidebarGroupLabel className="!text-sidebar-foreground/70">
-        explore
-      </SidebarGroupLabel>
+      <SidebarGroupLabel>explore</SidebarGroupLabel>
       <SidebarMenu>
         {navigationItems.map((item) => (
           <SidebarMenuItem key={item.label}>
