@@ -1,3 +1,4 @@
+import { Globe } from "lucide-react"
 import { type Metadata } from "next"
 import { notFound } from "next/navigation"
 
@@ -25,7 +26,6 @@ import { formatUsd } from "@/lib/number"
 import { getTeamByIdOrSlug } from "@/lib/teams"
 import { prettyMs } from "@/lib/time"
 import { getHost, getTwitterHandle } from "@/lib/url"
-import { Globe } from "lucide-react"
 
 export type TeamDetailsPageProps = {
   params: Promise<{ teamId: string }>
