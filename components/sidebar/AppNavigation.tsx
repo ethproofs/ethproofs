@@ -96,9 +96,7 @@ const navigationItems = [
 const AppNavigation = () => {
   return (
     <SidebarGroup>
-      <SidebarGroupLabel className="!text-sidebar-foreground/70">
-        explore
-      </SidebarGroupLabel>
+      <SidebarGroupLabel>explore</SidebarGroupLabel>
       <SidebarMenu>
         {navigationItems.map((item) => (
           <SidebarMenuItem key={item.label}>

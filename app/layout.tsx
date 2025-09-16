@@ -1,17 +1,15 @@
-import { Suspense } from "react"
-import { Heart, Moon } from "lucide-react"
+import { Heart } from "lucide-react"
 import Script from "next/script"
 
-import AppSidebar from "@/components/sidebar/AppSidebar"
 import SearchInput from "@/components/header/SearchInput"
-import ThemeSwitch from "@/components/header/ThemeSwitch"
+import AppSidebar from "@/components/sidebar/AppSidebar"
 import { SidebarInset, SidebarTrigger } from "@/components/ui/sidebar"
-
 import { Toaster } from "@/components/ui/sonner"
 
 import Providers from "./providers"
 
 import "../styles/globals.css"
+import ThemeToggle from "@/components/header/ThemeToggle"
 
 export default function RootLayout({
   children,
@@ -60,22 +58,14 @@ export default function RootLayout({
           <AppSidebar />
           <SidebarInset className="flex min-h-screen flex-col">
             <header className="group-has-data-[collapsible=icon]/sidebar-wrapper:h-12 flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear">
-              <div className="flex w-full items-center justify-between px-4">
-                <SidebarTrigger className="-ml-1 text-primary hover:bg-transparent hover:text-primary-light" />
+              <div className="flex items-center gap-2 px-4">
+                <SidebarTrigger className="-ml-1" />
                 <div className="flex items-center gap-2">
-                  <Suspense
-                    fallback={
-                      <div className="flex h-fit items-center gap-2">
-                        <Moon className="animate-pulse text-primary" />
-                      </div>
-                    }
-                  >
-                    <ThemeSwitch />
-                  </Suspense>
                   <SearchInput
-                    aria-label="search by block"
+                    aria-label="Search by block"
                     placeholder="search by block"
                   />
+                  <ThemeToggle />
                 </div>
               </div>
               {/* <HeaderScrollEffects />

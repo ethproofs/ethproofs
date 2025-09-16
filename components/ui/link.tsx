@@ -1,8 +1,8 @@
 import { AnchorHTMLAttributes, forwardRef } from "react"
+import { ExternalLink } from "lucide-react"
 import NextLink, { type LinkProps as NextLinkProps } from "next/link"
 
 import * as url from "@/lib/url"
-import { ExternalLink } from "lucide-react"
 
 type BaseProps = {
   hideArrow?: boolean
