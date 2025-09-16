@@ -3,6 +3,8 @@
 // import ClipboardCheck from "@/components/svgs/clipboard-check.svg"
 // import Copy from "@/components/svgs/copy.svg"
 
+import { ClipboardCheck, Copy } from "lucide-react"
+
 import { cn } from "@/lib/utils"
 
 import { Button } from "./ui/button"
@@ -14,7 +16,6 @@ import {
 } from "./ui/tooltip"
 
 import { useClipboard } from "@/hooks/useClipboard"
-import { ClipboardCheck, Copy } from "lucide-react"
 
 type CopyButtonProps = React.HTMLAttributes<HTMLButtonElement> & {
   message: string

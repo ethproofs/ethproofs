@@ -50,7 +50,7 @@ export function AdminUserForm() {
         <label htmlFor="logo" className="text-sm font-bold">
           Logo
         </label>
-        <p className="text-secondary text-sm">
+        <p className="text-sm text-secondary">
           SVG file. Fill color black.{" "}
           <Link
             href="https://ndjfbkojyebmdbckigbe.supabase.co/storage/v1/object/public/public-assets/succinct-logo.svg"

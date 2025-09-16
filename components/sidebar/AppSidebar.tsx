@@ -4,14 +4,15 @@ import {
   SidebarHeader,
   SidebarRail,
 } from "../ui/sidebar"
-import EthproofsLogomark from "../EthproofsLogomark"
+
 import AppNavigation from "./AppNavigation"
+import AppSidebarHeader from "./AppSidebarHeader"
 
 const AppSidebar = () => {
   return (
     <Sidebar collapsible="icon">
-      <SidebarHeader className="h-16">
-        <EthproofsLogomark />
+      <SidebarHeader>
+        <AppSidebarHeader />
       </SidebarHeader>
       <SidebarContent>
         <AppNavigation />
