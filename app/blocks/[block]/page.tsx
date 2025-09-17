@@ -55,7 +55,7 @@ export async function generateMetadata({
 }: BlockDetailsPageProps): Promise<Metadata> {
   const { block } = await params
 
-  if (isNaN(+block)) throw new Error()
+  if (!isBlockHash(block) && isNaN(+block)) throw new Error()
 
   const blockData = await fetchBlock(
     isBlockHash(block)
@@ -77,7 +77,7 @@ export default async function BlockDetailsPage({
 }: BlockDetailsPageProps) {
   const blockNumber = (await params).block
 
-  if (isNaN(+blockNumber)) throw new Error()
+  if (!isBlockHash(blockNumber) && isNaN(+blockNumber)) throw new Error()
 
   const block = await fetchBlock(
     isBlockHash(blockNumber)
