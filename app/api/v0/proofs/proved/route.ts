@@ -9,7 +9,7 @@ import { blocks, clusters, programs, proofs } from "@/db/schema"
 import { uploadProofBinary } from "@/lib/api/proof_binaries"
 import { isStorageQuotaExceeded } from "@/lib/api/storage"
 import { getTeam } from "@/lib/api/teams"
-import { fetchBlockDataWithFallback } from "@/lib/blocks"
+import { fetchBlockData } from "@/lib/blocks"
 import { withAuth } from "@/lib/middleware/with-auth"
 import { provedProofSchema } from "@/lib/zod/schemas/proof"
 
@@ -17,28 +17,23 @@ import { provedProofSchema } from "@/lib/zod/schemas/proof"
 export const POST = withAuth(async ({ request, user, timestamp }) => {
   const payload = await request.json()
 
-  // validate payload schema
   let proofPayload
   try {
     proofPayload = provedProofSchema.parse(payload)
   } catch (error) {
-    console.error("proof payload invalid", error)
+    console.error("Proof payload invalid:", error)
     if (error instanceof ZodError) {
       return new Response(`Invalid payload: ${error.message}`, {
         status: 400,
       })
     }
 
-    return new Response("Invalid payload", {
-      status: 400,
-    })
+    return new Response("Invalid payload", { status: 400 })
   }
 
   const { block_number, cluster_id, verifier_id, proof, ...restProofPayload } =
     proofPayload
 
-  // validate block_number exists
-  console.log("validating block_number", block_number)
   const block = await db.query.blocks.findFirst({
     columns: {
       block_number: true,
@@ -46,21 +41,19 @@ export const POST = withAuth(async ({ request, user, timestamp }) => {
     where: (blocks, { eq }) => eq(blocks.block_number, block_number),
   })
 
-  // fetch block data from block explorer and create block record
   if (!block) {
-    console.log("block not found, fetching block data", block_number)
+    console.log("Block not found, fetching block data:", block_number)
     let blockData
     try {
-      blockData = await fetchBlockDataWithFallback(block_number)
+      blockData = await fetchBlockData(block_number)
     } catch (error) {
-      console.error("error fetching block data", error)
+      console.error("Error fetching block data:", error)
       return new Response("Block not found", {
         status: 500,
       })
     }
 
     try {
-      console.log("creating block", block_number)
       await db
         .insert(blocks)
         .values({
@@ -72,12 +65,12 @@ export const POST = withAuth(async ({ request, user, timestamp }) => {
         })
         .onConflictDoNothing()
     } catch (error) {
-      console.error("error creating block", error)
+      console.error("Error creating block:", error)
       return new Response("Internal server error", { status: 500 })
     }
   }
 
-  // get cluster uuid from cluster_id
+  // Get cluster uuid from cluster_id
   const cluster = await db.query.clusters.findFirst({
     columns: {
       id: true,
@@ -91,7 +84,6 @@ export const POST = withAuth(async ({ request, user, timestamp }) => {
     return new Response("Cluster not found", { status: 404 })
   }
 
-  // get the last cluster_version_id from cluster_id
   const clusterVersion = await db.query.clusterVersions.findFirst({
     columns: {
       id: true,
@@ -105,11 +97,11 @@ export const POST = withAuth(async ({ request, user, timestamp }) => {
   })
 
   if (!clusterVersion) {
-    console.error("cluster version not found", cluster_id)
+    console.error("Cluster version not found:", cluster_id)
     return new Response("Cluster version not found", { status: 404 })
   }
 
-  // create or get program id if it exists
+  // TODO:TEAM - revisit this code, is it still needed?
   let programId: number | undefined
   if (verifier_id) {
     const existingProgram = await db.query.programs.findFirst({
@@ -122,8 +114,6 @@ export const POST = withAuth(async ({ request, user, timestamp }) => {
     programId = existingProgram?.id
 
     if (!existingProgram) {
-      console.info("no program found, creating program")
-
       try {
         const [program] = await db
           .insert(programs)
@@ -134,14 +124,14 @@ export const POST = withAuth(async ({ request, user, timestamp }) => {
 
         programId = program?.id
       } catch (error) {
-        console.error("error creating program", error)
+        console.error("Error creating program:", error)
       }
     }
   }
 
   const binaryBuffer = Buffer.from(proof, "base64")
 
-  // check storage quota
+  // TODO:TEAM - revisit the need for storage quota
   const storageQuotaExceeded = await isStorageQuotaExceeded(
     user.id,
     binaryBuffer.byteLength
@@ -153,7 +143,6 @@ export const POST = withAuth(async ({ request, user, timestamp }) => {
     )
   }
 
-  // add proof
   const dataToInsert = {
     ...restProofPayload,
     block_number,
@@ -164,8 +153,6 @@ export const POST = withAuth(async ({ request, user, timestamp }) => {
     size_bytes: binaryBuffer.byteLength,
     team_id: user.id,
   }
-
-  console.log("adding proved proof", dataToInsert)
 
   try {
     const newProof = await db.transaction(async (tx) => {
@@ -180,7 +167,7 @@ export const POST = withAuth(async ({ request, user, timestamp }) => {
         })
         .returning({ proof_id: proofs.proof_id })
 
-      // handle active cluster status and updates
+      // Handle active cluster status and updates
       if (!clusterVersion.cluster.is_active) {
         await tx
           .update(clusters)
@@ -189,7 +176,7 @@ export const POST = withAuth(async ({ request, user, timestamp }) => {
           })
           .where(eq(clusters.id, cluster.id))
 
-        // invalidate active clusters stats
+        // Invalidate active clusters stats
         revalidateTag(TAGS.CLUSTERS)
         revalidateTag(TAGS.CLUSTER_SUMMARY)
       }
@@ -204,16 +191,14 @@ export const POST = withAuth(async ({ request, user, timestamp }) => {
       return newProof
     })
 
-    // invalidate cache
     revalidateTag(TAGS.PROOFS)
     revalidateTag(TAGS.BLOCKS)
     revalidateTag(`cluster-${cluster.id}`)
     revalidateTag(`block-${block_number}`)
 
-    // return the generated proof_id
     return Response.json(newProof)
   } catch (error) {
-    console.error("error adding proof", error)
+    console.error("Error adding proof:", error)
     return new Response("Internal server error", { status: 500 })
   }
 })
