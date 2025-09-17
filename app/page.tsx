@@ -42,7 +42,7 @@ export default async function Index() {
       </div>
 
       <div className="mx-auto flex max-w-screen-xl flex-col items-center gap-20 px-6 md:px-8 [&>section]:w-full">
-        <ProofsStats recentSummary={recentSummary} />
+        {/* <ProofsStats recentSummary={recentSummary} /> */}
 
         <section id="zkvms">
           <Suspense fallback={null}>
