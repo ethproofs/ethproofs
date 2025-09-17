@@ -1,23 +1,32 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
-  webpack(config) {
-    const fileLoaderRule = config.module.rules.find((rule) =>
-      rule.test?.test?.(".svg")
-    )
-    fileLoaderRule.exclude = /\.svg$/
+  turbopack: {
+    rules: {
+      "*.svg": {
+        loaders: ["@svgr/webpack"],
+        as: "*.js",
+      },
+    },
+  },
+  webpack(config, { dev }) {
+    if (!dev) {
+      const fileLoaderRule = config.module.rules.find((rule) =>
+        rule.test?.test?.(".svg")
+      )
+      fileLoaderRule.exclude = /\.svg$/
 
-    // Convert all other *.svg imports to React components
-    config.module.rules.push({
-      test: /\.svg$/i,
-      issuer: fileLoaderRule.issuer,
-      resourceQuery: { not: [...fileLoaderRule.resourceQuery.not, /url/] }, // exclude if *.svg?url
-      use: ["@svgr/webpack"],
-    })
+      config.module.rules.push({
+        test: /\.svg$/i,
+        issuer: fileLoaderRule.issuer,
+        resourceQuery: { not: [...fileLoaderRule.resourceQuery.not, /url/] }, // exclude if *.svg?url
+        use: ["@svgr/webpack"],
+      })
 
-    config.experiments = {
-      ...config.experiments,
-      asyncWebAssembly: true,
+      config.experiments = {
+        ...config.experiments,
+        asyncWebAssembly: true,
+      }
     }
 
     return config

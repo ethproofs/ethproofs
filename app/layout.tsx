@@ -9,6 +9,8 @@ import { Toaster } from "@/components/ui/sonner"
 import Providers from "./providers"
 
 import "../styles/globals.css"
+import { ClientOnlyWrapper } from "@/components/ClientOnlyWrapper"
+import { Skeleton } from "@/components/ui/skeleton"
 
 export default function RootLayout({
   children,
@@ -25,7 +27,6 @@ export default function RootLayout({
           type="font/otf"
           crossOrigin="anonymous"
         />
-        {/* https://nextjs.org/docs/app/api-reference/file-conventions/metadata/app-icons */}
         <link rel="icon" href="/favicon.ico" sizes="any" />
         <link rel="icon" href="/icon.svg" type="image/svg+xml" sizes="any" />
         <link
@@ -34,22 +35,6 @@ export default function RootLayout({
           type="image/png"
           sizes="180x180"
         />
-        {/* <Script
-          strategy="afterInteractive"
-          data-domain="ethproofs.org"
-          src="https://plausible.io/js/script.file-downloads.outbound-links.tagged-events.js"
-        />
-        <Script
-          id="plausible-init"
-          strategy="afterInteractive"
-          dangerouslySetInnerHTML={{
-            __html: `
-            window.plausible = window.plausible || function() {
-              (window.plausible.q = window.plausible.q || []).push(arguments)
-            }
-          `,
-          }}
-        /> */}
       </head>
 
       <body>
@@ -64,7 +49,11 @@ export default function RootLayout({
                     aria-label="Search by block"
                     placeholder="search by block"
                   />
-                  <ThemeToggle />
+                  <ClientOnlyWrapper
+                    fallback={<Skeleton className="h-7 w-7 rounded-md" />}
+                  >
+                    <ThemeToggle />
+                  </ClientOnlyWrapper>
                 </div>
               </div>
             </header>
