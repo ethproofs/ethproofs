@@ -56,11 +56,11 @@ export const fetchBlockData = async (block_number: number, maxRetries = 3) => {
 export const getBlockValueType = (
   block: string
 ): keyof Pick<Block, "hash" | "block_number"> | null => {
-  if (isNaN(+block)) return null
-
   if (isBlockHash(block)) return "hash"
 
-  return "block_number"
+  if (!isNaN(+block)) return "block_number"
+
+  return null
 }
 
 export const isBlockHash = (block: string) => {
