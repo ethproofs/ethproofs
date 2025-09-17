@@ -2,33 +2,50 @@
 
 import { useCallback, useEffect, useState } from "react"
 
+import { wasmCache } from "@/lib/wasm-cache"
+
 export function useZirenVerifier(active: boolean = false) {
   const [wasmModule, setWasmModule] = useState<
     typeof import("@ethproofs/ziren-wasm-stark-verifier") | null
   >(null)
   const [isInitialized, setIsInitialized] = useState(false)
+  const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
     let mounted = true
 
     async function initializeWasm() {
       if (!active) return
-      try {
-        console.log("[Ziren] Initializing WASM module...")
-        const loadedModule = await import(
-          "@ethproofs/ziren-wasm-stark-verifier"
+
+      // Check if already cached and initialized
+      if (wasmCache.isModuleLoaded("ziren")) {
+        const cachedModule = await wasmCache.getModule(
+          "ziren",
+          () => import("@ethproofs/ziren-wasm-stark-verifier")
         )
-        loadedModule.main()
+        if (mounted) {
+          setWasmModule(cachedModule as typeof import("@ethproofs/ziren-wasm-stark-verifier"))
+          setIsInitialized(true)
+        }
+        return
+      }
+
+      try {
+        setError(null)
+        const loadedModule = await wasmCache.getModule(
+          "ziren",
+          () => import("@ethproofs/ziren-wasm-stark-verifier"),
+          (wasmModule) => (wasmModule as typeof import("@ethproofs/ziren-wasm-stark-verifier")).main()
+        )
 
         if (mounted) {
-          setWasmModule(loadedModule)
+          setWasmModule(loadedModule as typeof import("@ethproofs/ziren-wasm-stark-verifier"))
           setIsInitialized(true)
-          console.log("[Ziren] WASM module initialized")
         }
       } catch (error) {
         console.error("[Ziren] WASM initialization failed:", error)
         if (mounted) {
-          console.error(
+          setError(
             error instanceof Error ? error.message : "Unknown error"
           )
         }
@@ -45,7 +62,8 @@ export function useZirenVerifier(active: boolean = false) {
   return useCallback(
     (proofBytes: Uint8Array, vkBytes: Uint8Array) => {
       if (!wasmModule || !isInitialized) {
-        return { isValid: false, error: "[Ziren] WASM module not initialized" }
+        const errorMsg = error || "[Ziren] WASM module not initialized"
+        return { isValid: false, error: errorMsg }
       }
       try {
         const result = wasmModule.verify_stark(proofBytes, vkBytes)
@@ -58,6 +76,6 @@ export function useZirenVerifier(active: boolean = false) {
         }
       }
     },
-    [wasmModule, isInitialized]
+    [wasmModule, isInitialized, error]
   )
 }

@@ -6,6 +6,8 @@ import prettyBytes from "pretty-bytes"
 
 import type { Proof, Team } from "@/lib/types"
 
+import WasmErrorBoundary from "@/components/error-boundaries/WasmErrorBoundary"
+
 import { cn } from "@/lib/utils"
 
 import { Button } from "../ui/button"
@@ -149,10 +151,11 @@ const VerifyButton = ({
 
   if (proof_status === "proved")
     return (
-      <div className={cn("flex items-center gap-x-2 gap-y-1", containerClass)}>
-        <Button
+      <WasmErrorBoundary>
+        <div className={cn("flex items-center gap-x-2 gap-y-1", containerClass)}>
+          <Button
           disabled={buttonState === "disabled" || buttonState !== "verify"}
-          variant={buttonState === "disabled" ? "solid" : "outline"}
+          variant={buttonState === "disabled" ? "secondary" : "outline"}
           className={cn(
             sizingClassName,
             getProofButtonClasses(buttonState),
@@ -221,7 +224,8 @@ const VerifyButton = ({
             {`${verifyTime}ms`}
           </span>
         )}
-      </div>
+        </div>
+      </WasmErrorBoundary>
     )
 }
 

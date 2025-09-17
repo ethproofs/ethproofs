@@ -2,31 +2,50 @@
 
 import { useCallback, useEffect, useState } from "react"
 
+import { wasmCache } from "@/lib/wasm-cache"
+
 export function usePicoVerifier(active: boolean = false) {
   const [wasmModule, setWasmModule] = useState<
     typeof import("@ethproofs/pico-wasm-stark-verifier") | null
   >(null)
   const [isInitialized, setIsInitialized] = useState(false)
+  const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
     let mounted = true
 
     async function initializeWasm() {
       if (!active) return
+
+      // Check if already cached and initialized
+      if (wasmCache.isModuleLoaded("pico")) {
+        const cachedModule = await wasmCache.getModule(
+          "pico",
+          () => import("@ethproofs/pico-wasm-stark-verifier")
+        )
+        if (mounted) {
+          setWasmModule(cachedModule as typeof import("@ethproofs/pico-wasm-stark-verifier"))
+          setIsInitialized(true)
+        }
+        return
+      }
+
       try {
-        console.log("[Pico] Initializing WASM module...")
-        const loadedModule = await import("@ethproofs/pico-wasm-stark-verifier")
-        loadedModule.main()
+        setError(null)
+        const loadedModule = await wasmCache.getModule(
+          "pico",
+          () => import("@ethproofs/pico-wasm-stark-verifier"),
+          (wasmModule) => (wasmModule as typeof import("@ethproofs/pico-wasm-stark-verifier")).main()
+        )
 
         if (mounted) {
-          setWasmModule(loadedModule)
+          setWasmModule(loadedModule as typeof import("@ethproofs/pico-wasm-stark-verifier"))
           setIsInitialized(true)
-          console.log("[Pico] WASM module initialized")
         }
       } catch (error) {
         console.error("[Pico] WASM initialization failed:", error)
         if (mounted) {
-          console.error(
+          setError(
             error instanceof Error ? error.message : "Unknown error"
           )
         }
@@ -43,7 +62,8 @@ export function usePicoVerifier(active: boolean = false) {
   return useCallback(
     (vmType: string, proofBytes: Uint8Array, vkBytes: Uint8Array) => {
       if (!wasmModule || !isInitialized) {
-        return { isValid: false, error: "[Pico] WASM module not initialized" }
+        const errorMsg = error || "[Pico] WASM module not initialized"
+        return { isValid: false, error: errorMsg }
       }
       try {
         const result = wasmModule.verify_stark(vmType, proofBytes, vkBytes)
@@ -56,6 +76,6 @@ export function usePicoVerifier(active: boolean = false) {
         }
       }
     },
-    [wasmModule, isInitialized]
+    [wasmModule, isInitialized, error]
   )
 }
