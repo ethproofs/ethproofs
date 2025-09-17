@@ -5,7 +5,7 @@ import { TAGS } from "@/lib/constants"
 
 import { db } from "@/db"
 import { blocks, proofs } from "@/db/schema"
-import { fetchBlockData } from "@/lib/blocks"
+import { fetchBlockDataWithFallback } from "@/lib/blocks"
 import { withAuth } from "@/lib/middleware/with-auth"
 import { provingProofSchema } from "@/lib/zod/schemas/proof"
 
@@ -13,7 +13,7 @@ import { provingProofSchema } from "@/lib/zod/schemas/proof"
 export const POST = withAuth(async ({ request, user, timestamp }) => {
   const payload = await request.json()
 
-  // Validate payload schema
+  // validate payload schema
   let proofPayload
   try {
     proofPayload = provingProofSchema.parse(payload)
@@ -32,7 +32,7 @@ export const POST = withAuth(async ({ request, user, timestamp }) => {
 
   const { block_number, cluster_id } = proofPayload
 
-  // Validate block_number exists
+  // validate block_number exists
   console.log("validating block_number", block_number)
   const block = await db.query.blocks.findFirst({
     columns: {
@@ -41,12 +41,12 @@ export const POST = withAuth(async ({ request, user, timestamp }) => {
     where: (blocks, { eq }) => eq(blocks.block_number, block_number),
   })
 
-  // If block is new (not in db), fetch block data from block explorer and create block record
+  // fetch block data from block explorer and create block record
   if (!block) {
     console.log("block not found, fetching block data", block_number)
     let blockData
     try {
-      blockData = await fetchBlockData(block_number)
+      blockData = await fetchBlockDataWithFallback(block_number)
     } catch (error) {
       console.error("error fetching block data", error)
       return new Response("Block not found", {
@@ -72,7 +72,7 @@ export const POST = withAuth(async ({ request, user, timestamp }) => {
     }
   }
 
-  // Get cluster uuid from cluster_id
+  // get cluster uuid from cluster_id
   const cluster = await db.query.clusters.findFirst({
     columns: {
       id: true,
@@ -86,7 +86,7 @@ export const POST = withAuth(async ({ request, user, timestamp }) => {
     return new Response("Cluster not found", { status: 404 })
   }
 
-  // Get the last cluster_version_id from cluster_id
+  // get the last cluster_version_id from cluster_id
   const clusterVersion = await db.query.clusterVersions.findFirst({
     columns: {
       id: true,
@@ -101,7 +101,7 @@ export const POST = withAuth(async ({ request, user, timestamp }) => {
     return new Response("Cluster version not found", { status: 404 })
   }
 
-  // Add proof
+  // add proof
   const dataToInsert = {
     ...proofPayload,
     block_number,
@@ -126,13 +126,13 @@ export const POST = withAuth(async ({ request, user, timestamp }) => {
       })
       .returning({ proof_id: proofs.proof_id })
 
-    // Invalidate cache
+    // invalidate cache
     revalidateTag(TAGS.PROOFS)
     revalidateTag(TAGS.BLOCKS)
     revalidateTag(`cluster-${cluster.id}`)
     revalidateTag(`block-${block_number}`)
 
-    // Return the generated proof_id
+    // return the generated proof_id
     return Response.json(proof)
   } catch (error) {
     console.error("error adding proof", error)

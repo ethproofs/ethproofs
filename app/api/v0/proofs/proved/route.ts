@@ -9,7 +9,7 @@ import { blocks, clusters, programs, proofs } from "@/db/schema"
 import { uploadProofBinary } from "@/lib/api/proof_binaries"
 import { isStorageQuotaExceeded } from "@/lib/api/storage"
 import { getTeam } from "@/lib/api/teams"
-import { fetchBlockData } from "@/lib/blocks"
+import { fetchBlockDataWithFallback } from "@/lib/blocks"
 import { withAuth } from "@/lib/middleware/with-auth"
 import { provedProofSchema } from "@/lib/zod/schemas/proof"
 
@@ -17,7 +17,7 @@ import { provedProofSchema } from "@/lib/zod/schemas/proof"
 export const POST = withAuth(async ({ request, user, timestamp }) => {
   const payload = await request.json()
 
-  // Validate payload schema
+  // validate payload schema
   let proofPayload
   try {
     proofPayload = provedProofSchema.parse(payload)
@@ -37,7 +37,7 @@ export const POST = withAuth(async ({ request, user, timestamp }) => {
   const { block_number, cluster_id, verifier_id, proof, ...restProofPayload } =
     proofPayload
 
-  // Validate block_number exists
+  // validate block_number exists
   console.log("validating block_number", block_number)
   const block = await db.query.blocks.findFirst({
     columns: {
@@ -46,12 +46,12 @@ export const POST = withAuth(async ({ request, user, timestamp }) => {
     where: (blocks, { eq }) => eq(blocks.block_number, block_number),
   })
 
-  // If block is new (not in db), fetch block data from block explorer and create block record
+  // fetch block data from block explorer and create block record
   if (!block) {
     console.log("block not found, fetching block data", block_number)
     let blockData
     try {
-      blockData = await fetchBlockData(block_number)
+      blockData = await fetchBlockDataWithFallback(block_number)
     } catch (error) {
       console.error("error fetching block data", error)
       return new Response("Block not found", {
@@ -77,7 +77,7 @@ export const POST = withAuth(async ({ request, user, timestamp }) => {
     }
   }
 
-  // Get cluster uuid from cluster_id
+  // get cluster uuid from cluster_id
   const cluster = await db.query.clusters.findFirst({
     columns: {
       id: true,
@@ -91,7 +91,7 @@ export const POST = withAuth(async ({ request, user, timestamp }) => {
     return new Response("Cluster not found", { status: 404 })
   }
 
-  // Get the last cluster_version_id from cluster_id
+  // get the last cluster_version_id from cluster_id
   const clusterVersion = await db.query.clusterVersions.findFirst({
     columns: {
       id: true,
@@ -109,7 +109,7 @@ export const POST = withAuth(async ({ request, user, timestamp }) => {
     return new Response("Cluster version not found", { status: 404 })
   }
 
-  // Create or get program id if it exists
+  // create or get program id if it exists
   let programId: number | undefined
   if (verifier_id) {
     const existingProgram = await db.query.programs.findFirst({
@@ -141,7 +141,7 @@ export const POST = withAuth(async ({ request, user, timestamp }) => {
 
   const binaryBuffer = Buffer.from(proof, "base64")
 
-  // Check storage quota
+  // check storage quota
   const storageQuotaExceeded = await isStorageQuotaExceeded(
     user.id,
     binaryBuffer.byteLength
@@ -153,7 +153,7 @@ export const POST = withAuth(async ({ request, user, timestamp }) => {
     )
   }
 
-  // Add proof
+  // add proof
   const dataToInsert = {
     ...restProofPayload,
     block_number,
@@ -180,7 +180,7 @@ export const POST = withAuth(async ({ request, user, timestamp }) => {
         })
         .returning({ proof_id: proofs.proof_id })
 
-      // Handle active cluster status and updates
+      // handle active cluster status and updates
       if (!clusterVersion.cluster.is_active) {
         await tx
           .update(clusters)
@@ -189,7 +189,7 @@ export const POST = withAuth(async ({ request, user, timestamp }) => {
           })
           .where(eq(clusters.id, cluster.id))
 
-        // Invalidate active clusters stats
+        // invalidate active clusters stats
         revalidateTag(TAGS.CLUSTERS)
         revalidateTag(TAGS.CLUSTER_SUMMARY)
       }
@@ -204,13 +204,13 @@ export const POST = withAuth(async ({ request, user, timestamp }) => {
       return newProof
     })
 
-    // Invalidate cache
+    // invalidate cache
     revalidateTag(TAGS.PROOFS)
     revalidateTag(TAGS.BLOCKS)
     revalidateTag(`cluster-${cluster.id}`)
     revalidateTag(`block-${block_number}`)
 
-    // Return the generated proof_id
+    // return the generated proof_id
     return Response.json(newProof)
   } catch (error) {
     console.error("error adding proof", error)
