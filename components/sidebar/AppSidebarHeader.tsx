@@ -1,5 +1,6 @@
-import { SidebarMenu, SidebarMenuButton, SidebarMenuItem } from "../ui/sidebar"
 import EthproofsIcon from "@/components/svgs/ethproofs-icon.svg"
+
+import { SidebarMenu, SidebarMenuButton, SidebarMenuItem } from "../ui/sidebar"
 
 export default function AppSidebarHeader() {
   return (

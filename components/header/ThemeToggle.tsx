@@ -10,12 +10,10 @@ const ThemeToggle = () => {
   const { theme, resolvedTheme, setTheme } = useTheme()
 
   useEffect(() => {
-    console.log("theme", theme)
-    console.log("resolvedTheme", resolvedTheme)
     if (resolvedTheme && !theme) {
       setTheme(resolvedTheme === "light" ? "light" : "dark")
     }
-  }, [])
+  }, [resolvedTheme, theme, setTheme])
 
   const toggleThemeMode = () => {
     setTheme(theme === "light" ? "dark" : "light")
