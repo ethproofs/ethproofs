@@ -6,16 +6,10 @@ import { useTheme } from "next-themes"
 
 import { Button } from "../ui/button"
 
-const ThemeToggle = () => {
-  const { theme, resolvedTheme, setTheme } = useTheme()
+export default function ThemeToggle() {
+  const { theme, setTheme } = useTheme()
 
-  useEffect(() => {
-    if (resolvedTheme && !theme) {
-      setTheme(resolvedTheme === "light" ? "light" : "dark")
-    }
-  }, [resolvedTheme, theme, setTheme])
-
-  const toggleThemeMode = () => {
+  function toggleThemeMode() {
     setTheme(theme === "light" ? "dark" : "light")
   }
 
@@ -33,5 +27,3 @@ const ThemeToggle = () => {
     </Button>
   )
 }
-
-export default ThemeToggle
