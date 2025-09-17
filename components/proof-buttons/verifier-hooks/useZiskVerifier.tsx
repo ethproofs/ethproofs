@@ -2,31 +2,50 @@
 
 import { useCallback, useEffect, useState } from "react"
 
+import { wasmCache } from "@/lib/wasm-cache"
+
 export function useZiskVerifier(active: boolean = false) {
   const [wasmModule, setWasmModule] = useState<
     typeof import("@ethproofs/zisk-wasm-stark-verifier") | null
   >(null)
   const [isInitialized, setIsInitialized] = useState(false)
+  const [error, setError] = useState<string | null>(null)
 
   useEffect(() => {
     let mounted = true
 
     async function initializeWasm() {
       if (!active) return
+
+      // Check if already cached and initialized
+      if (wasmCache.isModuleLoaded("zisk")) {
+        const cachedModule = await wasmCache.getModule(
+          "zisk",
+          () => import("@ethproofs/zisk-wasm-stark-verifier")
+        )
+        if (mounted) {
+          setWasmModule(cachedModule as typeof import("@ethproofs/zisk-wasm-stark-verifier"))
+          setIsInitialized(true)
+        }
+        return
+      }
+
       try {
-        console.log("[Zisk] Initializing WASM module...")
-        const loadedModule = await import("@ethproofs/zisk-wasm-stark-verifier")
-        loadedModule.main()
+        setError(null)
+        const loadedModule = await wasmCache.getModule(
+          "zisk",
+          () => import("@ethproofs/zisk-wasm-stark-verifier"),
+          (wasmModule) => (wasmModule as typeof import("@ethproofs/zisk-wasm-stark-verifier")).main()
+        )
 
         if (mounted) {
-          setWasmModule(loadedModule)
+          setWasmModule(loadedModule as typeof import("@ethproofs/zisk-wasm-stark-verifier"))
           setIsInitialized(true)
-          console.log("[Zisk] WASM module initialized")
         }
       } catch (error) {
         console.error("[Zisk] WASM initialization failed:", error)
         if (mounted) {
-          console.error(
+          setError(
             error instanceof Error ? error.message : "Unknown error"
           )
         }
@@ -43,7 +62,8 @@ export function useZiskVerifier(active: boolean = false) {
   return useCallback(
     (proofBytes: Uint8Array, vkBytes: Uint8Array) => {
       if (!wasmModule || !isInitialized) {
-        return { isValid: false, error: "[Zisk] WASM module not initialized" }
+        const errorMsg = error || "[Zisk] WASM module not initialized"
+        return { isValid: false, error: errorMsg }
       }
       try {
         const result = wasmModule.verify_stark(proofBytes, vkBytes)
@@ -56,6 +76,6 @@ export function useZiskVerifier(active: boolean = false) {
         }
       }
     },
-    [wasmModule, isInitialized]
+    [wasmModule, isInitialized, error]
   )
 }

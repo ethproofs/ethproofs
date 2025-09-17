@@ -1,6 +1,7 @@
 import { Heart } from "lucide-react"
 
 import SearchInput from "@/components/header/SearchInput"
+import ThemeToggle from "@/components/header/ThemeToggle"
 import AppSidebar from "@/components/sidebar/AppSidebar"
 import { SidebarInset, SidebarTrigger } from "@/components/ui/sidebar"
 import { Toaster } from "@/components/ui/sonner"
@@ -8,7 +9,6 @@ import { Toaster } from "@/components/ui/sonner"
 import Providers from "./providers"
 
 import "../styles/globals.css"
-import ThemeToggle from "@/components/header/ThemeToggle"
 
 export default function RootLayout({
   children,

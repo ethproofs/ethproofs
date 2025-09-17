@@ -44,7 +44,9 @@ const SearchInput = ({
       const response = await fetch(`/api/blocks/search?query=${deferredQuery}`)
       return response.json()
     },
-    enabled: !!deferredQuery,
+    enabled: !!deferredQuery && deferredQuery.length > 2,
+    staleTime: 30 * 1000, // Cache for 30 seconds
+    gcTime: 5 * 60 * 1000, // Keep in cache for 5 minutes
   })
 
   const handleSubmit = () => {
@@ -55,12 +57,12 @@ const SearchInput = ({
 
   // Clear query when clicking outside
   useEventListener("mousedown", (e) => {
-    if (searchContainerRef?.current?.contains(e.target as Node)) return
+    if (!query || searchContainerRef?.current?.contains(e.target as Node)) return
     setQuery("")
   })
 
   useEventListener("keydown", (e) => {
-    if (e.key !== "Enter" || !blockMatch) return
+    if (e.key !== "Enter" || !blockMatch || !query) return
     const path = `/blocks/${blockMatch[isHash(query) ? "hash" : "block_number"]}`
     handleSubmit()
     router.push(path)
