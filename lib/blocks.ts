@@ -1,20 +1,23 @@
-import { createPublicClient, http } from "viem"
+import { createPublicClient, fallback, http } from "viem"
 import { mainnet } from "viem/chains"
 
 import { Block, Team } from "./types"
-import { delay } from "@/utils/delay"
 
 const rpcUrl = process.env.RPC_URL
 const rpcUrlFallback = process.env.RPC_URL_FALLBACK
 
-const client = createPublicClient({
+export const client = createPublicClient({
   chain: mainnet,
-  transport: http(rpcUrl),
-})
-
-const clientFallback = createPublicClient({
-  chain: mainnet,
-  transport: http(rpcUrlFallback),
+  transport: fallback([
+    http(rpcUrl, {
+      timeout: 5000,
+      retryCount: 2,
+    }),
+    http(rpcUrlFallback, {
+      timeout: 5000,
+      retryCount: 2,
+    }),
+  ]),
 })
 
 type BlockSummary = {
@@ -25,157 +28,22 @@ type BlockSummary = {
 }
 
 /**
- * Fetch a block with retries, exponential backoff + jitter, and per-attempt timeout.
+ * Fetch a block using multiple RPCs with built-in retries and timeout.
  *
- * @param block_number - Block number to fetch
- * @param maxRetries - Number of attempts (default 3)
- * @param attemptTimeoutMs - Per-attempt timeout in ms (default 5000)
+ * @param blockNumber - Block number to fetch
  */
 export async function fetchBlockData(
-  block_number: number,
-  maxRetries = 3,
-  attemptTimeoutMs = 5000
+  blockNumber: number
 ): Promise<BlockSummary> {
-  let lastError: Error | null = null
-
-  for (let attempt = 1; attempt <= maxRetries; attempt++) {
-    const controller = new AbortController()
-    const timeoutId = setTimeout(() => controller.abort(), attemptTimeoutMs)
-
-    try {
-      const block = await client.getBlock({
-        blockNumber: BigInt(block_number),
-        includeTransactions: true,
-        // @ts-expect-error: signal is supported at runtime
-        signal: controller.signal,
-      })
-
-      clearTimeout(timeoutId)
-
-      return {
-        gasUsed: block.gasUsed,
-        hash: block.hash,
-        txsCount: block.transactions.length,
-        timestamp: block.timestamp,
-      }
-    } catch (error) {
-      clearTimeout(timeoutId)
-
-      lastError = error instanceof Error ? error : new Error(String(error))
-      console.warn(
-        `Attempt ${attempt}/${maxRetries} failed for block ${block_number}:`,
-        lastError.message
-      )
-
-      // Stop retrying on final attempt
-      if (attempt < maxRetries) {
-        const baseDelay = Math.pow(2, attempt - 1) * 1000
-        const jitter = Math.random() * 300
-        await delay(baseDelay + jitter)
-      }
-    }
-  }
-
-  throw new Error(
-    `Failed to fetch block ${block_number} after ${maxRetries} attempts: ${lastError?.message}`
-  )
-}
-
-/**
- * Fallback fetch for a block with retries, exponential backoff + jitter, and per-attempt timeout.
- *
- * @param block_number - Block number to fetch
- * @param maxRetries - Number of attempts (default 3)
- * @param attemptTimeoutMs - Per-attempt timeout in ms (default 5000)
- */
-export async function fetchBlockDataFallback(
-  block_number: number,
-  maxRetries = 3,
-  attemptTimeoutMs = 5000
-): Promise<BlockSummary> {
-  let lastError: Error | null = null
-
-  for (let attempt = 1; attempt <= maxRetries; attempt++) {
-    const controller = new AbortController()
-    const timeoutId = setTimeout(() => controller.abort(), attemptTimeoutMs)
-
-    try {
-      const block = await clientFallback.getBlock({
-        blockNumber: BigInt(block_number),
-        includeTransactions: true,
-        // @ts-expect-error: signal is supported at runtime
-        signal: controller.signal,
-      })
-
-      clearTimeout(timeoutId)
-
-      return {
-        gasUsed: block.gasUsed,
-        hash: block.hash,
-        txsCount: block.transactions.length,
-        timestamp: block.timestamp,
-      }
-    } catch (error) {
-      clearTimeout(timeoutId)
-
-      lastError = error instanceof Error ? error : new Error(String(error))
-      console.warn(
-        `Fallback attempt ${attempt}/${maxRetries} failed for block ${block_number}:`,
-        lastError.message
-      )
-
-      // Stop retrying on final attempt
-      if (attempt < maxRetries) {
-        const baseDelay = Math.pow(2, attempt - 1) * 1000
-        const jitter = Math.random() * 300
-        await delay(baseDelay + jitter)
-      }
-    }
-  }
-
-  throw new Error(
-    `Fallback failed to fetch block ${block_number} after ${maxRetries} attempts: ${lastError?.message}`
-  )
-}
-
-/**
- * Fetch block data with automatic fallback RPC.
- *
- * @param block_number - Block number to fetch
- * @param maxRetries - Number of attempts per RPC (default 3)
- * @param attemptTimeoutMs - Per-attempt timeout in ms (default 5000)
- */
-export async function fetchBlockDataWithFallback(
-  block_number: number,
-  maxRetries = 3,
-  attemptTimeoutMs = 5000
-): Promise<BlockSummary> {
-  try {
-    return await fetchBlockData(block_number, maxRetries, attemptTimeoutMs)
-  } catch (primaryError) {
-    const primaryErr =
-      primaryError instanceof Error
-        ? primaryError
-        : new Error(String(primaryError))
-    console.warn(
-      `Primary RPC failed for block ${block_number}, trying fallback:`,
-      primaryErr
-    )
-    try {
-      return await fetchBlockDataFallback(
-        block_number,
-        maxRetries,
-        attemptTimeoutMs
-      )
-    } catch (fallbackError) {
-      const fallbackErr =
-        fallbackError instanceof Error
-          ? fallbackError
-          : new Error(String(fallbackError))
-      throw new Error(
-        `Both primary and fallback RPC failed for block ${block_number}. Primary: ${primaryErr.message}, Fallback: ${fallbackErr.message}`
-      )
-    }
+  const block = await client.getBlock({
+    blockNumber: BigInt(blockNumber),
+    includeTransactions: false,
+  })
+  return {
+    gasUsed: block.gasUsed,
+    hash: block.hash,
+    txsCount: block.transactions.length,
+    timestamp: block.timestamp,
   }
 }
 

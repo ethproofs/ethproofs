@@ -5,7 +5,7 @@ import { TAGS } from "@/lib/constants"
 
 import { db } from "@/db"
 import { blocks, proofs } from "@/db/schema"
-import { fetchBlockDataWithFallback } from "@/lib/blocks"
+import { fetchBlockData } from "@/lib/blocks"
 import { withAuth } from "@/lib/middleware/with-auth"
 import { provingProofSchema } from "@/lib/zod/schemas/proof"
 
@@ -13,27 +13,22 @@ import { provingProofSchema } from "@/lib/zod/schemas/proof"
 export const POST = withAuth(async ({ request, user, timestamp }) => {
   const payload = await request.json()
 
-  // validate payload schema
   let proofPayload
   try {
     proofPayload = provingProofSchema.parse(payload)
   } catch (error) {
-    console.error("proof payload invalid", error)
+    console.error("Proof payload invalid:", error)
     if (error instanceof ZodError) {
       return new Response(`Invalid payload: ${error.message}`, {
         status: 400,
       })
     }
 
-    return new Response("Invalid payload", {
-      status: 400,
-    })
+    return new Response("Invalid payload", { status: 400 })
   }
 
   const { block_number, cluster_id } = proofPayload
 
-  // validate block_number exists
-  console.log("validating block_number", block_number)
   const block = await db.query.blocks.findFirst({
     columns: {
       block_number: true,
@@ -41,21 +36,19 @@ export const POST = withAuth(async ({ request, user, timestamp }) => {
     where: (blocks, { eq }) => eq(blocks.block_number, block_number),
   })
 
-  // fetch block data from block explorer and create block record
   if (!block) {
-    console.log("block not found, fetching block data", block_number)
+    console.log("Block not found, fetching block data:", block_number)
     let blockData
     try {
-      blockData = await fetchBlockDataWithFallback(block_number)
+      blockData = await fetchBlockData(block_number)
     } catch (error) {
-      console.error("error fetching block data", error)
+      console.error("Error fetching block data:", error)
       return new Response("Block not found", {
         status: 500,
       })
     }
 
     try {
-      console.log("creating block", block_number)
       await db
         .insert(blocks)
         .values({
@@ -67,12 +60,12 @@ export const POST = withAuth(async ({ request, user, timestamp }) => {
         })
         .onConflictDoNothing()
     } catch (error) {
-      console.error("error creating block", error)
+      console.error("Error creating block:", error)
       return new Response("Internal server error", { status: 500 })
     }
   }
 
-  // get cluster uuid from cluster_id
+  // Get cluster uuid from cluster_id
   const cluster = await db.query.clusters.findFirst({
     columns: {
       id: true,
@@ -82,11 +75,10 @@ export const POST = withAuth(async ({ request, user, timestamp }) => {
   })
 
   if (!cluster) {
-    console.error("cluster not found", cluster_id)
+    console.error("Cluster not found:", cluster_id)
     return new Response("Cluster not found", { status: 404 })
   }
 
-  // get the last cluster_version_id from cluster_id
   const clusterVersion = await db.query.clusterVersions.findFirst({
     columns: {
       id: true,
@@ -97,11 +89,10 @@ export const POST = withAuth(async ({ request, user, timestamp }) => {
   })
 
   if (!clusterVersion) {
-    console.error("cluster version not found", cluster_id)
+    console.error("Cluster version not found:", cluster_id)
     return new Response("Cluster version not found", { status: 404 })
   }
 
-  // add proof
   const dataToInsert = {
     ...proofPayload,
     block_number,
@@ -110,8 +101,6 @@ export const POST = withAuth(async ({ request, user, timestamp }) => {
     proving_timestamp: timestamp,
     team_id: user.id,
   }
-
-  console.log("adding proving proof", dataToInsert)
 
   try {
     const [proof] = await db
@@ -126,16 +115,14 @@ export const POST = withAuth(async ({ request, user, timestamp }) => {
       })
       .returning({ proof_id: proofs.proof_id })
 
-    // invalidate cache
     revalidateTag(TAGS.PROOFS)
     revalidateTag(TAGS.BLOCKS)
     revalidateTag(`cluster-${cluster.id}`)
     revalidateTag(`block-${block_number}`)
 
-    // return the generated proof_id
     return Response.json(proof)
   } catch (error) {
-    console.error("error adding proof", error)
+    console.error("Error adding proof:", error)
     return new Response("Internal server error", { status: 500 })
   }
 })
