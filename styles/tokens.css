@@ -19,13 +19,13 @@
     --ring: var(--zinc-400);
     --placeholder: var(--zinc-500);
 
-    /* Brand (emerald) */
-    --primary: var(--emerald-700);
+    /* Brand (green) */
+    --primary: var(--green-700);
     --primary-foreground: var(--zinc-50);
-    --primary-light: var(--emerald-600);
-    --primary-dark: var(--emerald-800);
-    --primary-visited: var(--emerald-600);
-    --primary-border: var(--emerald-800);
+    --primary-light: var(--green-600);
+    --primary-dark: var(--green-800);
+    --primary-visited: var(--green-600);
+    --primary-border: var(--green-800);
     --brand-secondary: var(--indigo-500);
     --brand-secondary-foreground: var(--zinc-50);
 
@@ -50,7 +50,7 @@
     /* Sidebar */
     --sidebar: var(--zinc-100);
     --sidebar-foreground: var(--zinc-900);
-    --sidebar-primary: var(--emerald-700);
+    --sidebar-primary: var(--green-700);
     --sidebar-primary-foreground: var(--zinc-50);
     --sidebar-accent: var(--zinc-200);
     --sidebar-accent-foreground: var(--zinc-950);
@@ -88,13 +88,13 @@
     --ring: var(--zinc-300);
     --placeholder: var(--zinc-400);
 
-    /* Brand (emerald) */
-    --primary: var(--emerald-300);
+    /* Brand (green) */
+    --primary: var(--green-300);
     --primary-foreground: var(--zinc-950);
-    --primary-light: var(--emerald-200);
-    --primary-dark: var(--emerald-500);
-    --primary-visited: var(--emerald-400);
-    --primary-border: var(--emerald-500);
+    --primary-light: var(--green-200);
+    --primary-dark: var(--green-500);
+    --primary-visited: var(--green-400);
+    --primary-border: var(--green-500);
     --brand-secondary: var(--indigo-300);
     --brand-secondary-foreground: var(--zinc-950);
 
@@ -119,7 +119,7 @@
     /* Sidebar */
     --sidebar: var(--zinc-900);
     --sidebar-foreground: var(--zinc-100);
-    --sidebar-primary: var(--emerald-300);
+    --sidebar-primary: var(--green-300);
     --sidebar-primary-foreground: var(--zinc-950);
     --sidebar-accent: var(--zinc-800);
     --sidebar-accent-foreground: var(--zinc-50);
@@ -129,8 +129,8 @@
     /* Custom (v2) */
     --body-foreground: var(--zinc-200);
     --body-muted: var(--zinc-400);
-    --background-highlight: var(--emerald-900);
-    --background-active: var(--emerald-800);
+    --background-highlight: var(--green-900);
+    --background-active: var(--green-800);
     --background-accent: var(--zinc-800);
 
     /* Level Indicators (v2) */

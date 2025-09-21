@@ -11,7 +11,7 @@ import AppSidebarHeader from "./AppSidebarHeader"
 const AppSidebar = () => {
   return (
     <Sidebar collapsible="icon">
-      <SidebarHeader>
+      <SidebarHeader className="h-16 items-center justify-center">
         <AppSidebarHeader />
       </SidebarHeader>
       <SidebarContent>
