@@ -47,18 +47,18 @@ export function getProofButtonClasses(buttonState: ProofButtonState) {
       return `${baseClasses} bg-body-secondary/10`
     case "download":
     case "verify":
-      return `${baseClasses} border-primary bg-transparent hover:bg-emerald-500/10`
+      return `${baseClasses} border-primary bg-transparent hover:bg-green-500/10`
     case "downloading":
-      return `${baseClasses} border-emerald-300 bg-transparent`
+      return `${baseClasses} border-green-300 bg-transparent`
     case "verifying":
-      return `${baseClasses} border-emerald-500 bg-transparent`
+      return `${baseClasses} border-green-500 bg-transparent`
     case "success":
-      return `${baseClasses} border-emerald-500 bg-emerald-500/20 shadow-lg shadow-emerald-500/20`
+      return `${baseClasses} border-green-500 bg-green-500/20 shadow-lg shadow-green-500/20`
     case "failed":
     case "error":
       return `${baseClasses} border-destructive bg-transparent`
     default:
-      return `${baseClasses} border-primary bg-transparent hover:bg-emerald-500/10`
+      return `${baseClasses} border-primary bg-transparent hover:bg-green-500/10`
   }
 }
 
@@ -70,11 +70,11 @@ export function getProofButtonTextColorClass(buttonState: ProofButtonState) {
     case "verify":
       return "text-primary"
     case "downloading":
-      return "text-emerald-300"
+      return "text-green-300"
     case "verifying":
-      return "text-emerald-400"
+      return "text-green-400"
     case "success":
-      return "text-emerald-500"
+      return "text-green-500"
     case "failed":
     case "error":
       return "text-destructive"
