@@ -37,10 +37,7 @@ export const columns: ColumnDef<Block>[] = [
     id: "block_number",
     accessorKey: "block_number",
     header: () => (
-      <ColumnHeader
-        label={<metrics.blockNumber.Label />}
-        className="text-center"
-      >
+      <ColumnHeader label={<metrics.blockNumber.Label />}>
         <metrics.blockNumber.Details />
         <TooltipContentFooter className="space-y-3">
           <p className="font-bold">time since block published</p>
@@ -64,7 +61,7 @@ export const columns: ColumnDef<Block>[] = [
         : "-"
 
       return (
-        <div className="text-center">
+        <div>
           <BlockNumber blockNumber={blockNumber} />
           <div className="font-sans text-xs text-body-secondary">
             {formattedTimestamp}

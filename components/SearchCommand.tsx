@@ -55,11 +55,7 @@ export function SearchCommand({
   return (
     <Popover open={open} onOpenChange={setOpen}>
       <PopoverTrigger asChild>
-        <Button
-          size="icon"
-          variant="ghost"
-          className={"aspect-square h-7 w-7" + (buttonClassName ?? "")}
-        >
+        <Button size="icon" variant="ghost" className={buttonClassName}>
           <Search />
         </Button>
       </PopoverTrigger>
@@ -81,7 +77,7 @@ export function SearchCommand({
               <Button
                 variant="ghost"
                 size="icon"
-                className="ml-auto h-7 w-7"
+                className="ml-auto"
                 onClick={() => onSearch("")}
                 aria-label="clear query"
               >
@@ -91,7 +87,7 @@ export function SearchCommand({
           </div>
           <CommandList className="mt-2 max-h-72 overflow-y-hidden">
             {isLoading ? (
-              <div className="text-muted-foreground flex items-center gap-2 px-3 py-2 text-sm">
+              <div className="flex items-center gap-2 px-3 py-2 text-sm text-muted-foreground">
                 <Loader2 className="size-4 animate-spin" /> searching…
               </div>
             ) : (
@@ -115,7 +111,7 @@ export function SearchCommand({
                       <div className="w-full truncate text-sm font-medium leading-none">
                         block {item.blockNumber}
                       </div>
-                      <div className="text-muted-foreground w-full text-xs leading-tight">
+                      <div className="w-full text-xs leading-tight text-muted-foreground">
                         <div className="block truncate sm:hidden">
                           {item.provedProofs} / {item.totalProofs} •{" "}
                           {truncateHash(item.blockHash)}
