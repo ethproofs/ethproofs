@@ -24,7 +24,9 @@ export function useZiskVerifier(active: boolean = false) {
           () => import("@ethproofs/zisk-wasm-stark-verifier")
         )
         if (mounted) {
-          setWasmModule(cachedModule as typeof import("@ethproofs/zisk-wasm-stark-verifier"))
+          setWasmModule(
+            cachedModule as typeof import("@ethproofs/zisk-wasm-stark-verifier")
+          )
           setIsInitialized(true)
         }
         return
@@ -35,19 +37,22 @@ export function useZiskVerifier(active: boolean = false) {
         const loadedModule = await wasmCache.getModule(
           "zisk",
           () => import("@ethproofs/zisk-wasm-stark-verifier"),
-          (wasmModule) => (wasmModule as typeof import("@ethproofs/zisk-wasm-stark-verifier")).main()
+          (wasmModule) =>
+            (
+              wasmModule as typeof import("@ethproofs/zisk-wasm-stark-verifier")
+            ).main()
         )
 
         if (mounted) {
-          setWasmModule(loadedModule as typeof import("@ethproofs/zisk-wasm-stark-verifier"))
+          setWasmModule(
+            loadedModule as typeof import("@ethproofs/zisk-wasm-stark-verifier")
+          )
           setIsInitialized(true)
         }
       } catch (error) {
         console.error("[Zisk] WASM initialization failed:", error)
         if (mounted) {
-          setError(
-            error instanceof Error ? error.message : "Unknown error"
-          )
+          setError(error instanceof Error ? error.message : "Unknown error")
         }
       }
     }

@@ -15,7 +15,7 @@ export const LampEffect = ({ className }: LampEffectProps) => {
   return (
     <div
       className={cn(
-        "pointer-events-none absolute top-0 h-[40rem] w-full translate-y-[-50%] overflow-x-hidden bg-transparent dark:mix-blend-plus-lighter md:h-[calc((100vw_-_var(--sidebar-width))_*_0.4)]",
+        "pointer-events-none absolute top-0 h-[40rem] w-full translate-y-[-50%] overflow-x-hidden bg-transparent md:h-[calc((100vw_-_var(--sidebar-width))_*_0.4)] dark:mix-blend-plus-lighter",
         className
       )}
       // Fade bottom edge with mask to avoid hard cut-off
