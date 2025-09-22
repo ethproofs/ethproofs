@@ -16,24 +16,16 @@ const BasicTabs = ({
   defaultTab = "right",
 }: BasicTabsProps) => {
   return (
-    <Tabs defaultValue={defaultTab} className="w-full p-px">
-      <TabsList className="w-full">
-        <TabsTrigger
-          className="w-full hover:bg-gradient-to-b hover:from-primary/10 hover:to-primary/10"
-          value="left"
-        >
-          {contentLeftTitle}
-        </TabsTrigger>
-        <TabsTrigger
-          className="w-full hover:bg-gradient-to-b hover:from-primary/10 hover:to-primary/10"
-          value="right"
-        >
-          {contentRightTitle}
-        </TabsTrigger>
-      </TabsList>
-      <TabsContent value="left">{contentLeft}</TabsContent>
-      <TabsContent value="right">{contentRight}</TabsContent>
-    </Tabs>
+    <div className="px-6">
+      <Tabs defaultValue={defaultTab}>
+        <TabsList>
+          <TabsTrigger value="left">{contentLeftTitle}</TabsTrigger>
+          <TabsTrigger value="right">{contentRightTitle}</TabsTrigger>
+        </TabsList>
+        <TabsContent value="left">{contentLeft}</TabsContent>
+        <TabsContent value="right">{contentRight}</TabsContent>
+      </Tabs>
+    </div>
   )
 }
 
