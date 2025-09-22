@@ -21,7 +21,6 @@ export default function ThemeToggle() {
       variant="ghost"
       size="icon"
       onClick={toggleThemeMode}
-      className="aspect-square h-7 w-7"
     >
       {theme === "light" ? <Sun /> : <Moon />}
     </Button>

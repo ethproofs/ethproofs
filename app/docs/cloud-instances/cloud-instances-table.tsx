@@ -51,7 +51,7 @@ export function CloudInstancesTable({
           </SelectContent>
         </Select>
 
-        <p className="text-sm text-secondary">
+        <p className="text-secondary text-sm">
           snapshot taken on{" "}
           {snapshotDate
             ? new Date(snapshotDate).toLocaleDateString("en-US", {

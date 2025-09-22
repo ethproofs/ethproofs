@@ -60,7 +60,7 @@
     /* Custom (v2) */
     --background-highlight: var(--zinc-100);
     --background-active: var(--zinc-200);
-    --background-accent: var(--blue-500);
+    --background-accent: var(--zinc-300);
 
     /* Level Indicators (v2) TODO: TEAM - Remove */
     --level-best: 136 100% 38%;
