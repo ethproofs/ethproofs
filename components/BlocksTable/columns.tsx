@@ -194,8 +194,8 @@ export const columns: ColumnDef<Block>[] = [
       const proofsPerStatusCount = getProofsPerStatusCount(proofs)
 
       return (
-        <div className="flex flex-col justify-center text-center">
-          <ProofStatus className="mx-auto" statusCount={proofsPerStatusCount} />
+        <div className="flex min-w-[150px] flex-col">
+          <ProofStatus statusCount={proofsPerStatusCount} />
           <div className="whitespace-nowrap text-sm text-body-secondary">
             {totalTTPStats?.bestFormatted ?? <Null />}
           </div>
