@@ -17,13 +17,13 @@ export const metadata: Metadata = getMetadata()
 export const dynamic = "force-dynamic"
 
 export default async function Index() {
-  const recentSummary = await getRecentSummary()
+  // const recentSummary = await getRecentSummary()
 
   return (
     <>
       <h1 className="text-shadow mb-24 mt-16 px-6 text-center text-3xl font-semibold md:mt-24 md:px-8">
-        race to prove <span className="text-primary">Ethereum</span> in
-        real-time
+        race to prove{" "}
+        <span className="font-heading text-primary">Ethereum</span> in real-time
       </h1>
 
       <div className="mx-auto mb-4 flex max-w-screen-xl flex-col items-center px-6 md:px-8 [&>section]:w-full">
