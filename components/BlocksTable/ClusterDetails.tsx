@@ -7,9 +7,7 @@ const ClusterDetails = ({ proof }: { proof: ProofWithCluster }) => {
 
   return (
     <div className="text-wrap">
-      {nickname && (
-        <span className="block text-lg font-semibold">{nickname}</span>
-      )}
+      {nickname && <span className="block font-semibold">{nickname}</span>}
       {hardware && (
         <span className="block">
           <span className="font-semibold">hardware:</span> {hardware}

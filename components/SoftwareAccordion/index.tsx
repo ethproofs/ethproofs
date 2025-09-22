@@ -14,7 +14,6 @@ const SoftwareAccordion = async ({ type }: SoftwareAccordionProps) => {
     zkvmIds: zkvms.map((zkvm) => zkvm.id),
   })
 
-  // sort active zkvms by usage
   const sortedZkvms = zkvms.sort((a, b) => b.activeClusters - a.activeClusters)
   const activeZkvms = sortedZkvms.filter((z) => z.activeClusters > 0)
   const inactiveZkvms = sortedZkvms.filter((z) => z.activeClusters === 0)

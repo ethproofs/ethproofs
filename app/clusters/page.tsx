@@ -37,8 +37,8 @@ export default async function ClustersPage() {
 
   return (
     <>
-      <div className="text-shadow mb-24 mt-16 px-6 text-center text-3xl font-semibold md:mt-24 md:px-8">
-        <h1 className="text-shadow text-3xl">provers</h1>
+      <div className="mb-24 mt-16 px-6 text-center text-3xl font-semibold md:mt-24 md:px-8">
+        <h1 className="text-3xl">provers</h1>
       </div>
 
       <div className="mx-auto flex max-w-screen-xl flex-1 flex-col items-center gap-20 [&>section]:w-full">

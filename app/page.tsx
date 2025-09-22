@@ -8,6 +8,7 @@ import ProofsStats from "@/components/ProofsStats"
 import BlocksSection from "@/components/sections/BlocksSection"
 import ProversSection from "@/components/sections/ProversSection"
 import ZkvmsSection from "@/components/sections/ZkvmsSection"
+import EthproofsLineworkIcon from "@/components/svgs/ethproofs-linework-icon.svg"
 
 import { getRecentSummary } from "@/lib/api/stats"
 import { getMetadata } from "@/lib/metadata"
@@ -21,18 +22,32 @@ export default async function Index() {
 
   return (
     <>
-      <h1 className="text-shadow mb-24 mt-16 px-6 text-center text-3xl font-semibold md:mt-24 md:px-8">
-        race to prove{" "}
-        <span className="font-heading text-primary">Ethereum</span> in real-time
-      </h1>
+      <div className="relative">
+        <div className="absolute inset-0 flex items-center justify-center sm:items-start md:items-center">
+          <EthproofsLineworkIcon className="h-96 w-96 text-muted-foreground opacity-20 md:h-[28rem] md:w-[28rem] lg:h-[36rem] lg:w-[36rem]" />
+        </div>
 
-      <div className="mx-auto mb-4 flex max-w-screen-xl flex-col items-center px-6 md:px-8 [&>section]:w-full">
-        <section id="countdown-banners">
-          <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:gap-4">
-            <VerifierCountdownBanner isSuccess />
-            <ProverCountdownBanner />
+        <h1 className="relative z-10 mb-24 mt-16 px-0 text-center text-3xl font-semibold md:mt-24 md:px-8">
+          <div className="flex flex-col items-center justify-center gap-0 sm:flex-row">
+            <span>race to prove </span>
+            <div className="flex items-center">
+              <span className="pl-2 font-heading text-primary sm:pl-2">
+                Eth
+              </span>
+              <span className="inline pr-2 text-primary">ereum</span>
+            </div>
+            <span> in real time</span>
           </div>
-        </section>
+        </h1>
+
+        <div className="relative z-10 mx-auto mb-4 flex max-w-screen-xl flex-col items-center px-6 md:px-8 [&>section]:w-full">
+          <section id="countdown-banners">
+            <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:gap-4">
+              <VerifierCountdownBanner isSuccess />
+              <ProverCountdownBanner />
+            </div>
+          </section>
+        </div>
       </div>
 
       <div className="mx-auto mb-16 flex max-w-screen-xl flex-col items-center px-6 md:px-8 [&>section]:w-full">

@@ -65,7 +65,7 @@ const Pizza = ({ slices, disableEffects, className, ...props }: PizzaProps) => {
   return (
     <div
       className={cn(
-        "relative box-content flex size-[0.94em] justify-center rounded-full border-[0.05em] border-background-accent bg-background-accent shadow-lg",
+        "relative box-content flex size-[0.94em] justify-center rounded-full border-[0.05em] border-background-accent bg-background-accent",
         className
       )}
       data-label="pizza"
