@@ -22,7 +22,7 @@ const ProverCountdownBanner = () => {
       <Alert
         role="region"
         aria-label="Reproducible provers requirement countdown"
-        className="relative flex rounded-2xl border-[1.48px] border-primary-border bg-background-highlight p-4 text-body"
+        className="relative flex rounded-2xl border p-4 text-body"
       >
         <div className="flex w-full flex-col items-center gap-3 sm:flex-row sm:items-center sm:justify-between sm:gap-4">
           <AlertTitle>

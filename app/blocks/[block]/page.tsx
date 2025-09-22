@@ -1,14 +1,4 @@
-import {
-  BookOpen,
-  Box,
-  CircleDollarSign,
-  Clock,
-  Coins,
-  Cpu,
-  Hourglass,
-  Layers,
-  Timer,
-} from "lucide-react"
+import { Box, Clock, Coins, Cpu, Hourglass, Layers, Timer } from "lucide-react"
 import type { Metadata } from "next"
 import { notFound } from "next/navigation"
 
@@ -102,7 +92,6 @@ export default async function BlockDetailsPage({
     (proof) => proof.cluster_version?.cluster.is_multi_machine
   )
 
-  // single machine stats
   const singleMachineStats = {
     costPerProofStats: getCostPerProofStats(singleMachineProofs),
     costPerMgasStats: getCostPerMgasStats(singleMachineProofs, gas_used),
@@ -110,7 +99,6 @@ export default async function BlockDetailsPage({
     totalTTPStats: getTotalTTPStats(singleMachineProofs, timestamp),
   }
 
-  // multi machine stats
   const multiMachineStats = {
     costPerProofStats: getCostPerProofStats(multiMachineProofs),
     costPerMgasStats: getCostPerMgasStats(multiMachineProofs, gas_used),
