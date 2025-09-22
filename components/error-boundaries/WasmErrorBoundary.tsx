@@ -25,7 +25,11 @@ class WasmErrorBoundary extends Component<Props, State> {
   }
 
   componentDidCatch(error: Error, errorInfo: ErrorInfo) {
-    console.error("[WasmErrorBoundary] WASM operation failed:", error, errorInfo)
+    console.error(
+      "[WasmErrorBoundary] WASM operation failed:",
+      error,
+      errorInfo
+    )
   }
 
   render() {
@@ -36,9 +40,7 @@ class WasmErrorBoundary extends Component<Props, State> {
 
       return (
         <div className="flex flex-col items-center gap-2 rounded-lg border border-destructive/20 bg-destructive/5 p-4">
-          <p className="text-sm text-destructive">
-            WASM verification failed
-          </p>
+          <p className="text-sm text-destructive">WASM verification failed</p>
           <Button
             size="sm"
             variant="outline"

@@ -11,7 +11,7 @@ const HeroSection = React.forwardRef<
   <section
     ref={ref}
     className={cn(
-      "space-y-8 rounded-4xl border bg-gradient-to-b from-primary/[0.02] to-primary/[0.06] p-6 dark:from-white/[0.01] dark:to-white/[0.04] md:p-8",
+      "space-y-8 rounded-4xl border bg-gradient-to-b from-primary/[0.02] to-primary/[0.06] p-6 md:p-8 dark:from-white/[0.01] dark:to-white/[0.04]",
       className
     )}
     {...props}
