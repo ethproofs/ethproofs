@@ -24,7 +24,9 @@ export function useZirenVerifier(active: boolean = false) {
           () => import("@ethproofs/ziren-wasm-stark-verifier")
         )
         if (mounted) {
-          setWasmModule(cachedModule as typeof import("@ethproofs/ziren-wasm-stark-verifier"))
+          setWasmModule(
+            cachedModule as typeof import("@ethproofs/ziren-wasm-stark-verifier")
+          )
           setIsInitialized(true)
         }
         return
@@ -35,19 +37,22 @@ export function useZirenVerifier(active: boolean = false) {
         const loadedModule = await wasmCache.getModule(
           "ziren",
           () => import("@ethproofs/ziren-wasm-stark-verifier"),
-          (wasmModule) => (wasmModule as typeof import("@ethproofs/ziren-wasm-stark-verifier")).main()
+          (wasmModule) =>
+            (
+              wasmModule as typeof import("@ethproofs/ziren-wasm-stark-verifier")
+            ).main()
         )
 
         if (mounted) {
-          setWasmModule(loadedModule as typeof import("@ethproofs/ziren-wasm-stark-verifier"))
+          setWasmModule(
+            loadedModule as typeof import("@ethproofs/ziren-wasm-stark-verifier")
+          )
           setIsInitialized(true)
         }
       } catch (error) {
         console.error("[Ziren] WASM initialization failed:", error)
         if (mounted) {
-          setError(
-            error instanceof Error ? error.message : "Unknown error"
-          )
+          setError(error instanceof Error ? error.message : "Unknown error")
         }
       }
     }

@@ -1,0 +1,37 @@
+"use client"
+
+import { useState } from "react"
+import { SearchCommand, SearchItem } from "../SearchCommand"
+import { useBlockSearch } from "./useBlockSearch"
+import { isHash } from "viem"
+
+export function BlockSearch() {
+  const [query, setQuery] = useState("")
+  const { blockMatch, isFetching, isLoading } = useBlockSearch(query)
+
+  const items: SearchItem[] = blockMatch
+    ? [
+        {
+          id: blockMatch.block_number,
+          href: `/blocks/${blockMatch[isHash(query) ? "hash" : "block_number"]}`,
+          blockHash: blockMatch.hash,
+          blockNumber: blockMatch.block_number,
+          provedProofs: blockMatch.proofs.filter(
+            (p) => p.proof_status === "proved"
+          ).length,
+          totalProofs: blockMatch.proofs.length,
+        },
+      ]
+    : []
+
+  return (
+    <SearchCommand
+      query={query}
+      items={items}
+      aria-label="search by block"
+      placeholder="search by block"
+      onSearch={(value: string) => setQuery(value)}
+      isLoading={isFetching || isLoading}
+    />
+  )
+}
