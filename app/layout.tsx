@@ -1,16 +1,17 @@
 import { Heart } from "lucide-react"
 
-import SearchInput from "@/components/header/SearchInput"
+import { ClientOnlyWrapper } from "@/components/ClientOnlyWrapper"
 import ThemeToggle from "@/components/header/ThemeToggle"
 import AppSidebar from "@/components/sidebar/AppSidebar"
 import { SidebarInset, SidebarTrigger } from "@/components/ui/sidebar"
+import { Skeleton } from "@/components/ui/skeleton"
 import { Toaster } from "@/components/ui/sonner"
 
 import Providers from "./providers"
 
 import "../styles/globals.css"
-import { ClientOnlyWrapper } from "@/components/ClientOnlyWrapper"
-import { Skeleton } from "@/components/ui/skeleton"
+
+import { BlockSearch } from "@/components/header/BlockSearch"
 
 export default function RootLayout({
   children,
@@ -45,15 +46,12 @@ export default function RootLayout({
               <div className="flex items-center gap-2 px-4">
                 <SidebarTrigger className="-ml-1" />
                 <div className="flex items-center gap-2">
-                  <SearchInput
-                    aria-label="Search by block"
-                    placeholder="search by block"
-                  />
                   <ClientOnlyWrapper
                     fallback={<Skeleton className="h-7 w-7 rounded-md" />}
                   >
                     <ThemeToggle />
                   </ClientOnlyWrapper>
+                  <BlockSearch />
                 </div>
               </div>
             </header>

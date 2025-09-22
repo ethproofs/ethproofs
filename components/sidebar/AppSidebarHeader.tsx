@@ -14,7 +14,7 @@ export default function AppSidebarHeader() {
           <div className="bg-sidebar-primary text-sidebar-primary-foreground flex aspect-square size-8 items-center justify-center rounded-lg">
             <EthproofsIcon />
           </div>
-          <div className="flex flex-row gap-0 text-left text-2xl leading-tight">
+          <div className="flex flex-row gap-0 text-left text-2xl">
             <div className="font-heading">Eth</div>
             <div>proofs</div>
           </div>
