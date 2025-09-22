@@ -73,10 +73,10 @@ const Countdown = ({
       <div className="flex justify-center gap-4 sm:gap-6">
         {timeLeft.map((unit, _idx) => (
           <div key={unit.label} className="flex flex-col items-center">
-            <div className="text-3xl font-bold sm:text-4xl">
+            <div className="text-3xl font-bold text-primary sm:text-4xl">
               {unit.value.toString().padStart(2, "0")}
             </div>
-            <div className="text-body-muted mt-1 text-sm uppercase tracking-wide">
+            <div className="mt-1 text-sm uppercase tracking-wide text-muted-foreground">
               {unit.label}
             </div>
           </div>
