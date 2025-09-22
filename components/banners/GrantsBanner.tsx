@@ -21,7 +21,7 @@ const GrantsBanner = () => {
       <Alert
         role="region"
         aria-label="Grants banner"
-        className="relative flex w-full flex-col items-start justify-between gap-4 rounded-2xl border-[1.48px] border-primary-border bg-background-highlight px-4 py-4 text-body sm:flex-row sm:items-center sm:gap-2 sm:px-6"
+        className="relative flex w-full flex-col items-start justify-between gap-4 rounded-2xl border px-4 py-4 text-body sm:flex-row sm:items-center sm:gap-2 sm:px-6"
       >
         <AlertDescription className="w-full text-sm sm:text-base">
           <div className="flex flex-col items-start gap-1 pr-9 sm:flex-row sm:items-center">
