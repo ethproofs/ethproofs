@@ -32,7 +32,7 @@ export const InactiveSoftwareAccordionItem = ({
       trigger={
         <AccordionTrigger
           disabled
-          className="col-start-8 my-4 h-fit gap-2 rounded-full border-2 bg-background-highlight p-0.5 pe-2 text-4xl text-border [&>svg]:size-6"
+          className="col-start-8 my-4 h-fit gap-2 rounded-full border p-0.5 pe-2 text-4xl text-border [&>svg]:size-6"
         >
           <Pizza slices={disabledSlices} disableEffects />
         </AccordionTrigger>

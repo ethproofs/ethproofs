@@ -6,6 +6,7 @@ import { ButtonLink } from "../ui/button"
 import { Card, CardHeader, CardTitle } from "../ui/card"
 
 import { getZkvmsStats } from "@/lib/zkvms"
+import BasicTabs from "../BasicTabs"
 
 const ZkvmsSection = async () => {
   const zkvmsStats = await getZkvmsStats()
@@ -35,9 +36,13 @@ const ZkvmsSection = async () => {
         </div>
       </CardHeader>
 
-      <div className="overflow-x-auto">
-        <SoftwareAccordion type="active" />
-      </div>
+      <BasicTabs
+        defaultTab="left"
+        contentLeft={<SoftwareAccordion type="active" />}
+        contentLeftTitle="active"
+        contentRight={<SoftwareAccordion type="inactive" />}
+        contentRightTitle="coming soon"
+      />
 
       <div className="flex justify-center">
         <ButtonLink variant="outline" href="/zkvms" className="min-w-40">
