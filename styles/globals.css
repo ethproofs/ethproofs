@@ -61,27 +61,8 @@
     @apply  text-base leading-relaxed;
   }
 
-  /* ol {
-    @apply list-decimal list-inside;
-  }
-
-  ul {
-    @apply list-disc list-inside;
-  } */
-
   section {
     @apply scroll-m-20;
-  }
-
-  .text-shadow {
-    text-shadow:
-      0 0 3rem hsl(var(--background)),
-      0 0 2rem hsl(var(--background)),
-      0 0 1rem hsl(var(--background));
-  }
-
-  .dev-ring {
-    @apply ring ring-red-500 sm:ring-orange-500 md:ring-yellow-500 lg:ring-green-500 xl:ring-blue-500 2xl:ring-violet-500;
   }
 }
 

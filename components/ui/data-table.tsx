@@ -45,17 +45,16 @@ const DataTable = <TData,>({
             </TableRow>
           ))}
         </TableHeader>
-
-        <TableBody className="">
+        <TableBody>
           {table.getRowModel().rows?.length ? (
             table.getRowModel().rows.map((row) => (
               <TableRow
                 key={row.id}
-                className="hover:bg-primary/5 dark:hover:bg-primary/10"
+                className="hover:bg-muted/5 dark:hover:bg-muted/10"
                 data-state={row.getIsSelected() && "selected"}
               >
                 {row.getVisibleCells().map((cell) => (
-                  <TableCell key={cell.id} className={cn("p-4 align-top")}>
+                  <TableCell key={cell.id}>
                     {flexRender(cell.column.columnDef.cell, cell.getContext())}
                   </TableCell>
                 ))}
@@ -78,12 +77,10 @@ const DataTable = <TData,>({
         <div className="flex items-center justify-center gap-6">
           <Button
             variant="outline"
-            isSecondary
             onClick={() => table.previousPage()}
             disabled={!table.getCanPreviousPage()}
-            className="lowercase"
           >
-            Previous
+            previous
           </Button>
           <span className="flex items-center gap-1 text-body-secondary">
             <div>
@@ -95,12 +92,10 @@ const DataTable = <TData,>({
           </span>
           <Button
             variant="outline"
-            isSecondary
             onClick={() => table.nextPage()}
             disabled={!table.getCanNextPage()}
-            className="lowercase"
           >
-            Next
+            next
           </Button>
         </div>
       )}

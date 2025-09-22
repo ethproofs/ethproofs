@@ -28,7 +28,7 @@ export function BlockSearch() {
     <SearchCommand
       query={query}
       items={items}
-      aria-label="search by block"
+      aria-label="Search by block"
       placeholder="search by block"
       onSearch={(value: string) => setQuery(value)}
       isLoading={isFetching || isLoading}
