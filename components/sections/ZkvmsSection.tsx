@@ -1,12 +1,12 @@
 import type { SummaryItem } from "@/lib/types"
 
+import BasicTabs from "../BasicTabs"
 import KPIs from "../KPIs"
 import SoftwareAccordion from "../SoftwareAccordion"
 import { ButtonLink } from "../ui/button"
 import { Card, CardHeader, CardTitle } from "../ui/card"
 
 import { getZkvmsStats } from "@/lib/zkvms"
-import BasicTabs from "../BasicTabs"
 
 const ZkvmsSection = async () => {
   const zkvmsStats = await getZkvmsStats()

@@ -8,7 +8,7 @@ import {
   useReactTable,
 } from "@tanstack/react-table"
 
-import DataTable from "./data-table"
+import DataTable from "./data-table-old"
 
 type Props<TData, TValue> = {
   className?: string

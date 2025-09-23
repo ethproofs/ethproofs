@@ -1,7 +1,7 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { ArrowDown, CalendarCheck, Check, Loader2 } from "lucide-react"
+import { ArrowDown, CalendarCheck, Check, LoaderCircle } from "lucide-react"
 import prettyBytes from "pretty-bytes"
 
 import type { Proof, Team } from "@/lib/types"
@@ -24,7 +24,7 @@ import {
 } from "./utils"
 
 import { useAnimateCheckmark } from "@/hooks/useAnimateCheckmark"
-import { delay } from "@/utils/delay"
+import { delay } from "@/lib/utils"
 
 export type ProofForDownload = Required<
   Pick<Proof, "proof_status" | "proof_id" | "size_bytes" | "cluster_id">
@@ -187,7 +187,7 @@ const VerifyButton = ({
               <ArrowDown className="size-5 animate-pulse text-green-300" />
             )}
             {buttonState === "verifying" && (
-              <Loader2 className="size-5 animate-spin text-green-400" />
+              <LoaderCircle className="size-5 animate-spin text-green-400" />
             )}
             {buttonState === "success" && (
               <Check
