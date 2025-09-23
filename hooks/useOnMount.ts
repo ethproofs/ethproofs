@@ -1,4 +1,4 @@
-import { isFunction } from "@/utils"
+import { isFunction } from "@/lib/utils"
 import { useEffect } from "react"
 
 export function useOnMount(

@@ -1,8 +1,9 @@
 import { Heart } from "lucide-react"
 
 import { ClientOnlyWrapper } from "@/components/ClientOnlyWrapper"
+import { BlockSearch } from "@/components/header/BlockSearch"
 import ThemeToggle from "@/components/header/ThemeToggle"
-import AppSidebar from "@/components/sidebar/AppSidebar"
+import { AppSidebar } from "@/components/sidebar/app-sidebar"
 import { SidebarInset, SidebarTrigger } from "@/components/ui/sidebar"
 import { Skeleton } from "@/components/ui/skeleton"
 import { Toaster } from "@/components/ui/sonner"
@@ -10,8 +11,6 @@ import { Toaster } from "@/components/ui/sonner"
 import Providers from "./providers"
 
 import "../styles/globals.css"
-
-import { BlockSearch } from "@/components/header/BlockSearch"
 
 export default function RootLayout({
   children,

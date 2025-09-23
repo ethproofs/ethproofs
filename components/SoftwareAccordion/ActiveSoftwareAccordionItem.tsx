@@ -30,7 +30,7 @@ export const ActiveSoftwareAccordionItem = ({
       value={value}
       zkvm={zkvm}
       trigger={
-        <AccordionTrigger className="hover:bg-accent hover:text-accent-foreground col-start-8 my-4 h-fit gap-2 rounded-full border p-0.5 pe-2 [&>svg]:size-6">
+        <AccordionTrigger className="col-start-8 my-4 h-fit gap-2 rounded-full border p-0.5 pe-2 hover:bg-accent hover:text-accent-foreground [&>svg]:size-6">
           <Pizza slices={getSlices(detailItems)} disableEffects />
         </AccordionTrigger>
       }

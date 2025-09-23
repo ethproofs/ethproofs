@@ -116,8 +116,8 @@ const config = {
           worst: "hsla(var(--level-worst))",
         },
         body: {
-          DEFAULT: "hsla(var(--body-foreground))",
-          secondary: "hsla(var(--body-muted))",
+          DEFAULT: "hsla(var(--foreground))",
+          secondary: "hsla(var(--muted-foreground))",
         },
       },
       borderRadius: {

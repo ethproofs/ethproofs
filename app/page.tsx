@@ -34,7 +34,9 @@ export default async function Index() {
               <span className="pl-2 font-heading text-primary sm:pl-2">
                 Eth
               </span>
-              <span className="inline pr-2 text-primary">ereum</span>
+              <span className="inline pr-2 font-heading text-primary">
+                ereum
+              </span>
             </div>
             <span> in real time</span>
           </div>

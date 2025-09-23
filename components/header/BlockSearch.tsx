@@ -1,9 +1,11 @@
 "use client"
 
 import { useState } from "react"
-import { SearchCommand, SearchItem } from "../SearchCommand"
-import { useBlockSearch } from "./useBlockSearch"
 import { isHash } from "viem"
+
+import { SearchCommand, SearchItem } from "../SearchCommand"
+
+import { useBlockSearch } from "./useBlockSearch"
 
 export function BlockSearch() {
   const [query, setQuery] = useState("")
@@ -29,7 +31,7 @@ export function BlockSearch() {
       query={query}
       items={items}
       aria-label="Search by block"
-      placeholder="search by block"
+      placeholder="search by block..."
       onSearch={(value: string) => setQuery(value)}
       isLoading={isFetching || isLoading}
     />
