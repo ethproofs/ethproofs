@@ -10,18 +10,31 @@ interface BasicTabsProps {
 
 const BasicTabs = ({
   contentLeft,
-  contentLeftTitle = "multi-GPU",
+  contentLeftTitle = "1x 4090",
   contentRight,
-  contentRightTitle = "1x 4090",
-  defaultTab = "right",
+  contentRightTitle = "multi-GPU",
+  defaultTab = "left",
 }: BasicTabsProps) => {
   return (
     <div className="px-6">
       <Tabs defaultValue={defaultTab}>
-        <TabsList>
-          <TabsTrigger value="left">{contentLeftTitle}</TabsTrigger>
-          <TabsTrigger value="right">{contentRightTitle}</TabsTrigger>
-        </TabsList>
+        <div className="flex items-end justify-between gap-2">
+          <span className="text-2xl">blocks</span>
+          <TabsList className="w-[250px]">
+            <TabsTrigger
+              className="flex-1 data-[state=active]:text-primary"
+              value="left"
+            >
+              {contentLeftTitle}
+            </TabsTrigger>
+            <TabsTrigger
+              className="flex-1 data-[state=active]:text-primary"
+              value="right"
+            >
+              {contentRightTitle}
+            </TabsTrigger>
+          </TabsList>
+        </div>
         <TabsContent value="left">{contentLeft}</TabsContent>
         <TabsContent value="right">{contentRight}</TabsContent>
       </Tabs>
