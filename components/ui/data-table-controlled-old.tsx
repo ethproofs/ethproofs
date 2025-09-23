@@ -8,7 +8,7 @@ import {
   useReactTable,
 } from "@tanstack/react-table"
 
-import DataTable from "./data-table"
+import DataTable from "./data-table-old"
 
 interface Props<TData> {
   className?: string
