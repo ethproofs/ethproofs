@@ -30,3 +30,21 @@ export const isUUID = (value: string) => {
 export function isUndefined(value: unknown): value is undefined {
   return typeof value === "undefined"
 }
+
+export function isFunction(value: unknown): value is () => void {
+  return typeof value === "function"
+}
+
+export async function delay(ms: number) {
+  return new Promise((resolve) => setTimeout(resolve, ms))
+}
+
+export function truncateHash(hash: string, start = 6, end = 4): string {
+  return `${hash.slice(0, start)}...${hash.slice(-end)}`
+}
+
+export function noop(): void {}
+
+export async function noopAsync(): Promise<void> {
+  return Promise.resolve()
+}

@@ -1,5 +1,5 @@
-import { columns } from "./BlocksTable/columns"
-import DataTableUncontrolled from "./ui/data-table-uncontrolled"
+import { columns } from "./blocks-table/columns"
+import DataTableUncontrolled from "./ui/data-table-uncontrolled-old"
 
 import { fetchBlocks, MachineType } from "@/lib/api/blocks"
 import { getTeams } from "@/lib/api/teams"

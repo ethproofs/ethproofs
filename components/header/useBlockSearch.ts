@@ -1,7 +1,7 @@
 "use client"
 
-import { useQuery } from "@tanstack/react-query"
 import { useDebounceValue } from "usehooks-ts"
+import { useQuery } from "@tanstack/react-query"
 
 import type { BlockBase } from "@/lib/types"
 
