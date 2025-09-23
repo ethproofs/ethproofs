@@ -13,7 +13,7 @@ import type { Block, Team } from "@/lib/types"
 
 import { DEFAULT_PAGE_STATE } from "@/lib/constants"
 
-import DataTableControlled from "../ui/data-table-controlled"
+import { DataTable } from "../data-table/data-table"
 
 import { columns } from "./columns"
 import useRealtimeUpdates from "./useRealtimeUpdates"
@@ -23,8 +23,8 @@ import { mergeBlocksWithTeams } from "@/lib/blocks"
 
 type Props = {
   className?: string
-  teams: Team[]
   machineType: MachineType
+  teams: Team[]
 }
 
 const getBlocksQueryKey = (
@@ -51,8 +51,10 @@ const BlocksTable = ({ className, teams, machineType }: Props) => {
 
   const { pageIndex, pageSize } = deferredPagination
 
+  const queryKey = getBlocksQueryKey(pageIndex, pageSize, machineType)
+
   const blocksQuery = useQuery<{ rows: Block[]; rowCount: number }>({
-    queryKey: getBlocksQueryKey(pageIndex, pageSize, machineType),
+    queryKey,
     queryFn: getBlocksQueryFn(pageIndex, pageSize, machineType),
     placeholderData: keepPreviousData,
   })
@@ -65,7 +67,7 @@ const BlocksTable = ({ className, teams, machineType }: Props) => {
     queryFn: getBlocksQueryFn(pageIndex + 1, pageSize, machineType),
   })
 
-  // Prefetch previous page (no-op if on first page)
+  // Prefetch previous page (noop if on first page)
   usePrefetchQuery({
     queryKey: getBlocksQueryKey(pageIndex - 1, pageSize, machineType),
     queryFn:
@@ -77,10 +79,10 @@ const BlocksTable = ({ className, teams, machineType }: Props) => {
   const blocks = mergeBlocksWithTeams(blocksQuery.data?.rows ?? [], teams)
 
   return (
-    <DataTableControlled
+    <DataTable
       className={className}
-      columns={columns}
       data={blocks}
+      columns={columns}
       rowCount={blocksQuery.data?.rowCount ?? 0}
       pagination={pagination}
       setPagination={setPagination}

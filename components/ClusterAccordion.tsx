@@ -77,7 +77,7 @@ const ClusterAccordionItem = ({
       value={value}
       className="col-span-6 grid grid-cols-subgrid text-nowrap"
     >
-      <div className="hover:bg-muted/5 dark:hover:bg-muted/10 col-span-6 grid grid-cols-subgrid items-center gap-12 px-6 py-4">
+      <div className="col-span-6 grid grid-cols-subgrid items-center gap-12 px-6 py-4 hover:bg-muted/5 dark:hover:bg-muted/10">
         <div className="col-start-1 flex flex-col gap-1">
           <Link
             href={`/clusters/${clusterDetails.id}`}
@@ -119,7 +119,7 @@ const ClusterAccordionItem = ({
         <div className="col-start-4">{prettyMs(clusterDetails.avg_time)}</div>
         <div className="col-start-5">{formatUsd(clusterDetails.avg_cost)}</div>
 
-        <AccordionTrigger className="hover:bg-accent hover:text-accent-foreground relative col-start-6 my-2 h-fit gap-2 rounded-full border p-1 [&>svg]:size-6">
+        <AccordionTrigger className="relative col-start-6 my-2 h-fit gap-2 rounded-full border p-1 hover:bg-accent hover:text-accent-foreground [&>svg]:size-6">
           <span className="sr-only">Toggle details</span>
         </AccordionTrigger>
       </div>
