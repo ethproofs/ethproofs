@@ -21,7 +21,7 @@ import {
 } from "./utils"
 
 import { useAnimateCheckmark } from "@/hooks/useAnimateCheckmark"
-import { delay } from "@/utils/delay"
+import { delay } from "@/lib/utils"
 
 export type ProofForDownload = Required<
   Pick<Proof, "proof_status" | "proof_id" | "size_bytes">

@@ -22,7 +22,6 @@ const StatusIcon = React.forwardRef<
   return (
     <Icon
       ref={ref}
-      strokeWidth="1"
       className={cn(statusVariants({ status, className }))}
       {...props}
     />

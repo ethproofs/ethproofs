@@ -1,8 +1,11 @@
 import EthproofsIcon from "@/components/svgs/ethproofs-icon.svg"
+import {
+  SidebarMenu,
+  SidebarMenuButton,
+  SidebarMenuItem,
+} from "@/components/ui/sidebar"
 
-import { SidebarMenu, SidebarMenuButton, SidebarMenuItem } from "../ui/sidebar"
-
-export default function AppSidebarHeader() {
+export function AppSidebarHeader() {
   return (
     <SidebarMenu>
       <SidebarMenuItem className="data-[state=closed]:h-12">

@@ -2,7 +2,7 @@ import * as PopoverPrimitive from "@radix-ui/react-popover"
 
 import type { MachineBase } from "@/lib/types"
 
-import MachineDetails from "../ui/MachineDetails"
+import MachineDetails from "../MachineDetails"
 import { Popover, PopoverContent, PopoverTrigger } from "../ui/popover"
 
 const MachineBox = ({
