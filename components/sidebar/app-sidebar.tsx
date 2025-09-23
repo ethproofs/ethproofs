@@ -5,12 +5,12 @@ import {
   SidebarRail,
 } from "../ui/sidebar"
 
-import AppNavigation from "./AppNavigation"
-import AppSidebarHeader from "./AppSidebarHeader"
+import { AppNavigation } from "./app-navigation"
+import { AppSidebarHeader } from "./app-sidebar-header"
 
-const AppSidebar = () => {
+export function AppSidebar() {
   return (
-    <Sidebar collapsible="icon">
+    <Sidebar collapsible="icon" className="h-full bg-sidebar">
       <SidebarHeader className="h-16 items-center justify-center">
         <AppSidebarHeader />
       </SidebarHeader>
@@ -21,7 +21,3 @@ const AppSidebar = () => {
     </Sidebar>
   )
 }
-
-AppSidebar.displayName = "AppSidebar"
-
-export default AppSidebar

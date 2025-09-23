@@ -26,3 +26,21 @@ export const isUUID = (value: string) => {
     /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
   return uuidRegex.test(value)
 }
+
+export function isFunction(value: unknown): value is () => void {
+  return typeof value === "function"
+}
+
+export async function delay(ms: number) {
+  return new Promise((resolve) => setTimeout(resolve, ms))
+}
+
+export function truncateHash(hash: string, start = 6, end = 4): string {
+  return `${hash.slice(0, start)}...${hash.slice(-end)}`
+}
+
+export function noop(): void {}
+
+export async function noopAsync(): Promise<void> {
+  return Promise.resolve()
+}

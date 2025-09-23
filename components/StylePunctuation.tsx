@@ -25,7 +25,7 @@ type HidePunctuationProps = {
 const HidePunctuation = ({ children }: HidePunctuationProps) => {
   if (children === "-") return <Null />
   return (
-    <StylePunctuation className="invisible mx-[-0.15em] select-none">
+    <StylePunctuation className="invisible select-none">
       {children}
     </StylePunctuation>
   )

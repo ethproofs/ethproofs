@@ -53,7 +53,7 @@
     --sidebar-primary: var(--green-700);
     --sidebar-primary-foreground: var(--zinc-50);
     --sidebar-accent: var(--zinc-200);
-    --sidebar-accent-foreground: var(--zinc-950);
+    --sidebar-accent-foreground: var(--green-600);
     --sidebar-border: var(--zinc-200);
     --sidebar-ring: var(--zinc-400);
 
@@ -122,13 +122,11 @@
     --sidebar-primary: var(--green-300);
     --sidebar-primary-foreground: var(--zinc-950);
     --sidebar-accent: var(--zinc-800);
-    --sidebar-accent-foreground: var(--zinc-50);
+    --sidebar-accent-foreground: var(--green-300);
     --sidebar-border: var(--zinc-700);
     --sidebar-ring: var(--zinc-300);
 
     /* Custom (v2) */
-    --body-foreground: var(--zinc-200);
-    --body-muted: var(--zinc-400);
     --background-highlight: var(--green-900);
     --background-active: var(--green-800);
     --background-accent: var(--zinc-800);

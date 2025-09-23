@@ -2,7 +2,7 @@
 
 import * as React from "react"
 import { useState } from "react"
-import { Loader2, Search, X as Clear } from "lucide-react"
+import { LoaderCircle, Search, X as Clear } from "lucide-react"
 import { useRouter } from "next/navigation"
 
 import { Button } from "@/components/ui/button"
@@ -19,7 +19,8 @@ import {
   PopoverContent,
   PopoverTrigger,
 } from "@/components/ui/popover"
-import { truncateHash } from "@/utils/truncate-hash"
+
+import { truncateHash } from "@/lib/utils"
 
 export type SearchItem = {
   id: string | number
@@ -87,8 +88,8 @@ export function SearchCommand({
           </div>
           <CommandList className="mt-2 max-h-72 overflow-y-hidden">
             {isLoading ? (
-              <div className="flex items-center gap-2 px-3 py-2 text-sm text-muted-foreground">
-                <Loader2 className="size-4 animate-spin" /> searching…
+              <div className="text-muted-foreground flex items-center gap-2 px-3 py-2 text-sm">
+                <LoaderCircle className="size-4 animate-spin" /> searching…
               </div>
             ) : (
               <>
@@ -111,7 +112,7 @@ export function SearchCommand({
                       <div className="w-full truncate text-sm font-medium leading-none">
                         block {item.blockNumber}
                       </div>
-                      <div className="w-full text-xs leading-tight text-muted-foreground">
+                      <div className="text-muted-foreground w-full text-xs leading-tight">
                         <div className="block truncate sm:hidden">
                           {item.provedProofs} / {item.totalProofs} •{" "}
                           {truncateHash(item.blockHash)}
