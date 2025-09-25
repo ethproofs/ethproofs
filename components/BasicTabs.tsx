@@ -20,15 +20,15 @@ const BasicTabs = ({
       <Tabs defaultValue={defaultTab}>
         <div className="flex items-end justify-between gap-2">
           <span className="text-2xl">blocks</span>
-          <TabsList className="w-[250px]">
+          <TabsList className="h-8 w-[250px] px-0.5">
             <TabsTrigger
-              className="flex-1 data-[state=active]:text-primary"
+              className="flex-1 py-1 data-[state=active]:text-primary"
               value="left"
             >
               {contentLeftTitle}
             </TabsTrigger>
             <TabsTrigger
-              className="flex-1 data-[state=active]:text-primary"
+              className="flex-1 py-1 data-[state=active]:text-primary"
               value="right"
             >
               {contentRightTitle}
