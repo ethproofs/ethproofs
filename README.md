@@ -2,6 +2,8 @@
 
 # Ethproofs
 
+![Header PNG](./public/images/just-prove-it.png)
+
 ## App local development
 
 ```bash
