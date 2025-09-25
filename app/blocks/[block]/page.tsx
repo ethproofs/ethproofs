@@ -148,7 +148,11 @@ export default async function BlockDetailsPage({
             <Cpu className="size-4" /> gas used
           </HeroItemLabel>
           <p className="tracking-wide">
-            <HidePunctuation>{formatNumber(gas_used)}</HidePunctuation>
+            {gas_used ? (
+              <HidePunctuation>{formatNumber(gas_used)}</HidePunctuation>
+            ) : (
+              <Null />
+            )}
           </p>
         </HeroItem>
 
@@ -157,9 +161,13 @@ export default async function BlockDetailsPage({
             <Layers className="size-4" /> slot
           </HeroItemLabel>
           <p className="tracking-wide">
-            <HidePunctuation>
-              {formatNumber(timestampToSlot(timestamp))}
-            </HidePunctuation>
+            {timestamp ? (
+              <HidePunctuation>
+                {formatNumber(timestampToSlot(timestamp))}
+              </HidePunctuation>
+            ) : (
+              <Null />
+            )}
           </p>
         </HeroItem>
 
@@ -168,9 +176,13 @@ export default async function BlockDetailsPage({
             <Hourglass className="size-4" /> epoch
           </HeroItemLabel>
           <p className="tracking-wide">
-            <HidePunctuation>
-              {formatNumber(timestampToEpoch(timestamp))}
-            </HidePunctuation>
+            {timestamp ? (
+              <HidePunctuation>
+                {formatNumber(timestampToEpoch(timestamp))}
+              </HidePunctuation>
+            ) : (
+              <Null />
+            )}
           </p>
         </HeroItem>
       </section>
