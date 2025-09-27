@@ -1443,7 +1443,7 @@
             }
           },
           "400": {
-            "description": "Invalid request body"
+            "description": "Invalid request"
           },
           "401": {
             "description": "Invalid API key"
@@ -1451,8 +1451,14 @@
           "404": {
             "description": "Cluster not found"
           },
+          "422": {
+            "description": "Block not found"
+          },
           "500": {
-            "description": "Internal server error or block not found"
+            "description": "Internal server error"
+          },
+          "502": {
+            "description": "Upstream RPC error"
           }
         }
       }
@@ -1516,7 +1522,7 @@
             }
           },
           "400": {
-            "description": "Invalid request body"
+            "description": "Invalid request"
           },
           "401": {
             "description": "Invalid API key"
@@ -1525,7 +1531,7 @@
             "description": "Cluster not found"
           },
           "500": {
-            "description": "Internal server error or block not found"
+            "description": "Internal server error"
           }
         }
       }
@@ -1613,7 +1619,7 @@
             }
           },
           "400": {
-            "description": "Invalid request body"
+            "description": "Invalid request"
           },
           "401": {
             "description": "Invalid API key"
@@ -1622,7 +1628,7 @@
             "description": "Cluster not found"
           },
           "500": {
-            "description": "Internal server error or block not found"
+            "description": "Internal server error"
           }
         }
       }

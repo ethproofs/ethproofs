@@ -1,5 +1,8 @@
 import { revalidateTag } from "next/cache"
+import { BlockNotFoundError } from "viem"
 import { ZodError } from "zod"
+
+import { isUndefined } from "@/lib/utils"
 
 import { TAGS } from "@/lib/constants"
 
@@ -19,62 +22,27 @@ export const POST = withAuth(async ({ request, user, timestamp }) => {
   } catch (error) {
     console.error("Proof payload invalid:", error)
     if (error instanceof ZodError) {
-      return new Response(`Invalid payload: ${error.message}`, {
+      return new Response(`Invalid request: ${error.message}`, {
         status: 400,
       })
     }
 
-    return new Response("Invalid payload", { status: 400 })
+    return new Response("Invalid request", { status: 400 })
   }
 
   const { block_number, cluster_id } = proofPayload
-
-  const block = await db.query.blocks.findFirst({
-    columns: {
-      block_number: true,
-    },
-    where: (blocks, { eq }) => eq(blocks.block_number, block_number),
-  })
-
-  if (!block) {
-    console.log("Block not found, fetching block data:", block_number)
-    let blockData
-    try {
-      blockData = await fetchBlockData(block_number)
-    } catch (error) {
-      console.error("Error fetching block data:", error)
-      return new Response("Block not found", {
-        status: 500,
-      })
-    }
-
-    try {
-      await db
-        .insert(blocks)
-        .values({
-          block_number,
-          gas_used: Number(blockData.gasUsed),
-          transaction_count: blockData.txsCount,
-          timestamp: new Date(Number(blockData.timestamp) * 1000).toISOString(),
-          hash: blockData.hash,
-        })
-        .onConflictDoNothing()
-    } catch (error) {
-      console.error("Error creating block:", error)
-      return new Response("Error creating block", { status: 500 })
-    }
-  }
 
   // Get cluster uuid from cluster_id
   const cluster = await db.query.clusters.findFirst({
     columns: {
       id: true,
+      team_id: true,
     },
     where: (clusters, { and, eq }) =>
       and(eq(clusters.index, cluster_id), eq(clusters.team_id, user.id)),
   })
 
-  if (!cluster) {
+  if (isUndefined(cluster)) {
     console.error("cluster not found", cluster_id)
     return new Response("Cluster not found", { status: 404 })
   }
@@ -88,9 +56,47 @@ export const POST = withAuth(async ({ request, user, timestamp }) => {
     orderBy: (clusterVersions, { desc }) => [desc(clusterVersions.created_at)],
   })
 
-  if (!clusterVersion) {
+  if (isUndefined(clusterVersion)) {
     console.error("Cluster version not found:", cluster_id)
     return new Response("Cluster version not found", { status: 404 })
+  }
+
+  const block = await db.query.blocks.findFirst({
+    columns: {
+      block_number: true,
+    },
+    where: (blocks, { eq }) => eq(blocks.block_number, block_number),
+  })
+
+  if (isUndefined(block)) {
+    console.log("Fetching block data:", block_number)
+    let blockData
+    try {
+      blockData = await fetchBlockData(block_number)
+    } catch (error) {
+      console.error("Error fetching block data:", error)
+      if (error instanceof BlockNotFoundError) {
+        return new Response("Block not found", { status: 422 })
+      }
+      return new Response("Upstream RPC error", { status: 502 })
+    }
+
+    try {
+      await db
+        .insert(blocks)
+        .values({
+          block_number,
+          gas_used: Number(blockData.gasUsed),
+          transaction_count: blockData.txsCount,
+          timestamp: new Date(Number(blockData.timestamp) * 1000).toISOString(),
+          hash: blockData.hash,
+        })
+        .onConflictDoNothing()
+      console.log(`Block ${block_number} created by:`, cluster.team_id)
+    } catch (error) {
+      console.error("Error creating block:", error)
+      return new Response("Internal server error", { status: 500 })
+    }
   }
 
   const dataToInsert = {
@@ -121,7 +127,9 @@ export const POST = withAuth(async ({ request, user, timestamp }) => {
 
     return Response.json(proof)
   } catch (error) {
-    console.error("Error adding proof:", error)
-    return new Response("Internal server error", { status: 500 })
+    console.error("[Queued] Error adding proof:", error)
+    return new Response("Internal server error", {
+      status: 500,
+    })
   }
 })

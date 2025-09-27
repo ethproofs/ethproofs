@@ -10,12 +10,40 @@ export const client = createPublicClient({
   chain: mainnet,
   transport: fallback([
     http(rpcUrl, {
-      timeout: 5000,
-      retryCount: 2,
+      retryCount: 5,
+      onFetchRequest() {
+        console.log("RPC request initiated")
+      },
+      onFetchResponse(resp) {
+        if (!resp.ok) {
+          console.warn("RPC request failed:", {
+            status: resp.status,
+            statusText: resp.statusText,
+          })
+        } else {
+          console.log("RPC request succeeded:", {
+            status: resp.status,
+          })
+        }
+      },
     }),
     http(rpcUrlFallback, {
-      timeout: 5000,
-      retryCount: 2,
+      retryCount: 5,
+      onFetchRequest() {
+        console.log("Fallback RPC request initiated")
+      },
+      onFetchResponse(resp) {
+        if (!resp.ok) {
+          console.warn("Fallback RPC request failed:", {
+            status: resp.status,
+            statusText: resp.statusText,
+          })
+        } else {
+          console.log("Fallback RPC request succeeded:", {
+            status: resp.status,
+          })
+        }
+      },
     }),
   ]),
 })

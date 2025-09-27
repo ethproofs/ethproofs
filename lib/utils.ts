@@ -26,3 +26,7 @@ export const isUUID = (value: string) => {
     /^[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}$/i
   return uuidRegex.test(value)
 }
+
+export function isUndefined(value: unknown): value is undefined {
+  return typeof value === "undefined"
+}

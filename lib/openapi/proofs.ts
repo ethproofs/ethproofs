@@ -20,7 +20,7 @@ const commonResponses = {
     },
   },
   "400": {
-    description: "Invalid request body",
+    description: "Invalid request",
   },
   "401": {
     description: "Invalid API key",
@@ -29,7 +29,7 @@ const commonResponses = {
     description: "Cluster not found",
   },
   "500": {
-    description: "Internal server error or block not found",
+    description: "Internal server error",
   },
 }
 
@@ -134,6 +134,12 @@ export const proofsPaths: ZodOpenApiPathsObject = {
       },
       responses: {
         ...commonResponses,
+        "422": {
+          description: "Block not found",
+        },
+        "502": {
+          description: "Upstream RPC error",
+        },
       },
       security: [{ apikey: [] }],
     },
