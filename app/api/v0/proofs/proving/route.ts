@@ -4,8 +4,7 @@ import { ZodError } from "zod"
 import { TAGS } from "@/lib/constants"
 
 import { db } from "@/db"
-import { blocks, proofs } from "@/db/schema"
-import { fetchBlockData } from "@/lib/blocks"
+import { proofs } from "@/db/schema"
 import { withAuth } from "@/lib/middleware/with-auth"
 import { provingProofSchema } from "@/lib/zod/schemas/proof"
 
@@ -19,51 +18,15 @@ export const POST = withAuth(async ({ request, user, timestamp }) => {
   } catch (error) {
     console.error("Proof payload invalid:", error)
     if (error instanceof ZodError) {
-      return new Response(`Invalid payload: ${error.message}`, {
+      return new Response(`Invalid request: ${error.message}`, {
         status: 400,
       })
     }
 
-    return new Response("Invalid payload", { status: 400 })
+    return new Response("Invalid request", { status: 400 })
   }
 
   const { block_number, cluster_id } = proofPayload
-
-  const block = await db.query.blocks.findFirst({
-    columns: {
-      block_number: true,
-    },
-    where: (blocks, { eq }) => eq(blocks.block_number, block_number),
-  })
-
-  if (!block) {
-    console.log("Block not found, fetching block data:", block_number)
-    let blockData
-    try {
-      blockData = await fetchBlockData(block_number)
-    } catch (error) {
-      console.error("Error fetching block data:", error)
-      return new Response("Block not found", {
-        status: 500,
-      })
-    }
-
-    try {
-      await db
-        .insert(blocks)
-        .values({
-          block_number,
-          gas_used: Number(blockData.gasUsed),
-          transaction_count: blockData.txsCount,
-          timestamp: new Date(Number(blockData.timestamp) * 1000).toISOString(),
-          hash: blockData.hash,
-        })
-        .onConflictDoNothing()
-    } catch (error) {
-      console.error("Error creating block:", error)
-      return new Response("Internal server error", { status: 500 })
-    }
-  }
 
   // Get cluster uuid from cluster_id
   const cluster = await db.query.clusters.findFirst({
@@ -122,7 +85,9 @@ export const POST = withAuth(async ({ request, user, timestamp }) => {
 
     return Response.json(proof)
   } catch (error) {
-    console.error("Error adding proof:", error)
-    return new Response("Internal server error", { status: 500 })
+    console.error("[Proving] Error adding proof:", error)
+    return new Response("Internal server error", {
+      status: 500,
+    })
   }
 })
