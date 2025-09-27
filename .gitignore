@@ -39,7 +39,7 @@ next-env.d.ts
 # Sitemaps
 sitemap*.xml
 
-# Robots.txt
+# robots.txt
 robots.txt
 
 # cursor
@@ -48,3 +48,6 @@ robots.txt
 
 # Local Netlify folder
 .netlify
+
+# openapi
+public/api.html

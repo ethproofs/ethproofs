@@ -1,5 +1,8 @@
 import { revalidateTag } from "next/cache"
+import { BlockNotFoundError } from "viem"
 import { ZodError } from "zod"
+
+import { isUndefined } from "@/lib/utils"
 
 import { TAGS } from "@/lib/constants"
 
@@ -19,12 +22,12 @@ export const POST = withAuth(async ({ request, user, timestamp }) => {
   } catch (error) {
     console.error("Proof payload invalid:", error)
     if (error instanceof ZodError) {
-      return new Response(`Invalid payload: ${error.message}`, {
+      return new Response(`Invalid request: ${error.message}`, {
         status: 400,
       })
     }
 
-    return new Response("Invalid payload", { status: 400 })
+    return new Response("Invalid request", { status: 400 })
   }
 
   const { block_number, cluster_id } = proofPayload
@@ -36,16 +39,17 @@ export const POST = withAuth(async ({ request, user, timestamp }) => {
     where: (blocks, { eq }) => eq(blocks.block_number, block_number),
   })
 
-  if (!block) {
+  if (isUndefined(block)) {
     console.log("Block not found, fetching block data:", block_number)
     let blockData
     try {
       blockData = await fetchBlockData(block_number)
     } catch (error) {
       console.error("Error fetching block data:", error)
-      return new Response("Block not found", {
-        status: 500,
-      })
+      if (error instanceof BlockNotFoundError) {
+        return new Response("Block not found", { status: 422 })
+      }
+      return new Response("Upstream RPC error", { status: 502 })
     }
 
     try {
@@ -59,9 +63,10 @@ export const POST = withAuth(async ({ request, user, timestamp }) => {
           hash: blockData.hash,
         })
         .onConflictDoNothing()
+      console.log(`Block ${block_number} created by:`, cluster_id)
     } catch (error) {
       console.error("Error creating block:", error)
-      return new Response("Error creating block", { status: 500 })
+      return new Response("Internal server error", { status: 500 })
     }
   }
 
@@ -121,7 +126,9 @@ export const POST = withAuth(async ({ request, user, timestamp }) => {
 
     return Response.json(proof)
   } catch (error) {
-    console.error("Error adding proof:", error)
-    return new Response("Internal server error", { status: 500 })
+    console.error("[Queued] Error adding proof:", error)
+    return new Response("Internal server error", {
+      status: 500,
+    })
   }
 })
