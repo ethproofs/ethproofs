@@ -32,6 +32,35 @@ export const POST = withAuth(async ({ request, user, timestamp }) => {
 
   const { block_number, cluster_id } = proofPayload
 
+  // Get cluster uuid from cluster_id
+  const cluster = await db.query.clusters.findFirst({
+    columns: {
+      id: true,
+      team_id: true,
+    },
+    where: (clusters, { and, eq }) =>
+      and(eq(clusters.index, cluster_id), eq(clusters.team_id, user.id)),
+  })
+
+  if (isUndefined(cluster)) {
+    console.error("cluster not found", cluster_id)
+    return new Response("Cluster not found", { status: 404 })
+  }
+
+  const clusterVersion = await db.query.clusterVersions.findFirst({
+    columns: {
+      id: true,
+    },
+    where: (clusterVersions, { eq }) =>
+      eq(clusterVersions.cluster_id, cluster.id),
+    orderBy: (clusterVersions, { desc }) => [desc(clusterVersions.created_at)],
+  })
+
+  if (isUndefined(clusterVersion)) {
+    console.error("Cluster version not found:", cluster_id)
+    return new Response("Cluster version not found", { status: 404 })
+  }
+
   const block = await db.query.blocks.findFirst({
     columns: {
       block_number: true,
@@ -40,7 +69,7 @@ export const POST = withAuth(async ({ request, user, timestamp }) => {
   })
 
   if (isUndefined(block)) {
-    console.log("Block not found, fetching block data:", block_number)
+    console.log("Fetching block data:", block_number)
     let blockData
     try {
       blockData = await fetchBlockData(block_number)
@@ -63,39 +92,11 @@ export const POST = withAuth(async ({ request, user, timestamp }) => {
           hash: blockData.hash,
         })
         .onConflictDoNothing()
-      console.log(`Block ${block_number} created by:`, cluster_id)
+      console.log(`Block ${block_number} created by:`, cluster.team_id)
     } catch (error) {
       console.error("Error creating block:", error)
       return new Response("Internal server error", { status: 500 })
     }
-  }
-
-  // Get cluster uuid from cluster_id
-  const cluster = await db.query.clusters.findFirst({
-    columns: {
-      id: true,
-    },
-    where: (clusters, { and, eq }) =>
-      and(eq(clusters.index, cluster_id), eq(clusters.team_id, user.id)),
-  })
-
-  if (!cluster) {
-    console.error("cluster not found", cluster_id)
-    return new Response("Cluster not found", { status: 404 })
-  }
-
-  const clusterVersion = await db.query.clusterVersions.findFirst({
-    columns: {
-      id: true,
-    },
-    where: (clusterVersions, { eq }) =>
-      eq(clusterVersions.cluster_id, cluster.id),
-    orderBy: (clusterVersions, { desc }) => [desc(clusterVersions.created_at)],
-  })
-
-  if (!clusterVersion) {
-    console.error("Cluster version not found:", cluster_id)
-    return new Response("Cluster version not found", { status: 404 })
   }
 
   const dataToInsert = {
