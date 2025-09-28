@@ -2,10 +2,57 @@ import { count, eq } from "drizzle-orm"
 import { unstable_cache as cache } from "next/cache"
 import { PaginationState } from "@tanstack/react-table"
 
+import { fetchBlockData } from "../blocks"
+import { isUndefined } from "../utils"
+
 import { db } from "@/db"
 import { blocks, clusters, clusterVersions, proofs } from "@/db/schema"
 
 export type MachineType = "single" | "multi" | "all"
+
+export const findOrCreateBlock = async (blockNumber: number) => {
+  const foundBlock = await db.query.blocks.findFirst({
+    columns: {
+      block_number: true,
+    },
+    where: (blocks, { eq }) => eq(blocks.block_number, blockNumber),
+  })
+
+  if (isUndefined(foundBlock)) {
+    console.log("Fetching block data:", blockNumber)
+    let blockData
+    try {
+      blockData = await fetchBlockData(blockNumber)
+    } catch (error) {
+      throw new Error(`[RPC] Upstream error: ${error}`)
+    }
+
+    console.log("Attempting to create block:", blockNumber)
+
+    try {
+      const [block] = await db
+        .insert(blocks)
+        .values({
+          block_number: blockNumber,
+          gas_used: Number(blockData.gasUsed),
+          transaction_count: blockData.txsCount,
+          timestamp: new Date(Number(blockData.timestamp) * 1000).toISOString(),
+          hash: blockData.hash,
+        })
+        .onConflictDoUpdate({
+          target: [blocks.block_number],
+          set: { block_number: blockNumber },
+        })
+        .returning({ block_number: blocks.block_number })
+
+      return block.block_number
+    } catch (error) {
+      throw new Error(`[DB] Error creating block: ${error}`)
+    }
+  }
+
+  return foundBlock.block_number
+}
 
 export const fetchBlocksPaginated = async (
   pagination: PaginationState,

@@ -1,5 +1,5 @@
 import { db } from "@/db"
-import { downloadProofBinary } from "@/lib/api/proof_binaries"
+import { downloadProofBinary } from "@/lib/api/proof-binaries"
 import { getTeam } from "@/lib/api/teams"
 
 export async function GET(
@@ -46,9 +46,8 @@ export async function GET(
   }
 
   const arrayBuffer = await blob.arrayBuffer()
-  const buffer = Buffer.from(arrayBuffer)
 
-  return new Response(buffer, {
+  return new Response(arrayBuffer, {
     status: 200,
     headers: {
       "Content-Type": "application/octet-stream",
