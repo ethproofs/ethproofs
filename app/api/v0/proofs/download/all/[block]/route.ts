@@ -1,7 +1,7 @@
 import AdmZip from "adm-zip"
 
 import { db } from "@/db"
-import { downloadProofBinary } from "@/lib/api/proof_binaries"
+import { downloadProofBinary } from "@/lib/api/proof-binaries"
 import { getTeam } from "@/lib/api/teams"
 
 export async function GET(
@@ -71,7 +71,7 @@ export async function GET(
 
   const zipBuffer = zip.toBuffer()
 
-  return new Response(zipBuffer, {
+  return new Response(new Uint8Array(zipBuffer), {
     headers: {
       "Content-Type": "application/zip",
       "Content-Disposition": `attachment; filename="block_${block}_all_proofs.zip"`,

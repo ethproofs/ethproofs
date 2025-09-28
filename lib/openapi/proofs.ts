@@ -134,12 +134,6 @@ export const proofsPaths: ZodOpenApiPathsObject = {
       },
       responses: {
         ...commonResponses,
-        "422": {
-          description: "Block not found",
-        },
-        "502": {
-          description: "Upstream RPC error",
-        },
       },
       security: [{ apikey: [] }],
     },

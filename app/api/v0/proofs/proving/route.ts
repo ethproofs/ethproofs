@@ -5,12 +5,14 @@ import { TAGS } from "@/lib/constants"
 
 import { db } from "@/db"
 import { proofs } from "@/db/schema"
+import { findOrCreateBlock } from "@/lib/api/blocks"
 import { withAuth } from "@/lib/middleware/with-auth"
 import { provingProofSchema } from "@/lib/zod/schemas/proof"
 
 // TODO:TEAM - refactor code to use baseProofHandler and abstract out the logic
 export const POST = withAuth(async ({ request, user, timestamp }) => {
   const payload = await request.json()
+  const teamId = user.id
 
   let proofPayload
   try {
@@ -34,7 +36,7 @@ export const POST = withAuth(async ({ request, user, timestamp }) => {
       id: true,
     },
     where: (clusters, { and, eq }) =>
-      and(eq(clusters.index, cluster_id), eq(clusters.team_id, user.id)),
+      and(eq(clusters.index, cluster_id), eq(clusters.team_id, teamId)),
   })
 
   if (!cluster) {
@@ -56,13 +58,27 @@ export const POST = withAuth(async ({ request, user, timestamp }) => {
     return new Response("Cluster version not found", { status: 404 })
   }
 
+  try {
+    const block = await findOrCreateBlock(block_number)
+    console.log(`[Proving] Block ${block} found by team:`, teamId)
+  } catch (error) {
+    console.error(
+      `[Proving] Block ${block_number} not found by team:`,
+      teamId,
+      error
+    )
+    return new Response("Internal server error", {
+      status: 500,
+    })
+  }
+
   const dataToInsert = {
     ...proofPayload,
     block_number,
     cluster_version_id: clusterVersion.id,
     proof_status: "proving",
     proving_timestamp: timestamp,
-    team_id: user.id,
+    team_id: teamId,
   }
 
   try {
