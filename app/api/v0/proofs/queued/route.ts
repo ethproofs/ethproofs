@@ -1,5 +1,4 @@
 import { revalidateTag } from "next/cache"
-import { BlockNotFoundError } from "viem"
 import { ZodError } from "zod"
 
 import { isUndefined } from "@/lib/utils"
@@ -7,14 +6,15 @@ import { isUndefined } from "@/lib/utils"
 import { TAGS } from "@/lib/constants"
 
 import { db } from "@/db"
-import { blocks, proofs } from "@/db/schema"
-import { fetchBlockData } from "@/lib/blocks"
+import { proofs } from "@/db/schema"
+import { findOrCreateBlock } from "@/lib/api/blocks"
 import { withAuth } from "@/lib/middleware/with-auth"
 import { queuedProofSchema } from "@/lib/zod/schemas/proof"
 
 // TODO:TEAM - refactor code to use baseProofHandler and abstract out the logic
 export const POST = withAuth(async ({ request, user, timestamp }) => {
   const payload = await request.json()
+  const teamId = user.id
 
   let proofPayload
   try {
@@ -36,10 +36,9 @@ export const POST = withAuth(async ({ request, user, timestamp }) => {
   const cluster = await db.query.clusters.findFirst({
     columns: {
       id: true,
-      team_id: true,
     },
     where: (clusters, { and, eq }) =>
-      and(eq(clusters.index, cluster_id), eq(clusters.team_id, user.id)),
+      and(eq(clusters.index, cluster_id), eq(clusters.team_id, teamId)),
   })
 
   if (isUndefined(cluster)) {
@@ -61,42 +60,18 @@ export const POST = withAuth(async ({ request, user, timestamp }) => {
     return new Response("Cluster version not found", { status: 404 })
   }
 
-  const block = await db.query.blocks.findFirst({
-    columns: {
-      block_number: true,
-    },
-    where: (blocks, { eq }) => eq(blocks.block_number, block_number),
-  })
-
-  if (isUndefined(block)) {
-    console.log("Fetching block data:", block_number)
-    let blockData
-    try {
-      blockData = await fetchBlockData(block_number)
-    } catch (error) {
-      console.error("Error fetching block data:", error)
-      if (error instanceof BlockNotFoundError) {
-        return new Response("Block not found", { status: 422 })
-      }
-      return new Response("Upstream RPC error", { status: 502 })
-    }
-
-    try {
-      await db
-        .insert(blocks)
-        .values({
-          block_number,
-          gas_used: Number(blockData.gasUsed),
-          transaction_count: blockData.txsCount,
-          timestamp: new Date(Number(blockData.timestamp) * 1000).toISOString(),
-          hash: blockData.hash,
-        })
-        .onConflictDoNothing()
-      console.log(`Block ${block_number} created by:`, cluster.team_id)
-    } catch (error) {
-      console.error("Error creating block:", error)
-      return new Response("Internal server error", { status: 500 })
-    }
+  try {
+    const block = await findOrCreateBlock(block_number)
+    console.log(`[Queued] Block ${block} found by team:`, teamId)
+  } catch (error) {
+    console.error(
+      `[Queued] Block ${block_number} not found by team:`,
+      teamId,
+      error
+    )
+    return new Response("Internal server error", {
+      status: 500,
+    })
   }
 
   const dataToInsert = {
@@ -105,7 +80,7 @@ export const POST = withAuth(async ({ request, user, timestamp }) => {
     cluster_version_id: clusterVersion.id,
     proof_status: "queued",
     queued_timestamp: timestamp,
-    team_id: user.id,
+    team_id: teamId,
   }
 
   try {

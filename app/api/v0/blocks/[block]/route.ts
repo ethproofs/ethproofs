@@ -1,4 +1,3 @@
-import { NextResponse } from "next/server"
 import { z } from "zod"
 
 import { fetchBlock } from "@/lib/api/blocks"
@@ -33,10 +32,10 @@ export async function GET(
       created_at: block.created_at,
     }
 
-    return NextResponse.json(response)
+    return Response.json(response)
   } catch (error: unknown) {
     if (error instanceof z.ZodError) {
-      return NextResponse.json(error.issues, { status: 422 })
+      return Response.json(error.issues, { status: 422 })
     }
     console.error(error)
     return new Response("Internal Server Error", { status: 500 })

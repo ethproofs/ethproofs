@@ -6,7 +6,8 @@ import { TAGS } from "@/lib/constants"
 
 import { db } from "@/db"
 import { clusters, programs, proofs } from "@/db/schema"
-import { uploadProofBinary } from "@/lib/api/proof_binaries"
+import { findOrCreateBlock } from "@/lib/api/blocks"
+import { uploadProofBinary } from "@/lib/api/proof-binaries"
 import { isStorageQuotaExceeded } from "@/lib/api/storage"
 import { getTeam } from "@/lib/api/teams"
 import { withAuth } from "@/lib/middleware/with-auth"
@@ -15,6 +16,7 @@ import { provedProofSchema } from "@/lib/zod/schemas/proof"
 // TODO:TEAM - refactor code to use baseProofHandler and abstract out the logic
 export const POST = withAuth(async ({ request, user, timestamp }) => {
   const payload = await request.json()
+  const teamId = user.id
 
   let proofPayload
   try {
@@ -39,7 +41,7 @@ export const POST = withAuth(async ({ request, user, timestamp }) => {
       id: true,
     },
     where: (clusters, { and, eq }) =>
-      and(eq(clusters.index, cluster_id), eq(clusters.team_id, user.id)),
+      and(eq(clusters.index, cluster_id), eq(clusters.team_id, teamId)),
   })
 
   if (!cluster) {
@@ -62,6 +64,20 @@ export const POST = withAuth(async ({ request, user, timestamp }) => {
   if (!clusterVersion) {
     console.error("Cluster version not found:", cluster_id)
     return new Response("Cluster version not found", { status: 404 })
+  }
+
+  try {
+    const block = await findOrCreateBlock(block_number)
+    console.log(`[Proved] Block ${block} found by team:`, teamId)
+  } catch (error) {
+    console.error(
+      `[Proved] Block ${block_number} not found by team:`,
+      teamId,
+      error
+    )
+    return new Response("Internal server error", {
+      status: 500,
+    })
   }
 
   // TODO:TEAM - revisit this code, is it still needed?
@@ -96,14 +112,12 @@ export const POST = withAuth(async ({ request, user, timestamp }) => {
 
   // TODO:TEAM - revisit the need for storage quota
   const storageQuotaExceeded = await isStorageQuotaExceeded(
-    user.id,
+    teamId,
     binaryBuffer.byteLength
   )
 
   if (storageQuotaExceeded) {
-    console.log(
-      `[storage quota] team ${user.id} has reached quota. Skipping binary upload.`
-    )
+    console.log(`[Storage Quota Exceeded] team ${teamId} has reached quota`)
   }
 
   const dataToInsert = {
@@ -114,7 +128,7 @@ export const POST = withAuth(async ({ request, user, timestamp }) => {
     proof_status: "proved",
     proved_timestamp: timestamp,
     size_bytes: binaryBuffer.byteLength,
-    team_id: user.id,
+    team_id: teamId,
   }
 
   try {
@@ -145,7 +159,7 @@ export const POST = withAuth(async ({ request, user, timestamp }) => {
       }
 
       if (!storageQuotaExceeded) {
-        const team = await getTeam(user.id)
+        const team = await getTeam(teamId)
         const teamName = team?.name ? team.name : cluster.id.split("-")[0]
         const filename = `${block_number}_${teamName}_${newProof.proof_id}.txt`
         await uploadProofBinary(filename, binaryBuffer)
