@@ -148,6 +148,8 @@ DECLARE
     missing_blocks TEXT[];
     display_blocks TEXT;
     cluster_link TEXT;
+    duplicate_blocks TEXT[];
+    duplicate_blocks_display TEXT;
 BEGIN
     -- Get Telegram configuration
     telegram_bot_token := get_telegram_bot_token();
@@ -180,7 +182,7 @@ BEGIN
 
         IF array_length(missing_blocks, 1) > 3 THEN
             display_blocks := format('[%s](https://ethproofs\.org/block/%s), [%s](https://ethproofs\.org/block/%s), [%s](https://ethproofs\.org/block/%s) \+%s',
-                missing_blocks[1], missing_blocks[1], missing_blocks[2], missing_blocks[2], 
+                missing_blocks[1], missing_blocks[1], missing_blocks[2], missing_blocks[2],
                 missing_blocks[3], missing_blocks[3], array_length(missing_blocks, 1) - 3);
         ELSE
             SELECT string_agg(format('[%s](https://ethproofs\.org/block/%s)', block_num, block_num), ', ') INTO display_blocks
@@ -193,6 +195,24 @@ BEGIN
         message_text := message_text || E'▪️ *' || escape_markdown_v2(cluster.team_name) || '* \- [' || escape_markdown_v2(cluster.cluster_nickname) || ' \(…' || escape_markdown_v2(cluster.cluster_id_suffix) || E'\\)\](' || cluster_link || E')\n';
         message_text := message_text || E'   Missing proofs for blocks: ' || display_blocks || E'\n\n';
     END LOOP;
+
+    -- Find blocks missed by multiple teams
+    SELECT array_agg(block_number ORDER BY block_number) INTO duplicate_blocks
+    FROM (
+        SELECT block_number
+        FROM missing_proofs_temp
+        GROUP BY block_number
+        HAVING COUNT(DISTINCT team_id) > 1
+    ) dups;
+
+    -- Add duplicate blocks section if any exist
+    IF duplicate_blocks IS NOT NULL AND array_length(duplicate_blocks, 1) > 0 THEN
+        SELECT string_agg(format('[%s](https://ethproofs\.org/block/%s)', block_num, block_num), ', ')
+        INTO duplicate_blocks_display
+        FROM unnest(duplicate_blocks) AS block_num;
+
+        message_text := message_text || E'*Duplicate blocks missed:*\n' || duplicate_blocks_display || E'\n';
+    END IF;
 
     -- Send to internal Telegram chat
     telegram_response := send_telegram_message(telegram_chat_id, message_text, telegram_bot_token);
