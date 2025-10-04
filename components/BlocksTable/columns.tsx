@@ -193,8 +193,6 @@ export const columns: ColumnDef<Block>[] = [
       const proofs = cell.getValue() as ProofWithCluster[]
       const timestamp = row.original.timestamp
 
-      if (!timestamp) return <Null />
-
       const totalTTPStats = getTotalTTPStats(proofs, timestamp)
       const proofsPerStatusCount = getProofsPerStatusCount(proofs)
 

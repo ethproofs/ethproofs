@@ -1,19 +1,10 @@
-import {
-  BookOpen,
-  Box,
-  CircleDollarSign,
-  Clock,
-  Coins,
-  Cpu,
-  Hourglass,
-  Layers,
-  Timer,
-} from "lucide-react"
+import { Box, Clock, Coins, Cpu, Hourglass, Layers, Timer } from "lucide-react"
 import type { Metadata } from "next"
 import { notFound } from "next/navigation"
 
 import BasicTabs from "@/components/BasicTabs"
 import CopyButton from "@/components/CopyButton"
+import Null from "@/components/Null"
 import DownloadAllButton from "@/components/proof-buttons/DownloadAllButton"
 import ProofList from "@/components/ProofList"
 import ProofStatus, { ProofStatusInfo } from "@/components/ProofStatus"
@@ -141,7 +132,7 @@ export default async function BlockDetailsPage({
             <div className="truncate font-sans text-sm font-normal text-body-secondary">
               {hash}
             </div>
-            <CopyButton message={hash} />
+            {hash ? <CopyButton message={hash} /> : <Null />}
           </div>
         </div>
       </HeroTitle>
@@ -151,7 +142,7 @@ export default async function BlockDetailsPage({
           <HeroItemLabel>
             <Clock className="size-4" /> timestamp
           </HeroItemLabel>
-          <Timestamp>{timestamp}</Timestamp>
+          {timestamp ? <Timestamp>{timestamp}</Timestamp> : <Null />}
         </HeroItem>
 
         <HeroItem className="row-span-2 grid grid-rows-subgrid place-items-center gap-y-1">
@@ -159,7 +150,11 @@ export default async function BlockDetailsPage({
             <Cpu className="size-4" /> gas used
           </HeroItemLabel>
           <p className="font-mono tracking-wide">
-            <HidePunctuation>{formatNumber(gas_used)}</HidePunctuation>
+            {gas_used ? (
+              <HidePunctuation>{formatNumber(gas_used)}</HidePunctuation>
+            ) : (
+              <Null />
+            )}
           </p>
         </HeroItem>
 
@@ -168,9 +163,13 @@ export default async function BlockDetailsPage({
             <Layers className="size-4" /> slot
           </HeroItemLabel>
           <p className="font-mono tracking-wide">
-            <HidePunctuation>
-              {formatNumber(timestampToSlot(timestamp))}
-            </HidePunctuation>
+            {timestamp ? (
+              <HidePunctuation>
+                {formatNumber(timestampToSlot(timestamp))}
+              </HidePunctuation>
+            ) : (
+              <Null />
+            )}
           </p>
         </HeroItem>
 
@@ -179,9 +178,13 @@ export default async function BlockDetailsPage({
             <Hourglass className="size-4" /> epoch
           </HeroItemLabel>
           <p className="font-mono tracking-wide">
-            <HidePunctuation>
-              {formatNumber(timestampToEpoch(timestamp))}
-            </HidePunctuation>
+            {timestamp ? (
+              <HidePunctuation>
+                {formatNumber(timestampToEpoch(timestamp))}
+              </HidePunctuation>
+            ) : (
+              <Null />
+            )}
           </p>
         </HeroItem>
       </section>
