@@ -176,6 +176,20 @@
       "when": 1754503525807,
       "tag": "0024_proof-monitoring-cron",
       "breakpoints": true
+    },
+    {
+      "idx": 25,
+      "version": "7",
+      "when": 1759678664227,
+      "tag": "0025_separate-alert-scheduling",
+      "breakpoints": true
+    },
+    {
+      "idx": 26,
+      "version": "7",
+      "when": 1759678776046,
+      "tag": "0026_update-blocks-table",
+      "breakpoints": true
     }
   ]
 }

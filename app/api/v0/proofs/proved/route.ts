@@ -6,7 +6,7 @@ import { TAGS } from "@/lib/constants"
 
 import { db } from "@/db"
 import { clusters, programs, proofs } from "@/db/schema"
-import { findOrCreateBlock } from "@/lib/api/blocks"
+import { updateBlock } from "@/lib/api/blocks"
 import { uploadProofBinary } from "@/lib/api/proof-binaries"
 import { isStorageQuotaExceeded } from "@/lib/api/storage"
 import { getTeam } from "@/lib/api/teams"
@@ -67,7 +67,7 @@ export const POST = withAuth(async ({ request, user, timestamp }) => {
   }
 
   try {
-    const block = await findOrCreateBlock(block_number)
+    const block = await updateBlock(block_number)
     console.log(`[Proved] Block ${block} found by team:`, teamId)
   } catch (error) {
     console.error(

@@ -69,7 +69,7 @@ const ProofRow = ({ proof, block }: ProofRowProps) => {
   const isAvailable = isCompleted(proof) && hasProvedTimestamp(proof)
 
   const timeToProof =
-    isAvailable && proved_timestamp
+    isAvailable && proved_timestamp && block.timestamp
       ? Math.max(
           new Date(proved_timestamp).getTime() -
             new Date(block.timestamp).getTime(),
