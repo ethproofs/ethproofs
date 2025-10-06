@@ -61,7 +61,7 @@ export const columns: ColumnDef<Block>[] = [
       const timestamp = row.original.timestamp
       const formattedTimestamp = timestamp
         ? formatTimeAgo(new Date(timestamp))
-        : "pending"
+        : "-"
 
       return (
         <div className="text-center">
