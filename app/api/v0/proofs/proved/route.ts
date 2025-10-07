@@ -68,10 +68,10 @@ export const POST = withAuth(async ({ request, user, timestamp }) => {
 
   try {
     const block = await updateBlock(block_number)
-    console.log(`[Proved] Block ${block} found by team:`, teamId)
+    console.log(`[Proved] Block ${block} updated by team:`, teamId)
   } catch (error) {
     console.error(
-      `[Proved] Block ${block_number} not found by team:`,
+      `[Proved] Block ${block_number} not updated by team:`,
       teamId,
       error
     )
