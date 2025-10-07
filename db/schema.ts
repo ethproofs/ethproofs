@@ -67,10 +67,10 @@ export const blocks = pgTable(
     block_number: bigint("block_number", { mode: "number" })
       .primaryKey()
       .notNull(),
-    timestamp: timestamp({ withTimezone: true, mode: "string" }).notNull(),
-    gas_used: bigint("gas_used", { mode: "number" }).notNull(),
-    transaction_count: smallint("transaction_count").notNull(),
-    hash: text().notNull(),
+    timestamp: timestamp({ withTimezone: true, mode: "string" }),
+    gas_used: bigint("gas_used", { mode: "number" }),
+    transaction_count: smallint("transaction_count"),
+    hash: text(),
     created_at: timestamp("created_at", {
       withTimezone: true,
       mode: "string",

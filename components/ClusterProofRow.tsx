@@ -37,9 +37,10 @@ export type ClusterProofRowProps = {
 
 export const ClusterProofRow = ({ proof }: ClusterProofRowProps) => {
   const costPerProof = getProvingCost(proof as ProofWithCluster)
-  const costPerMgas = costPerProof
-    ? costPerProof / (proof.block.gas_used / 1e6)
-    : null
+  const costPerMgas =
+    costPerProof && proof.block.gas_used
+      ? costPerProof / (proof.block.gas_used / 1e6)
+      : null
 
   // TODO:TEAM - mobile responsiveness
   return (
@@ -74,7 +75,7 @@ export const ClusterProofRow = ({ proof }: ClusterProofRowProps) => {
         </div>
         <div className="font-sans text-xs text-body-secondary">
           total to proof:{" "}
-          {proof.proved_timestamp ? (
+          {proof.proved_timestamp && proof.block.timestamp ? (
             prettyMs(
               differenceInMilliseconds(
                 new Date(proof.proved_timestamp),

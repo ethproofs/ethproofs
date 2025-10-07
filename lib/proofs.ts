@@ -279,7 +279,7 @@ export const getCostPerProofStats = (
 
 export const getCostPerMgasStats = (
   proofs: ProofWithCluster[] | undefined,
-  gasUsed: number | undefined
+  gasUsed?: number | null
 ): Stats | null => {
   if (!proofs || !proofs.length || !gasUsed) return null
 
@@ -335,9 +335,9 @@ export const getProvingTimeStats = (
 
 export const getTotalTTPStats = (
   proofs: ProofWithCluster[],
-  timestamp: string
+  timestamp?: string | null
 ): Stats | null => {
-  if (!proofs.length) return null
+  if (!proofs.length || !timestamp) return null
 
   const availableProofs = proofs
     .filter(isCompleted)

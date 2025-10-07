@@ -19,26 +19,12 @@ export const findOrCreateBlock = async (blockNumber: number) => {
   })
 
   if (isUndefined(foundBlock)) {
-    console.log("Fetching block data:", blockNumber)
-    let blockData
-    try {
-      blockData = await fetchBlockData(blockNumber)
-    } catch (error) {
-      throw new Error(`[RPC] Upstream error: ${error}`)
-    }
-
-    console.log("Attempting to create block:", blockNumber)
+    console.log("Creating block:", blockNumber)
 
     try {
       const [block] = await db
         .insert(blocks)
-        .values({
-          block_number: blockNumber,
-          gas_used: Number(blockData.gasUsed),
-          transaction_count: blockData.txsCount,
-          timestamp: new Date(Number(blockData.timestamp) * 1000).toISOString(),
-          hash: blockData.hash,
-        })
+        .values({ block_number: blockNumber })
         .onConflictDoUpdate({
           target: [blocks.block_number],
           set: { block_number: blockNumber },
@@ -52,6 +38,41 @@ export const findOrCreateBlock = async (blockNumber: number) => {
   }
 
   return foundBlock.block_number
+}
+
+export const updateBlock = async (blockNumber: number) => {
+  console.log("Fetching block data:", blockNumber)
+  let blockData
+  try {
+    blockData = await fetchBlockData(blockNumber)
+  } catch (error) {
+    throw new Error(`[RPC] Upstream error: ${error}`)
+  }
+
+  console.log("Updating block:", blockNumber)
+
+  const dataToInsert = {
+    block_number: blockNumber,
+    gas_used: Number(blockData.gasUsed),
+    transaction_count: blockData.txsCount,
+    timestamp: new Date(Number(blockData.timestamp) * 1000).toISOString(),
+    hash: blockData.hash,
+  }
+
+  try {
+    const [block] = await db
+      .insert(blocks)
+      .values(dataToInsert)
+      .onConflictDoUpdate({
+        target: [blocks.block_number],
+        set: { ...dataToInsert },
+      })
+      .returning({ block_number: blocks.block_number })
+
+    return block.block_number
+  } catch (error) {
+    throw new Error(`[DB] Error updating block: ${error}`)
+  }
 }
 
 export const fetchBlocksPaginated = async (

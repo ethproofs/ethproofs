@@ -61,7 +61,7 @@ export const columns: ColumnDef<Block>[] = [
       const timestamp = row.original.timestamp
       const formattedTimestamp = timestamp
         ? formatTimeAgo(new Date(timestamp))
-        : "pending"
+        : "-"
 
       return (
         <div className="text-center">
@@ -192,8 +192,6 @@ export const columns: ColumnDef<Block>[] = [
     cell: ({ cell, row }) => {
       const proofs = cell.getValue() as ProofWithCluster[]
       const timestamp = row.original.timestamp
-
-      if (!timestamp) return <Null />
 
       const totalTTPStats = getTotalTTPStats(proofs, timestamp)
       const proofsPerStatusCount = getProofsPerStatusCount(proofs)
