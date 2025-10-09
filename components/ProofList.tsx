@@ -2,7 +2,7 @@ import { ComponentProps, useMemo } from "react"
 
 import type { BlockBase } from "@/lib/types"
 
-import ProofRow from "@/components/ProofRow"
+import { ProofRow } from "@/components/ProofRow"
 
 import NoData from "./NoData"
 

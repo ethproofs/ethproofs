@@ -2,16 +2,16 @@ import { Box, Clock, Coins, Cpu, Hourglass, Layers, Timer } from "lucide-react"
 import type { Metadata } from "next"
 import { notFound } from "next/navigation"
 
-import BasicTabs from "@/components/BasicTabs"
+import { BasicTabs } from "@/components/BasicTabs"
 import CopyButton from "@/components/CopyButton"
 import Null from "@/components/Null"
 import DownloadAllButton from "@/components/proof-buttons/DownloadAllButton"
 import ProofList from "@/components/ProofList"
-import ProofStatus, { ProofStatusInfo } from "@/components/ProofStatus"
+import ProofStatus from "@/components/ProofStatus"
 import { HidePunctuation } from "@/components/StylePunctuation"
 import EthproofsIcon from "@/components/svgs/ethproofs-icon.svg"
 import Timestamp from "@/components/Timestamp"
-import { Card, CardHeader, CardTitle } from "@/components/ui/card"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { HeroItem, HeroItemLabel, HeroTitle } from "@/components/ui/hero"
 import {
   MetricBox,
@@ -19,6 +19,9 @@ import {
   MetricLabel,
   MetricValue,
 } from "@/components/ui/metric"
+import { Separator } from "@/components/ui/separator"
+
+import { truncateHash } from "@/lib/utils"
 
 import {
   getAvailabilityMetrics,
@@ -126,9 +129,9 @@ export default async function BlockDetailsPage({
               <HidePunctuation>{formatNumber(block_number)}</HidePunctuation>
             </p>
           </h1>
-          <div className="flex gap-2 truncate">
-            <div className="truncate font-sans text-sm font-normal text-body-secondary">
-              {hash}
+          <div className="flex items-center gap-2 truncate">
+            <div className="text-sm font-normal text-body-secondary">
+              {truncateHash(hash ?? "", 12, 12)}
             </div>
             {hash ? <CopyButton message={hash} /> : <Null />}
           </div>
@@ -189,49 +192,20 @@ export default async function BlockDetailsPage({
 
       <section className="flex flex-col gap-8 xl:flex-row">
         <Card className="flex-1">
-          <CardHeader className="flex h-16 flex-row justify-between space-y-0">
+          <CardHeader className="flex flex-row justify-between space-y-0">
             <CardTitle className="flex items-center gap-2 text-lg font-normal [&>svg]:shrink-0">
               <Timer className="size-5" /> proof availability
             </CardTitle>
-
             <MetricBox className="py-0">
-              <MetricLabel>
-                <MetricInfo label="status of proofs">
-                  <ProofStatusInfo title="status of proofs" />
-                </MetricInfo>
-              </MetricLabel>
               <MetricValue className="font-normal">
                 <ProofStatus statusCount={proofsPerStatusCount} />
               </MetricValue>
             </MetricBox>
           </CardHeader>
-
-          <div>
-            <div className="text-center text-sm text-primary sm:text-start">
-              multi-machine performance
-            </div>
-            <div className="grid grid-cols-1 place-items-center gap-x-8 text-center sm:grid-cols-2 sm:place-items-start sm:text-start lg:grid-cols-4 xl:grid-cols-2">
-              {multiMachineMetrics.map(({ key, label, description, value }) => (
-                <MetricBox
-                  key={"multi-" + key}
-                  className="row-span-2 grid grid-rows-subgrid"
-                >
-                  <MetricLabel className="flex items-stretch lowercase">
-                    <MetricInfo
-                      label={<span className="h-full lowercase">{label}</span>}
-                    >
-                      {description}
-                    </MetricInfo>
-                  </MetricLabel>
-                  <MetricValue className="font-normal">{value}</MetricValue>
-                </MetricBox>
-              ))}
-            </div>
-          </div>
-
-          <div>
-            <div className="text-center text-sm text-primary sm:text-start">
-              single machine performance
+          <Separator />
+          <CardContent className="p-6">
+            <div className="text-sm text-primary sm:text-start">
+              1x4090 performance
             </div>
             <div className="grid grid-cols-1 place-items-center gap-x-8 text-center sm:grid-cols-2 sm:place-items-start sm:text-start lg:grid-cols-4 xl:grid-cols-2">
               {singleMachineMetrics.map(
@@ -254,44 +228,39 @@ export default async function BlockDetailsPage({
                 )
               )}
             </div>
-          </div>
+            <div className="mt-4 text-center text-sm text-primary sm:text-start">
+              multi-GPU performance
+            </div>
+            <div className="grid grid-cols-1 place-items-center gap-x-8 text-center sm:grid-cols-2 sm:place-items-start sm:text-start lg:grid-cols-4 xl:grid-cols-2">
+              {multiMachineMetrics.map(({ key, label, description, value }) => (
+                <MetricBox
+                  key={"multi-" + key}
+                  className="row-span-2 grid grid-rows-subgrid"
+                >
+                  <MetricLabel className="flex items-stretch lowercase">
+                    <MetricInfo
+                      label={<span className="h-full lowercase">{label}</span>}
+                    >
+                      {description}
+                    </MetricInfo>
+                  </MetricLabel>
+                  <MetricValue className="font-normal">{value}</MetricValue>
+                </MetricBox>
+              ))}
+            </div>
+          </CardContent>
         </Card>
 
         <Card className="flex-1">
-          <CardHeader className="flex h-16 flex-row items-center">
+          <CardHeader className="flex flex-row items-center">
             <CardTitle className="flex items-center gap-2 text-lg font-normal [&>svg]:shrink-0">
               <Coins className="size-5" /> proof costs
             </CardTitle>
           </CardHeader>
-
-          <div>
+          <Separator />
+          <CardContent className="p-6">
             <div className="text-center text-sm text-primary sm:text-start">
-              multi-machine performance
-            </div>
-            <div className="grid grid-cols-1 place-items-center gap-x-8 text-center sm:grid-cols-2 sm:place-items-start sm:text-start lg:grid-cols-4 xl:grid-cols-2">
-              {multiMachineBlockFeeMetrics.map(
-                ({ key, label, description, value }) => (
-                  <MetricBox
-                    key={key}
-                    className="row-span-2 grid grid-rows-subgrid"
-                  >
-                    <MetricLabel>
-                      <MetricInfo
-                        label={<span className="lowercase">{label}</span>}
-                      >
-                        {description}
-                      </MetricInfo>
-                    </MetricLabel>
-                    <MetricValue className="font-normal">{value}</MetricValue>
-                  </MetricBox>
-                )
-              )}
-            </div>
-          </div>
-
-          <div>
-            <div className="text-center text-sm text-primary sm:text-start">
-              single machine performance
+              1x4090 performance
             </div>
             <div className="grid grid-cols-1 place-items-center gap-x-8 text-center sm:grid-cols-2 sm:place-items-start sm:text-start lg:grid-cols-4 xl:grid-cols-2">
               {singleMachineBlockFeeMetrics.map(
@@ -312,14 +281,36 @@ export default async function BlockDetailsPage({
                 )
               )}
             </div>
-          </div>
+            <div className="mt-4 text-center text-sm text-primary sm:text-start">
+              multi-GPU performance
+            </div>
+            <div className="grid grid-cols-1 place-items-center gap-x-8 text-center sm:grid-cols-2 sm:place-items-start sm:text-start lg:grid-cols-4 xl:grid-cols-2">
+              {multiMachineBlockFeeMetrics.map(
+                ({ key, label, description, value }) => (
+                  <MetricBox
+                    key={key}
+                    className="row-span-2 grid grid-rows-subgrid"
+                  >
+                    <MetricLabel>
+                      <MetricInfo
+                        label={<span className="lowercase">{label}</span>}
+                      >
+                        {description}
+                      </MetricInfo>
+                    </MetricLabel>
+                    <MetricValue className="font-normal">{value}</MetricValue>
+                  </MetricBox>
+                )
+              )}
+            </div>
+          </CardContent>
         </Card>
       </section>
 
       <section>
-        <div className="flex justify-between md:mb-4">
+        <div className="flex items-center justify-between md:mb-4">
           <h2 className="flex items-center gap-2 text-lg font-normal text-primary">
-            <EthproofsIcon /> proofs
+            <EthproofsIcon className="size-5" /> proofs
           </h2>
           {proofs.length >= 1 && (
             <DownloadAllButton
@@ -330,6 +321,7 @@ export default async function BlockDetailsPage({
         </div>
 
         <BasicTabs
+          className="px-0"
           contentLeft={<ProofList proofs={multiMachineProofs} block={block} />}
           contentRight={
             <ProofList proofs={singleMachineProofs} block={block} />

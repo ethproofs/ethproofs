@@ -4,7 +4,7 @@ import { notFound } from "next/navigation"
 
 import type { SummaryItem, Team, Zkvm } from "@/lib/types"
 
-import BasicTabs from "@/components/BasicTabs"
+import { BasicTabs } from "@/components/BasicTabs"
 import ClusterTable from "@/components/ClusterTable"
 import { DisplayTeam } from "@/components/DisplayTeamLink"
 import KPIs from "@/components/KPIs"
@@ -181,13 +181,13 @@ export default async function TeamDetailsPage({
       <div className="mx-auto max-w-screen-xl space-y-20 [&>section]:w-full">
         <section className="grid grid-cols-1 gap-6 md:grid-cols-2">
           <Card className="!space-y-0">
-            <CardHeader className="">multi-machine performance</CardHeader>
+            <CardHeader className="">multi-GPU performance</CardHeader>
             <CardContent>
               <KPIs items={multiMachineSummary} layout="flipped" />
             </CardContent>
           </Card>
           <Card className="!space-y-0">
-            <CardHeader className="">single machine performance</CardHeader>
+            <CardHeader className="">1x4090 performance</CardHeader>
             <CardContent>
               <KPIs items={singleMachineSummary} layout="flipped" />
             </CardContent>
@@ -197,8 +197,8 @@ export default async function TeamDetailsPage({
         {zkvms.length > 0 && <ZkvmProvidersAside team={team} zkvms={zkvms} />}
 
         <BasicTabs
-          contentRight={<ClusterTable clusters={singleMachineClusters} />}
-          contentLeft={<ClusterTable clusters={multiMachineClusters} />}
+          contentLeft={<ClusterTable clusters={singleMachineClusters} />}
+          contentRight={<ClusterTable clusters={multiMachineClusters} />}
         />
       </div>
     </div>

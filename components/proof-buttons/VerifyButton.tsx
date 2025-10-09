@@ -43,13 +43,12 @@ interface VerifyButtonProps {
   containerClass?: string
   labelClass?: string
 }
-
-const VerifyButton = ({
+export function VerifyButton({
   className,
   proof,
   containerClass = "flex-col",
   labelClass,
-}: VerifyButtonProps) => {
+}: VerifyButtonProps) {
   const { proof_status, proof_id, size_bytes } = proof
   const [buttonState, setButtonState] = useState<ProofButtonState>("verify")
   const { downloadProof, downloadProgress, downloadSpeed } = useDownloadProof()
@@ -104,7 +103,7 @@ const VerifyButton = ({
         >
           <Button
             disabled={buttonState === "disabled" || buttonState !== "verify"}
-            variant={buttonState === "disabled" ? "secondary" : "outline"}
+            variant="outline"
             className={cn(
               sizingClassName,
               getProofButtonClasses(buttonState),
@@ -177,5 +176,3 @@ const VerifyButton = ({
       </WasmErrorBoundary>
     )
 }
-
-export default VerifyButton
