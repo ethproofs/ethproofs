@@ -8,6 +8,7 @@ import { toast } from "sonner"
 import type { Proof, Team } from "@/lib/types"
 
 import { cn } from "@/lib/utils"
+import { delay } from "@/lib/utils"
 
 import StatusIcon from "../StatusIcon"
 import { Button } from "../ui/button"
@@ -21,7 +22,6 @@ import {
 } from "./utils"
 
 import { useAnimateCheckmark } from "@/hooks/useAnimateCheckmark"
-import { delay } from "@/lib/utils"
 
 export type ProofForDownload = Required<
   Pick<Proof, "proof_status" | "proof_id" | "size_bytes">

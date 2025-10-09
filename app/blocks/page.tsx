@@ -33,7 +33,7 @@ export default async function BlocksPage() {
 
   return (
     <div className="mx-auto mt-2 flex max-w-screen-xl flex-1 flex-col items-center gap-20 [&>section]:w-full">
-      <section>
+      <section className="mb-6 px-6">
         <BasicTabs
           contentRight={
             <HydrationBoundary state={dehydrate(queryClient)}>

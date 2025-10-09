@@ -14,7 +14,11 @@ import { DataTableRowActions } from "../data-table/data-table-row-actions"
 import Null from "../Null"
 import ProofStatus from "../ProofStatus"
 import { HidePunctuation } from "../StylePunctuation"
+import { DropdownMenuItem } from "../ui/dropdown-menu"
 import { Progress } from "../ui/progress"
+
+import BlockMetric from "./block-metric"
+import { BlockViewer } from "./block-viewer"
 
 import { formatTimeAgo } from "@/lib/date"
 import { formatNumber } from "@/lib/number"
@@ -25,7 +29,6 @@ import {
   getProvingTimeStats,
   getTotalTTPStats,
 } from "@/lib/proofs"
-import BlockMetric from "./block-metric"
 
 export const labels = [
   {
@@ -86,19 +89,11 @@ export const columns: ColumnDef<Block>[] = [
       <DataTableColumnHeader column={column} title="block" />
     ),
     cell: ({ row }) => {
-      const blockNumber = row.getValue("block_number") as number
-
-      const timestamp = row.original.timestamp
-      const formattedTimestamp = timestamp
-        ? formatTimeAgo(new Date(timestamp))
-        : "pending"
+      // const blockNumber = row.getValue("block_number") as number
 
       return (
         <div className="w-[100px]">
-          <BlockNumber blockNumber={blockNumber} />
-          <div className="text-muted-foreground text-xs">
-            {formattedTimestamp}
-          </div>
+          <BlockViewer row={row} />
         </div>
       )
     },
@@ -126,7 +121,7 @@ export const columns: ColumnDef<Block>[] = [
             value={percentGasUsage}
             className="mx-auto my-[6px] h-2 max-w-32"
           />
-          <span className="text-muted-foreground text-xs">
+          <span className="text-xs text-muted-foreground">
             <HidePunctuation>{formatted}</HidePunctuation>
           </span>
         </div>
@@ -211,7 +206,7 @@ export const columns: ColumnDef<Block>[] = [
       return (
         <div className="min-w-[150px]">
           <ProofStatus statusCount={proofsPerStatusCount} />
-          <span className="text-muted-foreground block text-xs">
+          <span className="block text-xs text-muted-foreground">
             {totalTTPStats?.bestFormatted ?? <Null />}
           </span>
         </div>
@@ -223,6 +218,14 @@ export const columns: ColumnDef<Block>[] = [
   },
   {
     id: "actions",
-    cell: ({ row }) => <DataTableRowActions row={row} />,
+    cell: () => (
+      <DataTableRowActions
+        options={
+          <>
+            <DropdownMenuItem>Placeholder</DropdownMenuItem>
+          </>
+        }
+      />
+    ),
   },
 ]

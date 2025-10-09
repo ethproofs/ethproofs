@@ -9,7 +9,6 @@ import {
   getFacetedRowModel,
   getFacetedUniqueValues,
   getFilteredRowModel,
-  getPaginationRowModel,
   getSortedRowModel,
   OnChangeFn,
   PaginationState,
@@ -26,6 +25,8 @@ import {
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
+
+import { cn } from "@/lib/utils"
 
 import { DataTablePagination } from "./data-table-pagination"
 import { DataTableToolbar } from "./data-table-toolbar"
@@ -81,7 +82,7 @@ export function DataTable<TData, TValue>({
   })
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className={cn("flex flex-col gap-4", className)}>
       <DataTableToolbar table={table} />
       <div className="overflow-hidden rounded-md border">
         <Table>

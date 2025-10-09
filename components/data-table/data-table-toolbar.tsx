@@ -3,13 +3,14 @@
 import { Download, X as Reset } from "lucide-react"
 import { Table } from "@tanstack/react-table"
 
+import type { Block } from "@/lib/types"
+
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 
-import { exportBlocksToCSV } from "@/lib/csv-export"
-import type { Block } from "@/lib/types"
-
 import { DataTableViewOptions } from "./data-table-view-options"
+
+import { exportBlocksToCSV } from "@/lib/csv-export"
 
 interface DataTableToolbarProps<TData> {
   table: Table<TData>
@@ -26,12 +27,18 @@ export function DataTableToolbar<TData>({
     if (selectedRowsCount === 0) {
       // Export all visible rows if none selected
       const allRows = table.getFilteredRowModel().rows
-      const blocksToExport = allRows.map(row => row.original as Block)
-      exportBlocksToCSV(blocksToExport, `blocks-all-${new Date().toISOString().split('T')[0]}`)
+      const blocksToExport = allRows.map((row) => row.original as Block)
+      exportBlocksToCSV(
+        blocksToExport,
+        `blocks-all-${new Date().toISOString().split("T")[0]}`
+      )
     } else {
       // Export only selected rows
-      const blocksToExport = selectedRows.map(row => row.original as Block)
-      exportBlocksToCSV(blocksToExport, `blocks-selected-${new Date().toISOString().split('T')[0]}`)
+      const blocksToExport = selectedRows.map((row) => row.original as Block)
+      exportBlocksToCSV(
+        blocksToExport,
+        `blocks-selected-${new Date().toISOString().split("T")[0]}`
+      )
     }
   }
 

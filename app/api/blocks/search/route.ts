@@ -14,7 +14,7 @@ export async function GET(request: NextRequest) {
     return new Response("query search param is required", { status: 400 })
   }
 
-  // if the query is not a hash or a block number, return null
+  // If the query is not a hash or a block number, return null
   if (!isHash(query) && !Number.isInteger(Number(query))) {
     return Response.json(null)
   }

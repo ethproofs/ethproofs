@@ -74,8 +74,8 @@ const BlocksSection = async () => {
       </CardHeader>
 
       <BasicTabs
-        contentRight={<SimpleBlockTable machineType="single" />}
-        contentLeft={<SimpleBlockTable machineType="multi" />}
+        contentRight={<SimpleBlockTable machineType="multi" />}
+        contentLeft={<SimpleBlockTable machineType="single" />}
       />
 
       <div className="flex justify-center">

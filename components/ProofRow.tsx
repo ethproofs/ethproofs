@@ -113,21 +113,6 @@ const ProofRow = ({ proof, block }: ProofRowProps) => {
           )}
         </div>
       </div>
-      <div
-        className={cn(
-          "ms-auto self-center",
-          "col-span-2 col-start-3 row-start-1",
-          "sm:col-span-2 sm:col-start-3 sm:row-start-1",
-          "xl:col-span-1 xl:col-start-6 xl:row-start-1"
-        )}
-      >
-        <DownloadButton
-          proof={proof}
-          className="sm:max-xl:w-40 lg:w-40"
-          labelClass="hidden sm:inline-block"
-          containerClass="flex-row-reverse xl:flex-col-reverse"
-        />
-      </div>
       <MetricBox
         className={cn(
           "col-span-2 col-start-1 row-start-2",
@@ -332,6 +317,21 @@ const ProofRow = ({ proof, block }: ProofRowProps) => {
             <Null />
           )}
         </MetricValue>
+      </MetricBox>
+      <MetricBox
+        className={cn(
+          "ms-auto self-center",
+          "col-span-2 col-start-3 row-start-1",
+          "sm:col-span-2 sm:col-start-3 sm:row-start-1",
+          "xl:col-span-1 xl:col-start-6 xl:row-start-1"
+        )}
+      >
+        <DownloadButton
+          proof={proof}
+          className="sm:max-xl:w-40 lg:w-40"
+          labelClass="hidden sm:inline-block"
+          containerClass="flex-row-reverse xl:flex-col-reverse"
+        />
       </MetricBox>
     </div>
   )

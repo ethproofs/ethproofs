@@ -39,7 +39,7 @@ export async function delay(ms: number) {
   return new Promise((resolve) => setTimeout(resolve, ms))
 }
 
-export function truncateHash(hash: string, start = 6, end = 4): string {
+export function truncateHash(hash: string, start = 6, end = 6): string {
   return `${hash.slice(0, start)}...${hash.slice(-end)}`
 }
 

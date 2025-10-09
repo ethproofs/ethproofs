@@ -1,3 +1,5 @@
+import { cn } from "@/lib/utils"
+
 import Null from "./Null"
 
 type StylePunctuationProps = {
@@ -18,14 +20,14 @@ const StylePunctuation = ({
     )
   })
 
-type HidePunctuationProps = {
+interface HidePunctuationProps {
   children: string
+  className?: string
 }
-
-const HidePunctuation = ({ children }: HidePunctuationProps) => {
+const HidePunctuation = ({ children, className }: HidePunctuationProps) => {
   if (children === "-") return <Null />
   return (
-    <StylePunctuation className="invisible select-none">
+    <StylePunctuation className={cn("invisible select-none", className)}>
       {children}
     </StylePunctuation>
   )

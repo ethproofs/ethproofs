@@ -4,7 +4,7 @@ import { useFormState } from "react-dom"
 
 import type { Team } from "@/lib/types"
 
-import CopyButton from "../CopyButton"
+import { CopyButton } from "../CopyButton"
 import {
   Select,
   SelectContent,

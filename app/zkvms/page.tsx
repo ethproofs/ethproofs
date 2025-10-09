@@ -15,7 +15,7 @@ export default async function ZkvmsPage() {
       </h1>
 
       <div className="mx-auto flex max-w-screen-xl flex-1 flex-col items-center gap-20 [&>section]:w-full">
-        <section className="overflow-x-auto">
+        <section className="mb-6 overflow-x-auto px-6">
           <BasicTabs
             defaultTab="left"
             contentLeft={<SoftwareAccordion type="active" />}

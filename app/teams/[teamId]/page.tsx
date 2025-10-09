@@ -12,7 +12,7 @@ import Null from "@/components/Null"
 import GitHubLogo from "@/components/svgs/github-logo.svg"
 import XLogo from "@/components/svgs/x-logo.svg"
 import { Card, CardContent, CardHeader } from "@/components/ui/card"
-import { HeroBody, HeroItem, HeroItemLabel } from "@/components/ui/hero"
+import { HeroBody, HeroItem, HeroItemLabel } from "@/components/ui/hero-old"
 import Link from "@/components/ui/link"
 import ZkvmProvidersAside from "@/components/ZkvmProvidersAside"
 

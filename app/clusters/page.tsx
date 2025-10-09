@@ -42,7 +42,7 @@ export default async function ClustersPage() {
       </div>
 
       <div className="mx-auto flex max-w-screen-xl flex-1 flex-col items-center gap-20 [&>section]:w-full">
-        <section>
+        <section className="mb-6 px-6">
           <BasicTabs
             contentRight={<ClusterAccordion clusters={singleMachineClusters} />}
             contentLeft={<ClusterAccordion clusters={multiMachineClusters} />}

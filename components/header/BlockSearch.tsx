@@ -16,7 +16,7 @@ export function BlockSearch() {
         {
           id: blockMatch.block_number,
           href: `/blocks/${blockMatch[isHash(query) ? "hash" : "block_number"]}`,
-          blockHash: blockMatch.hash,
+          blockHash: blockMatch.hash ?? "",
           blockNumber: blockMatch.block_number,
           provedProofs: blockMatch.proofs.filter(
             (p) => p.proof_status === "proved"

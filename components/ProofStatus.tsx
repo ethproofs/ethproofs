@@ -46,7 +46,7 @@ const ProofStatus = ({
   ...props
 }: ProofStatusProps) => {
   return (
-    <figure className={cn("flex items-start gap-4", className)} {...props}>
+    <figure className={cn("flex items-start gap-2", className)} {...props}>
       {ORDERED_STATUSES.map((status) => {
         const count = statusCount[status] ?? 0
         // Hide if no proofs for that status
