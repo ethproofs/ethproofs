@@ -45,9 +45,8 @@ export async function GET(
   }
 
   const arrayBuffer = await blob.arrayBuffer()
-  const buffer = Buffer.from(arrayBuffer)
 
-  return new Response(buffer, {
+  return new Response(arrayBuffer, {
     status: 200,
     headers: {
       "Content-Type": "application/octet-stream",
