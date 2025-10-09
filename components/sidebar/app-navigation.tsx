@@ -44,13 +44,13 @@ export function AppNavigation() {
           </SidebarMenuItem>
         ))}
       </SidebarMenu>
-      {/* <SidebarGroupLabel>more</SidebarGroupLabel>
+      <SidebarGroupLabel>more</SidebarGroupLabel>
       <SidebarMenu>
         {moreNavItems.map((item) => (
           <SidebarMenuItem key={item.label}>
             <SidebarMenuButton
               asChild
-              isActive={item.label === activeItem.label}
+              isActive={item.label === activeItem?.label}
             >
               <Link
                 hideArrow
@@ -64,7 +64,7 @@ export function AppNavigation() {
             </SidebarMenuButton>
           </SidebarMenuItem>
         ))}
-      </SidebarMenu> */}
+      </SidebarMenu>
     </SidebarGroup>
   )
 }

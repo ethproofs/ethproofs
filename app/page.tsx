@@ -24,7 +24,7 @@ export default async function Index() {
     <>
       <div className="relative">
         <div className="absolute inset-0 flex items-center justify-center sm:items-start md:items-center">
-          <EthproofsLineworkIcon className="h-96 w-96 text-muted-foreground opacity-20 md:h-[28rem] md:w-[28rem] lg:h-[36rem] lg:w-[36rem]" />
+          <EthproofsLineworkIcon className="h-96 w-96 text-muted-foreground opacity-20 md:h-[36rem] md:w-[36rem] lg:h-[48rem] lg:w-[48rem]" />
         </div>
 
         <h1 className="relative z-10 mb-24 mt-16 px-0 text-center text-3xl font-semibold md:mt-24 md:px-8">

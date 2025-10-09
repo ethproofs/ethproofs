@@ -124,9 +124,7 @@ export default async function ClusterDetailsPage({
         <h1 className="text-4xl font-semibold">{cluster.nickname}</h1>
 
         <div className="text-center font-sans text-sm">
-          {cluster.is_multi_machine
-            ? "multi-machine cluster"
-            : "single machine cluster"}
+          {cluster.is_multi_machine ? "multi-GPU cluster" : "1x4090 cluster"}
         </div>
         {team && (
           <DisplayTeam
@@ -138,7 +136,7 @@ export default async function ClusterDetailsPage({
         )}
       </div>
 
-      <Card className="mx-auto w-fit">
+      <Card className="mx-auto w-fit p-6">
         <KPIs items={clusterSummaryItems} layout="flipped" />
       </Card>
 
@@ -151,7 +149,7 @@ export default async function ClusterDetailsPage({
       )}
 
       {cluster.software_link && (
-        <aside className="flex items-center justify-center gap-2 rounded bg-background-accent px-6 py-4 text-center">
+        <aside className="flex items-center justify-center gap-2 rounded bg-accent px-6 py-4 text-center">
           download the binary
           <Link
             href={cluster.software_link}
@@ -309,11 +307,10 @@ export default async function ClusterDetailsPage({
         </section>
       )}
 
-      <section className="flex flex-col">
-        <div className="flex items-center gap-2 px-6">
-          <Box strokeWidth="1" className="size-11" />
-          <div className="text-xl">latest proofs</div>
-        </div>
+      <section>
+        <h2 className="flex items-center gap-2 text-lg font-normal text-primary">
+          <Box className="size-5" /> latest proofs
+        </h2>
         {latestProofs.length ? (
           latestProofs.map((proof) => (
             <ClusterProofRow key={proof.proof_id} proof={proof} />

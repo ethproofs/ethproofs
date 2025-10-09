@@ -7,11 +7,17 @@ import {
 
 import type { SummaryItem } from "@/lib/types"
 
-import BasicTabs from "../BasicTabs"
+import { BasicTabs } from "../BasicTabs"
 import KPIs from "../KPIs"
 import SimpleBlockTable from "../SimpleBlockTable"
 import { ButtonLink } from "../ui/button"
-import { Card, CardHeader, CardTitle } from "../ui/card"
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "../ui/card"
 
 import { fetchProofsPerStatusCount, lastProvedProof } from "@/lib/api/proofs"
 import { prettyMs } from "@/lib/time"
@@ -63,27 +69,28 @@ const BlocksSection = async () => {
 
   return (
     <Card className="!p-0 !pb-6 md:!pb-8">
-      <CardHeader className="flex items-center justify-between px-6 pb-0 md:px-12 xl:flex-row max-xl:[&>div]:w-full">
+      <CardHeader className="flex items-center justify-between md:px-12 xl:flex-row max-xl:[&>div]:w-full">
         <CardTitle className="text-3xl font-normal tracking-[1px] max-xl:mt-8">
           latest blocks
         </CardTitle>
-
-        <div className="py-4">
+        <div>
           <KPIs items={blocksSummary} />
         </div>
       </CardHeader>
 
-      <BasicTabs
-        defaultTab="left"
-        contentRight={<SimpleBlockTable machineType="single" />}
-        contentLeft={<SimpleBlockTable machineType="multi" />}
-      />
+      <CardContent className="px-0 pt-6">
+        <BasicTabs
+          defaultTab="left"
+          contentRight={<SimpleBlockTable machineType="single" />}
+          contentLeft={<SimpleBlockTable machineType="multi" />}
+        />
+      </CardContent>
 
-      <div className="flex justify-center">
+      <CardFooter className="justify-center">
         <ButtonLink variant="outline" href="/blocks" className="min-w-40">
           see all
         </ButtonLink>
-      </div>
+      </CardFooter>
     </Card>
   )
 }

@@ -118,8 +118,8 @@ export default async function ZkvmDetailsPage({
       </div>
 
       <div className="mx-auto max-w-screen-xl">
-        <section className="mx-6 mt-40 px-6 md:mx-auto md:px-8">
-          <h2 className="flex items-center gap-2 text-lg font-normal text-primary">
+        <section className="mt-12">
+          <h2 className="flex items-center gap-2 px-6 text-lg font-normal text-primary">
             <Box className="size-11 text-primary" strokeWidth="1" />
             active clusters using {zkvm.name}: {zkvm.activeClusters} /{" "}
             {zkvm.totalClusters}

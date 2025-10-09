@@ -1,6 +1,6 @@
 import type { Metadata } from "next"
 
-import BasicTabs from "@/components/BasicTabs"
+import { BasicTabs } from "@/components/BasicTabs"
 import SoftwareAccordion from "@/components/SoftwareAccordion"
 
 import { getMetadata } from "@/lib/metadata"
