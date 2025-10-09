@@ -1,6 +1,7 @@
 import { headers } from "next/headers"
 
 import { hashToken } from "../auth/hash-token"
+import { authFailures } from "../otel-metrics"
 
 import { withTelemetry } from "./with-telemetry"
 
@@ -28,6 +29,7 @@ export const withAuth = (
     }
 
     if (!apiKey) {
+      authFailures.add(1)
       return new Response("No API key provided", {
         status: 401,
       })
@@ -44,6 +46,7 @@ export const withAuth = (
 
     // api key is invalid
     if (!apiAuthToken) {
+      authFailures.add(1)
       return new Response("Invalid API key", {
         status: 401,
       })

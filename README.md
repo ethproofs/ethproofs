@@ -62,6 +62,20 @@ Sync the database schema with the seed file.
 pnpm seed:sync
 ```
 
+## Monitoring & Observability
+
+The backend is instrumented with OpenTelemetry for distributed tracing, metrics, and structured logging.
+
+Tracing is disabled by default. To enable it, set the OTLP endpoint in your `.env` file:
+
+```bash
+# DataDog example
+OTEL_EXPORTER_OTLP_ENDPOINT=http://localhost:4317
+OTEL_EXPORTER_OTLP_HEADERS={}
+
+# Or use Honeycomb, Axiom, Grafana Cloud, etc.
+```
+
 ## Cron jobs
 
 This project uses the [`pg_cron`](https://github.com/citusdata/pg_cron) extension within Supabase to automate important database maintenance tasks.

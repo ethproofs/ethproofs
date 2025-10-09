@@ -2,6 +2,7 @@ import { NextResponse } from "next/server"
 import { z } from "zod"
 
 import { fetchProofsFiltered } from "@/lib/api/proofs"
+import { logger } from "@/lib/logger"
 
 const querySchema = z.object({
   block: z.coerce.number().int().positive().optional(),
@@ -41,7 +42,7 @@ export async function GET(req: Request) {
       return NextResponse.json(error.issues, { status: 422 })
     }
 
-    console.error(error)
+    logger.error("Failed to fetch proofs", error)
     return new Response("Internal Server Error", { status: 500 })
   }
 }

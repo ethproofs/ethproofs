@@ -1,6 +1,7 @@
 import { createPublicClient, fallback, http } from "viem"
 import { mainnet } from "viem/chains"
 
+import { logger } from "./logger"
 import { Block, Team } from "./types"
 
 const rpcUrl = process.env.RPC_URL
@@ -12,16 +13,18 @@ export const client = createPublicClient({
     http(rpcUrl, {
       retryCount: 5,
       onFetchRequest() {
-        console.log("RPC request initiated")
+        logger.debug("RPC request initiated", { rpc: "primary" })
       },
       onFetchResponse(resp) {
         if (!resp.ok) {
-          console.warn("RPC request failed:", {
+          logger.warn("RPC request failed", {
+            rpc: "primary",
             status: resp.status,
-            statusText: resp.statusText,
+            status_text: resp.statusText,
           })
         } else {
-          console.log("RPC request succeeded:", {
+          logger.debug("RPC request succeeded", {
+            rpc: "primary",
             status: resp.status,
           })
         }
@@ -30,16 +33,18 @@ export const client = createPublicClient({
     http(rpcUrlFallback, {
       retryCount: 5,
       onFetchRequest() {
-        console.log("Fallback RPC request initiated")
+        logger.debug("Fallback RPC request initiated", { rpc: "fallback" })
       },
       onFetchResponse(resp) {
         if (!resp.ok) {
-          console.warn("Fallback RPC request failed:", {
+          logger.warn("Fallback RPC request failed", {
+            rpc: "fallback",
             status: resp.status,
-            statusText: resp.statusText,
+            status_text: resp.statusText,
           })
         } else {
-          console.log("Fallback RPC request succeeded:", {
+          logger.debug("Fallback RPC request succeeded", {
+            rpc: "fallback",
             status: resp.status,
           })
         }

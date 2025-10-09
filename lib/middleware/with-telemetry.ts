@@ -1,4 +1,7 @@
+import { SpanStatusCode, trace } from "@opentelemetry/api"
 import { md } from "@vlad-yakovlev/telegram-md"
+
+import { logger } from "../logger"
 
 const LAMBDA_TIMEOUT_MS = 30000
 const RUNTIME = process.env.NEXT_RUNTIME ?? "node" // "edge" | "node"
@@ -31,7 +34,7 @@ const sample = (rate: number) => {
 
 const safeSend = (p: Promise<unknown>) => {
   // Ensure telemetry never explodes the request on success paths
-  p.catch((err) => console.error("[telemetry] send failed:", err))
+  p.catch((err) => logger.error("Telegram send failed", err))
 }
 
 const sendReport = async (message: string, report: Report) => {
@@ -58,7 +61,7 @@ const sendReport = async (message: string, report: Report) => {
 
   if (!response.ok) {
     const error = await response.json()
-    console.error("Failed to send report to telegram", error)
+    logger.error("Failed to send report to telegram", undefined, { error })
   }
 }
 
@@ -69,93 +72,159 @@ export const withTelemetry = (
   const sampleRate = opts?.sampleRate ?? 0
 
   return async (request: Request) => {
-    const t0 = performance.now()
-    const nowIso = new Date().toISOString()
+    const tracer = trace.getTracer("ethproofs")
     const url = new URL(request.url)
+    const spanName = `${request.method} ${url.pathname}`
 
-    const reportBase: Report = {
-      date: nowIso,
-      startTimeMs: Date.now(),
-      endTimeMs: Date.now(),
-      durationMs: 0,
-      method: request.method,
-      path: url.pathname,
-    }
+    return tracer.startActiveSpan(spanName, async (span) => {
+      const t0 = performance.now()
+      const nowIso = new Date().toISOString()
 
-    // Pre-timeout warning
-    const enableTimeoutWarn =
-      Number.isFinite(FUNCTION_TIMEOUT_MS) && FUNCTION_TIMEOUT_MS > 0
-    const timeoutDelay = Math.max(FUNCTION_TIMEOUT_MS - TIMEOUT_HEADROOM_MS, 0)
+      // Add span attributes
+      span.setAttributes({
+        "http.method": request.method,
+        "http.url": request.url,
+        "http.target": url.pathname,
+        "http.host": url.hostname,
+      })
 
-    let timeoutId: ReturnType<typeof setTimeout> | undefined
+      const reportBase: Report = {
+        date: nowIso,
+        startTimeMs: Date.now(),
+        endTimeMs: Date.now(),
+        durationMs: 0,
+        method: request.method,
+        path: url.pathname,
+      }
 
-    if (enableTimeoutWarn) {
-      timeoutId = setTimeout(() => {
+      // Pre-timeout warning
+      const enableTimeoutWarn =
+        Number.isFinite(FUNCTION_TIMEOUT_MS) && FUNCTION_TIMEOUT_MS > 0
+      const timeoutDelay = Math.max(
+        FUNCTION_TIMEOUT_MS - TIMEOUT_HEADROOM_MS,
+        0
+      )
+
+      let timeoutId: ReturnType<typeof setTimeout> | undefined
+
+      if (enableTimeoutWarn) {
+        timeoutId = setTimeout(() => {
+          const end = performance.now()
+          const durationMs = end - t0
+          const warn: Report = {
+            ...reportBase,
+            endTimeMs: Date.now(),
+            durationMs,
+            statusCode: 500,
+            errorMessage: `${RUNTIME} function timeout imminent`,
+          }
+
+          logger.warn("Function timeout imminent", {
+            method: warn.method,
+            path: warn.path,
+            duration_ms: durationMs,
+            runtime: RUNTIME,
+          })
+
+          // Still send to Telegram for now (will be removed later)
+          safeSend(
+            sendReport(
+              `[timeout warning] ${warn.method} ${warn.path} 500 in ${warn.durationMs.toFixed(1)}ms ${warn.date}`,
+              warn
+            )
+          )
+        }, timeoutDelay)
+      }
+
+      try {
+        const response = await handler(request)
         const end = performance.now()
         const durationMs = end - t0
-        const warn: Report = {
+
+        const status = response.status
+        const rep: Report = {
+          ...reportBase,
+          endTimeMs: Date.now(),
+          durationMs,
+          statusCode: status,
+        }
+
+        // Add status to span
+        span.setAttribute("http.status_code", status)
+        span.setStatus({
+          code: status >= 500 ? SpanStatusCode.ERROR : SpanStatusCode.OK,
+        })
+
+        // Structured logging instead of console.log
+        logger.info("Request completed", {
+          method: rep.method,
+          path: rep.path,
+          status_code: status,
+          duration_ms: durationMs,
+        })
+
+        // Still send to Telegram for now (will be removed later)
+        // Always await on 5xx; sample others to avoid latency + cost
+        if (status >= 500) {
+          await sendReport(
+            `${rep.method} ${rep.path} ${status} in ${durationMs.toFixed(1)}ms ${rep.date}`,
+            rep
+          )
+        } else if (
+          status >= 400
+            ? sample(Math.max(sampleRate, 0.1))
+            : sample(sampleRate)
+        ) {
+          safeSend(
+            sendReport(
+              `${rep.method} ${rep.path} ${status} in ${durationMs.toFixed(1)}ms ${rep.date}`,
+              rep
+            )
+          ) // fire-and-forget
+        }
+
+        return response
+      } catch (err) {
+        const end = performance.now()
+        const durationMs = end - t0
+
+        const rep: Report = {
           ...reportBase,
           endTimeMs: Date.now(),
           durationMs,
           statusCode: 500,
-          errorMessage: `${RUNTIME} function timeout imminent`,
+          errorMessage: err instanceof Error ? err.message : "Unknown error",
         }
-        safeSend(
-          sendReport(
-            `[timeout warning] ${warn.method} ${warn.path} 500 in ${warn.durationMs.toFixed(1)}ms ${warn.date}`,
-            warn
-          )
+
+        // Record exception in span
+        if (err instanceof Error) {
+          span.recordException(err)
+        }
+        span.setStatus({
+          code: SpanStatusCode.ERROR,
+          message: rep.errorMessage,
+        })
+        span.setAttribute("http.status_code", 500)
+
+        // Structured error logging
+        logger.error("Unhandled request error", err, {
+          method: rep.method,
+          path: rep.path,
+          duration_ms: durationMs,
+        })
+
+        // Still send to Telegram for now (will be removed later)
+        // Await to maximize chance we capture the crash
+        await sendReport(
+          `[unhandled error] ${rep.method} ${rep.path} 500 in ${durationMs.toFixed(1)}ms ${rep.date}`,
+          rep
         )
-      }, timeoutDelay)
-    }
 
-    try {
-      const response = await handler(request)
-      const end = performance.now()
-      const durationMs = end - t0
-
-      const status = response.status
-      const rep: Report = {
-        ...reportBase,
-        endTimeMs: Date.now(),
-        durationMs,
-        statusCode: status,
+        throw err
+      } finally {
+        if (timeoutId) clearTimeout(timeoutId)
+        span.end()
       }
-
-      const line = `${rep.method} ${rep.path} ${status} in ${durationMs.toFixed(1)}ms ${rep.date}`
-      console.log("[telemetry]", line)
-
-      // Always await on 5xx; sample others to avoid latency + cost
-      if (status >= 500) {
-        await sendReport(line, rep)
-      } else if (
-        status >= 400 ? sample(Math.max(sampleRate, 0.1)) : sample(sampleRate)
-      ) {
-        safeSend(sendReport(line, rep)) // fire-and-forget
-      }
-
-      return response
-    } catch (err) {
-      const end = performance.now()
-      const durationMs = end - t0
-
-      const rep: Report = {
-        ...reportBase,
-        endTimeMs: Date.now(),
-        durationMs,
-        statusCode: 500,
-        errorMessage: err instanceof Error ? err.message : "Unknown error",
-      }
-
-      const line = `[unhandled error] ${rep.method} ${rep.path} 500 in ${durationMs.toFixed(1)}ms ${rep.date}`
-      console.error("[telemetry]", line, err)
-
-      // Await to maximize chance we capture the crash
-      await sendReport(line, rep)
-
-      throw err
-    } finally {
-      if (timeoutId) clearTimeout(timeoutId)
-    }
+    })
   }
 }

@@ -1,5 +1,7 @@
 import type { NextRequest } from "next/server"
 
+import { logger } from "@/lib/logger"
+
 import { DEFAULT_PAGE_SIZE } from "@/lib/constants"
 
 import { fetchTeamProofsPaginated } from "@/lib/api/proofs"
@@ -31,7 +33,11 @@ export async function GET(
 
     return Response.json(proofs)
   } catch (error) {
-    console.error("Error fetching proofs", error)
+    logger.error("Failed to fetch team proofs", error, {
+      team_id: teamId,
+      page_index: pageIndex,
+      page_size: pageSize,
+    })
     return new Response("Internal server error", { status: 500 })
   }
 }

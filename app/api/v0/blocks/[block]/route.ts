@@ -1,6 +1,7 @@
 import { z } from "zod"
 
 import { fetchBlock } from "@/lib/api/blocks"
+import { logger } from "@/lib/logger"
 
 const routeContextSchema = z.object({
   params: z.object({
@@ -37,7 +38,7 @@ export async function GET(
     if (error instanceof z.ZodError) {
       return Response.json(error.issues, { status: 422 })
     }
-    console.error(error)
+    logger.error("Failed to fetch block", error)
     return new Response("Internal Server Error", { status: 500 })
   }
 }

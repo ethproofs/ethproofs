@@ -1,6 +1,8 @@
 import { revalidateTag } from "next/cache"
 import { NextRequest, NextResponse } from "next/server"
 
+import { logger } from "@/lib/logger"
+
 const revalidateSecret = process.env.REVALIDATE_SECRET
 
 if (!revalidateSecret) {
@@ -24,6 +26,8 @@ export async function GET(request: NextRequest) {
   try {
     revalidateTag(tag)
 
+    logger.info("Cache tag revalidated", { tag })
+
     return NextResponse.json({
       status: 200,
       revalidated: true,
@@ -31,7 +35,7 @@ export async function GET(request: NextRequest) {
       tag,
     })
   } catch (error) {
-    console.error(error)
+    logger.error("Failed to revalidate cache tag", error, { tag })
     return new Response("Failed to revalidate", { status: 500 })
   }
 }

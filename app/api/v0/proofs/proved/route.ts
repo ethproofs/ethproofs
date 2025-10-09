@@ -10,6 +10,12 @@ import { updateBlock } from "@/lib/api/blocks"
 import { uploadProofBinary } from "@/lib/api/proof-binaries"
 import { isStorageQuotaExceeded } from "@/lib/api/storage"
 import { getTeam } from "@/lib/api/teams"
+import { logger, traced } from "@/lib/logger"
+import {
+  proofSubmissions,
+  proofSize,
+  storageQuotaExceeded as storageQuotaExceededMetric,
+} from "@/lib/otel-metrics"
 import { withAuth } from "@/lib/middleware/with-auth"
 import { provedProofSchema } from "@/lib/zod/schemas/proof"
 
@@ -22,7 +28,9 @@ export const POST = withAuth(async ({ request, user, timestamp }) => {
   try {
     proofPayload = provedProofSchema.parse(payload)
   } catch (error) {
-    console.error("Proof payload invalid:", error)
+    logger.error("Proof payload validation failed", error, {
+      team_id: teamId,
+    })
     if (error instanceof ZodError) {
       return new Response(`Invalid request: ${error.message}`, {
         status: 400,
@@ -35,149 +43,182 @@ export const POST = withAuth(async ({ request, user, timestamp }) => {
   const { block_number, cluster_id, verifier_id, proof, ...restProofPayload } =
     proofPayload
 
-  // Get cluster uuid from cluster_id
-  const cluster = await db.query.clusters.findFirst({
-    columns: {
-      id: true,
-    },
-    where: (clusters, { and, eq }) =>
-      and(eq(clusters.index, cluster_id), eq(clusters.team_id, teamId)),
-  })
+  const log = logger.child({ team_id: teamId, block_number, cluster_id })
 
-  if (!cluster) {
-    console.error("cluster not found", cluster_id)
-    return new Response("Cluster not found", { status: 404 })
-  }
+  return traced(
+    "POST /api/v0/proofs/proved",
+    async () => {
+      log.info("Processing proved proof submission", {
+        proof_size: proof.length,
+      })
 
-  const clusterVersion = await db.query.clusterVersions.findFirst({
-    columns: {
-      id: true,
-    },
-    with: {
-      cluster: true,
-    },
-    where: (clusterVersions, { eq }) =>
-      eq(clusterVersions.cluster_id, cluster.id),
-    orderBy: (clusterVersions, { desc }) => [desc(clusterVersions.created_at)],
-  })
+      // Get cluster uuid from cluster_id
+      const cluster = await db.query.clusters.findFirst({
+        columns: {
+          id: true,
+        },
+        where: (clusters, { and, eq }) =>
+          and(eq(clusters.index, cluster_id), eq(clusters.team_id, teamId)),
+      })
 
-  if (!clusterVersion) {
-    console.error("Cluster version not found:", cluster_id)
-    return new Response("Cluster version not found", { status: 404 })
-  }
+      if (!cluster) {
+        log.error("Cluster not found")
+        return new Response("Cluster not found", { status: 404 })
+      }
 
-  try {
-    const block = await updateBlock(block_number)
-    console.log(`[Proved] Block ${block} updated by team:`, teamId)
-  } catch (error) {
-    console.error(
-      `[Proved] Block ${block_number} not updated by team:`,
-      teamId,
-      error
-    )
-    return new Response("Internal server error", {
-      status: 500,
-    })
-  }
+      const clusterVersion = await db.query.clusterVersions.findFirst({
+        columns: {
+          id: true,
+        },
+        with: {
+          cluster: true,
+        },
+        where: (clusterVersions, { eq }) =>
+          eq(clusterVersions.cluster_id, cluster.id),
+        orderBy: (clusterVersions, { desc }) => [
+          desc(clusterVersions.created_at),
+        ],
+      })
 
-  // TODO:TEAM - revisit this code, is it still needed?
-  let programId: number | undefined
-  if (verifier_id) {
-    const existingProgram = await db.query.programs.findFirst({
-      columns: {
-        id: true,
-      },
-      where: (programs, { eq }) => eq(programs.verifier_id, verifier_id),
-    })
+      if (!clusterVersion) {
+        log.error("Cluster version not found")
+        return new Response("Cluster version not found", { status: 404 })
+      }
 
-    programId = existingProgram?.id
-
-    if (!existingProgram) {
       try {
-        const [program] = await db
-          .insert(programs)
-          .values({
-            verifier_id,
-          })
-          .returning()
-
-        programId = program?.id
-      } catch (error) {
-        console.error("Error creating program:", error)
-      }
-    }
-  }
-
-  const binaryBuffer = Buffer.from(proof, "base64")
-
-  // TODO:TEAM - revisit the need for storage quota
-  const storageQuotaExceeded = await isStorageQuotaExceeded(
-    teamId,
-    binaryBuffer.byteLength
-  )
-
-  if (storageQuotaExceeded) {
-    console.log(`[Storage Quota Exceeded] team ${teamId} has reached quota`)
-  }
-
-  const dataToInsert = {
-    ...restProofPayload,
-    block_number,
-    cluster_version_id: clusterVersion.id,
-    program_id: programId,
-    proof_status: "proved",
-    proved_timestamp: timestamp,
-    size_bytes: binaryBuffer.byteLength,
-    team_id: teamId,
-  }
-
-  try {
-    const newProof = await db.transaction(async (tx) => {
-      const [newProof] = await tx
-        .insert(proofs)
-        .values(dataToInsert)
-        .onConflictDoUpdate({
-          target: [proofs.block_number, proofs.cluster_version_id],
-          set: {
-            ...dataToInsert,
-          },
+        const block = await updateBlock(block_number)
+        log.info("Block updated successfully", {
+          block_number: block,
         })
-        .returning({ proof_id: proofs.proof_id })
-
-      // Handle active cluster status and updates
-      if (!clusterVersion.cluster.is_active) {
-        await tx
-          .update(clusters)
-          .set({
-            is_active: true,
-          })
-          .where(eq(clusters.id, cluster.id))
-
-        // Invalidate active clusters stats
-        revalidateTag(TAGS.CLUSTERS)
-        revalidateTag(TAGS.CLUSTER_SUMMARY)
+      } catch (error) {
+        log.error("Failed to update block", error)
+        return new Response("Internal server error", {
+          status: 500,
+        })
       }
 
-      if (!storageQuotaExceeded) {
-        const team = await getTeam(teamId)
-        const teamName = team?.name ? team.name : cluster.id.split("-")[0]
-        const filename = `${block_number}_${teamName}_${newProof.proof_id}.txt`
-        await uploadProofBinary(filename, binaryBuffer)
+      // TODO:TEAM - revisit this code, is it still needed?
+      let programId: number | undefined
+      if (verifier_id) {
+        const existingProgram = await db.query.programs.findFirst({
+          columns: {
+            id: true,
+          },
+          where: (programs, { eq }) => eq(programs.verifier_id, verifier_id),
+        })
+
+        programId = existingProgram?.id
+
+        if (!existingProgram) {
+          try {
+            const [program] = await db
+              .insert(programs)
+              .values({
+                verifier_id,
+              })
+              .returning()
+
+            programId = program?.id
+          } catch (error) {
+            logger.error("Failed to create program", error, { verifier_id })
+          }
+        }
       }
 
-      return newProof
-    })
+      const binaryBuffer = Buffer.from(proof, "base64")
 
-    revalidateTag(TAGS.PROOFS)
-    revalidateTag(TAGS.BLOCKS)
-    revalidateTag(`cluster-${cluster.id}`)
-    revalidateTag(`block-${block_number}`)
+      // TODO:TEAM - revisit the need for storage quota
+      proofSize.record(binaryBuffer.byteLength, {
+        team_id: teamId,
+        status: "proved",
+      })
 
-    return Response.json(newProof)
-  } catch (error) {
-    console.error("[Proved] Error adding proof:", error)
-    return new Response("Internal server error", {
-      status: 500,
-    })
-  }
+      const storageQuotaExceeded = await isStorageQuotaExceeded(
+        teamId,
+        binaryBuffer.byteLength
+      )
+
+      if (storageQuotaExceeded) {
+        log.warn("Storage quota exceeded", {
+          proof_size: binaryBuffer.byteLength,
+        })
+        storageQuotaExceededMetric.add(1, { team_id: teamId })
+      }
+
+      const dataToInsert = {
+        ...restProofPayload,
+        block_number,
+        cluster_version_id: clusterVersion.id,
+        program_id: programId,
+        proof_status: "proved",
+        proved_timestamp: timestamp,
+        size_bytes: binaryBuffer.byteLength,
+        team_id: teamId,
+      }
+
+      try {
+        const newProof = await db.transaction(async (tx) => {
+          const [newProof] = await tx
+            .insert(proofs)
+            .values(dataToInsert)
+            .onConflictDoUpdate({
+              target: [proofs.block_number, proofs.cluster_version_id],
+              set: {
+                ...dataToInsert,
+              },
+            })
+            .returning({ proof_id: proofs.proof_id })
+
+          // Handle active cluster status and updates
+          if (!clusterVersion.cluster.is_active) {
+            await tx
+              .update(clusters)
+              .set({
+                is_active: true,
+              })
+              .where(eq(clusters.id, cluster.id))
+
+            // Invalidate active clusters stats
+            revalidateTag(TAGS.CLUSTERS)
+            revalidateTag(TAGS.CLUSTER_SUMMARY)
+          }
+
+          if (!storageQuotaExceeded) {
+            const team = await getTeam(teamId)
+            const teamName = team?.name ? team.name : cluster.id.split("-")[0]
+            const filename = `${block_number}_${teamName}_${newProof.proof_id}.txt`
+            await uploadProofBinary(filename, binaryBuffer)
+          }
+
+          return newProof
+        })
+
+        revalidateTag(TAGS.PROOFS)
+        revalidateTag(TAGS.BLOCKS)
+        revalidateTag(`cluster-${cluster.id}`)
+        revalidateTag(`block-${block_number}`)
+
+        log.info("Proof stored successfully", {
+          proof_id: newProof.proof_id,
+          cluster_uuid: cluster.id,
+        })
+
+        proofSubmissions.add(1, {
+          status: "proved",
+          team_id: teamId,
+        })
+
+        return Response.json(newProof)
+      } catch (error) {
+        log.error("Failed to store proof", error)
+        return new Response("Internal server error", {
+          status: 500,
+        })
+      }
+    },
+    {
+      block_number,
+      team_id: teamId,
+    }
+  )
 })

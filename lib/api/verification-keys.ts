@@ -1,4 +1,5 @@
 import { VERIFICATION_KEYS_BUCKET } from "../constants"
+import { logger } from "../logger"
 
 import { createClient } from "@/utils/supabase/server"
 
@@ -10,11 +11,14 @@ export const downloadVerificationKey = async (filename: string) => {
     .download(filename)
 
   if (error) {
-    console.error(`Error downloading ${filename}:`, error)
+    logger.error("Failed to download verification key", error, { filename })
     return null
   }
 
-  console.log("downloaded vk binary", data)
+  logger.debug("Verification key downloaded", {
+    filename,
+    size_bytes: data.size,
+  })
 
   return data
 }
