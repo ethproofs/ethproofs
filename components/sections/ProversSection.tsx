@@ -1,10 +1,16 @@
 import type { SummaryItem } from "@/lib/types"
 
-import BasicTabs from "../BasicTabs"
+import { BasicTabs } from "../BasicTabs"
 import ClusterAccordion from "../ClusterAccordion"
 import KPIs from "../KPIs"
 import { ButtonLink } from "../ui/button"
-import { Card, CardHeader, CardTitle } from "../ui/card"
+import {
+  Card,
+  CardContent,
+  CardFooter,
+  CardHeader,
+  CardTitle,
+} from "../ui/card"
 
 import { getActiveClusters } from "@/lib/api/clusters"
 import { getClusterSummary } from "@/lib/api/stats"
@@ -52,26 +58,28 @@ const ProversSection = async () => {
 
   return (
     <Card className="!p-0 !pb-6 md:!pb-8">
-      <CardHeader className="flex flex-wrap items-center justify-between px-6 pb-0 sm:flex-row md:px-12 max-sm:[&>div]:w-full">
+      <CardHeader className="flex flex-wrap items-center justify-between sm:flex-row md:px-12 max-sm:[&>div]:w-full">
         <CardTitle className="text-3xl font-normal tracking-[1px] max-sm:pt-8">
           provers
         </CardTitle>
 
-        <div className="py-4">
+        <div>
           <KPIs items={clustersSummary} />
         </div>
       </CardHeader>
 
-      <BasicTabs
-        contentRight={<ClusterAccordion clusters={singleMachineClusters} />}
-        contentLeft={<ClusterAccordion clusters={multiMachineClusters} />}
-      />
+      <CardContent className="px-0 pt-6">
+        <BasicTabs
+          contentRight={<ClusterAccordion clusters={singleMachineClusters} />}
+          contentLeft={<ClusterAccordion clusters={multiMachineClusters} />}
+        />
+      </CardContent>
 
-      <div className="flex justify-center">
+      <CardFooter className="justify-center">
         <ButtonLink variant="outline" href="/clusters" className="min-w-40">
           see all
         </ButtonLink>
-      </div>
+      </CardFooter>
     </Card>
   )
 }
