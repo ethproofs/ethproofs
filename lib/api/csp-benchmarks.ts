@@ -1,14 +1,14 @@
-import { VERIFICATION_KEYS_BUCKET } from "../constants"
+import { CSP_BENCHMARKS_BUCKET } from "../constants"
 
 import { createClient } from "@/utils/supabase/server"
 
-export const uploadVerificationKey = async (filename: string, file: File) => {
+export const uploadCspBenchmarks = async (filename: string, file: File) => {
   const supabase = await createClient()
 
   const { data, error } = await supabase.storage
-    .from(VERIFICATION_KEYS_BUCKET)
+    .from(CSP_BENCHMARKS_BUCKET)
     .upload(filename, file, {
-      contentType: "application/octet-stream",
+      contentType: "application/json",
       upsert: true,
     })
 
@@ -17,16 +17,16 @@ export const uploadVerificationKey = async (filename: string, file: File) => {
     return null
   }
 
-  console.log("uploaded vk binary", data)
+  console.log("uploaded csp-benchmarks json", data)
 
   return data
 }
 
-export const downloadVerificationKey = async (filename: string) => {
+export const downloadCspBenchmarks = async (filename: string) => {
   const supabase = await createClient()
 
   const { data, error } = await supabase.storage
-    .from(VERIFICATION_KEYS_BUCKET)
+    .from(CSP_BENCHMARKS_BUCKET)
     .download(filename)
 
   if (error) {
@@ -34,7 +34,7 @@ export const downloadVerificationKey = async (filename: string) => {
     return null
   }
 
-  console.log("downloaded vk binary", data)
+  console.log("downloaded csp-benchmarks json", data)
 
   return data
 }

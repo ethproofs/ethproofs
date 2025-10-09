@@ -33,7 +33,7 @@ const bytea = customType<{
   },
 })
 
-export const keyMode = pgEnum("key_mode", ["read", "write", "all", "upload"])
+export const keyMode = pgEnum("key_mode", ["admin", "read", "write"])
 
 export const apiAuthTokens = pgTable(
   "api_auth_tokens",
@@ -56,7 +56,7 @@ export const apiAuthTokens = pgTable(
       as: "permissive",
       for: "select",
       to: ["anon"],
-      using: sql`is_allowed_apikey(((current_setting('request.headers'::text, true))::json ->> 'ethkey'::text), '{all,read}'::key_mode[])`,
+      using: sql`is_allowed_apikey(((current_setting('request.headers'::text, true))::json ->> 'ethkey'::text), '{admin,read,write}'::key_mode[])`,
     }),
   ]
 )
@@ -524,7 +524,7 @@ export const proofs = pgTable(
       as: "permissive",
       for: "update",
       to: ["public"],
-      using: sql`is_allowed_apikey(((current_setting('request.headers'::text, true))::json ->> 'ethkey'::text), '{all,write}'::key_mode[])`,
+      using: sql`is_allowed_apikey(((current_setting('request.headers'::text, true))::json ->> 'ethkey'::text), '{admin,write}'::key_mode[])`,
     }),
     pgPolicy("Enable read access for all users", {
       as: "permissive",

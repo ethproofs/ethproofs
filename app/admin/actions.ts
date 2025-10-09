@@ -98,7 +98,6 @@ export async function createUser(_prevState: unknown, formData: FormData) {
   try {
     const supabase = await createClient()
 
-    // check if logged user is using the correct role
     const {
       data: { user },
     } = await supabase.auth.getUser()
@@ -111,7 +110,6 @@ export async function createUser(_prevState: unknown, formData: FormData) {
       }
     }
 
-    // create user
     const { data, error } = await supabase.auth.admin.createUser({
       email,
       email_confirm: true,
@@ -126,8 +124,8 @@ export async function createUser(_prevState: unknown, formData: FormData) {
       }
     }
 
-    // upload logo
     let logoUrl = null
+
     if (logo) {
       const { data, error } = await supabase.storage
         .from(PUBLIC_ASSETS_BUCKET)
@@ -140,7 +138,7 @@ export async function createUser(_prevState: unknown, formData: FormData) {
         }
       }
 
-      // get public url
+      // Get public url
       const { data: publicUrlData } = supabase.storage
         .from(PUBLIC_ASSETS_BUCKET)
         .getPublicUrl(data.path)
@@ -148,7 +146,6 @@ export async function createUser(_prevState: unknown, formData: FormData) {
       logoUrl = publicUrlData.publicUrl
     }
 
-    // update team name
     await db
       .update(teams)
       .set({
@@ -160,7 +157,7 @@ export async function createUser(_prevState: unknown, formData: FormData) {
       })
       .where(eq(teams.id, data.user.id))
 
-    // revalidate admin page to show new user
+    // Revalidate admin page to show new user
     revalidatePath("/admin", "page")
 
     return {
@@ -197,7 +194,6 @@ export async function generateApiKey(_prevState: unknown, formData: FormData) {
   try {
     const supabase = await createClient()
 
-    // check if logged user is using the correct role
     const {
       data: { user },
     } = await supabase.auth.getUser()
@@ -210,7 +206,6 @@ export async function generateApiKey(_prevState: unknown, formData: FormData) {
       }
     }
 
-    // get user
     const userData = await db
       .select()
       .from(authUsers)
@@ -222,13 +217,13 @@ export async function generateApiKey(_prevState: unknown, formData: FormData) {
       }
     }
 
-    // create new api key
+    // Create new API key
     const apikey = nanoid(24)
     const hashedKey = await hashToken(apikey)
 
     await db.insert(apiAuthTokens).values({
       token: hashedKey,
-      mode: "all",
+      mode: "write",
       team_id: userData[0].id,
     })
 
