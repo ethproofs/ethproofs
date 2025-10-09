@@ -35,7 +35,7 @@ import { formatNumber, formatUsd } from "@/lib/number"
 import { getProvingCost, hasProvedTimestamp, isCompleted } from "@/lib/proofs"
 import { prettyMs } from "@/lib/time"
 
-type ProofRowProps = {
+interface ProofRowProps {
   proof: ProofBase & {
     team: Team
     cluster_version: ClusterVersionBase & {
@@ -55,8 +55,7 @@ type ProofRowProps = {
   }
   block: BlockBase
 }
-
-const ProofRow = ({ proof, block }: ProofRowProps) => {
+export function ProofRow({ proof, block }: ProofRowProps) {
   const {
     cluster_version,
     proof_id,
@@ -86,19 +85,15 @@ const ProofRow = ({ proof, block }: ProofRowProps) => {
   return (
     <div
       className={cn(
-        "grid grid-flow-dense grid-cols-4 grid-rows-3 max-md:py-4",
-        "xl:grid-cols-[repeat(5, 1fr) auto] xl:grid-rows-1"
+        "grid gap-4 border-b border-border py-4",
+        "grid-cols-1",
+        "sm:grid-cols-2",
+        "lg:grid-cols-[repeat(5,_1fr)_auto] lg:items-center"
       )}
       key={proof_id}
     >
-      <div
-        className={cn(
-          "relative flex h-full items-center",
-          "col-span-3 col-start-1 row-start-1",
-          "sm:col-span-2 sm:col-start-1 sm:row-start-1",
-          "xl:col-span-1 xl:col-start-1 xl:row-start-1"
-        )}
-      >
+      {/* Team/ZKVM Column */}
+      <div className="flex h-full items-center text-left">
         <div className="flex flex-col gap-2">
           {team?.name && (
             <Link
@@ -113,28 +108,9 @@ const ProofRow = ({ proof, block }: ProofRowProps) => {
           )}
         </div>
       </div>
-      <div
-        className={cn(
-          "ms-auto self-center",
-          "col-span-2 col-start-3 row-start-1",
-          "sm:col-span-2 sm:col-start-3 sm:row-start-1",
-          "xl:col-span-1 xl:col-start-6 xl:row-start-1"
-        )}
-      >
-        <DownloadButton
-          proof={proof}
-          className="sm:max-xl:w-40 lg:w-40"
-          labelClass="hidden sm:inline-block"
-          containerClass="flex-row-reverse xl:flex-col-reverse"
-        />
-      </div>
-      <MetricBox
-        className={cn(
-          "col-span-2 col-start-1 row-start-2",
-          "sm:col-span-1 sm:col-start-1 sm:row-start-2",
-          "xl:col-span-1 xl:col-start-2 xl:row-start-1"
-        )}
-      >
+
+      {/* Time to Proof Column */}
+      <MetricBox className="text-left">
         <MetricLabel>
           <MetricInfo label={<metrics.totalTTP.Label />}>
             <TooltipContentHeader>
@@ -147,13 +123,9 @@ const ProofRow = ({ proof, block }: ProofRowProps) => {
           {isAvailable && timeToProof > 0 ? prettyMs(timeToProof) : <Null />}
         </MetricValue>
       </MetricBox>
-      <MetricBox
-        className={cn(
-          "col-span-2 col-start-3 row-start-2",
-          "sm:col-span-1 sm:col-start-2 sm:row-start-2",
-          "xl:col-span-1 xl:col-start-3 xl:row-start-1"
-        )}
-      >
+
+      {/* Proving Time Column */}
+      <MetricBox className="text-left">
         <MetricLabel>
           <MetricInfo label={<metrics.provingTime.Label />}>
             <TooltipContentHeader>
@@ -166,13 +138,9 @@ const ProofRow = ({ proof, block }: ProofRowProps) => {
           {isAvailable && proving_time ? prettyMs(proving_time) : <Null />}
         </MetricValue>
       </MetricBox>
-      <MetricBox
-        className={cn(
-          "col-span-2 col-start-1 row-start-3",
-          "sm:col-span-1 sm:col-start-3 sm:row-start-2",
-          "xl:col-span-1 xl:col-start-4 xl:row-start-1"
-        )}
-      >
+
+      {/* Cycles Column */}
+      <MetricBox className="text-left">
         <MetricLabel>
           <MetricInfo
             label={
@@ -218,15 +186,10 @@ const ProofRow = ({ proof, block }: ProofRowProps) => {
           )}
         </MetricValue>
       </MetricBox>
-      <MetricBox
-        className={cn(
-          "col-span-2 col-start-3 row-start-3",
-          "sm:col-span-1 sm:col-start-4 sm:row-start-2",
-          "xl:col-span-1 xl:col-start-5 xl:row-start-1",
-          "sm:max-xl:text-end"
-        )}
-      >
-        <MetricLabel className="sm:max-xl:justify-end">
+
+      {/* Cost Column */}
+      <MetricBox className="text-left">
+        <MetricLabel>
           <MetricInfo label={<metrics.costPerProof.Label />}>
             <TooltipContentHeader>
               <metrics.costPerProof.Label />
@@ -333,8 +296,16 @@ const ProofRow = ({ proof, block }: ProofRowProps) => {
           )}
         </MetricValue>
       </MetricBox>
+
+      {/* Download Button Column */}
+      <div className="flex items-center justify-center sm:justify-start lg:justify-center">
+        <DownloadButton
+          proof={proof}
+          className="w-full sm:w-40"
+          labelClass="hidden sm:inline-block"
+          containerClass="flex-row-reverse lg:flex-col-reverse"
+        />
+      </div>
     </div>
   )
 }
-
-export default ProofRow

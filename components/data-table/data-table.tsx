@@ -29,6 +29,7 @@ import {
 
 import { DataTablePagination } from "./data-table-pagination"
 import { DataTableToolbar } from "./data-table-toolbar"
+import { cn } from "@/lib/utils"
 
 interface DataTableProps<TData, TValue> {
   className?: string
@@ -81,7 +82,7 @@ export function DataTable<TData, TValue>({
   })
 
   return (
-    <div className="flex flex-col gap-4">
+    <div className={cn("flex flex-col gap-4", className)}>
       <DataTableToolbar table={table} />
       <div className="overflow-hidden rounded-md border">
         <Table>
