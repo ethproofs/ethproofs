@@ -1,12 +1,15 @@
 import {
   Sidebar,
   SidebarContent,
+  SidebarFooter,
   SidebarHeader,
   SidebarRail,
 } from "../ui/sidebar"
 
 import { AppNavigation } from "./app-navigation"
 import { AppSidebarHeader } from "./app-sidebar-header"
+
+import { AppNavSecondary } from "./app-nav-secondary"
 
 export function AppSidebar() {
   return (
@@ -16,6 +19,7 @@ export function AppSidebar() {
       </SidebarHeader>
       <SidebarContent>
         <AppNavigation />
+        <AppNavSecondary />
       </SidebarContent>
       <SidebarRail />
     </Sidebar>

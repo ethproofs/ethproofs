@@ -42,7 +42,10 @@ export default async function TeamsPage() {
               }) => {
                 const isNewTeam = !avg_cost_per_proof || !avg_proving_time
                 return (
-                  <Card className="flex flex-1 flex-col gap-4" key={team_id}>
+                  <Card
+                    className="flex flex-1 flex-col gap-4 p-6"
+                    key={team_id}
+                  >
                     <div className="relative mx-auto flex h-20 w-full justify-center">
                       <TeamLogo
                         src={logo_url}

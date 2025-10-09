@@ -1,5 +1,4 @@
 import {
-  Bomb,
   Box,
   Bug,
   Cpu,
@@ -10,12 +9,6 @@ import {
   Users,
   Zap,
 } from "lucide-react"
-
-// import GitHub from "@/components/svgs/github-logo.svg"
-// import XLogo from "@/components/svgs/x-logo.svg"
-
-// import { URL_GITHUB_REPO, URL_TWITTER } from "@/lib/constants"
-// import { SITE_REPO } from "@/lib/constants"
 
 export const exploreNavItems = [
   {
@@ -37,11 +30,6 @@ export const exploreNavItems = [
     label: "blocks",
     href: "/blocks",
     icon: <Box />,
-  },
-  {
-    label: "killers",
-    href: "/killers",
-    icon: <Bomb />,
   },
   {
     label: "teams",
@@ -66,22 +54,4 @@ export const moreNavItems = [
     href: "/api.html",
     icon: <Target />,
   },
-  // {
-  //   label: "build Ethproofs",
-  //   href: URL_GITHUB_REPO,
-  //   icon: <GitHub />,
-  // },
-  // {
-  //   label: "spot a bug?",
-  //   href: new URL(
-  //     SITE_REPO + "/issues/new/choose/",
-  //     "https://github.com"
-  //   ).toString(),
-  //   icon: <Bug />,
-  // },
-  // {
-  //   label: "follow us",
-  //   href: URL_TWITTER,
-  //   icon: <XLogo className="h-3 w-auto" />,
-  // },
 ]

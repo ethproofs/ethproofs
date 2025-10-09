@@ -1,6 +1,6 @@
 import type { Metadata } from "next"
 
-import BasicTabs from "@/components/BasicTabs"
+import { BasicTabs } from "@/components/BasicTabs"
 import ClusterAccordion from "@/components/ClusterAccordion"
 
 import { getActiveClusters } from "@/lib/api/clusters"

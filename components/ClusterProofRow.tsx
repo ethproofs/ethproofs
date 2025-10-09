@@ -8,7 +8,7 @@ import DownloadButton from "@/components/proof-buttons/DownloadButton"
 
 import { cn } from "@/lib/utils"
 
-import VerifyButton from "./proof-buttons/VerifyButton"
+import { VerifyButton } from "./proof-buttons/VerifyButton"
 
 import { formatTimeAgo } from "@/lib/date"
 import { formatUsd } from "@/lib/number"
@@ -48,7 +48,7 @@ export const ClusterProofRow = ({ proof }: ClusterProofRowProps) => {
     <div
       data-grid-template-areas="cluster-proof"
       className={cn(
-        "grid gap-x-6 border-b border-primary-border p-6",
+        "grid gap-x-8 border-b border-border p-6",
         "grid-cols-[auto_auto] gap-y-4",
         "md:grid-cols-[1fr_1fr_auto_auto]",
         "lg:grid-cols-[1fr_repeat(3,_auto)]",

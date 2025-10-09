@@ -1,6 +1,6 @@
 import type { Metadata } from "next"
 
-import BasicTabs from "@/components/BasicTabs"
+import { BasicTabs } from "@/components/BasicTabs"
 import KillersTable from "@/components/KillersTable"
 
 import { getBenchmarks } from "@/lib/api/benchmarks"
