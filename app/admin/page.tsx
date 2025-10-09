@@ -14,7 +14,6 @@ export default async function AdminPage() {
     data: { user },
   } = await supabase.auth.getUser()
 
-  // Get existing users/teams
   const existingTeams = await db.select().from(teams)
 
   if (!user) {
