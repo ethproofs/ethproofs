@@ -28,7 +28,12 @@ export const POST = withAuth(async ({ request, apiKey }) => {
     const filenameWithExtension = filename.endsWith(".bin")
       ? filename
       : `${filename}.bin`
-    const result = await uploadVerificationKey(filenameWithExtension, file)
+
+    // Convert File to Buffer for upload
+    const arrayBuffer = await file.arrayBuffer()
+    const buffer = Buffer.from(arrayBuffer)
+
+    const result = await uploadVerificationKey(filenameWithExtension, buffer)
 
     if (!result) {
       return new Response("Failed to upload file", { status: 500 })

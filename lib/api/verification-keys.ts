@@ -2,12 +2,15 @@ import { VERIFICATION_KEYS_BUCKET } from "../constants"
 
 import { createClient } from "@/utils/supabase/server"
 
-export const uploadVerificationKey = async (filename: string, file: File) => {
+export const uploadVerificationKey = async (
+  filename: string,
+  buffer: Buffer
+) => {
   const supabase = await createClient()
 
   const { data, error } = await supabase.storage
     .from(VERIFICATION_KEYS_BUCKET)
-    .upload(filename, file, {
+    .upload(filename, buffer, {
       contentType: "application/octet-stream",
       upsert: true,
     })
