@@ -13,40 +13,37 @@ export const client = createPublicClient({
     http(rpcUrl, {
       retryCount: 5,
       onFetchRequest() {
-        logger.debug("RPC request initiated", { rpc: "primary" })
+        logger.debug({ rpc: "primary" }, "RPC request initiated")
       },
       onFetchResponse(resp) {
         if (!resp.ok) {
-          logger.warn("RPC request failed", {
+          logger.warn({
             rpc: "primary",
             status: resp.status,
             status_text: resp.statusText,
-          })
+          }, "RPC request failed")
         } else {
-          logger.debug("RPC request succeeded", {
+          logger.debug({
             rpc: "primary",
             status: resp.status,
-          })
+          }, "RPC request succeeded")
         }
       },
     }),
     http(rpcUrlFallback, {
       retryCount: 5,
       onFetchRequest() {
-        logger.debug("Fallback RPC request initiated", { rpc: "fallback" })
+        logger.debug({ rpc: "fallback" }, "Fallback RPC request initiated")
       },
       onFetchResponse(resp) {
         if (!resp.ok) {
-          logger.warn("Fallback RPC request failed", {
+          logger.warn({
             rpc: "fallback",
             status: resp.status,
             status_text: resp.statusText,
-          })
+          }, "Fallback RPC request failed")
         } else {
-          logger.debug("Fallback RPC request succeeded", {
-            rpc: "fallback",
-            status: resp.status,
-          })
+          logger.debug({ rpc: "fallback", status: resp.status }, "Fallback RPC request succeeded")
         }
       },
     }),

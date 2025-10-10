@@ -9,8 +9,8 @@ import {
 } from "@/db/schema"
 import { getZkvmVersion } from "@/lib/api/zkvm-versions"
 import { logger, traced } from "@/lib/logger"
-import { clusterRegistrations } from "@/lib/otel-metrics"
 import { withAuth } from "@/lib/middleware/with-auth"
+import { clusterRegistrations } from "@/lib/otel-metrics"
 import { singleMachineSchema } from "@/lib/zod/schemas/cluster"
 
 export const POST = withAuth(async ({ request, user }) => {
@@ -21,9 +21,10 @@ export const POST = withAuth(async ({ request, user }) => {
   try {
     singleMachinePayload = singleMachineSchema.parse(requestBody)
   } catch (error) {
-    logger.error("Single machine payload validation failed", error, {
+    logger.error({
+      error,
       team_id: user.id,
-    })
+    }, "Single machine payload validation failed")
     if (error instanceof ZodError) {
       return new Response(`Invalid payload: ${error.message}`, {
         status: 400,
@@ -55,7 +56,7 @@ export const POST = withAuth(async ({ request, user }) => {
   return traced(
     "POST /api/v0/single-machine",
     async () => {
-      log.info("Registering single machine", { zkvm_version_id })
+      log.info({ zkvm_version_id }, "Registering single machine")
 
       // get & validate cloud instance id
       const cloudInstance = await db.query.cloudInstances.findFirst({
@@ -76,7 +77,7 @@ export const POST = withAuth(async ({ request, user }) => {
       const zkvmVersion = await getZkvmVersion(zkvm_version_id)
 
       if (!zkvmVersion) {
-        log.error("Invalid zkvm version", { zkvm_version_id })
+        log.error({ zkvm_version_id }, "Invalid zkvm version")
         return new Response("Invalid zkvm version", { status: 400 })
       }
 
@@ -125,9 +126,7 @@ export const POST = withAuth(async ({ request, user }) => {
         clusterIndex = cluster.index
       })
 
-      log.info("Single machine registered successfully", {
-        cluster_id: clusterIndex,
-      })
+      log.info({ cluster_id: clusterIndex }, "Single machine registered successfully")
 
       clusterRegistrations.add(1, {
         team_id: user.id,

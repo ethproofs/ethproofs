@@ -4,6 +4,7 @@ const nextConfig = {
   serverExternalPackages: [
     "@opentelemetry/sdk-node",
     "@opentelemetry/auto-instrumentations-node",
+    "@opentelemetry/instrumentation-pino",
     "@opentelemetry/exporter-trace-otlp-grpc",
     "@opentelemetry/exporter-trace-otlp-http",
     "@opentelemetry/exporter-metrics-otlp-grpc",
@@ -14,6 +15,8 @@ const nextConfig = {
     "@opentelemetry/sdk-logs",
     "@opentelemetry/resources",
     "@opentelemetry/semantic-conventions",
+    "pino",
+    "pino-pretty",
   ],
   webpack(config, { isServer }) {
     const fileLoaderRule = config.module.rules.find((rule) =>

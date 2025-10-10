@@ -52,7 +52,7 @@ export const GET = withAuth(async ({ user }) => {
       }))
     )
   } catch (error) {
-    logger.error("Failed to fetch clusters", error, { team_id: user.id })
+    logger.error({ error, team_id: user.id }, "Failed to fetch clusters")
     return new Response("Internal server error", { status: 500 })
   }
 })
@@ -65,9 +65,7 @@ export const POST = withAuth(async ({ request, user }) => {
   try {
     clusterPayload = createClusterSchema.parse(requestBody)
   } catch (error) {
-    logger.error("Cluster payload validation failed", error, {
-      team_id: user.id,
-    })
+    logger.error({ error, team_id: user.id }, "Cluster payload validation failed")
 
     if (error instanceof ZodError) {
       return new Response(error.message, {

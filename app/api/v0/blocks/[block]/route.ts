@@ -38,7 +38,7 @@ export async function GET(
     if (error instanceof z.ZodError) {
       return Response.json(error.issues, { status: 422 })
     }
-    logger.error("Failed to fetch block", error)
+    logger.error({ error }, "Failed to fetch block")
     return new Response("Internal Server Error", { status: 500 })
   }
 }

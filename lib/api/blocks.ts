@@ -21,7 +21,7 @@ export const findOrCreateBlock = async (blockNumber: number) => {
   })
 
   if (isUndefined(foundBlock)) {
-    logger.info("Creating new block", { block_number: blockNumber })
+    logger.info({ block_number: blockNumber }, "Creating new block")
 
     try {
       const [block] = await db
@@ -37,7 +37,7 @@ export const findOrCreateBlock = async (blockNumber: number) => {
 
       return block.block_number
     } catch (error) {
-      logger.error("Failed to create block", error, { block_number: blockNumber })
+      logger.error({ error, block_number: blockNumber }, "Failed to create block")
       throw new Error(`[DB] Error creating block: ${error}`)
     }
   }
@@ -46,7 +46,7 @@ export const findOrCreateBlock = async (blockNumber: number) => {
 }
 
 export const updateBlock = async (blockNumber: number) => {
-  logger.debug("Fetching block data from RPC", { block_number: blockNumber })
+  logger.debug({ block_number: blockNumber }, "Fetching block data from RPC")
 
   const startTime = Date.now()
   let blockData
@@ -59,7 +59,7 @@ export const updateBlock = async (blockNumber: number) => {
       rpc: "primary",
       success: "false",
     })
-    logger.error("RPC error fetching block data", error, { block_number: blockNumber })
+    logger.error({ error, block_number: blockNumber }, "RPC error fetching block data")
     throw new Error(`[RPC] Upstream error: ${error}`)
   }
 
@@ -69,7 +69,7 @@ export const updateBlock = async (blockNumber: number) => {
     success: "true",
   })
 
-  logger.debug("Updating block in database", { block_number: blockNumber })
+  logger.debug({ block_number: blockNumber }, "Updating block in database")
 
   const dataToInsert = {
     block_number: blockNumber,

@@ -6,6 +6,9 @@ export async function register() {
     const { getNodeAutoInstrumentations } = await import(
       "@opentelemetry/auto-instrumentations-node"
     )
+    const { PinoInstrumentation } = await import(
+      "@opentelemetry/instrumentation-pino"
+    )
 
     const { OTLPTraceExporter: OTLPTraceExporterGrpc } = await import(
       "@opentelemetry/exporter-trace-otlp-grpc"
@@ -28,15 +31,7 @@ export async function register() {
     const { PeriodicExportingMetricReader } = await import(
       "@opentelemetry/sdk-metrics"
     )
-    const {
-      LoggerProvider,
-      BatchLogRecordProcessor,
-    } = await import("@opentelemetry/sdk-logs")
-    const { logs } = await import("@opentelemetry/api-logs")
-    const { resourceFromAttributes } = await import("@opentelemetry/resources")
-    const { ATTR_SERVICE_NAME, ATTR_SERVICE_VERSION } = await import(
-      "@opentelemetry/semantic-conventions"
-    )
+    const { BatchLogRecordProcessor } = await import("@opentelemetry/sdk-logs")
 
     const serviceName = process.env.OTEL_SERVICE_NAME || "ethproofs-api"
     const serviceVersion = process.env.npm_package_version || "0.2.0"
@@ -69,26 +64,6 @@ export async function register() {
       ? OTLPLogExporterGrpc
       : OTLPLogExporterHttp
 
-    // Create shared resource with service information
-    const resource = resourceFromAttributes({
-      [ATTR_SERVICE_NAME]: serviceName,
-      [ATTR_SERVICE_VERSION]: serviceVersion,
-    })
-
-    // Initialize Logs Provider with resource
-    const loggerProvider = new LoggerProvider({
-      resource,
-      processors: [
-        new BatchLogRecordProcessor(
-          new OTLPLogExporter({
-            url: otlpEndpoint,
-            headers,
-          })
-        ),
-      ],
-    })
-    logs.setGlobalLoggerProvider(loggerProvider)
-
     const sdk = new NodeSDK({
       serviceName,
       traceExporter: new OTLPTraceExporter({
@@ -102,7 +77,25 @@ export async function register() {
         }),
         exportIntervalMillis: 60000,
       }),
+      logRecordProcessor: new BatchLogRecordProcessor(
+        new OTLPLogExporter({
+          url: otlpEndpoint,
+          headers,
+        })
+      ),
       instrumentations: [
+        new PinoInstrumentation({
+          // Inject trace context into Pino logs
+          logKeys: {
+            traceId: "trace_id",
+            spanId: "span_id",
+            traceFlags: "trace_flags",
+          },
+          // Explicitly enable log sending (default is false in some versions)
+          disableLogSending: false,
+          // Do NOT disable log correlation
+          disableLogCorrelation: false,
+        }),
         getNodeAutoInstrumentations({
           // Auto-instrument fetch, http, https, and other Node.js modules
           "@opentelemetry/instrumentation-fs": {
@@ -122,14 +115,12 @@ export async function register() {
       )
       console.log(`  - Traces:  exporting to ${otlpEndpoint}`)
       console.log(`  - Metrics: exporting to ${otlpEndpoint} (every 60s)`)
-      console.log(`  - Logs:    exporting to ${otlpEndpoint}`)
+      console.log(`  - Logs:    exporting to ${otlpEndpoint} (Pino → OTel)`)
 
       // Graceful shutdown
       process.on("SIGTERM", () => {
-        Promise.all([
-          sdk.shutdown(),
-          loggerProvider.shutdown(),
-        ])
+        sdk
+          .shutdown()
           .then(() => console.log("[OpenTelemetry] Observability terminated"))
           .catch((error) =>
             console.error("[OpenTelemetry] Error terminating observability", error)

@@ -22,9 +22,10 @@ export const GET = async (request: Request) => {
     if (error instanceof z.ZodError) {
       return new Response("Invalid query parameters", { status: 400 })
     }
-    logger.error("Failed to fetch cloud instances", error, {
+    logger.error({
+      error,
       provider,
-    })
+    }, "Failed to fetch cloud instances")
     return new Response("Internal server error", { status: 500 })
   }
 }

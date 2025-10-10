@@ -26,7 +26,7 @@ export async function GET(request: NextRequest) {
   try {
     revalidateTag(tag)
 
-    logger.info("Cache tag revalidated", { tag })
+    logger.info({ tag }, "Cache tag revalidated")
 
     return NextResponse.json({
       status: 200,
@@ -35,7 +35,7 @@ export async function GET(request: NextRequest) {
       tag,
     })
   } catch (error) {
-    logger.error("Failed to revalidate cache tag", error, { tag })
+    logger.error({ error, tag }, "Failed to revalidate cache tag")
     return new Response("Failed to revalidate", { status: 500 })
   }
 }

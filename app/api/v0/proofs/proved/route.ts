@@ -11,12 +11,12 @@ import { uploadProofBinary } from "@/lib/api/proof-binaries"
 import { isStorageQuotaExceeded } from "@/lib/api/storage"
 import { getTeam } from "@/lib/api/teams"
 import { logger, traced } from "@/lib/logger"
+import { withAuth } from "@/lib/middleware/with-auth"
 import {
-  proofSubmissions,
   proofSize,
+  proofSubmissions,
   storageQuotaExceeded as storageQuotaExceededMetric,
 } from "@/lib/otel-metrics"
-import { withAuth } from "@/lib/middleware/with-auth"
 import { provedProofSchema } from "@/lib/zod/schemas/proof"
 
 // TODO:TEAM - refactor code to use baseProofHandler and abstract out the logic
@@ -28,9 +28,7 @@ export const POST = withAuth(async ({ request, user, timestamp }) => {
   try {
     proofPayload = provedProofSchema.parse(payload)
   } catch (error) {
-    logger.error("Proof payload validation failed", error, {
-      team_id: teamId,
-    })
+    logger.error({ error, team_id: teamId }, "Proof payload validation failed")
     if (error instanceof ZodError) {
       return new Response(`Invalid request: ${error.message}`, {
         status: 400,
@@ -48,9 +46,9 @@ export const POST = withAuth(async ({ request, user, timestamp }) => {
   return traced(
     "POST /api/v0/proofs/proved",
     async () => {
-      log.info("Processing proved proof submission", {
+      log.info({
         proof_size: proof.length,
-      })
+      }, "Processing proved proof submission")
 
       // Get cluster uuid from cluster_id
       const cluster = await db.query.clusters.findFirst({
@@ -87,11 +85,11 @@ export const POST = withAuth(async ({ request, user, timestamp }) => {
 
       try {
         const block = await updateBlock(block_number)
-        log.info("Block updated successfully", {
+        log.info({
           block_number: block,
-        })
+        }, "Block updated successfully")
       } catch (error) {
-        log.error("Failed to update block", error)
+        log.error({ error, block_number }, "Failed to update block")
         return new Response("Internal server error", {
           status: 500,
         })
@@ -120,7 +118,7 @@ export const POST = withAuth(async ({ request, user, timestamp }) => {
 
             programId = program?.id
           } catch (error) {
-            logger.error("Failed to create program", error, { verifier_id })
+            logger.error({ error, verifier_id }, "Failed to create program")
           }
         }
       }
@@ -139,9 +137,9 @@ export const POST = withAuth(async ({ request, user, timestamp }) => {
       )
 
       if (storageQuotaExceeded) {
-        log.warn("Storage quota exceeded", {
+        log.warn({
           proof_size: binaryBuffer.byteLength,
-        })
+        }, "Storage quota exceeded")
         storageQuotaExceededMetric.add(1, { team_id: teamId })
       }
 
@@ -198,10 +196,10 @@ export const POST = withAuth(async ({ request, user, timestamp }) => {
         revalidateTag(`cluster-${cluster.id}`)
         revalidateTag(`block-${block_number}`)
 
-        log.info("Proof stored successfully", {
+        log.info({
           proof_id: newProof.proof_id,
           cluster_uuid: cluster.id,
-        })
+        }, "Proof stored successfully")
 
         proofSubmissions.add(1, {
           status: "proved",
@@ -210,7 +208,7 @@ export const POST = withAuth(async ({ request, user, timestamp }) => {
 
         return Response.json(newProof)
       } catch (error) {
-        log.error("Failed to store proof", error)
+        log.error({ error }, "Failed to store proof")
         return new Response("Internal server error", {
           status: 500,
         })

@@ -9,8 +9,8 @@ import { db } from "@/db"
 import { proofs } from "@/db/schema"
 import { findOrCreateBlock } from "@/lib/api/blocks"
 import { logger, traced } from "@/lib/logger"
-import { proofSubmissions } from "@/lib/otel-metrics"
 import { withAuth } from "@/lib/middleware/with-auth"
+import { proofSubmissions } from "@/lib/otel-metrics"
 import { queuedProofSchema } from "@/lib/zod/schemas/proof"
 
 // TODO:TEAM - refactor code to use baseProofHandler and abstract out the logic
@@ -22,9 +22,10 @@ export const POST = withAuth(async ({ request, user, timestamp }) => {
   try {
     proofPayload = queuedProofSchema.parse(payload)
   } catch (error) {
-    logger.error("Queued proof payload validation failed", error, {
+    logger.error({
+      error,
       team_id: teamId,
-    })
+    }, "Queued proof payload validation failed")
     if (error instanceof ZodError) {
       return new Response(`Invalid request: ${error.message}`, {
         status: 400,
@@ -75,11 +76,11 @@ export const POST = withAuth(async ({ request, user, timestamp }) => {
 
       try {
         const block = await findOrCreateBlock(block_number)
-        log.info("Block found/created for queued proof", {
+        log.info({
           block_number: block,
-        })
+        }, "Block found/created for queued proof")
       } catch (error) {
-        log.error("Failed to find/create block", error)
+        log.error({ error, block_number }, "Failed to find/create block")
         return new Response("Internal server error", {
           status: 500,
         })
@@ -111,9 +112,9 @@ export const POST = withAuth(async ({ request, user, timestamp }) => {
         revalidateTag(`cluster-${cluster.id}`)
         revalidateTag(`block-${block_number}`)
 
-        log.info("Queued proof stored successfully", {
+        log.info({
           proof_id: proof.proof_id,
-        })
+        }, "Queued proof stored successfully")
 
         proofSubmissions.add(1, {
           status: "queued",
@@ -122,7 +123,7 @@ export const POST = withAuth(async ({ request, user, timestamp }) => {
 
         return Response.json(proof)
       } catch (error) {
-        log.error("Failed to store queued proof", error)
+        log.error({ error }, "Failed to store queued proof")
         return new Response("Internal server error", {
           status: 500,
         })

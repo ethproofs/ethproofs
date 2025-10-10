@@ -7,8 +7,8 @@ import { db } from "@/db"
 import { proofs } from "@/db/schema"
 import { findOrCreateBlock } from "@/lib/api/blocks"
 import { logger, traced } from "@/lib/logger"
-import { proofSubmissions } from "@/lib/otel-metrics"
 import { withAuth } from "@/lib/middleware/with-auth"
+import { proofSubmissions } from "@/lib/otel-metrics"
 import { provingProofSchema } from "@/lib/zod/schemas/proof"
 
 // TODO:TEAM - refactor code to use baseProofHandler and abstract out the logic
@@ -20,9 +20,10 @@ export const POST = withAuth(async ({ request, user, timestamp }) => {
   try {
     proofPayload = provingProofSchema.parse(payload)
   } catch (error) {
-    logger.error("Proving proof payload validation failed", error, {
+    logger.error({
+      error,
       team_id: teamId,
-    })
+    }, "Proving proof payload validation failed")
     if (error instanceof ZodError) {
       return new Response(`Invalid request: ${error.message}`, {
         status: 400,
@@ -73,11 +74,11 @@ export const POST = withAuth(async ({ request, user, timestamp }) => {
 
       try {
         const block = await findOrCreateBlock(block_number)
-        log.info("Block found/created for proving proof", {
+        log.info({
           block_number: block,
-        })
+        }, "Block found/created for proving proof")
       } catch (error) {
-        log.error("Failed to find/create block", error)
+        log.error({ error, block_number }, "Failed to find/create block")
         return new Response("Internal server error", {
           status: 500,
         })
@@ -110,9 +111,9 @@ export const POST = withAuth(async ({ request, user, timestamp }) => {
         revalidateTag(`cluster-${cluster.id}`)
         revalidateTag(`block-${block_number}`)
 
-        log.info("Proving proof stored successfully", {
+        log.info({
           proof_id: proof.proof_id,
-        })
+        }, "Proving proof stored successfully")
 
         proofSubmissions.add(1, {
           status: "proving",
@@ -121,7 +122,7 @@ export const POST = withAuth(async ({ request, user, timestamp }) => {
 
         return Response.json(proof)
       } catch (error) {
-        log.error("Failed to store proving proof", error)
+        log.error({ error }, "Failed to store proving proof")
         return new Response("Internal server error", {
           status: 500,
         })

@@ -119,12 +119,12 @@ export const withTelemetry = (
             errorMessage: `${RUNTIME} function timeout imminent`,
           }
 
-          logger.warn("Function timeout imminent", {
+          logger.warn({
             method: warn.method,
             path: warn.path,
             duration_ms: durationMs,
             runtime: RUNTIME,
-          })
+          }, "Function timeout imminent")
 
           // Still send to Telegram for now (will be removed later)
           safeSend(
@@ -156,12 +156,12 @@ export const withTelemetry = (
         })
 
         // Structured logging instead of console.log
-        logger.info("Request completed", {
+        logger.info({
           method: rep.method,
           path: rep.path,
           status_code: status,
           duration_ms: durationMs,
-        })
+        }, "Request completed")
 
         // Still send to Telegram for now (will be removed later)
         // Always await on 5xx; sample others to avoid latency + cost
@@ -184,7 +184,7 @@ export const withTelemetry = (
         }
 
         return response
-      } catch (err) {
+      } catch (error) {
         const end = performance.now()
         const durationMs = end - t0
 
@@ -193,12 +193,12 @@ export const withTelemetry = (
           endTimeMs: Date.now(),
           durationMs,
           statusCode: 500,
-          errorMessage: err instanceof Error ? err.message : "Unknown error",
+          errorMessage: error instanceof Error ? error.message : "Unknown error",
         }
 
         // Record exception in span
-        if (err instanceof Error) {
-          span.recordException(err)
+        if (error instanceof Error) {
+          span.recordException(error)
         }
         span.setStatus({
           code: SpanStatusCode.ERROR,
@@ -207,11 +207,12 @@ export const withTelemetry = (
         span.setAttribute("http.status_code", 500)
 
         // Structured error logging
-        logger.error("Unhandled request error", err, {
+        logger.error({
+          error,
           method: rep.method,
           path: rep.path,
           duration_ms: durationMs,
-        })
+        }, "Unhandled request error")
 
         // Still send to Telegram for now (will be removed later)
         // Await to maximize chance we capture the crash
@@ -220,7 +221,7 @@ export const withTelemetry = (
           rep
         )
 
-        throw err
+        throw error
       } finally {
         if (timeoutId) clearTimeout(timeoutId)
         span.end()

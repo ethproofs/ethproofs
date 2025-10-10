@@ -24,20 +24,21 @@ export const uploadProofBinary = async (
 
   if (error) {
     proofUploadDuration.record(duration, { success: "false" })
-    logger.error("Failed to upload proof binary", error, {
+    logger.error({
+      error,
       data,
       filename,
       size_bytes: binaryBuffer.byteLength,
-    })
+    }, "Failed to upload proof binary")
     throw error
   }
 
   proofUploadDuration.record(duration, { success: "true" })
-  logger.debug("Proof binary uploaded", {
+  logger.debug({
     data,
     filename,
     size_bytes: binaryBuffer.byteLength,
-  })
+  }, "Proof binary uploaded")
 }
 
 export const getProofBinary = async (filename: string) => {
@@ -58,14 +59,14 @@ export const downloadProofBinary = async (filename: string) => {
     .download(filename)
 
   if (error) {
-    logger.error("Failed to download proof binary", error, { filename })
+    logger.error({ error, filename }, "Failed to download proof binary")
     return null
   }
 
-  logger.debug("Proof binary downloaded", {
+  logger.debug({
     filename,
     size_bytes: data.size,
-  })
+  }, "Proof binary downloaded")
 
   return data
 }

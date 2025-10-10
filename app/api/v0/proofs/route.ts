@@ -42,7 +42,7 @@ export async function GET(req: Request) {
       return NextResponse.json(error.issues, { status: 422 })
     }
 
-    logger.error("Failed to fetch proofs", error)
+    logger.error({error}, "Failed to fetch proofs")
     return new Response("Internal Server Error", { status: 500 })
   }
 }
