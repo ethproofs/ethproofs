@@ -50,12 +50,10 @@ export const updateBlock = async (blockNumber: number) => {
 
   const startTime = Date.now()
   let blockData
-  let rpcSuccess = true
 
   try {
     blockData = await fetchBlockData(blockNumber)
   } catch (error) {
-    rpcSuccess = false
     const duration = Date.now() - startTime
     blockRpcDuration.record(duration, {
       rpc: "primary",

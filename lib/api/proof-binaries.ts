@@ -1,7 +1,7 @@
+import { PROOF_BINARY_BUCKET } from "@/lib/constants"
+
 import { logger } from "../logger"
 import { proofUploadDuration } from "../otel-metrics"
-
-import { PROOF_BINARY_BUCKET } from "@/lib/constants"
 
 import { createClient } from "@/utils/supabase/server"
 
@@ -25,6 +25,7 @@ export const uploadProofBinary = async (
   if (error) {
     proofUploadDuration.record(duration, { success: "false" })
     logger.error("Failed to upload proof binary", error, {
+      data,
       filename,
       size_bytes: binaryBuffer.byteLength,
     })
@@ -33,6 +34,7 @@ export const uploadProofBinary = async (
 
   proofUploadDuration.record(duration, { success: "true" })
   logger.debug("Proof binary uploaded", {
+    data,
     filename,
     size_bytes: binaryBuffer.byteLength,
   })

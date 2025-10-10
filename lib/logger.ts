@@ -1,5 +1,5 @@
 import { SpanStatusCode, trace } from "@opentelemetry/api"
-import { logs, SeverityNumber, Logger as OtelLogger } from "@opentelemetry/api-logs"
+import { Logger as OtelLogger, logs, SeverityNumber } from "@opentelemetry/api-logs"
 
 type LogLevel = "debug" | "info" | "warn" | "error"
 
@@ -31,7 +31,7 @@ class Logger {
       this.otelLogger = logs.getLoggerProvider().getLogger(serviceName)
     } catch (e) {
       // OTel not initialized yet, will fall back to console only
-      console.warn("[Logger] OpenTelemetry logger not initialized, using console only")
+      console.warn("[Logger] OpenTelemetry logger not initialized, using console only:", e)
     }
   }
 
