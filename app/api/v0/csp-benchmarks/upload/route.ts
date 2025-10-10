@@ -28,7 +28,12 @@ export const POST = withAuth(async ({ apiKey, request }) => {
     const filenameWithExtension = filename.endsWith(".json")
       ? filename
       : `${filename}.json`
-    const result = await uploadCspBenchmarks(filenameWithExtension, file)
+
+    // Convert File to Buffer for upload
+    const arrayBuffer = await file.arrayBuffer()
+    const buffer = Buffer.from(arrayBuffer)
+
+    const result = await uploadCspBenchmarks(filenameWithExtension, buffer)
 
     if (!result) {
       return new Response("Failed to upload file", { status: 500 })

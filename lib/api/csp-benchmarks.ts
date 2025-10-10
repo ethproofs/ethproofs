@@ -2,12 +2,15 @@ import { CSP_BENCHMARKS_BUCKET } from "../constants"
 
 import { createClient } from "@/utils/supabase/server"
 
-export const uploadCspBenchmarks = async (filename: string, file: File) => {
+export const uploadCspBenchmarks = async (
+  filename: string,
+  buffer: Buffer
+) => {
   const supabase = await createClient()
 
   const { data, error } = await supabase.storage
     .from(CSP_BENCHMARKS_BUCKET)
-    .upload(filename, file, {
+    .upload(filename, buffer, {
       contentType: "application/json",
       upsert: true,
     })
