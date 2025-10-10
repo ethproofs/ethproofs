@@ -33,7 +33,7 @@ export const withAuth = (
       })
     }
 
-    // If there is an auth header, validate api key
+    // If there is an auth header, validate API key
     const apiAuthToken = await db.query.apiAuthTokens.findFirst({
       columns: {
         mode: true,
@@ -42,7 +42,7 @@ export const withAuth = (
       where: (apiAuthToken, { eq }) => eq(apiAuthToken.token, hashedKey),
     })
 
-    // api key is invalid
+    // API key is invalid
     if (!apiAuthToken) {
       return new Response("Invalid API key", {
         status: 401,
