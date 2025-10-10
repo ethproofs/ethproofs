@@ -1,8 +1,11 @@
-import { context, SpanStatusCode, trace } from "@opentelemetry/api"
-import { logs, SeverityNumber } from "@opentelemetry/api-logs"
+import { SpanStatusCode, trace } from "@opentelemetry/api"
+import { logs, SeverityNumber, Logger as OtelLogger } from "@opentelemetry/api-logs"
 
 type LogLevel = "debug" | "info" | "warn" | "error"
 
+/**
+ * Context object for structured logging.
+ */
 interface LogContext {
   [key: string]: unknown
 }
@@ -17,7 +20,7 @@ const severityMap: Record<LogLevel, SeverityNumber> = {
 class Logger {
   private serviceName: string
   private baseContext: LogContext
-  private otelLogger: ReturnType<ReturnType<typeof logs.getLoggerProvider>["getLogger"]> | null = null
+  private otelLogger: OtelLogger | null = null
 
   constructor(serviceName: string = "ethproofs", baseContext: LogContext = {}) {
     this.serviceName = serviceName
@@ -28,7 +31,6 @@ class Logger {
       this.otelLogger = logs.getLoggerProvider().getLogger(serviceName)
     } catch (e) {
       // OTel not initialized yet, will fall back to console only
-      this.otelLogger = null
       console.warn("[Logger] OpenTelemetry logger not initialized, using console only")
     }
   }
