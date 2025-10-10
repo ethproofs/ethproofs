@@ -19,10 +19,6 @@ export const POST = withAuth(async ({ apiKey, request }) => {
       return new Response("No file provided", { status: 400 })
     }
 
-    if (file.type !== "application/json") {
-      return new Response("File must be a JSON file", { status: 400 })
-    }
-
     const filename = formData.get("filename") as string
     if (!filename) {
       return new Response("No filename provided", { status: 400 })
