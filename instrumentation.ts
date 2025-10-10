@@ -34,7 +34,6 @@ export async function register() {
     const { BatchLogRecordProcessor } = await import("@opentelemetry/sdk-logs")
 
     const serviceName = process.env.OTEL_SERVICE_NAME || "ethproofs-api"
-    const serviceVersion = process.env.npm_package_version || "0.2.0"
     const otlpEndpoint = process.env.OTEL_EXPORTER_OTLP_ENDPOINT
 
     // Only initialize if OTLP endpoint is configured
@@ -45,9 +44,18 @@ export async function register() {
       return
     }
 
-    const headers = process.env.OTEL_EXPORTER_OTLP_HEADERS
-      ? JSON.parse(process.env.OTEL_EXPORTER_OTLP_HEADERS)
-      : {}
+    let headers = {}
+    if (process.env.OTEL_EXPORTER_OTLP_HEADERS) {
+      try {
+        headers = JSON.parse(process.env.OTEL_EXPORTER_OTLP_HEADERS)
+      } catch (error) {
+        console.error(
+          "[OpenTelemetry] Failed to parse OTEL_EXPORTER_OTLP_HEADERS:",
+          error
+        )
+        console.log("[OpenTelemetry] Continuing with empty headers")
+      }
+    }
 
     // Determine protocol (gRPC or HTTP)
     const isGrpc =
