@@ -1,7 +1,7 @@
 {
   "name": "ethproofs",
   "version": "0.2.0",
-  "license": "MIT",
+  "license": "(MIT OR Apache-2.0)",
   "private": true,
   "scripts": {
     "postinstall": "pnpm seed:generate",
@@ -19,7 +19,8 @@
     "db:seed": "tsx supabase/seed/seed.ts > supabase/seed.sql",
     "seed:sync": "snaplet-seed sync --config supabase/seed/seed.config.ts",
     "seed:generate": "snaplet-seed generate --config supabase/seed/seed.config.ts",
-    "api:docs": "tsx scripts/generate-openapi.ts & npx @redocly/cli build-docs public/openapi.json --output=public/api.html"
+    "api:docs": "tsx scripts/generate-openapi.ts & npx @redocly/cli build-docs public/openapi.json --output=public/api.html",
+    "prepare": "husky"
   },
   "dependencies": {
     "@ethproofs/pico-wasm-stark-verifier": "^0.1.4",
@@ -65,6 +66,8 @@
     "zod": "^3.23.8"
   },
   "devDependencies": {
+    "@commitlint/cli": "^20.1.0",
+    "@commitlint/config-conventional": "^20.0.0",
     "@snaplet/copycat": "^5.0.0",
     "@snaplet/seed": "^0.98.0",
     "@svgr/webpack": "^8.1.0",
@@ -87,6 +90,7 @@
     "eslint-plugin-simple-import-sort": "^12.1.1",
     "eslint-plugin-unused-imports": "^4.1.4",
     "gray-matter": "^4.0.3",
+    "husky": "^9.1.7",
     "nanoid": "^5.0.9",
     "pg": "^8.13.0",
     "postcss": "8.4.33",

@@ -91,3 +91,32 @@ This project uses the [`pg_cron`](https://github.com/citusdata/pg_cron) extensio
   ```
 
 More info: https://supabase.com/docs/guides/cron
+
+## Contributing
+
+We welcome contributions from the community! Please read our [CONTRIBUTING.md](./CONTRIBUTING.md) for:
+
+- Contribution requirements and workflow
+- Code standards and commit message conventions
+- Pull request process
+- How to report bugs and request features
+
+### Quick Start for Contributors
+
+1. Fork and clone the repository
+2. Follow the local development setup above
+3. Create a feature branch
+4. Make your changes following our code standards
+5. Commit using [conventional commits](https://www.conventionalcommits.org/) format
+6. Push and create a pull request
+
+New contributors should start with issues labeled `good first issue`.
+
+## License
+
+Ethproofs is dual-licensed under your choice of:
+
+- [MIT License](LICENSE-MIT)
+- [Apache License 2.0](LICENSE-APACHE)
+
+See [LICENSE](LICENSE) for details.
