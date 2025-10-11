@@ -1,0 +1,2 @@
+# Run linting and type checking before commit
+pnpm lint && pnpm typecheck
