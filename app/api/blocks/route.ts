@@ -3,6 +3,7 @@ import type { NextRequest } from "next/server"
 import { DEFAULT_PAGE_SIZE } from "@/lib/constants"
 
 import { fetchBlocksPaginated, type MachineType } from "@/lib/api/blocks"
+import { logger } from "@/lib/logger"
 
 export async function GET(request: NextRequest) {
   const searchParams = request.nextUrl.searchParams
@@ -19,6 +20,12 @@ export async function GET(request: NextRequest) {
     return new Response("Invalid machine type", { status: 400 })
   }
 
+  const log = logger.child({
+    page_index: pageIndex,
+    page_size: pageSize,
+    machine_type: machineType,
+  })
+
   try {
     const blocks = await fetchBlocksPaginated(
       {
@@ -30,7 +37,7 @@ export async function GET(request: NextRequest) {
 
     return Response.json(blocks)
   } catch (error) {
-    console.error("Error fetching blocks", error)
+    log.error({error},"Failed to fetch blocks")
     return new Response("Internal server error", { status: 500 })
   }
 }

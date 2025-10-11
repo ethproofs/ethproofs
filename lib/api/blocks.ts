@@ -3,6 +3,8 @@ import { unstable_cache as cache } from "next/cache"
 import { PaginationState } from "@tanstack/react-table"
 
 import { fetchBlockData } from "../blocks"
+import { logger } from "../logger"
+import { blockRpcDuration, blocksProcessed } from "../otel-metrics"
 import { isUndefined } from "../utils"
 
 import { db } from "@/db"
@@ -19,7 +21,7 @@ export const findOrCreateBlock = async (blockNumber: number) => {
   })
 
   if (isUndefined(foundBlock)) {
-    console.log("Creating block:", blockNumber)
+    logger.info({ block_number: blockNumber }, "Creating new block")
 
     try {
       const [block] = await db
@@ -31,8 +33,11 @@ export const findOrCreateBlock = async (blockNumber: number) => {
         })
         .returning({ block_number: blocks.block_number })
 
+      blocksProcessed.add(1, { operation: "created" })
+
       return block.block_number
     } catch (error) {
+      logger.error({ error, block_number: blockNumber }, "Failed to create block")
       throw new Error(`[DB] Error creating block: ${error}`)
     }
   }
@@ -41,15 +46,30 @@ export const findOrCreateBlock = async (blockNumber: number) => {
 }
 
 export const updateBlock = async (blockNumber: number) => {
-  console.log("Fetching block data:", blockNumber)
+  logger.debug({ block_number: blockNumber }, "Fetching block data from RPC")
+
+  const startTime = Date.now()
   let blockData
+
   try {
     blockData = await fetchBlockData(blockNumber)
   } catch (error) {
+    const duration = Date.now() - startTime
+    blockRpcDuration.record(duration, {
+      rpc: "primary",
+      success: "false",
+    })
+    logger.error({ error, block_number: blockNumber }, "RPC error fetching block data")
     throw new Error(`[RPC] Upstream error: ${error}`)
   }
 
-  console.log("Updating block:", blockNumber)
+  const rpcDuration = Date.now() - startTime
+  blockRpcDuration.record(rpcDuration, {
+    rpc: "primary",
+    success: "true",
+  })
+
+  logger.debug({ block_number: blockNumber }, "Updating block in database")
 
   const dataToInsert = {
     block_number: blockNumber,
@@ -68,6 +88,8 @@ export const updateBlock = async (blockNumber: number) => {
         set: { ...dataToInsert },
       })
       .returning({ block_number: blocks.block_number })
+
+    blocksProcessed.add(1, { operation: "updated" })
 
     return block.block_number
   } catch (error) {

@@ -1,7 +1,24 @@
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
-  webpack(config) {
+  serverExternalPackages: [
+    "@opentelemetry/sdk-node",
+    "@opentelemetry/auto-instrumentations-node",
+    "@opentelemetry/instrumentation-pino",
+    "@opentelemetry/exporter-trace-otlp-grpc",
+    "@opentelemetry/exporter-trace-otlp-http",
+    "@opentelemetry/exporter-metrics-otlp-grpc",
+    "@opentelemetry/exporter-metrics-otlp-http",
+    "@opentelemetry/exporter-logs-otlp-grpc",
+    "@opentelemetry/exporter-logs-otlp-http",
+    "@opentelemetry/sdk-metrics",
+    "@opentelemetry/sdk-logs",
+    "@opentelemetry/resources",
+    "@opentelemetry/semantic-conventions",
+    "pino",
+    "pino-pretty",
+  ],
+  webpack(config, { isServer }) {
     const fileLoaderRule = config.module.rules.find((rule) =>
       rule.test?.test?.(".svg")
     )
@@ -18,6 +35,19 @@ const nextConfig = {
     config.experiments = {
       ...config.experiments,
       asyncWebAssembly: true,
+    }
+
+    // Exclude OpenTelemetry from client bundle
+    if (!isServer) {
+      config.resolve.fallback = {
+        ...config.resolve.fallback,
+        fs: false,
+        net: false,
+        tls: false,
+        dns: false,
+        child_process: false,
+        stream: false,
+      }
     }
 
     return config

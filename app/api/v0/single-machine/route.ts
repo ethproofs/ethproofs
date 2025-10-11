@@ -8,7 +8,9 @@ import {
   machines,
 } from "@/db/schema"
 import { getZkvmVersion } from "@/lib/api/zkvm-versions"
+import { logger, traced } from "@/lib/logger"
 import { withAuth } from "@/lib/middleware/with-auth"
+import { clusterRegistrations } from "@/lib/otel-metrics"
 import { singleMachineSchema } from "@/lib/zod/schemas/cluster"
 
 export const POST = withAuth(async ({ request, user }) => {
@@ -19,7 +21,10 @@ export const POST = withAuth(async ({ request, user }) => {
   try {
     singleMachinePayload = singleMachineSchema.parse(requestBody)
   } catch (error) {
-    console.error("single machine payload invalid", error)
+    logger.error({
+      error,
+      team_id: user.id,
+    }, "Single machine payload validation failed")
     if (error instanceof ZodError) {
       return new Response(`Invalid payload: ${error.message}`, {
         status: 400,
@@ -42,71 +47,97 @@ export const POST = withAuth(async ({ request, user }) => {
     machine,
   } = singleMachinePayload
 
-  // get & validate cloud instance id
-  const cloudInstance = await db.query.cloudInstances.findFirst({
-    columns: {
-      id: true,
-      instance_name: true,
-    },
-    where: (cloudInstances, { eq }) =>
-      eq(cloudInstances.instance_name, cloud_instance_name),
+  const log = logger.child({
+    team_id: user.id,
+    nickname,
+    cloud_instance: cloud_instance_name,
   })
 
-  if (!cloudInstance) {
-    return new Response("Cloud instance not found", { status: 400 })
-  }
+  return traced(
+    "POST /api/v0/single-machine",
+    async () => {
+      log.info({ zkvm_version_id }, "Registering single machine")
 
-  // validate zkvm_version_id
-  const zkvmVersion = await getZkvmVersion(zkvm_version_id)
+      // get & validate cloud instance id
+      const cloudInstance = await db.query.cloudInstances.findFirst({
+        columns: {
+          id: true,
+          instance_name: true,
+        },
+        where: (cloudInstances, { eq }) =>
+          eq(cloudInstances.instance_name, cloud_instance_name),
+      })
 
-  if (!zkvmVersion) {
-    return new Response("Invalid zkvm version", { status: 400 })
-  }
+      if (!cloudInstance) {
+        log.error("Cloud instance not found")
+        return new Response("Cloud instance not found", { status: 400 })
+      }
 
-  let clusterIndex: number | null = null
-  await db.transaction(async (tx) => {
-    // create cluster for single machine
-    const [cluster] = await tx
-      .insert(clusters)
-      .values({
-        nickname,
-        description,
-        hardware,
-        cycle_type,
-        proof_type,
-        is_multi_machine: false,
+      // validate zkvm_version_id
+      const zkvmVersion = await getZkvmVersion(zkvm_version_id)
+
+      if (!zkvmVersion) {
+        log.error({ zkvm_version_id }, "Invalid zkvm version")
+        return new Response("Invalid zkvm version", { status: 400 })
+      }
+
+      let clusterIndex: number | null = null
+      await db.transaction(async (tx) => {
+        // create cluster for single machine
+        const [cluster] = await tx
+          .insert(clusters)
+          .values({
+            nickname,
+            description,
+            hardware,
+            cycle_type,
+            proof_type,
+            is_multi_machine: false,
+            team_id: user.id,
+          })
+          .returning({ id: clusters.id, index: clusters.index })
+
+        // create cluster version
+        const [clusterVersion] = await tx
+          .insert(clusterVersions)
+          .values({
+            cluster_id: cluster.id,
+            zkvm_version_id,
+            // TODO:TEAM - remove this once we have a real version management system for users
+            version: "v0.1",
+          })
+          .returning({ id: clusterVersions.id })
+
+        // create machine
+        const [createdMachine] = await tx
+          .insert(machines)
+          .values(machine)
+          .returning({ id: machines.id })
+
+        // create single machine as a cluster with 1 instance
+        await tx.insert(clusterMachines).values({
+          cluster_version_id: clusterVersion.id,
+          machine_id: createdMachine.id,
+          machine_count: 1,
+          cloud_instance_id: cloudInstance.id,
+          cloud_instance_count: 1,
+        })
+
+        clusterIndex = cluster.index
+      })
+
+      log.info({ cluster_id: clusterIndex }, "Single machine registered successfully")
+
+      clusterRegistrations.add(1, {
         team_id: user.id,
+        is_multi_machine: "false",
       })
-      .returning({ id: clusters.id, index: clusters.index })
 
-    // create cluster version
-    const [clusterVersion] = await tx
-      .insert(clusterVersions)
-      .values({
-        cluster_id: cluster.id,
-        zkvm_version_id,
-        // TODO:TEAM - remove this once we have a real version management system for users
-        version: "v0.1",
-      })
-      .returning({ id: clusterVersions.id })
-
-    // create machine
-    const [createdMachine] = await tx
-      .insert(machines)
-      .values(machine)
-      .returning({ id: machines.id })
-
-    // create single machine as a cluster with 1 instance
-    await tx.insert(clusterMachines).values({
-      cluster_version_id: clusterVersion.id,
-      machine_id: createdMachine.id,
-      machine_count: 1,
-      cloud_instance_id: cloudInstance.id,
-      cloud_instance_count: 1,
-    })
-
-    clusterIndex = cluster.index
-  })
-
-  return Response.json({ id: clusterIndex })
+      return Response.json({ id: clusterIndex })
+    },
+    {
+      team_id: user.id,
+      cloud_instance: cloud_instance_name,
+    }
+  )
 })

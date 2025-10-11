@@ -8,6 +8,7 @@ import {
   machines,
 } from "@/db/schema"
 import { getZkvmVersion } from "@/lib/api/zkvm-versions"
+import { logger } from "@/lib/logger"
 import { withAuth } from "@/lib/middleware/with-auth"
 import { createClusterSchema } from "@/lib/zod/schemas/cluster"
 
@@ -51,7 +52,7 @@ export const GET = withAuth(async ({ user }) => {
       }))
     )
   } catch (error) {
-    console.error("error fetching clusters", error)
+    logger.error({ error, team_id: user.id }, "Failed to fetch clusters")
     return new Response("Internal server error", { status: 500 })
   }
 })
@@ -64,7 +65,7 @@ export const POST = withAuth(async ({ request, user }) => {
   try {
     clusterPayload = createClusterSchema.parse(requestBody)
   } catch (error) {
-    console.error("cluster payload invalid", error)
+    logger.error({ error, team_id: user.id }, "Cluster payload validation failed")
 
     if (error instanceof ZodError) {
       return new Response(error.message, {

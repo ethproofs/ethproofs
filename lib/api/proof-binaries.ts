@@ -1,5 +1,8 @@
 import { PROOF_BINARY_BUCKET } from "@/lib/constants"
 
+import { logger } from "../logger"
+import { proofUploadDuration } from "../otel-metrics"
+
 import { createClient } from "@/utils/supabase/server"
 
 export const uploadProofBinary = async (
@@ -8,6 +11,8 @@ export const uploadProofBinary = async (
 ) => {
   const supabase = await createClient()
 
+  const startTime = Date.now()
+
   const { data, error } = await supabase.storage
     .from(PROOF_BINARY_BUCKET)
     .upload(filename, binaryBuffer, {
@@ -15,12 +20,25 @@ export const uploadProofBinary = async (
       upsert: true,
     })
 
+  const duration = Date.now() - startTime
+
   if (error) {
-    console.error("error uploading proof binary", error)
+    proofUploadDuration.record(duration, { success: "false" })
+    logger.error({
+      error,
+      data,
+      filename,
+      size_bytes: binaryBuffer.byteLength,
+    }, "Failed to upload proof binary")
     throw error
-  } else {
-    console.log("proof binary uploaded", data)
   }
+
+  proofUploadDuration.record(duration, { success: "true" })
+  logger.debug({
+    data,
+    filename,
+    size_bytes: binaryBuffer.byteLength,
+  }, "Proof binary uploaded")
 }
 
 export const getProofBinary = async (filename: string) => {
@@ -41,11 +59,14 @@ export const downloadProofBinary = async (filename: string) => {
     .download(filename)
 
   if (error) {
-    console.error(`Error downloading ${filename}:`, error)
+    logger.error({ error, filename }, "Failed to download proof binary")
     return null
   }
 
-  console.log("downloaded proof binary", data)
+  logger.debug({
+    filename,
+    size_bytes: data.size,
+  }, "Proof binary downloaded")
 
   return data
 }
