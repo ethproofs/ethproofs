@@ -48,12 +48,9 @@ export const ActiveSoftwareAccordionItem = ({
                 <ChevronRight className="-mx-2 size-4" />
               </ButtonLink>
               {metrics?.updated_at && (
-                <div className="col-start-3 text-end">
-                  <span className="text-xs text-body-secondary">
-                    last updated:
-                  </span>{" "}
-                  <span className="text-xs uppercase text-body">
-                    {formatShortDate(new Date(metrics.updated_at))}
+                <div className="col-start-3 text-end text-xs text-muted-foreground">
+                  <span>
+                    {`updated ${formatShortDate(new Date(metrics.updated_at))}`}
                   </span>
                 </div>
               )}

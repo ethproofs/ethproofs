@@ -1,9 +1,9 @@
 import { columns } from "./blocks-table/columns"
-import DataTableUncontrolled from "./ui/data-table-uncontrolled-old"
 
 import { fetchBlocks, MachineType } from "@/lib/api/blocks"
 import { getTeams } from "@/lib/api/teams"
 import { mergeBlocksWithTeams } from "@/lib/blocks"
+import { DataTable } from "./data-table/data-table"
 
 type Props = {
   className?: string
@@ -19,11 +19,14 @@ const SimpleBlocksTable = async ({ className, machineType }: Props) => {
   )
 
   return (
-    <DataTableUncontrolled
-      className={className}
+    <DataTable
+      className="px-6"
       columns={columns}
       data={blocksWithTeams}
-      hidePagination
+      rowCount={blocksWithTeams.length}
+      pagination={{ pageIndex: 0, pageSize: 5 }}
+      showToolbar={false}
+      showPagination={false}
     />
   )
 }
