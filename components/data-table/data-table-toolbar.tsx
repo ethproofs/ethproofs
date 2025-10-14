@@ -3,13 +3,14 @@
 import { Download, X as Reset } from "lucide-react"
 import { Table } from "@tanstack/react-table"
 
+import type { Block } from "@/lib/types"
+
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 
-import { exportBlocksToCSV } from "@/lib/csv-export"
-import type { Block } from "@/lib/types"
-
 import { DataTableViewOptions } from "./data-table-view-options"
+
+import { exportBlocksToCSV } from "@/lib/csv-export"
 
 interface DataTableToolbarProps<TData> {
   table: Table<TData>

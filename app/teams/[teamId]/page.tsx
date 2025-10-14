@@ -5,6 +5,7 @@ import { notFound } from "next/navigation"
 import type { SummaryItem, Team, Zkvm } from "@/lib/types"
 
 import { BasicTabs } from "@/components/BasicTabs"
+import { ClustersTable } from "@/components/clusters-table/clusters-table"
 import ClusterTable from "@/components/ClusterTable"
 import { DisplayTeam } from "@/components/DisplayTeamLink"
 import KPIs from "@/components/KPIs"
@@ -26,7 +27,6 @@ import { formatUsd } from "@/lib/number"
 import { getTeamByIdOrSlug } from "@/lib/teams"
 import { prettyMs } from "@/lib/time"
 import { getHost, getTwitterHandle } from "@/lib/url"
-import { ClustersTable } from "@/components/clusters-table/clusters-table"
 
 export type TeamDetailsPageProps = {
   params: Promise<{ teamId: string }>

@@ -3,13 +3,13 @@
 import { useState } from "react"
 import { PaginationState } from "@tanstack/react-table"
 
+import { Team, Zkvm, ZkvmMetrics, ZkvmVersion } from "@/lib/types"
+
 import { DataTable } from "@/components/data-table/data-table"
 
 import { DEFAULT_PAGE_STATE } from "@/lib/constants"
 
 import { columns } from "./columns"
-
-import { Team, Zkvm, ZkvmMetrics, ZkvmVersion } from "@/lib/types"
 
 export type ZkvmRow = Zkvm & {
   versions: ZkvmVersion[]

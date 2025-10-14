@@ -1,8 +1,5 @@
 "use client"
 
-// import ClipboardCheck from "@/components/svgs/clipboard-check.svg"
-// import Copy from "@/components/svgs/copy.svg"
-
 import { ClipboardCheck, Copy } from "lucide-react"
 
 import { cn } from "@/lib/utils"
