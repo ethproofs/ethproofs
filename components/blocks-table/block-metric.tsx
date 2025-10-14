@@ -2,19 +2,19 @@ import { Award } from "lucide-react"
 
 import type { Stats } from "@/lib/types"
 
-import { AVERAGE_LABEL } from "@/lib/constants"
-
 import {
   Tooltip,
   TooltipContent,
   TooltipTrigger,
 } from "@/components/ui/tooltip"
 
+import { AVERAGE_LABEL } from "@/lib/constants"
+
 const BlockMetric = ({ stats }: { stats: Stats }) => (
   <div className="flex w-[100px] justify-between gap-4 whitespace-nowrap">
     <div>
       <span>{stats.bestFormatted}</span>
-      <span className="text-muted-foreground block text-xs">
+      <span className="block text-xs text-muted-foreground">
         {AVERAGE_LABEL} {stats.avgFormatted}
       </span>
     </div>
@@ -29,7 +29,7 @@ const BlockMetric = ({ stats }: { stats: Stats }) => (
               {stats.bestProof.team.name}
             </span>
           )}{" "}
-          <span className="text-muted-foreground text-xs">|</span>{" "}
+          <span className="text-xs text-muted-foreground">|</span>{" "}
           <span className="text-xs">
             {stats.bestProof.cluster_version.cluster.nickname}
           </span>

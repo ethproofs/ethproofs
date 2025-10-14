@@ -1,17 +1,17 @@
 "use client"
 
-import { ColumnDef } from "@tanstack/react-table"
 import { Check, Pizza, X as RedX } from "lucide-react"
+import { ColumnDef } from "@tanstack/react-table"
 
-import { ActiveZkvm } from "@/components/SoftwareAccordion/ActiveSoftwareAccordion"
 import { DataTableColumnHeader } from "@/components/data-table/data-table-column-header"
-
-import Link from "@/components/ui/link"
+import { ActiveZkvm } from "@/components/SoftwareAccordion/ActiveSoftwareAccordion"
 import { Checkbox } from "@/components/ui/checkbox"
+import Link from "@/components/ui/link"
 import { Progress } from "@/components/ui/progress"
 
-import { ZkvmRow } from "./zkvms-table"
 import { ButtonLink } from "../ui/button"
+
+import { ZkvmRow } from "./zkvms-table"
 
 export const labels = [
   {

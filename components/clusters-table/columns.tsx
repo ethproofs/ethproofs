@@ -1,18 +1,19 @@
 "use client"
 
-import { ColumnDef } from "@tanstack/react-table"
 import { Check, ChevronRight, X as RedX } from "lucide-react"
+import { ColumnDef } from "@tanstack/react-table"
 
 import { DataTableColumnHeader } from "@/components/data-table/data-table-column-header"
-
 import { DisplayTeamLink } from "@/components/DisplayTeamLink"
-import Link from "@/components/ui/link"
 import { Checkbox } from "@/components/ui/checkbox"
+import Link from "@/components/ui/link"
+
+import { ButtonLink } from "../ui/button"
+
+import { ClusterRow } from "./clusters-table"
 
 import { formatUsd } from "@/lib/number"
 import { prettyMs } from "@/lib/time"
-import { ButtonLink } from "../ui/button"
-import { ClusterRow } from "./clusters-table"
 
 export const labels = [
   {
