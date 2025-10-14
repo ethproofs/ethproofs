@@ -1,7 +1,8 @@
+import Link from "@/components/ui/link"
+
 import { HidePunctuation } from "./StylePunctuation"
 
 import { formatNumber } from "@/lib/number"
-import Link from "@/components/ui/link"
 
 interface BlockNumberProps {
   blockNumber: number

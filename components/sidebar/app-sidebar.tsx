@@ -6,10 +6,9 @@ import {
   SidebarRail,
 } from "../ui/sidebar"
 
+import { AppNavSecondary } from "./app-nav-secondary"
 import { AppNavigation } from "./app-navigation"
 import { AppSidebarHeader } from "./app-sidebar-header"
-
-import { AppNavSecondary } from "./app-nav-secondary"
 
 export function AppSidebar() {
   return (
