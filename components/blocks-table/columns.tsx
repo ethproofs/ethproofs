@@ -26,6 +26,8 @@ import {
   getTotalTTPStats,
 } from "@/lib/proofs"
 import BlockMetric from "./block-metric"
+import { Button, ButtonLink } from "../ui/button"
+import { ChevronRight } from "lucide-react"
 
 export const labels = [
   {
@@ -96,7 +98,7 @@ export const columns: ColumnDef<Block>[] = [
       return (
         <div className="w-[100px]">
           <BlockNumber blockNumber={blockNumber} />
-          <div className="text-muted-foreground text-xs">
+          <div className="text-xs text-muted-foreground">
             {formattedTimestamp}
           </div>
         </div>
@@ -126,7 +128,7 @@ export const columns: ColumnDef<Block>[] = [
             value={percentGasUsage}
             className="mx-auto my-[6px] h-2 max-w-32"
           />
-          <span className="text-muted-foreground text-xs">
+          <span className="text-xs text-muted-foreground">
             <HidePunctuation>{formatted}</HidePunctuation>
           </span>
         </div>
@@ -211,7 +213,7 @@ export const columns: ColumnDef<Block>[] = [
       return (
         <div className="min-w-[150px]">
           <ProofStatus statusCount={proofsPerStatusCount} />
-          <span className="text-muted-foreground block text-xs">
+          <span className="block text-xs text-muted-foreground">
             {totalTTPStats?.bestFormatted ?? <Null />}
           </span>
         </div>
@@ -223,6 +225,14 @@ export const columns: ColumnDef<Block>[] = [
   },
   {
     id: "actions",
-    cell: ({ row }) => <DataTableRowActions row={row} />,
+    cell: ({ row }) => (
+      <ButtonLink
+        variant="outline"
+        size="icon"
+        href={`/blocks/${row.original.block_number}`}
+      >
+        <ChevronRight />
+      </ButtonLink>
+    ),
   },
 ]

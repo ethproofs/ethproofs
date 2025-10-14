@@ -2,7 +2,7 @@ import type { SummaryItem } from "@/lib/types"
 
 import { BasicTabs } from "../BasicTabs"
 import KPIs from "../KPIs"
-import SoftwareAccordion from "../SoftwareAccordion"
+import { ZkvmsTable } from "../zkvms-table/zkvms-table"
 import { ButtonLink } from "../ui/button"
 import {
   Card,
@@ -12,10 +12,18 @@ import {
   CardTitle,
 } from "../ui/card"
 
-import { getZkvmsStats } from "@/lib/zkvms"
+import { getZkvmsMetricsByZkvmId } from "@/lib/metrics"
+import { getZkvmsStats, getZkvmsWithUsage } from "@/lib/zkvms"
 
 const ZkvmsSection = async () => {
-  const zkvmsStats = await getZkvmsStats()
+  const [zkvmsStats, zkvms] = await Promise.all([
+    getZkvmsStats(),
+    getZkvmsWithUsage(),
+  ])
+
+  const metricsByZkvmId = await getZkvmsMetricsByZkvmId({
+    zkvmIds: zkvms.map((zkvm) => zkvm.id),
+  })
 
   const zkvmsSummary: SummaryItem[] = [
     {
@@ -29,6 +37,15 @@ const ZkvmsSection = async () => {
       value: zkvmsStats.isas.length,
     },
   ]
+
+  const sortedZkvms = zkvms.sort((a, b) => b.activeClusters - a.activeClusters)
+  const activeZkvmsWithMetrics = sortedZkvms
+    .filter((z) => z.activeClusters > 0)
+    .map((zkvm) => ({
+      ...zkvm,
+      metrics: metricsByZkvmId.get(zkvm.id),
+    }))
+  const inactiveZkvms = sortedZkvms.filter((z) => z.activeClusters === 0)
 
   return (
     <Card className="!p-0 !pb-6 md:!pb-8">
@@ -45,9 +62,13 @@ const ZkvmsSection = async () => {
       <CardContent className="px-0 pt-6">
         <BasicTabs
           defaultTab="left"
-          contentLeft={<SoftwareAccordion type="active" />}
+          contentLeft={<ZkvmsTable className="px-6" zkvms={activeZkvmsWithMetrics} />}
           contentLeftTitle="active"
-          contentRight={<SoftwareAccordion type="inactive" />}
+          contentRight={
+            inactiveZkvms.length > 0 ? (
+              <ZkvmsTable className="px-6" zkvms={inactiveZkvms} />
+            ) : null
+          }
           contentRightTitle="coming soon"
         />
       </CardContent>
