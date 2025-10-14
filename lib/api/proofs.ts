@@ -119,9 +119,18 @@ export const fetchProvedProofsByClusterId = async (
           cluster_version: {
             with: {
               cluster: true,
+              zkvm_version: {
+                with: {
+                  zkvm: true,
+                },
+              },
               cluster_machines: {
                 with: {
-                  cloud_instance: true,
+                  cloud_instance: {
+                    with: {
+                      provider: true,
+                    },
+                  },
                   machine: true,
                 },
               },

@@ -170,11 +170,8 @@ const ClusterAccordionItem = ({
             </ButtonLink>
           </div>
 
-          <div className="absolute bottom-6 right-6">
-            <span className="text-xs text-body-secondary">last updated:</span>{" "}
-            <span className="text-xs uppercase text-body">
-              {formatShortDate(new Date(lastVersion.created_at))}
-            </span>
+          <div className="absolute bottom-6 right-6 text-xs text-muted-foreground">
+            <span>{`updated ${formatShortDate(new Date(lastVersion.created_at))}`}</span>
           </div>
         </AccordionContent>
       </div>

@@ -1,11 +1,11 @@
-import { Box, Check, X as RedX } from "lucide-react"
+import { Check, X as RedX } from "lucide-react"
 import type { Metadata } from "next"
 import { notFound } from "next/navigation"
 
 import { SummaryItem } from "@/lib/types"
 
 import ClusterMachineSummary from "@/components/ClusterMachineSummary"
-import ClusterProofRow from "@/components/ClusterProofRow"
+import { ProofsTable } from "@/components/proofs-table/proofs-table"
 import { DisplayTeam } from "@/components/DisplayTeamLink"
 import KPIs from "@/components/KPIs"
 import MachineDetails from "@/components/MachineDetails"
@@ -64,10 +64,16 @@ export default async function ClusterDetailsPage({
     return notFound()
   }
 
-  const [clusterSummary, latestProofs] = await Promise.all([
+  const [clusterSummary, latestProofsRaw] = await Promise.all([
     getClusterSummaryById(clusterId),
     fetchProvedProofsByClusterId(clusterId),
   ])
+
+  const latestProofs = latestProofsRaw.map((proof) => ({
+    ...proof,
+    block_number: proof.block.block_number,
+    block_timestamp: proof.block.timestamp,
+  }))
 
   const team = cluster.team
   const lastVersion = cluster.versions[0]
@@ -307,14 +313,14 @@ export default async function ClusterDetailsPage({
         </section>
       )}
 
-      <section>
-        <h2 className="flex items-center gap-2 text-lg font-normal text-primary">
-          <Box className="size-5" /> latest proofs
-        </h2>
+      <section className="pt-12">
+        <span className="text-2xl">lastest proofs</span>
         {latestProofs.length ? (
-          latestProofs.map((proof) => (
-            <ClusterProofRow key={proof.proof_id} proof={proof} />
-          ))
+          <ProofsTable
+            className="mt-4"
+            proofs={latestProofs}
+            showTeam={false}
+          />
         ) : (
           <NoData>for this cluster</NoData>
         )}

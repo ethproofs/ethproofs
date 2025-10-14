@@ -6,7 +6,7 @@ import {
 } from "@tanstack/react-query"
 
 import { BasicTabs } from "@/components/BasicTabs"
-import BlocksTable from "@/components/blocks-table/blocks-table"
+import { BlocksTable } from "@/components/blocks-table/blocks-table"
 
 import { DEFAULT_PAGE_STATE } from "@/lib/constants"
 
