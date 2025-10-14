@@ -1,8 +1,8 @@
-import { Box } from "lucide-react"
+import { Cpu } from "lucide-react"
 import { Metadata } from "next"
 import { notFound } from "next/navigation"
 
-import ClusterAccordion from "@/components/ClusterAccordion"
+import { ClustersTable } from "@/components/clusters-table/clusters-table"
 import { DisplayTeamLink } from "@/components/DisplayTeamLink"
 import SoftwareDetails from "@/components/SoftwareDetails"
 import GitHubLogo from "@/components/svgs/github-logo.svg"
@@ -74,7 +74,7 @@ export default async function ZkvmDetailsPage({
   )
 
   return (
-    <>
+    <div className="mx-auto mt-16 max-w-screen-xl space-y-8 px-6 md:mt-24 md:px-8 [&>section]:w-full">
       <div className="mb-24 mt-16 space-y-4 px-6 text-center md:mt-24 md:px-8">
         <h1 className="text-3xl font-semibold">{zkvm.name}</h1>
 
@@ -119,16 +119,10 @@ export default async function ZkvmDetailsPage({
 
       <div className="mx-auto max-w-screen-xl">
         <section className="mt-12">
-          <h2 className="flex items-center gap-2 px-6 text-lg font-normal text-primary">
-            <Box className="size-11 text-primary" strokeWidth="1" />
-            active clusters using {zkvm.name}: {zkvm.activeClusters} /{" "}
-            {zkvm.totalClusters}
-          </h2>
-          <div className="-me-6 overflow-x-auto pe-6">
-            <ClusterAccordion clusters={clusters} />
-          </div>
+          <span className="text-2xl">active clusters</span>
+          <ClustersTable className="mt-4" clusters={clusters} />
         </section>
       </div>
-    </>
+    </div>
   )
 }

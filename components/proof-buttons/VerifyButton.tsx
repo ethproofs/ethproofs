@@ -9,6 +9,7 @@ import type { Proof, Team } from "@/lib/types"
 import WasmErrorBoundary from "@/components/error-boundaries/WasmErrorBoundary"
 
 import { cn } from "@/lib/utils"
+import { delay } from "@/lib/utils"
 
 import { Button } from "../ui/button"
 
@@ -24,7 +25,6 @@ import {
 } from "./utils"
 
 import { useAnimateCheckmark } from "@/hooks/useAnimateCheckmark"
-import { delay } from "@/lib/utils"
 
 export type ProofForDownload = Required<
   Pick<Proof, "proof_status" | "proof_id" | "size_bytes" | "cluster_id">
@@ -109,9 +109,10 @@ export function VerifyButton({
   useEffect(() => {
     setButtonState((prev) => {
       if (prev !== "verify" && prev !== "disabled") return prev
+      if (proof_status !== "proved") return "disabled"
       return isVerifiableProver(prover) ? "verify" : "disabled"
     })
-  }, [prover])
+  }, [prover, proof_status])
 
   async function onVerifyProof(proof_id: number) {
     // Downloading proof
@@ -143,84 +144,81 @@ export function VerifyButton({
   const sizingClassName = "relative h-8 gap-2 self-center text-2xl"
   const textColorClassName = getProofButtonTextColorClass(buttonState)
 
-  if (proof_status === "proved")
-    return (
-      <WasmErrorBoundary>
-        <div
-          className={cn("flex items-center gap-x-2 gap-y-1", containerClass)}
-        >
-          <Button
-            disabled={buttonState === "disabled" || buttonState !== "verify"}
-            variant="outline"
-            className={cn(
-              sizingClassName,
-              getProofButtonClasses(buttonState),
-              className
-            )}
-            onClick={() => onVerifyProof(proof_id)}
-          >
-            {/* Progress bars */}
-            {buttonState === "downloading" && (
-              <div
-                className="absolute left-0 top-0 h-full bg-green-300/20 transition-all duration-100"
-                style={{ width: `${downloadProgress}%` }}
-              />
-            )}
-            {buttonState === "verifying" && (
-              <div
-                className="absolute left-0 top-0 h-full bg-green-500/20 transition-all duration-100"
-                style={{ width: `${downloadProgress}%` }}
-              />
-            )}
-            {buttonState === "success" && (
-              <>
-                <div className="absolute inset-0 animate-success-pulse bg-green-500 opacity-20" />
-                <div className="absolute -inset-4 animate-success-ring rounded-full border border-green-500/30" />
-              </>
-            )}
-
-            {(buttonState === "disabled" || buttonState === "verify") && (
-              <CalendarCheck className={cn("size-5", textColorClassName)} />
-            )}
-            {buttonState === "downloading" && (
-              <ArrowDown className="size-5 animate-pulse text-green-300" />
-            )}
-            {buttonState === "verifying" && (
-              <LoaderCircle className="size-5 animate-spin text-green-400" />
-            )}
-            {buttonState === "success" && (
-              <Check
-                ref={checkRef}
-                className="size-5 text-green-500"
-                style={checkmarkAnimation()}
-              />
-            )}
-            <span className={cn(labelClassName, textColorClassName)}>
-              {getProofButtonLabel(buttonState)}
-            </span>
-          </Button>
-
-          {buttonState === "verify" && (
-            <span className="text-xs text-body-secondary">in-browser</span>
+  return (
+    <WasmErrorBoundary>
+      <div className={cn("flex items-center gap-x-2 gap-y-1", containerClass)}>
+        <Button
+          disabled={buttonState === "disabled" || buttonState !== "verify"}
+          variant="outline"
+          className={cn(
+            sizingClassName,
+            getProofButtonClasses(buttonState),
+            className
           )}
-          {buttonState === "downloading" &&
-            downloadProgress > 5 &&
-            downloadProgress < 98 && (
-              <span className="text-xs text-green-300 opacity-80">
-                {downloadSpeed} MB/s
-              </span>
-            )}
+          onClick={() => onVerifyProof(proof_id)}
+        >
+          {/* Progress bars */}
+          {buttonState === "downloading" && (
+            <div
+              className="absolute left-0 top-0 h-full bg-green-300/20 transition-all duration-100"
+              style={{ width: `${downloadProgress}%` }}
+            />
+          )}
           {buttonState === "verifying" && (
-            <span className="animate-fade-in text-xs text-body-secondary">
-              {size_bytes ? prettyBytes(size_bytes) : ""}
-            </span>
+            <div
+              className="absolute left-0 top-0 h-full bg-green-500/20 transition-all duration-100"
+              style={{ width: `${downloadProgress}%` }}
+            />
           )}
           {buttonState === "success" && (
-            <span className="animate-fade-in text-xs text-body-secondary">
-              {`${verifyTime}ms`}
+            <>
+              <div className="absolute inset-0 animate-success-pulse bg-green-500 opacity-20" />
+              <div className="absolute -inset-4 animate-success-ring rounded-full border border-green-500/30" />
+            </>
+          )}
+
+          {(buttonState === "disabled" || buttonState === "verify") && (
+            <CalendarCheck className={cn("size-5", textColorClassName)} />
+          )}
+          {buttonState === "downloading" && (
+            <ArrowDown className="size-5 animate-pulse text-green-300" />
+          )}
+          {buttonState === "verifying" && (
+            <LoaderCircle className="size-5 animate-spin text-green-400" />
+          )}
+          {buttonState === "success" && (
+            <Check
+              ref={checkRef}
+              className="size-5 text-green-500"
+              style={checkmarkAnimation()}
+            />
+          )}
+          <span className={cn(labelClassName, textColorClassName)}>
+            {getProofButtonLabel(buttonState)}
+          </span>
+        </Button>
+
+        {buttonState === "verify" && (
+          <span className="text-xs text-body-secondary">in-browser</span>
+        )}
+        {buttonState === "downloading" &&
+          downloadProgress > 5 &&
+          downloadProgress < 98 && (
+            <span className="text-xs text-green-300 opacity-80">
+              {downloadSpeed} MB/s
             </span>
           )}
-        </div>
-      </WasmErrorBoundary>
-    )
+        {buttonState === "verifying" && (
+          <span className="animate-fade-in text-xs text-body-secondary">
+            {size_bytes ? prettyBytes(size_bytes) : ""}
+          </span>
+        )}
+        {buttonState === "success" && (
+          <span className="animate-fade-in text-xs text-body-secondary">
+            {`${verifyTime}ms`}
+          </span>
+        )}
+      </div>
+    </WasmErrorBoundary>
+  )
 }
