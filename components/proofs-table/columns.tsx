@@ -2,19 +2,19 @@
 
 import { ColumnDef } from "@tanstack/react-table"
 
-import { DataTableColumnHeader } from "@/components/data-table/data-table-column-header"
 import { BlockNumber } from "@/components/BlockNumber"
-import Link from "@/components/ui/link"
+import { DataTableColumnHeader } from "@/components/data-table/data-table-column-header"
 import Null from "@/components/Null"
 import DownloadButton from "@/components/proof-buttons/DownloadButton"
 import { VerifyButton } from "@/components/proof-buttons/VerifyButton"
+import Link from "@/components/ui/link"
 
+import { fetchBlock } from "@/lib/api/blocks"
+import { fetchProvedProofsByClusterId } from "@/lib/api/proofs"
 import { formatTimeAgo } from "@/lib/date"
 import { formatNumber, formatUsd } from "@/lib/number"
 import { getProvingCost, hasProvedTimestamp, isCompleted } from "@/lib/proofs"
 import { prettyMs } from "@/lib/time"
-import { fetchProvedProofsByClusterId } from "@/lib/api/proofs"
-import { fetchBlock } from "@/lib/api/blocks"
 
 // Infer types from both API responses
 type ProofFromClusterApi = Awaited<

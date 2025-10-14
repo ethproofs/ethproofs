@@ -1,19 +1,17 @@
-import { Suspense } from "react"
 import type { Metadata } from "next"
 
 import GrantsBanner from "@/components/banners/GrantsBanner"
 import { ProverCountdownBanner } from "@/components/banners/ProverCountdownBanner"
 import { VerifierCountdownBanner } from "@/components/banners/VerifierCountdownBanner"
-import ProofsStats from "@/components/ProofsStats"
-import BlocksSection from "@/components/sections/BlocksSection"
-import ProversSection from "@/components/sections/ProversSection"
-import ZkvmsSection from "@/components/sections/ZkvmsSection"
+// import { BasicTabs } from "@/components/BasicTabs"
+// import ProofsStats from "@/components/ProofsStats"
+// import BlocksSection from "@/components/sections/BlocksSection"
+// import ProversSection from "@/components/sections/ProversSection"
+// import ZkvmsSection from "@/components/sections/ZkvmsSection"
 import EthproofsLineworkIcon from "@/components/svgs/ethproofs-linework-icon.svg"
 
-import { getRecentSummary } from "@/lib/api/stats"
+// import { getRecentSummary } from "@/lib/api/stats"
 import { getMetadata } from "@/lib/metadata"
-import { ZkvmsTable } from "@/components/zkvms-table/zkvms-table"
-import { BasicTabs } from "@/components/BasicTabs"
 import { getZkvmsMetricsByZkvmId } from "@/lib/metrics"
 import { getZkvmsWithUsage } from "@/lib/zkvms"
 
@@ -23,19 +21,19 @@ export const dynamic = "force-dynamic"
 
 export default async function Index() {
   // const recentSummary = await getRecentSummary()
-  const zkvms = await getZkvmsWithUsage()
-  const metricsByZkvmId = await getZkvmsMetricsByZkvmId({
-    zkvmIds: zkvms.map((zkvm) => zkvm.id),
-  })
+  // const zkvms = await getZkvmsWithUsage()
+  // const metricsByZkvmId = await getZkvmsMetricsByZkvmId({
+  //   zkvmIds: zkvms.map((zkvm) => zkvm.id),
+  // })
 
-  const sortedZkvms = zkvms.sort((a, b) => b.activeClusters - a.activeClusters)
-  const activeZkvmsWithMetrics = sortedZkvms
-    .filter((z) => z.activeClusters > 0)
-    .map((zkvm) => ({
-      ...zkvm,
-      metrics: metricsByZkvmId.get(zkvm.id),
-    }))
-  const inactiveZkvms = sortedZkvms.filter((z) => z.activeClusters === 0)
+  // const sortedZkvms = zkvms.sort((a, b) => b.activeClusters - a.activeClusters)
+  // const activeZkvmsWithMetrics = sortedZkvms
+  //   .filter((z) => z.activeClusters > 0)
+  //   .map((zkvm) => ({
+  //     ...zkvm,
+  //     metrics: metricsByZkvmId.get(zkvm.id),
+  //   }))
+  // const inactiveZkvms = sortedZkvms.filter((z) => z.activeClusters === 0)
 
   return (
     <>
