@@ -1,5 +1,8 @@
 "use client"
 
+import { useEffect, useState } from "react"
+import { usePathname } from "next/navigation"
+
 import Link from "@/components/ui/link"
 import {
   SidebarGroup,
@@ -8,9 +11,8 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar"
+
 import { exploreNavItems, moreNavItems } from "./nav-items"
-import { useEffect, useState } from "react"
-import { usePathname } from "next/navigation"
 
 export function AppNavigation() {
   const pathname = usePathname()

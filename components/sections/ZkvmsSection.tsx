@@ -2,7 +2,6 @@ import type { SummaryItem } from "@/lib/types"
 
 import { BasicTabs } from "../BasicTabs"
 import KPIs from "../KPIs"
-import { ZkvmsTable } from "../zkvms-table/zkvms-table"
 import { ButtonLink } from "../ui/button"
 import {
   Card,
@@ -11,6 +10,7 @@ import {
   CardHeader,
   CardTitle,
 } from "../ui/card"
+import { ZkvmsTable } from "../zkvms-table/zkvms-table"
 
 import { getZkvmsMetricsByZkvmId } from "@/lib/metrics"
 import { getZkvmsStats, getZkvmsWithUsage } from "@/lib/zkvms"
@@ -62,7 +62,9 @@ const ZkvmsSection = async () => {
       <CardContent className="px-0 pt-6">
         <BasicTabs
           defaultTab="left"
-          contentLeft={<ZkvmsTable className="px-6" zkvms={activeZkvmsWithMetrics} />}
+          contentLeft={
+            <ZkvmsTable className="px-6" zkvms={activeZkvmsWithMetrics} />
+          }
           contentLeftTitle="active"
           contentRight={
             inactiveZkvms.length > 0 ? (

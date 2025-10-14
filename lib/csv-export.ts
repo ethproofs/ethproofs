@@ -1,4 +1,3 @@
-import type { Block } from "./types"
 import { formatTimeAgo } from "./date"
 import { formatNumber } from "./number"
 import {
@@ -8,6 +7,7 @@ import {
   getProvingTimeStats,
   getTotalTTPStats,
 } from "./proofs"
+import type { Block } from "./types"
 
 export function exportBlocksToCSV(blocks: Block[], filename = "blocks-export") {
   if (blocks.length === 0) {
