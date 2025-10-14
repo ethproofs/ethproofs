@@ -12,6 +12,10 @@ import EthproofsLineworkIcon from "@/components/svgs/ethproofs-linework-icon.svg
 
 import { getRecentSummary } from "@/lib/api/stats"
 import { getMetadata } from "@/lib/metadata"
+import { ZkvmsTable } from "@/components/zkvms-table/zkvms-table"
+import { BasicTabs } from "@/components/BasicTabs"
+import { getZkvmsMetricsByZkvmId } from "@/lib/metrics"
+import { getZkvmsWithUsage } from "@/lib/zkvms"
 
 export const metadata: Metadata = getMetadata()
 
@@ -19,6 +23,19 @@ export const dynamic = "force-dynamic"
 
 export default async function Index() {
   // const recentSummary = await getRecentSummary()
+  const zkvms = await getZkvmsWithUsage()
+  const metricsByZkvmId = await getZkvmsMetricsByZkvmId({
+    zkvmIds: zkvms.map((zkvm) => zkvm.id),
+  })
+
+  const sortedZkvms = zkvms.sort((a, b) => b.activeClusters - a.activeClusters)
+  const activeZkvmsWithMetrics = sortedZkvms
+    .filter((z) => z.activeClusters > 0)
+    .map((zkvm) => ({
+      ...zkvm,
+      metrics: metricsByZkvmId.get(zkvm.id),
+    }))
+  const inactiveZkvms = sortedZkvms.filter((z) => z.activeClusters === 0)
 
   return (
     <>
@@ -58,26 +75,24 @@ export default async function Index() {
         </section>
       </div>
 
-      <div className="mx-auto flex max-w-screen-xl flex-col items-center gap-20 px-6 md:px-8 [&>section]:w-full">
+      <div className="mx-auto mt-2 flex max-w-screen-xl flex-1 flex-col items-center gap-20 [&>section]:w-full">
         {/* <ProofsStats recentSummary={recentSummary} /> */}
-
-        <section id="zkvms">
-          <Suspense fallback={null}>
-            <ZkvmsSection />
-          </Suspense>
-        </section>
-
-        <section id="provers">
-          <Suspense fallback={null}>
-            <ProversSection />
-          </Suspense>
-        </section>
-
-        <section id="blocks">
-          <Suspense fallback={null}>
-            <BlocksSection />
-          </Suspense>
-        </section>
+        {/* <section>
+          <BasicTabs
+            title="zkVMs"
+            defaultTab="left"
+            contentLeft={
+              <ZkvmsTable className="px-6" zkvms={activeZkvmsWithMetrics} />
+            }
+            contentLeftTitle="active"
+            contentRight={
+              inactiveZkvms.length > 0 ? (
+                <ZkvmsTable className="px-6" zkvms={inactiveZkvms} />
+              ) : null
+            }
+            contentRightTitle="coming soon"
+          />
+        </section> */}
       </div>
     </>
   )

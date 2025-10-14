@@ -10,7 +10,7 @@ export function BlockNumber({ blockNumber }: BlockNumberProps) {
   return (
     <Link
       href={`/blocks/${blockNumber}`}
-      className="text-sm tracking-wide text-primary"
+      className="text-primary hover:text-primary-light hover:underline"
     >
       <HidePunctuation>{formatNumber(blockNumber)}</HidePunctuation>
     </Link>

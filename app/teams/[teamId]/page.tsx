@@ -19,13 +19,14 @@ import ZkvmProvidersAside from "@/components/ZkvmProvidersAside"
 import { SITE_NAME } from "@/lib/constants"
 
 import { getActiveClusters } from "@/lib/api/clusters"
-import { getTeamSummary } from "@/lib/api/stats"
+import { getClusterSummary, getTeamSummary } from "@/lib/api/stats"
 import { getZkvmsByTeamId } from "@/lib/api/zkvms"
 import { getMetadata } from "@/lib/metadata"
 import { formatUsd } from "@/lib/number"
 import { getTeamByIdOrSlug } from "@/lib/teams"
 import { prettyMs } from "@/lib/time"
 import { getHost, getTwitterHandle } from "@/lib/url"
+import { ClustersTable } from "@/components/clusters-table/clusters-table"
 
 export type TeamDetailsPageProps = {
   params: Promise<{ teamId: string }>
@@ -60,12 +61,25 @@ export default async function TeamDetailsPage({
     return notFound()
   }
 
-  const [teamSummary, clusters] = await Promise.all([
+  const [clusterSummary, teamSummary, activeClusters] = await Promise.all([
+    getClusterSummary(),
     getTeamSummary(team.id),
     getActiveClusters({ teamId: team.id }),
   ])
 
   const zkvms: Zkvm[] = (await getZkvmsByTeamId(team.id)) ?? []
+
+  const clusters = activeClusters.map((cluster) => {
+    const stats = clusterSummary.find(
+      (summary) => summary.cluster_id === cluster.id
+    )
+
+    return {
+      ...cluster,
+      avg_cost: stats?.avg_cost_per_proof ?? 0,
+      avg_time: Number(stats?.avg_proving_time ?? 0),
+    }
+  })
 
   const singleMachineClusters = clusters.filter(
     (cluster) => !cluster.is_multi_machine
@@ -197,8 +211,14 @@ export default async function TeamDetailsPage({
         {zkvms.length > 0 && <ZkvmProvidersAside team={team} zkvms={zkvms} />}
 
         <BasicTabs
-          contentLeft={<ClusterTable clusters={singleMachineClusters} />}
-          contentRight={<ClusterTable clusters={multiMachineClusters} />}
+          className="px-0"
+          title="active clusters"
+          contentLeft={
+            <ClustersTable className="mt-4" clusters={singleMachineClusters} />
+          }
+          contentRight={
+            <ClustersTable className="mt-4" clusters={multiMachineClusters} />
+          }
         />
       </div>
     </div>

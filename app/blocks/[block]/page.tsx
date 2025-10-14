@@ -6,10 +6,9 @@ import { BasicTabs } from "@/components/BasicTabs"
 import CopyButton from "@/components/CopyButton"
 import Null from "@/components/Null"
 import DownloadAllButton from "@/components/proof-buttons/DownloadAllButton"
-import ProofList from "@/components/ProofList"
+import { ProofsTable } from "@/components/proofs-table/proofs-table"
 import ProofStatus from "@/components/ProofStatus"
 import { HidePunctuation } from "@/components/StylePunctuation"
-import EthproofsIcon from "@/components/svgs/ethproofs-icon.svg"
 import Timestamp from "@/components/Timestamp"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { HeroItem, HeroItemLabel, HeroTitle } from "@/components/ui/hero"
@@ -88,13 +87,21 @@ export default async function BlockDetailsPage({
 
   const proofsPerStatusCount = getProofsPerStatusCount(proofs)
 
-  const singleMachineProofs = proofs.filter(
-    (proof) => !proof.cluster_version?.cluster.is_multi_machine
-  )
+  const singleMachineProofs = proofs
+    .filter((proof) => !proof.cluster_version?.cluster.is_multi_machine)
+    .map((proof) => ({
+      ...proof,
+      block_number,
+      block_timestamp: timestamp,
+    }))
 
-  const multiMachineProofs = proofs.filter(
-    (proof) => proof.cluster_version?.cluster.is_multi_machine
-  )
+  const multiMachineProofs = proofs
+    .filter((proof) => proof.cluster_version?.cluster.is_multi_machine)
+    .map((proof) => ({
+      ...proof,
+      block_number,
+      block_timestamp: timestamp,
+    }))
 
   const singleMachineStats = {
     costPerProofStats: getCostPerProofStats(singleMachineProofs),
@@ -308,10 +315,7 @@ export default async function BlockDetailsPage({
       </section>
 
       <section>
-        <div className="flex items-center justify-between md:mb-4">
-          <h2 className="flex items-center gap-2 text-lg font-normal text-primary">
-            <EthproofsIcon className="size-5" /> proofs
-          </h2>
+        <div className="flex items-center justify-end md:mb-4">
           {proofs.length >= 1 && hash && (
             <DownloadAllButton blockHash={hash} className="max-md:hidden" />
           )}
@@ -319,9 +323,16 @@ export default async function BlockDetailsPage({
 
         <BasicTabs
           className="px-0"
-          contentLeft={<ProofList proofs={multiMachineProofs} block={block} />}
+          title="proofs"
+          contentLeft={
+            <ProofsTable
+              className="mt-4"
+              proofs={singleMachineProofs}
+              showBlockNumber={false}
+            />
+          }
           contentRight={
-            <ProofList proofs={singleMachineProofs} block={block} />
+            <ProofsTable proofs={multiMachineProofs} showBlockNumber={false} />
           }
         />
       </section>

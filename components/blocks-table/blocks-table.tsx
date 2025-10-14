@@ -21,12 +21,6 @@ import useRealtimeUpdates from "./useRealtimeUpdates"
 import { MachineType } from "@/lib/api/blocks"
 import { mergeBlocksWithTeams } from "@/lib/blocks"
 
-type Props = {
-  className?: string
-  machineType: MachineType
-  teams: Team[]
-}
-
 const getBlocksQueryKey = (
   pageIndex: number,
   pageSize: number,
@@ -44,7 +38,18 @@ const getBlocksQueryFn =
     return response.json()
   }
 
-const BlocksTable = ({ className, teams, machineType }: Props) => {
+interface BlocksTableProps {
+  className?: string
+  machineType: MachineType
+  teams: Team[]
+  showPagination?: boolean
+}
+export function BlocksTable({
+  className,
+  teams,
+  machineType,
+  showPagination = true,
+}: BlocksTableProps) {
   const [pagination, setPagination] =
     useState<PaginationState>(DEFAULT_PAGE_STATE)
   const [deferredPagination] = useDebounceValue(pagination, 200)
@@ -86,8 +91,7 @@ const BlocksTable = ({ className, teams, machineType }: Props) => {
       rowCount={blocksQuery.data?.rowCount ?? 0}
       pagination={pagination}
       setPagination={setPagination}
+      showPagination={showPagination}
     />
   )
 }
-
-export default BlocksTable

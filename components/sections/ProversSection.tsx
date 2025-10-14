@@ -1,7 +1,7 @@
 import type { SummaryItem } from "@/lib/types"
 
 import { BasicTabs } from "../BasicTabs"
-import ClusterAccordion from "../ClusterAccordion"
+import { ClustersTable } from "../clusters-table/clusters-table"
 import KPIs from "../KPIs"
 import { ButtonLink } from "../ui/button"
 import {
@@ -70,8 +70,18 @@ const ProversSection = async () => {
 
       <CardContent className="px-0 pt-6">
         <BasicTabs
-          contentRight={<ClusterAccordion clusters={singleMachineClusters} />}
-          contentLeft={<ClusterAccordion clusters={multiMachineClusters} />}
+          contentLeft={
+            <ClustersTable
+              className="mt-4 px-6"
+              clusters={singleMachineClusters}
+            />
+          }
+          contentRight={
+            <ClustersTable
+              className="mt-4 px-6"
+              clusters={multiMachineClusters}
+            />
+          }
         />
       </CardContent>
 

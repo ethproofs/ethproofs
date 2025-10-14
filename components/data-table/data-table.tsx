@@ -9,7 +9,6 @@ import {
   getFacetedRowModel,
   getFacetedUniqueValues,
   getFilteredRowModel,
-  getPaginationRowModel,
   getSortedRowModel,
   OnChangeFn,
   PaginationState,
@@ -32,21 +31,24 @@ import { DataTableToolbar } from "./data-table-toolbar"
 import { cn } from "@/lib/utils"
 
 interface DataTableProps<TData, TValue> {
-  className?: string
   columns: ColumnDef<TData, TValue>[]
   data: TData[]
   rowCount: number
   pagination: PaginationState
-  setPagination: OnChangeFn<PaginationState>
+  setPagination?: OnChangeFn<PaginationState>
+  className?: string
+  showToolbar?: boolean
+  showPagination?: boolean
 }
-
 export function DataTable<TData, TValue>({
-  className,
   columns,
   data,
   rowCount,
   pagination,
   setPagination,
+  className,
+  showToolbar = true,
+  showPagination = true,
 }: DataTableProps<TData, TValue>) {
   const [rowSelection, setRowSelection] = React.useState({})
   const [columnVisibility, setColumnVisibility] =
@@ -83,9 +85,9 @@ export function DataTable<TData, TValue>({
 
   return (
     <div className={cn("flex flex-col gap-4", className)}>
-      <DataTableToolbar table={table} />
-      <div className="overflow-hidden rounded-md border">
-        <Table>
+      {showToolbar && <DataTableToolbar table={table} />}
+      <div className="overflow-x-auto rounded-md border">
+        <Table className="min-w-max">
           <TableHeader>
             {table.getHeaderGroups().map((headerGroup) => (
               <TableRow key={headerGroup.id}>
@@ -134,7 +136,7 @@ export function DataTable<TData, TValue>({
           </TableBody>
         </Table>
       </div>
-      <DataTablePagination table={table} />
+      {showPagination && <DataTablePagination table={table} />}
     </div>
   )
 }
