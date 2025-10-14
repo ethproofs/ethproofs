@@ -1,4 +1,5 @@
 import { cn } from "@/lib/utils"
+
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "./ui/tabs"
 
 interface BasicTabsProps {

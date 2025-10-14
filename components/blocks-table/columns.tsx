@@ -1,5 +1,6 @@
 "use client"
 
+import { ChevronRight } from "lucide-react"
 import { ColumnDef } from "@tanstack/react-table"
 
 import { Block, ProofWithCluster } from "@/lib/types"
@@ -14,7 +15,10 @@ import { DataTableRowActions } from "../data-table/data-table-row-actions"
 import Null from "../Null"
 import ProofStatus from "../ProofStatus"
 import { HidePunctuation } from "../StylePunctuation"
+import { Button, ButtonLink } from "../ui/button"
 import { Progress } from "../ui/progress"
+
+import BlockMetric from "./block-metric"
 
 import { formatTimeAgo } from "@/lib/date"
 import { formatNumber } from "@/lib/number"
@@ -25,9 +29,6 @@ import {
   getProvingTimeStats,
   getTotalTTPStats,
 } from "@/lib/proofs"
-import BlockMetric from "./block-metric"
-import { Button, ButtonLink } from "../ui/button"
-import { ChevronRight } from "lucide-react"
 
 export const labels = [
   {

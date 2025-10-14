@@ -13,7 +13,7 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card"
+} from "@/components/ui/card-old"
 import {
   ChartConfig,
   ChartContainer,
@@ -21,7 +21,7 @@ import {
   ChartLegendContent,
   ChartTooltip,
   ChartTooltipContent,
-} from "@/components/ui/chart"
+} from "@/components/ui/chart-old"
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,

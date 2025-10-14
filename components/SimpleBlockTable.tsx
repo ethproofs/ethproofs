@@ -1,9 +1,9 @@
 import { columns } from "./blocks-table/columns"
+import { DataTable } from "./data-table/data-table"
 
 import { fetchBlocks, MachineType } from "@/lib/api/blocks"
 import { getTeams } from "@/lib/api/teams"
 import { mergeBlocksWithTeams } from "@/lib/blocks"
-import { DataTable } from "./data-table/data-table"
 
 type Props = {
   className?: string

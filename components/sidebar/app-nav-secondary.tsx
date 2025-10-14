@@ -1,5 +1,7 @@
 "use client"
 
+import GitHub from "@/components/svgs/github-logo.svg"
+import XLogo from "@/components/svgs/x-logo.svg"
 import Link from "@/components/ui/link"
 import {
   SidebarGroup,
@@ -8,9 +10,6 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
 } from "@/components/ui/sidebar"
-
-import GitHub from "@/components/svgs/github-logo.svg"
-import XLogo from "@/components/svgs/x-logo.svg"
 
 import { URL_GITHUB_REPO, URL_TWITTER } from "@/lib/constants"
 
