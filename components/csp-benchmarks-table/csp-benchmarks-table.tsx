@@ -7,11 +7,13 @@ import { DataTable } from "@/components/data-table/data-table"
 
 import { DEFAULT_PAGE_STATE } from "@/lib/constants"
 
-import { columns, CspBenchmarkRow } from "./columns"
+import { columns } from "./columns"
+
+import { CspCollectedBenchmark } from "@/lib/api/csp-benchmarks"
 
 interface CspBenchmarksTableProps {
   className?: string
-  benchmarks: CspBenchmarkRow[]
+  benchmarks: CspCollectedBenchmark[]
 }
 
 export function CspBenchmarksTable({
