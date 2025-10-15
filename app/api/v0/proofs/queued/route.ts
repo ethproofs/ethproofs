@@ -1,3 +1,4 @@
+import { ne } from "drizzle-orm"
 import { revalidateTag } from "next/cache"
 import { ZodError } from "zod"
 
@@ -116,6 +117,7 @@ export const POST = withAuth(async ({ request, user, timestamp }) => {
           proof_status: "queued",
           queued_timestamp: timestamp,
         },
+        where: ne(proofs.proof_status, "proved"),
       })
       .returning({ proof_id: proofs.proof_id })
 

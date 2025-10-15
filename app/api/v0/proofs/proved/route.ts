@@ -1,4 +1,4 @@
-import { eq } from "drizzle-orm"
+import { eq, ne } from "drizzle-orm"
 import { revalidateTag } from "next/cache"
 import { ZodError } from "zod"
 
@@ -164,6 +164,7 @@ export const POST = withAuth(async ({ request, user, timestamp }) => {
           set: {
             ...dataToInsert,
           },
+          where: ne(proofs.proof_status, "proved"),
         })
         .returning({ proof_id: proofs.proof_id })
 
