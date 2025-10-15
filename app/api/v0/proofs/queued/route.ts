@@ -74,6 +74,29 @@ export const POST = withAuth(async ({ request, user, timestamp }) => {
     })
   }
 
+  // Check if proof already exists and is proved
+  const existingProof = await db.query.proofs.findFirst({
+    columns: {
+      proof_id: true,
+      proof_status: true,
+    },
+    where: (proofs, { and, eq }) =>
+      and(
+        eq(proofs.block_number, block_number),
+        eq(proofs.cluster_version_id, clusterVersion.id)
+      ),
+  })
+
+  if (existingProof && existingProof.proof_status === "proved") {
+    console.log(
+      `[Queued] Proof already proved for block ${block_number} by team:`,
+      teamId
+    )
+    return new Response("Proof already proved", {
+      status: 409,
+    })
+  }
+
   const dataToInsert = {
     ...proofPayload,
     block_number,
