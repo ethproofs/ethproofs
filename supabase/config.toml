@@ -89,6 +89,11 @@ public = true
 file_size_limit = "50MiB"
 objects_path = "./buckets/verification-keys"
 
+[storage.buckets.csp-benchmarks]
+public = true
+allowed_mime_types = ["application/json"]
+objects_path = "./buckets/csp-benchmarks"
+
 [auth]
 enabled = true
 # The base URL of your website. Used as an allow-list for redirects and for constructing URLs used
