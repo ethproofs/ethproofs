@@ -12,8 +12,9 @@ import {
   SidebarMenuItem,
 } from "@/components/ui/sidebar"
 
-import { benchmarksNavItems, exploreNavItems, moreNavItems } from "./nav-items"
 import { Separator } from "../ui/separator"
+
+import { benchmarksNavItems, exploreNavItems, moreNavItems } from "./nav-items"
 
 export function AppNavigation() {
   const pathname = usePathname()
