@@ -28,6 +28,9 @@ const commonResponses = {
   "404": {
     description: "Cluster not found",
   },
+  "409": {
+    description: "Proof already proved and cannot be modified",
+  },
   "500": {
     description: "Internal server error",
   },
