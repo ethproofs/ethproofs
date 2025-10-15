@@ -30,6 +30,12 @@
     },
     {
       "name": "Cloud instances"
+    },
+    {
+      "name": "Verification Keys"
+    },
+    {
+      "name": "CSP Benchmarks"
     }
   ],
   "paths": {
@@ -1528,7 +1534,7 @@
             "description": "Cluster not found"
           },
           "409": {
-            "description": "Proof already proved and cannot be modified"
+            "description": "Proof already proved"
           },
           "500": {
             "description": "Internal server error"
@@ -1628,7 +1634,7 @@
             "description": "Cluster not found"
           },
           "409": {
-            "description": "Proof already proved and cannot be modified"
+            "description": "Proof already proved"
           },
           "500": {
             "description": "Internal server error"
@@ -1737,6 +1743,166 @@
           },
           "400": {
             "description": "Invalid query parameters"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/verification-keys/upload": {
+      "post": {
+        "tags": [
+          "Verification Keys"
+        ],
+        "summary": "Upload verification key",
+        "description": "Upload a verification key binary file to storage.",
+        "security": [
+          {
+            "apikey": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "file": {
+                    "type": "string",
+                    "format": "binary",
+                    "description": "The verification key binary file to upload"
+                  },
+                  "filename": {
+                    "type": "string",
+                    "description": "The filename to use for storage (e.g., 'team-vk.bin')",
+                    "example": "team-vk.bin"
+                  }
+                },
+                "required": [
+                  "file",
+                  "filename"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Verification key uploaded successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    },
+                    "path": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "message",
+                    "path"
+                  ]
+                },
+                "example": {
+                  "message": "Verification key uploaded successfully",
+                  "path": "team-vk.bin"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "No file or filename provided"
+          },
+          "401": {
+            "description": "Invalid API key"
+          },
+          "403": {
+            "description": "Forbidden: admin mode required"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/csp-benchmarks/upload": {
+      "post": {
+        "tags": [
+          "CSP Benchmarks"
+        ],
+        "summary": "Upload CSP benchmarks",
+        "description": "Upload a CSP benchmarks JSON file to storage.",
+        "security": [
+          {
+            "apikey": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "file": {
+                    "type": "string",
+                    "format": "binary",
+                    "description": "The JSON file containing CSP benchmarks data"
+                  },
+                  "filename": {
+                    "type": "string",
+                    "description": "The filename to use for storage (without .json extension)",
+                    "example": "collected-benchmarks-2024-01"
+                  }
+                },
+                "required": [
+                  "file",
+                  "filename"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "CSP benchmarks uploaded successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    },
+                    "path": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "message",
+                    "path"
+                  ]
+                },
+                "example": {
+                  "message": "CSP benchmarks uploaded successfully",
+                  "path": "collected-benchmarks-2024-01.json"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "No file or filename provided, or file is not JSON"
+          },
+          "401": {
+            "description": "Invalid API key"
+          },
+          "403": {
+            "description": "Forbidden: admin mode required"
           },
           "500": {
             "description": "Internal server error"
