@@ -60,11 +60,7 @@ export const columns: ColumnDef<CspBenchmarkRow>[] = [
       const isZkvm = row.getValue("is_zkvm") as string
       return (
         <div className="w-[100px]">
-          {isZkvm ? (
-            <span className="text-xs">{isZkvm ? "Yes" : "No"}</span>
-          ) : (
-            <Null />
-          )}
+          <span className="text-xs">{isZkvm ? "Yes" : "No"}</span>
         </div>
       )
     },
