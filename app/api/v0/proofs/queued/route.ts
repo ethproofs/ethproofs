@@ -1,3 +1,4 @@
+import { ne } from "drizzle-orm"
 import { revalidateTag } from "next/cache"
 import { ZodError } from "zod"
 
@@ -74,6 +75,29 @@ export const POST = withAuth(async ({ request, user, timestamp }) => {
     })
   }
 
+  // Check if proof already exists and is proved
+  const existingProof = await db.query.proofs.findFirst({
+    columns: {
+      proof_id: true,
+      proof_status: true,
+    },
+    where: (proofs, { and, eq }) =>
+      and(
+        eq(proofs.block_number, block_number),
+        eq(proofs.cluster_version_id, clusterVersion.id)
+      ),
+  })
+
+  if (existingProof && existingProof.proof_status === "proved") {
+    console.log(
+      `[Queued] Proof already proved for block ${block_number} by team:`,
+      teamId
+    )
+    return new Response("Proof already proved", {
+      status: 409,
+    })
+  }
+
   const dataToInsert = {
     ...proofPayload,
     block_number,
@@ -93,6 +117,7 @@ export const POST = withAuth(async ({ request, user, timestamp }) => {
           proof_status: "queued",
           queued_timestamp: timestamp,
         },
+        where: ne(proofs.proof_status, "proved"),
       })
       .returning({ proof_id: proofs.proof_id })
 
