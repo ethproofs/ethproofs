@@ -1,21 +1,22 @@
 import {
+  BarChart3,
   Box,
   Bug,
   Cpu,
   HeartPulse,
   Library,
   Target,
-  TrendingUp,
+  // TrendingUp,
   Users,
   Zap,
 } from "lucide-react"
 
 export const exploreNavItems = [
-  {
-    label: "dashboard",
-    href: "/",
-    icon: <TrendingUp />,
-  },
+  // {
+  //   label: "dashboard",
+  //   href: "/",
+  //   icon: <TrendingUp />,
+  // },
   {
     label: "zkVMs",
     href: "/zkvms",
@@ -40,6 +41,14 @@ export const exploreNavItems = [
     label: "status",
     href: "/status",
     icon: <HeartPulse />,
+  },
+]
+
+export const benchmarksNavItems = [
+  {
+    label: "benchmarks",
+    href: "/csp-benchmarks",
+    icon: <BarChart3 />,
   },
 ]
 
