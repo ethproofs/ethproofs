@@ -40,7 +40,7 @@ export default function RootLayout({
       <body>
         <Providers>
           <AppSidebar />
-          <SidebarInset className="flex min-h-screen flex-col">
+          <SidebarInset className="flex min-h-screen flex-col overflow-x-hidden">
             <header className="group-has-data-[collapsible=icon]/sidebar-wrapper:h-12 flex h-16 shrink-0 items-center gap-2 transition-[width,height] ease-linear">
               <div className="flex items-center gap-2 px-4">
                 <SidebarTrigger className="-ml-1" />
@@ -55,7 +55,7 @@ export default function RootLayout({
               </div>
             </header>
 
-            <div className="relative w-full flex-1">
+            <div className="relative w-full flex-1 overflow-x-hidden">
               <main className="isolate min-h-[50vh]">{children}</main>
             </div>
             <footer className="mt-20 flex h-20 flex-col items-center justify-center border-t">
