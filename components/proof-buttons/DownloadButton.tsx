@@ -8,6 +8,7 @@ import { toast } from "sonner"
 import type { Proof, Team } from "@/lib/types"
 
 import { cn } from "@/lib/utils"
+import { delay } from "@/lib/utils"
 
 import StatusIcon from "../StatusIcon"
 import { Button } from "../ui/button"
@@ -21,7 +22,6 @@ import {
 } from "./utils"
 
 import { useAnimateCheckmark } from "@/hooks/useAnimateCheckmark"
-import { delay } from "@/utils/delay"
 
 export type ProofForDownload = Required<
   Pick<Proof, "proof_status" | "proof_id" | "size_bytes">
@@ -139,34 +139,38 @@ const DownloadButton = ({
 
   if (proof_status === "queued")
     return (
-      <Button
-        variant="outline"
-        className={cn(sizingClassName, fakeButtonClassName, className)}
-        onClick={() =>
-          toast(`${teamName} has indicated intent to prove this block`)
-        }
-      >
-        <StatusIcon status="queued" className="size-5" />
-        <span className={cn(labelClassName, "text-body-secondary")}>
-          queued
-        </span>
-      </Button>
+      <div className={cn("flex items-center gap-x-2 gap-y-1", containerClass)}>
+        <Button
+          variant="outline"
+          className={cn(sizingClassName, fakeButtonClassName, className)}
+          onClick={() =>
+            toast(`${teamName} has indicated intent to prove this block`)
+          }
+        >
+          <StatusIcon status="queued" className="size-5" />
+          <span className={cn(labelClassName, "text-body-secondary")}>
+            queued
+          </span>
+        </Button>
+      </div>
     )
 
   if (proof_status === "proving")
     return (
-      <Button
-        variant="outline"
-        className={cn(sizingClassName, fakeButtonClassName, className)}
-        onClick={() =>
-          toast(`${teamName} is generating the proof for this block`)
-        }
-      >
-        <StatusIcon status="proving" className="size-5 animate-pulse" />
-        <span className={cn(labelClassName, "text-body-secondary")}>
-          proving
-        </span>
-      </Button>
+      <div className={cn("flex items-center gap-x-2 gap-y-1", containerClass)}>
+        <Button
+          variant="outline"
+          className={cn(sizingClassName, fakeButtonClassName, className)}
+          onClick={() =>
+            toast(`${teamName} is generating the proof for this block`)
+          }
+        >
+          <StatusIcon status="proving" className="size-5 animate-pulse" />
+          <span className={cn(labelClassName, "text-body-secondary")}>
+            proving
+          </span>
+        </Button>
+      </div>
     )
 }
 

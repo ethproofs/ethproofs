@@ -1,5 +1,5 @@
-import { columns } from "./BlocksTable/columns"
-import DataTableUncontrolled from "./ui/data-table-uncontrolled"
+import { columns } from "./blocks-table/columns"
+import { DataTable } from "./data-table/data-table"
 
 import { fetchBlocks, MachineType } from "@/lib/api/blocks"
 import { getTeams } from "@/lib/api/teams"
@@ -17,11 +17,14 @@ const SimpleBlocksTable = async ({ className, machineType }: Props) => {
   const blocksWithTeams = mergeBlocksWithTeams(blocks, teams)
 
   return (
-    <DataTableUncontrolled
-      className={className}
+    <DataTable
+      className="px-6"
       columns={columns}
       data={blocksWithTeams}
-      hidePagination
+      rowCount={blocksWithTeams.length}
+      pagination={{ pageIndex: 0, pageSize: 5 }}
+      showToolbar={false}
+      showPagination={false}
     />
   )
 }

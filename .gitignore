@@ -46,8 +46,12 @@ robots.txt
 .cursorrules
 .cursor
 
-# Local Netlify folder
+# local Netlify folder
 .netlify
 
 # openapi
 public/api.html
+
+# storybook
+*storybook.log
+storybook-static

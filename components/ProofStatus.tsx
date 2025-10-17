@@ -4,16 +4,20 @@ import * as Info from "@/components/ui/info"
 
 import { cn } from "@/lib/utils"
 
-import { MetricInfo } from "./ui/metric"
-import { TooltipContentHeader } from "./ui/tooltip"
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipContentHeader,
+  TooltipTrigger,
+} from "./ui/tooltip"
 import StatusIcon from "./StatusIcon"
 
 const ORDERED_STATUSES = ["proved", "proving", "queued"] as const
 
 const DESCRIPTIONS = {
-  proved: "completed proofs published",
-  proving: "current proofs in progress",
-  queued: "queued for proving",
+  proved: "proved",
+  proving: "proving",
+  queued: "queued",
 } as Record<(typeof ORDERED_STATUSES)[number], string>
 
 export const ProofStatusInfo = ({ title }: { title?: string }) => (
@@ -42,29 +46,26 @@ const ProofStatus = ({
   ...props
 }: ProofStatusProps) => {
   return (
-    <figure
-      className={cn("flex items-center gap-4 font-mono", className)}
-      {...props}
-    >
+    <figure className={cn("flex items-start gap-4", className)} {...props}>
       {ORDERED_STATUSES.map((status) => {
         const count = statusCount[status] ?? 0
         // Hide if no proofs for that status
         if (count === 0 && hideEmpty) return null
         return (
-          <div key={status} className="flex items-center gap-1">
-            <MetricInfo
-              trigger={
-                <div className="flex flex-nowrap items-center gap-1">
-                  <StatusIcon status={status} />
-                  <span className="block">{count}</span>
-                </div>
-              }
-            >
-              <span className="!font-body text-body">
-                {DESCRIPTIONS[status]}
-              </span>
-            </MetricInfo>
-          </div>
+          <Tooltip key={status}>
+            <TooltipTrigger>
+              <div className="flex items-center gap-1">
+                <StatusIcon
+                  status={status}
+                  className="size-4 hover:opacity-80"
+                />{" "}
+                {count}
+              </div>
+            </TooltipTrigger>
+            <TooltipContent className="max-w-80 sm:max-w-96">
+              <span className="text-xs">{DESCRIPTIONS[status]}</span>
+            </TooltipContent>
+          </Tooltip>
         )
       })}
     </figure>

@@ -1,42 +1,48 @@
+import { cn } from "@/lib/utils"
+
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "./ui/tabs"
 
 interface BasicTabsProps {
+  className?: string
+  title?: string
   contentLeft: React.ReactNode
   contentLeftTitle?: string
   contentRight: React.ReactNode
   contentRightTitle?: string
   defaultTab?: "left" | "right"
 }
-
-const BasicTabs = ({
+export function BasicTabs({
+  className,
+  title,
   contentLeft,
-  contentLeftTitle = "multi-GPU",
+  contentLeftTitle = "1x 4090",
   contentRight,
-  contentRightTitle = "1x 4090",
-  defaultTab = "right",
-}: BasicTabsProps) => {
+  contentRightTitle = "multi-GPU",
+  defaultTab = "left",
+}: BasicTabsProps) {
   return (
-    <Tabs defaultValue={defaultTab} className="w-full p-px">
-      <TabsList className="w-full">
-        <TabsTrigger
-          className="w-full hover:bg-gradient-to-b hover:from-primary/10 hover:to-primary/10"
-          value="left"
-        >
-          {contentLeftTitle}
-        </TabsTrigger>
-        <TabsTrigger
-          className="w-full hover:bg-gradient-to-b hover:from-primary/10 hover:to-primary/10"
-          value="right"
-        >
-          {contentRightTitle}
-        </TabsTrigger>
-      </TabsList>
+    <Tabs defaultValue={defaultTab}>
+      <div
+        className={cn("flex items-end justify-between gap-2 px-6", className)}
+      >
+        <span className="text-2xl">{title}</span>
+        <TabsList className="m h-8 w-[250px] px-0.5">
+          <TabsTrigger
+            className="flex-1 py-1 data-[state=active]:text-primary"
+            value="left"
+          >
+            {contentLeftTitle}
+          </TabsTrigger>
+          <TabsTrigger
+            className="flex-1 py-1 data-[state=active]:text-primary"
+            value="right"
+          >
+            {contentRightTitle}
+          </TabsTrigger>
+        </TabsList>
+      </div>
       <TabsContent value="left">{contentLeft}</TabsContent>
       <TabsContent value="right">{contentRight}</TabsContent>
     </Tabs>
   )
 }
-
-BasicTabs.displayName = "BasicTabs"
-
-export default BasicTabs

@@ -44,7 +44,7 @@ const termVariants = cva("", {
   variants: {
     type: {
       internal: "italic",
-      codeTerm: "font-mono text-primary-light",
+      codeTerm: " text-primary-light",
     },
   },
 })

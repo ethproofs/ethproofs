@@ -22,7 +22,7 @@ const ZkvmProvidersAside = ({ team, zkvms }: { team: Team; zkvms: Zkvm[] }) => {
 
 const ZkvmProviderAside = ({ team, zkvm }: { team: Team; zkvm: Zkvm }) => {
   return (
-    <aside className="flex flex-col gap-4 rounded bg-primary-dark px-6 py-4 text-center text-white">
+    <aside className="flex flex-col gap-4 rounded bg-accent px-6 py-4 text-center">
       <div className="flex items-center justify-center gap-2">
         {team.logo_url && (
           <Image

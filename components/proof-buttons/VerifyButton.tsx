@@ -1,12 +1,15 @@
 "use client"
 
 import { useEffect, useState } from "react"
-import { ArrowDown, CalendarCheck, Check, Loader2 } from "lucide-react"
+import { ArrowDown, CalendarCheck, Check, LoaderCircle } from "lucide-react"
 import prettyBytes from "pretty-bytes"
 
 import type { Proof, Team } from "@/lib/types"
 
+import WasmErrorBoundary from "@/components/error-boundaries/WasmErrorBoundary"
+
 import { cn } from "@/lib/utils"
+import { delay } from "@/lib/utils"
 
 import { Button } from "../ui/button"
 
@@ -22,7 +25,6 @@ import {
 } from "./utils"
 
 import { useAnimateCheckmark } from "@/hooks/useAnimateCheckmark"
-import { delay } from "@/utils/delay"
 
 export type ProofForDownload = Required<
   Pick<Proof, "proof_status" | "proof_id" | "size_bytes">
@@ -41,13 +43,12 @@ interface VerifyButtonProps {
   containerClass?: string
   labelClass?: string
 }
-
-const VerifyButton = ({
+export function VerifyButton({
   className,
   proof,
   containerClass = "flex-col",
   labelClass,
-}: VerifyButtonProps) => {
+}: VerifyButtonProps) {
   const { proof_status, proof_id, size_bytes } = proof
   const [buttonState, setButtonState] = useState<ProofButtonState>("verify")
   const { downloadProof, downloadProgress, downloadSpeed } = useDownloadProof()
@@ -60,6 +61,7 @@ const VerifyButton = ({
   useEffect(() => {
     setButtonState((prev) => {
       if (prev !== "verify" && prev !== "disabled") return prev
+      if (proof_status !== "proved") return "disabled"
       return isVerifiableProverTeam(prover) ? "verify" : "disabled"
     })
   }, [prover])
@@ -94,12 +96,12 @@ const VerifyButton = ({
   const sizingClassName = "relative h-8 gap-2 self-center text-2xl"
   const textColorClassName = getProofButtonTextColorClass(buttonState)
 
-  if (proof_status === "proved")
-    return (
+  return (
+    <WasmErrorBoundary>
       <div className={cn("flex items-center gap-x-2 gap-y-1", containerClass)}>
         <Button
           disabled={buttonState === "disabled" || buttonState !== "verify"}
-          variant={buttonState === "disabled" ? "solid" : "outline"}
+          variant="outline"
           className={cn(
             sizingClassName,
             getProofButtonClasses(buttonState),
@@ -134,7 +136,7 @@ const VerifyButton = ({
             <ArrowDown className="size-5 animate-pulse text-green-300" />
           )}
           {buttonState === "verifying" && (
-            <Loader2 className="size-5 animate-spin text-green-400" />
+            <LoaderCircle className="size-5 animate-spin text-green-400" />
           )}
           {buttonState === "success" && (
             <Check
@@ -169,7 +171,6 @@ const VerifyButton = ({
           </span>
         )}
       </div>
-    )
+    </WasmErrorBoundary>
+  )
 }
-
-export default VerifyButton

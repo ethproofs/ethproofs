@@ -1,16 +1,17 @@
+import { Globe } from "lucide-react"
 import { type Metadata } from "next"
 import { notFound } from "next/navigation"
 
 import type { SummaryItem, Team, Zkvm } from "@/lib/types"
 
-import BasicTabs from "@/components/BasicTabs"
+import { BasicTabs } from "@/components/BasicTabs"
+import { ClustersTable } from "@/components/clusters-table/clusters-table"
 import ClusterTable from "@/components/ClusterTable"
 import { DisplayTeam } from "@/components/DisplayTeamLink"
 import KPIs from "@/components/KPIs"
 import Null from "@/components/Null"
-import GitHub from "@/components/svgs/github.svg"
-import Globe from "@/components/svgs/globe.svg"
-import TwitterLogo from "@/components/svgs/x-logo.svg"
+import GitHubLogo from "@/components/svgs/github-logo.svg"
+import XLogo from "@/components/svgs/x-logo.svg"
 import { Card, CardContent, CardHeader } from "@/components/ui/card"
 import { HeroBody, HeroItem, HeroItemLabel } from "@/components/ui/hero"
 import Link from "@/components/ui/link"
@@ -19,7 +20,7 @@ import ZkvmProvidersAside from "@/components/ZkvmProvidersAside"
 import { SITE_NAME } from "@/lib/constants"
 
 import { getActiveClusters } from "@/lib/api/clusters"
-import { getTeamSummary } from "@/lib/api/stats"
+import { getClusterSummary, getTeamSummary } from "@/lib/api/stats"
 import { getZkvmsByTeamId } from "@/lib/api/zkvms"
 import { getMetadata } from "@/lib/metadata"
 import { formatUsd } from "@/lib/number"
@@ -60,12 +61,25 @@ export default async function TeamDetailsPage({
     return notFound()
   }
 
-  const [teamSummary, clusters] = await Promise.all([
+  const [clusterSummary, teamSummary, activeClusters] = await Promise.all([
+    getClusterSummary(),
     getTeamSummary(team.id),
     getActiveClusters({ teamId: team.id }),
   ])
 
   const zkvms: Zkvm[] = (await getZkvmsByTeamId(team.id)) ?? []
+
+  const clusters = activeClusters.map((cluster) => {
+    const stats = clusterSummary.find(
+      (summary) => summary.cluster_id === cluster.id
+    )
+
+    return {
+      ...cluster,
+      avg_cost: stats?.avg_cost_per_proof ?? 0,
+      avg_time: Number(stats?.avg_proving_time ?? 0),
+    }
+  })
 
   const singleMachineClusters = clusters.filter(
     (cluster) => !cluster.is_multi_machine
@@ -132,7 +146,7 @@ export default async function TeamDetailsPage({
   return (
     <div className="px-6 md:px-8">
       <div id="hero-section" className="mb-24 mt-16 md:mt-24">
-        <h1 className="text-shadow flex justify-center pb-6 text-center font-serif text-4xl font-semibold">
+        <h1 className="flex justify-center pb-6 text-center font-serif text-4xl font-semibold">
           <DisplayTeam team={team} height={48} />
         </h1>
 
@@ -141,7 +155,7 @@ export default async function TeamDetailsPage({
             <HeroItem className="hover:underline">
               <Link hideArrow className="text-body" href={team.website_url}>
                 <HeroItemLabel className="gap-x-2 text-body">
-                  <Globe />
+                  <Globe className="size-4" />
                   {getHost(team.website_url)}
                 </HeroItemLabel>
               </Link>
@@ -155,7 +169,7 @@ export default async function TeamDetailsPage({
                 href={new URL(team.twitter_handle, "https://x.com/").toString()}
               >
                 <HeroItemLabel className="gap-x-2 text-body">
-                  <TwitterLogo />
+                  <XLogo className="h-3 w-auto" />
                   {getTwitterHandle(team.twitter_handle)}
                 </HeroItemLabel>
               </Link>
@@ -169,7 +183,7 @@ export default async function TeamDetailsPage({
                 href={new URL(team.github_org, "https://github.com").toString()}
               >
                 <HeroItemLabel className="gap-x-2 text-body">
-                  <GitHub />
+                  <GitHubLogo className="size-4" />
                   {team.github_org}
                 </HeroItemLabel>
               </Link>
@@ -181,17 +195,13 @@ export default async function TeamDetailsPage({
       <div className="mx-auto max-w-screen-xl space-y-20 [&>section]:w-full">
         <section className="grid grid-cols-1 gap-6 md:grid-cols-2">
           <Card className="!space-y-0">
-            <CardHeader className="font-mono">
-              multi-machine performance
-            </CardHeader>
+            <CardHeader className="">multi-GPU performance</CardHeader>
             <CardContent>
               <KPIs items={multiMachineSummary} layout="flipped" />
             </CardContent>
           </Card>
           <Card className="!space-y-0">
-            <CardHeader className="font-mono">
-              single machine performance
-            </CardHeader>
+            <CardHeader className="">1x4090 performance</CardHeader>
             <CardContent>
               <KPIs items={singleMachineSummary} layout="flipped" />
             </CardContent>
@@ -201,8 +211,14 @@ export default async function TeamDetailsPage({
         {zkvms.length > 0 && <ZkvmProvidersAside team={team} zkvms={zkvms} />}
 
         <BasicTabs
-          contentRight={<ClusterTable clusters={singleMachineClusters} />}
-          contentLeft={<ClusterTable clusters={multiMachineClusters} />}
+          className="px-0"
+          title="active clusters"
+          contentLeft={
+            <ClustersTable className="mt-4" clusters={singleMachineClusters} />
+          }
+          contentRight={
+            <ClustersTable className="mt-4" clusters={multiMachineClusters} />
+          }
         />
       </div>
     </div>

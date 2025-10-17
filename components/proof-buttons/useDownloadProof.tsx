@@ -1,8 +1,8 @@
 import { useCallback, useEffect, useState } from "react"
 
-import { handleBlobRead } from "./utils"
+import { delay } from "@/lib/utils"
 
-import { delay } from "@/utils/delay"
+import { handleBlobRead } from "./utils"
 
 export function useDownloadProof() {
   const [downloadSpeed, setDownloadSpeed] = useState("0")
