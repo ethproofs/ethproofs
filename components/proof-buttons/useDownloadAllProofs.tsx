@@ -3,7 +3,9 @@ import { useCallback } from "react"
 export function useDownloadAllProofs() {
   const downloadAllProofs = useCallback(async (blockNumber: string) => {
     try {
-      const response = await fetch(`/api/v0/proofs/download/all/${blockNumber}`)
+      const response = await fetch(
+        `/api/v0/proofs/download/block/${blockNumber}`
+      )
       if (!response.ok) {
         throw new Error(
           `Failed to download proofs: ${response.status} ${response.statusText}`

@@ -37,7 +37,7 @@ export async function GET(
   const teamName = team?.name
     ? team.name
     : proofRow.cluster_version.cluster.id.split("-")[0]
-  const filename = `${proofRow.block_number}_${teamName}_${id}.txt`
+  const filename = `${proofRow.block_number}_${teamName}_${id}.bin`
 
   const blob = await downloadProofBinary(filename)
 
