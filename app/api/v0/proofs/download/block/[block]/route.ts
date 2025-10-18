@@ -8,7 +8,7 @@ export async function GET(
   _request: Request,
   { params }: { params: Promise<{ block: string }> }
 ) {
-  const { block } = await params
+  const { block: blockNumber } = await params
 
   const proofRows = await db.query.proofs.findMany({
     columns: {
@@ -31,7 +31,7 @@ export async function GET(
     },
     where: (proofs, { eq, and }) =>
       and(
-        eq(proofs.block_number, Number(block)),
+        eq(proofs.block_number, Number(blockNumber)),
         eq(proofs.proof_status, "proved")
       ),
   })
@@ -51,14 +51,14 @@ export async function GET(
       cycle_type,
     } = proofRow.cluster_version.cluster
     const teamName = team?.name ? team.name : cluster_id.split("-")[0]
-    const filenameInStorage = `${proofRow.block_number}_${teamName}_${proofRow.proof_id}.txt`
+    const filenameInStorage = `${proofRow.block_number}_${teamName}_${proofRow.proof_id}.bin`
 
     const blob = await downloadProofBinary(filenameInStorage)
     if (blob) {
       const arrayBuffer = await blob.arrayBuffer()
       const binaryBuffer = Buffer.from(arrayBuffer)
 
-      const filename = `block_${block}_${proof_type}_${cycle_type}_${teamName}.txt`
+      const filename = `block_${blockNumber}_${proof_type}_${cycle_type}_${teamName}.bin`
       binaryBuffers.push({ binaryBuffer, filename })
     }
   }
@@ -74,7 +74,7 @@ export async function GET(
   return new Response(new Uint8Array(zipBuffer), {
     headers: {
       "Content-Type": "application/zip",
-      "Content-Disposition": `attachment; filename="block_${block}_all_proofs.zip"`,
+      "Content-Disposition": `attachment; filename="block_${blockNumber}_proofs.zip"`,
     },
   })
 }
