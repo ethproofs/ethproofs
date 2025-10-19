@@ -1,11 +1,9 @@
 import { useCallback } from "react"
 
 export function useDownloadAllProofs() {
-  const downloadAllProofs = useCallback(async (blockNumber: string) => {
+  const downloadAllProofs = useCallback(async (blockHash: string) => {
     try {
-      const response = await fetch(
-        `/api/v0/proofs/download/block/${blockNumber}`
-      )
+      const response = await fetch(`/api/v0/proofs/download/block/${blockHash}`)
       if (!response.ok) {
         throw new Error(
           `Failed to download proofs: ${response.status} ${response.statusText}`
@@ -16,7 +14,7 @@ export function useDownloadAllProofs() {
       const downloadUrl = URL.createObjectURL(blob)
       const a = document.createElement("a")
       a.href = downloadUrl
-      a.download = `block_${blockNumber}_all_proofs`
+      a.download = `${blockHash}`
       document.body.appendChild(a)
       a.click()
       a.remove()

@@ -37,6 +37,47 @@ const commonResponses = {
 }
 
 export const proofsPaths: ZodOpenApiPathsObject = {
+  "/proofs/download/block/{block}": {
+    get: {
+      tags: ["Proofs"],
+      summary: "Download proofs for a block",
+      description:
+        "Download all proved proofs for a specific block as a ZIP file.",
+      parameters: [
+        {
+          name: "block",
+          in: "path",
+          description: "The block hash (0x-prefixed 64 hex characters)",
+          required: true,
+          schema: {
+            type: "string",
+            pattern: "^0x[a-fA-F0-9]{64}$",
+          },
+          example:
+            "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef",
+        },
+      ],
+      responses: {
+        "200": {
+          description: "ZIP file containing all proved proofs for the block",
+          content: {
+            "application/zip": {
+              schema: {
+                type: "string",
+                format: "binary",
+              },
+            },
+          },
+        },
+        "404": {
+          description: "Block not found or no proofs found for the block",
+        },
+        "500": {
+          description: "Internal server error",
+        },
+      },
+    },
+  },
   "/proofs": {
     get: {
       tags: ["Proofs"],

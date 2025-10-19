@@ -10,14 +10,14 @@ import { Button } from "../ui/button"
 import { useDownloadAllProofs } from "./useDownloadAllProofs"
 
 interface DownloadAllButtonProps {
-  blockNumber: string
+  blockHash: string
   className?: string
   containerClass?: string
   labelClass?: string
 }
 
 const DownloadAllButton = ({
-  blockNumber,
+  blockHash,
   className,
   labelClass,
 }: DownloadAllButtonProps) => {
@@ -33,7 +33,7 @@ const DownloadAllButton = ({
     <Button
       className={cn(sizingClassName, className)}
       onClick={() =>
-        toast.promise(downloadAllProofs(blockNumber), {
+        toast.promise(downloadAllProofs(blockHash), {
           loading: "Loading...",
           success: () => {
             return "All proofs have been downloaded"

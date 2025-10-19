@@ -917,6 +917,47 @@
         }
       }
     },
+    "/proofs/download/block/{block}": {
+      "get": {
+        "tags": [
+          "Proofs"
+        ],
+        "summary": "Download proofs for a block",
+        "description": "Download all proved proofs for a specific block as a ZIP file.",
+        "parameters": [
+          {
+            "name": "block",
+            "in": "path",
+            "description": "The block hash (0x-prefixed 64 hex characters)",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^0x[a-fA-F0-9]{64}$"
+            },
+            "example": "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "ZIP file containing all proved proofs for the block",
+            "content": {
+              "application/zip": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Block not found or no proofs found for the block"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
     "/proofs": {
       "get": {
         "tags": [
@@ -1753,7 +1794,7 @@
     "/verification-keys/upload": {
       "post": {
         "tags": [
-          "Verification keys"
+          "Verification Keys"
         ],
         "summary": "Upload verification key",
         "description": "Upload a verification key binary file to storage.",
@@ -1833,7 +1874,7 @@
     "/csp-benchmarks/upload": {
       "post": {
         "tags": [
-          "CSP benchmarks"
+          "CSP Benchmarks"
         ],
         "summary": "Upload CSP benchmarks",
         "description": "Upload a CSP benchmarks JSON file to storage.",
@@ -1903,56 +1944,6 @@
           },
           "403": {
             "description": "Forbidden: admin mode required"
-          },
-          "500": {
-            "description": "Internal server error"
-          }
-        }
-      }
-    },
-    "/proofs/download/block/{block}": {
-      "get": {
-        "tags": [
-          "Proofs"
-        ],
-        "summary": "Download proofs by block number",
-        "description": "Download all proofs for a specific block number as a ZIP file containing proof binaries.",
-        "parameters": [
-          {
-            "name": "block",
-            "in": "path",
-            "description": "The block number to download proofs for",
-            "required": true,
-            "schema": {
-              "type": "integer",
-              "minimum": 0
-            },
-            "example": 12345
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "ZIP file containing all proofs for the block",
-            "content": {
-              "application/zip": {
-                "schema": {
-                  "type": "string",
-                  "format": "binary"
-                }
-              }
-            },
-            "headers": {
-              "Content-Disposition": {
-                "description": "Attachment filename",
-                "schema": {
-                  "type": "string",
-                  "example": "attachment; filename=\"block_12345_proofs.zip\""
-                }
-              }
-            }
-          },
-          "404": {
-            "description": "No proofs found for this block number"
           },
           "500": {
             "description": "Internal server error"
