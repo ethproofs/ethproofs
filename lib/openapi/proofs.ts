@@ -40,7 +40,7 @@ export const proofsPaths: ZodOpenApiPathsObject = {
   "/proofs/download/block/{block}": {
     get: {
       tags: ["Proofs"],
-      summary: "Download proofs for a block",
+      summary: "Download block proofs",
       description:
         "Download all proved proofs for a specific block as a ZIP file.",
       parameters: [
@@ -70,7 +70,7 @@ export const proofsPaths: ZodOpenApiPathsObject = {
           },
         },
         "404": {
-          description: "Block not found or no proofs found for the block",
+          description: "Block or proofs not found",
         },
         "500": {
           description: "Internal server error",

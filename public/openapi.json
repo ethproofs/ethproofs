@@ -922,7 +922,7 @@
         "tags": [
           "Proofs"
         ],
-        "summary": "Download proofs for a block",
+        "summary": "Download block proofs",
         "description": "Download all proved proofs for a specific block as a ZIP file.",
         "parameters": [
           {
@@ -950,7 +950,7 @@
             }
           },
           "404": {
-            "description": "Block not found or no proofs found for the block"
+            "description": "Block or proofs not found"
           },
           "500": {
             "description": "Internal server error"
@@ -1794,7 +1794,7 @@
     "/verification-keys/upload": {
       "post": {
         "tags": [
-          "Verification Keys"
+          "Verification keys"
         ],
         "summary": "Upload verification key",
         "description": "Upload a verification key binary file to storage.",
@@ -1874,7 +1874,7 @@
     "/csp-benchmarks/upload": {
       "post": {
         "tags": [
-          "CSP Benchmarks"
+          "CSP benchmarks"
         ],
         "summary": "Upload CSP benchmarks",
         "description": "Upload a CSP benchmarks JSON file to storage.",

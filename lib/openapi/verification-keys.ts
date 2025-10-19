@@ -4,7 +4,7 @@ import { ZodOpenApiPathsObject } from "zod-openapi"
 export const verificationKeysPaths: ZodOpenApiPathsObject = {
   "/verification-keys/upload": {
     post: {
-      tags: ["Verification Keys"],
+      tags: ["Verification keys"],
       summary: "Upload verification key",
       description: "Upload a verification key binary file to storage.",
       requestBody: {
