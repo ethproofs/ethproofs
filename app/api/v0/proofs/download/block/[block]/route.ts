@@ -8,7 +8,19 @@ export async function GET(
   _request: Request,
   { params }: { params: Promise<{ block: string }> }
 ) {
-  const { block } = await params
+  const { block: blockHash } = await params
+
+  const block = await db.query.blocks.findFirst({
+    columns: {
+      block_number: true,
+      hash: true,
+    },
+    where: (blocks, { eq }) => eq(blocks.hash, blockHash),
+  })
+
+  if (!block) {
+    return new Response("Block not found", { status: 404 })
+  }
 
   const proofRows = await db.query.proofs.findMany({
     columns: {
@@ -31,7 +43,7 @@ export async function GET(
     },
     where: (proofs, { eq, and }) =>
       and(
-        eq(proofs.block_number, Number(block)),
+        eq(proofs.block_number, block.block_number),
         eq(proofs.proof_status, "proved")
       ),
   })
@@ -45,25 +57,20 @@ export async function GET(
   for (const proofRow of proofRows) {
     const team = await getTeam(proofRow.team_id)
 
-    const {
-      id: cluster_id,
-      proof_type,
-      cycle_type,
-    } = proofRow.cluster_version.cluster
+    const { id: cluster_id } = proofRow.cluster_version.cluster
     const teamName = team?.name ? team.name : cluster_id.split("-")[0]
-    const filenameInStorage = `${proofRow.block_number}_${teamName}_${proofRow.proof_id}.txt`
+    const filenameInStorage = `${proofRow.block_number}_${teamName}_${proofRow.proof_id}.bin`
 
     const blob = await downloadProofBinary(filenameInStorage)
     if (blob) {
       const arrayBuffer = await blob.arrayBuffer()
       const binaryBuffer = Buffer.from(arrayBuffer)
 
-      const filename = `block_${block}_${proof_type}_${cycle_type}_${teamName}.txt`
+      const filename = `${proofRow.block_number}_${teamName}_${proofRow.proof_id}.bin`
       binaryBuffers.push({ binaryBuffer, filename })
     }
   }
 
-  // Create a zip file from buffers using adm-zip
   const zip = new AdmZip()
   binaryBuffers.forEach(({ binaryBuffer, filename }) => {
     zip.addFile(filename, binaryBuffer)
@@ -74,7 +81,7 @@ export async function GET(
   return new Response(new Uint8Array(zipBuffer), {
     headers: {
       "Content-Type": "application/zip",
-      "Content-Disposition": `attachment; filename="block_${block}_all_proofs.zip"`,
+      "Content-Disposition": `attachment; filename="block_${block.hash}_proofs.zip"`,
     },
   })
 }

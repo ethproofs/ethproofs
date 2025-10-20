@@ -4,7 +4,7 @@ import { ZodOpenApiPathsObject } from "zod-openapi"
 export const cspBenchmarksPaths: ZodOpenApiPathsObject = {
   "/csp-benchmarks/upload": {
     post: {
-      tags: ["CSP Benchmarks"],
+      tags: ["CSP benchmarks"],
       summary: "Upload CSP benchmarks",
       description: "Upload a CSP benchmarks JSON file to storage.",
       requestBody: {

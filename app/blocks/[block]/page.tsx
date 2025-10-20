@@ -323,11 +323,8 @@ export default async function BlockDetailsPage({
           <h2 className="flex items-center gap-2 text-lg font-normal text-primary">
             <ProofCircle /> proofs
           </h2>
-          {proofs.length >= 1 && (
-            <DownloadAllButton
-              blockNumber={blockNumber}
-              className="max-md:hidden"
-            />
+          {proofs.length >= 1 && hash && (
+            <DownloadAllButton blockHash={hash} className="max-md:hidden" />
           )}
         </div>
 
