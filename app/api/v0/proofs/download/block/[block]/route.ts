@@ -77,11 +77,12 @@ export async function GET(
   })
 
   const zipBuffer = zip.toBuffer()
+  const arrayBuffer = new Uint8Array(zipBuffer).buffer
 
-  return new Response(new Uint8Array(zipBuffer), {
+  return new Response(arrayBuffer, {
     headers: {
       "Content-Type": "application/zip",
-      "Content-Disposition": `attachment; filename="block_${block.hash}_proofs.zip"`,
+      "Content-Disposition": `attachment; filename="block_${block.hash || block.block_number}_proofs.zip"`,
     },
   })
 }

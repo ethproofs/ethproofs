@@ -50,10 +50,10 @@ export const document = createDocument({
       name: "Cloud instances",
     },
     {
-      name: "Verification Keys",
+      name: "Verification keys",
     },
     {
-      name: "CSP Benchmarks",
+      name: "CSP benchmarks",
     },
   ],
   paths: {
