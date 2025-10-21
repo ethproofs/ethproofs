@@ -34,10 +34,10 @@ export async function GET(
 
   const team = await getTeam(proofRow.team_id)
 
-  const teamName = team?.name
-    ? team.name
+  const teamSlug = team?.slug
+    ? team.slug
     : proofRow.cluster_version.cluster.id.split("-")[0]
-  const filename = `${proofRow.block_number}_${teamName}_${id}.bin`
+  const filename = `${proofRow.block_number}_${teamSlug}_${id}.bin`
 
   const blob = await downloadProofBinary(filename)
 
