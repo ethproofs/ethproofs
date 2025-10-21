@@ -58,15 +58,15 @@ export async function GET(
     const team = await getTeam(proofRow.team_id)
 
     const { id: cluster_id } = proofRow.cluster_version.cluster
-    const teamName = team?.name ? team.name : cluster_id.split("-")[0]
-    const filenameInStorage = `${proofRow.block_number}_${teamName}_${proofRow.proof_id}.bin`
+    const teamSlug = team?.slug ? team.slug : cluster_id.split("-")[0]
+    const filenameInStorage = `${proofRow.block_number}_${teamSlug}_${proofRow.proof_id}.bin`
 
     const blob = await downloadProofBinary(filenameInStorage)
     if (blob) {
       const arrayBuffer = await blob.arrayBuffer()
       const binaryBuffer = Buffer.from(arrayBuffer)
 
-      const filename = `${proofRow.block_number}_${teamName}_${proofRow.proof_id}.bin`
+      const filename = `${cluster_id}_${teamSlug}_${proofRow.proof_id}.bin`
       binaryBuffers.push({ binaryBuffer, filename })
     }
   }
@@ -82,7 +82,7 @@ export async function GET(
   return new Response(arrayBuffer, {
     headers: {
       "Content-Type": "application/zip",
-      "Content-Disposition": `attachment; filename="block_${block.hash || block.block_number}_proofs.zip"`,
+      "Content-Disposition": `attachment; filename="${block.hash || block.block_number}_proofs.zip"`,
     },
   })
 }

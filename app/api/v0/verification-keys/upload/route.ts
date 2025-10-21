@@ -2,6 +2,7 @@ import { uploadVerificationKey } from "@/lib/api/verification-keys"
 import { withAuth } from "@/lib/middleware/with-auth"
 import { validateFilename, ValidationError } from "@/utils/validation"
 
+// TODO:TEAM - this needs to upload with a cluster id
 export const POST = withAuth(async ({ request, apiKey }) => {
   // Temporarily restrict to admin mode
   if (apiKey?.mode !== "admin") {
