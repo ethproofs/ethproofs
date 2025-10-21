@@ -61,7 +61,14 @@ export async function GET(
     const teamSlug = team?.slug ? team.slug : cluster_id.split("-")[0]
     const filenameInStorage = `${proofRow.block_number}_${teamSlug}_${proofRow.proof_id}.bin`
 
-    const blob = await downloadProofBinary(filenameInStorage)
+    let blob = await downloadProofBinary(filenameInStorage)
+
+    // Fallback to team.name for backwards compatibility
+    if (!blob && team?.name) {
+      const fallbackFilename = `${proofRow.block_number}_${team.name}_${proofRow.proof_id}.bin`
+      blob = await downloadProofBinary(fallbackFilename)
+    }
+
     if (blob) {
       const arrayBuffer = await blob.arrayBuffer()
       const binaryBuffer = Buffer.from(arrayBuffer)

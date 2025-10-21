@@ -39,7 +39,13 @@ export async function GET(
     : proofRow.cluster_version.cluster.id.split("-")[0]
   const filename = `${proofRow.block_number}_${teamSlug}_${id}.bin`
 
-  const blob = await downloadProofBinary(filename)
+  let blob = await downloadProofBinary(filename)
+
+  // Fallback to team.name for backwards compatibility
+  if (!blob && team?.name) {
+    const fallbackFilename = `${proofRow.block_number}_${team.name}_${id}.bin`
+    blob = await downloadProofBinary(fallbackFilename)
+  }
 
   if (!blob) {
     return new Response("No proof binary found", { status: 404 })
