@@ -37,11 +37,12 @@ export async function GET(
   const teamSlug = team?.slug
     ? team.slug
     : proofRow.cluster_version.cluster.id.split("-")[0]
-  const filename = `${proofRow.block_number}_${teamSlug}_${id}.bin`
+  const filename = `${teamSlug}_${proofRow.block_number}_${id}.bin`
 
   let blob = await downloadProofBinary(filename)
 
-  // Fallback to team.name for backwards compatibility
+  // TODO:TEAM - run a script to migrate all proofs to the new filename format
+  // Fallback for backwards compatibility
   if (!blob && team?.name) {
     const fallbackFilename = `${proofRow.block_number}_${team.name}_${id}.bin`
     blob = await downloadProofBinary(fallbackFilename)

@@ -59,11 +59,12 @@ export async function GET(
 
     const { id: cluster_id } = proofRow.cluster_version.cluster
     const teamSlug = team?.slug ? team.slug : cluster_id.split("-")[0]
-    const filenameInStorage = `${proofRow.block_number}_${teamSlug}_${proofRow.proof_id}.bin`
+    const filenameInStorage = `${teamSlug}_${proofRow.block_number}_${proofRow.proof_id}.bin`
 
     let blob = await downloadProofBinary(filenameInStorage)
 
-    // Fallback to team.name for backwards compatibility
+    // TODO:TEAM - run a script to migrate all proofs to the new filename format
+    // Fallback for backwards compatibility
     if (!blob && team?.name) {
       const fallbackFilename = `${proofRow.block_number}_${team.name}_${proofRow.proof_id}.bin`
       blob = await downloadProofBinary(fallbackFilename)
@@ -73,7 +74,7 @@ export async function GET(
       const arrayBuffer = await blob.arrayBuffer()
       const binaryBuffer = Buffer.from(arrayBuffer)
 
-      const filename = `${cluster_id}_${teamSlug}_${proofRow.proof_id}.bin`
+      const filename = `${teamSlug}_${cluster_id}_${proofRow.proof_id}.bin`
       binaryBuffers.push({ binaryBuffer, filename })
     }
   }
