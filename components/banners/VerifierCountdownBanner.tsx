@@ -5,14 +5,16 @@ import { CheckCheck } from "lucide-react"
 
 import { Countdown } from "../Countdown"
 import { Alert, AlertTitle } from "../ui/alert"
+import Link from "../ui/link"
 
+const learnMoreLink = "https://x.com/eth_proofs/status/1961498775865655675"
 const deadlineDate = "2025-10-26T00:00:00Z"
 
 interface VerifierCountdownBannerProps {
-  isSuccess: boolean
+  isSuccess?: boolean
 }
 export function VerifierCountdownBanner({
-  isSuccess,
+  isSuccess = false,
 }: VerifierCountdownBannerProps) {
   const [isOpen, setIsOpen] = useState(true)
   const countdownDate = new Date(deadlineDate)
@@ -39,7 +41,17 @@ export function VerifierCountdownBanner({
                 ? "verifiers are all fully open‑source"
                 : "open‑source verifiers required"}
             </span>{" "}
-            <CheckCheck className="inline size-5 text-primary hover:text-primary-light" />
+            {isSuccess ? (
+              <CheckCheck className="inline size-5 text-primary hover:text-primary-light" />
+            ) : (
+              <Link
+                className="text-xl text-primary hover:text-primary-light"
+                href={learnMoreLink}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label="Learn more about the verifier requirement"
+              />
+            )}
           </AlertTitle>
           <Countdown
             targetDate={countdownDate}
