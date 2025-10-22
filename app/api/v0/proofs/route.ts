@@ -9,8 +9,6 @@ import { createProofSchema } from "@/lib/zod/schemas/proof"
 export const POST = withAuth(async ({ request, client, user, timestamp }) => {
   const payload = await request.json()
 
-  // TODO: remove when we go to production, this is a temporary log to debug the payload
-  console.log("payload", payload)
 
   if (!user) {
     return new Response("Invalid API key", {
