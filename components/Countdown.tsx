@@ -9,19 +9,20 @@ type TimeUnit = {
   label: string
 }
 
-type CountdownProps = {
+interface CountdownProps {
   targetDate: Date
   title?: string
   className?: string
   onComplete?: () => void
+  isSuccess?: boolean
 }
-
-const Countdown = ({
+export function Countdown({
   targetDate,
   title,
   className,
   onComplete,
-}: CountdownProps) => {
+  isSuccess = false,
+}: CountdownProps) {
   const [timeLeft, setTimeLeft] = useState<TimeUnit[]>([])
 
   const calculateTimeLeft = useCallback(() => {
@@ -30,6 +31,7 @@ const Countdown = ({
     const difference = target - now
 
     if (difference <= 0) {
+      if (isSuccess) return
       setTimeLeft([])
       onComplete?.()
       return
@@ -57,7 +59,7 @@ const Countdown = ({
     })
 
     setTimeLeft(units)
-  }, [targetDate, onComplete])
+  }, [targetDate, isSuccess, onComplete])
 
   useEffect(() => {
     calculateTimeLeft()
@@ -66,12 +68,21 @@ const Countdown = ({
     return () => clearInterval(timer)
   }, [calculateTimeLeft])
 
+  const defaultUnits = isSuccess
+    ? [
+        { value: 0, label: "days" },
+        { value: 0, label: "hours" },
+        { value: 0, label: "minutes" },
+        { value: 0, label: "seconds" },
+      ]
+    : timeLeft
+
   return (
     <div className={cn("text-center", className)}>
       {title && <h3 className="mb-4 text-lg font-semibold">{title}</h3>}
 
       <div className="flex justify-center gap-4 sm:gap-6">
-        {timeLeft.map((unit, _idx) => (
+        {defaultUnits.map((unit, _idx) => (
           <div key={unit.label} className="flex flex-col items-center">
             <div className="font-mono text-3xl font-bold sm:text-4xl">
               {unit.value.toString().padStart(2, "0")}
@@ -85,5 +96,3 @@ const Countdown = ({
     </div>
   )
 }
-
-export default Countdown

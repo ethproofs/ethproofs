@@ -2,8 +2,8 @@ import { Suspense } from "react"
 import type { Metadata } from "next"
 
 import GrantsBanner from "@/components/banners/GrantsBanner"
-import ProverCountdownBanner from "@/components/banners/ProverCountdownBanner"
-import VerifierCountdownBanner from "@/components/banners/VerifierCountdownBanner"
+import { ProverCountdownBanner } from "@/components/banners/ProverCountdownBanner"
+import { VerifierCountdownBanner } from "@/components/banners/VerifierCountdownBanner"
 import ProofsStats from "@/components/ProofsStats"
 import BlocksSection from "@/components/sections/BlocksSection"
 import ProversSection from "@/components/sections/ProversSection"
@@ -29,7 +29,7 @@ export default async function Index() {
       <div className="mx-auto mb-4 flex max-w-screen-xl flex-col items-center px-6 md:px-8 [&>section]:w-full">
         <section id="countdown-banners">
           <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:gap-4">
-            <VerifierCountdownBanner />
+            <VerifierCountdownBanner isSuccess />
             <ProverCountdownBanner />
           </div>
         </section>

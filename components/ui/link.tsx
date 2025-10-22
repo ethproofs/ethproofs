@@ -1,7 +1,6 @@
 import { AnchorHTMLAttributes, forwardRef } from "react"
+import { ExternalLink } from "lucide-react"
 import NextLink, { type LinkProps as NextLinkProps } from "next/link"
-
-import ExternalLink from "@/components/svgs/external-link.svg"
 
 import * as url from "@/lib/url"
 
@@ -44,7 +43,7 @@ export const BaseLink = forwardRef<HTMLAnchorElement, LinkProps>(function Link(
         {children}
         <span className="sr-only">(opens in a new tab)</span>
         {!hideArrow && (
-          <ExternalLink className="external-arrow mb-1 ms-1 inline text-nowrap" />
+          <ExternalLink className="mb-1 ms-1 inline size-5 text-nowrap" />
         )}
       </a>
     )
