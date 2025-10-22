@@ -57,24 +57,21 @@ export function intervalToReadable(interval: string): string {
   return `${hours}h ${minutes}m ${seconds}s`
 }
 
-/**
- * Checks if a given timestamp is within a specified number of days from the current date.
- *
- * @param {string | null} [timestamp] - The timestamp to check. If not provided or null, the function returns false.
- * @param {number} [days=30] - The number of days to compare against. Defaults to 30 days.
- * @returns {boolean} - Returns true if the timestamp is within the specified number of days from the current date, otherwise false.
- */
-export function timestampWithinDays(
-  timestamp?: string | null,
-  days = 5 * 365 // TODO: Change back to 30-day default for production
-): boolean {
-  if (!timestamp) return false
-  return Date.now() - new Date(timestamp).getTime() < days * 24 * 60 * 60 * 1000
-}
-
 export const renderTimestamp = (timestamp: string, timeZone?: string): string =>
   new Intl.DateTimeFormat("en-US", {
     dateStyle: "short",
     timeStyle: "long",
     timeZone,
   }).format(new Date(timestamp))
+
+export function formatShortDate(date: Date | string): string {
+  if (typeof date === "string") {
+    date = new Date(date)
+  }
+
+  return date.toLocaleDateString("en-US", {
+    month: "short",
+    day: "2-digit",
+    year: "numeric",
+  })
+}

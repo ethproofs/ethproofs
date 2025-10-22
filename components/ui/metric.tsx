@@ -1,9 +1,14 @@
 import React from "react"
-
-import InfoCircle from "@/components/svgs/info-circle.svg"
-import Tooltip from "@/components/Tooltip"
+import { Info } from "lucide-react"
 
 import { cn } from "@/lib/utils"
+
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipPortal,
+  TooltipTrigger,
+} from "./tooltip"
 
 const MetricBox = React.forwardRef<
   HTMLDivElement,
@@ -30,27 +35,31 @@ const MetricLabel = React.forwardRef<
 MetricLabel.displayName = "MetricLabel"
 
 type MetricInfoProps = React.HTMLAttributes<HTMLDivElement> & {
+  label?: React.ReactNode
   trigger?: React.ReactNode
 }
 const MetricInfo = React.forwardRef<HTMLDivElement, MetricInfoProps>(
-  ({ trigger, className, children, ...props }, ref) => (
-    <Tooltip
-      trigger={
-        trigger || (
-          <div className="ms-2">
-            <InfoCircle className="-mb-0.5" />
+  ({ label, trigger, className, children, ...props }, ref) => (
+    <Tooltip>
+      <TooltipTrigger className="hover:opacity-80">
+        {trigger || (
+          <div className="flex items-center gap-2">
+            <span className="text-nowrap text-start">{label}</span>
+            <Info className="-mb-0.5 size-3 shrink-0" />
           </div>
-        )
-      }
-      className="max-w-80 sm:max-w-96"
-    >
-      <div
-        ref={ref}
-        className={cn("space-y-2 text-start", className)}
-        {...props}
-      >
-        {children}
-      </div>
+        )}
+      </TooltipTrigger>
+      <TooltipPortal>
+        <TooltipContent className="max-w-80 sm:max-w-96">
+          <div
+            ref={ref}
+            className={cn("space-y-2 text-start", className)}
+            {...props}
+          >
+            {children}
+          </div>
+        </TooltipContent>
+      </TooltipPortal>
     </Tooltip>
   )
 )

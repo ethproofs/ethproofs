@@ -1,36 +1,63 @@
-import { withAuth } from "@/lib/auth"
+import { ZodError } from "zod"
+
+import { db } from "@/db"
+import {
+  clusterMachines,
+  clusters,
+  clusterVersions,
+  machines,
+} from "@/db/schema"
+import { getZkvmVersion } from "@/lib/api/zkvm-versions"
+import { withAuth } from "@/lib/middleware/with-auth"
 import { createClusterSchema } from "@/lib/zod/schemas/cluster"
 
-export const GET = withAuth(async ({ client, user }) => {
-  if (!user) {
-    return new Response("Invalid API key", {
-      status: 401,
+export const GET = withAuth(async ({ user }) => {
+  try {
+    const clusters = await db.query.clusters.findMany({
+      columns: {
+        index: true,
+        nickname: true,
+        description: true,
+        cycle_type: true,
+        proof_type: true,
+      },
+      where: (cluster, { eq }) => eq(cluster.team_id, user.id),
+      with: {
+        versions: {
+          columns: {
+            id: true,
+          },
+          with: {
+            cluster_machines: {
+              columns: {
+                id: true,
+                machine_count: true,
+                cloud_instance_count: true,
+              },
+              with: {
+                cloud_instance: true,
+                machine: true,
+              },
+            },
+          },
+        },
+      },
     })
-  }
 
-  const { data, error } = await client
-    .from("clusters")
-    .select(
-      "cluster_id, cluster_name, cluster_description, cluster_hardware, cluster_cycle_type"
+    return Response.json(
+      clusters.map(({ index, ...cluster }) => ({
+        id: index,
+        ...cluster,
+      }))
     )
-    .eq("user_id", user.id)
-
-  if (error) {
+  } catch (error) {
     console.error("error fetching clusters", error)
     return new Response("Internal server error", { status: 500 })
   }
-
-  return Response.json(data)
 })
 
-export const POST = withAuth(async ({ request, client, user }) => {
+export const POST = withAuth(async ({ request, user }) => {
   const requestBody = await request.json()
-
-  if (!user) {
-    return new Response("Invalid API key", {
-      status: 401,
-    })
-  }
 
   // validate payload schema
   let clusterPayload
@@ -38,81 +65,116 @@ export const POST = withAuth(async ({ request, client, user }) => {
     clusterPayload = createClusterSchema.parse(requestBody)
   } catch (error) {
     console.error("cluster payload invalid", error)
+
+    if (error instanceof ZodError) {
+      return new Response(error.message, {
+        status: 400,
+      })
+    }
+
     return new Response("Invalid payload", {
       status: 400,
     })
   }
 
   const {
-    cluster_name,
-    cluster_description,
-    cluster_hardware,
-    cluster_configuration,
-    cluster_cycle_type,
+    nickname,
+    description,
+    zkvm_version_id,
+    hardware,
+    configuration,
+    cycle_type,
+    proof_type,
   } = clusterPayload
 
-  // get & validate instance type ids
-  const { data: instanceTypeIds, error: instanceTypeError } = await client
-    .from("aws_instance_pricing")
-    .select("id, instance_type")
-    .in(
-      "instance_type",
-      cluster_configuration.map((config) => config.instance_type)
-    )
+  // get & validate cloud instance ids
+  const cloudInstanceIds = await db.query.cloudInstances.findMany({
+    columns: {
+      id: true,
+      instance_name: true,
+    },
+    where: (cloudInstances, { inArray }) =>
+      inArray(
+        cloudInstances.instance_name,
+        configuration.map((config) => config.cloud_instance_name)
+      ),
+  })
 
-  if (instanceTypeError) {
-    console.error("error fetching instance type ids", instanceTypeError)
-    return new Response("Internal server error", { status: 500 })
-  }
-
-  if (instanceTypeIds.length !== cluster_configuration.length) {
+  if (cloudInstanceIds.length !== configuration.length) {
     return new Response("Invalid cluster configuration", { status: 400 })
   }
 
-  // create cluster
-  const { data, error } = await client
-    .from("clusters")
-    .insert({
-      cluster_name,
-      cluster_description,
-      cluster_hardware,
-      cluster_cycle_type,
-      user_id: user.id,
-    })
-    .select("id, cluster_id")
-    .single()
+  // validate zkvm_version_id
+  const zkvmVersion = await getZkvmVersion(zkvm_version_id)
 
-  if (error) {
-    console.error("error creating cluster", error)
-    return new Response("Internal server error", { status: 500 })
+  if (!zkvmVersion) {
+    return new Response("Invalid zkvm version", { status: 400 })
   }
 
-  // create cluster configuration
-  const instanceTypeById = instanceTypeIds.reduce(
-    (acc, instanceType) => {
-      acc[instanceType.instance_type] = instanceType.id
-      return acc
-    },
-    {} as Record<string, number>
-  )
+  const isMultiMachine =
+    configuration.length > 1 ||
+    configuration.some((config) => config.machine_count > 1)
 
-  const { error: clusterConfigurationError } = await client
-    .from("cluster_configurations")
-    .insert(
-      cluster_configuration.map(({ instance_type, instance_count }) => ({
-        cluster_id: data.id,
-        instance_type_id: instanceTypeById[instance_type],
-        instance_count,
-      }))
+  let clusterIndex: number | null = null
+  await db.transaction(async (tx) => {
+    // create cluster
+    const [cluster] = await tx
+      .insert(clusters)
+      .values({
+        nickname,
+        description,
+        hardware,
+        cycle_type,
+        proof_type,
+        is_multi_machine: isMultiMachine,
+        team_id: user.id,
+      })
+      .returning({ id: clusters.id, index: clusters.index })
+
+    // create cluster version
+    const [clusterVersion] = await tx
+      .insert(clusterVersions)
+      .values({
+        cluster_id: cluster.id,
+        zkvm_version_id,
+        // TODO:TEAM - remove this once we have a real version management system for users
+        version: "v0.1",
+      })
+      .returning({ id: clusterVersions.id })
+
+    // create machines
+    const createdMachines = await tx
+      .insert(machines)
+      .values(configuration.map(({ machine }) => machine))
+      .returning({ id: machines.id })
+
+    // map cloud instance names to ids
+    const cloudInstanceByName = cloudInstanceIds.reduce(
+      (acc, cloudInstance) => {
+        acc[cloudInstance.instance_name] = cloudInstance.id
+        return acc
+      },
+      {} as Record<string, number>
     )
 
-  if (clusterConfigurationError) {
-    console.error(
-      "error creating cluster configuration",
-      clusterConfigurationError
+    // create cluster configurations
+    await tx.insert(clusterMachines).values(
+      configuration.map(
+        (
+          { cloud_instance_name, cloud_instance_count, machine_count },
+          index
+        ) => ({
+          cluster_version_id: clusterVersion.id,
+          machine_id: createdMachines[index].id,
+          machine_count,
+          cloud_instance_id: cloudInstanceByName[cloud_instance_name],
+          cloud_instance_count,
+        })
+      )
     )
-    return new Response("Internal server error", { status: 500 })
-  }
 
-  return Response.json({ cluster_id: data.cluster_id })
+    clusterIndex = cluster.index
+  })
+
+  return Response.json({ id: clusterIndex })
 })

@@ -1,80 +1,89 @@
 "use client"
 
-import { Reducer, useEffect, useReducer } from "react"
+import { useState } from "react"
+import { useDebounceValue } from "usehooks-ts"
+import {
+  keepPreviousData,
+  usePrefetchQuery,
+  useQuery,
+} from "@tanstack/react-query"
+import { PaginationState } from "@tanstack/react-table"
 
-import type { Block, BlockWithProofs, Proof } from "@/lib/types"
+import type { Block, Team } from "@/lib/types"
 
-import DataTable from "@/components/ui/data-table"
+import { DEFAULT_PAGE_STATE } from "@/lib/constants"
+
+import DataTableControlled from "../ui/data-table-controlled"
 
 import { columns } from "./columns"
-import { Actions, createInitialState, reducer, State } from "./reducer"
+import useRealtimeUpdates from "./useRealtimeUpdates"
 
-import { createClient } from "@/utils/supabase/client"
+import { MachineType } from "@/lib/api/blocks"
+import { mergeBlocksWithTeams } from "@/lib/blocks"
 
 type Props = {
-  blocks: BlockWithProofs[]
   className?: string
+  teams: Team[]
+  machineType: MachineType
 }
 
-const BlocksTable = ({ blocks, className }: Props) => {
-  const [state, dispatch] = useReducer<
-    Reducer<State, Actions>,
-    { blocks: BlockWithProofs[] }
-  >(reducer, { blocks }, createInitialState)
+const getBlocksQueryKey = (
+  pageIndex: number,
+  pageSize: number,
+  machineType: MachineType
+) => ["blocks", machineType, { pageIndex, pageSize }]
 
-  const supabase = createClient()
+const getBlocksQueryFn =
+  (pageIndex: number, pageSize: number, machineType: MachineType) =>
+  async () => {
+    const params = new URLSearchParams()
+    params.set("page_index", pageIndex.toString())
+    params.set("page_size", pageSize.toString())
+    params.set("machine_type", machineType)
+    const response = await fetch(`/api/blocks?${params.toString()}`)
+    return response.json()
+  }
 
-  useEffect(() => {
-    const blocksChannel = supabase
-      .channel("blocks")
-      .on(
-        "postgres_changes",
-        { event: "INSERT", schema: "public", table: "blocks" },
-        (payload) => {
-          dispatch({ type: "add_block", payload: payload.new as Block })
-        }
-      )
-      .on(
-        "postgres_changes",
-        { event: "UPDATE", schema: "public", table: "blocks" },
-        (payload) => {
-          dispatch({ type: "update_block", payload: payload.new as Block })
-        }
-      )
-      .subscribe()
+const BlocksTable = ({ className, teams, machineType }: Props) => {
+  const [pagination, setPagination] =
+    useState<PaginationState>(DEFAULT_PAGE_STATE)
+  const [deferredPagination] = useDebounceValue(pagination, 200)
 
-    const proofsChannel = supabase
-      .channel("proofs")
-      .on(
-        "postgres_changes",
-        { event: "INSERT", schema: "public", table: "proofs" },
-        (payload) => {
-          dispatch({ type: "add_proof", payload: payload.new as Proof })
-        }
-      )
-      .on(
-        "postgres_changes",
-        { event: "UPDATE", schema: "public", table: "proofs" },
-        (payload) => {
-          dispatch({ type: "update_proof", payload: payload.new as Proof })
-        }
-      )
-      .subscribe()
+  const { pageIndex, pageSize } = deferredPagination
 
-    return () => {
-      supabase.removeChannel(blocksChannel)
-      supabase.removeChannel(proofsChannel)
-    }
-  }, [state, supabase])
+  const blocksQuery = useQuery<{ rows: Block[]; rowCount: number }>({
+    queryKey: getBlocksQueryKey(pageIndex, pageSize, machineType),
+    queryFn: getBlocksQueryFn(pageIndex, pageSize, machineType),
+    placeholderData: keepPreviousData,
+  })
 
-  const blockData = state.allIds.map((id) => state.byId[id])
+  useRealtimeUpdates()
+
+  // Prefetch next page
+  usePrefetchQuery({
+    queryKey: getBlocksQueryKey(pageIndex + 1, pageSize, machineType),
+    queryFn: getBlocksQueryFn(pageIndex + 1, pageSize, machineType),
+  })
+
+  // Prefetch previous page (no-op if on first page)
+  usePrefetchQuery({
+    queryKey: getBlocksQueryKey(pageIndex - 1, pageSize, machineType),
+    queryFn:
+      pageIndex > 0
+        ? getBlocksQueryFn(pageIndex - 1, pageSize, machineType)
+        : async () => Promise.resolve(null),
+  })
+
+  const blocks = mergeBlocksWithTeams(blocksQuery.data?.rows ?? [], teams)
 
   return (
-    <DataTable
+    <DataTableControlled
       className={className}
       columns={columns}
-      data={blockData}
-      sorting={[{ id: "block_number", desc: true }]}
+      data={blocks}
+      rowCount={blocksQuery.data?.rowCount ?? 0}
+      pagination={pagination}
+      setPagination={setPagination}
     />
   )
 }

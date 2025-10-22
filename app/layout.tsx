@@ -1,30 +1,19 @@
 import Link from "next/link"
-import { ThemeProvider } from "next-themes"
+import Script from "next/script"
 
-import ActiveLinkDecorator from "@/components/ActiveLinkDecorator"
+import AppNavigationMenu from "@/components/AppNavigationMenu"
 import HeaderScrollEffects from "@/components/header/HeaderScrollEffects"
-import MobileSearchInput from "@/components/header/MobileSearchInput"
-import SearchInput from "@/components/header/SearchInput"
-import ThemeSwitch from "@/components/header/ThemeSwitch"
+import LampEffect from "@/components/LampEffect"
 import EthProofsLogo from "@/components/svgs/eth-proofs-logo.svg"
-import GitHub from "@/components/svgs/github.svg"
 import Hamburger from "@/components/svgs/hamburger.svg"
-import Heart from "@/components/svgs/heart.svg"
 import { Button } from "@/components/ui/button"
-import {
-  Drawer,
-  DrawerClose,
-  DrawerContent,
-  DrawerDescription,
-  DrawerFooter,
-  DrawerHeader,
-  DrawerTitle,
-  DrawerTrigger,
-} from "@/components/ui/drawer"
+import { Drawer, DrawerContent, DrawerTrigger } from "@/components/ui/drawer"
+import { Sidebar } from "@/components/ui/sidebar"
+import { Toaster } from "@/components/ui/sonner"
 
 import { cn } from "@/lib/utils"
 
-import { SITE_NAME, SITE_REPO } from "@/lib/constants"
+import Providers from "./providers"
 
 import "../styles/globals.css"
 
@@ -52,157 +41,73 @@ export default function RootLayout({
           type="image/png"
           sizes="180x180"
         />
+        <Script
+          strategy="afterInteractive"
+          data-domain="ethproofs.org"
+          src="https://plausible.io/js/script.file-downloads.outbound-links.tagged-events.js"
+        />
+        <Script
+          id="plausible-init"
+          strategy="afterInteractive"
+          dangerouslySetInnerHTML={{
+            __html: `
+            window.plausible = window.plausible || function() {
+              (window.plausible.q = window.plausible.q || []).push(arguments)
+            }
+          `,
+          }}
+        />
       </head>
+
       <body className="pb-80">
-        <ThemeProvider attribute="class">
-          <div className="mx-auto flex max-w-screen-2xl flex-col gap-16 px-4 sm:px-4 md:px-8 xl:px-16">
-            <header
+        <Providers>
+          <Sidebar>
+            <AppNavigationMenu />
+          </Sidebar>
+
+          <div className="relative w-full md:w-[calc(100vw_-_var(--sidebar-width))]">
+            <div
               className={cn(
-                "sticky top-0 z-10 grid grid-cols-3 items-center py-4",
-                "-mx-4 sm:-mx-4 md:-mx-8 xl:-mx-16",
-                "px-4 sm:px-4 md:px-8 xl:px-16"
+                "max-md:hidden",
+                "bg-[url('/images/blocks-and-hashes.svg')] bg-no-repeat dark:bg-[url('/images/blocks-and-hashes.svg')]",
+                "opacity-75 hue-rotate-180 invert dark:opacity-100 dark:hue-rotate-0 dark:invert-0",
+                "before:absolute before:inset-0 before:-z-10 before:bg-gradient-to-b before:content-[''] before:dark:from-background-accent/10",
+                "pointer-events-none absolute -z-[0] h-1/3 w-full"
               )}
+              style={{ backgroundPosition: "calc(50% + 20rem) -6rem" }}
+            />
+
+            <LampEffect />
+
+            <header
+              id="mobile-header"
+              className="sticky top-0 z-10 flex w-full items-center justify-between p-6 before:absolute before:inset-0 before:z-[-1] before:backdrop-blur-[8px] before:content-[''] md:hidden"
             >
               <HeaderScrollEffects />
 
-              {/* Header start */}
-              <div className="flex">
-                <Link href="/">
-                  <EthProofsLogo />
-                </Link>
-              </div>
+              <Link href="/">
+                <EthProofsLogo className="text-3xl" />
+              </Link>
 
-              {/* Header center */}
-              <div className="flex justify-center">
-                <SearchInput className="max-md:hidden" />
-              </div>
-
-              {/* Header end */}
-              <div className="flex justify-end">
-                <nav className="flex gap-6 max-md:hidden">
-                  <Link
-                    href="/#blocks"
-                    className="relative h-fit outline-offset-4 hover:text-primary-light"
+              <Drawer>
+                <DrawerTrigger asChild>
+                  <Button
+                    variant="outline"
+                    className="ms-auto size-[2rem] border-2 p-2"
                   >
-                    Proofs
-                    <ActiveLinkDecorator match="/" />
-                  </Link>
-                  <Link
-                    href="/learn"
-                    className="relative h-fit outline-offset-4 hover:text-primary-light"
-                  >
-                    Learn
-                    <ActiveLinkDecorator match="/learn" />
-                  </Link>
-                  <ThemeSwitch />
-                </nav>
-
-                {/* Mobile */}
-                <div className="flex gap-4 md:hidden">
-                  <MobileSearchInput />
-                  <Drawer>
-                    <DrawerTrigger asChild>
-                      <Button variant="solid" className="size-[2rem] p-2">
-                        <Hamburger />
-                      </Button>
-                    </DrawerTrigger>
-                    <DrawerContent>
-                      <DrawerHeader className="space-y-16">
-                        <DrawerTitle className="mb-4 flex items-center justify-between gap-4">
-                          <Link href="/" className="ms-4">
-                            <EthProofsLogo />
-                          </Link>
-                          <DrawerClose asChild>
-                            <Button variant="ghost">Close</Button>
-                          </DrawerClose>
-                        </DrawerTitle>
-                        <DrawerDescription className="space-y-12">
-                          <nav>
-                            <ul className="space-y-12 text-center">
-                              <li className="list-none">
-                                <Button variant="ghost" size="lg" asChild>
-                                  <Link href="/">Proofs</Link>
-                                </Button>
-                              </li>
-                              <li className="list-none">
-                                <Button variant="ghost" size="lg" asChild>
-                                  <Link href="/learn">Learn</Link>
-                                </Button>
-                              </li>
-                            </ul>
-                          </nav>
-                          <div className="flex justify-center">
-                            <ThemeSwitch />
-                          </div>
-                        </DrawerDescription>
-                      </DrawerHeader>
-                      <DrawerFooter>
-                        <nav className="flex justify-center">
-                          <Button variant="ghost" size="lg" asChild>
-                            <Link
-                              href={new URL(
-                                SITE_REPO,
-                                "https://github.com"
-                              ).toString()}
-                            >
-                              <GitHub /> GitHub
-                            </Link>
-                          </Button>
-                        </nav>
-                      </DrawerFooter>
-                    </DrawerContent>
-                  </Drawer>
-                </div>
-              </div>
+                    <Hamburger />
+                  </Button>
+                </DrawerTrigger>
+                <DrawerContent>
+                  <AppNavigationMenu insideDrawer />
+                </DrawerContent>
+              </Drawer>
             </header>
 
-            <main className="min-h-[50vh]">{children}</main>
-
-            <footer className="mx-auto mt-16 flex max-w-prose flex-col items-center">
-              <Button asChild size="lg">
-                <Link
-                  href={new URL(SITE_REPO, "https://github.com").toString()}
-                  className="mb-12"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                >
-                  <GitHub className="size-6" />
-                  <span>Contribute to {SITE_NAME}</span>
-                </Link>
-              </Button>
-
-              <p className="mb-4 text-center">
-                Built with{" "}
-                <Heart className="mb-0.5 inline animate-heart-beat text-xl text-primary" />{" "}
-                by the{" "}
-                <Link
-                  href="https://ethereum.org"
-                  target="_blank"
-                  rel="noopener noreferrer"
-                  className="hover:text-primary-light"
-                >
-                  ethereum.org
-                </Link>{" "}
-                team
-              </p>
-              <p className="text-center text-lg text-primary-light">
-                Public goods are good
-              </p>
-
-              <Link
-                href={new URL(
-                  SITE_REPO + "/issues/new/choose/",
-                  "https://github.com"
-                ).toString()}
-                className="mt-8 text-center text-body-secondary"
-                target="_blank"
-                rel="noopener noreferrer"
-              >
-                Spot a bug? Report it here
-              </Link>
-            </footer>
+            <main className="isolate min-h-[50vh]">{children}</main>
           </div>
-        </ThemeProvider>
+        </Providers>
+        <Toaster />
       </body>
     </html>
   )

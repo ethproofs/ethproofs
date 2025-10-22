@@ -2,6 +2,8 @@ import * as React from "react"
 
 import { cn } from "@/lib/utils"
 
+import { Divider } from "./divider"
+
 const HeroSection = React.forwardRef<
   HTMLDivElement,
   React.HTMLAttributes<HTMLDivElement>
@@ -9,7 +11,7 @@ const HeroSection = React.forwardRef<
   <section
     ref={ref}
     className={cn(
-      "space-y-8 rounded-4xl border bg-gradient-to-b from-primary/[0.02] to-primary/[0.06] px-2 py-6 dark:from-white/[0.01] dark:to-white/[0.04] md:p-8",
+      "space-y-8 rounded-4xl border bg-gradient-to-b from-primary/[0.02] to-primary/[0.06] p-6 dark:from-white/[0.01] dark:to-white/[0.04] md:p-8",
       className
     )}
     {...props}
@@ -29,11 +31,7 @@ const HeroDivider = React.forwardRef<
   HTMLDivElement,
   React.HTMLAttributes<HTMLDivElement>
 >(({ className, ...props }, ref) => (
-  <div
-    ref={ref}
-    className={cn("my-8 h-px w-full bg-gradient-to-r from-primary", className)}
-    {...props}
-  />
+  <Divider ref={ref} className={cn("my-8", className)} {...props} />
 ))
 HeroDivider.displayName = "HeroDivider"
 
@@ -67,10 +65,7 @@ const HeroItemLabel = React.forwardRef<
 >(({ className, ...props }, ref) => (
   <div
     ref={ref}
-    className={cn(
-      "flex items-center gap-1 lowercase text-body-secondary",
-      className
-    )}
+    className={cn("flex items-center gap-1 text-body-secondary", className)}
     {...props}
   />
 ))

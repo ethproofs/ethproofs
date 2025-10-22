@@ -2,7 +2,7 @@
   "openapi": "3.1.0",
   "info": {
     "title": "Ethproofs API",
-    "description": "This document outlines the available API endpoints for Ethproofs.\n\n**Authentication**\n\nAll endpoints require authentication using an API key in the request header:\n\n`Authorization: Bearer <api_key>`",
+    "description": "This document outlines the available API endpoints for Ethproofs.\n    \n\n**Base URL**\n    \n\nAll API endpoints are relative to:\n    \n\n`https://staging--ethproofs.netlify.app/api/v0`\n    \n\n**Authentication**\n    \n\nAll endpoints require authentication using an API key in the request header:\n    \n\n`Authorization: Bearer <api_key>`",
     "version": "0.0.1"
   },
   "servers": [
@@ -11,22 +11,163 @@
       "description": "Main server"
     },
     {
-      "url": "https://main--ethproofs.netlify.app/api/v0",
+      "url": "https://staging--ethproofs.netlify.app/api/v0",
       "description": "Testing server"
     }
   ],
   "tags": [
     {
+      "name": "Blocks"
+    },
+    {
       "name": "Clusters"
+    },
+    {
+      "name": "Single machine"
     },
     {
       "name": "Proofs"
     },
     {
-      "name": "Aws pricing list"
+      "name": "Cloud instances"
+    },
+    {
+      "name": "Verification keys"
+    },
+    {
+      "name": "CSP benchmarks"
     }
   ],
   "paths": {
+    "/blocks/{block}": {
+      "get": {
+        "tags": [
+          "Blocks"
+        ],
+        "summary": "Get block details",
+        "description": "Retrieve metadata for a specific block.",
+        "parameters": [
+          {
+            "name": "block",
+            "in": "path",
+            "description": "The block number to retrieve",
+            "required": true,
+            "schema": {
+              "oneOf": [
+                {
+                  "type": "integer",
+                  "minimum": 0
+                },
+                {
+                  "type": "string",
+                  "pattern": "^0x[a-fA-F0-9]{64}$"
+                }
+              ]
+            },
+            "example": 12345
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Block details retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "block_number": {
+                      "type": "integer"
+                    },
+                    "hash": {
+                      "type": "string"
+                    },
+                    "timestamp": {
+                      "type": "string"
+                    },
+                    "gas_used": {
+                      "type": "integer"
+                    },
+                    "transaction_count": {
+                      "type": "integer"
+                    },
+                    "created_at": {
+                      "type": "string"
+                    },
+                    "updated_at": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "block_number",
+                    "hash",
+                    "timestamp",
+                    "gas_used",
+                    "transaction_count",
+                    "created_at"
+                  ]
+                },
+                "example": {
+                  "block_number": 12345,
+                  "timestamp": "2025-01-15T12:00:00Z",
+                  "gas_used": 15000000,
+                  "transaction_count": 250,
+                  "hash": "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef",
+                  "created_at": "2025-01-15T12:00:00Z"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid block number"
+          },
+          "404": {
+            "description": "Block not found"
+          },
+          "422": {
+            "description": "Validation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "code": {
+                        "type": "string"
+                      },
+                      "message": {
+                        "type": "string"
+                      },
+                      "path": {
+                        "type": "array",
+                        "items": {
+                          "anyOf": [
+                            {
+                              "type": "string"
+                            },
+                            {
+                              "type": "number"
+                            }
+                          ]
+                        }
+                      }
+                    },
+                    "required": [
+                      "code",
+                      "message",
+                      "path"
+                    ]
+                  }
+                }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
     "/clusters": {
       "post": {
         "tags": [
@@ -45,51 +186,198 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "cluster_name": {
+                  "nickname": {
                     "type": "string",
                     "maxLength": 50,
-                    "description": "Human-readable name (e.g., \"ZKnight-01\", \"SNARK-Sentinel\")"
+                    "description": "Human-readable name. Main display name in the UI",
+                    "example": "ZKnight-01"
                   },
-                  "cluster_description": {
+                  "description": {
                     "type": "string",
                     "maxLength": 200,
-                    "description": "Description of the cluster (e.g., \"Primary RISC-V prover\")"
+                    "description": "Description of the cluster",
+                    "example": "Primary RISC-V prover"
                   },
-                  "cluster_hardware": {
+                  "zkvm_version_id": {
+                    "type": "integer",
+                    "exclusiveMinimum": 0,
+                    "description": "ID of the zkVM version. Visit [ZKVMs](/docs/zkvms) to view all available zkVMs and their IDs.",
+                    "example": 1
+                  },
+                  "hardware": {
                     "type": "string",
                     "maxLength": 200,
-                    "description": "Technical specifications (e.g., \"RISC-V Prover\", \"STARK-to-SNARK Prover\")"
+                    "description": "Technical specifications. Use `configuration.cluster_machine` field instead.",
+                    "example": "RISC-V Prover",
+                    "deprecated": true
                   },
-                  "cluster_cycle_type": {
+                  "cycle_type": {
                     "type": "string",
                     "maxLength": 50,
-                    "description": "Type of cycle (e.g., \"SP1\")"
+                    "description": "Type of cycle",
+                    "example": "SP1"
                   },
-                  "cluster_configuration": {
+                  "proof_type": {
+                    "type": "string",
+                    "maxLength": 50,
+                    "description": "Proof system used to generate proofs. (e.g., Groth16 or PlonK)",
+                    "example": "Groth16"
+                  },
+                  "configuration": {
                     "type": "array",
                     "items": {
                       "type": "object",
                       "properties": {
-                        "instance_type": {
-                          "type": "string",
-                          "description": "Instance type (e.g., 'c5.xlarge'). Check our aws instance pricing endpoint for available instance types"
+                        "machine": {
+                          "type": "object",
+                          "properties": {
+                            "cpu_model": {
+                              "type": "string",
+                              "maxLength": 200,
+                              "description": "CPU model",
+                              "example": "Intel(R) Xeon(R) CPU @ 2.20GHz"
+                            },
+                            "cpu_cores": {
+                              "type": "integer",
+                              "exclusiveMinimum": 0,
+                              "description": "Number of CPU cores",
+                              "example": 2
+                            },
+                            "gpu_models": {
+                              "type": "array",
+                              "items": {
+                                "type": "string",
+                                "maxLength": 200
+                              },
+                              "description": "List of GPU models",
+                              "example": [
+                                "RTX 4090",
+                                "RTX 4080"
+                              ]
+                            },
+                            "gpu_count": {
+                              "type": "array",
+                              "items": {
+                                "type": "integer",
+                                "exclusiveMinimum": 0
+                              },
+                              "description": "Number of GPUs",
+                              "example": [
+                                1,
+                                1
+                              ]
+                            },
+                            "gpu_memory_gb": {
+                              "type": "array",
+                              "items": {
+                                "type": "integer",
+                                "exclusiveMinimum": 0
+                              },
+                              "description": "GPU memory size in GB",
+                              "example": [
+                                24,
+                                24
+                              ]
+                            },
+                            "memory_size_gb": {
+                              "type": "array",
+                              "items": {
+                                "type": "integer",
+                                "exclusiveMinimum": 0
+                              },
+                              "description": "Memory size in GB",
+                              "example": [
+                                32,
+                                32
+                              ]
+                            },
+                            "memory_count": {
+                              "type": "array",
+                              "items": {
+                                "type": "integer",
+                                "exclusiveMinimum": 0
+                              },
+                              "description": "Number of memory modules",
+                              "example": [
+                                8,
+                                8
+                              ]
+                            },
+                            "memory_type": {
+                              "type": "array",
+                              "items": {
+                                "type": "string",
+                                "maxLength": 200
+                              },
+                              "description": "Memory type",
+                              "example": [
+                                "DDR5-4800 ECC",
+                                "DDR5-4800 ECC"
+                              ]
+                            },
+                            "storage_size_gb": {
+                              "type": "integer",
+                              "exclusiveMinimum": 0,
+                              "description": "Storage size in GB",
+                              "example": 1000
+                            },
+                            "total_tera_flops": {
+                              "type": "integer",
+                              "exclusiveMinimum": 0,
+                              "description": "Total Tera Flops",
+                              "example": 1000
+                            },
+                            "network_between_machines": {
+                              "type": "string",
+                              "maxLength": 500,
+                              "description": "Network configuration details between machines in the cluster",
+                              "example": "Dual-port 100GbE NICs in mesh topology with RDMA enabled, primary and backup interconnects between all nodes"
+                            }
+                          },
+                          "required": [
+                            "cpu_model",
+                            "cpu_cores",
+                            "gpu_models",
+                            "gpu_count",
+                            "gpu_memory_gb",
+                            "memory_size_gb",
+                            "memory_count",
+                            "memory_type"
+                          ],
+                          "description": "Physical hardware specifications of the machine"
                         },
-                        "instance_count": {
-                          "type": "number",
-                          "description": "Number of instances of this type"
+                        "machine_count": {
+                          "type": "integer",
+                          "exclusiveMinimum": 0,
+                          "description": "Number of machines of this type",
+                          "example": 1
+                        },
+                        "cloud_instance_name": {
+                          "type": "string",
+                          "description": "The instance_name value of the cloud instance. Visit [Cloud Instances](/docs/cloud-instances) to view all available instances and their exact names.",
+                          "example": "c5.xlarge"
+                        },
+                        "cloud_instance_count": {
+                          "type": "integer",
+                          "exclusiveMinimum": 0,
+                          "description": "Number of equivalent cloud instances",
+                          "example": 10
                         }
                       },
                       "required": [
-                        "instance_type",
-                        "instance_count"
+                        "machine",
+                        "machine_count",
+                        "cloud_instance_name",
+                        "cloud_instance_count"
                       ]
                     },
                     "description": "Cluster configuration"
                   }
                 },
                 "required": [
-                  "cluster_name",
-                  "cluster_configuration"
+                  "nickname",
+                  "zkvm_version_id",
+                  "configuration"
                 ]
               }
             }
@@ -103,12 +391,12 @@
                 "schema": {
                   "type": "object",
                   "properties": {
-                    "cluster_id": {
+                    "id": {
                       "type": "number"
                     }
                   },
                   "required": [
-                    "cluster_id"
+                    "id"
                   ]
                 }
               }
@@ -145,25 +433,255 @@
                   "items": {
                     "type": "object",
                     "properties": {
-                      "cluster_id": {
-                        "type": "number"
+                      "id": {
+                        "type": [
+                          "number",
+                          "null"
+                        ]
                       },
-                      "cluster_name": {
+                      "nickname": {
                         "type": "string"
                       },
-                      "cluster_description": {
-                        "type": "string"
+                      "description": {
+                        "type": [
+                          "string",
+                          "null"
+                        ]
                       },
-                      "cluster_hardware": {
-                        "type": "string"
+                      "hardware": {
+                        "type": [
+                          "string",
+                          "null"
+                        ]
                       },
-                      "cluster_cycle_type": {
-                        "type": "string"
+                      "cycle_type": {
+                        "type": [
+                          "string",
+                          "null"
+                        ]
+                      },
+                      "proof_type": {
+                        "type": [
+                          "string",
+                          "null"
+                        ]
+                      },
+                      "machines": {
+                        "type": "array",
+                        "items": {
+                          "type": "object",
+                          "properties": {
+                            "machine": {
+                              "type": "object",
+                              "properties": {
+                                "cpu_model": {
+                                  "type": "string",
+                                  "maxLength": 200,
+                                  "description": "CPU model",
+                                  "example": "Intel(R) Xeon(R) CPU @ 2.20GHz"
+                                },
+                                "cpu_cores": {
+                                  "type": "integer",
+                                  "exclusiveMinimum": 0,
+                                  "description": "Number of CPU cores",
+                                  "example": 2
+                                },
+                                "gpu_models": {
+                                  "type": "array",
+                                  "items": {
+                                    "type": "string",
+                                    "maxLength": 200
+                                  },
+                                  "description": "List of GPU models",
+                                  "example": [
+                                    "RTX 4090",
+                                    "RTX 4080"
+                                  ]
+                                },
+                                "gpu_count": {
+                                  "type": "array",
+                                  "items": {
+                                    "type": "integer",
+                                    "exclusiveMinimum": 0
+                                  },
+                                  "description": "Number of GPUs",
+                                  "example": [
+                                    1,
+                                    1
+                                  ]
+                                },
+                                "gpu_memory_gb": {
+                                  "type": "array",
+                                  "items": {
+                                    "type": "integer",
+                                    "exclusiveMinimum": 0
+                                  },
+                                  "description": "GPU memory size in GB",
+                                  "example": [
+                                    24,
+                                    24
+                                  ]
+                                },
+                                "memory_size_gb": {
+                                  "type": "array",
+                                  "items": {
+                                    "type": "integer",
+                                    "exclusiveMinimum": 0
+                                  },
+                                  "description": "Memory size in GB",
+                                  "example": [
+                                    32,
+                                    32
+                                  ]
+                                },
+                                "memory_count": {
+                                  "type": "array",
+                                  "items": {
+                                    "type": "integer",
+                                    "exclusiveMinimum": 0
+                                  },
+                                  "description": "Number of memory modules",
+                                  "example": [
+                                    8,
+                                    8
+                                  ]
+                                },
+                                "memory_type": {
+                                  "type": "array",
+                                  "items": {
+                                    "type": "string",
+                                    "maxLength": 200
+                                  },
+                                  "description": "Memory type",
+                                  "example": [
+                                    "DDR5-4800 ECC",
+                                    "DDR5-4800 ECC"
+                                  ]
+                                },
+                                "storage_size_gb": {
+                                  "type": "integer",
+                                  "exclusiveMinimum": 0,
+                                  "description": "Storage size in GB",
+                                  "example": 1000
+                                },
+                                "total_tera_flops": {
+                                  "type": "integer",
+                                  "exclusiveMinimum": 0,
+                                  "description": "Total Tera Flops",
+                                  "example": 1000
+                                },
+                                "network_between_machines": {
+                                  "type": "string",
+                                  "maxLength": 500,
+                                  "description": "Network configuration details between machines in the cluster",
+                                  "example": "Dual-port 100GbE NICs in mesh topology with RDMA enabled, primary and backup interconnects between all nodes"
+                                }
+                              },
+                              "required": [
+                                "cpu_model",
+                                "cpu_cores",
+                                "gpu_models",
+                                "gpu_count",
+                                "gpu_memory_gb",
+                                "memory_size_gb",
+                                "memory_count",
+                                "memory_type"
+                              ]
+                            },
+                            "machine_count": {
+                              "type": "integer",
+                              "exclusiveMinimum": 0
+                            },
+                            "cloud_instance": {
+                              "type": "object",
+                              "properties": {
+                                "id": {
+                                  "type": "number"
+                                },
+                                "provider": {
+                                  "type": "string"
+                                },
+                                "instance_name": {
+                                  "type": "string"
+                                },
+                                "region": {
+                                  "type": "string"
+                                },
+                                "hourly_price": {
+                                  "type": "number"
+                                },
+                                "cpu_arch": {
+                                  "type": "string"
+                                },
+                                "cpu_cores": {
+                                  "type": "number"
+                                },
+                                "cpu_effective_cores": {
+                                  "type": "number"
+                                },
+                                "cpu_name": {
+                                  "type": "string"
+                                },
+                                "memory": {
+                                  "type": "number"
+                                },
+                                "gpu_count": {
+                                  "type": "number"
+                                },
+                                "gpu_arch": {
+                                  "type": "string"
+                                },
+                                "gpu_name": {
+                                  "type": "string"
+                                },
+                                "gpu_memory": {
+                                  "type": "number"
+                                },
+                                "mobo_name": {
+                                  "type": "string"
+                                },
+                                "disk_name": {
+                                  "type": "string"
+                                },
+                                "disk_space": {
+                                  "type": "number"
+                                },
+                                "created_at": {
+                                  "type": "string"
+                                },
+                                "snapshot_date": {
+                                  "type": "string"
+                                }
+                              },
+                              "required": [
+                                "id",
+                                "provider",
+                                "instance_name",
+                                "region",
+                                "hourly_price",
+                                "cpu_cores",
+                                "memory",
+                                "created_at"
+                              ]
+                            },
+                            "cloud_instance_count": {
+                              "type": "integer",
+                              "exclusiveMinimum": 0
+                            }
+                          },
+                          "required": [
+                            "machine",
+                            "machine_count",
+                            "cloud_instance",
+                            "cloud_instance_count"
+                          ]
+                        }
                       }
                     },
                     "required": [
-                      "cluster_id",
-                      "cluster_name"
+                      "id",
+                      "nickname",
+                      "machines"
                     ]
                   }
                 }
@@ -179,12 +697,12 @@
         }
       }
     },
-    "/proofs": {
+    "/single-machine": {
       "post": {
         "tags": [
-          "Proofs"
+          "Single machine"
         ],
-        "summary": "Submit a new proof or update an existing one",
+        "summary": "Create a single machine",
         "security": [
           {
             "apikey": []
@@ -192,139 +710,762 @@
         ],
         "requestBody": {
           "required": true,
-          "description": "The request body schema varies based on the `proof_status` field.",
           "content": {
             "application/json": {
               "schema": {
-                "oneOf": [
-                  {
-                    "type": "object",
-                    "properties": {
-                      "proof_id": {
-                        "type": "number",
-                        "description": "Unique identifier for the proof. If no proof_id is provided, the system will attempt to find an existing proof for the block_number and cluster_id"
-                      },
-                      "block_number": {
-                        "type": "number",
-                        "minimum": 0
-                      },
-                      "cluster_id": {
-                        "type": "number"
-                      },
-                      "proof_status": {
-                        "type": "string",
-                        "const": "queued"
-                      }
-                    },
-                    "required": [
-                      "block_number",
-                      "cluster_id",
-                      "proof_status"
-                    ]
+                "type": "object",
+                "properties": {
+                  "nickname": {
+                    "type": "string",
+                    "maxLength": 50,
+                    "description": "Human-readable name. Main display name in the UI",
+                    "example": "ZKnight-01"
                   },
-                  {
-                    "type": "object",
-                    "properties": {
-                      "proof_id": {
-                        "type": "number",
-                        "description": "Unique identifier for the proof. If no proof_id is provided, the system will attempt to find an existing proof for the block_number and cluster_id"
-                      },
-                      "block_number": {
-                        "type": "number",
-                        "minimum": 0
-                      },
-                      "cluster_id": {
-                        "type": "number"
-                      },
-                      "proof_status": {
-                        "type": "string",
-                        "const": "proving"
-                      }
-                    },
-                    "required": [
-                      "block_number",
-                      "cluster_id",
-                      "proof_status"
-                    ]
+                  "description": {
+                    "type": "string",
+                    "maxLength": 200,
+                    "description": "Description of the cluster",
+                    "example": "Primary RISC-V prover"
                   },
-                  {
+                  "zkvm_version_id": {
+                    "type": "integer",
+                    "exclusiveMinimum": 0,
+                    "description": "ID of the zkVM version. Visit [ZKVMs](/docs/zkvms) to view all available zkVMs and their IDs.",
+                    "example": 1
+                  },
+                  "hardware": {
+                    "type": "string",
+                    "maxLength": 200,
+                    "description": "Technical specifications. Use `configuration.cluster_machine` field instead.",
+                    "example": "RISC-V Prover",
+                    "deprecated": true
+                  },
+                  "cycle_type": {
+                    "type": "string",
+                    "maxLength": 50,
+                    "description": "Type of cycle",
+                    "example": "SP1"
+                  },
+                  "proof_type": {
+                    "type": "string",
+                    "maxLength": 50,
+                    "description": "Proof system used to generate proofs. (e.g., Groth16 or PlonK)",
+                    "example": "Groth16"
+                  },
+                  "machine": {
                     "type": "object",
                     "properties": {
-                      "proof_id": {
-                        "type": "number",
-                        "description": "Unique identifier for the proof. If no proof_id is provided, the system will attempt to find an existing proof for the block_number and cluster_id"
-                      },
-                      "block_number": {
-                        "type": "number",
-                        "minimum": 0
-                      },
-                      "cluster_id": {
-                        "type": "number"
-                      },
-                      "proof_status": {
+                      "cpu_model": {
                         "type": "string",
-                        "const": "proved"
+                        "maxLength": 200,
+                        "description": "CPU model",
+                        "example": "Intel(R) Xeon(R) CPU @ 2.20GHz"
                       },
-                      "proving_time": {
-                        "type": "number",
-                        "exclusiveMinimum": 0,
-                        "description": "Milliseconds taken to generate the proof"
-                      },
-                      "proving_cost": {
-                        "type": "number",
-                        "exclusiveMinimum": 0,
-                        "description": "Cost of generating the proof (in USD)"
-                      },
-                      "proving_cycles": {
+                      "cpu_cores": {
                         "type": "integer",
-                        "exclusiveMinimum": 0
+                        "exclusiveMinimum": 0,
+                        "description": "Number of CPU cores",
+                        "example": 2
                       },
-                      "proof": {
+                      "gpu_models": {
+                        "type": "array",
+                        "items": {
+                          "type": "string",
+                          "maxLength": 200
+                        },
+                        "description": "List of GPU models",
+                        "example": [
+                          "RTX 4090",
+                          "RTX 4080"
+                        ]
+                      },
+                      "gpu_count": {
+                        "type": "array",
+                        "items": {
+                          "type": "integer",
+                          "exclusiveMinimum": 0
+                        },
+                        "description": "Number of GPUs",
+                        "example": [
+                          1,
+                          1
+                        ]
+                      },
+                      "gpu_memory_gb": {
+                        "type": "array",
+                        "items": {
+                          "type": "integer",
+                          "exclusiveMinimum": 0
+                        },
+                        "description": "GPU memory size in GB",
+                        "example": [
+                          24,
+                          24
+                        ]
+                      },
+                      "memory_size_gb": {
+                        "type": "array",
+                        "items": {
+                          "type": "integer",
+                          "exclusiveMinimum": 0
+                        },
+                        "description": "Memory size in GB",
+                        "example": [
+                          32,
+                          32
+                        ]
+                      },
+                      "memory_count": {
+                        "type": "array",
+                        "items": {
+                          "type": "integer",
+                          "exclusiveMinimum": 0
+                        },
+                        "description": "Number of memory modules",
+                        "example": [
+                          8,
+                          8
+                        ]
+                      },
+                      "memory_type": {
+                        "type": "array",
+                        "items": {
+                          "type": "string",
+                          "maxLength": 200
+                        },
+                        "description": "Memory type",
+                        "example": [
+                          "DDR5-4800 ECC",
+                          "DDR5-4800 ECC"
+                        ]
+                      },
+                      "storage_size_gb": {
+                        "type": "integer",
+                        "exclusiveMinimum": 0,
+                        "description": "Storage size in GB",
+                        "example": 1000
+                      },
+                      "total_tera_flops": {
+                        "type": "integer",
+                        "exclusiveMinimum": 0,
+                        "description": "Total Tera Flops",
+                        "example": 1000
+                      },
+                      "network_between_machines": {
                         "type": "string",
-                        "minLength": 1
+                        "maxLength": 500,
+                        "description": "Network configuration details between machines in the cluster",
+                        "example": "Dual-port 100GbE NICs in mesh topology with RDMA enabled, primary and backup interconnects between all nodes"
                       }
                     },
                     "required": [
-                      "block_number",
-                      "cluster_id",
-                      "proof_status",
-                      "proving_time",
-                      "proving_cost",
-                      "proving_cycles",
-                      "proof"
-                    ]
+                      "cpu_model",
+                      "cpu_cores",
+                      "gpu_models",
+                      "gpu_count",
+                      "gpu_memory_gb",
+                      "memory_size_gb",
+                      "memory_count",
+                      "memory_type"
+                    ],
+                    "description": "Physical hardware specifications of the machine"
+                  },
+                  "cloud_instance_name": {
+                    "type": "string",
+                    "description": "The instance_name value of the cloud instance. Visit [Cloud Instances](/docs/cloud-instances) to view all available instances and their exact names.",
+                    "example": "c5.xlarge"
                   }
+                },
+                "required": [
+                  "nickname",
+                  "zkvm_version_id",
+                  "machine",
+                  "cloud_instance_name"
                 ]
-              },
-              "examples": {
-                "queued": {
-                  "summary": "Queued proof",
-                  "value": {
-                    "block_number": 123456,
-                    "cluster_id": 1,
-                    "proof_status": "queued"
-                  }
-                },
-                "proving": {
-                  "summary": "Proving proof",
-                  "value": {
-                    "block_number": 123456,
-                    "cluster_id": 1,
-                    "proof_status": "proving"
-                  }
-                },
-                "proved": {
-                  "summary": "Proved proof",
-                  "value": {
-                    "block_number": 123456,
-                    "cluster_id": 1,
-                    "proof_status": "proved",
-                    "proving_time": 100,
-                    "proving_cost": 540,
-                    "proving_cycles": 10000,
-                    "proof": "..."
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Single machine created",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "id": {
+                      "type": "number"
+                    }
+                  },
+                  "required": [
+                    "id"
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request body"
+          },
+          "401": {
+            "description": "Invalid API key"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/proofs/download/block/{block}": {
+      "get": {
+        "tags": [
+          "Proofs"
+        ],
+        "summary": "Download block proofs",
+        "description": "Download all proved proofs for a specific block as a ZIP file.",
+        "parameters": [
+          {
+            "name": "block",
+            "in": "path",
+            "description": "The block hash (0x-prefixed 64 hex characters)",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "pattern": "^0x[a-fA-F0-9]{64}$"
+            },
+            "example": "0x1234567890abcdef1234567890abcdef1234567890abcdef1234567890abcdef"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "ZIP file containing all proved proofs for the block",
+            "content": {
+              "application/zip": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Block or proofs not found"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/proofs": {
+      "get": {
+        "tags": [
+          "Proofs"
+        ],
+        "summary": "List proofs",
+        "description": "Retrieve a filtered and paginated list of proofs.",
+        "parameters": [
+          {
+            "name": "team",
+            "in": "query",
+            "description": "Filter by team slug",
+            "required": false,
+            "schema": {
+              "type": "string"
+            }
+          },
+          {
+            "name": "block",
+            "in": "query",
+            "description": "Filter by specific block number",
+            "required": false,
+            "schema": {
+              "type": "number"
+            }
+          },
+          {
+            "name": "limit",
+            "in": "query",
+            "description": "Number of proofs to return (default: 100, max: 1000)",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "default": 100,
+              "minimum": 1,
+              "maximum": 1000
+            }
+          },
+          {
+            "name": "offset",
+            "in": "query",
+            "description": "Number of proofs to skip for pagination (default: 0)",
+            "required": false,
+            "schema": {
+              "type": "integer",
+              "default": 0,
+              "minimum": 0
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "List of proofs retrieved successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "proofs": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "proof_id": {
+                            "type": "integer"
+                          },
+                          "block_number": {
+                            "type": "integer",
+                            "minimum": 0
+                          },
+                          "proof_status": {
+                            "type": "string",
+                            "enum": [
+                              "queued",
+                              "proving",
+                              "proved"
+                            ]
+                          },
+                          "proving_cycles": {
+                            "type": "integer"
+                          },
+                          "team_id": {
+                            "type": "string",
+                            "format": "uuid"
+                          },
+                          "created_at": {
+                            "type": "string"
+                          },
+                          "proved_timestamp": {
+                            "type": "string"
+                          },
+                          "proving_timestamp": {
+                            "type": "string"
+                          },
+                          "queued_timestamp": {
+                            "type": "string"
+                          },
+                          "cluster_version_id": {
+                            "type": "integer"
+                          },
+                          "proving_time": {
+                            "type": "integer"
+                          },
+                          "program_id": {
+                            "type": "integer"
+                          },
+                          "size_bytes": {
+                            "type": "integer"
+                          },
+                          "proof": {
+                            "type": "string"
+                          },
+                          "verifier_id": {
+                            "type": "string"
+                          },
+                          "team": {
+                            "type": "object",
+                            "properties": {
+                              "id": {
+                                "type": "string",
+                                "format": "uuid"
+                              },
+                              "name": {
+                                "type": "string"
+                              },
+                              "slug": {
+                                "type": "string"
+                              },
+                              "created_at": {
+                                "type": "string"
+                              },
+                              "updated_at": {
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "id",
+                              "name",
+                              "slug",
+                              "created_at"
+                            ]
+                          },
+                          "block": {
+                            "type": "object",
+                            "properties": {
+                              "block_number": {
+                                "type": "integer"
+                              },
+                              "hash": {
+                                "type": "string"
+                              },
+                              "timestamp": {
+                                "type": "string"
+                              },
+                              "gas_used": {
+                                "type": "integer"
+                              },
+                              "transaction_count": {
+                                "type": "integer"
+                              },
+                              "created_at": {
+                                "type": "string"
+                              },
+                              "updated_at": {
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "block_number",
+                              "hash",
+                              "timestamp",
+                              "gas_used",
+                              "transaction_count",
+                              "created_at"
+                            ]
+                          },
+                          "cluster_version": {
+                            "type": "object",
+                            "properties": {
+                              "id": {
+                                "type": "integer"
+                              },
+                              "cluster_id": {
+                                "type": "string",
+                                "format": "uuid"
+                              },
+                              "version": {
+                                "type": "string"
+                              },
+                              "created_at": {
+                                "type": "string"
+                              },
+                              "updated_at": {
+                                "type": "string"
+                              },
+                              "cluster": {
+                                "type": "object",
+                                "properties": {
+                                  "id": {
+                                    "type": "string",
+                                    "format": "uuid"
+                                  },
+                                  "name": {
+                                    "type": "string"
+                                  },
+                                  "nickname": {
+                                    "type": "string"
+                                  },
+                                  "created_at": {
+                                    "type": "string"
+                                  },
+                                  "updated_at": {
+                                    "type": "string"
+                                  }
+                                },
+                                "required": [
+                                  "id",
+                                  "name",
+                                  "created_at"
+                                ]
+                              },
+                              "zkvm_version": {
+                                "type": "object",
+                                "properties": {
+                                  "id": {
+                                    "type": "integer"
+                                  },
+                                  "version": {
+                                    "type": "string"
+                                  },
+                                  "zkvm_id": {
+                                    "type": "integer"
+                                  },
+                                  "release_date": {
+                                    "type": "string"
+                                  },
+                                  "created_at": {
+                                    "type": "string"
+                                  },
+                                  "zkvm": {
+                                    "type": "object",
+                                    "properties": {
+                                      "id": {
+                                        "type": "integer"
+                                      },
+                                      "name": {
+                                        "type": "string"
+                                      },
+                                      "slug": {
+                                        "type": "string"
+                                      },
+                                      "isa": {
+                                        "type": "string"
+                                      },
+                                      "team_id": {
+                                        "type": "string",
+                                        "format": "uuid"
+                                      },
+                                      "created_at": {
+                                        "type": "string"
+                                      }
+                                    },
+                                    "required": [
+                                      "id",
+                                      "name",
+                                      "slug",
+                                      "isa",
+                                      "team_id",
+                                      "created_at"
+                                    ]
+                                  }
+                                },
+                                "required": [
+                                  "id",
+                                  "version",
+                                  "zkvm_id",
+                                  "release_date",
+                                  "created_at"
+                                ]
+                              },
+                              "cluster_machines": {
+                                "type": "array",
+                                "items": {
+                                  "type": "object",
+                                  "properties": {
+                                    "id": {
+                                      "type": "integer"
+                                    },
+                                    "cluster_version_id": {
+                                      "type": "integer"
+                                    },
+                                    "machine_id": {
+                                      "type": "integer"
+                                    },
+                                    "cloud_instance_id": {
+                                      "type": "integer"
+                                    },
+                                    "created_at": {
+                                      "type": "string"
+                                    },
+                                    "cloud_instance": {
+                                      "type": "object",
+                                      "properties": {
+                                        "id": {
+                                          "type": "integer"
+                                        },
+                                        "instance_id": {
+                                          "type": "string"
+                                        },
+                                        "provider_id": {
+                                          "type": "integer"
+                                        },
+                                        "region": {
+                                          "type": "string"
+                                        },
+                                        "instance_type": {
+                                          "type": "string"
+                                        },
+                                        "created_at": {
+                                          "type": "string"
+                                        },
+                                        "provider": {
+                                          "type": "object",
+                                          "properties": {
+                                            "id": {
+                                              "type": "integer"
+                                            },
+                                            "name": {
+                                              "type": "string"
+                                            },
+                                            "created_at": {
+                                              "type": "string"
+                                            }
+                                          },
+                                          "required": [
+                                            "id",
+                                            "name",
+                                            "created_at"
+                                          ]
+                                        }
+                                      },
+                                      "required": [
+                                        "id",
+                                        "instance_id",
+                                        "provider_id",
+                                        "region",
+                                        "instance_type",
+                                        "created_at"
+                                      ]
+                                    },
+                                    "machine": {
+                                      "type": "object",
+                                      "properties": {
+                                        "id": {
+                                          "type": "integer"
+                                        },
+                                        "name": {
+                                          "type": "string"
+                                        },
+                                        "cpu_count": {
+                                          "type": "integer"
+                                        },
+                                        "memory_gb": {
+                                          "type": "number"
+                                        },
+                                        "created_at": {
+                                          "type": "string"
+                                        }
+                                      },
+                                      "required": [
+                                        "id",
+                                        "name",
+                                        "cpu_count",
+                                        "memory_gb",
+                                        "created_at"
+                                      ]
+                                    }
+                                  },
+                                  "required": [
+                                    "id",
+                                    "cluster_version_id",
+                                    "machine_id",
+                                    "created_at"
+                                  ]
+                                }
+                              }
+                            },
+                            "required": [
+                              "id",
+                              "cluster_id",
+                              "version",
+                              "created_at"
+                            ]
+                          }
+                        },
+                        "required": [
+                          "proof_id",
+                          "block_number",
+                          "proof_status",
+                          "team_id",
+                          "created_at",
+                          "cluster_version_id"
+                        ]
+                      }
+                    },
+                    "total_count": {
+                      "type": "integer"
+                    },
+                    "limit": {
+                      "type": "integer"
+                    },
+                    "offset": {
+                      "type": "integer"
+                    }
+                  },
+                  "required": [
+                    "proofs",
+                    "total_count",
+                    "limit",
+                    "offset"
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid query parameters"
+          },
+          "422": {
+            "description": "Validation error",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "array",
+                  "items": {
+                    "type": "object",
+                    "properties": {
+                      "code": {
+                        "type": "string"
+                      },
+                      "message": {
+                        "type": "string"
+                      },
+                      "path": {
+                        "type": "array",
+                        "items": {
+                          "anyOf": [
+                            {
+                              "type": "string"
+                            },
+                            {
+                              "type": "number"
+                            }
+                          ]
+                        }
+                      }
+                    },
+                    "required": [
+                      "code",
+                      "message",
+                      "path"
+                    ]
                   }
                 }
+              }
+            }
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/proofs/queued": {
+      "post": {
+        "tags": [
+          "Proofs"
+        ],
+        "summary": "Queued proof",
+        "description": "The prover indicates they'll prove a block, but they haven't started proving yet.",
+        "security": [
+          {
+            "apikey": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "block_number": {
+                    "type": "number",
+                    "minimum": 0
+                  },
+                  "cluster_id": {
+                    "type": "number"
+                  }
+                },
+                "required": [
+                  "block_number",
+                  "cluster_id"
+                ]
+              },
+              "example": {
+                "block_number": 123456,
+                "cluster_id": 1
               }
             }
           }
@@ -349,7 +1490,7 @@
             }
           },
           "400": {
-            "description": "Invalid request body"
+            "description": "Invalid request"
           },
           "401": {
             "description": "Invalid API key"
@@ -357,21 +1498,210 @@
           "404": {
             "description": "Cluster not found"
           },
+          "409": {
+            "description": "Proof already proved"
+          },
           "500": {
-            "description": "Internal server error or block not found"
+            "description": "Internal server error"
           }
         }
       }
     },
-    "/aws-pricing-list": {
-      "get": {
+    "/proofs/proving": {
+      "post": {
         "tags": [
-          "Aws pricing list"
+          "Proofs"
         ],
-        "summary": "List aws pricing list",
+        "summary": "Proving proof",
+        "description": "The prover indicates they've started proving a block.",
+        "security": [
+          {
+            "apikey": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "block_number": {
+                    "type": "number",
+                    "minimum": 0
+                  },
+                  "cluster_id": {
+                    "type": "number"
+                  }
+                },
+                "required": [
+                  "block_number",
+                  "cluster_id"
+                ]
+              },
+              "example": {
+                "block_number": 123456,
+                "cluster_id": 1
+              }
+            }
+          }
+        },
         "responses": {
           "200": {
-            "description": "Aws pricing list",
+            "description": "Proof submitted",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "proof_id": {
+                      "type": "number"
+                    }
+                  },
+                  "required": [
+                    "proof_id"
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request"
+          },
+          "401": {
+            "description": "Invalid API key"
+          },
+          "404": {
+            "description": "Cluster not found"
+          },
+          "409": {
+            "description": "Proof already proved"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/proofs/proved": {
+      "post": {
+        "tags": [
+          "Proofs"
+        ],
+        "summary": "Proved proof",
+        "description": "The prover indicates they've completed proving a block.",
+        "security": [
+          {
+            "apikey": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "block_number": {
+                    "type": "number",
+                    "minimum": 0
+                  },
+                  "cluster_id": {
+                    "type": "number"
+                  },
+                  "proving_time": {
+                    "type": "number",
+                    "exclusiveMinimum": 0,
+                    "description": "Time in milliseconds taken to generate the proof including witness generation. It excludes time taken for data fetching and any latency to submit the proof."
+                  },
+                  "proving_cycles": {
+                    "type": "integer",
+                    "exclusiveMinimum": 0,
+                    "description": "Number of cycles taken to generate the proof."
+                  },
+                  "proof": {
+                    "type": "string",
+                    "description": "Proof in base64 format"
+                  },
+                  "verifier_id": {
+                    "type": "string",
+                    "description": "vkey/image-id"
+                  }
+                },
+                "required": [
+                  "block_number",
+                  "cluster_id",
+                  "proving_time",
+                  "proof"
+                ]
+              },
+              "example": {
+                "block_number": 123456,
+                "cluster_id": 1,
+                "proving_time": 1000,
+                "proving_cycles": 10000,
+                "proof": "YmluYXJ5X3Byb29mX2RhdGE=",
+                "verifier_id": "..."
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Proof submitted",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "proof_id": {
+                      "type": "number"
+                    }
+                  },
+                  "required": [
+                    "proof_id"
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request"
+          },
+          "401": {
+            "description": "Invalid API key"
+          },
+          "404": {
+            "description": "Cluster not found"
+          },
+          "409": {
+            "description": "Proof already proved"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/cloud-instances": {
+      "get": {
+        "tags": [
+          "Cloud instances"
+        ],
+        "summary": "List cloud instances",
+        "description": "Returns a list of available cloud instances across different providers. Filter results by provider using the query parameter. See [Cloud Instances](/docs/cloud-instances) for a visual table view and more details.",
+        "parameters": [
+          {
+            "in": "query",
+            "name": "provider",
+            "schema": {
+              "type": "string"
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Cloud instances",
             "content": {
               "application/json": {
                 "schema": {
@@ -382,7 +1712,10 @@
                       "id": {
                         "type": "number"
                       },
-                      "instance_type": {
+                      "provider": {
+                        "type": "string"
+                      },
+                      "instance_name": {
                         "type": "string"
                       },
                       "region": {
@@ -391,33 +1724,226 @@
                       "hourly_price": {
                         "type": "number"
                       },
-                      "instance_memory": {
-                        "type": "number"
-                      },
-                      "vcpu": {
-                        "type": "number"
-                      },
-                      "instance_storage": {
+                      "cpu_arch": {
                         "type": "string"
                       },
+                      "cpu_cores": {
+                        "type": "number"
+                      },
+                      "cpu_effective_cores": {
+                        "type": "number"
+                      },
+                      "cpu_name": {
+                        "type": "string"
+                      },
+                      "memory": {
+                        "type": "number"
+                      },
+                      "gpu_count": {
+                        "type": "number"
+                      },
+                      "gpu_arch": {
+                        "type": "string"
+                      },
+                      "gpu_name": {
+                        "type": "string"
+                      },
+                      "gpu_memory": {
+                        "type": "number"
+                      },
+                      "mobo_name": {
+                        "type": "string"
+                      },
+                      "disk_name": {
+                        "type": "string"
+                      },
+                      "disk_space": {
+                        "type": "number"
+                      },
                       "created_at": {
+                        "type": "string"
+                      },
+                      "snapshot_date": {
                         "type": "string"
                       }
                     },
                     "required": [
                       "id",
-                      "instance_type",
+                      "provider",
+                      "instance_name",
                       "region",
                       "hourly_price",
-                      "instance_memory",
-                      "vcpu",
-                      "instance_storage",
+                      "cpu_cores",
+                      "memory",
                       "created_at"
                     ]
                   }
                 }
               }
             }
+          },
+          "400": {
+            "description": "Invalid query parameters"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/verification-keys/upload": {
+      "post": {
+        "tags": [
+          "Verification keys"
+        ],
+        "summary": "Upload verification key",
+        "description": "Upload a verification key binary file to storage.",
+        "security": [
+          {
+            "apikey": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "file": {
+                    "type": "string",
+                    "format": "binary",
+                    "description": "The verification key binary file to upload"
+                  },
+                  "filename": {
+                    "type": "string",
+                    "description": "The filename to use for storage (e.g., 'team-vk.bin')",
+                    "example": "team-vk.bin"
+                  }
+                },
+                "required": [
+                  "file",
+                  "filename"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Verification key uploaded successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    },
+                    "path": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "message",
+                    "path"
+                  ]
+                },
+                "example": {
+                  "message": "Verification key uploaded successfully",
+                  "path": "team-vk.bin"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "No file or filename provided"
+          },
+          "401": {
+            "description": "Invalid API key"
+          },
+          "403": {
+            "description": "Forbidden: admin mode required"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
+    "/csp-benchmarks/upload": {
+      "post": {
+        "tags": [
+          "CSP benchmarks"
+        ],
+        "summary": "Upload CSP benchmarks",
+        "description": "Upload a CSP benchmarks JSON file to storage.",
+        "security": [
+          {
+            "apikey": []
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "multipart/form-data": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "file": {
+                    "type": "string",
+                    "format": "binary",
+                    "description": "The JSON file containing CSP benchmarks data"
+                  },
+                  "filename": {
+                    "type": "string",
+                    "description": "The filename to use for storage (without .json extension)",
+                    "example": "collected-benchmarks-2024-01"
+                  }
+                },
+                "required": [
+                  "file",
+                  "filename"
+                ]
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "CSP benchmarks uploaded successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "message": {
+                      "type": "string"
+                    },
+                    "path": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "message",
+                    "path"
+                  ]
+                },
+                "example": {
+                  "message": "CSP benchmarks uploaded successfully",
+                  "path": "collected-benchmarks-2024-01.json"
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "No file or filename provided, or file is not JSON"
+          },
+          "401": {
+            "description": "Invalid API key"
+          },
+          "403": {
+            "description": "Forbidden: admin mode required"
           },
           "500": {
             "description": "Internal server error"

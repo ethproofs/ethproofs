@@ -1,7 +1,5 @@
 import { Fragment } from "react"
 
-import type { Proof } from "@/lib/types"
-
 import * as Info from "@/components/ui/info"
 
 import { cn } from "@/lib/utils"
@@ -13,14 +11,14 @@ import StatusIcon from "./StatusIcon"
 const ORDERED_STATUSES = ["proved", "proving", "queued"] as const
 
 const DESCRIPTIONS = {
-  proved: "Completed proofs published",
-  proving: "Current proofs in progress",
-  queued: "Queued for proving",
+  proved: "completed proofs published",
+  proving: "current proofs in progress",
+  queued: "queued for proving",
 } as Record<(typeof ORDERED_STATUSES)[number], string>
 
 export const ProofStatusInfo = ({ title }: { title?: string }) => (
   <>
-    <TooltipContentHeader>{title || "proof status"}</TooltipContentHeader>
+    <TooltipContentHeader>{title ?? "proof status"}</TooltipContentHeader>
     <div className="items-top grid grid-cols-[auto,1fr] gap-4">
       {ORDERED_STATUSES.map((status) => (
         <Fragment key={status}>
@@ -29,43 +27,41 @@ export const ProofStatusInfo = ({ title }: { title?: string }) => (
         </Fragment>
       ))}
     </div>
-    <Info.Description>Current status of proofs</Info.Description>
+    <Info.Description>current status of proofs</Info.Description>
   </>
 )
 
 type ProofStatusProps = React.HTMLAttributes<HTMLDivElement> & {
-  proofs: Proof[]
+  statusCount: Record<string, number>
   hideEmpty?: boolean
 }
 const ProofStatus = ({
-  proofs,
+  statusCount,
   className,
-  hideEmpty,
+  hideEmpty = true,
   ...props
 }: ProofStatusProps) => {
-  const allProofs: Proof[][] = Array(3)
-    .fill(0)
-    .map((_, i) => proofs.filter((p) => p.proof_status === ORDERED_STATUSES[i]))
-
   return (
     <figure
       className={cn("flex items-center gap-4 font-mono", className)}
       {...props}
     >
-      {allProofs.map(({ length: proofCount }, idx) => {
-        if (proofCount === 0 && hideEmpty) return null
+      {ORDERED_STATUSES.map((status) => {
+        const count = statusCount[status] ?? 0
+        // Hide if no proofs for that status
+        if (count === 0 && hideEmpty) return null
         return (
-          <div key={idx} className="flex items-center gap-1">
+          <div key={status} className="flex items-center gap-1">
             <MetricInfo
               trigger={
                 <div className="flex flex-nowrap items-center gap-1">
-                  <StatusIcon status={ORDERED_STATUSES[idx]} />
-                  <span className="block">{proofCount}</span>
+                  <StatusIcon status={status} />
+                  <span className="block">{count}</span>
                 </div>
               }
             >
               <span className="!font-body text-body">
-                {DESCRIPTIONS[ORDERED_STATUSES[idx]]}
+                {DESCRIPTIONS[status]}
               </span>
             </MetricInfo>
           </div>

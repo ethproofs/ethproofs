@@ -1,15 +1,15 @@
 import Link from "next/link"
 
-import type { ProofExtended } from "@/lib/types"
+import type { Proof } from "@/lib/types"
 
-const TeamName = ({ proof: { team, user_id } }: { proof: ProofExtended }) => {
-  if (!team) return `Team ${user_id.split("-")[0]}`
+const TeamName = ({ proof: { team, team_id } }: { proof: Proof }) => {
+  if (!team) return `Team ${team_id.split("-")[0]}`
   return (
     <Link
-      href={"/prover/" + team.team_id}
+      href={"/teams/" + team.slug}
       className="text-xl text-primary underline"
     >
-      {team.team_name}
+      {team.name}
     </Link>
   )
 }

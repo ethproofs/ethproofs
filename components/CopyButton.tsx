@@ -6,6 +6,12 @@ import Copy from "@/components/svgs/copy.svg"
 import { cn } from "@/lib/utils"
 
 import { Button } from "./ui/button"
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "./ui/tooltip"
 
 import { useClipboard } from "@/hooks/useClipboard"
 
@@ -16,14 +22,24 @@ const CopyButton = ({ message, className }: CopyButtonProps) => {
   const { onCopy, hasCopied } = useClipboard()
 
   return (
-    <Button
-      size="icon"
-      variant="ghost"
-      className={cn("text-primary-dark", className)}
-      onClick={onCopy(message)}
-    >
-      {hasCopied ? <ClipboardCheck /> : <Copy />}
-    </Button>
+    <TooltipProvider>
+      <Tooltip open={hasCopied} delayDuration={0}>
+        <TooltipTrigger asChild>
+          <Button
+            size="icon"
+            variant="ghost"
+            className={cn("text-primary-dark", className)}
+            type="button"
+            onClick={onCopy(message)}
+          >
+            {hasCopied ? <ClipboardCheck /> : <Copy />}
+          </Button>
+        </TooltipTrigger>
+        <TooltipContent>
+          <p>Copied!</p>
+        </TooltipContent>
+      </Tooltip>
+    </TooltipProvider>
   )
 }
 

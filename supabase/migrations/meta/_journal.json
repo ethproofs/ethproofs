@@ -1,0 +1,202 @@
+{
+  "version": "7",
+  "dialect": "postgresql",
+  "entries": [
+    {
+      "idx": 0,
+      "version": "7",
+      "when": 1736181897058,
+      "tag": "0000_init",
+      "breakpoints": true
+    },
+    {
+      "idx": 1,
+      "version": "7",
+      "when": 1739530033776,
+      "tag": "0001_drop-proof-binaries",
+      "breakpoints": true
+    },
+    {
+      "idx": 2,
+      "version": "7",
+      "when": 1741703181579,
+      "tag": "0002_api-key-manager",
+      "breakpoints": true
+    },
+    {
+      "idx": 3,
+      "version": "7",
+      "when": 1744036764546,
+      "tag": "0003_migrate-aws-instances-to-cloud-instances",
+      "breakpoints": true
+    },
+    {
+      "idx": 4,
+      "version": "7",
+      "when": 1744049706363,
+      "tag": "0004_storage-quotas",
+      "breakpoints": true
+    },
+    {
+      "idx": 5,
+      "version": "7",
+      "when": 1744724023680,
+      "tag": "0005_cluster-machines",
+      "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "7",
+      "when": 1744975634194,
+      "tag": "0006_vendor-zkvms",
+      "breakpoints": true
+    },
+    {
+      "idx": 7,
+      "version": "7",
+      "when": 1745410207150,
+      "tag": "0007_cloud-providers",
+      "breakpoints": true
+    },
+    {
+      "idx": 8,
+      "version": "7",
+      "when": 1745752695001,
+      "tag": "0008_proof-stats",
+      "breakpoints": true
+    },
+    {
+      "idx": 9,
+      "version": "7",
+      "when": 1745756169542,
+      "tag": "0009_add-median-recent-summary",
+      "breakpoints": true
+    },
+    {
+      "idx": 10,
+      "version": "7",
+      "when": 1745938460958,
+      "tag": "0010_cluster-is-open-source",
+      "breakpoints": true
+    },
+    {
+      "idx": 11,
+      "version": "7",
+      "when": 1745941611632,
+      "tag": "0011_cluster-summary",
+      "breakpoints": true
+    },
+    {
+      "idx": 12,
+      "version": "7",
+      "when": 1745950118998,
+      "tag": "0012_cluster-multi-machine",
+      "breakpoints": true
+    },
+    {
+      "idx": 13,
+      "version": "7",
+      "when": 1746104720272,
+      "tag": "0013_zkvm-team-vendor-slug",
+      "breakpoints": true
+    },
+    {
+      "idx": 14,
+      "version": "7",
+      "when": 1746183416328,
+      "tag": "0014_zkvm-metrics",
+      "breakpoints": true
+    },
+    {
+      "idx": 15,
+      "version": "7",
+      "when": 1746192359710,
+      "tag": "0015_team-clusters-stats",
+      "breakpoints": true
+    },
+    {
+      "idx": 16,
+      "version": "7",
+      "when": 1746449818345,
+      "tag": "0016_cluster-software-link",
+      "breakpoints": true
+    },
+    {
+      "idx": 17,
+      "version": "7",
+      "when": 1746622500704,
+      "tag": "0017_cluster-benchmarks",
+      "breakpoints": true
+    },
+    {
+      "idx": 18,
+      "version": "7",
+      "when": 1747146840536,
+      "tag": "0018_indexes",
+      "breakpoints": true
+    },
+    {
+      "idx": 19,
+      "version": "7",
+      "when": 1748002692380,
+      "tag": "0019_team-slug",
+      "breakpoints": true
+    },
+    {
+      "idx": 20,
+      "version": "7",
+      "when": 1748426789848,
+      "tag": "0020_cluster-is-active-flag",
+      "breakpoints": true
+    },
+    {
+      "idx": 21,
+      "version": "7",
+      "when": 1751551599876,
+      "tag": "0021_add-tracker-columns-to-vkvms",
+      "breakpoints": true
+    },
+    {
+      "idx": 22,
+      "version": "7",
+      "when": 1753036886957,
+      "tag": "0022_add-team-to-zkvms",
+      "breakpoints": true
+    },
+    {
+      "idx": 23,
+      "version": "7",
+      "when": 1753128679795,
+      "tag": "0023_remove-vendors",
+      "breakpoints": true
+    },
+    {
+      "idx": 24,
+      "version": "7",
+      "when": 1754503525807,
+      "tag": "0024_proof-monitoring-cron",
+      "breakpoints": true
+    },
+    {
+      "idx": 25,
+      "version": "7",
+      "when": 1759678664227,
+      "tag": "0025_separate-alert-scheduling",
+      "breakpoints": true
+    },
+    {
+      "idx": 26,
+      "version": "7",
+      "when": 1759678776046,
+      "tag": "0026_update-blocks-table",
+      "breakpoints": true
+    },
+    {
+      "idx": 27,
+      "version": "7",
+      "when": 1760004209066,
+      "tag": "0027_update-api-key-mode-enum",
+      "breakpoints": true
+    }
+  ]
+}

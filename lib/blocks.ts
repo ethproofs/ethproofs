@@ -1,59 +1,108 @@
-import { type Block as ViemBlock, createPublicClient, http } from "viem"
+import { createPublicClient, fallback, http } from "viem"
 import { mainnet } from "viem/chains"
 
-const rpcUrl = process.env.RPC_URL
+import { Block, Team } from "./types"
 
-const client = createPublicClient({
+const rpcUrl = process.env.RPC_URL
+const rpcUrlFallback = process.env.RPC_URL_FALLBACK
+
+export const client = createPublicClient({
   chain: mainnet,
-  transport: http(rpcUrl),
+  transport: fallback([
+    http(rpcUrl, {
+      retryCount: 5,
+      onFetchRequest() {
+        console.log("RPC request initiated")
+      },
+      onFetchResponse(resp) {
+        if (!resp.ok) {
+          console.warn("RPC request failed:", {
+            status: resp.status,
+            statusText: resp.statusText,
+          })
+        } else {
+          console.log("RPC request succeeded:", {
+            status: resp.status,
+          })
+        }
+      },
+    }),
+    http(rpcUrlFallback, {
+      retryCount: 5,
+      onFetchRequest() {
+        console.log("Fallback RPC request initiated")
+      },
+      onFetchResponse(resp) {
+        if (!resp.ok) {
+          console.warn("Fallback RPC request failed:", {
+            status: resp.status,
+            statusText: resp.statusText,
+          })
+        } else {
+          console.log("Fallback RPC request succeeded:", {
+            status: resp.status,
+          })
+        }
+      },
+    }),
+  ]),
 })
 
-function calculateTotalFees(block: ViemBlock<bigint, true>): bigint {
-  let totalFees = BigInt(0)
-
-  for (const tx of block.transactions) {
-    const gasUsed = BigInt(tx.gas)
-    const maxFeePerGas = BigInt(tx.maxFeePerGas || 0)
-    const maxPriorityFeePerGas = BigInt(tx.maxPriorityFeePerGas || 0)
-
-    if (!block.baseFeePerGas) {
-      throw new Error("Base fee per gas is not available")
-    }
-
-    // Calculate effective gas price
-    const effectiveGasPrice =
-      maxFeePerGas < block.baseFeePerGas + maxPriorityFeePerGas
-        ? maxFeePerGas
-        : block.baseFeePerGas + maxPriorityFeePerGas
-
-    // Calculate transaction fee
-    const transactionFee = gasUsed * effectiveGasPrice
-    totalFees += transactionFee
-  }
-
-  return totalFees
+type BlockSummary = {
+  gasUsed: bigint
+  txsCount: number
+  timestamp: bigint
+  hash: string
 }
 
-export const fetchBlockData = async (block_number: number) => {
+/**
+ * Fetch a block using multiple RPCs with built-in retries and timeout.
+ *
+ * @param blockNumber - Block number to fetch
+ */
+export async function fetchBlockData(
+  blockNumber: number
+): Promise<BlockSummary> {
   const block = await client.getBlock({
-    blockNumber: BigInt(block_number),
-    includeTransactions: true,
+    blockNumber: BigInt(blockNumber),
+    includeTransactions: false,
   })
-
   return {
-    feeTotal: calculateTotalFees(block),
     gasUsed: block.gasUsed,
+    hash: block.hash,
     txsCount: block.transactions.length,
     timestamp: block.timestamp,
-    hash: block.hash,
   }
 }
 
 /**
  * Determines the type of value for a given block.
  *
- * @param block - The block parameter to evaluate.
- * @returns A string indicating the type of value: "hash" if the block number is greater than 0xffffffff, otherwise "block_number".
+ * @param block - The block parameter to evaluate in string format
+ * @returns null if not parsable to a number; "hash" if matching 64 hex chars, else "block_number"
  */
-export const getBlockValueType = (block: number) =>
-  block > 0xffffffff ? "hash" : "block_number"
+export const getBlockValueType = (
+  block: string
+): keyof Pick<Block, "hash" | "block_number"> | null => {
+  if (isNaN(+block)) return null
+
+  if (isBlockHash(block)) return "hash"
+
+  return "block_number"
+}
+
+export const isBlockHash = (block: string) => {
+  return /^0x[0-9a-fA-F]{64}$/.test(block)
+}
+
+export const mergeBlocksWithTeams = (blocks: Block[], teams: Team[]) => {
+  return blocks.map((block) => {
+    const { proofs } = block
+    const proofsWithTeams = proofs.map((proof) => ({
+      ...proof,
+      team: teams.find((team) => team.id === proof.team_id),
+    }))
+
+    return { ...block, proofs: proofsWithTeams }
+  })
+}

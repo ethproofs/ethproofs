@@ -1,15 +1,35 @@
 "use client" // Error boundaries must be Client Components
 
+import { useState } from "react"
+
 import ProofCircle from "@/components/svgs/proof-circle.svg"
-import { HeroSection } from "@/components/ui/hero"
+import RefreshCW from "@/components/svgs/refresh-cw.svg"
+import { Button, ButtonLink } from "@/components/ui/button"
+import { Divider } from "@/components/ui/divider"
+
+import { cn } from "@/lib/utils"
 
 export default function Error() {
+  const [refreshing, setRefreshing] = useState(false)
+  const handleRefresh = () => {
+    setRefreshing(true)
+    window.location.reload()
+  }
   return (
-    <HeroSection className="space-y-4">
-      <h1 className="flex flex-col items-center gap-4 font-mono md:flex-row">
-        500 <ProofCircle className="inline text-primary" />
-      </h1>
-      <p className="text-center md:text-start">Internal server error</p>
-    </HeroSection>
+    <div className="mt-40 flex flex-col items-center gap-4 text-center">
+      <ProofCircle className="size-40 -translate-x-4 stroke-[1.25px] text-primary" />
+      <h1 className="mb-4 font-mono font-normal text-primary">500</h1>
+      <p className="text-lg">internal server error</p>
+      <Divider className="my-6" />
+      <div className="flex flex-col gap-6">
+        <Button onClick={handleRefresh} size="lg">
+          <RefreshCW className={cn(refreshing && "motion-safe:animate-spin")} />
+          refresh page
+        </Button>
+        <ButtonLink href="/" variant="outline" size="lg">
+          back to homepage
+        </ButtonLink>
+      </div>
+    </div>
   )
 }

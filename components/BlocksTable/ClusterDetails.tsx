@@ -1,24 +1,23 @@
-import type { ProofExtended } from "@/lib/types"
+import type { ProofWithCluster } from "@/lib/types"
 
-const ClusterDetails = ({ proof }: { proof: ProofExtended }) => {
-  const { cluster_id, cluster } = proof
-  if (!cluster) return "Cluster " + cluster_id.split("-")[0]
-  const { cluster_description, cluster_hardware, cluster_name } = cluster
+const ClusterDetails = ({ proof }: { proof: ProofWithCluster }) => {
+  const { cluster_version } = proof
+  const { cluster } = cluster_version
+  const { description, hardware, nickname } = cluster
 
   return (
     <div className="text-wrap">
-      {cluster_name && (
-        <span className="block text-lg font-semibold">{cluster_name}</span>
+      {nickname && (
+        <span className="block text-lg font-semibold">{nickname}</span>
       )}
-      {cluster_hardware && (
+      {hardware && (
         <span className="block">
-          <span className="font-semibold">Hardware:</span> {cluster_hardware}
+          <span className="font-semibold">hardware:</span> {hardware}
         </span>
       )}
-      {cluster_description && (
+      {description && (
         <span className="block">
-          <span className="font-semibold">Description:</span>{" "}
-          {cluster_description}
+          <span className="font-semibold">description:</span> {description}
         </span>
       )}
     </div>

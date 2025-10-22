@@ -1,146 +1,47 @@
-import { revalidateTag } from "next/cache"
-import { formatGwei } from "viem"
-import { ZodError } from "zod"
+import { NextResponse } from "next/server"
+import { z } from "zod"
 
-import { withAuth } from "@/lib/auth"
-import { fetchBlockData } from "@/lib/blocks"
-import { createProofSchema } from "@/lib/zod/schemas/proof"
+import { fetchProofsFiltered } from "@/lib/api/proofs"
 
-export const POST = withAuth(async ({ request, client, user, timestamp }) => {
-  const payload = await request.json()
-
-
-  if (!user) {
-    return new Response("Invalid API key", {
-      status: 401,
-    })
-  }
-
-  // validate payload schema
-  let proofPayload
-  try {
-    proofPayload = createProofSchema.parse(payload)
-  } catch (error) {
-    console.error("proof payload invalid", error)
-    if (error instanceof ZodError) {
-      return new Response(`Invalid payload: ${error.message}`, {
-        status: 400,
-      })
-    }
-
-    return new Response("Invalid payload", {
-      status: 400,
-    })
-  }
-
-  const { block_number, proof_status, cluster_id } = proofPayload
-
-  // validate block_number exists
-  console.log("validating block_number", block_number)
-  const block = await client
-    .from("blocks")
-    .select("block_number")
-    .eq("block_number", block_number)
-    .single()
-
-  // if block is new (not in db), fetch block data from block explorer and create block record
-  if (block.error) {
-    console.log("block not found, fetching block data", block_number)
-    let blockData
-    try {
-      blockData = await fetchBlockData(block_number)
-    } catch (error) {
-      console.error("error fetching block data", error)
-      return new Response("Block not found", {
-        status: 500,
-      })
-    }
-
-    // create block
-    console.log("creating block", block_number)
-    const { error } = await client.from("blocks").insert({
-      block_number,
-      total_fees: parseInt(formatGwei(blockData.feeTotal)),
-      gas_used: Number(blockData.gasUsed),
-      transaction_count: blockData.txsCount,
-      timestamp: new Date(Number(blockData.timestamp) * 1000).toISOString(),
-      hash: blockData.hash,
-    })
-
-    if (error) {
-      console.error("error creating block", error)
-      return new Response("Internal server error", { status: 500 })
-    }
-
-    // invalidate blocks cache
-    revalidateTag("blocks")
-  }
-
-  // get cluster uuid from cluster_id
-  const { data: clusterData, error: clusterError } = await client
-    .from("clusters")
-    .select("id")
-    .eq("cluster_id", cluster_id)
-    .eq("user_id", user.id)
-    .single()
-
-  if (clusterError) {
-    console.error("error getting cluster", clusterError)
-    return new Response("Cluster not found", { status: 404 })
-  }
-
-  // get proof_id to update or create an existing proof
-  let proofId
-  if (!proofPayload.proof_id) {
-    const { data: existingProofData } = await client
-      .from("proofs")
-      .select("proof_id")
-      .eq("block_number", block_number)
-      .eq("cluster_id", clusterData.id)
-      .eq("user_id", user.id)
-      .single()
-
-    proofId = existingProofData?.proof_id
-  }
-
-  // add proof
-  console.log("adding proof", {
-    proof_id: proofId,
-    ...proofPayload,
-  })
-  const timestampField = {
-    queued: "queued_timestamp",
-    proving: "proving_timestamp",
-    proved: "proved_timestamp",
-  }[proof_status]
-
-  const proofResponse = await client
-    .from("proofs")
-    .upsert(
-      {
-        ...proofPayload,
-        proof_id: proofId,
-        block_number,
-        cluster_id: clusterData.id,
-        proof_status,
-        user_id: user.id,
-        [timestampField]: timestamp,
-      },
-      {
-        onConflict: "block_number,cluster_id",
-      }
-    )
-    .select("proof_id")
-    .single()
-
-  if (proofResponse.error) {
-    console.error("error adding proof", proofResponse.error)
-    return new Response("Internal server error", { status: 500 })
-  }
-
-  // invalidate proofs cache
-  revalidateTag("proofs")
-
-  // return the generated proof_id
-  return Response.json(proofResponse.data)
+const querySchema = z.object({
+  block: z.coerce.number().int().positive().optional(),
+  team: z.string().optional(),
+  limit: z.coerce.number().int().min(1).max(1000).default(100),
+  offset: z.coerce.number().int().min(0).default(0),
 })
+
+export async function GET(req: Request) {
+  try {
+    const { searchParams } = new URL(req.url)
+    const query = {
+      block: searchParams.get("block") || undefined,
+      team: searchParams.get("team") || undefined,
+      limit: searchParams.get("limit") || undefined,
+      offset: searchParams.get("offset") || undefined,
+    }
+
+    const validatedQuery = querySchema.parse(query)
+
+    const result = await fetchProofsFiltered({
+      teamSlug: validatedQuery.team,
+      blockNumber: validatedQuery.block,
+      limit: validatedQuery.limit,
+      offset: validatedQuery.offset,
+    })
+
+    // Just return the proof
+    return NextResponse.json({
+      proofs: result.rows,
+      total_count: result.rowCount,
+      limit: validatedQuery.limit,
+      offset: validatedQuery.offset,
+    })
+  } catch (error: unknown) {
+    if (error instanceof z.ZodError) {
+      return NextResponse.json(error.issues, { status: 422 })
+    }
+
+    console.error(error)
+    return new Response("Internal Server Error", { status: 500 })
+  }
+}

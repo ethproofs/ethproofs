@@ -1,14 +1,19 @@
-import Tooltip from "./Tooltip"
+import { Popover, PopoverContent, PopoverTrigger } from "./ui/popover"
 
-import { renderTimestamp } from "@/lib/date"
+import { formatShortDate, formatTimeAgo, renderTimestamp } from "@/lib/date"
 
 type RenderTimestampProps = React.HTMLAttributes<HTMLSpanElement> & {
   children: string
 }
 const Timestamp = ({ children, ...props }: RenderTimestampProps) => (
-  <Tooltip trigger={<span {...props}>{renderTimestamp(children)}</span>}>
-    {renderTimestamp(children, "UTC")}
-  </Tooltip>
+  <Popover>
+    <PopoverTrigger>
+      <span {...props}>
+        {formatTimeAgo(children)} ({formatShortDate(children)})
+      </span>
+    </PopoverTrigger>
+    <PopoverContent>{renderTimestamp(children, "UTC")}</PopoverContent>
+  </Popover>
 )
 
 export default Timestamp

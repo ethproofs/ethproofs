@@ -8,6 +8,7 @@
 
 # testing
 /coverage
+/supabase/buckets
 
 # next.js
 /.next/
@@ -38,5 +39,15 @@ next-env.d.ts
 # Sitemaps
 sitemap*.xml
 
-# Robots.txt
+# robots.txt
 robots.txt
+
+# cursor
+.cursorrules
+.cursor
+
+# Local Netlify folder
+.netlify
+
+# openapi
+public/api.html

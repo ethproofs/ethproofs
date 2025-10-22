@@ -2,15 +2,25 @@ import { createDocument } from "zod-openapi"
 
 import { SITE_NAME, SITE_PREVIEW_URL, SITE_URL } from "../constants"
 
-import { awsPricingListPaths } from "./aws-pricing-list"
+import { blocksPaths } from "./blocks"
+import { cloudInstancesPaths } from "./cloud-instances"
 import { clustersPaths } from "./clusters"
+import { cspBenchmarksPaths } from "./csp-benchmarks"
 import { proofsPaths } from "./proofs"
+import { singleMachinePaths } from "./single-machine"
+import { verificationKeysPaths } from "./verification-keys"
 
 export const document = createDocument({
   openapi: "3.1.0",
   info: {
     title: `${SITE_NAME} API`,
-    description: `This document outlines the available API endpoints for ${SITE_NAME}.\n\n**Authentication**\n\nAll endpoints require authentication using an API key in the request header:\n\n\`Authorization: Bearer <api_key>\``,
+    description: `This document outlines the available API endpoints for ${SITE_NAME}.
+    \n\n**Base URL**
+    \n\nAll API endpoints are relative to:
+    \n\n\`${new URL("/api/v0", SITE_PREVIEW_URL).toString()}\`
+    \n\n**Authentication**
+    \n\nAll endpoints require authentication using an API key in the request header:
+    \n\n\`Authorization: Bearer <api_key>\``,
     version: "0.0.1",
   },
   servers: [
@@ -25,19 +35,35 @@ export const document = createDocument({
   ],
   tags: [
     {
+      name: "Blocks",
+    },
+    {
       name: "Clusters",
+    },
+    {
+      name: "Single machine",
     },
     {
       name: "Proofs",
     },
     {
-      name: "Aws pricing list",
+      name: "Cloud instances",
+    },
+    {
+      name: "Verification keys",
+    },
+    {
+      name: "CSP benchmarks",
     },
   ],
   paths: {
+    ...blocksPaths,
     ...clustersPaths,
+    ...singleMachinePaths,
     ...proofsPaths,
-    ...awsPricingListPaths,
+    ...cloudInstancesPaths,
+    ...verificationKeysPaths,
+    ...cspBenchmarksPaths,
   },
   components: {
     securitySchemes: {

@@ -72,4 +72,75 @@
   ul {
     @apply list-inside;
   }
+
+  section {
+    @apply scroll-m-20;
+  }
+
+  .text-shadow {
+    text-shadow:
+      0 0 3rem hsla(var(--background)),
+      0 0 2rem hsla(var(--background)),
+      0 0 1rem hsla(var(--background));
+  }
+
+  .dev-ring {
+    @apply ring ring-red-500 sm:ring-orange-500 md:ring-yellow-500 lg:ring-green-500 xl:ring-blue-500 2xl:ring-violet-500;
+  }
+}
+
+@layer components {
+  /* base */
+  [data-grid-template-areas="cluster-proof"] {
+    grid-template-areas:
+      "block block"
+      "time cost"
+      "download verify";
+  }
+
+  [data-grid-template-areas="software-details"] {
+    grid-template-areas:
+      "position7 position7"
+      "position0 position0"
+      "pizza pizza"
+      "position6 position1"
+      "position5 position2"
+      "position4 position3";
+  }
+
+  /* sm */
+  @media (min-width: 640px) {
+    [data-grid-template-areas="software-details"] {
+      grid-template-areas:
+        "position7 position7 position7 . position0 position0 position0"
+        ". position6 pizza pizza pizza position1 ."
+        ". position5 pizza pizza pizza position2 ."
+        ". position4 pizza pizza pizza position3 .";
+    }
+  }
+
+  /* md */
+  @media (min-width: 768px) {
+    [data-grid-template-areas="cluster-proof"] {
+      grid-template-areas:
+        "block block time cost"
+        ". download verify .";
+    }
+  }
+
+  /* lg */
+  @media (min-width: 1024px) {
+    [data-grid-template-areas="cluster-proof"] {
+      grid-template-areas:
+        "block time cost verify"
+        "block time cost download";
+    }
+  }
+
+  /* xl */
+  @media (min-width: 1280px) {
+    [data-grid-template-areas="cluster-proof"] {
+      grid-template-areas: "block time cost download verify";
+    }
+  }
 }
