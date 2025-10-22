@@ -2,14 +2,14 @@
 
 import { useState } from "react"
 
-import Countdown from "../Countdown"
+import { Countdown } from "../Countdown"
 import { Alert, AlertTitle } from "../ui/alert"
 import Link from "../ui/link"
 
 const learnMoreLink = "https://x.com/eth_proofs/status/1963682855373906121"
 const deadlineDate = "2025-12-03T00:00:00Z"
 
-const ProverCountdownBanner = () => {
+export function ProverCountdownBanner() {
   const [isOpen, setIsOpen] = useState(true)
   const countdownDate = new Date(deadlineDate)
 
@@ -45,5 +45,3 @@ const ProverCountdownBanner = () => {
     )
   )
 }
-
-export default ProverCountdownBanner
