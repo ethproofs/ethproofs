@@ -14,7 +14,7 @@ export function useDownloadAllProofs() {
       const downloadUrl = URL.createObjectURL(blob)
       const a = document.createElement("a")
       a.href = downloadUrl
-      a.download = `block_${blockHash}_proofs`
+      a.download = `${blockHash}_proofs`
       document.body.appendChild(a)
       a.click()
       a.remove()
