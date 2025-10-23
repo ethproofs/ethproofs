@@ -38,7 +38,7 @@ export function VerifierCountdownBanner({
           <AlertTitle>
             <span className={isSuccess ? "text-primary" : undefined}>
               {isSuccess
-                ? "verifiers are all fully open‑source"
+                ? "all verifiers are now open‑source"
                 : "open‑source verifiers required"}
             </span>{" "}
             {isSuccess ? (

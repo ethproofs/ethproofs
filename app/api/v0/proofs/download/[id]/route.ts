@@ -39,7 +39,8 @@ export async function GET(
     : proofRow.cluster_version.cluster.id.split("-")[0]
   const filename = `${teamSlug}_${proofRow.block_number}_${id}.bin`
 
-  let blob = await downloadProofBinary(filename)
+  // Try new format first (silently, since fallback will follow)
+  let blob = await downloadProofBinary(filename, { silent: true })
 
   // TODO:TEAM - run a script to migrate all proofs to the new filename format
   // Fallback for backwards compatibility
