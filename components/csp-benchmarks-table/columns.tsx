@@ -2,9 +2,9 @@
 
 import { ColumnDef } from "@tanstack/react-table"
 
-import { Checkbox } from "@/components/ui/checkbox"
 import { DataTableColumnHeader } from "@/components/data-table/data-table-column-header"
 import Null from "@/components/Null"
+import { Checkbox } from "@/components/ui/checkbox"
 
 import { CspCollectedBenchmark } from "@/lib/api/csp-benchmarks"
 import { formatNumber } from "@/lib/number"

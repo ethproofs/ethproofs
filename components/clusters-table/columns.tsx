@@ -62,9 +62,6 @@ export const columns: ColumnDef<ClusterRow>[] = [
         </div>
       )
     },
-    filterFn: (row, id, value) => {
-      return value.includes(row.getValue(id))
-    },
   },
   {
     id: "open_source",
@@ -89,9 +86,6 @@ export const columns: ColumnDef<ClusterRow>[] = [
           )}
         </div>
       )
-    },
-    filterFn: (row, id, value) => {
-      return value.includes(row.getValue(id))
     },
   },
   {
@@ -118,9 +112,6 @@ export const columns: ColumnDef<ClusterRow>[] = [
         </div>
       )
     },
-    filterFn: (row, id, value) => {
-      return value.includes(row.getValue(id))
-    },
   },
   {
     id: "avg_cost",
@@ -132,9 +123,6 @@ export const columns: ColumnDef<ClusterRow>[] = [
       const avgCost = row.getValue("avg_cost") as number
       return <div className="w-[100px]">{formatUsd(avgCost)}</div>
     },
-    filterFn: (row, id, value) => {
-      return value.includes(row.getValue(id))
-    },
   },
   {
     id: "avg_time",
@@ -145,9 +133,6 @@ export const columns: ColumnDef<ClusterRow>[] = [
     cell: ({ row }) => {
       const avgTime = row.getValue("avg_time") as number
       return <div className="w-[100px]">{prettyMs(avgTime)}</div>
-    },
-    filterFn: (row, id, value) => {
-      return value.includes(row.getValue(id))
     },
   },
   {

@@ -1,7 +1,6 @@
 "use client"
 
 import { MoreHorizontal } from "lucide-react"
-import { Row } from "@tanstack/react-table"
 
 import { Button } from "@/components/ui/button"
 import {
@@ -10,14 +9,14 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu"
 
-interface DataTableRowActionsProps<TData> {
+interface DataTableRowActionsProps {
   children: React.ReactNode
   icon?: React.ReactNode
 }
-export function DataTableRowActions<TData>({
+export function DataTableRowActions({
   children,
   icon,
-}: DataTableRowActionsProps<TData>) {
+}: DataTableRowActionsProps) {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
