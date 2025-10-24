@@ -6,7 +6,7 @@ import { Table } from "@tanstack/react-table"
 import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
 
-import { DataTableViewOptions, ColumnLabel } from "./data-table-view-options"
+import { ColumnLabel, DataTableViewOptions } from "./data-table-view-options"
 
 interface DataTableToolbarProps<TData> {
   table: Table<TData>
@@ -68,12 +68,16 @@ export function DataTableToolbar<TData>({
         <DataTableViewOptions table={table} labels={columnLabels} />
         <Button
           size="sm"
-          className="ml-auto hidden h-8 md:flex md:flex-1"
+          className="ml-auto flex h-8 md:flex-1"
           onClick={handleExport}
           variant={selectedRowsCount > 0 ? "default" : "outline"}
         >
           <Download className="mr-1 h-3 w-3" />
-          {selectedRowsCount > 0 ? `export ${selectedRowsCount}` : "export all"}
+          <span className="hidden md:inline">
+            {selectedRowsCount > 0
+              ? `export ${selectedRowsCount}`
+              : "export all"}
+          </span>
         </Button>
       </div>
     </div>

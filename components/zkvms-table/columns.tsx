@@ -63,9 +63,6 @@ export const columns: ColumnDef<ZkvmRow>[] = [
         </div>
       )
     },
-    filterFn: (row, id, value) => {
-      return value.includes(row.getValue(id))
-    },
   },
   {
     id: "used_by",
@@ -90,9 +87,6 @@ export const columns: ColumnDef<ZkvmRow>[] = [
           </span>
         </div>
       )
-    },
-    filterFn: (row, id, value) => {
-      return value.includes(row.getValue(id))
     },
   },
   {
@@ -119,9 +113,6 @@ export const columns: ColumnDef<ZkvmRow>[] = [
         </div>
       )
     },
-    filterFn: (row, id, value) => {
-      return value.includes(row.getValue(id))
-    },
   },
   {
     id: "dual_licenses",
@@ -147,9 +138,6 @@ export const columns: ColumnDef<ZkvmRow>[] = [
         </div>
       )
     },
-    filterFn: (row, id, value) => {
-      return value.includes(row.getValue(id))
-    },
   },
   {
     id: "is_proving_mainnet",
@@ -172,9 +160,6 @@ export const columns: ColumnDef<ZkvmRow>[] = [
         </div>
       )
     },
-    filterFn: (row, id, value) => {
-      return value.includes(row.getValue(id))
-    },
   },
   {
     id: "version",
@@ -189,9 +174,6 @@ export const columns: ColumnDef<ZkvmRow>[] = [
       )
       return <div className="w-[100px]">{latestVersion.version || "N/A"}</div>
     },
-    filterFn: (row, id, value) => {
-      return value.includes(row.getValue(id))
-    },
   },
   {
     id: "isa",
@@ -202,9 +184,6 @@ export const columns: ColumnDef<ZkvmRow>[] = [
     cell: ({ row }) => {
       const isa = row.getValue("isa") as string
       return <div className="w-[100px]">{isa}</div>
-    },
-    filterFn: (row, id, value) => {
-      return value.includes(row.getValue(id))
     },
   },
   {
