@@ -1,5 +1,6 @@
 "use client"
 
+import { useRouter, useSearchParams } from "next/navigation"
 import { useState } from "react"
 
 import {
@@ -17,6 +18,8 @@ import {
   CspCollectedBenchmarks,
 } from "@/lib/api/csp-benchmarks"
 
+import { parseSelectedIdFromUrl } from "@/lib/url-state"
+
 interface CspBenchmarksSelectorProps {
   benchmarks: CspCollectedBenchmarks[]
 }
@@ -24,9 +27,23 @@ interface CspBenchmarksSelectorProps {
 export function CspBenchmarksSelector({
   benchmarks,
 }: CspBenchmarksSelectorProps) {
+  const router = useRouter()
+  const searchParams = useSearchParams()
+  const defaultBenchmarkId = benchmarks[0]?.benchmarksId || ""
+  const urlBenchmarkId = parseSelectedIdFromUrl(searchParams, "id")
+
   const [selectedBenchmarkId, setSelectedBenchmarkId] = useState<string>(
-    benchmarks[0]?.benchmarksId || ""
+    urlBenchmarkId || defaultBenchmarkId
   )
+
+  const handleBenchmarkChange = (newId: string) => {
+    setSelectedBenchmarkId(newId)
+
+    const params = new URLSearchParams(searchParams.toString())
+    params.set("id", newId)
+
+    router.push(`?${params.toString()}`)
+  }
 
   const selectedBenchmarks = benchmarks.find(
     (benchmark) => benchmark.benchmarksId === selectedBenchmarkId
@@ -51,7 +68,7 @@ export function CspBenchmarksSelector({
         <div className="flex items-center gap-4">
           <Select
             value={selectedBenchmarkId}
-            onValueChange={setSelectedBenchmarkId}
+            onValueChange={handleBenchmarkChange}
           >
             <SelectTrigger id="benchmark-select" className="w-[300px]">
               <SelectValue placeholder="Select a benchmark file" />

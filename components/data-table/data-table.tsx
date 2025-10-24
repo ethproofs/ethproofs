@@ -30,6 +30,7 @@ import { cn } from "@/lib/utils"
 
 import { DataTablePagination } from "./data-table-pagination"
 import { DataTableToolbar } from "./data-table-toolbar"
+import { ColumnLabel } from "./data-table-view-options"
 
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[]
@@ -37,6 +38,16 @@ interface DataTableProps<TData, TValue> {
   rowCount: number
   pagination: PaginationState
   setPagination?: OnChangeFn<PaginationState>
+  sorting?: SortingState
+  setSorting?: OnChangeFn<SortingState>
+  columnVisibility?: VisibilityState
+  setColumnVisibility?: OnChangeFn<VisibilityState>
+  columnFilters?: ColumnFiltersState
+  setColumnFilters?: OnChangeFn<ColumnFiltersState>
+  toolbarFilterColumnId?: string
+  toolbarFilterPlaceholder?: string
+  onExport?: (rows: TData[], isFiltered: boolean) => void
+  columnLabels?: ColumnLabel[]
   className?: string
   showToolbar?: boolean
   showPagination?: boolean
@@ -47,17 +58,40 @@ export function DataTable<TData, TValue>({
   rowCount,
   pagination,
   setPagination,
+  sorting: externalSorting,
+  setSorting: externalSetSorting,
+  columnVisibility: externalColumnVisibility,
+  setColumnVisibility: externalSetColumnVisibility,
+  columnFilters: externalColumnFilters,
+  setColumnFilters: externalSetColumnFilters,
+  toolbarFilterColumnId,
+  toolbarFilterPlaceholder,
+  onExport,
+  columnLabels,
   className,
   showToolbar = true,
   showPagination = true,
 }: DataTableProps<TData, TValue>) {
   const [rowSelection, setRowSelection] = React.useState({})
-  const [columnVisibility, setColumnVisibility] =
-    React.useState<VisibilityState>({})
-  const [columnFilters, setColumnFilters] = React.useState<ColumnFiltersState>(
-    []
+  const [internalColumnVisibility, setInternalColumnVisibility] =
+    React.useState<VisibilityState>(externalColumnVisibility || {})
+  const [internalColumnFilters, setInternalColumnFilters] =
+    React.useState<ColumnFiltersState>(externalColumnFilters || [])
+  const [internalSorting, setInternalSorting] = React.useState<SortingState>(
+    externalSorting || []
   )
-  const [sorting, setSorting] = React.useState<SortingState>([])
+
+  // Use external sorting if provided, otherwise use internal
+  const sorting = externalSorting !== undefined ? externalSorting : internalSorting
+  const handleSortingChange = externalSetSorting || setInternalSorting
+
+  // Use external column visibility if provided, otherwise use internal
+  const columnVisibility = externalColumnVisibility !== undefined ? externalColumnVisibility : internalColumnVisibility
+  const handleColumnVisibilityChange = externalSetColumnVisibility || setInternalColumnVisibility
+
+  // Use external column filters if provided, otherwise use internal
+  const columnFilters = externalColumnFilters !== undefined ? externalColumnFilters : internalColumnFilters
+  const handleColumnFiltersChange = externalSetColumnFilters || setInternalColumnFilters
 
   const table = useReactTable({
     data,
@@ -74,9 +108,9 @@ export function DataTable<TData, TValue>({
     manualPagination: true,
     onPaginationChange: setPagination,
     onRowSelectionChange: setRowSelection,
-    onSortingChange: setSorting,
-    onColumnFiltersChange: setColumnFilters,
-    onColumnVisibilityChange: setColumnVisibility,
+    onSortingChange: handleSortingChange,
+    onColumnFiltersChange: handleColumnFiltersChange,
+    onColumnVisibilityChange: handleColumnVisibilityChange,
     getCoreRowModel: getCoreRowModel(),
     getFilteredRowModel: getFilteredRowModel(),
     getSortedRowModel: getSortedRowModel(),
@@ -86,7 +120,15 @@ export function DataTable<TData, TValue>({
 
   return (
     <div className={cn("flex flex-col gap-4", className)}>
-      {showToolbar && <DataTableToolbar table={table} />}
+      {showToolbar && (
+        <DataTableToolbar
+          table={table}
+          filterColumnId={toolbarFilterColumnId}
+          filterPlaceholder={toolbarFilterPlaceholder}
+          onExport={onExport}
+          columnLabels={columnLabels}
+        />
+      )}
       <div className="overflow-x-auto rounded-md border">
         <Table className="min-w-max">
           <TableHeader>
