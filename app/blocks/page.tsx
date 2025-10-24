@@ -6,7 +6,7 @@ import {
 } from "@tanstack/react-query"
 
 import { BasicTabs } from "@/components/BasicTabs"
-import { BlocksTable } from "@/components/blocks-table/blocks-table"
+import { BlocksTableWithSuspense } from "@/components/blocks-table/blocks-table-with-suspense"
 
 import { DEFAULT_PAGE_STATE } from "@/lib/constants"
 
@@ -38,7 +38,7 @@ export default async function BlocksPage() {
           title="blocks"
           contentLeft={
             <HydrationBoundary state={dehydrate(queryClient)}>
-              <BlocksTable
+              <BlocksTableWithSuspense
                 className="px-6"
                 machineType="single"
                 teams={teams}
@@ -47,7 +47,11 @@ export default async function BlocksPage() {
           }
           contentRight={
             <HydrationBoundary state={dehydrate(queryClient)}>
-              <BlocksTable className="px-6" machineType="multi" teams={teams} />
+              <BlocksTableWithSuspense
+                className="px-6"
+                machineType="multi"
+                teams={teams}
+              />
             </HydrationBoundary>
           }
         />

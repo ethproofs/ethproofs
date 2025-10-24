@@ -106,7 +106,7 @@ export const columns: ColumnDef<Block>[] = [
       )
     },
     filterFn: (row, id, value) => {
-      return value.includes(row.getValue(id))
+      return String(row.getValue(id)).includes(value)
     },
   },
   {
@@ -135,9 +135,6 @@ export const columns: ColumnDef<Block>[] = [
         </div>
       )
     },
-    filterFn: (row, id, value) => {
-      return value.includes(row.getValue(id))
-    },
   },
   {
     id: "cost_per_proof",
@@ -153,9 +150,6 @@ export const columns: ColumnDef<Block>[] = [
       if (!stats) return <Null />
 
       return <BlockMetric stats={stats} />
-    },
-    filterFn: (row, id, value) => {
-      return value.includes(row.getValue(id))
     },
   },
   {
@@ -173,9 +167,6 @@ export const columns: ColumnDef<Block>[] = [
 
       return <BlockMetric stats={stats} />
     },
-    filterFn: (row, id, value) => {
-      return value.includes(row.getValue(id))
-    },
   },
   {
     id: "proving_time",
@@ -191,9 +182,6 @@ export const columns: ColumnDef<Block>[] = [
       if (!stats) return <Null />
 
       return <BlockMetric stats={stats} />
-    },
-    filterFn: (row, id, value) => {
-      return value.includes(row.getValue(id))
     },
   },
   {
@@ -219,9 +207,6 @@ export const columns: ColumnDef<Block>[] = [
           </span>
         </div>
       )
-    },
-    filterFn: (row, id, value) => {
-      return value.includes(row.getValue(id))
     },
   },
   {

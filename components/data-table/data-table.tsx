@@ -82,16 +82,25 @@ export function DataTable<TData, TValue>({
   )
 
   // Use external sorting if provided, otherwise use internal
-  const sorting = externalSorting !== undefined ? externalSorting : internalSorting
+  const sorting =
+    externalSorting !== undefined ? externalSorting : internalSorting
   const handleSortingChange = externalSetSorting || setInternalSorting
 
   // Use external column visibility if provided, otherwise use internal
-  const columnVisibility = externalColumnVisibility !== undefined ? externalColumnVisibility : internalColumnVisibility
-  const handleColumnVisibilityChange = externalSetColumnVisibility || setInternalColumnVisibility
+  const columnVisibility =
+    externalColumnVisibility !== undefined
+      ? externalColumnVisibility
+      : internalColumnVisibility
+  const handleColumnVisibilityChange =
+    externalSetColumnVisibility || setInternalColumnVisibility
 
   // Use external column filters if provided, otherwise use internal
-  const columnFilters = externalColumnFilters !== undefined ? externalColumnFilters : internalColumnFilters
-  const handleColumnFiltersChange = externalSetColumnFilters || setInternalColumnFilters
+  const columnFilters =
+    externalColumnFilters !== undefined
+      ? externalColumnFilters
+      : internalColumnFilters
+  const handleColumnFiltersChange =
+    externalSetColumnFilters || setInternalColumnFilters
 
   const table = useReactTable({
     data,
