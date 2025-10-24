@@ -11,12 +11,19 @@ import {
   DropdownMenuContent,
 } from "@/components/ui/dropdown-menu"
 
-import { labels } from "../blocks-table/columns"
+import { labels as defaultLabels } from "../blocks-table/columns"
+
+export interface ColumnLabel {
+  value: string
+  label: string
+}
 
 export function DataTableViewOptions<TData>({
   table,
+  labels = defaultLabels,
 }: {
   table: Table<TData>
+  labels?: ColumnLabel[]
 }) {
   return (
     <DropdownMenu>

@@ -15,11 +15,12 @@ import { DEFAULT_PAGE_STATE } from "@/lib/constants"
 
 import { DataTable } from "../data-table/data-table"
 
-import { columns } from "./columns"
+import { columns, labels } from "./columns"
 import useRealtimeUpdates from "./useRealtimeUpdates"
 
 import { MachineType } from "@/lib/api/blocks"
 import { mergeBlocksWithTeams } from "@/lib/blocks"
+import { exportWithLabels } from "@/lib/csv-export"
 
 const getBlocksQueryKey = (
   pageIndex: number,
@@ -83,6 +84,13 @@ export function BlocksTable({
 
   const blocks = mergeBlocksWithTeams(blocksQuery.data?.rows ?? [], teams)
 
+  const handleExport = (rows: Block[], isFiltered: boolean) => {
+    const filename = `blocks-${new Date().toISOString().split("T")[0]}${
+      isFiltered ? "-filtered" : "-all"
+    }`
+    exportWithLabels(rows, labels, filename)
+  }
+
   return (
     <DataTable
       className={className}
@@ -91,7 +99,10 @@ export function BlocksTable({
       rowCount={blocksQuery.data?.rowCount ?? 0}
       pagination={pagination}
       setPagination={setPagination}
+      columnLabels={labels}
+      onExport={handleExport}
       showPagination={showPagination}
+      showToolbar={true}
     />
   )
 }
