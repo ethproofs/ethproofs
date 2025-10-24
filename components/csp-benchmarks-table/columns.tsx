@@ -2,6 +2,7 @@
 
 import { ColumnDef } from "@tanstack/react-table"
 
+import { Checkbox } from "@/components/ui/checkbox"
 import { DataTableColumnHeader } from "@/components/data-table/data-table-column-header"
 import Null from "@/components/Null"
 
@@ -9,7 +10,130 @@ import { CspCollectedBenchmark } from "@/lib/api/csp-benchmarks"
 import { formatNumber } from "@/lib/number"
 import { prettyMs } from "@/lib/time"
 
+export const labels = [
+  {
+    value: "name",
+    label: "name",
+  },
+  {
+    value: "feat",
+    label: "feature",
+  },
+  {
+    value: "is_zkvm",
+    label: "zkVM",
+  },
+  {
+    value: "target",
+    label: "target",
+  },
+  {
+    value: "input_size",
+    label: "input size",
+  },
+  {
+    value: "proof_duration",
+    label: "proof duration",
+  },
+  {
+    value: "witgen_duration",
+    label: "witgen duration",
+  },
+  {
+    value: "verify_duration",
+    label: "verify duration",
+  },
+  {
+    value: "proof_size",
+    label: "proof size",
+  },
+  {
+    value: "preprocessing_size",
+    label: "preprocessing size",
+  },
+  {
+    value: "peak_memory",
+    label: "peak memory",
+  },
+  {
+    value: "peak_memory_witgen",
+    label: "peak memory (witgen)",
+  },
+  {
+    value: "n_constraints",
+    label: "constraints",
+  },
+  {
+    value: "is_maintained",
+    label: "maintained",
+  },
+  {
+    value: "is_zk",
+    label: "ZK",
+  },
+  {
+    value: "is_audited",
+    label: "audited",
+  },
+  {
+    value: "proving_system",
+    label: "proving system",
+  },
+  {
+    value: "field_curve",
+    label: "field/curve",
+  },
+  {
+    value: "iop",
+    label: "IOP",
+  },
+  {
+    value: "pcs",
+    label: "PCS",
+  },
+  {
+    value: "arithm",
+    label: "arithmetization",
+  },
+  {
+    value: "security_bits",
+    label: "security bits",
+  },
+  {
+    value: "cycles",
+    label: "cycles",
+  },
+  {
+    value: "isa",
+    label: "ISA",
+  },
+]
+
 export const columns: ColumnDef<CspCollectedBenchmark>[] = [
+  {
+    id: "select",
+    header: ({ table }) => (
+      <Checkbox
+        checked={
+          table.getIsAllPageRowsSelected() ||
+          (table.getIsSomePageRowsSelected() && "indeterminate")
+        }
+        onCheckedChange={(value) => table.toggleAllPageRowsSelected(!!value)}
+        aria-label="Select all"
+        className="translate-y-[2px] border-border"
+      />
+    ),
+    cell: ({ row }) => (
+      <Checkbox
+        checked={row.getIsSelected()}
+        onCheckedChange={(value) => row.toggleSelected(!!value)}
+        aria-label="Select row"
+        className="translate-y-[2px] border-border"
+      />
+    ),
+    enableSorting: false,
+    enableHiding: false,
+  },
   {
     id: "name",
     accessorKey: "name",
