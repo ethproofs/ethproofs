@@ -1,8 +1,9 @@
 "use client"
 
-import { useRouter, useSearchParams } from "next/navigation"
 import { useState } from "react"
+import { useRouter, useSearchParams } from "next/navigation"
 
+import { parseSelectedIdFromUrl } from "@/components/data-table/url-state.utils"
 import {
   Select,
   SelectContent,
@@ -11,14 +12,12 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 
-import { CspBenchmarksTable } from "./csp-benchmarks-table"
+import { CspBenchmarksTableWithSuspense } from "./csp-benchmarks-table-with-suspense"
 
 import {
   CspCollectedBenchmark,
   CspCollectedBenchmarks,
 } from "@/lib/api/csp-benchmarks"
-
-import { parseSelectedIdFromUrl } from "@/lib/url-state"
 
 interface CspBenchmarksSelectorProps {
   benchmarks: CspCollectedBenchmarks[]
@@ -63,14 +62,17 @@ export function CspBenchmarksSelector({
 
   return (
     <>
-      <div className="flex items-end justify-between gap-4">
+      <div className="flex flex-col gap-4 sm:flex-row sm:items-end sm:justify-between">
         <span className="text-2xl">CSP benchmarks</span>
-        <div className="flex items-center gap-4">
+        <div className="w-full sm:w-auto">
           <Select
             value={selectedBenchmarkId}
             onValueChange={handleBenchmarkChange}
           >
-            <SelectTrigger id="benchmark-select" className="w-[300px]">
+            <SelectTrigger
+              id="benchmark-select"
+              className="w-full sm:w-[300px]"
+            >
               <SelectValue placeholder="Select a benchmark file" />
             </SelectTrigger>
             <SelectContent align="end">
@@ -85,7 +87,10 @@ export function CspBenchmarksSelector({
       </div>
 
       {selectedBenchmarks && (
-        <CspBenchmarksTable className="mt-4" benchmarks={benchmarksData} />
+        <CspBenchmarksTableWithSuspense
+          className="mt-4"
+          benchmarks={benchmarksData}
+        />
       )}
     </>
   )

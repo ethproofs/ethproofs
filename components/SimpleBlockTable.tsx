@@ -6,11 +6,10 @@ import { getTeams } from "@/lib/api/teams"
 import { mergeBlocksWithTeams } from "@/lib/blocks"
 
 type Props = {
-  className?: string
   machineType: MachineType
 }
 
-const SimpleBlocksTable = async ({ className, machineType }: Props) => {
+const SimpleBlocksTable = async ({ machineType }: Props) => {
   const teams = await getTeams()
   const blocks = await fetchBlocks(machineType, 5)
 

@@ -98,9 +98,6 @@ export const getColumns = (
                 </div>
               )
             },
-            filterFn: (row, id, value) => {
-              return value.includes(row.getValue(id))
-            },
           } as ColumnDef<ProofRow>,
         ]
       : []),
@@ -135,9 +132,6 @@ export const getColumns = (
                 </div>
               )
             },
-            filterFn: (row, id, value) => {
-              return value.includes(row.getValue(id))
-            },
           } as ColumnDef<ProofRow>,
         ]
       : []),
@@ -168,9 +162,6 @@ export const getColumns = (
           </div>
         )
       },
-      filterFn: (row, id, value) => {
-        return value.includes(row.getValue(id))
-      },
     },
     {
       id: "proving_time",
@@ -188,9 +179,6 @@ export const getColumns = (
             {isAvailable && provingTime ? prettyMs(provingTime) : <Null />}
           </div>
         )
-      },
-      filterFn: (row, id, value) => {
-        return value.includes(row.getValue(id))
       },
     },
     {
@@ -218,9 +206,6 @@ export const getColumns = (
           </div>
         )
       },
-      filterFn: (row, id, value) => {
-        return value.includes(row.getValue(id))
-      },
     },
     {
       id: "cost_per_proof",
@@ -238,9 +223,6 @@ export const getColumns = (
             {isAvailable && provingCost ? formatUsd(provingCost) : <Null />}
           </div>
         )
-      },
-      filterFn: (row, id, value) => {
-        return value.includes(row.getValue(id))
       },
     },
     {
