@@ -1,86 +1,43 @@
-import { formatTimeAgo } from "./date"
-import { formatNumber } from "./number"
-import {
-  getCostPerMgasStats,
-  getCostPerProofStats,
-  getProofsPerStatusCount,
-  getProvingTimeStats,
-  getTotalTTPStats,
-} from "./proofs"
 import type { Block } from "./types"
 
-export function exportBlocksToCSV(blocks: Block[], filename = "blocks-export") {
-  if (blocks.length === 0) {
-    console.warn("No blocks to export")
+export interface CSVExportConfig<T> {
+  headers: string[]
+  formatRow: (item: T) => (string | number)[]
+}
+
+/**
+ * Generic CSV export function that works with any data type
+ * @param data - Array of items to export
+ * @param config - Configuration object with headers and formatRow function
+ * @param filename - Name of the downloaded file (without .csv extension)
+ */
+export function exportToCsv<T>(
+  data: T[],
+  config: CSVExportConfig<T>,
+  filename: string
+): void {
+  if (data.length === 0) {
+    console.warn("No data to export")
     return
   }
 
-  // Define CSV headers
-  const headers = [
-    "Block Number",
-    "Timestamp",
-    "Gas Used",
-    "Transaction Count",
-    "Hash",
-    "Total Proofs",
-    "Proved Proofs",
-    "Failed Proofs",
-    "Queued Proofs",
-    "Cost Per Proof (min)",
-    "Cost Per Proof (max)",
-    "Cost Per Proof (avg)",
-    "Cost Per Mgas (min)",
-    "Cost Per Mgas (max)",
-    "Cost Per Mgas (avg)",
-    "Proving Time (min)",
-    "Proving Time (max)",
-    "Proving Time (avg)",
-    "Total Time to Proof",
-  ]
+  const { headers, formatRow } = config
 
-  // Convert blocks to CSV rows
-  const rows = blocks.map((block) => {
-    const { proofs, gas_used, timestamp } = block
-
-    // Calculate stats
-    const statusCount = getProofsPerStatusCount(proofs)
-    const costPerProofStats = getCostPerProofStats(proofs)
-    const costPerMgasStats = getCostPerMgasStats(proofs, gas_used)
-    const provingTimeStats = getProvingTimeStats(proofs)
-    const totalTTPStats = timestamp ? getTotalTTPStats(proofs, timestamp) : null
-
-    return [
-      block.block_number,
-      timestamp ? new Date(timestamp).toISOString() : "",
-      gas_used || "",
-      block.transaction_count || "",
-      block.hash || "",
-      proofs.length,
-      statusCount.proved || 0,
-      statusCount.failed || 0,
-      statusCount.queued || 0,
-      costPerProofStats?.best || "",
-      costPerProofStats?.avg || "",
-      costPerMgasStats?.best || "",
-      costPerMgasStats?.avg || "",
-      provingTimeStats?.best || "",
-      provingTimeStats?.avg || "",
-      totalTTPStats?.bestFormatted || "",
-    ]
-  })
+  // Convert data to CSV rows
+  const rows = data.map(formatRow)
 
   // Create CSV content
   const csvContent = [
     headers.join(","),
     ...rows.map((row) =>
       row
-        .map((field) =>
+        .map((field) => {
+          const stringValue = String(field ?? "")
           // Escape commas and quotes in CSV fields
-          typeof field === "string" &&
-          (field.includes(",") || field.includes('"'))
-            ? `"${field.replace(/"/g, '""')}"`
-            : field
-        )
+          return stringValue.includes(",") || stringValue.includes('"')
+            ? `"${stringValue.replace(/"/g, '""')}"`
+            : stringValue
+        })
         .join(",")
     ),
   ].join("\n")
@@ -99,4 +56,47 @@ export function exportBlocksToCSV(blocks: Block[], filename = "blocks-export") {
     document.body.removeChild(link)
     URL.revokeObjectURL(url)
   }
+}
+
+export interface ColumnLabel {
+  value: string
+  label: string
+}
+
+/**
+ * Generic export function that uses column labels to format and export data to CSV
+ * @param data - Array of items to export
+ * @param columnLabels - Array of column labels to use for headers
+ * @param filename - Name of the downloaded file (without .csv extension)
+ */
+export function exportWithLabels<T>(
+  data: T[],
+  columnLabels: ColumnLabel[],
+  filename: string
+): void {
+  const exportLabels = columnLabels.filter((label) => label.value !== "select")
+  const headers = exportLabels.map((label) => label.label)
+  const columnIds = exportLabels.map((label) => label.value)
+
+  const config: CSVExportConfig<T> = {
+    headers,
+    formatRow: (item) => {
+      return columnIds.map((columnId) => {
+        const value = item[columnId as keyof T]
+
+        if (typeof value === "boolean") {
+          return value ? "Yes" : "No"
+        }
+        if (
+          Array.isArray(value) ||
+          (typeof value === "object" && value !== null)
+        ) {
+          return JSON.stringify(value)
+        }
+        return String(value ?? "")
+      })
+    },
+  }
+
+  exportToCsv(data, config, filename)
 }
