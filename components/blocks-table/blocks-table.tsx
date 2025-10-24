@@ -1,17 +1,15 @@
 "use client"
 
-import { useState } from "react"
 import { useDebounceValue } from "usehooks-ts"
 import {
   keepPreviousData,
   usePrefetchQuery,
   useQuery,
 } from "@tanstack/react-query"
-import { PaginationState } from "@tanstack/react-table"
 
 import type { Block, Team } from "@/lib/types"
 
-import { DEFAULT_PAGE_STATE } from "@/lib/constants"
+import { useDataTableUrlState } from "@/components/data-table/useDataTableUrlState"
 
 import { DataTable } from "../data-table/data-table"
 
@@ -43,17 +41,15 @@ interface BlocksTableProps {
   className?: string
   machineType: MachineType
   teams: Team[]
-  showPagination?: boolean
 }
+
 export function BlocksTable({
   className,
   teams,
   machineType,
-  showPagination = true,
 }: BlocksTableProps) {
-  const [pagination, setPagination] =
-    useState<PaginationState>(DEFAULT_PAGE_STATE)
-  const [deferredPagination] = useDebounceValue(pagination, 200)
+  const tableState = useDataTableUrlState()
+  const [deferredPagination] = useDebounceValue(tableState.pagination, 200)
 
   const { pageIndex, pageSize } = deferredPagination
 
@@ -97,12 +93,11 @@ export function BlocksTable({
       data={blocks}
       columns={columns}
       rowCount={blocksQuery.data?.rowCount ?? 0}
-      pagination={pagination}
-      setPagination={setPagination}
       columnLabels={labels}
       onExport={handleExport}
-      showPagination={showPagination}
-      showToolbar={true}
+      toolbarFilterColumnId="block_number"
+      toolbarFilterPlaceholder="filter by block number..."
+      {...tableState}
     />
   )
 }

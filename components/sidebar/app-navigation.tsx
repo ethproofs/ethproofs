@@ -1,6 +1,6 @@
 "use client"
 
-import { useEffect, useState } from "react"
+import { useEffect, useMemo, useState } from "react"
 import { usePathname } from "next/navigation"
 
 import Link from "@/components/ui/link"
@@ -18,12 +18,15 @@ import { benchmarksNavItems, exploreNavItems, moreNavItems } from "./nav-items"
 
 export function AppNavigation() {
   const pathname = usePathname()
-  const items = [...exploreNavItems, ...benchmarksNavItems, ...moreNavItems]
+  const items = useMemo(
+    () => [...exploreNavItems, ...benchmarksNavItems, ...moreNavItems],
+    []
+  )
   const [activeItem, setActiveItem] = useState<(typeof items)[0] | null>(null)
 
   useEffect(() => {
     setActiveItem(items.find((item) => item.href === pathname) ?? null)
-  }, [pathname])
+  }, [items, pathname])
 
   return (
     <SidebarGroup>

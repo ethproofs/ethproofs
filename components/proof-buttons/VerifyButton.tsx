@@ -64,7 +64,7 @@ export function VerifyButton({
       if (proof_status !== "proved") return "disabled"
       return isVerifiableProverTeam(prover) ? "verify" : "disabled"
     })
-  }, [prover])
+  }, [prover, proof_status])
 
   async function onVerifyProof(proof_id: number) {
     // Downloading proof
