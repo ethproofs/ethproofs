@@ -6,12 +6,16 @@ import type { ProofsDailyStats, RecentSummary } from "@/lib/types"
 
 import { CHART_RANGES } from "@/lib/constants"
 
-import LineChartCard, { type ChartData } from "./LineChartCard"
+import { type ChartData, ProofMetricChart } from "./proof-metric-chart"
 
 import { formatUsd } from "@/lib/number"
 import { prettyMs } from "@/lib/time"
 
-const ProofsStats = ({ recentSummary }: { recentSummary: RecentSummary }) => {
+export function ProofMetrics({
+  recentSummary,
+}: {
+  recentSummary: RecentSummary
+}) {
   const { data: dailyData, isLoading } = useQuery<ProofsDailyStats[]>({
     queryKey: ["proofs-daily-stats"],
     queryFn: async () => {
@@ -40,29 +44,23 @@ const ProofsStats = ({ recentSummary }: { recentSummary: RecentSummary }) => {
   )
 
   return (
-    <section className="grid grid-cols-1 gap-8 lg:grid-cols-2">
-      <LineChartCard
-        className="w-full"
+    <>
+      <ProofMetricChart
         title="latency"
-        format="ms"
         data={latencyData}
         isLoading={isLoading}
         totalAvg={Number(recentSummary.avg_proving_time ?? 0)}
         totalMedian={Number(recentSummary.median_proving_time ?? 0)}
         formatValue={(value) => prettyMs(Number(value))}
       />
-      <LineChartCard
-        className="w-full"
+      <ProofMetricChart
         title="cost"
-        format="currency"
         data={costData}
         isLoading={isLoading}
         totalAvg={recentSummary.avg_cost_per_proof ?? 0}
         totalMedian={recentSummary.median_cost_per_proof ?? 0}
         formatValue={(value) => formatUsd(Number(value))}
       />
-    </section>
+    </>
   )
 }
-
-export default ProofsStats
