@@ -55,7 +55,7 @@ export default function RootLayout({
               </div>
             </header>
 
-            <div className="relative w-full flex-1 overflow-x-hidden">
+            <div className="relative w-full flex-1">
               <main className="isolate min-h-[50vh]">{children}</main>
             </div>
             <footer className="mt-20 flex h-20 flex-col items-center justify-center border-t">
