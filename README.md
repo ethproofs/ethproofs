@@ -118,5 +118,3 @@ Ethproofs is dual-licensed under your choice of:
 
 - [MIT License](LICENSE-MIT)
 - [Apache License 2.0](LICENSE-APACHE)
-
-See [LICENSE](LICENSE) for details.
