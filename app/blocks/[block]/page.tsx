@@ -2,16 +2,15 @@ import { Box, Clock, Coins, Cpu, Hourglass, Layers, Timer } from "lucide-react"
 import type { Metadata } from "next"
 import { notFound } from "next/navigation"
 
-import BasicTabs from "@/components/BasicTabs"
+import { BasicTabs } from "@/components/BasicTabs"
 import CopyButton from "@/components/CopyButton"
 import Null from "@/components/Null"
 import DownloadAllButton from "@/components/proof-buttons/DownloadAllButton"
-import ProofList from "@/components/ProofList"
-import ProofStatus, { ProofStatusInfo } from "@/components/ProofStatus"
+import { ProofsTable } from "@/components/proofs-table/proofs-table"
+import ProofStatus from "@/components/ProofStatus"
 import { HidePunctuation } from "@/components/StylePunctuation"
-import ProofCircle from "@/components/svgs/proof-circle.svg"
 import Timestamp from "@/components/Timestamp"
-import { Card, CardHeader, CardTitle } from "@/components/ui/card"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import { HeroItem, HeroItemLabel, HeroTitle } from "@/components/ui/hero"
 import {
   MetricBox,
@@ -19,6 +18,9 @@ import {
   MetricLabel,
   MetricValue,
 } from "@/components/ui/metric"
+import { Separator } from "@/components/ui/separator"
+
+import { truncateHash } from "@/lib/utils"
 
 import {
   getAvailabilityMetrics,
@@ -85,15 +87,22 @@ export default async function BlockDetailsPage({
 
   const proofsPerStatusCount = getProofsPerStatusCount(proofs)
 
-  const singleMachineProofs = proofs.filter(
-    (proof) => !proof.cluster_version?.cluster.is_multi_machine
-  )
+  const singleMachineProofs = proofs
+    .filter((proof) => !proof.cluster_version?.cluster.is_multi_machine)
+    .map((proof) => ({
+      ...proof,
+      block_number,
+      block_timestamp: timestamp,
+    }))
 
-  const multiMachineProofs = proofs.filter(
-    (proof) => proof.cluster_version?.cluster.is_multi_machine
-  )
+  const multiMachineProofs = proofs
+    .filter((proof) => proof.cluster_version?.cluster.is_multi_machine)
+    .map((proof) => ({
+      ...proof,
+      block_number,
+      block_timestamp: timestamp,
+    }))
 
-  // single machine stats
   const singleMachineStats = {
     costPerProofStats: getCostPerProofStats(singleMachineProofs),
     costPerMgasStats: getCostPerMgasStats(singleMachineProofs, gas_used),
@@ -101,7 +110,6 @@ export default async function BlockDetailsPage({
     totalTTPStats: getTotalTTPStats(singleMachineProofs, timestamp),
   }
 
-  // multi machine stats
   const multiMachineStats = {
     costPerProofStats: getCostPerProofStats(multiMachineProofs),
     costPerMgasStats: getCostPerMgasStats(multiMachineProofs, gas_used),
@@ -120,17 +128,17 @@ export default async function BlockDetailsPage({
       <HeroTitle className="mx-auto mb-24 mt-16 w-fit items-center gap-4 md:mt-24">
         <Box strokeWidth="1" className="size-[4.5rem] shrink-0 text-primary" />
         <div className="max-w-[14rem]">
-          <h1 className="font-mono">
+          <h1 className="">
             <p className="font-sans text-sm font-normal text-body-secondary">
-              block Height
+              block height
             </p>
             <p className="text-3xl font-semibold tracking-wide">
               <HidePunctuation>{formatNumber(block_number)}</HidePunctuation>
             </p>
           </h1>
-          <div className="flex gap-2 truncate">
-            <div className="truncate font-sans text-sm font-normal text-body-secondary">
-              {hash}
+          <div className="flex items-center gap-2 truncate">
+            <div className="text-sm font-normal text-body-secondary">
+              {truncateHash(hash ?? "", 12, 12)}
             </div>
             {hash ? <CopyButton message={hash} /> : <Null />}
           </div>
@@ -149,7 +157,7 @@ export default async function BlockDetailsPage({
           <HeroItemLabel>
             <Cpu className="size-4" /> gas used
           </HeroItemLabel>
-          <p className="font-mono tracking-wide">
+          <p className="tracking-wide">
             {gas_used ? (
               <HidePunctuation>{formatNumber(gas_used)}</HidePunctuation>
             ) : (
@@ -162,7 +170,7 @@ export default async function BlockDetailsPage({
           <HeroItemLabel>
             <Layers className="size-4" /> slot
           </HeroItemLabel>
-          <p className="font-mono tracking-wide">
+          <p className="tracking-wide">
             {timestamp ? (
               <HidePunctuation>
                 {formatNumber(timestampToSlot(timestamp))}
@@ -177,7 +185,7 @@ export default async function BlockDetailsPage({
           <HeroItemLabel>
             <Hourglass className="size-4" /> epoch
           </HeroItemLabel>
-          <p className="font-mono tracking-wide">
+          <p className="tracking-wide">
             {timestamp ? (
               <HidePunctuation>
                 {formatNumber(timestampToEpoch(timestamp))}
@@ -191,49 +199,20 @@ export default async function BlockDetailsPage({
 
       <section className="flex flex-col gap-8 xl:flex-row">
         <Card className="flex-1">
-          <CardHeader className="flex h-16 flex-row justify-between space-y-0">
-            <CardTitle className="flex items-center gap-2 font-mono text-lg font-normal [&>svg]:shrink-0">
+          <CardHeader className="flex flex-row justify-between space-y-0">
+            <CardTitle className="flex items-center gap-2 text-lg font-normal [&>svg]:shrink-0">
               <Timer className="size-5" /> proof availability
             </CardTitle>
-
             <MetricBox className="py-0">
-              <MetricLabel>
-                <MetricInfo label="status of proofs">
-                  <ProofStatusInfo title="status of proofs" />
-                </MetricInfo>
-              </MetricLabel>
               <MetricValue className="font-normal">
                 <ProofStatus statusCount={proofsPerStatusCount} />
               </MetricValue>
             </MetricBox>
           </CardHeader>
-
-          <div>
-            <div className="text-center font-mono text-sm text-primary sm:text-start">
-              multi-machine performance
-            </div>
-            <div className="grid grid-cols-1 place-items-center gap-x-8 text-center sm:grid-cols-2 sm:place-items-start sm:text-start lg:grid-cols-4 xl:grid-cols-2">
-              {multiMachineMetrics.map(({ key, label, description, value }) => (
-                <MetricBox
-                  key={"multi-" + key}
-                  className="row-span-2 grid grid-rows-subgrid"
-                >
-                  <MetricLabel className="flex items-stretch lowercase">
-                    <MetricInfo
-                      label={<span className="h-full lowercase">{label}</span>}
-                    >
-                      {description}
-                    </MetricInfo>
-                  </MetricLabel>
-                  <MetricValue className="font-normal">{value}</MetricValue>
-                </MetricBox>
-              ))}
-            </div>
-          </div>
-
-          <div>
-            <div className="text-center font-mono text-sm text-primary sm:text-start">
-              single machine performance
+          <Separator />
+          <CardContent className="p-6">
+            <div className="text-sm text-primary sm:text-start">
+              1x4090 performance
             </div>
             <div className="grid grid-cols-1 place-items-center gap-x-8 text-center sm:grid-cols-2 sm:place-items-start sm:text-start lg:grid-cols-4 xl:grid-cols-2">
               {singleMachineMetrics.map(
@@ -256,44 +235,39 @@ export default async function BlockDetailsPage({
                 )
               )}
             </div>
-          </div>
+            <div className="mt-4 text-center text-sm text-primary sm:text-start">
+              multi-GPU performance
+            </div>
+            <div className="grid grid-cols-1 place-items-center gap-x-8 text-center sm:grid-cols-2 sm:place-items-start sm:text-start lg:grid-cols-4 xl:grid-cols-2">
+              {multiMachineMetrics.map(({ key, label, description, value }) => (
+                <MetricBox
+                  key={"multi-" + key}
+                  className="row-span-2 grid grid-rows-subgrid"
+                >
+                  <MetricLabel className="flex items-stretch lowercase">
+                    <MetricInfo
+                      label={<span className="h-full lowercase">{label}</span>}
+                    >
+                      {description}
+                    </MetricInfo>
+                  </MetricLabel>
+                  <MetricValue className="font-normal">{value}</MetricValue>
+                </MetricBox>
+              ))}
+            </div>
+          </CardContent>
         </Card>
 
         <Card className="flex-1">
-          <CardHeader className="flex h-16 flex-row items-center">
-            <CardTitle className="flex items-center gap-2 font-mono text-lg font-normal [&>svg]:shrink-0">
+          <CardHeader className="flex flex-row items-center">
+            <CardTitle className="flex items-center gap-2 text-lg font-normal [&>svg]:shrink-0">
               <Coins className="size-5" /> proof costs
             </CardTitle>
           </CardHeader>
-
-          <div>
-            <div className="text-center font-mono text-sm text-primary sm:text-start">
-              multi-machine performance
-            </div>
-            <div className="grid grid-cols-1 place-items-center gap-x-8 text-center sm:grid-cols-2 sm:place-items-start sm:text-start lg:grid-cols-4 xl:grid-cols-2">
-              {multiMachineBlockFeeMetrics.map(
-                ({ key, label, description, value }) => (
-                  <MetricBox
-                    key={key}
-                    className="row-span-2 grid grid-rows-subgrid"
-                  >
-                    <MetricLabel>
-                      <MetricInfo
-                        label={<span className="lowercase">{label}</span>}
-                      >
-                        {description}
-                      </MetricInfo>
-                    </MetricLabel>
-                    <MetricValue className="font-normal">{value}</MetricValue>
-                  </MetricBox>
-                )
-              )}
-            </div>
-          </div>
-
-          <div>
-            <div className="text-center font-mono text-sm text-primary sm:text-start">
-              single machine performance
+          <Separator />
+          <CardContent className="p-6">
+            <div className="text-center text-sm text-primary sm:text-start">
+              1x4090 performance
             </div>
             <div className="grid grid-cols-1 place-items-center gap-x-8 text-center sm:grid-cols-2 sm:place-items-start sm:text-start lg:grid-cols-4 xl:grid-cols-2">
               {singleMachineBlockFeeMetrics.map(
@@ -314,24 +288,51 @@ export default async function BlockDetailsPage({
                 )
               )}
             </div>
-          </div>
+            <div className="mt-4 text-center text-sm text-primary sm:text-start">
+              multi-GPU performance
+            </div>
+            <div className="grid grid-cols-1 place-items-center gap-x-8 text-center sm:grid-cols-2 sm:place-items-start sm:text-start lg:grid-cols-4 xl:grid-cols-2">
+              {multiMachineBlockFeeMetrics.map(
+                ({ key, label, description, value }) => (
+                  <MetricBox
+                    key={key}
+                    className="row-span-2 grid grid-rows-subgrid"
+                  >
+                    <MetricLabel>
+                      <MetricInfo
+                        label={<span className="lowercase">{label}</span>}
+                      >
+                        {description}
+                      </MetricInfo>
+                    </MetricLabel>
+                    <MetricValue className="font-normal">{value}</MetricValue>
+                  </MetricBox>
+                )
+              )}
+            </div>
+          </CardContent>
         </Card>
       </section>
 
       <section>
-        <div className="flex justify-between md:mb-4">
-          <h2 className="flex items-center gap-2 text-lg font-normal text-primary">
-            <ProofCircle /> proofs
-          </h2>
+        <div className="flex items-center justify-end md:mb-4">
           {proofs.length >= 1 && hash && (
             <DownloadAllButton blockHash={hash} className="max-md:hidden" />
           )}
         </div>
 
         <BasicTabs
-          contentLeft={<ProofList proofs={multiMachineProofs} block={block} />}
+          className="px-0"
+          title="proofs"
+          contentLeft={
+            <ProofsTable
+              className="mt-4"
+              proofs={singleMachineProofs}
+              showBlockNumber={false}
+            />
+          }
           contentRight={
-            <ProofList proofs={singleMachineProofs} block={block} />
+            <ProofsTable proofs={multiMachineProofs} showBlockNumber={false} />
           }
         />
       </section>

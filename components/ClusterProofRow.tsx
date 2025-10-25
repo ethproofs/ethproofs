@@ -2,13 +2,13 @@ import { differenceInMilliseconds } from "date-fns"
 
 import { Block, ProofWithCluster, Team } from "@/lib/types"
 
-import BlockNumber from "@/components/BlockNumber"
+import { BlockNumber } from "@/components/BlockNumber"
 import Null from "@/components/Null"
 import DownloadButton from "@/components/proof-buttons/DownloadButton"
 
 import { cn } from "@/lib/utils"
 
-import VerifyButton from "./proof-buttons/VerifyButton"
+import { VerifyButton } from "./proof-buttons/VerifyButton"
 
 import { formatTimeAgo } from "@/lib/date"
 import { formatUsd } from "@/lib/number"
@@ -47,7 +47,7 @@ export const ClusterProofRow = ({ proof }: ClusterProofRowProps) => {
     <div
       data-grid-template-areas="cluster-proof"
       className={cn(
-        "grid gap-x-6 border-b border-primary-border p-6",
+        "grid gap-x-8 border-b border-border p-6",
         "grid-cols-[auto_auto] gap-y-4",
         "md:grid-cols-[1fr_1fr_auto_auto]",
         "lg:grid-cols-[1fr_repeat(3,_auto)]",
@@ -69,7 +69,7 @@ export const ClusterProofRow = ({ proof }: ClusterProofRowProps) => {
         className="my-auto flex flex-col items-center"
         style={{ gridArea: "time" }}
       >
-        <div className="text-nowrap font-mono text-sm">
+        <div className="text-nowrap text-sm">
           proving:{" "}
           {proof.proving_time ? prettyMs(proof.proving_time) : <Null />}
         </div>
@@ -92,7 +92,7 @@ export const ClusterProofRow = ({ proof }: ClusterProofRowProps) => {
         className="my-auto flex flex-col items-center"
         style={{ gridArea: "cost" }}
       >
-        <div className="text-nowrap font-mono text-sm">
+        <div className="text-nowrap text-sm">
           per proof: {costPerProof ? formatUsd(costPerProof) : <Null />}
         </div>
         <div className="font-sans text-xs text-body-secondary">

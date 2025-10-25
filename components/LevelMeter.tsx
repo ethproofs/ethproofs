@@ -87,7 +87,7 @@ const LevelMeter = ({
           className="absolute z-10"
           style={{ insetInlineStart: valueXPosition + "%" }}
         >
-          <span className="absolute -translate-x-1/2 -translate-y-9 font-mono">
+          <span className="absolute -translate-x-1/2 -translate-y-9">
             {formatValue ? formatValue(value) : value}
             <div className="relative flex w-full flex-col">
               <div className="col-span-2 place-items-center">

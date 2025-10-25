@@ -5,8 +5,8 @@ import {
   QueryClient,
 } from "@tanstack/react-query"
 
-import BasicTabs from "@/components/BasicTabs"
-import BlocksTable from "@/components/BlocksTable"
+import { BasicTabs } from "@/components/BasicTabs"
+import { BlocksTableWithSuspense } from "@/components/blocks-table/blocks-table-with-suspense"
 
 import { DEFAULT_PAGE_STATE } from "@/lib/constants"
 
@@ -14,7 +14,7 @@ import { fetchBlocksPaginated } from "@/lib/api/blocks"
 import { getTeams } from "@/lib/api/teams"
 import { getMetadata } from "@/lib/metadata"
 
-export const metadata: Metadata = getMetadata({ title: "Blocks" })
+export const metadata: Metadata = getMetadata({ title: "blocks" })
 
 export default async function BlocksPage() {
   const queryClient = new QueryClient()
@@ -32,26 +32,30 @@ export default async function BlocksPage() {
   ])
 
   return (
-    <>
-      <h1 className="text-shadow mb-24 mt-16 px-6 text-center font-mono text-3xl font-semibold md:mt-24 md:px-8">
-        blocks
-      </h1>
-      <div className="mx-auto flex max-w-screen-xl flex-1 flex-col items-center gap-20 [&>section]:w-full">
-        <section>
-          <BasicTabs
-            contentRight={
-              <HydrationBoundary state={dehydrate(queryClient)}>
-                <BlocksTable teams={teams} machineType="single" />
-              </HydrationBoundary>
-            }
-            contentLeft={
-              <HydrationBoundary state={dehydrate(queryClient)}>
-                <BlocksTable teams={teams} machineType="multi" />
-              </HydrationBoundary>
-            }
-          />
-        </section>
-      </div>
-    </>
+    <div className="mx-auto mt-2 flex max-w-screen-xl flex-1 flex-col items-center gap-20 [&>section]:w-full">
+      <section>
+        <BasicTabs
+          title="blocks"
+          contentLeft={
+            <HydrationBoundary state={dehydrate(queryClient)}>
+              <BlocksTableWithSuspense
+                className="px-6"
+                machineType="single"
+                teams={teams}
+              />
+            </HydrationBoundary>
+          }
+          contentRight={
+            <HydrationBoundary state={dehydrate(queryClient)}>
+              <BlocksTableWithSuspense
+                className="px-6"
+                machineType="multi"
+                teams={teams}
+              />
+            </HydrationBoundary>
+          }
+        />
+      </section>
+    </div>
   )
 }

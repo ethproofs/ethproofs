@@ -65,7 +65,7 @@ export const BaseLink = forwardRef<HTMLAnchorElement, LinkProps>(function Link(
 })
 BaseLink.displayName = "BaseLink"
 
-const InlineLink = forwardRef<HTMLAnchorElement, LinkProps>(
+const Link = forwardRef<HTMLAnchorElement, LinkProps>(
   (props: LinkProps, ref) => {
     return (
       <BaseLink
@@ -76,6 +76,6 @@ const InlineLink = forwardRef<HTMLAnchorElement, LinkProps>(
     )
   }
 )
-InlineLink.displayName = "InlineLink"
+Link.displayName = "Link"
 
-export default InlineLink
+export default Link
