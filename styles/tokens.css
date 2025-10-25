@@ -40,11 +40,23 @@
     --info-foreground: var(--zinc-50);
 
     /* Charts */
-    --chart-1: var(--orange-500);
-    --chart-2: var(--yellow-500);
-    --chart-3: var(--green-500);
-    --chart-4: var(--blue-500);
-    --chart-5: var(--purple-500);
+    --chart-1: var(--red-500);
+    --chart-2: var(--orange-500);
+    --chart-3: var(--amber-500);
+    --chart-4: var(--yellow-500);
+    --chart-5: var(--lime-500);
+    --chart-6: var(--green-500);
+    --chart-7: var(--emerald-500);
+    --chart-8: var(--teal-500);
+    --chart-9: var(--cyan-500);
+    --chart-10: var(--sky-500);
+    --chart-11: var(--blue-500);
+    --chart-12: var(--indigo-500);
+    --chart-13: var(--violet-500);
+    --chart-14: var(--purple-500);
+    --chart-15: var(--fuchsia-500);
+    --chart-16: var(--pink-500);
+    --chart-17: var(--rose-500);
     --chart-border: var(--zinc-200);
 
     /* Sidebar */

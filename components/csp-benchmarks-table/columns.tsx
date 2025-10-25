@@ -7,7 +7,7 @@ import Null from "@/components/Null"
 import { Checkbox } from "@/components/ui/checkbox"
 
 import { CspCollectedBenchmark } from "@/lib/api/csp-benchmarks"
-import { formatNumber } from "@/lib/number"
+import { formatBytes, formatNumber } from "@/lib/number"
 import { prettyMs } from "@/lib/time"
 
 export const labels = [
@@ -194,15 +194,7 @@ export const columns: ColumnDef<CspCollectedBenchmark>[] = [
     ),
     cell: ({ row }) => {
       const inputSize = row.getValue("input_size") as number
-      return (
-        <div className="w-[100px]">
-          {formatNumber(inputSize, {
-            notation: "compact",
-            compactDisplay: "short",
-          })}{" "}
-          <span className="text-xs text-muted-foreground">bytes</span>
-        </div>
-      )
+      return <div className="w-[100px]">{formatBytes(inputSize)}</div>
     },
   },
   {
@@ -258,15 +250,7 @@ export const columns: ColumnDef<CspCollectedBenchmark>[] = [
     ),
     cell: ({ row }) => {
       const proofSize = row.getValue("proof_size") as number
-      return (
-        <div className="w-[100px]">
-          {formatNumber(proofSize, {
-            notation: "compact",
-            compactDisplay: "short",
-          })}{" "}
-          <span className="text-xs text-muted-foreground">bytes</span>
-        </div>
-      )
+      return <div className="w-[100px]">{formatBytes(proofSize)}</div>
     },
   },
   {
@@ -277,15 +261,7 @@ export const columns: ColumnDef<CspCollectedBenchmark>[] = [
     ),
     cell: ({ row }) => {
       const preprocessingSize = row.getValue("preprocessing_size") as number
-      return (
-        <div className="w-[140px]">
-          {formatNumber(preprocessingSize, {
-            notation: "compact",
-            compactDisplay: "short",
-          })}{" "}
-          <span className="text-xs text-muted-foreground">bytes</span>
-        </div>
-      )
+      return <div className="w-[140px]">{formatBytes(preprocessingSize)}</div>
     },
   },
   {
@@ -296,15 +272,7 @@ export const columns: ColumnDef<CspCollectedBenchmark>[] = [
     ),
     cell: ({ row }) => {
       const peakMemory = row.getValue("peak_memory") as number
-      return (
-        <div className="w-[120px]">
-          {formatNumber(peakMemory, {
-            notation: "compact",
-            compactDisplay: "short",
-          })}{" "}
-          <span className="text-xs text-muted-foreground">bytes</span>
-        </div>
-      )
+      return <div className="w-[120px]">{formatBytes(peakMemory)}</div>
     },
   },
   {
@@ -320,13 +288,7 @@ export const columns: ColumnDef<CspCollectedBenchmark>[] = [
       return (
         <div className="w-[140px]">
           {peakMemoryWitgen !== undefined ? (
-            <>
-              {formatNumber(peakMemoryWitgen, {
-                notation: "compact",
-                compactDisplay: "short",
-              })}{" "}
-              <span className="text-xs text-muted-foreground">bytes</span>
-            </>
+            formatBytes(peakMemoryWitgen)
           ) : (
             <Null />
           )}
