@@ -58,8 +58,7 @@ export const getActiveClusters = async (filters?: {
   teamId?: string
   zkvmId?: number
 }) => {
-  const { teamId, zkvmId } = filters ?? {}
-  const cacheKey = `active-clusters-${teamId}-${zkvmId}`
+  const cacheKey = `active-clusters-${filters?.teamId}-${filters?.zkvmId}`
 
   return cache(
     async (filters?: { teamId?: string; zkvmId?: number }) => {
