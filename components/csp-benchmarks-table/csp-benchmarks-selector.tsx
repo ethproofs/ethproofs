@@ -12,6 +12,7 @@ import {
   SelectValue,
 } from "@/components/ui/select"
 
+import { CspBenchmarksChart } from "./csp-benchmarks-chart"
 import { CspBenchmarksTableWithSuspense } from "./csp-benchmarks-table-with-suspense"
 
 import {
@@ -87,10 +88,15 @@ export function CspBenchmarksSelector({
       </div>
 
       {selectedBenchmarks && (
-        <CspBenchmarksTableWithSuspense
-          className="mt-4"
-          benchmarks={benchmarksData}
-        />
+        <>
+          <div className="mt-6">
+            <CspBenchmarksChart benchmarks={benchmarksData} />
+          </div>
+          <CspBenchmarksTableWithSuspense
+            className="mt-6"
+            benchmarks={benchmarksData}
+          />
+        </>
       )}
     </>
   )
