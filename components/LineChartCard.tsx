@@ -13,7 +13,7 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from "@/components/ui/card-old"
+} from "@/components/ui/card"
 import {
   ChartConfig,
   ChartContainer,
@@ -21,13 +21,13 @@ import {
   ChartLegendContent,
   ChartTooltip,
   ChartTooltipContent,
-} from "@/components/ui/chart-old"
+} from "@/components/ui/chart"
 import {
   DropdownMenu,
   DropdownMenuCheckboxItem,
   DropdownMenuContent,
   DropdownMenuTrigger,
-} from "@/components/ui/dropdown-menu-old"
+} from "@/components/ui/dropdown-menu"
 
 import { cn } from "@/lib/utils"
 
@@ -176,7 +176,7 @@ const LineChartCard = ({
                         year: "numeric",
                       })
                     }}
-                    valueFormatter={formatValue}
+                    formatter={formatValue}
                   />
                 }
               />
