@@ -185,7 +185,8 @@ export const POST = withAuth(async ({ request, user, timestamp }) => {
       if (!storageQuotaExceeded) {
         const team = await getTeam(teamId)
         const teamSlug = team?.slug ? team.slug : cluster.id.split("-")[0]
-        const filename = `${teamSlug}_${block_number}_${newProof.proof_id}.bin`
+        // NEW format: teamSlug_clusterId_proofId
+        const filename = `${teamSlug}_${cluster.id}_${newProof.proof_id}.bin`
         await uploadProofBinary(filename, binaryBuffer)
       }
 

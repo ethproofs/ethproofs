@@ -59,16 +59,27 @@ export async function GET(
 
     const { id: cluster_id } = proofRow.cluster_version.cluster
     const teamSlug = team?.slug ? team.slug : cluster_id.split("-")[0]
-    const filenameInStorage = `${teamSlug}_${proofRow.block_number}_${proofRow.proof_id}.bin`
-
-    // Try new format first (silently, since fallback will follow)
-    let blob = await downloadProofBinary(filenameInStorage, { silent: true })
 
     // TODO:TEAM - run a script to migrate all proofs to the new filename format
-    // Fallback for backwards compatibility
-    if (!blob && team?.name) {
-      const fallbackFilename = `${proofRow.block_number}_${team.name}_${proofRow.proof_id}.bin`
-      blob = await downloadProofBinary(fallbackFilename)
+    // Try filenames in order of preference (new format first)
+    const filenamesToTry = [
+      // NEW format: teamSlug_clusterId_proofId
+      `${teamSlug}_${cluster_id}_${proofRow.proof_id}.bin`,
+      // OLD format: teamSlug_blockNumber_proofId
+      `${teamSlug}_${proofRow.block_number}_${proofRow.proof_id}.bin`,
+      // LEGACY format: blockNumber_teamName_proofId
+      ...(team?.name
+        ? [`${proofRow.block_number}_${team.name}_${proofRow.proof_id}.bin`]
+        : []),
+    ]
+
+    let blob: Blob | null = null
+
+    for (const filenameToTry of filenamesToTry) {
+      blob = await downloadProofBinary(filenameToTry, { silent: true })
+      if (blob) {
+        break
+      }
     }
 
     if (blob) {
