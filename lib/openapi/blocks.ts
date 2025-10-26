@@ -15,6 +15,7 @@ export const blocksPaths: ZodOpenApiPathsObject = {
           in: "path",
           description: "The block number to retrieve",
           required: true,
+          example: 123456,
           schema: {
             oneOf: [
               {
@@ -27,7 +28,6 @@ export const blocksPaths: ZodOpenApiPathsObject = {
               },
             ],
           },
-          example: 12345,
         },
       ],
       responses: {

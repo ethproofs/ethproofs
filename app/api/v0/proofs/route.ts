@@ -4,7 +4,7 @@ import { z } from "zod"
 import { fetchProofsFiltered } from "@/lib/api/proofs"
 
 const querySchema = z.object({
-  block: z.coerce.number().int().positive().optional(),
+  block: z.string().optional(),
   team: z.string().optional(),
   limit: z.coerce.number().int().min(1).max(1000).default(100),
   offset: z.coerce.number().int().min(0).default(0),
@@ -24,7 +24,7 @@ export async function GET(req: Request) {
 
     const result = await fetchProofsFiltered({
       teamSlug: validatedQuery.team,
-      blockNumber: validatedQuery.block,
+      block: validatedQuery.block,
       limit: validatedQuery.limit,
       offset: validatedQuery.offset,
     })

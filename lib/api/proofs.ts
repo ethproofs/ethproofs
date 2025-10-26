@@ -155,17 +155,42 @@ export const fetchProvedProofsByClusterId = async (
 
 export const fetchProofsFiltered = async ({
   teamSlug,
-  blockNumber,
+  block,
   limit = 100,
   offset = 0,
 }: {
   teamSlug?: string
-  blockNumber?: number
+  block?: string
   limit?: number
   offset?: number
 }) => {
+  const { isHash } = await import("viem")
+
   // Build where conditions
   const conditions = []
+
+  // Handle block parameter (can be hash or number)
+  let blockNumber: number | undefined
+  if (block !== undefined) {
+    if (isHash(block)) {
+      // It's a hash, look it up
+      const blockRecord = await db.query.blocks.findFirst({
+        where: (blocks, { eq }) => eq(blocks.hash, block),
+      })
+      if (blockRecord) {
+        blockNumber = blockRecord.block_number
+      } else {
+        // Block hash not found, return empty results
+        return {
+          rows: [],
+          rowCount: 0,
+        }
+      }
+    } else {
+      // It's a block number
+      blockNumber = parseInt(block, 10)
+    }
+  }
 
   if (blockNumber !== undefined) {
     conditions.push(eq(proofs.block_number, blockNumber))

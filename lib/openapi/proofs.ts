@@ -124,21 +124,32 @@ export const proofsPaths: ZodOpenApiPathsObject = {
       description: "Retrieve a filtered and paginated list of proofs.",
       parameters: [
         {
+          name: "block",
+          in: "query",
+          description:
+            "Filter by block number or block hash (0x-prefixed 64 hex characters)",
+          required: false,
+          example: 123456,
+          schema: {
+            oneOf: [
+              {
+                type: "integer",
+                minimum: 0,
+              },
+              {
+                type: "string",
+                pattern: "^0x[a-fA-F0-9]{64}$",
+              },
+            ],
+          },
+        },
+        {
           name: "team",
           in: "query",
           description: "Filter by team slug",
           required: false,
           schema: {
             type: "string",
-          },
-        },
-        {
-          name: "block",
-          in: "query",
-          description: "Filter by specific block number",
-          required: false,
-          schema: {
-            type: "number",
           },
         },
         {
