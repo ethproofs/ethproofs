@@ -48,8 +48,6 @@ export const proofSchema = z.object({
   proving_time: z.number().int().optional(),
   program_id: z.number().int().optional(),
   size_bytes: z.number().int().optional(),
-  proof: z.string().optional(),
-  verifier_id: z.string().optional(),
   team: teamSchema.optional(),
   block: blockSchema.optional(),
   cluster_version: clusterVersionWithRelationsSchema.optional(),

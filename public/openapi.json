@@ -1118,12 +1118,6 @@
                           "size_bytes": {
                             "type": "integer"
                           },
-                          "proof": {
-                            "type": "string"
-                          },
-                          "verifier_id": {
-                            "type": "string"
-                          },
                           "team": {
                             "type": "object",
                             "properties": {
