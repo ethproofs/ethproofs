@@ -917,12 +917,53 @@
         }
       }
     },
+    "/proofs/download/{id}": {
+      "get": {
+        "tags": [
+          "Proofs"
+        ],
+        "summary": "Download proof",
+        "description": "Download a single proved proof by its proof ID.",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "description": "The unique proof ID (UUID)",
+            "required": true,
+            "schema": {
+              "type": "string",
+              "format": "uuid"
+            },
+            "example": "550e8400-e29b-41d4-a716-446655440000"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "Proof binary file",
+            "content": {
+              "application/octet-stream": {
+                "schema": {
+                  "type": "string",
+                  "format": "binary"
+                }
+              }
+            }
+          },
+          "404": {
+            "description": "Proof not found"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
     "/proofs/download/block/{block}": {
       "get": {
         "tags": [
           "Proofs"
         ],
-        "summary": "Download block proofs",
+        "summary": "Download proofs",
         "description": "Download all proved proofs for a specific block as a ZIP file.",
         "parameters": [
           {
