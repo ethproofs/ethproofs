@@ -197,6 +197,13 @@
       "when": 1760004209066,
       "tag": "0027_update-api-key-mode-enum",
       "breakpoints": true
+    },
+    {
+      "idx": 28,
+      "version": "7",
+      "when": 1761485774088,
+      "tag": "0028_update-cluster-active-check-interval",
+      "breakpoints": true
     }
   ]
 }
