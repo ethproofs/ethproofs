@@ -204,6 +204,13 @@
       "when": 1761485774088,
       "tag": "0028_update-cluster-active-check-interval",
       "breakpoints": true
+    },
+    {
+      "idx": 29,
+      "version": "7",
+      "when": 1761580598641,
+      "tag": "0029_add-cluster-id-to-proofs",
+      "breakpoints": true
     }
   ]
 }

@@ -99,6 +99,7 @@ export const POST = withAuth(async ({ request, user, timestamp }) => {
   const dataToInsert = {
     ...proofPayload,
     block_number,
+    cluster_id: cluster.id,
     cluster_version_id: clusterVersion.id,
     proof_status: "proving",
     proving_timestamp: timestamp,

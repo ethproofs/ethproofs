@@ -502,6 +502,12 @@ export const proofs = pgTable(
         onDelete: "cascade",
         onUpdate: "cascade",
       }),
+    cluster_id: uuid("cluster_id")
+      .notNull()
+      .references(() => clusters.id, {
+        onDelete: "cascade",
+        onUpdate: "cascade",
+      }),
     proving_time: integer("proving_time"),
     program_id: bigint("program_id", { mode: "number" }).references(
       () => programs.id,
@@ -518,6 +524,7 @@ export const proofs = pgTable(
       table.cluster_version_id
     ),
     index("proofs_cluster_version_id_idx").on(table.cluster_version_id),
+    index("proofs_cluster_id_idx").on(table.cluster_id),
     index("proofs_proved_timestamp_idx").on(table.proved_timestamp),
     index("proofs_created_at_idx").on(table.created_at),
     pgPolicy("Enable updates for users with an api key", {
