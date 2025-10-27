@@ -196,6 +196,9 @@ export const fetchProofsFiltered = async ({
     conditions.push(eq(proofs.block_number, blockNumber))
   }
 
+  // Only return proved proofs
+  conditions.push(eq(proofs.proof_status, "proved"))
+
   // First get team ID if team slug is provided
   let teamId: string | null = null
   if (teamSlug) {
@@ -240,7 +243,7 @@ export const fetchProofsFiltered = async ({
         },
       },
     },
-    where: conditions.length > 0 ? and(...conditions) : undefined,
+    where: and(...conditions),
     orderBy: (proofs, { desc }) => [desc(proofs.created_at)],
     limit: Math.min(limit, 1000),
     offset,
@@ -250,7 +253,7 @@ export const fetchProofsFiltered = async ({
   const [rowCount] = await db
     .select({ count: count() })
     .from(proofs)
-    .where(conditions.length > 0 ? and(...conditions) : undefined)
+    .where(and(...conditions))
 
   return {
     rows: proofsRows,
