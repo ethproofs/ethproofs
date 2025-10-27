@@ -29,7 +29,6 @@ export async function GET(req: Request) {
       offset: validatedQuery.offset,
     })
 
-    // Just return the proof
     return NextResponse.json({
       proofs: result.rows,
       total_count: result.rowCount,

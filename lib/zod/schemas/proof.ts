@@ -34,9 +34,8 @@ export const provedProofSchema = baseProofSchema.extend({
   verifier_id: z.string().optional().describe("vkey/image-id"),
 })
 
-export const proofSchema = z.object({
+export const proofSchema = baseProofSchema.extend({
   proof_id: z.number().int(),
-  block_number: z.number().int().min(0),
   proof_status: z.enum(["queued", "proving", "proved"]),
   proving_cycles: z.number().int().optional(),
   team_id: z.string().uuid(),
@@ -44,7 +43,6 @@ export const proofSchema = z.object({
   proved_timestamp: z.string().optional(),
   proving_timestamp: z.string().optional(),
   queued_timestamp: z.string().optional(),
-  cluster_version_id: z.number().int(),
   proving_time: z.number().int().optional(),
   program_id: z.number().int().optional(),
   size_bytes: z.number().int().optional(),

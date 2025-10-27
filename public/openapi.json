@@ -1063,12 +1063,15 @@
                       "items": {
                         "type": "object",
                         "properties": {
+                          "block_number": {
+                            "type": "number",
+                            "minimum": 0
+                          },
+                          "cluster_id": {
+                            "type": "number"
+                          },
                           "proof_id": {
                             "type": "integer"
-                          },
-                          "block_number": {
-                            "type": "integer",
-                            "minimum": 0
                           },
                           "proof_status": {
                             "type": "string",
@@ -1096,9 +1099,6 @@
                           },
                           "queued_timestamp": {
                             "type": "string"
-                          },
-                          "cluster_version_id": {
-                            "type": "integer"
                           },
                           "proving_time": {
                             "type": "integer"
@@ -1390,12 +1390,12 @@
                           }
                         },
                         "required": [
-                          "proof_id",
                           "block_number",
+                          "cluster_id",
+                          "proof_id",
                           "proof_status",
                           "team_id",
-                          "created_at",
-                          "cluster_version_id"
+                          "created_at"
                         ]
                       }
                     },
