@@ -337,9 +337,6 @@
                           "required": [
                             "cpu_model",
                             "cpu_cores",
-                            "gpu_models",
-                            "gpu_count",
-                            "gpu_memory_gb",
                             "memory_size_gb",
                             "memory_count",
                             "memory_type"
@@ -580,9 +577,6 @@
                               "required": [
                                 "cpu_model",
                                 "cpu_cores",
-                                "gpu_models",
-                                "gpu_count",
-                                "gpu_memory_gb",
                                 "memory_size_gb",
                                 "memory_count",
                                 "memory_type"
@@ -861,9 +855,6 @@
                     "required": [
                       "cpu_model",
                       "cpu_cores",
-                      "gpu_models",
-                      "gpu_count",
-                      "gpu_memory_gb",
                       "memory_size_gb",
                       "memory_count",
                       "memory_type"
