@@ -39,6 +39,7 @@ export default async function BlocksPage() {
       <div className="mx-auto flex max-w-screen-xl flex-1 flex-col items-center gap-20 [&>section]:w-full">
         <section>
           <BasicTabs
+            defaultTab="left"
             contentRight={
               <HydrationBoundary state={dehydrate(queryClient)}>
                 <BlocksTable teams={teams} machineType="single" />

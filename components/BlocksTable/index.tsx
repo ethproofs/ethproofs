@@ -74,7 +74,10 @@ const BlocksTable = ({ className, teams, machineType }: Props) => {
         : async () => Promise.resolve(null),
   })
 
-  const blocks = mergeBlocksWithTeams(blocksQuery.data?.rows ?? [], teams)
+  const blocks = mergeBlocksWithTeams(
+    blocksQuery.data?.rows ?? [],
+    teams
+  ).filter((block) => block.proofs.length)
 
   return (
     <DataTableControlled
