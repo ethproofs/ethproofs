@@ -37,6 +37,51 @@ export function formatTimeAgo(date: Date | string): string {
   return "just now"
 }
 
+export function formatTimeAgoDetailed(date: Date | string): string {
+  // Initialize a default date as the current date
+  let _date: Date = new Date()
+
+  // Check if the input is a string and convert it to a Date object
+  if (typeof date === "string") {
+    _date = new Date(date)
+  } else {
+    _date = date
+  }
+
+  // Calculate the time difference in seconds
+  const seconds: number = Math.floor(
+    (new Date().getTime() - _date.getTime()) / 1000
+  )
+
+  // Handle negative values (future dates)
+  if (seconds < 0) {
+    return "in the future"
+  }
+
+  // If less than a second, return "just now"
+  if (seconds === 0) {
+    return "just now"
+  }
+
+  // For timestamps older than 24 hours, use the simpler format
+  if (seconds >= 86400) {
+    return formatTimeAgo(date)
+  }
+
+  // Calculate hours, minutes, and remaining seconds
+  const hours = Math.floor(seconds / 3600)
+  const minutes = Math.floor((seconds % 3600) / 60)
+  const secs = seconds % 60
+
+  const parts: string[] = []
+
+  if (hours > 0) parts.push(`${hours}h`)
+  if (minutes > 0) parts.push(`${minutes}m`)
+  if (secs > 0 || parts.length === 0) parts.push(`${secs}s`)
+
+  return `${parts.slice(0, 2).join(" ")} ago`
+}
+
 export function intervalToSeconds(interval: string): number {
   const [hours, minutes, seconds] = interval.split(":").map(Number)
 

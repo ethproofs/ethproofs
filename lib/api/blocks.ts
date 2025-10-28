@@ -95,7 +95,6 @@ export const fetchBlocksPaginated = async (
             },
           },
         },
-        // Filter proofs by cluster type
         where:
           machineType === "all"
             ? undefined
@@ -117,13 +116,30 @@ export const fetchBlocksPaginated = async (
                 ),
       },
     },
-    where: (blocks, { exists }) =>
-      exists(
-        db
-          .select()
-          .from(proofs)
-          .where(eq(proofs.block_number, blocks.block_number))
-      ),
+    where: (blocks, { exists, eq, and }) =>
+      machineType === "all"
+        ? exists(
+            db
+              .select()
+              .from(proofs)
+              .where(eq(proofs.block_number, blocks.block_number))
+          )
+        : exists(
+            db
+              .select()
+              .from(proofs)
+              .innerJoin(
+                clusterVersions,
+                eq(proofs.cluster_version_id, clusterVersions.id)
+              )
+              .innerJoin(clusters, eq(clusterVersions.cluster_id, clusters.id))
+              .where(
+                and(
+                  eq(proofs.block_number, blocks.block_number),
+                  eq(clusters.is_multi_machine, machineType === "multi")
+                )
+              )
+          ),
     orderBy: (blocks, { desc }) => [desc(blocks.block_number)],
     limit: pagination.pageSize,
     offset: pagination.pageIndex * pagination.pageSize,
@@ -246,6 +262,33 @@ export const fetchBlocks = cache(
                   ),
         },
       },
+      where: (blocks, { exists, eq, and }) =>
+        machineType === "all"
+          ? exists(
+              db
+                .select()
+                .from(proofs)
+                .where(eq(proofs.block_number, blocks.block_number))
+            )
+          : exists(
+              db
+                .select()
+                .from(proofs)
+                .innerJoin(
+                  clusterVersions,
+                  eq(proofs.cluster_version_id, clusterVersions.id)
+                )
+                .innerJoin(
+                  clusters,
+                  eq(clusterVersions.cluster_id, clusters.id)
+                )
+                .where(
+                  and(
+                    eq(proofs.block_number, blocks.block_number),
+                    eq(clusters.is_multi_machine, machineType === "multi")
+                  )
+                )
+            ),
       orderBy: (blocks, { desc }) => [desc(blocks.block_number)],
       limit,
     })

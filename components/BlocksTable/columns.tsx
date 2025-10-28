@@ -2,7 +2,7 @@
 
 import { ColumnDef } from "@tanstack/react-table"
 
-import type { Block, Proof, ProofWithCluster } from "@/lib/types"
+import type { Block, ProofWithCluster } from "@/lib/types"
 
 import BlockNumber from "@/components/BlockNumber"
 import { ColumnHeader } from "@/components/ColumnHeader"
@@ -21,7 +21,7 @@ import { TooltipContentFooter } from "../ui/tooltip"
 
 import AvgBestMetric from "./AvgBestMetric"
 
-import { formatTimeAgo } from "@/lib/date"
+import { formatTimeAgoDetailed } from "@/lib/date"
 import { formatNumber } from "@/lib/number"
 import {
   getCostPerMgasStats,
@@ -60,7 +60,7 @@ export const columns: ColumnDef<Block>[] = [
 
       const timestamp = row.original.timestamp
       const formattedTimestamp = timestamp
-        ? formatTimeAgo(new Date(timestamp))
+        ? formatTimeAgoDetailed(new Date(timestamp))
         : "-"
 
       return (
