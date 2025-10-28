@@ -118,8 +118,8 @@ const ClusterAccordionItem = ({
             <RedX className="text-level-worst" />
           )}
         </div>
-        <div className="col-start-4">{formatUsd(clusterDetails.avg_cost)}</div>
-        <div className="col-start-5">{prettyMs(clusterDetails.avg_time)}</div>
+        <div className="col-start-4">{prettyMs(clusterDetails.avg_time)}</div>
+        <div className="col-start-5">{formatUsd(clusterDetails.avg_cost)}</div>
 
         <AccordionTrigger className="relative col-start-6 my-2 h-fit gap-2 rounded-full border-2 border-primary bg-background-highlight p-1 text-primary [&>svg]:size-6">
           <span className="sr-only">Toggle details</span>
@@ -203,21 +203,21 @@ const ClusterAccordion = ({ clusters }: ClusterAccordionProps) => (
           </MetricBox>
           <MetricBox className="col-start-4">
             <MetricLabel>
-              <MetricInfo label={<metrics.avgCostPerCluster.Label />}>
-                <Info.Label className="lowercase">
-                  {metrics.avgCostPerCluster.Label()}
-                </Info.Label>
-                <metrics.avgCostPerCluster.Details />
-              </MetricInfo>
-            </MetricLabel>
-          </MetricBox>
-          <MetricBox className="col-start-5">
-            <MetricLabel>
               <MetricInfo label={<metrics.avgProvingTimePerCluster.Label />}>
                 <Info.Label className="lowercase">
                   {metrics.avgProvingTimePerCluster.Label()}
                 </Info.Label>
                 <metrics.avgProvingTimePerCluster.Details />
+              </MetricInfo>
+            </MetricLabel>
+          </MetricBox>
+          <MetricBox className="col-start-5">
+            <MetricLabel>
+              <MetricInfo label={<metrics.avgCostPerCluster.Label />}>
+                <Info.Label className="lowercase">
+                  {metrics.avgCostPerCluster.Label()}
+                </Info.Label>
+                <metrics.avgCostPerCluster.Details />
               </MetricInfo>
             </MetricLabel>
           </MetricBox>

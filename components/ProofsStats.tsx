@@ -43,16 +43,6 @@ const ProofsStats = ({ recentSummary }: { recentSummary: RecentSummary }) => {
     <section className="grid grid-cols-1 gap-8 lg:grid-cols-2">
       <LineChartCard
         className="w-full"
-        title="cost"
-        format="currency"
-        data={costData}
-        isLoading={isLoading}
-        totalAvg={recentSummary.avg_cost_per_proof ?? 0}
-        totalMedian={recentSummary.median_cost_per_proof ?? 0}
-        formatValue={(value) => formatUsd(Number(value))}
-      />
-      <LineChartCard
-        className="w-full"
         title="latency"
         format="ms"
         data={latencyData}
@@ -60,6 +50,16 @@ const ProofsStats = ({ recentSummary }: { recentSummary: RecentSummary }) => {
         totalAvg={Number(recentSummary.avg_proving_time ?? 0)}
         totalMedian={Number(recentSummary.median_proving_time ?? 0)}
         formatValue={(value) => prettyMs(Number(value))}
+      />
+      <LineChartCard
+        className="w-full"
+        title="cost"
+        format="currency"
+        data={costData}
+        isLoading={isLoading}
+        totalAvg={recentSummary.avg_cost_per_proof ?? 0}
+        totalMedian={recentSummary.median_cost_per_proof ?? 0}
+        formatValue={(value) => formatUsd(Number(value))}
       />
     </section>
   )

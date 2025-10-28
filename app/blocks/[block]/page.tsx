@@ -329,6 +329,7 @@ export default async function BlockDetailsPage({
         </div>
 
         <BasicTabs
+          defaultTab="left"
           contentLeft={<ProofList proofs={multiMachineProofs} block={block} />}
           contentRight={
             <ProofList proofs={singleMachineProofs} block={block} />

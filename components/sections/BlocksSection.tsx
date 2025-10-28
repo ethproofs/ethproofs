@@ -74,6 +74,7 @@ const BlocksSection = async () => {
       </CardHeader>
 
       <BasicTabs
+        defaultTab="left"
         contentRight={<SimpleBlockTable machineType="single" />}
         contentLeft={<SimpleBlockTable machineType="multi" />}
       />

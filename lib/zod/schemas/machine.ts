@@ -9,18 +9,27 @@ export const machineSchema = z.object({
     description: "Number of CPU cores",
     example: 2,
   }),
-  gpu_models: z.array(z.string().max(200)).optional().openapi({
-    description: "List of GPU models",
-    example: ["RTX 4090", "RTX 4080"],
-  }),
-  gpu_count: z.array(z.number().int().positive()).optional().openapi({
-    description: "Number of GPUs",
-    example: [1, 1],
-  }),
-  gpu_memory_gb: z.array(z.number().int().positive()).optional().openapi({
-    description: "GPU memory size in GB",
-    example: [24, 24],
-  }),
+  gpu_models: z
+    .array(z.string().max(200))
+    .optional()
+    .openapi({
+      description: "List of GPU models",
+      example: ["RTX 4090", "RTX 4080"],
+    }),
+  gpu_count: z
+    .array(z.number().int().positive())
+    .optional()
+    .openapi({
+      description: "Number of GPUs",
+      example: [1, 1],
+    }),
+  gpu_memory_gb: z
+    .array(z.number().int().positive())
+    .optional()
+    .openapi({
+      description: "GPU memory size in GB",
+      example: [24, 24],
+    }),
   memory_size_gb: z.array(z.number().int().positive()).openapi({
     description: "Memory size in GB",
     example: [32, 32],

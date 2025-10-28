@@ -14,7 +14,9 @@ const SimpleBlocksTable = async ({ className, machineType }: Props) => {
   const teams = await getTeams()
   const blocks = await fetchBlocks(machineType, 5)
 
-  const blocksWithTeams = mergeBlocksWithTeams(blocks, teams)
+  const blocksWithTeams = mergeBlocksWithTeams(blocks, teams).filter(
+    (block) => block.proofs.length
+  )
 
   return (
     <DataTableUncontrolled
