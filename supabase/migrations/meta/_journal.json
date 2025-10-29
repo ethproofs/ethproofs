@@ -211,6 +211,13 @@
       "when": 1761580598641,
       "tag": "0029_add-cluster-id-to-proofs",
       "breakpoints": true
+    },
+    {
+      "idx": 30,
+      "version": "7",
+      "when": 1761748322075,
+      "tag": "0030_add-updated-at-to-proofs",
+      "breakpoints": true
     }
   ]
 }

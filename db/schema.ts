@@ -484,6 +484,12 @@ export const proofs = pgTable(
     })
       .defaultNow()
       .notNull(),
+    updated_at: timestamp("updated_at", {
+      withTimezone: true,
+      mode: "string",
+    })
+      .defaultNow()
+      .notNull(),
     proved_timestamp: timestamp("proved_timestamp", {
       withTimezone: true,
       mode: "string",
@@ -527,6 +533,7 @@ export const proofs = pgTable(
     index("proofs_cluster_id_idx").on(table.cluster_id),
     index("proofs_proved_timestamp_idx").on(table.proved_timestamp),
     index("proofs_created_at_idx").on(table.created_at),
+    index("proofs_updated_at_idx").on(table.updated_at),
     pgPolicy("Enable updates for users with an api key", {
       as: "permissive",
       for: "update",
