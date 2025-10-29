@@ -1,5 +1,5 @@
 import { startOfDay } from "date-fns"
-import { and, eq, gte, lte, sql } from "drizzle-orm"
+import { and, eq, gte, inArray, lte, sql } from "drizzle-orm"
 import { count } from "drizzle-orm"
 import { unstable_cache as cache } from "next/cache"
 import { PaginationState } from "@tanstack/react-table"
@@ -154,13 +154,13 @@ export const fetchProvedProofsByClusterId = async (
 }
 
 export const fetchProofsFiltered = async ({
-  teamSlug,
   block,
+  clusterIds,
   limit = 100,
   offset = 0,
 }: {
-  teamSlug?: string
   block?: string
+  clusterIds?: string[]
   limit?: number
   offset?: number
 }) => {
@@ -199,22 +199,9 @@ export const fetchProofsFiltered = async ({
   // Only return proved proofs
   conditions.push(eq(proofs.proof_status, "proved"))
 
-  // First get team ID if team slug is provided
-  let teamId: string | null = null
-  if (teamSlug) {
-    const team = await db.query.teams.findFirst({
-      where: (teams, { eq }) => eq(teams.slug, teamSlug),
-    })
-    if (team) {
-      teamId = team.id
-      conditions.push(eq(proofs.team_id, teamId))
-    } else {
-      // Team not found, return empty results
-      return {
-        rows: [],
-        rowCount: 0,
-      }
-    }
+  // Filter by cluster IDs if provided
+  if (clusterIds && clusterIds.length > 0) {
+    conditions.push(inArray(proofs.cluster_id, clusterIds))
   }
 
   // Query proofs with all related data

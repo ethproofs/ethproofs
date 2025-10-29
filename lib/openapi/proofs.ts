@@ -144,10 +144,12 @@ export const proofsPaths: ZodOpenApiPathsObject = {
           },
         },
         {
-          name: "team",
+          name: "cluster_ids",
           in: "query",
-          description: "Filter by team slug",
+          description:
+            "Filter by comma-separated cluster UUIDs (e.g., uuid1,uuid2,uuid3)",
           required: false,
+          example: "550e8400-e29b-41d4-a716-446655440000,660e8400-e29b-41d4-a716-446655440001",
           schema: {
             type: "string",
           },
