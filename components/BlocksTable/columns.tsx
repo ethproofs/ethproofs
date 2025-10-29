@@ -117,6 +117,25 @@ export const columns: ColumnDef<Block>[] = [
       )
     },
   },
+  // Proving time
+  {
+    id: "proving_time",
+    accessorKey: "proofs",
+    header: () => (
+      <ColumnHeader label={<metrics.provingTime.Label />}>
+        <metrics.provingTime.Details />
+      </ColumnHeader>
+    ),
+    cell: ({ cell }) => {
+      const proofs = cell.getValue() as ProofWithCluster[]
+
+      const stats = getProvingTimeStats(proofs)
+
+      if (!stats) return <Null />
+
+      return <AvgBestMetric stats={stats} />
+    },
+  },
   // Cost per proof
   {
     id: "cost_per_proof",
@@ -149,25 +168,6 @@ export const columns: ColumnDef<Block>[] = [
       const { proofs, gas_used } = row.original
 
       const stats = getCostPerMgasStats(proofs, gas_used)
-
-      if (!stats) return <Null />
-
-      return <AvgBestMetric stats={stats} />
-    },
-  },
-  // Proving time
-  {
-    id: "proving_time",
-    accessorKey: "proofs",
-    header: () => (
-      <ColumnHeader label={<metrics.provingTime.Label />}>
-        <metrics.provingTime.Details />
-      </ColumnHeader>
-    ),
-    cell: ({ cell }) => {
-      const proofs = cell.getValue() as ProofWithCluster[]
-
-      const stats = getProvingTimeStats(proofs)
 
       if (!stats) return <Null />
 
