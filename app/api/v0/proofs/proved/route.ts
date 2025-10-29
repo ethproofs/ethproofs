@@ -5,10 +5,9 @@ import { ZodError } from "zod"
 import { TAGS } from "@/lib/constants"
 
 import { db } from "@/db"
-import { clusters, programs, proofs } from "@/db/schema"
+import { clusters, proofs } from "@/db/schema"
 import { updateBlock } from "@/lib/api/blocks"
 import { uploadProofBinary } from "@/lib/api/proof-binaries"
-import { isStorageQuotaExceeded } from "@/lib/api/storage"
 import { getTeam } from "@/lib/api/teams"
 import { withAuth } from "@/lib/middleware/with-auth"
 import { provedProofSchema } from "@/lib/zod/schemas/proof"
@@ -32,8 +31,7 @@ export const POST = withAuth(async ({ request, user, timestamp }) => {
     return new Response("Invalid request", { status: 400 })
   }
 
-  const { block_number, cluster_id, verifier_id, proof, ...restProofPayload } =
-    proofPayload
+  const { block_number, cluster_id, proof, ...restProofPayload } = proofPayload
 
   // Get cluster uuid from cluster_id
   const cluster = await db.query.clusters.findFirst({
@@ -103,34 +101,6 @@ export const POST = withAuth(async ({ request, user, timestamp }) => {
     })
   }
 
-  // TODO:TEAM - revisit this code, is it still needed?
-  let programId: number | undefined
-  if (verifier_id) {
-    const existingProgram = await db.query.programs.findFirst({
-      columns: {
-        id: true,
-      },
-      where: (programs, { eq }) => eq(programs.verifier_id, verifier_id),
-    })
-
-    programId = existingProgram?.id
-
-    if (!existingProgram) {
-      try {
-        const [program] = await db
-          .insert(programs)
-          .values({
-            verifier_id,
-          })
-          .returning()
-
-        programId = program?.id
-      } catch (error) {
-        console.error("Error creating program:", error)
-      }
-    }
-  }
-
   const binaryBuffer = Buffer.from(proof, "base64")
 
   const dataToInsert = {
@@ -138,7 +108,6 @@ export const POST = withAuth(async ({ request, user, timestamp }) => {
     block_number,
     cluster_id: cluster.id,
     cluster_version_id: clusterVersion.id,
-    program_id: programId,
     proof_status: "proved",
     proved_timestamp: timestamp,
     size_bytes: binaryBuffer.byteLength,

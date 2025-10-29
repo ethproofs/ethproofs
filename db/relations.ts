@@ -12,7 +12,6 @@ import {
   clusters,
   clusterVersions,
   machines,
-  programs,
   proofs,
   recursiveRootProofs,
   teams,
@@ -171,12 +170,4 @@ export const proofsRelations = relations(proofs, ({ one }) => ({
     fields: [proofs.team_id],
     references: [teams.id],
   }),
-  program: one(programs, {
-    fields: [proofs.program_id],
-    references: [programs.id],
-  }),
-}))
-
-export const programsRelations = relations(programs, ({ many }) => ({
-  proofs: many(proofs),
 }))

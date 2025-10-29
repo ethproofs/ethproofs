@@ -218,6 +218,20 @@
       "when": 1761748322075,
       "tag": "0030_add-updated-at-to-proofs",
       "breakpoints": true
+    },
+    {
+      "idx": 31,
+      "version": "7",
+      "when": 1761750016168,
+      "tag": "0031_drop-program-id-from-proofs",
+      "breakpoints": true
+    },
+    {
+      "idx": 32,
+      "version": "7",
+      "when": 1761750145627,
+      "tag": "0032_drop-programs-table",
+      "breakpoints": true
     }
   ]
 }

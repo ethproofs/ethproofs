@@ -438,30 +438,6 @@ export const zkvmVersions = pgTable("zkvm_versions", {
     .notNull(),
 })
 
-export const programs = pgTable(
-  "programs",
-  {
-    id: bigint({ mode: "number" }).primaryKey().generatedByDefaultAsIdentity(),
-    verifier_id: text("verifier_id").notNull().unique(),
-    created_at: timestamp("created_at", { withTimezone: true, mode: "string" })
-      .defaultNow()
-      .notNull(),
-  },
-  () => [
-    pgPolicy("Enable read access for all users", {
-      as: "permissive",
-      for: "select",
-      to: ["public"],
-      using: sql`true`,
-    }),
-    pgPolicy("Enable insert for users with an api key", {
-      as: "permissive",
-      for: "insert",
-      to: ["public"],
-    }),
-  ]
-)
-
 export const proofs = pgTable(
   "proofs",
   {
@@ -515,13 +491,6 @@ export const proofs = pgTable(
         onUpdate: "cascade",
       }),
     proving_time: integer("proving_time"),
-    program_id: bigint("program_id", { mode: "number" }).references(
-      () => programs.id,
-      {
-        onDelete: "set null",
-        onUpdate: "cascade",
-      }
-    ),
     size_bytes: bigint("size_bytes", { mode: "number" }),
   },
   (table) => [
