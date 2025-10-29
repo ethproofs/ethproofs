@@ -42,13 +42,13 @@ const ProversSection = async () => {
     }
   })
 
-  const singleMachineClusters = clusters.filter(
-    (cluster) => !cluster.is_multi_machine
-  )
+  const singleMachineClusters = clusters
+    .filter((cluster) => !cluster.is_multi_machine)
+    .sort((a, b) => a.avg_time - b.avg_time)
 
-  const multiMachineClusters = clusters.filter(
-    (cluster) => cluster.is_multi_machine
-  )
+  const multiMachineClusters = clusters
+    .filter((cluster) => cluster.is_multi_machine)
+    .sort((a, b) => a.avg_time - b.avg_time)
 
   return (
     <Card className="!p-0 !pb-6 md:!pb-8">
