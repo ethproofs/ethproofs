@@ -133,16 +133,6 @@ export const POST = withAuth(async ({ request, user, timestamp }) => {
 
   const binaryBuffer = Buffer.from(proof, "base64")
 
-  // TODO:TEAM - revisit the need for storage quota
-  const storageQuotaExceeded = await isStorageQuotaExceeded(
-    teamId,
-    binaryBuffer.byteLength
-  )
-
-  if (storageQuotaExceeded) {
-    console.log(`[Storage Quota Exceeded] team ${teamId} has reached quota`)
-  }
-
   const dataToInsert = {
     ...restProofPayload,
     block_number,
@@ -183,14 +173,6 @@ export const POST = withAuth(async ({ request, user, timestamp }) => {
         revalidateTag(TAGS.CLUSTER_SUMMARY)
       }
 
-      if (!storageQuotaExceeded) {
-        const team = await getTeam(teamId)
-        const teamSlug = team?.slug ? team.slug : cluster.id.split("-")[0]
-        // NEW format: teamSlug_clusterId_proofId
-        const filename = `${teamSlug}_${cluster.id}_${newProof.proof_id}.bin`
-        await uploadProofBinary(filename, binaryBuffer)
-      }
-
       return newProof
     })
 
@@ -198,6 +180,33 @@ export const POST = withAuth(async ({ request, user, timestamp }) => {
     revalidateTag(TAGS.BLOCKS)
     revalidateTag(`cluster-${cluster.id}`)
     revalidateTag(`block-${block_number}`)
+
+    // TODO:TEAM - revisit the need for storage quota
+    // const storageQuotaExceeded = await isStorageQuotaExceeded(
+    //   teamId,
+    //   binaryBuffer.byteLength
+    // )
+    const storageQuotaExceeded = false
+    // if (storageQuotaExceeded) {
+    //   console.log(`[Storage Quota Exceeded] team ${teamId} has reached quota`)
+    // }
+
+    // Upload proof binary asynchronously after returning response
+    if (!storageQuotaExceeded) {
+      void (async () => {
+        try {
+          const team = await getTeam(teamId)
+          const teamSlug = team?.slug ? team.slug : cluster.id.split("-")[0]
+          const filename = `${teamSlug}_${cluster.id}_${newProof.proof_id}.bin`
+          await uploadProofBinary(filename, binaryBuffer)
+        } catch (error) {
+          console.error(
+            `[Proved] Error uploading proof binary for proof_id ${newProof.proof_id}:`,
+            error
+          )
+        }
+      })()
+    }
 
     return Response.json(newProof)
   } catch (error) {
