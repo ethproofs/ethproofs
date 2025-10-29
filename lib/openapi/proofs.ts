@@ -144,7 +144,7 @@ export const proofsPaths: ZodOpenApiPathsObject = {
           },
         },
         {
-          name: "cluster_ids",
+          name: "clusters",
           in: "query",
           description:
             "Filter by comma-separated cluster UUIDs (e.g., uuid1,uuid2,uuid3)",
