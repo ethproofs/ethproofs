@@ -1,18 +1,18 @@
-import { Box, Check, X as RedX } from "lucide-react"
+import { Check, X as RedX } from "lucide-react"
 import type { Metadata } from "next"
 import { notFound } from "next/navigation"
 
 import { SummaryItem } from "@/lib/types"
 
 import ClusterMachineSummary from "@/components/ClusterMachineSummary"
-import ClusterProofRow from "@/components/ClusterProofRow"
 import { DisplayTeam } from "@/components/DisplayTeamLink"
 import KPIs from "@/components/KPIs"
+import MachineDetails from "@/components/MachineDetails"
 import NoData from "@/components/NoData"
 import Null from "@/components/Null"
+import { ProofsTable } from "@/components/proofs-table/proofs-table"
 import { Card } from "@/components/ui/card"
 import Link from "@/components/ui/link"
-import MachineDetails from "@/components/ui/MachineDetails"
 import { MetricBox, MetricInfo, MetricLabel } from "@/components/ui/metric"
 import { TooltipContentHeader } from "@/components/ui/tooltip"
 
@@ -64,10 +64,16 @@ export default async function ClusterDetailsPage({
     return notFound()
   }
 
-  const [clusterSummary, latestProofs] = await Promise.all([
+  const [clusterSummary, latestProofsRaw] = await Promise.all([
     getClusterSummaryById(clusterId),
     fetchProvedProofsByClusterId(clusterId),
   ])
+
+  const latestProofs = latestProofsRaw.map((proof) => ({
+    ...proof,
+    block_number: proof.block.block_number,
+    block_timestamp: proof.block.timestamp,
+  }))
 
   const team = cluster.team
   const lastVersion = cluster.versions[0]
@@ -121,14 +127,10 @@ export default async function ClusterDetailsPage({
   return (
     <div className="mx-auto mt-16 max-w-screen-xl space-y-8 px-6 md:mt-24 md:px-8 [&>section]:w-full">
       <div id="hero-section" className="flex flex-col items-center gap-2">
-        <h1 className="text-shadow font-mono text-4xl font-semibold">
-          {cluster.nickname}
-        </h1>
+        <h1 className="text-4xl font-semibold">{cluster.nickname}</h1>
 
         <div className="text-center font-sans text-sm">
-          {cluster.is_multi_machine
-            ? "multi-machine cluster"
-            : "single machine cluster"}
+          {cluster.is_multi_machine ? "multi-GPU cluster" : "1x4090 cluster"}
         </div>
         {team && (
           <DisplayTeam
@@ -140,7 +142,7 @@ export default async function ClusterDetailsPage({
         )}
       </div>
 
-      <Card className="mx-auto w-fit">
+      <Card className="mx-auto w-fit p-6">
         <KPIs items={clusterSummaryItems} layout="flipped" />
       </Card>
 
@@ -153,11 +155,11 @@ export default async function ClusterDetailsPage({
       )}
 
       {cluster.software_link && (
-        <aside className="flex items-center justify-center gap-2 rounded bg-background-accent px-6 py-4 text-center">
+        <aside className="flex items-center justify-center gap-2 rounded bg-accent px-6 py-4 text-center">
           download the binary
           <Link
             href={cluster.software_link}
-            className="text-primary-light hover:underline"
+            className="text-primary hover:text-primary-light"
           >
             here
           </Link>
@@ -169,7 +171,7 @@ export default async function ClusterDetailsPage({
           <div className="font-sans text-sm text-body-secondary">zkVM</div>
           <Link
             href={`/zkvms/${zkvm.slug}`}
-            className="font-mono text-lg text-primary hover:underline"
+            className="text-lg text-primary hover:underline"
           >
             {zkvm.name}
           </Link>
@@ -188,15 +190,13 @@ export default async function ClusterDetailsPage({
               </MetricInfo>
             </MetricLabel>
           </MetricBox>
-          <div className="font-mono text-lg text-primary">{zkvm.isa}</div>
+          <div className="text-lg text-primary">{zkvm.isa}</div>
         </div>
         <div className="flex flex-col items-center gap-1 p-4">
           <div className="font-sans text-sm text-body-secondary">
             proof type
           </div>
-          <div className="font-mono text-lg text-primary">
-            {cluster.proof_type}
-          </div>
+          <div className="text-lg text-primary">{cluster.proof_type}</div>
         </div>
       </section>
 
@@ -313,15 +313,14 @@ export default async function ClusterDetailsPage({
         </section>
       )}
 
-      <section className="flex flex-col">
-        <div className="flex items-center gap-2 px-6">
-          <Box strokeWidth="1" className="size-11" />
-          <div className="font-mono text-xl">latest proofs</div>
-        </div>
+      <section className="pt-12">
+        <span className="text-2xl">lastest proofs</span>
         {latestProofs.length ? (
-          latestProofs.map((proof) => (
-            <ClusterProofRow key={proof.proof_id} proof={proof} />
-          ))
+          <ProofsTable
+            className="mt-4"
+            proofs={latestProofs}
+            showTeam={false}
+          />
         ) : (
           <NoData>for this cluster</NoData>
         )}

@@ -1,6 +1,6 @@
 import type { Metadata } from "next"
 
-import BasicTabs from "@/components/BasicTabs"
+import { BasicTabs } from "@/components/BasicTabs"
 import KillersTable from "@/components/KillersTable"
 
 import { getBenchmarks } from "@/lib/api/benchmarks"
@@ -25,8 +25,8 @@ export default async function KillersPage() {
 
   return (
     <>
-      <div className="mb-24 mt-16 space-y-2 px-6 text-center font-mono font-semibold md:mt-24">
-        <h1 className="text-shadow text-3xl">killers</h1>
+      <div className="mb-24 mt-16 space-y-2 px-6 text-center font-semibold md:mt-24">
+        <h1 className="text-3xl">killers</h1>
         <div className="mx-auto max-w-md font-sans text-sm font-normal">
           Prover killers are adversarially-crafted benchmarks to test zkVMs with
           worst-case blocks. The goal is to find performance bottlenecks,

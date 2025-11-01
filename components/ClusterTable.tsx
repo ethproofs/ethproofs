@@ -14,11 +14,11 @@ import { formatShortDate } from "@/lib/date"
 type ClusterRowItemProps = { cluster: ClusterWithRelations }
 
 const ClusterRowItem = ({ cluster }: ClusterRowItemProps) => (
-  <div className="col-span-full row-span-2 grid grid-cols-subgrid grid-rows-subgrid border-b border-primary-border">
+  <div className="col-span-full row-span-2 grid grid-cols-subgrid grid-rows-subgrid border-b border-border">
     <div className="row-span-2 grid grid-cols-1 grid-rows-subgrid px-6 py-4">
       <div className="text-lg">{cluster.nickname}</div>
       <div className="mt-auto text-xs">
-        <span className="italic text-body-secondary">updated</span>{" "}
+        <span className="text-body-secondary">updated</span>{" "}
         <span className="uppercase">
           {formatShortDate(new Date(cluster.versions[0].created_at))}
         </span>
@@ -74,7 +74,6 @@ const ClusterRowItem = ({ cluster }: ClusterRowItemProps) => (
       <ButtonLink
         size="icon"
         variant="outline"
-        className="h-fit bg-background-highlight p-1"
         href={`/clusters/${cluster.id}`}
       >
         <ChevronRight />
@@ -97,7 +96,7 @@ const ClusterTable = ({ className, clusters, ...props }: ClusterTableProps) => (
         <ClusterRowItem key={cluster.id} cluster={cluster} />
       ))
     ) : (
-      <NoData>for this set of machines</NoData>
+      <NoData />
     )}
   </div>
 )

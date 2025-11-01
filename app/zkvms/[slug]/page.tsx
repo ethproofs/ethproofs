@@ -1,11 +1,11 @@
-import { Box } from "lucide-react"
+import { Cpu } from "lucide-react"
 import { Metadata } from "next"
 import { notFound } from "next/navigation"
 
-import ClusterAccordion from "@/components/ClusterAccordion"
+import { ClustersTable } from "@/components/clusters-table/clusters-table"
 import { DisplayTeamLink } from "@/components/DisplayTeamLink"
 import SoftwareDetails from "@/components/SoftwareDetails"
-import GitHub from "@/components/svgs/github.svg"
+import GitHubLogo from "@/components/svgs/github-logo.svg"
 import Link from "@/components/ui/link"
 
 import { getActiveClusters } from "@/lib/api/clusters"
@@ -74,14 +74,12 @@ export default async function ZkvmDetailsPage({
   )
 
   return (
-    <>
-      <div className="mb-24 mt-16 space-y-4 px-6 text-center font-mono md:mt-24 md:px-8">
-        <h1 className="text-shadow text-3xl font-semibold">{zkvm.name}</h1>
+    <div className="mx-auto mt-16 max-w-screen-xl space-y-8 px-6 md:mt-24 md:px-8 [&>section]:w-full">
+      <div className="mb-24 mt-16 space-y-4 px-6 text-center md:mt-24 md:px-8">
+        <h1 className="text-3xl font-semibold">{zkvm.name}</h1>
 
         <div className="flex items-center justify-center gap-3">
-          <span className="inline-block font-mono italic text-body-secondary">
-            by
-          </span>
+          <span className="inline-block italic text-body-secondary">by</span>
           <DisplayTeamLink team={zkvm.team} height={24} />
         </div>
       </div>
@@ -106,7 +104,7 @@ export default async function ZkvmDetailsPage({
         <div className="row-span-2 grid grid-cols-subgrid place-items-center gap-y-1 text-nowrap">
           <div className="text-body-secondary">official repository</div>
           <div className="flex items-center gap-2">
-            <GitHub className="text-2xl" />{" "}
+            <GitHubLogo className="text-2xl" />{" "}
             <Link href={zkvm.repo_url} className="hover:underline">
               {new URL(zkvm.repo_url).pathname.replace(/^\//, "")}
             </Link>
@@ -114,25 +112,17 @@ export default async function ZkvmDetailsPage({
         </div>
       </div>
 
-      <div className="bg-gradient-to-t from-background-active/20">
-        <div className="mx-auto max-w-screen-xl pb-6">
-          <h2 className="sr-only">zkVM software details</h2>
-          <SoftwareDetails detailItems={getSoftwareDetailItems(zkvmMetrics)} />
-        </div>
+      <div className="mx-auto max-w-screen-xl pb-6">
+        <h2 className="sr-only">zkVM software details</h2>
+        <SoftwareDetails detailItems={getSoftwareDetailItems(zkvmMetrics)} />
       </div>
 
       <div className="mx-auto max-w-screen-xl">
-        <section className="mx-6 mt-40 px-6 md:mx-auto md:px-8">
-          <h2 className="flex items-center gap-2 font-mono text-lg font-normal text-primary">
-            <Box className="size-11 text-primary" strokeWidth="1" />
-            active clusters using {zkvm.name}: {zkvm.activeClusters} /{" "}
-            {zkvm.totalClusters}
-          </h2>
-          <div className="-me-6 overflow-x-auto pe-6">
-            <ClusterAccordion clusters={clusters} />
-          </div>
+        <section className="mt-12">
+          <span className="text-2xl">active clusters</span>
+          <ClustersTable className="mt-4" clusters={clusters} />
         </section>
       </div>
-    </>
+    </div>
   )
 }

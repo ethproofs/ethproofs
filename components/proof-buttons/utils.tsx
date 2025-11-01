@@ -56,7 +56,7 @@ export function getProofButtonClasses(buttonState: ProofButtonState) {
       return `${baseClasses} border-green-500 bg-green-500/20 shadow-lg shadow-green-500/20`
     case "failed":
     case "error":
-      return `${baseClasses} border-red-500 bg-transparent`
+      return `${baseClasses} border-destructive bg-transparent`
     default:
       return `${baseClasses} border-primary bg-transparent hover:bg-green-500/10`
   }
@@ -65,7 +65,7 @@ export function getProofButtonClasses(buttonState: ProofButtonState) {
 export function getProofButtonTextColorClass(buttonState: ProofButtonState) {
   switch (buttonState) {
     case "disabled":
-      return "text-body-secondary"
+      return "text-muted-foreground"
     case "download":
     case "verify":
       return "text-primary"
@@ -77,8 +77,8 @@ export function getProofButtonTextColorClass(buttonState: ProofButtonState) {
       return "text-green-500"
     case "failed":
     case "error":
-      return "text-red-500"
+      return "text-destructive"
     default:
-      return "text-body-secondary"
+      return "text-muted-foreground"
   }
 }

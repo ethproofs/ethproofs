@@ -23,8 +23,11 @@ const SoftwareAccordionItemLayout = ({
     version.id > latest.id ? version : latest
   )
   return (
-    <AccordionItem value={value} className="col-span-8 grid grid-cols-subgrid">
-      <div className="col-span-8 grid grid-cols-subgrid items-center justify-items-center gap-12 text-nowrap border-b p-px px-6">
+    <AccordionItem
+      value={value}
+      className="col-span-8 grid w-full grid-cols-subgrid hover:bg-muted/5 dark:hover:bg-muted/10"
+    >
+      <div className="col-span-8 grid grid-cols-subgrid items-center justify-items-center gap-12 text-nowrap p-px px-6">
         <div className="col-start-1 flex items-center gap-3 justify-self-start">
           <Link
             href={`/zkvms/${zkvm.slug}`}
@@ -32,9 +35,7 @@ const SoftwareAccordionItemLayout = ({
           >
             {zkvm.name}
           </Link>
-          <span className="block font-mono text-sm italic text-body-secondary">
-            by
-          </span>
+          <span className="block text-sm italic text-body-secondary">by</span>
           <div className="min-w-24">
             <DisplayTeamLink team={zkvm.team} className="block" />
           </div>

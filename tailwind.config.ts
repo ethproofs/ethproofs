@@ -2,7 +2,7 @@ import type { Config } from "tailwindcss"
 import tailwindcssAnimate from "tailwindcss-animate"
 
 const config = {
-  darkMode: ["class"],
+  darkMode: ["selector"],
   content: [
     "./pages/**/*.{ts,tsx}",
     "./components/**/*.{ts,tsx}",
@@ -19,12 +19,10 @@ const config = {
     },
     extend: {
       fontFamily: {
-        heading: "var(--font-ibm-plex-sans)",
-        body: "var(--font-ibm-plex-sans)",
-        mono: "var(--font-ibm-plex-mono)",
+        heading: "var(--font-lock-sans-stencil)",
+        body: "var(--font-lock-sans)",
       },
       fontSize: {
-        // Ex: "name": ["font-size", "line-height"]
         "6xl": ["4rem", "4.5rem"],
         "5xl": ["3.25rem", "4rem"],
         "4xl": ["2.75rem", "3.25rem"],
@@ -36,57 +34,126 @@ const config = {
         sm: ["0.875rem", "1.375rem"],
         xs: ["0.75rem", "1.125rem"],
       },
-      gridTemplateColumns: {
-        "6-auto": "repeat(5, 1fr) auto",
-      },
       colors: {
-        background: {
-          DEFAULT: "hsla(var(--background))",
-          highlight: "hsla(var(--background-highlight))",
-          active: "hsla(var(--background-active))",
-          accent: "hsla(var(--background-accent))",
-          modal: "hsla(var(--background-modal))",
-        },
+        border: "hsla(var(--border))",
+        input: "hsla(var(--input))",
+        ring: "hsla(var(--ring))",
+        background: "hsla(var(--background))",
+        foreground: "hsla(var(--foreground))",
         primary: {
           DEFAULT: "hsla(var(--primary))",
+          foreground: "hsla(var(--primary-foreground))",
           light: "hsla(var(--primary-light))",
           dark: "hsla(var(--primary-dark))",
           visited: "hsla(var(--primary-visited))",
           border: "hsla(var(--primary-border))",
         },
-        body: {
-          DEFAULT: "hsla(var(--body))",
-          secondary: "hsla(var(--body-secondary))",
+        secondary: {
+          DEFAULT: "hsla(var(--secondary))",
+          foreground: "hsla(var(--secondary-foreground))",
+        },
+        destructive: {
+          DEFAULT: "hsla(var(--destructive))",
+          foreground: "hsla(var(--destructive-foreground))",
+        },
+        muted: {
+          DEFAULT: "hsla(var(--muted))",
+          foreground: "hsla(var(--muted-foreground))",
+        },
+        accent: {
+          DEFAULT: "hsla(var(--accent))",
+          foreground: "hsla(var(--accent-foreground))",
+        },
+        popover: {
+          DEFAULT: "hsla(var(--popover))",
+          foreground: "hsla(var(--popover-foreground))",
+        },
+        card: {
+          DEFAULT: "hsla(var(--card))",
+          foreground: "hsla(var(--card-foreground))",
+        },
+        brand: {
+          secondary: "hsla(var(--brand-secondary))",
+          "secondary-foreground": "hsla(var(--brand-secondary-foreground))",
+        },
+        success: {
+          DEFAULT: "hsla(var(--success))",
+          foreground: "hsla(var(--success-foreground))",
+        },
+        warning: {
+          DEFAULT: "hsla(var(--warning))",
+          foreground: "hsla(var(--warning-foreground))",
+        },
+        info: {
+          DEFAULT: "hsla(var(--info))",
+          foreground: "hsla(var(--info-foreground))",
+        },
+        chart: {
+          "1": "hsla(var(--chart-1))",
+          "2": "hsla(var(--chart-2))",
+          "3": "hsla(var(--chart-3))",
+          "4": "hsla(var(--chart-4))",
+          "5": "hsla(var(--chart-5))",
+          "6": "hsla(var(--chart-6))",
+          "7": "hsla(var(--chart-7))",
+          "8": "hsla(var(--chart-8))",
+          "9": "hsla(var(--chart-9))",
+          "10": "hsla(var(--chart-10))",
+          "11": "hsla(var(--chart-11))",
+          "12": "hsla(var(--chart-12))",
+          "13": "hsla(var(--chart-13))",
+          "14": "hsla(var(--chart-14))",
+          "15": "hsla(var(--chart-15))",
+          "16": "hsla(var(--chart-16))",
+          "17": "hsla(var(--chart-17))",
+          border: "hsla(var(--chart-border))",
         },
         sidebar: {
           DEFAULT: "hsla(var(--sidebar))",
+          foreground: "hsla(var(--sidebar-foreground))",
+          primary: "hsla(var(--sidebar-primary))",
+          "primary-foreground": "hsla(var(--sidebar-primary-foreground))",
+          accent: "hsla(var(--sidebar-accent))",
+          "accent-foreground": "hsla(var(--sidebar-accent-foreground))",
+          border: "hsla(var(--sidebar-border))",
+          ring: "hsla(var(--sidebar-ring))",
         },
-        chart: {
-          1: "hsla(var(--chart-1))",
-          2: "hsla(var(--chart-2))",
-          3: "hsla(var(--chart-3))",
-          4: "hsla(var(--chart-4))",
-          5: "hsla(var(--chart-5))",
-          border: "hsla(var(--chart-border))",
-        },
+        "background-highlight": "hsla(var(--background-highlight))",
+        "background-active": "hsla(var(--background-active))",
+        "background-accent": "hsla(var(--background-accent))",
+        placeholder: "hsla(var(--placeholder))",
         level: {
           best: "hsla(var(--level-best))",
           middle: "hsla(var(--level-middle))",
           worst: "hsla(var(--level-worst))",
         },
-        border: "hsla(var(--border))",
+        body: {
+          DEFAULT: "hsla(var(--foreground))",
+          secondary: "hsla(var(--muted-foreground))",
+        },
       },
       borderRadius: {
         "4xl": "2rem",
+        lg: "var(--radius)",
+        md: "calc(var(--radius) - 2px)",
+        sm: "calc(var(--radius) - 4px)",
       },
       keyframes: {
         "accordion-down": {
-          from: { height: "0" },
-          to: { height: "var(--radix-accordion-content-height)" },
+          from: {
+            height: "0",
+          },
+          to: {
+            height: "var(--radix-accordion-content-height)",
+          },
         },
         "accordion-up": {
-          from: { height: "var(--radix-accordion-content-height)" },
-          to: { height: "0" },
+          from: {
+            height: "var(--radix-accordion-content-height)",
+          },
+          to: {
+            height: "0",
+          },
         },
         "heart-beat": {
           "0%, 25%": {

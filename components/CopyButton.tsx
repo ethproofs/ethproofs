@@ -1,7 +1,6 @@
 "use client"
 
-import ClipboardCheck from "@/components/svgs/clipboard-check.svg"
-import Copy from "@/components/svgs/copy.svg"
+import { ClipboardCheck, Copy } from "lucide-react"
 
 import { cn } from "@/lib/utils"
 
@@ -32,7 +31,11 @@ const CopyButton = ({ message, className }: CopyButtonProps) => {
             type="button"
             onClick={onCopy(message)}
           >
-            {hasCopied ? <ClipboardCheck /> : <Copy />}
+            {hasCopied ? (
+              <ClipboardCheck className="size-4" />
+            ) : (
+              <Copy className="size-4" />
+            )}
           </Button>
         </TooltipTrigger>
         <TooltipContent>

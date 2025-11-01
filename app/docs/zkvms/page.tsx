@@ -44,7 +44,7 @@ export default async function ZkvmsPage() {
         <ZkvmsTable zkvms={zkvms} />
       </div>
 
-      <p className="text-muted-foreground text-sm">
+      <p className="text-sm text-muted-foreground">
         If you&apos;re looking for a zkVM version that&apos;s not listed here,
         please <Link href={issuesUrl.toString()}>open a GitHub issue</Link> and
         we&apos;ll work on adding it to the list.
