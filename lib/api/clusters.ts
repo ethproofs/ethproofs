@@ -1,4 +1,4 @@
-import { and, desc, eq, exists, gt, sql, sum } from "drizzle-orm"
+import { and, desc, eq, exists, sql, sum } from "drizzle-orm"
 import { unstable_cache as cache } from "next/cache"
 
 import { TAGS } from "@/lib/constants"
@@ -8,7 +8,6 @@ import {
   clusterMachines,
   clusters,
   clusterVersions,
-  proofs,
   teams,
   zkvms,
   zkvmVersions,
