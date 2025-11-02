@@ -10,19 +10,8 @@ export async function GET(
 
   const proofRow = await db.query.proofs.findFirst({
     columns: {
-      block_number: true,
+      cluster_id: true,
       team_id: true,
-    },
-    with: {
-      cluster_version: {
-        with: {
-          cluster: {
-            columns: {
-              id: true,
-            },
-          },
-        },
-      },
     },
     where: (proofs, { and, eq }) =>
       and(eq(proofs.proof_id, Number(id)), eq(proofs.proof_status, "proved")),
@@ -36,7 +25,7 @@ export async function GET(
   const teamSlug = team?.slug
     ? team.slug
     : team?.name.toLowerCase() || "unknown"
-  const filename = `${teamSlug}-vk.bin`
+  const filename = `${teamSlug}_${proofRow.cluster_id}.bin`
 
   const blob = await downloadVerificationKey(filename)
 
