@@ -16,7 +16,9 @@ export function useVerifyProof(prover: string) {
   const [verifyTime, setVerifyTime] = useState("")
   const verifyPicoProof = usePicoVerifier(prover === "brevis")
   const verifyZirenProof = useZirenVerifier(prover === "zkm")
-  const verifyZiskProof = useZiskVerifier(prover === "zisk")
+  const verifyZiskProof = useZiskVerifier(
+    prover === "zisk" || prover === "zkcloud"
+  )
 
   const verifyProof = useCallback(
     async (
@@ -30,7 +32,7 @@ export function useVerifyProof(prover: string) {
           result = verifyPicoProof(proofBytes, vkBytes)
         } else if (prover === "zkm") {
           result = verifyZirenProof(proofBytes, vkBytes)
-        } else if (prover === "zisk") {
+        } else if (prover === "zisk" || prover === "zkcloud") {
           result = verifyZiskProof(proofBytes, vkBytes)
         } else {
           result = { isValid: false, error: "Proof cannot be verified" }
