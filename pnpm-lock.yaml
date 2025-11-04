@@ -9,8 +9,8 @@ importers:
   .:
     dependencies:
       '@ethproofs/pico-wasm-stark-verifier':
-        specifier: ^0.1.5
-        version: 0.1.5
+        specifier: ^0.1.6
+        version: 0.1.6
       '@ethproofs/ziren-wasm-stark-verifier':
         specifier: ^0.1.6
         version: 0.1.6
@@ -1348,8 +1348,8 @@ packages:
     resolution: {integrity: sha512-d9zaMRSTIKDLhctzH12MtXvJKSSUhaHcjV+2Z+GK+EEY7XKpP5yR4x+N3TAcHTcu963nIr+TMcCb4DBCYX1z6Q==}
     engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
 
-  '@ethproofs/pico-wasm-stark-verifier@0.1.5':
-    resolution: {integrity: sha512-zBe0Ztdhb2cbUV08IX+znhO1CJlyCJML98Ek9W+6TuzmmAYX0bkryhIVeZdM8IXrQurDk53zaCE2zq+18MXMpg==}
+  '@ethproofs/pico-wasm-stark-verifier@0.1.6':
+    resolution: {integrity: sha512-6OiK4RrIXcRtO/GrOJQSQcm8NOsi1jek+DuqWeuYbvA3F007kiQA5GWNXUOGrL6wxyhgVbQsRhTQ6+H47/l+qA==}
     engines: {node: '>=16.0.0'}
 
   '@ethproofs/ziren-wasm-stark-verifier@0.1.6':
@@ -7212,7 +7212,7 @@ snapshots:
 
   '@eslint/js@8.57.1': {}
 
-  '@ethproofs/pico-wasm-stark-verifier@0.1.5': {}
+  '@ethproofs/pico-wasm-stark-verifier@0.1.6': {}
 
   '@ethproofs/ziren-wasm-stark-verifier@0.1.6': {}
 
