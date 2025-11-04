@@ -41,12 +41,12 @@ export function usePicoVerifier(active: boolean = false) {
   }, [active])
 
   return useCallback(
-    (proofBytes: Uint8Array, vkBytes: Uint8Array) => {
+    (vmType: string, proofBytes: Uint8Array, vkBytes: Uint8Array) => {
       if (!wasmModule || !isInitialized) {
         return { isValid: false, error: "[Pico] WASM module not initialized" }
       }
       try {
-        const result = wasmModule.verify_stark("KoalaBear", proofBytes, vkBytes)
+        const result = wasmModule.verify_stark(vmType, proofBytes, vkBytes)
         return { isValid: result }
       } catch (err) {
         console.error("[Pico] verify_stark failed:", err)

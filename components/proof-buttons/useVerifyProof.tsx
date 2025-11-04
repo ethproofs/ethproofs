@@ -1,10 +1,11 @@
 "use client"
 
-import { useCallback, useEffect, useState } from "react"
+import { useCallback, useState } from "react"
 
 import { usePicoVerifier } from "./verifier-hooks/usePicoVerifier"
 import { useZirenVerifier } from "./verifier-hooks/useZirenVerifier"
 import { useZiskVerifier } from "./verifier-hooks/useZiskVerifier"
+import { VERIFIABLE_PROVERS } from "./VerifyButton"
 
 export interface VerificationResult {
   error?: string
@@ -14,10 +15,15 @@ export interface VerificationResult {
 
 export function useVerifyProof(prover: string) {
   const [verifyTime, setVerifyTime] = useState("")
-  const verifyPicoProof = usePicoVerifier(prover === "brevis")
-  const verifyZirenProof = useZirenVerifier(prover === "zkm")
+  const verifyPicoProof = usePicoVerifier(
+    prover === VERIFIABLE_PROVERS.brevis ||
+      prover === VERIFIABLE_PROVERS.brevisMultiGpu
+  )
+  const verifyZirenProof = useZirenVerifier(prover === VERIFIABLE_PROVERS.zkm)
   const verifyZiskProof = useZiskVerifier(
-    prover === "zisk" || prover === "zkcloud"
+    prover === VERIFIABLE_PROVERS.zisk ||
+      prover === VERIFIABLE_PROVERS.ziskMultiGpu ||
+      prover === VERIFIABLE_PROVERS.zkcloud
   )
 
   const verifyProof = useCallback(
@@ -28,11 +34,17 @@ export function useVerifyProof(prover: string) {
       let result: VerificationResult
       try {
         const startTime = performance.now()
-        if (prover === "brevis") {
-          result = verifyPicoProof(proofBytes, vkBytes)
-        } else if (prover === "zkm") {
+        if (prover === VERIFIABLE_PROVERS.brevis) {
+          result = verifyPicoProof("Pico", proofBytes, vkBytes)
+        } else if (prover === VERIFIABLE_PROVERS.brevisMultiGpu) {
+          result = verifyPicoProof("PicoPrism", proofBytes, vkBytes)
+        } else if (prover === VERIFIABLE_PROVERS.zkm) {
           result = verifyZirenProof(proofBytes, vkBytes)
-        } else if (prover === "zisk" || prover === "zkcloud") {
+        } else if (
+          prover === VERIFIABLE_PROVERS.zisk ||
+          prover === VERIFIABLE_PROVERS.ziskMultiGpu ||
+          prover === VERIFIABLE_PROVERS.zkcloud
+        ) {
           result = verifyZiskProof(proofBytes, vkBytes)
         } else {
           result = { isValid: false, error: "Proof cannot be verified" }

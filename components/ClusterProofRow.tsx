@@ -25,6 +25,7 @@ export type RowProof = Required<
     | "proof_status"
     | "proof_id"
     | "size_bytes"
+    | "cluster_id"
   >
 > & {
   block: Required<Pick<Block, "timestamp" | "gas_used">>

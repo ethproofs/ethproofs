@@ -25,19 +25,24 @@ import { useAnimateCheckmark } from "@/hooks/useAnimateCheckmark"
 import { delay } from "@/utils/delay"
 
 export type ProofForDownload = Required<
-  Pick<Proof, "proof_status" | "proof_id" | "size_bytes">
+  Pick<Proof, "proof_status" | "proof_id" | "size_bytes" | "cluster_id">
 > & {
   team: Required<Pick<Team, "name" | "slug">>
 }
 
-const VERIFIABLE_PROVER_TEAM_SLUGS = new Set<string>([
-  "brevis",
-  "zkm",
-  "zisk",
-  "zkcloud",
-])
-function isVerifiableProverTeam(slug: string): boolean {
-  return VERIFIABLE_PROVER_TEAM_SLUGS.has(slug)
+export const VERIFIABLE_PROVERS = {
+  brevis: "4eb78a0b-61c1-464f-80f2-20f1f56aea73",
+  brevisMultiGpu: "b79041a5-b-ee8d-49b3-8207-86c7debf8e13",
+  zkm: "84a01f4b-8078-44cf-b463-90ddcd124960",
+  zisk: "efa90d57-3269-4d8d-8e9c-947d6c311420",
+  ziskMultiGpu: "33f14a82-47b7-42d7-9bc1-b81a46eea4fe",
+  zkcloud: "884fcc21-d522-4b4a-b535-7cfde199485c",
+} as const
+
+const VERIFIABLE_PROVER_IDS = new Set<string>(Object.values(VERIFIABLE_PROVERS))
+
+function isVerifiableProverTeam(id: string): boolean {
+  return VERIFIABLE_PROVER_IDS.has(id)
 }
 
 interface VerifyButtonProps {
@@ -59,7 +64,7 @@ const VerifyButton = ({
   const downloadVerificationKey = useDownloadVerificationKey()
   const { checkRef, checkmarkAnimation } = useAnimateCheckmark(buttonState)
 
-  const prover = proof.team.slug.toLowerCase()
+  const prover = proof.cluster_id
   const { verifyProof, verifyTime } = useVerifyProof(prover)
 
   useEffect(() => {
