@@ -32,7 +32,7 @@ export type ProofForDownload = Required<
 
 export const VERIFIABLE_PROVERS = {
   brevis: "4eb78a0b-61c1-464f-80f2-20f1f56aea73",
-  brevisMultiGpu: "b79041a5-b-ee8d-49b3-8207-86c7debf8e13",
+  brevisMultiGpu: "79041a5b-ee8d-49b3-8207-86c7debf8e13",
   zkm: "84a01f4b-8078-44cf-b463-90ddcd124960",
   zisk: "efa90d57-3269-4d8d-8e9c-947d6c311420",
   ziskMultiGpu: "33f14a82-47b7-42d7-9bc1-b81a46eea4fe",
