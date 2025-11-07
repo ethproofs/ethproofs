@@ -8,6 +8,20 @@ const config = {
     "./components/**/*.{ts,tsx}",
     "./app/**/*.{ts,tsx}",
   ],
+  safelist: [
+    "text-chart-4",
+    "bg-chart-4",
+    "text-chart-5",
+    "bg-chart-5",
+    "text-chart-9",
+    "bg-chart-9",
+    "text-chart-12",
+    "bg-chart-12",
+    "text-primary",
+    "bg-primary",
+    "text-placeholder",
+    "bg-placeholder",
+  ],
   prefix: "",
   theme: {
     container: {
@@ -223,6 +237,14 @@ const config = {
             opacity: "0",
           },
         },
+        "progress-pulse": {
+          "0%, 100%": {
+            opacity: "0.5",
+          },
+          "50%": {
+            opacity: "1",
+          },
+        },
       },
       animation: {
         "accordion-down": "accordion-down 0.2s ease-out",
@@ -233,6 +255,7 @@ const config = {
         "fade-in": "fade-in 0.3s forwards",
         "success-pulse": "success-pulse 1.2s ease-in-out 2 forwards",
         "success-ring": "success-ring 1s ease-out forwards",
+        "progress-pulse": "progress-pulse 2s ease-in-out infinite",
       },
     },
   },

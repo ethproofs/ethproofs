@@ -1,5 +1,5 @@
 import { startOfDay } from "date-fns"
-import { and, eq, gte, inArray, lte, sql } from "drizzle-orm"
+import { and, desc, eq, gte, inArray, lte, sql } from "drizzle-orm"
 import { count } from "drizzle-orm"
 import { unstable_cache as cache } from "next/cache"
 import { PaginationState } from "@tanstack/react-table"
@@ -255,4 +255,36 @@ export const fetchProofsFiltered = async ({
     rows: proofsRows,
     rowCount: rowCount.count,
   }
+}
+
+export const fetchAllProofsForRealtime = async () => {
+  // Get the 3 most recent block numbers that have proofs
+  const topBlocks = await db
+    .selectDistinct({ block_number: proofs.block_number })
+    .from(proofs)
+    .orderBy((proofs) => desc(proofs.block_number))
+    .limit(3)
+
+  if (topBlocks.length === 0) {
+    return []
+  }
+
+  const blockNumbersToFetch = topBlocks.map((row) => row.block_number)
+
+  // Fetch all proofs for those blocks
+  const proofsRows = await db.query.proofs.findMany({
+    with: {
+      block: true,
+      team: true,
+      cluster_version: {
+        with: {
+          cluster: true,
+        },
+      },
+    },
+    where: (proofs, { inArray }) => inArray(proofs.block_number, blockNumbersToFetch),
+    orderBy: (proofs, { desc }) => [desc(proofs.block_number), desc(proofs.created_at)],
+  })
+
+  return proofsRows
 }
