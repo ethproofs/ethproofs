@@ -14,7 +14,7 @@ import { useDataTableUrlState } from "@/components/data-table/useDataTableUrlSta
 import { DataTable } from "../data-table/data-table"
 
 import { columns, labels } from "./columns"
-import useRealtimeUpdates from "./useRealtimeUpdates"
+import useRealtimeBlocks from "./use-realtime-blocks"
 
 import { MachineType } from "@/lib/api/blocks"
 import { mergeBlocksWithTeams } from "@/lib/blocks"
@@ -61,7 +61,7 @@ export function BlocksTable({
     placeholderData: keepPreviousData,
   })
 
-  useRealtimeUpdates()
+  useRealtimeBlocks()
 
   // Prefetch next page
   usePrefetchQuery({

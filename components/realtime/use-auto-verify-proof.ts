@@ -2,35 +2,12 @@
 
 import { useEffect, useState } from "react"
 
-import { useDownloadProof } from "@/components/proof-buttons/useDownloadProof"
-import { useDownloadVerificationKey } from "@/components/proof-buttons/useDownloadVerificationKey"
-import { useVerifyProof } from "@/components/proof-buttons/useVerifyProof"
-
 import { delay } from "@/lib/utils"
 
-// Prover configuration
-const ziskVerifiableProvers = [
-  "efa90d57-3269-4d8d-8e9c-947d6c311420",
-  "33f14a82-47b7-42d7-9bc1-b81a46eea4fe",
-  "c759bbea-e1d7-462c-9fdc-2a47d979e495",
-]
-
-const picoVerifiableProvers = ["4eb78a0b-61c1-464f-80f2-20f1f56aea73"]
-
-const picoPrismVerifiableProvers = ["79041a5b-ee8d-49b3-8207-86c7debf8e13"]
-
-const zirenVerifiableProvers = ["84a01f4b-8078-44cf-b463-90ddcd124960"]
-
-const verifiableProvers = [
-  ...ziskVerifiableProvers,
-  ...picoVerifiableProvers,
-  ...picoPrismVerifiableProvers,
-  ...zirenVerifiableProvers,
-]
-
-function isVerifiableProver(id: string): boolean {
-  return verifiableProvers.includes(id)
-}
+import { useDownloadProof } from "@/hooks/verify-proof/use-download-proof"
+import { useDownloadVerificationKey } from "@/hooks/verify-proof/use-download-verification-key"
+import { useVerifyProof } from "@/hooks/verify-proof/use-verify-proof"
+import { isVerifiableProver } from "@/hooks/verify-proof/verify-proof.utils"
 
 export type VerificationStatus =
   | "idle"
