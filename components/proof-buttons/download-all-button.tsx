@@ -7,7 +7,7 @@ import { cn } from "@/lib/utils"
 
 import { Button } from "../ui/button"
 
-import { useDownloadAllProofs } from "./useDownloadAllProofs"
+import { useDownloadAllProofs } from "./use-download-all-proofs"
 
 interface DownloadAllButtonProps {
   blockHash: string

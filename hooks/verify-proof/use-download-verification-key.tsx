@@ -1,6 +1,6 @@
 import { useCallback, useState } from "react"
 
-import { handleBlobRead } from "./utils"
+import { handleBlobRead } from "./verify-proof.utils"
 
 export function useDownloadVerificationKey() {
   const [isDownloading, setIsDownloading] = useState(false)

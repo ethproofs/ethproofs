@@ -1,4 +1,5 @@
 import {
+  Activity,
   BarChart3,
   Box,
   Bug,
@@ -6,17 +7,16 @@ import {
   HeartPulse,
   Library,
   Target,
-  // TrendingUp,
   Users,
   Zap,
 } from "lucide-react"
 
 export const exploreNavItems = [
-  // {
-  //   label: "dashboard",
-  //   href: "/",
-  //   icon: <TrendingUp />,
-  // },
+  {
+    label: "realtime",
+    href: "/realtime",
+    icon: <Activity />,
+  },
   {
     label: "zkVMs",
     href: "/zkvms",

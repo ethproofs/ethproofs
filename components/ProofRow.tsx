@@ -25,7 +25,7 @@ import { TooltipContentHeader } from "@/components/ui/tooltip"
 
 import { cn } from "@/lib/utils"
 
-import DownloadButton from "./proof-buttons/DownloadButton"
+import DownloadButton from "./proof-buttons/download-button"
 import { MetricInfo, MetricLabel, MetricValue } from "./ui/metric"
 import { MetricBox } from "./ui/metric"
 import { metrics } from "./Metrics"

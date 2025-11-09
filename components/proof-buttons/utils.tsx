@@ -1,8 +1,3 @@
-export const handleBlobRead = async (blob: Blob): Promise<Uint8Array> => {
-  const buf = await blob.arrayBuffer()
-  return new Uint8Array(buf)
-}
-
 export const proofButtonStateMap = {
   disabled: "disabled",
   download: "download",

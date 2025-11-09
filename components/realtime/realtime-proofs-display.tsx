@@ -4,18 +4,21 @@ import { useRef } from "react"
 
 import type { ProofWithCluster } from "@/lib/types"
 
-import { useRealtimeProofsQuery } from "@/components/realtime/useRealtimeProofsQuery"
+import { useRealtimeProofsQuery } from "@/components/realtime/use-realtime-proofs-query"
 
+import { HidePunctuation } from "../StylePunctuation"
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card"
 
 import { ProofItem } from "./proof-item"
-import useRealtimeUpdatesForProofs from "./useRealtimeUpdatesForProofs"
+import useRealtimeProofs from "./use-realtime-proofs"
+
+import { formatNumber } from "@/lib/number"
 
 const TIMEOUT_MS = 1 * 60 * 1000 // 1 minutes
 
 export function RealtimeProofsDisplay() {
   // Use real-time subscription to invalidate cache
-  useRealtimeUpdatesForProofs()
+  useRealtimeProofs()
 
   const { data: proofsByBlock, isLoading, error } = useRealtimeProofsQuery()
   const completionTimesRef = useRef(new Map<number, number>())
@@ -78,7 +81,6 @@ export function RealtimeProofsDisplay() {
     )
   }
 
-  // Render all blocks to display
   return (
     <div className="space-y-6">
       {blocksToDisplay.map((blockNum) => {
@@ -100,7 +102,7 @@ export function RealtimeProofsDisplay() {
             <CardHeader>
               <div className="flex items-center justify-between">
                 <CardTitle className="text-xl font-normal">
-                  block {blockNum}
+                  <HidePunctuation>{formatNumber(blockNum)}</HidePunctuation>
                 </CardTitle>
                 {allProved && completedAt && (
                   <span className="text-sm text-muted-foreground">

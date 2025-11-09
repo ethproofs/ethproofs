@@ -5,7 +5,7 @@ import { useCallback, useState } from "react"
 import { usePicoVerifier } from "./verifier-hooks/usePicoVerifier"
 import { useZirenVerifier } from "./verifier-hooks/useZirenVerifier"
 import { useZiskVerifier } from "./verifier-hooks/useZiskVerifier"
-import { getProverType } from "./VerifyButton"
+import { getProverType } from "./verify-proof.utils"
 
 export interface VerificationResult {
   error?: string
