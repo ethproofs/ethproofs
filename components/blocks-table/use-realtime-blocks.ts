@@ -5,7 +5,7 @@ import { createClient } from "@/utils/supabase/client"
 
 // This hook subscribes to real-time updates for blocks and proofs tables
 // and invalidates the blocks query cache when changes occur
-const useRealtimeUpdates = () => {
+const useRealtimeBlocks = () => {
   const queryClient = useQueryClient()
 
   const supabase = createClient()
@@ -54,4 +54,4 @@ const useRealtimeUpdates = () => {
   }, [queryClient, supabase])
 }
 
-export default useRealtimeUpdates
+export default useRealtimeBlocks

@@ -4,11 +4,11 @@ import { Block, ProofWithCluster, Team } from "@/lib/types"
 
 import { BlockNumber } from "@/components/BlockNumber"
 import Null from "@/components/Null"
-import DownloadButton from "@/components/proof-buttons/DownloadButton"
+import DownloadButton from "@/components/proof-buttons/download-button"
 
 import { cn } from "@/lib/utils"
 
-import { VerifyButton } from "./proof-buttons/VerifyButton"
+import { VerifyButton } from "./proof-buttons/verify-button"
 
 import { formatTimeAgo } from "@/lib/date"
 import { formatUsd } from "@/lib/number"

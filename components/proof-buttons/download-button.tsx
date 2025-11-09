@@ -13,7 +13,6 @@ import { delay } from "@/lib/utils"
 import StatusIcon from "../StatusIcon"
 import { Button } from "../ui/button"
 
-import { useDownloadProof } from "./useDownloadProof"
 import {
   getProofButtonClasses,
   getProofButtonLabel,
@@ -22,6 +21,7 @@ import {
 } from "./utils"
 
 import { useAnimateCheckmark } from "@/hooks/useAnimateCheckmark"
+import { useDownloadProof } from "@/hooks/verify-proof/use-download-proof"
 
 export type ProofForDownload = Required<
   Pick<Proof, "proof_status" | "proof_id" | "size_bytes">
