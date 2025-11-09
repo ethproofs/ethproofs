@@ -4,8 +4,7 @@ import { useQueryClient } from "@tanstack/react-query"
 import { createClient } from "@/utils/supabase/client"
 
 // Subscribe to real-time updates for proofs and invalidate cache
-// Uses the same pattern as the blocks page which is proven to work
-const useRealtimeUpdatesForProofs = () => {
+const useRealtimeProofs = () => {
   const queryClient = useQueryClient()
 
   useEffect(() => {
@@ -47,4 +46,4 @@ const useRealtimeUpdatesForProofs = () => {
   }, [queryClient])
 }
 
-export default useRealtimeUpdatesForProofs
+export default useRealtimeProofs

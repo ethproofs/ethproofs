@@ -6,7 +6,7 @@ import { cn } from "@/lib/utils"
 
 import { Progress } from "../ui/progress"
 
-import { useAutoVerifyProof } from "./useAutoVerifyProof"
+import { useAutoVerifyProof } from "./use-auto-verify-proof"
 import {
   getProofStatusClasses,
   getProofStatusProgressValue,
@@ -36,8 +36,12 @@ export function ProofItem({ proof }: ProofItemProps) {
   const isVerifying =
     verificationResult.status === "downloading" ||
     verificationResult.status === "verifying"
+  const hasCompletedVerification =
+    verificationResult.status === "success" ||
+    verificationResult.status === "failed" ||
+    verificationResult.status === "error"
 
-  if (isVerifying) {
+  if (isVerifying || hasCompletedVerification) {
     statusText = getProofStatusText(verificationResult.status as ProofStatus)
     statusClasses = getProofStatusClasses(
       verificationResult.status as ProofStatus
