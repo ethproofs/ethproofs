@@ -9,6 +9,7 @@ import Link from "../ui/link"
 
 const learnMoreLink = "https://x.com/eth_proofs/status/1930244636582334473"
 
+// TODO:TEAM - remove this component, use GrantsBanner from header
 const GrantsBanner = () => {
   const [isOpen, setIsOpen] = useState(true)
 
