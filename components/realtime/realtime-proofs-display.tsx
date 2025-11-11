@@ -82,7 +82,8 @@ export function RealtimeProofsDisplay() {
   }
 
   return (
-    <div className="space-y-6">
+    <div className="w-full space-y-4">
+      <span className="text-xl">realtime proofs</span>
       {blocksToDisplay.map((blockNum) => {
         const proofs = proofsByBlock[blockNum]
         const allProved = proofs.every(

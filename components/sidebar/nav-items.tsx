@@ -13,8 +13,8 @@ import {
 
 export const exploreNavItems = [
   {
-    label: "realtime",
-    href: "/realtime",
+    label: "metrics",
+    href: "/metrics",
     icon: <Activity />,
   },
   {
