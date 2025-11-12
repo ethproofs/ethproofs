@@ -1,10 +1,9 @@
 import type { Metadata } from "next"
 
-import { ProverCountdownBanner } from "@/components/banners/ProverCountdownBanner"
-import { VerifierCountdownBanner } from "@/components/banners/VerifierCountdownBanner"
+import { ProverCountdownBanner } from "@/components/countdowns/prover-countdown-banner"
+import { VerifierCountdownBanner } from "@/components/countdowns/verifier-countdown-banner"
 import { MetricCards } from "@/components/metric-cards"
 import { RealtimeProofsDisplay } from "@/components/realtime/realtime-proofs-display"
-import EthproofsLineworkIcon from "@/components/svgs/ethproofs-linework-icon.svg"
 
 import { getMetadata } from "@/lib/metadata"
 
@@ -16,10 +15,6 @@ export default async function Index() {
   return (
     <>
       <div className="relative">
-        {/* <div className="absolute inset-0 -z-10 mt-48 flex items-center justify-center sm:items-start md:items-center">
-          <EthproofsLineworkIcon className="h-96 w-96 text-muted-foreground opacity-20 md:h-[36rem] md:w-[36rem] lg:h-[48rem] lg:w-[48rem]" />
-        </div> */}
-
         <h1 className="relative z-10 mb-8 mt-8 px-0 text-center text-3xl font-semibold md:px-8">
           <div className="flex flex-col items-center justify-center gap-0 sm:flex-row">
             <span>race to prove </span>

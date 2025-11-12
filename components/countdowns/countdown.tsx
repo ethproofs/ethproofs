@@ -81,13 +81,18 @@ export function Countdown({
     <div className={cn("text-center", className)}>
       {title && <h3 className="mb-4 text-lg font-semibold">{title}</h3>}
 
-      <div className="flex justify-center gap-4 sm:gap-6">
+      <div className="flex justify-center gap-1 sm:gap-4">
         {defaultUnits.map((unit, _idx) => (
-          <div key={unit.label} className="flex flex-col items-center">
-            <div className="text-3xl font-bold sm:text-4xl">
+          <div key={unit.label} className="flex min-w-8 flex-col items-center">
+            <div
+              className={cn(
+                "text-sm font-bold sm:text-base",
+                isSuccess ? "text-muted-foreground" : undefined
+              )}
+            >
               {unit.value.toString().padStart(2, "0")}
             </div>
-            <div className="mt-1 text-sm uppercase tracking-wide text-muted-foreground">
+            <div className="text-xxs mt-0.5 uppercase tracking-tight text-muted-foreground">
               {unit.label}
             </div>
           </div>

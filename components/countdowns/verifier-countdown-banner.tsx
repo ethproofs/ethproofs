@@ -1,11 +1,12 @@
 "use client"
 
 import { useState } from "react"
-import { CheckCheck } from "lucide-react"
+import { Check } from "lucide-react"
 
-import { Countdown } from "../Countdown"
 import { Alert, AlertTitle } from "../ui/alert"
 import Link from "../ui/link"
+
+import { Countdown } from "./countdown"
 
 const learnMoreLink = "https://x.com/eth_proofs/status/1961498775865655675"
 const deadlineDate = "2025-10-26T00:00:00Z"
@@ -32,20 +33,19 @@ export function VerifierCountdownBanner({
             ? "Open-source verifier requirement achieved"
             : "Open‑source verifier requirement countdown"
         }
-        className="relative flex rounded-lg border bg-secondary/60 p-4 text-body"
+        className="relative flex border-none bg-accent p-2 text-body"
       >
-        <div className="flex w-full flex-col items-center gap-3 sm:flex-row sm:items-center sm:justify-between sm:gap-4">
-          <AlertTitle>
-            <span className={isSuccess ? "text-primary" : undefined}>
+        <div className="flex w-full items-center justify-between px-2">
+          <AlertTitle className="text-base font-normal">
+            <span className={isSuccess ? "text-primary-light/80" : undefined}>
               {isSuccess
                 ? "all verifiers are now open‑source"
                 : "open‑source verifiers required"}
             </span>{" "}
             {isSuccess ? (
-              <CheckCheck className="inline size-5 text-primary hover:text-primary-light" />
+              <Check className="inline size-4 text-primary-light/80" />
             ) : (
               <Link
-                className="text-xl text-primary hover:text-primary-light"
                 href={learnMoreLink}
                 target="_blank"
                 rel="noopener noreferrer"
@@ -55,7 +55,6 @@ export function VerifierCountdownBanner({
           </AlertTitle>
           <Countdown
             targetDate={countdownDate}
-            className="origin-center scale-75"
             onComplete={onDismiss}
             isSuccess={isSuccess}
           />
