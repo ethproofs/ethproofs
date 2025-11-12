@@ -1,6 +1,7 @@
 "use client"
 
-import { useRef } from "react"
+import { useMemo } from "react"
+import { AnimatePresence, motion } from "framer-motion"
 
 import type { ProofWithCluster } from "@/lib/types"
 
@@ -14,46 +15,28 @@ import useRealtimeProofs from "./use-realtime-proofs"
 
 import { formatNumber } from "@/lib/number"
 
-const TIMEOUT_MS = 1 * 60 * 1000 // 1 minutes
-
 export function RealtimeProofsDisplay() {
   // Use real-time subscription to invalidate cache
   useRealtimeProofs()
 
   const { data: proofsByBlock, isLoading, error } = useRealtimeProofsQuery()
-  const completionTimesRef = useRef(new Map<number, number>())
 
   // Get all block numbers sorted newest first
-  const blockNumbers = proofsByBlock
-    ? Object.keys(proofsByBlock)
-        .map(Number)
-        .sort((a, b) => b - a)
-    : []
+  const blockNumbers = useMemo(
+    () =>
+      proofsByBlock
+        ? Object.keys(proofsByBlock)
+            .map(Number)
+            .sort((a, b) => b - a)
+        : [],
+    [proofsByBlock]
+  )
 
   // Determine which blocks to display
-  // Show newest block + any older blocks still within timeout
-  const blocksToDisplay: number[] = []
-  const now = Date.now()
-
-  for (const blockNum of blockNumbers) {
-    if (blocksToDisplay.length === 0) {
-      // Always show the newest block
-      blocksToDisplay.push(blockNum)
-    } else {
-      // For older blocks, show if still in progress or recently completed
-      const completedAt = completionTimesRef.current.get(blockNum)
-      if (!completedAt) {
-        // Still in progress, show it
-        blocksToDisplay.push(blockNum)
-      } else {
-        // Completed, check if within timeout
-        const elapsed = now - completedAt
-        if (elapsed < TIMEOUT_MS) {
-          blocksToDisplay.push(blockNum)
-        }
-      }
-    }
-  }
+  // Always show the first 3 blocks (newest first)
+  const blocksToDisplay: number[] = useMemo(() => {
+    return blockNumbers.slice(0, 3)
+  }, [blockNumbers])
 
   if (isLoading) {
     return (
@@ -84,46 +67,37 @@ export function RealtimeProofsDisplay() {
   return (
     <div className="w-full space-y-4">
       <span className="text-xl">realtime proofs</span>
-      {blocksToDisplay.map((blockNum) => {
-        const proofs = proofsByBlock[blockNum]
-        const allProved = proofs.every(
-          (p: ProofWithCluster) => p.proof_status === "proved"
-        )
+      <AnimatePresence mode="popLayout">
+        {blocksToDisplay.map((blockNum) => {
+          const proofs = proofsByBlock?.[blockNum]
+          if (!proofs) return null
 
-        let completedAt = completionTimesRef.current.get(blockNum)
-
-        // Set completion timestamp if all proofs just became proved
-        if (allProved && !completedAt) {
-          completedAt = Date.now()
-          completionTimesRef.current.set(blockNum, completedAt)
-        }
-
-        return (
-          <Card key={blockNum} className="rounded-lg border">
-            <CardHeader>
-              <div className="flex items-center justify-between">
-                <CardTitle className="text-xl font-normal">
-                  <HidePunctuation>{formatNumber(blockNum)}</HidePunctuation>
-                </CardTitle>
-                {allProved && completedAt && (
-                  <span className="text-sm text-muted-foreground">
-                    clearing in{" "}
-                    {Math.ceil(
-                      (TIMEOUT_MS - (Date.now() - completedAt)) / 1000
-                    )}
-                    s
-                  </span>
-                )}
-              </div>
-            </CardHeader>
-            <CardContent className="space-y-4">
-              {proofs.map((proof: ProofWithCluster) => (
-                <ProofItem key={proof.proof_id} proof={proof} />
-              ))}
-            </CardContent>
-          </Card>
-        )
-      })}
+          return (
+            <motion.div
+              key={blockNum}
+              layout
+              initial={{ y: -50, opacity: 0 }}
+              animate={{ y: 0, opacity: 1 }}
+              exit={{ y: 50, opacity: 0 }}
+              transition={{ duration: 0.5, ease: "easeInOut" }}
+              style={{ position: "relative" }}
+            >
+              <Card>
+                <CardHeader>
+                  <CardTitle className="text-xl font-normal">
+                    <HidePunctuation>{formatNumber(blockNum)}</HidePunctuation>
+                  </CardTitle>
+                </CardHeader>
+                <CardContent className="space-y-4">
+                  {proofs.map((proof: ProofWithCluster) => (
+                    <ProofItem key={proof.proof_id} proof={proof} />
+                  ))}
+                </CardContent>
+              </Card>
+            </motion.div>
+          )
+        })}
+      </AnimatePresence>
     </div>
   )
 }
