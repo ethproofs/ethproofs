@@ -64,7 +64,7 @@ export function usePicoVerifier(active: boolean = false) {
     }
   }, [active])
 
-  return useCallback(
+  const verifyFn = useCallback(
     (vmType: string, proofBytes: Uint8Array, vkBytes: Uint8Array) => {
       if (!wasmModule || !isInitialized) {
         const errorMsg = error || "[Pico] WASM module not initialized"
@@ -83,4 +83,6 @@ export function usePicoVerifier(active: boolean = false) {
     },
     [wasmModule, isInitialized, error]
   )
+
+  return { verifyFn, isInitialized }
 }

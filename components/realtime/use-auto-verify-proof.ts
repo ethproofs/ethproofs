@@ -33,7 +33,7 @@ export function useAutoVerifyProof(
   const [hasStartedVerification, setHasStartedVerification] = useState(false)
   const { downloadProof } = useDownloadProof()
   const downloadVerificationKey = useDownloadVerificationKey()
-  const { verifyProof } = useVerifyProof(clusterId || "")
+  const { verifyProof, isReady } = useVerifyProof(clusterId || "")
 
   useEffect(() => {
     console.log("[Verification] Effect triggered:", {
@@ -43,6 +43,11 @@ export function useAutoVerifyProof(
       isVerifiable: isVerifiableProver(clusterId),
       hasStartedVerification,
     })
+
+    if (!isReady) {
+      console.log("[Verification] Not ready to verify")
+      return
+    }
 
     if (
       proofStatus !== "proved" ||
@@ -63,12 +68,14 @@ export function useAutoVerifyProof(
         setHasStartedVerification(true)
 
         setResult({ status: "downloading" })
+        console.log("[Verification] Starting downloads for proofId:", proofId)
         const [proofBytes, vkBytes] = await Promise.all([
           downloadProof(proofId),
           downloadVerificationKey(proofId),
         ])
 
         console.log("[Verification] Download complete:", {
+          proofId,
           proofBytesLength: proofBytes?.length,
           vkBytesLength: vkBytes?.length,
         })
@@ -91,10 +98,17 @@ export function useAutoVerifyProof(
         setResult({ status: "verifying" })
         await delay(100)
 
+        console.log("[Verification] Calling verifyProof with:", {
+          proofBytesLength: proofBytes.length,
+          vkBytesLength: vkBytes.length,
+        })
         const verifyResult = await verifyProof(proofBytes, vkBytes)
         const duration = performance.now() - startTime
 
-        console.log("[Verification] Verification result:", verifyResult)
+        console.log("[Verification] Verification result:", {
+          verifyResult,
+          duration,
+        })
 
         if (!isMounted) {
           console.log("[Verification] Component unmounted during verification")
