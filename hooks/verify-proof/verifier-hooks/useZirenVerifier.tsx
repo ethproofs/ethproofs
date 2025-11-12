@@ -64,7 +64,7 @@ export function useZirenVerifier(active: boolean = false) {
     }
   }, [active])
 
-  return useCallback(
+  const verifyFn = useCallback(
     (proofBytes: Uint8Array, vkBytes: Uint8Array) => {
       if (!wasmModule || !isInitialized) {
         const errorMsg = error || "[Ziren] WASM module not initialized"
@@ -83,4 +83,6 @@ export function useZirenVerifier(active: boolean = false) {
     },
     [wasmModule, isInitialized, error]
   )
+
+  return { verifyFn, isInitialized }
 }
