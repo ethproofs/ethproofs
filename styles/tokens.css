@@ -107,7 +107,7 @@
     --primary-dark: var(--green-500);
     --primary-visited: var(--green-400);
     --primary-border: var(--green-500);
-    --brand-secondary: var(--indigo-300);
+    --brand-secondary: var(--indigo-400);
     --brand-secondary-foreground: var(--zinc-950);
 
     /* States */
