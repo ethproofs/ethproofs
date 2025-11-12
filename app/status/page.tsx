@@ -52,8 +52,8 @@ export default async function StatusPage() {
             </div>
 
             {hasIssues ? (
-              <Alert className="mb-4">
-                <div className="flex items-center justify-center gap-2 text-lg font-semibold text-level-worst">
+              <Alert className="mb-4" variant="destructive">
+                <div className="flex items-center justify-center gap-2 text-lg font-semibold text-destructive">
                   <TriangleAlert className="size-5" />{" "}
                   {statusData.total_missing} missing proofs detected
                 </div>
@@ -74,17 +74,17 @@ export default async function StatusPage() {
                 <div>
                   <Link
                     href={`/teams/${team.team_id}`}
-                    className="text-xl text-primary hover:text-primary-light hover:underline"
+                    className="text-lg text-primary hover:text-primary-light"
                   >
                     {team.team_name}
                   </Link>
                 </div>
 
-                <div className="space-y-3">
+                <div className="mt-2 space-y-3">
                   {team.clusters.map((cluster) => (
                     <div
                       key={cluster.cluster_id}
-                      className="border-l-4 border-primary bg-background-accent p-4"
+                      className="rounded-sm border-l-4 border-primary bg-secondary p-2"
                     >
                       <div className="flex items-center gap-2">
                         <Link
@@ -128,8 +128,8 @@ export default async function StatusPage() {
             ))}
 
             <div className="mt-8 text-center text-sm text-body-secondary">
-              Please confirm your prover is online and submitting proofs for
-              every 100 blocks.
+              confirm your prover is online and submitting proofs for every 100
+              blocks
             </div>
           </div>
         )}
