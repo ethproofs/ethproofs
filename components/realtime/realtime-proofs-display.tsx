@@ -6,6 +6,7 @@ import { AnimatePresence, motion } from "framer-motion"
 import type { ProofWithCluster } from "@/lib/types"
 
 import { useRealtimeProofsQuery } from "@/components/realtime/use-realtime-proofs-query"
+import EthproofsIcon from "@/components/svgs/ethproofs-icon.svg"
 
 import { HidePunctuation } from "../StylePunctuation"
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card"
@@ -66,7 +67,10 @@ export function RealtimeProofsDisplay() {
 
   return (
     <div className="w-full space-y-4">
-      <span className="text-xl">realtime proofs</span>
+      <div className="flex items-center">
+        <EthproofsIcon className="h-12 w-12" />
+        <span className="text-xl">realtime proofs</span>
+      </div>
       <AnimatePresence mode="popLayout">
         {blocksToDisplay.map((blockNum) => {
           const proofs = proofsByBlock?.[blockNum]

@@ -1,8 +1,6 @@
 "use client"
 
-import { ExternalLink } from "lucide-react"
-
-import { ButtonLink } from "../ui/button"
+import Link from "../ui/link"
 
 import { useIsMobile } from "@/hooks/useIsMobile"
 
@@ -15,14 +13,12 @@ export function GrantsBanner() {
       {isMobile
         ? "$300k in realtime proving grants."
         : "Ethproofs is accelerating realtime proving with $300k in grants."}{" "}
-      <ButtonLink
-        aria-label="Learn more about the $300k grants"
-        variant="ghost"
-        size="icon"
+      <Link
         href={learnMoreLink}
-      >
-        <ExternalLink className="text-primary hover:text-primary-light" />
-      </ButtonLink>
+        target="_blank"
+        rel="noopener noreferrer"
+        aria-label="Learn more about the verifier requirement"
+      />
     </div>
   )
 }
