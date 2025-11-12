@@ -282,8 +282,12 @@ export const fetchAllProofsForRealtime = async () => {
         },
       },
     },
-    where: (proofs, { inArray }) => inArray(proofs.block_number, blockNumbersToFetch),
-    orderBy: (proofs, { desc }) => [desc(proofs.block_number), desc(proofs.created_at)],
+    where: (proofs, { inArray }) =>
+      inArray(proofs.block_number, blockNumbersToFetch),
+    orderBy: (proofs, { desc }) => [
+      desc(proofs.block_number),
+      desc(proofs.created_at),
+    ],
   })
 
   return proofsRows
