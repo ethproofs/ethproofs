@@ -1,6 +1,6 @@
 "use client"
 
-import { useCallback, useState } from "react"
+import { useCallback, useMemo, useState } from "react"
 
 import { usePicoVerifier } from "./verifier-hooks/usePicoVerifier"
 import { useZirenVerifier } from "./verifier-hooks/useZirenVerifier"
@@ -17,11 +17,23 @@ export function useVerifyProof(prover: string) {
   const [verifyTime, setVerifyTime] = useState("")
   const proverType = getProverType(prover)
 
-  const verifyPicoProof = usePicoVerifier(
+  const picoVerifier = usePicoVerifier(
     proverType === "pico" || proverType === "pico-prism"
   )
-  const verifyZirenProof = useZirenVerifier(proverType === "ziren")
-  const verifyZiskProof = useZiskVerifier(proverType === "zisk")
+  const zirenVerifier = useZirenVerifier(proverType === "ziren")
+  const ziskVerifier = useZiskVerifier(proverType === "zisk")
+
+  // Check if the active verifier is initialized
+  const isReady = useMemo(() => {
+    if (proverType === "pico" || proverType === "pico-prism") {
+      return picoVerifier.isInitialized
+    } else if (proverType === "ziren") {
+      return zirenVerifier.isInitialized
+    } else if (proverType === "zisk") {
+      return ziskVerifier.isInitialized
+    }
+    return true // Unknown prover type, treat as ready to fail fast
+  }, [proverType, picoVerifier.isInitialized, zirenVerifier.isInitialized, ziskVerifier.isInitialized])
 
   const verifyProof = useCallback(
     async (
@@ -32,13 +44,13 @@ export function useVerifyProof(prover: string) {
       try {
         const startTime = performance.now()
         if (proverType === "pico") {
-          result = verifyPicoProof("Pico", proofBytes, vkBytes)
+          result = picoVerifier.verifyFn("Pico", proofBytes, vkBytes)
         } else if (proverType === "pico-prism") {
-          result = verifyPicoProof("PicoPrism", proofBytes, vkBytes)
+          result = picoVerifier.verifyFn("PicoPrism", proofBytes, vkBytes)
         } else if (proverType === "ziren") {
-          result = verifyZirenProof(proofBytes, vkBytes)
+          result = zirenVerifier.verifyFn(proofBytes, vkBytes)
         } else if (proverType === "zisk") {
-          result = verifyZiskProof(proofBytes, vkBytes)
+          result = ziskVerifier.verifyFn(proofBytes, vkBytes)
         } else {
           result = { isValid: false, error: "Proof cannot be verified" }
         }
@@ -52,11 +64,12 @@ export function useVerifyProof(prover: string) {
         }
       }
     },
-    [proverType, verifyPicoProof, verifyZirenProof, verifyZiskProof]
+    [proverType, picoVerifier, zirenVerifier, ziskVerifier]
   )
 
   return {
     verifyProof,
     verifyTime,
+    isReady,
   }
 }
