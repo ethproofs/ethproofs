@@ -40,13 +40,13 @@ export default async function KillersPage() {
             contentRight={
               <KillersTable
                 benchmarks={benchmarks}
-                clusters={singleMachineBenchmarks}
+                clusters={multiMachineBenchmarks}
               />
             }
             contentLeft={
               <KillersTable
                 benchmarks={benchmarks}
-                clusters={multiMachineBenchmarks}
+                clusters={singleMachineBenchmarks}
               />
             }
           />

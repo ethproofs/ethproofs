@@ -43,13 +43,13 @@ export default async function ClustersPage() {
           contentLeft={
             <ClustersTable
               className="mt-4 px-6"
-              clusters={singleMachineClusters}
+              clusters={multiMachineClusters}
             />
           }
           contentRight={
             <ClustersTable
               className="mt-4 px-6"
-              clusters={multiMachineClusters}
+              clusters={singleMachineClusters}
             />
           }
         />

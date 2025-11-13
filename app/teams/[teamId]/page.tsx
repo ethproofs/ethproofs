@@ -214,10 +214,10 @@ export default async function TeamDetailsPage({
           className="px-0"
           title="active clusters"
           contentLeft={
-            <ClustersTable className="mt-4" clusters={singleMachineClusters} />
+            <ClustersTable className="mt-4" clusters={multiMachineClusters} />
           }
           contentRight={
-            <ClustersTable className="mt-4" clusters={multiMachineClusters} />
+            <ClustersTable className="mt-4" clusters={singleMachineClusters} />
           }
         />
       </div>
