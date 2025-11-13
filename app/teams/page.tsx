@@ -2,7 +2,7 @@ import { ChevronRight } from "lucide-react"
 import type { Metadata } from "next"
 
 import { metrics } from "@/components/Metrics"
-import Null from "@/components/Null"
+import { Null } from "@/components/Null"
 import TeamLogo from "@/components/TeamLogo"
 import { ButtonLink } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"

@@ -1,3 +1,12 @@
-const Null = () => <span className="text-muted-foreground">{"-"}</span>
+interface NullProps {
+  children?: React.ReactNode
+  hidePlaceholder?: boolean
+}
 
-export default Null
+export function Null({ children, hidePlaceholder = false }: NullProps) {
+  return (
+    <span className="text-muted-foreground">
+      {children || hidePlaceholder ? "\u00A0" : "-"}
+    </span>
+  )
+}

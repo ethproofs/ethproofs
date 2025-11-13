@@ -3,7 +3,7 @@
 import { ColumnDef } from "@tanstack/react-table"
 
 import { DataTableColumnHeader } from "@/components/data-table/data-table-column-header"
-import Null from "@/components/Null"
+import { Null } from "@/components/Null"
 import { Checkbox } from "@/components/ui/checkbox"
 
 import { CspCollectedBenchmark } from "@/lib/api/csp-benchmarks"

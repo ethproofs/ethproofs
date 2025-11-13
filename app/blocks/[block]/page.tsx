@@ -4,7 +4,7 @@ import { notFound } from "next/navigation"
 
 import { BasicTabs } from "@/components/BasicTabs"
 import CopyButton from "@/components/CopyButton"
-import Null from "@/components/Null"
+import { Null } from "@/components/Null"
 import DownloadAllButton from "@/components/proof-buttons/download-all-button"
 import { ProofsTable } from "@/components/proofs-table/proofs-table"
 import ProofStatus from "@/components/ProofStatus"

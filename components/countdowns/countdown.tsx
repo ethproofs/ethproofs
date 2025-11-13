@@ -92,7 +92,7 @@ export function Countdown({
             >
               {unit.value.toString().padStart(2, "0")}
             </div>
-            <div className="text-xxs mt-0.5 uppercase tracking-tight text-muted-foreground">
+            <div className="mt-0.5 text-xxs uppercase tracking-tight text-muted-foreground">
               {unit.label}
             </div>
           </div>
