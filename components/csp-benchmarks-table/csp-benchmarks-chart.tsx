@@ -63,17 +63,30 @@ interface ChartDataPoint {
   [key: string]: number | string
 }
 
+type AlgorithmFilter = "sha" | "ecdsa"
+
 export function CspBenchmarksChart({ benchmarks }: CspBenchmarksChartProps) {
   const [selectedMetric, setSelectedMetric] =
     useState<MetricKey>("proof_duration")
+  const [algorithmFilter, setAlgorithmFilter] =
+    useState<AlgorithmFilter>("sha")
+
+  const filteredBenchmarks = useMemo(() => {
+    return benchmarks.filter((benchmark) => {
+      const searchText = `${benchmark.name} ${benchmark.target}`.toLowerCase()
+      return algorithmFilter === "sha"
+        ? searchText.includes("sha") && !searchText.includes("ecdsa")
+        : searchText.includes("ecdsa")
+    })
+  }, [benchmarks, algorithmFilter])
 
   const chartData = useMemo(() => {
-    if (benchmarks.length === 0) return []
+    if (filteredBenchmarks.length === 0) return []
 
     // Group by input_size and create a data point for each combination
     const grouped = new Map<number, Map<string, number>>()
 
-    benchmarks.forEach((benchmark) => {
+    filteredBenchmarks.forEach((benchmark) => {
       const inputSize = benchmark.input_size
       const metricValue = benchmark[selectedMetric]
 
@@ -97,7 +110,7 @@ export function CspBenchmarksChart({ benchmarks }: CspBenchmarksChartProps) {
       }))
 
     return data
-  }, [benchmarks, selectedMetric])
+  }, [filteredBenchmarks, selectedMetric])
 
   // Use semantic chart tokens from CSS
   const chartTokens = [
@@ -139,8 +152,22 @@ export function CspBenchmarksChart({ benchmarks }: CspBenchmarksChartProps) {
 
   return (
     <div className="w-full space-y-4">
-      <div className="flex gap-4">
-        <div className="w-full sm:w-[250px]">
+      <div className="flex flex-col gap-4 sm:flex-row">
+        <div className="w-full sm:w-[200px]">
+          <Select
+            value={algorithmFilter}
+            onValueChange={(value) => setAlgorithmFilter(value as AlgorithmFilter)}
+          >
+            <SelectTrigger className="h-8">
+              <SelectValue />
+            </SelectTrigger>
+            <SelectContent>
+              <SelectItem value="sha">sha-256</SelectItem>
+              <SelectItem value="ecdsa">ecdsa</SelectItem>
+            </SelectContent>
+          </Select>
+        </div>
+        <div className="w-full sm:w-[200px]">
           <Select
             value={selectedMetric}
             onValueChange={(value) => setSelectedMetric(value as MetricKey)}
