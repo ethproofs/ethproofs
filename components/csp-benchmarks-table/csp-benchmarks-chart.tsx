@@ -68,8 +68,7 @@ type AlgorithmFilter = "sha" | "ecdsa"
 export function CspBenchmarksChart({ benchmarks }: CspBenchmarksChartProps) {
   const [selectedMetric, setSelectedMetric] =
     useState<MetricKey>("proof_duration")
-  const [algorithmFilter, setAlgorithmFilter] =
-    useState<AlgorithmFilter>("sha")
+  const [algorithmFilter, setAlgorithmFilter] = useState<AlgorithmFilter>("sha")
 
   const filteredBenchmarks = useMemo(() => {
     return benchmarks.filter((benchmark) => {
@@ -156,7 +155,9 @@ export function CspBenchmarksChart({ benchmarks }: CspBenchmarksChartProps) {
         <div className="w-full sm:w-[200px]">
           <Select
             value={algorithmFilter}
-            onValueChange={(value) => setAlgorithmFilter(value as AlgorithmFilter)}
+            onValueChange={(value) =>
+              setAlgorithmFilter(value as AlgorithmFilter)
+            }
           >
             <SelectTrigger className="h-8">
               <SelectValue />

@@ -111,14 +111,12 @@ export const fetchAllCspBenchmarks = async () => {
       try {
         const text = await blob.text()
         const rawData = JSON.parse(text)
-        // TODO: Validate data with zod schema when ready
-        // const validatedData = cspBenchmarkDataSchema.parse(rawData)
 
         const cspCollectedBenchmarks: CspCollectedBenchmarks = {
           filename: file.name,
           benchmarksId: file.name.replace(".json", ""),
           updatedAt: file.updated_at || file.created_at,
-          data: rawData as CspCollectedBenchmark[], // ...validatedData,
+          data: rawData as CspCollectedBenchmark[],
         }
 
         return cspCollectedBenchmarks
