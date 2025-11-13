@@ -40,7 +40,7 @@ export default async function BlocksPage() {
             <HydrationBoundary state={dehydrate(queryClient)}>
               <BlocksTableWithSuspense
                 className="px-6"
-                machineType="single"
+                machineType="multi"
                 teams={teams}
               />
             </HydrationBoundary>
@@ -49,7 +49,7 @@ export default async function BlocksPage() {
             <HydrationBoundary state={dehydrate(queryClient)}>
               <BlocksTableWithSuspense
                 className="px-6"
-                machineType="multi"
+                machineType="single"
                 teams={teams}
               />
             </HydrationBoundary>

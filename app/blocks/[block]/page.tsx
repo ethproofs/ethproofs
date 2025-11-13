@@ -325,14 +325,14 @@ export default async function BlockDetailsPage({
           className="px-0"
           title="proofs"
           contentLeft={
+            <ProofsTable proofs={multiMachineProofs} showBlockNumber={false} />
+          }
+          contentRight={
             <ProofsTable
               className="mt-4"
               proofs={singleMachineProofs}
               showBlockNumber={false}
             />
-          }
-          contentRight={
-            <ProofsTable proofs={multiMachineProofs} showBlockNumber={false} />
           }
         />
       </section>
