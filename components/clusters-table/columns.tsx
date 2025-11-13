@@ -114,17 +114,6 @@ export const columns: ColumnDef<ClusterRow>[] = [
     },
   },
   {
-    id: "avg_cost",
-    accessorKey: "avg_cost",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="avg cost" />
-    ),
-    cell: ({ row }) => {
-      const avgCost = row.getValue("avg_cost") as number
-      return <div className="w-[100px]">{formatUsd(avgCost)}</div>
-    },
-  },
-  {
     id: "avg_time",
     accessorKey: "avg_time",
     header: ({ column }) => (
@@ -133,6 +122,17 @@ export const columns: ColumnDef<ClusterRow>[] = [
     cell: ({ row }) => {
       const avgTime = row.getValue("avg_time") as number
       return <div className="w-[100px]">{prettyMs(avgTime)}</div>
+    },
+  },
+  {
+    id: "avg_cost",
+    accessorKey: "avg_cost",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="avg cost" />
+    ),
+    cell: ({ row }) => {
+      const avgCost = row.getValue("avg_cost") as number
+      return <div className="w-[100px]">{formatUsd(avgCost)}</div>
     },
   },
   {

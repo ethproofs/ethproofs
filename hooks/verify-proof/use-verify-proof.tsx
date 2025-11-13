@@ -33,7 +33,12 @@ export function useVerifyProof(prover: string) {
       return ziskVerifier.isInitialized
     }
     return true // Unknown prover type, treat as ready to fail fast
-  }, [proverType, picoVerifier.isInitialized, zirenVerifier.isInitialized, ziskVerifier.isInitialized])
+  }, [
+    proverType,
+    picoVerifier.isInitialized,
+    zirenVerifier.isInitialized,
+    ziskVerifier.isInitialized,
+  ])
 
   const verifyProof = useCallback(
     async (
