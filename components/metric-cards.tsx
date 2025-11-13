@@ -1,16 +1,23 @@
 import Link from "next/link"
 
-import { Card, CardContent, CardHeader, CardTitle } from "./ui/card"
+import {
+  Card,
+  CardContent,
+  CardDescription,
+  CardHeader,
+  CardTitle,
+} from "./ui/card"
+import { Null } from "./Null"
 
 import { getActiveClusters } from "@/lib/api/clusters"
 import { getRecentSummary } from "@/lib/api/stats"
 import { formatUsd } from "@/lib/number"
 import { prettyMs } from "@/lib/time"
-import { getZkvmsStats } from "@/lib/zkvms"
+import { getActiveZkvms } from "@/lib/zkvms"
 
 export async function MetricCards() {
   const recentSummary = await getRecentSummary()
-  const zkvmsStats = await getZkvmsStats()
+  const zkvms = await getActiveZkvms()
   const activeClusters = await getActiveClusters()
 
   const cards = [
@@ -21,7 +28,7 @@ export async function MetricCards() {
     },
     {
       title: "zkVMs",
-      value: zkvmsStats.count,
+      value: zkvms.length,
       href: "/zkvms",
     },
     {
@@ -30,13 +37,17 @@ export async function MetricCards() {
       href: "/provers",
     },
     {
-      title: "avg cost per proof",
-      value: formatUsd(Number(recentSummary.avg_cost_per_proof ?? 0)),
+      title: "avg proving time",
+      subtitle: "median",
+      value: prettyMs(Number(recentSummary.avg_proving_time ?? 0)),
+      subValue: prettyMs(Number(recentSummary.median_proving_time ?? 0)),
       href: "/metrics",
     },
     {
-      title: "avg proving time",
-      value: prettyMs(Number(recentSummary.avg_proving_time ?? 0)),
+      title: "avg cost per proof",
+      subtitle: "median",
+      value: formatUsd(Number(recentSummary.avg_cost_per_proof ?? 0)),
+      subValue: formatUsd(Number(recentSummary.median_cost_per_proof ?? 0)),
       href: "/metrics",
     },
   ]
@@ -49,6 +60,13 @@ export async function MetricCards() {
               <CardTitle className="overflow-hidden text-ellipsis text-lg text-primary">
                 {card.title}
               </CardTitle>
+              {card.subtitle ? (
+                <CardDescription>
+                  {card.subtitle} {card.subValue}
+                </CardDescription>
+              ) : (
+                <Null hidePlaceholder />
+              )}
             </CardHeader>
             <CardContent className="break-words text-3xl font-bold">
               {card.value}

@@ -12,7 +12,7 @@ import { BLOCK_GAS_LIMIT } from "@/lib/constants"
 import { BlockNumber } from "../BlockNumber"
 import { DataTableColumnHeader } from "../data-table/data-table-column-header"
 import { DataTableRowActions } from "../data-table/data-table-row-actions"
-import Null from "../Null"
+import { Null } from "../Null"
 import ProofStatus from "../ProofStatus"
 import { HidePunctuation } from "../StylePunctuation"
 import { Button, ButtonLink } from "../ui/button"
@@ -137,6 +137,22 @@ export const columns: ColumnDef<Block>[] = [
     },
   },
   {
+    id: "proving_time",
+    accessorKey: "proofs",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="proving time" />
+    ),
+    cell: ({ cell }) => {
+      const proofs = cell.getValue() as ProofWithCluster[]
+
+      const stats = getProvingTimeStats(proofs)
+
+      if (!stats) return <Null />
+
+      return <BlockMetric stats={stats} />
+    },
+  },
+  {
     id: "cost_per_proof",
     accessorKey: "proofs",
     header: ({ column }) => (
@@ -162,22 +178,6 @@ export const columns: ColumnDef<Block>[] = [
       const { proofs, gas_used } = row.original
 
       const stats = getCostPerMgasStats(proofs, gas_used)
-
-      if (!stats) return <Null />
-
-      return <BlockMetric stats={stats} />
-    },
-  },
-  {
-    id: "proving_time",
-    accessorKey: "proofs",
-    header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="proving time" />
-    ),
-    cell: ({ cell }) => {
-      const proofs = cell.getValue() as ProofWithCluster[]
-
-      const stats = getProvingTimeStats(proofs)
 
       if (!stats) return <Null />
 

@@ -1,7 +1,7 @@
 import type { Stats } from "@/lib/types"
 
 import { metrics } from "@/components/Metrics"
-import Null from "@/components/Null"
+import { Null } from "@/components/Null"
 import * as Info from "@/components/ui/info"
 import { TooltipContentHeader } from "@/components/ui/tooltip"
 

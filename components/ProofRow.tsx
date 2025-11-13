@@ -29,7 +29,7 @@ import DownloadButton from "./proof-buttons/download-button"
 import { MetricInfo, MetricLabel, MetricValue } from "./ui/metric"
 import { MetricBox } from "./ui/metric"
 import { metrics } from "./Metrics"
-import Null from "./Null"
+import { Null } from "./Null"
 
 import { formatNumber, formatUsd } from "@/lib/number"
 import { getProvingCost, hasProvedTimestamp, isCompleted } from "@/lib/proofs"
