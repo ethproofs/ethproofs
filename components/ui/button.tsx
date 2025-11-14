@@ -56,7 +56,10 @@ const Button = React.forwardRef<HTMLButtonElement, ButtonProps>(
 Button.displayName = "Button"
 
 type ButtonLinkProps = LinkProps &
-  Pick<ButtonProps, "size" | "variant" | "children" | "className"> & {
+  Pick<
+    ButtonProps,
+    "size" | "variant" | "children" | "className" | "disabled"
+  > & {
     buttonProps?: Omit<ButtonProps, "size" | "variant">
   }
 
