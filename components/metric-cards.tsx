@@ -7,7 +7,6 @@ import {
   CardHeader,
   CardTitle,
 } from "./ui/card"
-import { Null } from "./Null"
 
 import { getActiveClusters } from "@/lib/api/clusters"
 import { getRecentSummary } from "@/lib/api/stats"
@@ -52,23 +51,25 @@ export async function MetricCards() {
     },
   ]
   return (
-    <div className="flex flex-wrap gap-4">
-      {cards.map((card) => (
-        <Link key={card.title} href={card.href} className="min-w-0 flex-1">
-          <Card className="h-full min-w-0 cursor-pointer bg-secondary/60 transition-colors hover:bg-secondary">
-            <CardHeader>
-              <CardTitle className="overflow-hidden text-ellipsis text-lg text-primary">
+    <div className="grid grid-cols-6 gap-4 xl:grid-cols-5">
+      {cards.map((card, index) => (
+        <Link
+          key={card.title}
+          href={card.href}
+          className={`min-w-0 ${index >= cards.length - 2 ? "col-span-3" : "col-span-2"} xl:col-span-1`}
+        >
+          <Card className="flex h-full min-w-0 cursor-pointer flex-col bg-secondary/60 transition-colors hover:bg-secondary">
+            <CardHeader className="p-3 md:p-4 lg:p-6">
+              <CardTitle className="overflow-hidden text-ellipsis text-base text-primary md:text-base lg:text-lg">
                 {card.title}
               </CardTitle>
-              {card.subtitle ? (
-                <CardDescription>
+              {card.subtitle && (
+                <CardDescription className="mt-0.5 text-xs md:mt-0 md:text-xs">
                   {card.subtitle} {card.subValue}
                 </CardDescription>
-              ) : (
-                <Null hidePlaceholder />
               )}
             </CardHeader>
-            <CardContent className="break-words text-3xl font-bold">
+            <CardContent className="flex flex-1 items-end overflow-hidden break-words px-3 pb-3 pt-1.5 text-2xl font-bold md:px-4 md:pb-4 md:pt-2 md:text-xl lg:px-6 lg:pb-6 lg:pt-3 lg:text-3xl">
               {card.value}
             </CardContent>
           </Card>

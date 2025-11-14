@@ -1,10 +1,12 @@
 "use client"
 
 import { useState } from "react"
-import { Check } from "lucide-react"
+import { CheckCheck } from "lucide-react"
+
+import { cn } from "@/lib/utils"
 
 import { Alert, AlertTitle } from "../ui/alert"
-import Link from "../ui/link"
+import Link, { BaseLink } from "../ui/link"
 
 import { Countdown } from "./countdown"
 
@@ -24,42 +26,53 @@ export function ProverCountdownBanner({
     setIsOpen(false)
   }
 
+  const displayText = isSuccess
+    ? "provers are all fully reproducible"
+    : "reproducible provers required"
+
   return (
     isOpen && (
-      <Alert
-        role="region"
-        aria-label={
-          isSuccess
-            ? "Reproducible provers requirement achieved"
-            : "Reproducible provers requirement countdown"
-        }
-        className="relative flex border-none bg-accent p-2 text-body"
+      <BaseLink
+        hideArrow
+        aria-label="Learn more about the prover requirement"
+        className="flex w-full"
+        href={learnMoreLink}
       >
-        <div className="flex w-full items-center justify-between px-2">
-          <AlertTitle className="text-base font-normal">
-            <span className={isSuccess ? "text-primary-light/80" : undefined}>
-              {isSuccess
-                ? "provers are all fully reproducible"
-                : "reproducible provers required"}
-            </span>{" "}
-            {isSuccess ? (
-              <Check className="inline size-4 text-primary-light/80" />
-            ) : (
+        <Alert
+          role="region"
+          aria-label={
+            isSuccess
+              ? "Reproducible provers requirement achieved"
+              : "Reproducible provers requirement countdown"
+          }
+          className="relative flex border-none bg-accent p-2 text-body hover:bg-accent/80"
+        >
+          <div className="flex w-full items-center justify-between px-2">
+            <AlertTitle
+              className={cn(
+                "flex items-center gap-1 text-sm font-normal xl:text-base",
+                isSuccess ? "text-primary" : "text-body"
+              )}
+            >
+              {displayText}
               <Link
-                href={learnMoreLink}
-                target="_blank"
-                rel="noopener noreferrer"
                 aria-label="Learn more about the prover requirement"
+                className="hidden font-body text-primary visited:text-primary-visited hover:text-primary-light xl:block"
+                href={learnMoreLink}
+                hideArrow={isSuccess}
               />
-            )}
-          </AlertTitle>
-          <Countdown
-            targetDate={countdownDate}
-            onComplete={onDismiss}
-            isSuccess={isSuccess}
-          />
-        </div>
-      </Alert>
+              {isSuccess ? (
+                <CheckCheck className="hidden size-4 xl:block" />
+              ) : null}
+            </AlertTitle>
+            <Countdown
+              targetDate={countdownDate}
+              onComplete={onDismiss}
+              isSuccess={isSuccess}
+            />
+          </div>
+        </Alert>
+      </BaseLink>
     )
   )
 }
