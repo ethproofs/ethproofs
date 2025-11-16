@@ -4,6 +4,8 @@ export const ziskVerifiableProvers = {
     "efa90d57-3269-4d8d-8e9c-947d6c311420",
     "33f14a82-47b7-42d7-9bc1-b81a46eea4fe",
     "c759bbea-e1d7-462c-9fdc-2a47d979e495",
+    "817bbf03-07b4-466d-879b-e476322bd080",
+    "534e6cf4-3dfe-47de-bba2-a0b11d544557",
   ],
 } as const
 
@@ -14,7 +16,10 @@ export const picoVerifiableProvers = {
 
 export const picoPrismVerifiableProvers = {
   type: "pico-prism",
-  provers: ["79041a5b-ee8d-49b3-8207-86c7debf8e13"],
+  provers: [
+    "79041a5b-ee8d-49b3-8207-86c7debf8e13",
+    "f404c187-88d6-4927-963c-61760a639900",
+  ],
 } as const
 
 export const zirenVerifiableProvers = {

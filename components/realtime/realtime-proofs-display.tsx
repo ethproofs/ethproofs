@@ -10,6 +10,7 @@ import EthproofsIcon from "@/components/svgs/ethproofs-icon.svg"
 
 import { HidePunctuation } from "../StylePunctuation"
 import { Card, CardContent, CardHeader, CardTitle } from "../ui/card"
+import { Spinner } from "../ui/spinner"
 
 import { ProofItem } from "./proof-item"
 import useRealtimeProofs from "./use-realtime-proofs"
@@ -41,7 +42,8 @@ export function RealtimeProofsDisplay() {
 
   if (isLoading) {
     return (
-      <div className="space-y-4">
+      <div className="mt-4 flex items-center justify-center gap-2">
+        <Spinner className="text-muted-foreground" />
         <p className="text-muted-foreground">loading proofs...</p>
       </div>
     )

@@ -11,11 +11,10 @@ import { BLOCK_GAS_LIMIT } from "@/lib/constants"
 
 import { BlockNumber } from "../BlockNumber"
 import { DataTableColumnHeader } from "../data-table/data-table-column-header"
-import { DataTableRowActions } from "../data-table/data-table-row-actions"
 import { Null } from "../Null"
 import ProofStatus from "../ProofStatus"
 import { HidePunctuation } from "../StylePunctuation"
-import { Button, ButtonLink } from "../ui/button"
+import { ButtonLink } from "../ui/button"
 import { Progress } from "../ui/progress"
 
 import BlockMetric from "./block-metric"
@@ -108,6 +107,7 @@ export const columns: ColumnDef<Block>[] = [
     filterFn: (row, id, value) => {
       return String(row.getValue(id)).includes(value)
     },
+    enableSorting: false,
   },
   {
     id: "gas_used",
@@ -124,7 +124,7 @@ export const columns: ColumnDef<Block>[] = [
       const percentGasUsage = (gasUsed / BLOCK_GAS_LIMIT) * 100
 
       return (
-        <div className="w-[100px]">
+        <div className="w-[140px]">
           <Progress
             value={percentGasUsage}
             className="mx-auto my-[6px] h-2 max-w-32"
@@ -135,6 +135,7 @@ export const columns: ColumnDef<Block>[] = [
         </div>
       )
     },
+    enableSorting: false,
   },
   {
     id: "proving_time",
@@ -151,6 +152,7 @@ export const columns: ColumnDef<Block>[] = [
 
       return <BlockMetric stats={stats} />
     },
+    enableSorting: false,
   },
   {
     id: "cost_per_proof",
@@ -167,6 +169,7 @@ export const columns: ColumnDef<Block>[] = [
 
       return <BlockMetric stats={stats} />
     },
+    enableSorting: false,
   },
   {
     id: "cost_per_mgas",
@@ -183,6 +186,7 @@ export const columns: ColumnDef<Block>[] = [
 
       return <BlockMetric stats={stats} />
     },
+    enableSorting: false,
   },
   {
     id: "proof_status",
@@ -200,7 +204,7 @@ export const columns: ColumnDef<Block>[] = [
       const proofsPerStatusCount = getProofsPerStatusCount(proofs)
 
       return (
-        <div className="min-w-[150px]">
+        <div className="min-w-[160px]">
           <ProofStatus statusCount={proofsPerStatusCount} />
           <span className="block text-xs text-muted-foreground">
             {totalTTPStats?.bestFormatted ?? <Null />}
@@ -208,17 +212,22 @@ export const columns: ColumnDef<Block>[] = [
         </div>
       )
     },
+    enableSorting: false,
   },
   {
     id: "actions",
     cell: ({ row }) => (
-      <ButtonLink
-        variant="outline"
-        size="icon"
-        href={`/blocks/${row.original.block_number}`}
-      >
-        <ChevronRight />
-      </ButtonLink>
+      <div className="mr-4 flex flex-row justify-end">
+        <ButtonLink
+          variant="outline"
+          size="icon"
+          href={`/blocks/${row.original.block_number}`}
+        >
+          <ChevronRight />
+        </ButtonLink>
+      </div>
     ),
+    enableSorting: false,
+    enableHiding: false,
   },
 ]

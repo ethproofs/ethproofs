@@ -4,8 +4,6 @@ import { useEffect, useState } from "react"
 import { ArrowDown, CalendarCheck, Check, LoaderCircle } from "lucide-react"
 import prettyBytes from "pretty-bytes"
 
-import type { Proof, Team } from "@/lib/types"
-
 import WasmErrorBoundary from "@/components/error-boundaries/WasmErrorBoundary"
 
 import { cn } from "@/lib/utils"
@@ -19,6 +17,7 @@ import {
   getProofButtonTextColorClass,
   ProofButtonState,
   proofButtonStateMap,
+  ProofForDownload,
 } from "./utils"
 
 import { useAnimateCheckmark } from "@/hooks/useAnimateCheckmark"
@@ -26,12 +25,6 @@ import { useDownloadProof } from "@/hooks/verify-proof/use-download-proof"
 import { useDownloadVerificationKey } from "@/hooks/verify-proof/use-download-verification-key"
 import { useVerifyProof } from "@/hooks/verify-proof/use-verify-proof"
 import { isVerifiableProver } from "@/hooks/verify-proof/verify-proof.utils"
-
-export type ProofForDownload = Required<
-  Pick<Proof, "proof_status" | "proof_id" | "size_bytes" | "cluster_id">
-> & {
-  team: Required<Pick<Team, "name" | "slug">>
-}
 
 interface VerifyButtonProps {
   proof: ProofForDownload

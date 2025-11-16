@@ -1,7 +1,7 @@
 import type { MetricThresholds } from "./types"
 
 export const SITE_NAME = "Ethproofs"
-export const SITE_DESCRIPTION = "race to prove Ethereum in real time"
+export const SITE_DESCRIPTION = "race to prove Ethereum in real-time"
 export const SITE_URL = process.env.SITE_URL || "https://ethproofs.org"
 export const SITE_PREVIEW_URL = "https://staging--ethproofs.netlify.app"
 export const SITE_REPO = "ethproofs/ethproofs"
@@ -29,6 +29,7 @@ export const LEARN_CONTENT_MD = "app/learn/content/index.md"
 
 export const AVERAGE_LABEL = "avg"
 
+export const DEFAULT_FETCH_LIMIT = 200
 export const DEFAULT_PAGE_SIZE = 20
 export const DEFAULT_PAGE_INDEX = 0
 export const DEFAULT_PAGE_STATE = {

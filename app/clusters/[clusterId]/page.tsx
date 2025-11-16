@@ -8,9 +8,8 @@ import ClusterMachineSummary from "@/components/ClusterMachineSummary"
 import { DisplayTeam } from "@/components/DisplayTeamLink"
 import KPIs from "@/components/KPIs"
 import MachineDetails from "@/components/MachineDetails"
-import NoData from "@/components/NoData"
 import { Null } from "@/components/Null"
-import { ProofsTable } from "@/components/proofs-table/proofs-table"
+import { ClusterProofsSection } from "@/components/proofs-table/cluster-proofs-section"
 import { Card } from "@/components/ui/card"
 import Link from "@/components/ui/link"
 import { MetricBox, MetricInfo, MetricLabel } from "@/components/ui/metric"
@@ -19,7 +18,6 @@ import { TooltipContentHeader } from "@/components/ui/tooltip"
 import { cn } from "@/lib/utils"
 
 import { getCluster } from "@/lib/api/clusters"
-import { fetchProvedProofsByClusterId } from "@/lib/api/proofs"
 import { getClusterSummaryById } from "@/lib/api/stats"
 import { hasPhysicalMachines, isMultiMachineCluster } from "@/lib/clusters"
 import { getMetadata } from "@/lib/metadata"
@@ -64,16 +62,7 @@ export default async function ClusterDetailsPage({
     return notFound()
   }
 
-  const [clusterSummary, latestProofsRaw] = await Promise.all([
-    getClusterSummaryById(clusterId),
-    fetchProvedProofsByClusterId(clusterId),
-  ])
-
-  const latestProofs = latestProofsRaw.map((proof) => ({
-    ...proof,
-    block_number: proof.block.block_number,
-    block_timestamp: proof.block.timestamp,
-  }))
+  const clusterSummary = await getClusterSummaryById(clusterId)
 
   const team = cluster.team
   const lastVersion = cluster.versions[0]
@@ -314,16 +303,8 @@ export default async function ClusterDetailsPage({
       )}
 
       <section className="pt-12">
-        <span className="text-2xl">lastest proofs</span>
-        {latestProofs.length ? (
-          <ProofsTable
-            className="mt-4"
-            proofs={latestProofs}
-            showTeam={false}
-          />
-        ) : (
-          <NoData>for this cluster</NoData>
-        )}
+        <span className="text-2xl">latest proofs</span>
+        <ClusterProofsSection clusterId={clusterId} className="mt-4" />
       </section>
     </div>
   )

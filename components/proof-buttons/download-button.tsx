@@ -5,8 +5,6 @@ import { ArrowDown, Check } from "lucide-react"
 import prettyBytes from "pretty-bytes"
 import { toast } from "sonner"
 
-import type { Proof, Team } from "@/lib/types"
-
 import { cn } from "@/lib/utils"
 import { delay } from "@/lib/utils"
 
@@ -18,16 +16,11 @@ import {
   getProofButtonLabel,
   getProofButtonTextColorClass,
   ProofButtonState,
+  ProofForDownload,
 } from "./utils"
 
 import { useAnimateCheckmark } from "@/hooks/useAnimateCheckmark"
 import { useDownloadProof } from "@/hooks/verify-proof/use-download-proof"
-
-export type ProofForDownload = Required<
-  Pick<Proof, "proof_status" | "proof_id" | "size_bytes">
-> & {
-  team: Required<Pick<Team, "name" | "slug">>
-}
 
 interface DownloadButtonProps {
   proof: ProofForDownload

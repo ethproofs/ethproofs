@@ -26,7 +26,7 @@ export default async function Index() {
                 ereum
               </span>
             </div>
-            <span> in real time</span>
+            <span> in real-time</span>
           </div>
         </h1>
 

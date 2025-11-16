@@ -4,8 +4,6 @@ import { Check, ChevronRight, X as RedX } from "lucide-react"
 import { ColumnDef } from "@tanstack/react-table"
 
 import { DataTableColumnHeader } from "@/components/data-table/data-table-column-header"
-import { DisplayTeamLink } from "@/components/DisplayTeamLink"
-import { Checkbox } from "@/components/ui/checkbox"
 import Link from "@/components/ui/link"
 
 import { ButtonLink } from "../ui/button"
@@ -137,14 +135,17 @@ export const columns: ColumnDef<ClusterRow>[] = [
   },
   {
     id: "actions",
+    header: () => null,
     cell: ({ row }) => (
-      <ButtonLink
-        variant="outline"
-        size="icon"
-        href={`/clusters/${row.original.id}`}
-      >
-        <ChevronRight />
-      </ButtonLink>
+      <div className="mr-4 flex flex-row justify-end">
+        <ButtonLink
+          variant="outline"
+          size="icon"
+          href={`/clusters/${row.original.id}`}
+        >
+          <ChevronRight />
+        </ButtonLink>
+      </div>
     ),
   },
 ]

@@ -12,6 +12,7 @@ import type { Block, Team } from "@/lib/types"
 import { useDataTableUrlState } from "@/components/data-table/useDataTableUrlState"
 
 import { DataTable } from "../data-table/data-table"
+import { Spinner } from "../ui/spinner"
 
 import { columns, labels } from "./columns"
 import useRealtimeBlocks from "./use-realtime-blocks"
@@ -50,7 +51,6 @@ export function BlocksTable({
 }: BlocksTableProps) {
   const tableState = useDataTableUrlState()
   const [deferredPagination] = useDebounceValue(tableState.pagination, 200)
-
   const { pageIndex, pageSize } = deferredPagination
 
   const queryKey = getBlocksQueryKey(pageIndex, pageSize, machineType)
@@ -85,6 +85,15 @@ export function BlocksTable({
       isFiltered ? "-filtered" : "-all"
     }`
     exportWithLabels(rows, labels, filename)
+  }
+
+  if (blocksQuery.isLoading) {
+    return (
+      <div className="mt-4 flex items-center gap-2 px-6">
+        <Spinner className="text-muted-foreground" />
+        <p className="text-muted-foreground">loading proofs...</p>
+      </div>
+    )
   }
 
   return (

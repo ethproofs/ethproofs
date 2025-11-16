@@ -10,7 +10,7 @@ import type { ClusterVersion, Proof, ProofWithCluster, Stats } from "./types"
  * @param proof - The proof object to check.
  * @returns `true` if the proof's status is "proved", otherwise `false`.
  */
-export const isCompleted = (proof: Pick<Proof, "proof_status">) =>
+export const isCompleted = (proof: { proof_status: string }) =>
   proof.proof_status === "proved"
 
 /**
@@ -33,7 +33,9 @@ export const hasCostInfo = (p: ProofWithCluster) => {
  * @param {Proof} p - The proof object.
  * @returns {boolean} - True if the proof has a valid proved timestamp, false otherwise.
  */
-export const hasProvedTimestamp = (p: Proof) => {
+export const hasProvedTimestamp = (p: {
+  proved_timestamp: string | null | undefined
+}) => {
   if (!p.proved_timestamp) return false
   const time = getTime(p.proved_timestamp)
   return !isNaN(time)
@@ -44,7 +46,9 @@ export const hasProvedTimestamp = (p: Proof) => {
  * @param {Proof} p - The proof object.
  * @returns {boolean} - True if the proof has a proving time, false otherwise.
  */
-export const hasProvingTime = (p: Proof) => !!p.proving_time
+export const hasProvingTime = (p: {
+  proving_time: number | null | undefined
+}) => !!p.proving_time
 
 /**
  * Determines if a proof has a proved_timestamp and that it occurs after the given block timestamp.
@@ -143,7 +147,10 @@ export const getClusterHourlyPrice = (cluster: ClusterVersion): number => {
  * @example clusterHourlyPrice(USD/hr) * proving_time(ms) / 1e3(ms/s) / 60(s/min) / 60(min/hr) = provingCost(USD)
  * @returns The calculated proving cost in USD, as a number.
  */
-export const getProvingCost = (proof: ProofWithCluster): number | null => {
+export const getProvingCost = (proof: {
+  proving_time?: number | null
+  cluster_version?: ClusterVersion | null
+}): number | null => {
   const { proving_time, cluster_version } = proof
 
   if (!proving_time || !cluster_version) return null

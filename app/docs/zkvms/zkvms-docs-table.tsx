@@ -12,7 +12,7 @@ import {
   TableRow,
 } from "@/components/ui/table"
 
-export function ZkvmsTable({
+export function ZkvmsDocsTable({
   zkvms,
 }: {
   zkvms: (Zkvm & { versions: ZkvmVersion[]; team: Team })[]

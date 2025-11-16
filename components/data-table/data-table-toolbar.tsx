@@ -53,16 +53,15 @@ export function DataTableToolbar<TData>({
           }
           className="h-8 w-full md:w-[250px]"
         />
-        {isFiltered && (
-          <Button
-            variant="ghost"
-            size="sm"
-            onClick={() => table.resetColumnFilters()}
-          >
-            reset
-            <Reset />
-          </Button>
-        )}
+        <Button
+          variant="ghost"
+          size="sm"
+          onClick={() => table.resetColumnFilters()}
+          className={isFiltered ? "" : "invisible"}
+        >
+          reset
+          <Reset />
+        </Button>
       </div>
       <div className="flex h-8 items-center gap-2 md:w-[250px]">
         <DataTableViewOptions table={table} labels={columnLabels} />

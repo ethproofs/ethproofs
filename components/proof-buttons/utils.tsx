@@ -1,3 +1,11 @@
+import type { Proof, Team } from "@/lib/types"
+
+export type ProofForDownload = Required<
+  Pick<Proof, "proof_status" | "proof_id" | "size_bytes" | "cluster_id">
+> & {
+  team: Required<Pick<Team, "name" | "slug">>
+}
+
 export const proofButtonStateMap = {
   disabled: "disabled",
   download: "download",
@@ -48,7 +56,7 @@ export function getProofButtonClasses(buttonState: ProofButtonState) {
     case "verifying":
       return `${baseClasses} border-green-500 bg-transparent`
     case "success":
-      return `${baseClasses} border-green-500 bg-green-500/20 shadow-lg shadow-green-500/20`
+      return `${baseClasses} border-green-500 bg-green-500/20`
     case "failed":
     case "error":
       return `${baseClasses} border-destructive bg-transparent`
