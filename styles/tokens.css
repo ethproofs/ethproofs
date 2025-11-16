@@ -30,13 +30,13 @@
     --brand-secondary-foreground: var(--zinc-50);
 
     /* States */
-    --success: var(--green-600);
+    --success: var(--green-500);
     --success-foreground: var(--zinc-50);
-    --warning: var(--amber-600);
+    --warning: var(--amber-500);
     --warning-foreground: var(--zinc-50);
-    --destructive: var(--red-600);
+    --destructive: var(--red-500);
     --destructive-foreground: var(--zinc-50);
-    --info: var(--blue-600);
+    --info: var(--blue-500);
     --info-foreground: var(--zinc-50);
 
     /* Charts */
@@ -111,13 +111,13 @@
     --brand-secondary-foreground: var(--zinc-950);
 
     /* States */
-    --success: var(--green-400);
+    --success: var(--green-500);
     --success-foreground: var(--zinc-50);
-    --warning: var(--amber-400);
+    --warning: var(--yellow-500);
     --warning-foreground: var(--zinc-50);
-    --destructive: var(--red-400);
+    --destructive: var(--red-500);
     --destructive-foreground: var(--zinc-50);
-    --info: var(--blue-400);
+    --info: var(--blue-500);
     --info-foreground: var(--zinc-50);
 
     /* Charts */
