@@ -2,7 +2,7 @@ import Link from "@/components/ui/link"
 
 import { SITE_REPO } from "@/lib/constants"
 
-import { ZkvmsTable } from "./zkvms-table"
+import { ZkvmsDocsTable } from "./zkvms-docs-table"
 
 import { getZkvms } from "@/lib/api/zkvms"
 
@@ -41,7 +41,7 @@ export default async function ZkvmsPage() {
       </div>
 
       <div className="overflow-x-auto">
-        <ZkvmsTable zkvms={zkvms} />
+        <ZkvmsDocsTable zkvms={zkvms} />
       </div>
 
       <p className="text-sm text-muted-foreground">

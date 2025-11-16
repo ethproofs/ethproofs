@@ -2,6 +2,8 @@ import { Suspense } from "react"
 
 import type { Team } from "@/lib/types"
 
+import { Spinner } from "../ui/spinner"
+
 import { BlocksTable } from "./blocks-table"
 
 import type { MachineType } from "@/lib/api/blocks"
@@ -18,7 +20,14 @@ export function BlocksTableWithSuspense({
   teams,
 }: BlocksTableWithSuspenseProps) {
   return (
-    <Suspense fallback={<div>Loading blocks...</div>}>
+    <Suspense
+      fallback={
+        <div className="mt-4 flex items-center gap-2">
+          <Spinner className="text-muted-foreground" />
+          <p className="text-muted-foreground">loading proofs...</p>
+        </div>
+      }
+    >
       <BlocksTable
         className={className}
         machineType={machineType}

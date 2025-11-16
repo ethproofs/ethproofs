@@ -28,6 +28,8 @@ import {
 
 import { cn } from "@/lib/utils"
 
+import { DEFAULT_PAGE_SIZE } from "@/lib/constants"
+
 import { DataTablePagination } from "./data-table-pagination"
 import { DataTableToolbar } from "./data-table-toolbar"
 import { ColumnLabel } from "./data-table-view-options"
@@ -138,31 +140,42 @@ export function DataTable<TData, TValue>({
           columnLabels={columnLabels}
         />
       )}
-      <div className="overflow-x-auto rounded-md border">
-        <Table className="min-w-max">
-          <TableHeader>
-            {table.getHeaderGroups().map((headerGroup) => (
-              <TableRow key={headerGroup.id}>
-                {headerGroup.headers.map((header) => {
-                  return (
-                    <TableHead key={header.id} colSpan={header.colSpan}>
-                      {header.isPlaceholder
-                        ? null
-                        : flexRender(
-                            header.column.columnDef.header,
-                            header.getContext()
-                          )}
-                    </TableHead>
-                  )
-                })}
-              </TableRow>
-            ))}
-          </TableHeader>
-          <TableBody>
+      <div className="h-[calc(100vh-250px)] overflow-auto rounded-md border">
+        <Table>
+          {table.getRowModel().rows?.length > 0 && (
+            <TableHeader>
+              {table.getHeaderGroups().map((headerGroup) => (
+                <TableRow key={headerGroup.id} className="hover:bg-transparent">
+                  {headerGroup.headers.map((header) => {
+                    return (
+                      <TableHead key={header.id} colSpan={header.colSpan}>
+                        {header.isPlaceholder
+                          ? null
+                          : flexRender(
+                              header.column.columnDef.header,
+                              header.getContext()
+                            )}
+                      </TableHead>
+                    )
+                  })}
+                </TableRow>
+              ))}
+            </TableHeader>
+          )}
+          <TableBody
+            className={
+              (table.getState().columnFilters.length === 0 &&
+                table.getRowModel().rows?.length > DEFAULT_PAGE_SIZE) ||
+              table.getRowModel().rows?.length === 0
+                ? "[&_tr:last-child]:border-0"
+                : ""
+            }
+          >
             {table.getRowModel().rows?.length ? (
               table.getRowModel().rows.map((row) => (
                 <TableRow
                   key={row.id}
+                  className="hover:bg-muted/20"
                   data-state={row.getIsSelected() && "selected"}
                 >
                   {row.getVisibleCells().map((cell) => (
@@ -176,7 +189,7 @@ export function DataTable<TData, TValue>({
                 </TableRow>
               ))
             ) : (
-              <TableRow>
+              <TableRow className="hover:bg-transparent">
                 <TableCell
                   colSpan={columns.length}
                   className="h-24 text-center"

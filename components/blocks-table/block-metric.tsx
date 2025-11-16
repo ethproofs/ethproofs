@@ -11,7 +11,7 @@ import {
 import { AVERAGE_LABEL } from "@/lib/constants"
 
 const BlockMetric = ({ stats }: { stats: Stats }) => (
-  <div className="flex w-[100px] justify-between gap-4 whitespace-nowrap">
+  <div className="flex w-[120px] justify-between gap-4 whitespace-nowrap">
     <div>
       <span>{stats.bestFormatted}</span>
       <span className="block text-xs text-muted-foreground">

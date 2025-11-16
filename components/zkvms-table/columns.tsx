@@ -5,7 +5,6 @@ import { ColumnDef } from "@tanstack/react-table"
 
 import { DataTableColumnHeader } from "@/components/data-table/data-table-column-header"
 import { ActiveZkvm } from "@/components/SoftwareAccordion/ActiveSoftwareAccordion"
-import { Checkbox } from "@/components/ui/checkbox"
 import Link from "@/components/ui/link"
 import { Progress } from "@/components/ui/progress"
 
@@ -188,14 +187,17 @@ export const columns: ColumnDef<ZkvmRow>[] = [
   },
   {
     id: "actions",
+    header: () => null,
     cell: ({ row }) => (
-      <ButtonLink
-        variant="outline"
-        size="icon"
-        href={`/zkvms/${row.original.slug}`}
-      >
-        <Pizza />
-      </ButtonLink>
+      <div className="mr-4 flex flex-row justify-end">
+        <ButtonLink
+          variant="outline"
+          size="icon"
+          href={`/zkvms/${row.original.slug}`}
+        >
+          <Pizza />
+        </ButtonLink>
+      </div>
     ),
   },
 ]

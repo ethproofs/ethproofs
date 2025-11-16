@@ -7,7 +7,7 @@
   },
   "servers": [
     {
-      "url": "https://ethproofs.org/api/v0",
+      "url": "https://localhost:3000/api/v0",
       "description": "Main server"
     },
     {

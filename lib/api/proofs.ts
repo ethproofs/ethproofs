@@ -4,7 +4,7 @@ import { count } from "drizzle-orm"
 import { unstable_cache as cache } from "next/cache"
 import { PaginationState } from "@tanstack/react-table"
 
-import { TAGS } from "../constants"
+import { DEFAULT_FETCH_LIMIT, TAGS } from "../constants"
 
 import { db } from "@/db"
 import { clusterVersions, proofs, teams } from "@/db/schema"
@@ -108,64 +108,89 @@ export const lastProvedProof = async () => {
 
 export const fetchProvedProofsByClusterId = async (
   clusterId: string,
-  { limit = 10 }: { limit?: number } = {}
+  pagination?: PaginationState,
+  totalLimit?: number
 ) => {
-  return cache(
-    async (clusterId: string) => {
-      const lastProvedProof = await db.query.proofs.findMany({
+  const pageSize = pagination?.pageSize ?? 20
+  const pageIndex = pagination?.pageIndex ?? 0
+  const offset = pageIndex * pageSize
+
+  // Get the last N proofs then paginate within those
+  const maxProofsToFetch = totalLimit ?? DEFAULT_FETCH_LIMIT
+
+  const proofsRows = await db.query.proofs.findMany({
+    with: {
+      block: true,
+      team: true,
+      cluster_version: {
         with: {
-          block: true,
-          team: true,
-          cluster_version: {
+          cluster: true,
+          zkvm_version: {
             with: {
-              cluster: true,
-              zkvm_version: {
+              zkvm: true,
+            },
+          },
+          cluster_machines: {
+            with: {
+              cloud_instance: {
                 with: {
-                  zkvm: true,
+                  provider: true,
                 },
               },
-              cluster_machines: {
-                with: {
-                  cloud_instance: {
-                    with: {
-                      provider: true,
-                    },
-                  },
-                  machine: true,
-                },
-              },
+              machine: true,
             },
           },
         },
-        where: (proofs, { eq, and, inArray }) =>
-          and(
-            eq(proofs.proof_status, "proved"),
-            inArray(
-              proofs.cluster_version_id,
-              db
-                .select({ id: clusterVersions.id })
-                .from(clusterVersions)
-                .where(eq(clusterVersions.cluster_id, clusterId))
-            )
-          ),
-        orderBy: (proofs, { desc }) => [desc(proofs.created_at)],
-        limit,
-      })
-
-      return lastProvedProof
+      },
     },
-    ["cluster-proofs", clusterId],
-    {
-      revalidate: false,
-      tags: [`cluster-${clusterId}`],
-    }
-  )(clusterId)
+    where: (proofs, { eq, and, inArray }) =>
+      and(
+        eq(proofs.proof_status, "proved"),
+        inArray(
+          proofs.cluster_version_id,
+          db
+            .select({ id: clusterVersions.id })
+            .from(clusterVersions)
+            .where(eq(clusterVersions.cluster_id, clusterId))
+        )
+      ),
+    orderBy: (proofs, { desc }) => [desc(proofs.created_at)],
+    limit: maxProofsToFetch,
+  })
+
+  // Count total proofs matching the criteria (capped at limit)
+  const [rowCountResult] = await db
+    .select({ count: count() })
+    .from(proofs)
+    .where(
+      and(
+        eq(proofs.proof_status, "proved"),
+        inArray(
+          proofs.cluster_version_id,
+          db
+            .select({ id: clusterVersions.id })
+            .from(clusterVersions)
+            .where(eq(clusterVersions.cluster_id, clusterId))
+        )
+      )
+    )
+
+  const totalCount = rowCountResult.count
+  const cappedRowCount = Math.min(totalCount, maxProofsToFetch)
+
+  // Apply pagination on the fetched results
+  const paginatedProofs = proofsRows.slice(offset, offset + pageSize)
+
+  return {
+    rows: paginatedProofs,
+    rowCount: cappedRowCount,
+  }
 }
 
 export const fetchProofsFiltered = async ({
   block,
   clusterIds,
-  limit = 100,
+  limit = DEFAULT_FETCH_LIMIT,
   offset = 0,
 }: {
   block?: string

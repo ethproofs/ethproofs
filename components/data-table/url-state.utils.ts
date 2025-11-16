@@ -20,7 +20,7 @@ export const parsePaginationFromUrl = (
     : 0
   const pageSize = searchParams.get("pageSize")
     ? parseInt(searchParams.get("pageSize")!, 10)
-    : 10
+    : 20
 
   return { pageIndex, pageSize }
 }
@@ -137,10 +137,9 @@ export const createPaginationHandler = (
     // Handle both direct values and updater functions
     let newPagination: PaginationState
     if (typeof updaterOrValue === "function") {
-      // Need to get current state - this is a limitation, caller should pass current state
       newPagination = updaterOrValue({
         pageIndex: parseInt(searchParams.get("pageIndex") || "0"),
-        pageSize: parseInt(searchParams.get("pageSize") || "10"),
+        pageSize: parseInt(searchParams.get("pageSize") || "20"),
       })
     } else {
       newPagination = updaterOrValue
@@ -152,7 +151,7 @@ export const createPaginationHandler = (
     params.set("pageIndex", String(newPagination.pageIndex))
     params.set("pageSize", String(newPagination.pageSize))
 
-    router.replace(`?${params.toString()}`)
+    router.replace(`?${params.toString()}`, { scroll: false })
   }
 }
 
@@ -182,7 +181,7 @@ export const createSortingHandler = (
       params.delete("sort")
     }
 
-    router.replace(`?${params.toString()}`)
+    router.replace(`?${params.toString()}`, { scroll: false })
   }
 }
 
@@ -212,7 +211,7 @@ export const createVisibilityHandler = (
       params.delete("hidden")
     }
 
-    router.replace(`?${params.toString()}`)
+    router.replace(`?${params.toString()}`, { scroll: false })
   }
 }
 
@@ -249,6 +248,6 @@ export const createFiltersHandler = (
       }
     })
 
-    router.replace(`?${params.toString()}`)
+    router.replace(`?${params.toString()}`, { scroll: false })
   }
 }

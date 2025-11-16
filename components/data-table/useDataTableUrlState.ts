@@ -22,11 +22,17 @@ import {
 
 import { DEFAULT_PAGE_STATE } from "@/lib/constants"
 
+interface UseDataTableUrlStateOptions {
+  initialVisibility?: VisibilityState
+}
+
 /**
  * Hook that manages all table URL state (pagination, sorting, visibility, filters)
  * Returns state and handlers that sync with URL parameters
  */
-export function useDataTableUrlState() {
+export function useDataTableUrlState(
+  options: UseDataTableUrlStateOptions = {}
+) {
   const router = useRouter()
   const searchParams = useSearchParams()
 
@@ -44,15 +50,18 @@ export function useDataTableUrlState() {
     })
   )
 
-  // Initialize state from URL
+  // Initialize state from URL, with optional initial visibility defaults
   const [pagination, setPagination] = useState<PaginationState>(
     urlPagination.pageIndex > 0 || urlPagination.pageSize !== 10
       ? urlPagination
       : DEFAULT_PAGE_STATE
   )
   const [sorting, setSorting] = useState<SortingState>(urlSorting)
-  const [columnVisibility, setColumnVisibility] =
-    useState<VisibilityState>(urlVisibility)
+  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>(
+    Object.keys(urlVisibility).length > 0
+      ? urlVisibility
+      : (options.initialVisibility ?? {})
+  )
   const [columnFilters, setColumnFilters] =
     useState<ColumnFiltersState>(urlColumnFilters)
 

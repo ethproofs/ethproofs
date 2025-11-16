@@ -1,54 +1,65 @@
 "use client"
 
-import { useMemo, useState } from "react"
-import { PaginationState } from "@tanstack/react-table"
+import { useMemo } from "react"
 
 import { DataTable } from "@/components/data-table/data-table"
 
-import { DEFAULT_PAGE_STATE } from "@/lib/constants"
+import { Spinner } from "../ui/spinner"
 
-import { getColumns, ProofRow } from "./columns"
+import { getColumns, labels, ProofRow } from "./columns"
+
+import { exportWithLabels } from "@/lib/csv-export"
 
 interface ProofsTableProps {
   className?: string
   proofs: ProofRow[]
-  showBlockNumber?: boolean
-  showTeam?: boolean
+  rowCount: number
+  tableState: ReturnType<
+    typeof import("@/components/data-table/useDataTableUrlState").useDataTableUrlState
+  >
+  isLoading: boolean
+  toolbarFilterColumnId?: string
+  toolbarFilterPlaceholder?: string
 }
 
 export function ProofsTable({
   className,
   proofs,
-  showBlockNumber,
-  showTeam,
+  rowCount,
+  tableState,
+  isLoading,
+  toolbarFilterColumnId,
+  toolbarFilterPlaceholder,
 }: ProofsTableProps) {
-  const [pagination, setPagination] =
-    useState<PaginationState>(DEFAULT_PAGE_STATE)
+  const columns = useMemo(() => getColumns(), [])
 
-  // Sort by proving_time (fastest first), with nulls at the end
-  const sortedProofs = useMemo(() => {
-    return [...proofs].sort((a, b) => {
-      if (a.proving_time === null) return 1
-      if (b.proving_time === null) return -1
-      return a.proving_time - b.proving_time
-    })
-  }, [proofs])
+  if (isLoading) {
+    return (
+      <div className="mt-4 flex items-center gap-2">
+        <Spinner className="text-muted-foreground" />
+        <p className="text-muted-foreground">loading proofs...</p>
+      </div>
+    )
+  }
 
-  const columns = useMemo(
-    () => getColumns({ showBlockNumber, showTeam }),
-    [showBlockNumber, showTeam]
-  )
+  const handleExport = (rows: ProofRow[], isFiltered: boolean) => {
+    const filename = `proofs-${new Date().toISOString().split("T")[0]}${
+      isFiltered ? "-filtered" : "-all"
+    }`
+    exportWithLabels(rows, labels, filename)
+  }
 
   return (
     <DataTable
       className={className}
-      showToolbar={false}
-      data={sortedProofs}
+      data={proofs}
       columns={columns}
-      rowCount={sortedProofs.length}
-      pagination={pagination}
-      setPagination={setPagination}
-      showPagination={false}
+      rowCount={rowCount}
+      columnLabels={labels}
+      onExport={handleExport}
+      toolbarFilterColumnId={toolbarFilterColumnId}
+      toolbarFilterPlaceholder={toolbarFilterPlaceholder}
+      {...tableState}
     />
   )
 }

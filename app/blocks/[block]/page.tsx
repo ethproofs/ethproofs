@@ -6,7 +6,7 @@ import { BasicTabs } from "@/components/BasicTabs"
 import CopyButton from "@/components/CopyButton"
 import { Null } from "@/components/Null"
 import DownloadAllButton from "@/components/proof-buttons/download-all-button"
-import { ProofsTable } from "@/components/proofs-table/proofs-table"
+import { BlockProofsSection } from "@/components/proofs-table/block-proofs-section"
 import ProofStatus from "@/components/ProofStatus"
 import { HidePunctuation } from "@/components/StylePunctuation"
 import Timestamp from "@/components/Timestamp"
@@ -211,7 +211,7 @@ export default async function BlockDetailsPage({
           </CardHeader>
           <Separator />
           <CardContent className="p-6">
-            <div className="text-sm text-primary sm:text-start">
+            <div className="text-center text-sm text-primary sm:text-start">
               1x4090 performance
             </div>
             <div className="grid grid-cols-1 place-items-center gap-x-8 text-center sm:grid-cols-2 sm:place-items-start sm:text-start lg:grid-cols-4 xl:grid-cols-2">
@@ -325,14 +325,10 @@ export default async function BlockDetailsPage({
           className="px-0"
           title="proofs"
           contentLeft={
-            <ProofsTable proofs={multiMachineProofs} showBlockNumber={false} />
+            <BlockProofsSection blockId={blockNumber} filterType="multi" />
           }
           contentRight={
-            <ProofsTable
-              className="mt-4"
-              proofs={singleMachineProofs}
-              showBlockNumber={false}
-            />
+            <BlockProofsSection blockId={blockNumber} filterType="single" />
           }
         />
       </section>
