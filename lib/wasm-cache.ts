@@ -47,7 +47,6 @@ class WasmModuleCache {
     initFn?: (module: unknown) => void
   ): Promise<unknown> {
     try {
-      console.log(`[WasmCache] Initializing ${moduleName}...`)
       const wasmModule = await importFn()
 
       if (initFn) {
@@ -59,7 +58,6 @@ class WasmModuleCache {
         isInitialized: true,
       })
 
-      console.log(`[WasmCache] ${moduleName} initialized successfully`)
       return wasmModule
     } catch (error) {
       console.error(`[WasmCache] Failed to initialize ${moduleName}:`, error)
