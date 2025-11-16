@@ -3,6 +3,7 @@
 import { useCallback, useMemo, useState } from "react"
 
 import { usePicoVerifier } from "./verifier-hooks/usePicoVerifier"
+import { useSp1HypercubeVerifier } from "./verifier-hooks/useSp1HypercubeVerifier"
 import { useZirenVerifier } from "./verifier-hooks/useZirenVerifier"
 import { useZiskVerifier } from "./verifier-hooks/useZiskVerifier"
 import { getProverType } from "./verify-proof.utils"
@@ -20,6 +21,9 @@ export function useVerifyProof(prover: string) {
   const picoVerifier = usePicoVerifier(
     proverType === "pico" || proverType === "pico-prism"
   )
+  const sp1HypercubeVerifier = useSp1HypercubeVerifier(
+    proverType === "sp1-hypercube"
+  )
   const zirenVerifier = useZirenVerifier(proverType === "ziren")
   const ziskVerifier = useZiskVerifier(proverType === "zisk")
 
@@ -27,6 +31,8 @@ export function useVerifyProof(prover: string) {
   const isReady = useMemo(() => {
     if (proverType === "pico" || proverType === "pico-prism") {
       return picoVerifier.isInitialized
+    } else if (proverType === "sp1-hypercube") {
+      return sp1HypercubeVerifier.isInitialized
     } else if (proverType === "ziren") {
       return zirenVerifier.isInitialized
     } else if (proverType === "zisk") {
@@ -36,6 +42,7 @@ export function useVerifyProof(prover: string) {
   }, [
     proverType,
     picoVerifier.isInitialized,
+    sp1HypercubeVerifier.isInitialized,
     zirenVerifier.isInitialized,
     ziskVerifier.isInitialized,
   ])
@@ -52,6 +59,8 @@ export function useVerifyProof(prover: string) {
           result = picoVerifier.verifyFn("Pico", proofBytes, vkBytes)
         } else if (proverType === "pico-prism") {
           result = picoVerifier.verifyFn("PicoPrism", proofBytes, vkBytes)
+        } else if (proverType === "sp1-hypercube") {
+          result = sp1HypercubeVerifier.verifyFn(proofBytes, vkBytes)
         } else if (proverType === "ziren") {
           result = zirenVerifier.verifyFn(proofBytes, vkBytes)
         } else if (proverType === "zisk") {
@@ -69,7 +78,13 @@ export function useVerifyProof(prover: string) {
         }
       }
     },
-    [proverType, picoVerifier, zirenVerifier, ziskVerifier]
+    [
+      proverType,
+      picoVerifier,
+      sp1HypercubeVerifier,
+      zirenVerifier,
+      ziskVerifier,
+    ]
   )
 
   return {

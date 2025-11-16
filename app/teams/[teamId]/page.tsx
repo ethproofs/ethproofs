@@ -6,7 +6,6 @@ import type { SummaryItem, Team, Zkvm } from "@/lib/types"
 
 import { BasicTabs } from "@/components/BasicTabs"
 import { ClustersTable } from "@/components/clusters-table/clusters-table"
-import ClusterTable from "@/components/ClusterTable"
 import { DisplayTeam } from "@/components/DisplayTeamLink"
 import KPIs from "@/components/KPIs"
 import { Null } from "@/components/Null"
@@ -16,8 +15,6 @@ import { Card, CardContent, CardHeader } from "@/components/ui/card"
 import { HeroBody, HeroItem, HeroItemLabel } from "@/components/ui/hero"
 import Link from "@/components/ui/link"
 import ZkvmProvidersAside from "@/components/ZkvmProvidersAside"
-
-import { SITE_NAME } from "@/lib/constants"
 
 import { getActiveClusters } from "@/lib/api/clusters"
 import { getClusterSummary, getTeamSummary } from "@/lib/api/stats"
@@ -42,7 +39,7 @@ export async function generateMetadata({
     if (!team) throw new Error()
     return getMetadata({ title: `${team.name}` })
   } catch {
-    return { title: `Proving team not found - ${SITE_NAME}` }
+    return { title: `Proving team not found` }
   }
 }
 

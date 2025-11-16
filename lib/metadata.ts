@@ -54,7 +54,7 @@ export const defaults = (custom: CustomMetadata): Metadata => {
 }
 
 export const getMetadata = (
-  custom: CustomMetadata = { title: SITE_NAME, description: SITE_DESCRIPTION },
+  custom: CustomMetadata = {},
   overrides?: Partial<Metadata>
 ): Metadata => ({
   ...defaults(custom),
