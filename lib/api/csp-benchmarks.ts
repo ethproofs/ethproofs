@@ -4,36 +4,99 @@ import { CSP_BENCHMARKS_BUCKET } from "../constants"
 
 import { createClient } from "@/utils/supabase/server"
 
-export const cspBenchmarkDataSchema = z
-  .object({
-    name: z.string(),
-    feat: z.string().optional(),
-    is_zkvm: z.boolean(),
-    target: z.string(),
-    input_size: z.number().int(),
-    proof_duration: z.number().int(), // nanoseconds
-    witgen_duration: z.number().int().optional(), // nanoseconds
-    verify_duration: z.number().int(), // nanoseconds
-    proof_size: z.number().int(), // bytes
-    preprocessing_size: z.number().int(), // bytes
-    peak_memory: z.number().int(), // bytes
-    peak_memory_witgen: z.number().int().optional(), // bytes
-    n_constraints: z.number().int(),
-    is_maintained: z.boolean(),
-    is_zk: z.boolean(),
-    is_audited: z.boolean(),
-    proving_system: z.string(),
-    field_curve: z.string(),
-    iop: z.string(),
-    pcs: z.string().optional(),
-    arithm: z.string().optional(),
-    security_bits: z.number().int(),
-    cycles: z.number().int().optional(), // cycles
-    isa: z.string().optional(),
-  })
-  .passthrough() // possibly remove with validation
+export const memReportSchema = z.object({
+  peak_memory: z.number().int().describe("Peak memory usage in bytes"),
+})
 
-export type CspCollectedBenchmark = z.infer<typeof cspBenchmarkDataSchema>
+export type MemReport = z.infer<typeof memReportSchema>
+
+export const benchPropertiesSchema = z.object({
+  proving_system: z.string().optional().describe("e.g., STARK, UltraHonk"),
+  field_curve: z.string().optional().describe("e.g., BabyBear, BN254"),
+  iop: z.string().optional().describe("Interactive Oracle Proof type"),
+  pcs: z
+    .string()
+    .optional()
+    .describe("Polynomial Commitment Scheme (e.g., FRI, KZG)"),
+  arithm: z.string().optional().describe("Arithmetization (e.g., AIR, ACIR)"),
+  is_zk: z.boolean().optional().describe("Zero-knowledge property"),
+  security_bits: z
+    .number()
+    .int()
+    .optional()
+    .describe("Security parameter (e.g., 96, 128)"),
+  is_pq: z.boolean().optional().describe("Post-quantum secure"),
+  is_maintained: z.boolean().optional().describe("Whether actively maintained"),
+  is_audited: z
+    .enum(["audited", "not_audited", "partially_audited"])
+    .optional()
+    .describe("Audit status"),
+  isa: z
+    .string()
+    .optional()
+    .describe("Instruction Set Architecture (for zkVMs, e.g., RISC-V RV32IM)"),
+})
+
+export type BenchProperties = z.infer<typeof benchPropertiesSchema>
+
+export const metricsSchema = z.object({
+  // Basic info
+  name: z.string().describe("Proving system name (e.g., risc0, binius64)"),
+  feat: z.string().optional().describe("Optional feature flag"),
+  is_zkvm: z.boolean().describe("Whether it's a zkVM"),
+  target: z.string().describe("Benchmark target (e.g., sha256, ecdsa, keccak)"),
+
+  // Performance metrics
+  input_size: z.number().int().describe("Size in bytes"),
+  proof_duration: z.number().int().describe("Duration in nanoseconds"),
+  verify_duration: z.number().int().describe("Duration in nanoseconds"),
+  cycles: z
+    .number()
+    .int()
+    .optional()
+    .describe("Execution cycles (optional, for zkVMs)"),
+
+  // Size metrics
+  proof_size: z.number().int().describe("Size in bytes"),
+  preprocessing_size: z.number().int().describe("Size in bytes"),
+  num_constraints: z.number().int().describe("Number of constraints"),
+  peak_memory: z.number().int().describe("Peak memory usage in bytes"),
+
+  // System properties
+  proving_system: z.string().optional().describe("e.g., STARK, UltraHonk"),
+  field_curve: z.string().optional().describe("e.g., BabyBear, BN254"),
+  iop: z.string().optional().describe("Interactive Oracle Proof type"),
+  pcs: z
+    .string()
+    .optional()
+    .describe("Polynomial Commitment Scheme (e.g., FRI, KZG)"),
+  arithm: z.string().optional().describe("Arithmetization (e.g., AIR, ACIR)"),
+  is_zk: z.boolean().optional().describe("Zero-knowledge property"),
+  security_bits: z
+    .number()
+    .int()
+    .optional()
+    .describe("Security parameter (e.g., 96, 128)"),
+  is_pq: z.boolean().optional().describe("Post-quantum secure"),
+  is_maintained: z.boolean().optional().describe("Whether actively maintained"),
+  is_audited: z
+    .enum(["audited", "not_audited", "partially_audited"])
+    .optional()
+    .describe("Audit status"),
+  isa: z
+    .string()
+    .optional()
+    .describe("Instruction Set Architecture (for zkVMs, e.g., RISC-V RV32IM)"),
+})
+
+export type Metrics = z.infer<typeof metricsSchema>
+
+export interface BenchmarkCollection {
+  benchmarksId: string
+  filename: string
+  updatedAt: string | null
+  data: Metrics[]
+}
 
 export const uploadCspBenchmarks = async (filename: string, buffer: Buffer) => {
   const supabase = await createClient()
@@ -50,8 +113,6 @@ export const uploadCspBenchmarks = async (filename: string, buffer: Buffer) => {
     return null
   }
 
-  console.log("uploaded csp-benchmarks json", data)
-
   return data
 }
 
@@ -66,8 +127,6 @@ export const downloadCspBenchmarks = async (filename: string) => {
     console.error(`Error downloading ${filename}:`, error)
     return null
   }
-
-  console.log("downloaded csp-benchmarks json", data)
 
   return data
 }
@@ -84,16 +143,7 @@ export const listCspBenchmarks = async () => {
     return null
   }
 
-  console.log("listed csp-benchmarks", data)
-
   return data
-}
-
-export interface CspCollectedBenchmarks {
-  benchmarksId: string
-  filename: string
-  updatedAt: string | null
-  data: CspCollectedBenchmark[]
 }
 
 export const fetchAllCspBenchmarks = async () => {
@@ -112,21 +162,23 @@ export const fetchAllCspBenchmarks = async () => {
         const text = await blob.text()
         const rawData = JSON.parse(text)
 
-        const cspCollectedBenchmarks: CspCollectedBenchmarks = {
+        // Validate with Zod schema
+        const validatedData = z.array(metricsSchema).parse(rawData)
+
+        const collection: BenchmarkCollection = {
           filename: file.name,
           benchmarksId: file.name.replace(".json", ""),
           updatedAt: file.updated_at || file.created_at,
-          data: rawData as CspCollectedBenchmark[],
+          data: validatedData,
         }
 
-        return cspCollectedBenchmarks
+        return collection
       } catch (error) {
-        console.error(`Error parsing ${file.name}:`, error)
+        console.error(`Error parsing or validating ${file.name}:`, error)
         return null
       }
     })
   )
 
-  // Filter out nulls
   return benchmarks.filter((b): b is NonNullable<typeof b> => b !== null)
 }

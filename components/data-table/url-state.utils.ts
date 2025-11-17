@@ -152,7 +152,7 @@ export const createPaginationHandler = (
     params.set("pageIndex", String(newPagination.pageIndex))
     params.set("pageSize", String(newPagination.pageSize))
 
-    router.replace(`?${params.toString()}`)
+    router.replace(`?${params.toString()}`, { scroll: false })
   }
 }
 
@@ -182,7 +182,7 @@ export const createSortingHandler = (
       params.delete("sort")
     }
 
-    router.replace(`?${params.toString()}`)
+    router.replace(`?${params.toString()}`, { scroll: false })
   }
 }
 
@@ -212,7 +212,7 @@ export const createVisibilityHandler = (
       params.delete("hidden")
     }
 
-    router.replace(`?${params.toString()}`)
+    router.replace(`?${params.toString()}`, { scroll: false })
   }
 }
 
@@ -249,6 +249,6 @@ export const createFiltersHandler = (
       }
     })
 
-    router.replace(`?${params.toString()}`)
+    router.replace(`?${params.toString()}`, { scroll: false })
   }
 }
