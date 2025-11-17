@@ -208,9 +208,9 @@ export function CspBenchmarksRadar({ benchmarks }: CspBenchmarksRadarProps) {
                     key={key}
                     dataKey={key}
                     fill={chartConfig[key].color}
-                    fillOpacity={isDimmed ? 0.1 : isHovered ? 0.7 : 0.5}
+                    fillOpacity={isDimmed ? 0 : isHovered ? 0.7 : 0.5}
                     stroke={chartConfig[key].color}
-                    strokeOpacity={isDimmed ? 0.1 : 1}
+                    strokeOpacity={isDimmed ? 0 : 1}
                     strokeWidth={isHovered ? 3 : 2}
                     style={{ transition: "all 0.2s ease" }}
                   />
