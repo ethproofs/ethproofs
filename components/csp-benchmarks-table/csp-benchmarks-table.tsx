@@ -5,12 +5,12 @@ import { useDataTableUrlState } from "@/components/data-table/useDataTableUrlSta
 
 import { columns, labels } from "./columns"
 
-import { CspCollectedBenchmark } from "@/lib/api/csp-benchmarks"
+import { Metrics } from "@/lib/api/csp-benchmarks"
 import { exportWithLabels } from "@/lib/csv-export"
 
 interface CspBenchmarksTableProps {
   className?: string
-  benchmarks: CspCollectedBenchmark[]
+  benchmarks: Metrics[]
 }
 
 export function CspBenchmarksTable({
@@ -19,7 +19,7 @@ export function CspBenchmarksTable({
 }: CspBenchmarksTableProps) {
   const tableState = useDataTableUrlState()
 
-  const handleExport = (rows: CspCollectedBenchmark[], isFiltered: boolean) => {
+  const handleExport = (rows: Metrics[], isFiltered: boolean) => {
     const filename = `csp-benchmarks-${new Date().toISOString().split("T")[0]}${
       isFiltered ? "-filtered" : "-all"
     }`
