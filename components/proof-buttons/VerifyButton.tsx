@@ -36,6 +36,7 @@ export const ziskVerifiableProvers = {
     "efa90d57-3269-4d8d-8e9c-947d6c311420",
     "33f14a82-47b7-42d7-9bc1-b81a46eea4fe",
     "c759bbea-e1d7-462c-9fdc-2a47d979e495",
+    "817bbf03-07b4-466d-879b-e476322bd080",
   ],
 } as const
 
