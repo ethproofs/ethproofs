@@ -54,7 +54,7 @@ export const columns: ColumnDef<ZkvmRow>[] = [
       const zkvm = row.original
 
       return (
-        <div className="w-[120px]">
+        <div className="w-[140px]">
           <Link href={`/zkvms/${zkvm.slug}`} className="hover:underline">
             {zkvm.name}
           </Link>
