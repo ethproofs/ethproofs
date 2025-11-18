@@ -29,31 +29,62 @@ export function useDownloadProof() {
       await simulateDownload()
 
       try {
-        const response = await fetch(`/api/v0/proofs/download/${proofId}`)
-        if (!response.ok) {
-          throw new Error(
-            `Failed to download proof: ${response.status} ${response.statusText}`
-          )
-        }
-        const blob = await response.blob()
-        const proofBytes = await handleBlobRead(blob)
+        let lastError: Error | null = null
+        const maxRetries = 5
+        const baseDelay = 500 // ms
 
-        if (saveToFile) {
-          const contentDisposition = response.headers.get("Content-Disposition")
-          const filename =
-            contentDisposition?.match(/filename="?([^"]*)"?/)?.[1] ||
-            `proof_${proofId}.txt`
+        for (let attempt = 0; attempt <= maxRetries; attempt++) {
+          try {
+            const response = await fetch(`/api/v0/proofs/download/${proofId}`)
+            if (!response.ok) {
+              // If it's a 404 and we haven't exhausted retries, retry
+              if (response.status === 404 && attempt < maxRetries) {
+                lastError = new Error(
+                  `Proof not yet available (attempt ${attempt + 1}/${maxRetries + 1})`
+                )
+                const delayMs = baseDelay * Math.pow(2, attempt) // exponential backoff
+                await delay(delayMs)
+                continue
+              }
+              throw new Error(
+                `Failed to download proof: ${response.status} ${response.statusText}`
+              )
+            }
+            const blob = await response.blob()
+            const proofBytes = await handleBlobRead(blob)
 
-          const downloadUrl = URL.createObjectURL(blob)
-          const a = document.createElement("a")
-          a.href = downloadUrl
-          a.download = filename
-          document.body.appendChild(a)
-          a.click()
-          a.remove()
-          URL.revokeObjectURL(downloadUrl)
+            if (saveToFile) {
+              const contentDisposition = response.headers.get(
+                "Content-Disposition"
+              )
+              const filename =
+                contentDisposition?.match(/filename="?([^"]*)"?/)?.[1] ||
+                `proof_${proofId}.txt`
+
+              const downloadUrl = URL.createObjectURL(blob)
+              const a = document.createElement("a")
+              a.href = downloadUrl
+              a.download = filename
+              document.body.appendChild(a)
+              a.click()
+              a.remove()
+              URL.revokeObjectURL(downloadUrl)
+            }
+            return proofBytes
+          } catch (err) {
+            lastError = err instanceof Error ? err : new Error(String(err))
+            // If it's the last attempt or not a retryable error, throw
+            if (
+              attempt === maxRetries ||
+              !(err instanceof Error) ||
+              !err.message.includes("not yet available")
+            ) {
+              throw err
+            }
+          }
         }
-        return proofBytes
+
+        throw lastError || new Error("Failed to download proof after retries")
       } catch (err) {
         console.error("Error downloading proof:", err)
       } finally {
