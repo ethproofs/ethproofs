@@ -3,11 +3,17 @@ import { Redis } from "@upstash/redis"
 
 import { withAuth } from "./with-auth"
 
-// Initialize Redis client for rate limiting
-const redis = new Redis({
-  url: process.env.UPSTASH_REDIS_REST_URL || "",
-  token: process.env.UPSTASH_REDIS_REST_TOKEN || "",
-})
+// Check if Redis credentials are configured
+const hasRedisConfig =
+  process.env.UPSTASH_REDIS_REST_URL && process.env.UPSTASH_REDIS_REST_TOKEN
+
+// Initialize Redis client for rate limiting (only if configured)
+const redis = hasRedisConfig
+  ? new Redis({
+      url: process.env.UPSTASH_REDIS_REST_URL!,
+      token: process.env.UPSTASH_REDIS_REST_TOKEN!,
+    })
+  : null
 
 /**
  * Create a rate limiter for a specific endpoint
@@ -37,9 +43,20 @@ export async function checkRateLimit(
       return {
         success: true,
         remaining: -1, // unlimited
-        resetTime: Infinity,
+        resetTime: Date.now() + window * 1000,
         error: undefined,
       }
+    }
+  }
+
+  // Skip rate limiting if Redis is not configured (e.g., in staging)
+  if (!redis) {
+    console.warn("Rate limiting disabled")
+    return {
+      success: true,
+      remaining: -1,
+      resetTime: Date.now() + window * 1000,
+      error: undefined,
     }
   }
 
