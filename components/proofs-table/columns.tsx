@@ -129,12 +129,17 @@ export const getColumns = (): ColumnDef<ProofRow>[] => {
         if (!team) return <Null />
 
         return (
-          <div className="w-[140px]">
-            <Link href={`/teams/${team.slug}`} className="hover:underline">
-              {team.name}
+          <div className="w-[180px]">
+            <Link
+              href={`/clusters/${proof.cluster_version?.cluster?.id}`}
+              className="hover:underline"
+            >
+              {proof.cluster_version?.cluster?.nickname}
             </Link>
             {zkvm && (
-              <div className="text-xs text-muted-foreground">{zkvm.name}</div>
+              <div className="text-xs text-muted-foreground">
+                {zkvm.name} by {team.name}
+              </div>
             )}
           </div>
         )
@@ -218,7 +223,7 @@ export const getColumns = (): ColumnDef<ProofRow>[] => {
         const provingCycles = proof.proving_cycles
 
         return (
-          <div className="w-[120px]">
+          <div className="w-[100px]">
             {isAvailable && provingCycles ? (
               formatNumber(provingCycles, {
                 notation: "compact",
@@ -248,7 +253,7 @@ export const getColumns = (): ColumnDef<ProofRow>[] => {
         const provingCost = getProvingCost(proof)
 
         return (
-          <div className="w-[120px]">
+          <div className="w-[100px]">
             {isAvailable && provingCost ? formatUsd(provingCost) : <Null />}
           </div>
         )
