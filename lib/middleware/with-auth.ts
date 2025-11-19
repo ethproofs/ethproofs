@@ -6,15 +6,20 @@ import { withTelemetry } from "./with-telemetry"
 
 import { db } from "@/db"
 
-export const withAuth = (
-  handler: (auth: {
-    request: Request
-    user: { id: string }
-    apiKey?: { mode: string; team_id: string }
-    timestamp: string
-  }) => Promise<Response>
+export const withAuth = <
+  T extends Record<string, unknown> = Record<string, unknown>,
+>(
+  handler: (
+    auth: {
+      request: Request
+      user: { id: string }
+      apiKey?: { mode: string; team_id: string }
+      timestamp: string
+    },
+    params: T
+  ) => Promise<Response>
 ) =>
-  withTelemetry(async (request: Request) => {
+  withTelemetry(async (request: Request, params: T) => {
     const timestamp = new Date().toISOString()
 
     const headerStore = await headers()
@@ -49,9 +54,12 @@ export const withAuth = (
       })
     }
 
-    return handler({
-      ...commonProps,
-      user: { id: apiAuthToken.team_id },
-      apiKey: apiAuthToken,
-    })
+    return handler(
+      {
+        ...commonProps,
+        user: { id: apiAuthToken.team_id },
+        apiKey: apiAuthToken,
+      },
+      params
+    )
   })

@@ -62,13 +62,15 @@ const sendReport = async (message: string, report: Report) => {
   }
 }
 
-export const withTelemetry = (
-  handler: (request: Request) => Promise<Response>,
+export const withTelemetry = <
+  T extends Record<string, unknown> = Record<string, unknown>,
+>(
+  handler: (request: Request, params: T) => Promise<Response>,
   opts?: { sampleRate?: number } // e.g., 0.02 for 2% of non-5xx
 ) => {
   const sampleRate = opts?.sampleRate ?? 0
 
-  return async (request: Request) => {
+  return async (request: Request, params: T) => {
     const t0 = performance.now()
     const nowIso = new Date().toISOString()
     const url = new URL(request.url)
@@ -110,7 +112,7 @@ export const withTelemetry = (
     }
 
     try {
-      const response = await handler(request)
+      const response = await handler(request, params)
       const end = performance.now()
       const durationMs = end - t0
 

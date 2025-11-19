@@ -58,18 +58,21 @@ export async function checkRateLimit(
 /**
  * Rate limit middleware for Next.js API routes
  * Extracts API key from Authorization header and rate limits based on that
+ * Supports both static and dynamic routes
  */
-export function withRateLimit(
-  handler: (request: Request) => Promise<Response>,
+export function withRateLimit<
+  T extends Record<string, unknown> = Record<string, unknown>,
+>(
+  handler: (request: Request, params: T) => Promise<Response>,
   options: {
     requests?: number // Default: 10
     window?: number // Default: 60 seconds
     identifier?: (request: Request) => string // Custom identifier function
   } = {}
-): (request: Request) => Promise<Response> {
+): (request: Request, params: T) => Promise<Response> {
   const { requests = 10, window = 60, identifier } = options
 
-  return async (request: Request) => {
+  return async (request: Request, params: T) => {
     // Extract identifier (API key or IP)
     const id = identifier
       ? identifier(request)
@@ -99,7 +102,7 @@ export function withRateLimit(
     }
 
     // Add rate limit info to response headers
-    const response = await handler(request)
+    const response = await handler(request, params)
     const headers = new Headers(response.headers)
     headers.set("X-RateLimit-Remaining", rateCheck.remaining.toString())
     headers.set(
@@ -118,30 +121,36 @@ export function withRateLimit(
 /**
  * Compose rate limiting with the withAuth middleware
  * Use this for authenticated endpoints that need rate limiting
+ * Supports both static and dynamic routes
  */
-export function withAuthAndRateLimit(
-  handler: (auth: {
-    request: Request
-    user: { id: string }
-    apiKey?: { mode: string; team_id: string }
-    timestamp: string
-  }) => Promise<Response>,
+export function withAuthAndRateLimit<
+  T extends Record<string, unknown> = Record<string, unknown>,
+>(
+  handler: (
+    auth: {
+      request: Request
+      user: { id: string }
+      apiKey?: { mode: string; team_id: string }
+      timestamp: string
+    },
+    params: T
+  ) => Promise<Response>,
   options: {
     requests?: number // Default: 10
     window?: number // Default: 60 seconds
   } = {}
-): (request: Request) => Promise<Response> {
+): (request: Request, params: T) => Promise<Response> {
   const { requests = 10, window = 60 } = options
 
   // First apply auth, then rate limit based on API key
   const authHandler = withAuth(handler)
 
-  return async (request: Request) => {
+  return async (request: Request, params: T) => {
     // Extract API key for rate limiting
     const apiKey = extractApiKey(request)
     if (!apiKey) {
       // Let auth middleware handle missing API key
-      return authHandler(request)
+      return authHandler(request, params)
     }
 
     const rateCheck = await checkRateLimit(apiKey, requests, window)
@@ -168,7 +177,7 @@ export function withAuthAndRateLimit(
     }
 
     // Pass to auth handler
-    const response = await authHandler(request)
+    const response = await authHandler(request, params)
     const headers = new Headers(response.headers)
     headers.set("X-RateLimit-Remaining", rateCheck.remaining.toString())
     headers.set(
