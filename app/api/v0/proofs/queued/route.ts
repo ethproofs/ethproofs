@@ -64,19 +64,19 @@ export const POST = withAuthAndRateLimit(
       return new Response("Cluster version not found", { status: 404 })
     }
 
-    try {
-      const block = await findOrCreateBlock(block_number)
-      console.log(`[Queued] Block ${block} found by team:`, teamId)
-    } catch (error) {
-      console.error(
-        `[Queued] Block ${block_number} not found by team:`,
-        teamId,
-        error
-      )
-      return new Response("Internal server error", {
-        status: 500,
-      })
-    }
+    // Ensure block exists asynchronously (non-blocking)
+    void (async () => {
+      try {
+        const block = await findOrCreateBlock(block_number)
+        console.log(`[Queued] Block ${block} found by team:`, teamId)
+      } catch (error) {
+        console.error(
+          `[Queued] Block ${block_number} not found by team:`,
+          teamId,
+          error
+        )
+      }
+    })()
 
     // Check if proof already exists and is proved
     const existingProof = await db.query.proofs.findFirst({

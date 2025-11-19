@@ -68,20 +68,6 @@ export const POST = withAuthAndRateLimit(
       return new Response("Cluster version not found", { status: 404 })
     }
 
-    try {
-      const block = await updateBlock(block_number)
-      console.log(`[Proved] Block ${block} updated by team:`, teamId)
-    } catch (error) {
-      console.error(
-        `[Proved] Block ${block_number} not updated by team:`,
-        teamId,
-        error
-      )
-      return new Response("Internal server error", {
-        status: 500,
-      })
-    }
-
     // Check if proof already exists and is proved
     const existingProof = await db.query.proofs.findFirst({
       columns: {
@@ -164,7 +150,20 @@ export const POST = withAuthAndRateLimit(
       //   console.log(`[Storage Quota Exceeded] team ${teamId} has reached quota`)
       // }
 
-      // Upload proof binary asynchronously after returning response
+      // Update block and upload proof binary asynchronously after returning response
+      void (async () => {
+        try {
+          await updateBlock(block_number)
+          console.log(`[Proved] Block ${block_number} updated by team:`, teamId)
+        } catch (error) {
+          console.error(
+            `[Proved] Block ${block_number} not updated by team:`,
+            teamId,
+            error
+          )
+        }
+      })()
+
       if (!storageQuotaExceeded) {
         void (async () => {
           try {
