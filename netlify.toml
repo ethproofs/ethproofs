@@ -3,3 +3,18 @@
   to = "https://ethproofs.org/:splat"
   status = 301
   force = true
+
+# Edge-level rate limiting for DDoS protection
+# These rules block at the edge before reaching serverless functions
+
+# Strict limit on proof endpoints (most critical)
+[[rate_limiting]]
+  paths = ["/api/v0/proofs/*"]
+  limit_per_ip = 50
+  actions = [{type = "block"}]
+
+# General rate limit on all API endpoints
+[[rate_limiting]]
+  paths = ["/api/*"]
+  limit_per_ip = 100
+  actions = [{type = "block"}]
