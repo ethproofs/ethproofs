@@ -3,11 +3,49 @@ import AdmZip from "adm-zip"
 import { db } from "@/db"
 import { downloadProofBinary } from "@/lib/api/proof-binaries"
 import { getTeam } from "@/lib/api/teams"
+import { checkRateLimit } from "@/lib/middleware/with-rate-limit"
+
+// Extract IP address from request
+function getClientIp(request: Request): string {
+  return (
+    request.headers.get("x-forwarded-for")?.split(",")[0] ||
+    request.headers.get("x-real-ip") ||
+    request.headers.get("cf-connecting-ip") ||
+    "unknown"
+  )
+}
 
 export async function GET(
-  _request: Request,
+  request: Request,
   { params }: { params: Promise<{ block: string }> }
 ) {
+  // Rate limit: 5 bulk downloads per 60 seconds per IP (expensive operation)
+  const clientIp = getClientIp(request)
+  const rateLimitCheck = await checkRateLimit(
+    `download-bulk:${clientIp}`,
+    5,
+    60
+  )
+
+  if (!rateLimitCheck.success) {
+    return new Response(
+      JSON.stringify({
+        error: "Rate limit exceeded",
+        message: rateLimitCheck.error,
+        retryAfter: Math.ceil((rateLimitCheck.resetTime - Date.now()) / 1000),
+      }),
+      {
+        status: 429,
+        headers: {
+          "Content-Type": "application/json",
+          "Retry-After": Math.ceil(
+            (rateLimitCheck.resetTime - Date.now()) / 1000
+          ).toString(),
+        },
+      }
+    )
+  }
+
   const { block: blockHash } = await params
 
   const block = await db.query.blocks.findFirst({
