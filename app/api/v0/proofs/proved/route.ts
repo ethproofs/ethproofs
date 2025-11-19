@@ -12,8 +12,7 @@ import { getTeam } from "@/lib/api/teams"
 import { withAuthAndRateLimit } from "@/lib/middleware/with-rate-limit"
 import { provedProofSchema } from "@/lib/zod/schemas/proof"
 
-// TODO:TEAM - refactor code to use baseProofHandler and abstract out the logic
-// Rate limit: 10 proof submissions per 60 seconds per API key
+// Rate limit: 20 proof submissions per 60 seconds per API key
 export const POST = withAuthAndRateLimit(
   async ({ request, user, timestamp }) => {
     const payload = await request.json()
@@ -190,5 +189,5 @@ export const POST = withAuthAndRateLimit(
       })
     }
   },
-  { requests: 10, window: 60 }
+  { requests: 20, window: 60 }
 )
