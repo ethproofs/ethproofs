@@ -4,9 +4,9 @@ import { useCallback, useEffect, useState } from "react"
 
 import { wasmCache } from "@/lib/wasm-cache"
 
-export function useZiskVerifier(active: boolean = false) {
+export function useOpenVmVerifier(active: boolean = false) {
   const [wasmModule, setWasmModule] = useState<
-    typeof import("@ethproofs/zisk-wasm-stark-verifier") | null
+    typeof import("@ethproofs/openvm-wasm-stark-verifier") | null
   >(null)
   const [isInitialized, setIsInitialized] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -18,14 +18,14 @@ export function useZiskVerifier(active: boolean = false) {
       if (!active) return
 
       // Check if already cached and initialized
-      if (wasmCache.isModuleLoaded("zisk")) {
+      if (wasmCache.isModuleLoaded("openvm")) {
         const cachedModule = await wasmCache.getModule(
-          "zisk",
-          () => import("@ethproofs/zisk-wasm-stark-verifier")
+          "openvm",
+          () => import("@ethproofs/openvm-wasm-stark-verifier")
         )
         if (mounted) {
           setWasmModule(
-            cachedModule as typeof import("@ethproofs/zisk-wasm-stark-verifier")
+            cachedModule as typeof import("@ethproofs/openvm-wasm-stark-verifier")
           )
           setIsInitialized(true)
         }
@@ -35,22 +35,22 @@ export function useZiskVerifier(active: boolean = false) {
       try {
         setError(null)
         const loadedModule = await wasmCache.getModule(
-          "zisk",
-          () => import("@ethproofs/zisk-wasm-stark-verifier"),
+          "openvm",
+          () => import("@ethproofs/openvm-wasm-stark-verifier"),
           (wasmModule) =>
             (
-              wasmModule as typeof import("@ethproofs/zisk-wasm-stark-verifier")
+              wasmModule as typeof import("@ethproofs/openvm-wasm-stark-verifier")
             ).main()
         )
 
         if (mounted) {
           setWasmModule(
-            loadedModule as typeof import("@ethproofs/zisk-wasm-stark-verifier")
+            loadedModule as typeof import("@ethproofs/openvm-wasm-stark-verifier")
           )
           setIsInitialized(true)
         }
       } catch (error) {
-        console.error("[Zisk] WASM initialization failed:", error)
+        console.error("[OpenVM] WASM initialization failed:", error)
         if (mounted) {
           setError(error instanceof Error ? error.message : "Unknown error")
         }
@@ -67,17 +67,17 @@ export function useZiskVerifier(active: boolean = false) {
   const verifyFn = useCallback(
     (proofBytes: Uint8Array, vkBytes: Uint8Array) => {
       if (!wasmModule || !isInitialized) {
-        const errorMsg = error || "[Zisk] WASM module not initialized"
+        const errorMsg = error || "[OpenVM] WASM module not initialized"
         return { isValid: false, error: errorMsg }
       }
       try {
         const result = wasmModule.verify_stark(proofBytes, vkBytes)
         return { isValid: result }
       } catch (err) {
-        console.error("[Zisk] verify_stark failed:", err)
+        console.error("[OpenVM] verify_stark failed:", err)
         return {
           isValid: false,
-          error: err instanceof Error ? err.message : "Zisk verifier error",
+          error: err instanceof Error ? err.message : "OpenVM verifier error",
         }
       }
     },

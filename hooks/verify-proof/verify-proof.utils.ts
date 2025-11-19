@@ -2,10 +2,9 @@ export const ziskVerifiableProvers = {
   type: "zisk",
   provers: [
     "efa90d57-3269-4d8d-8e9c-947d6c311420",
-    "33f14a82-47b7-42d7-9bc1-b81a46eea4fe",
-    "c759bbea-e1d7-462c-9fdc-2a47d979e495",
     "817bbf03-07b4-466d-879b-e476322bd080",
     "534e6cf4-3dfe-47de-bba2-a0b11d544557",
+    "884fcc21-d522-4b4a-b535-7cfde199485c", // ZkCloud
   ],
 } as const
 
@@ -32,17 +31,23 @@ export const sp1HypercubeVerifiableProvers = {
   provers: ["9d0bd54d-69f9-4404-8f30-020516a8155d"],
 } as const
 
+export const openVmVerifiableProvers = {
+  type: "openvm",
+  provers: ["425971e7-78eb-4d61-95d9-e9eea62f41da"],
+} as const
+
 export const verifiableProvers = [
   ...ziskVerifiableProvers.provers,
   ...picoVerifiableProvers.provers,
   ...picoPrismVerifiableProvers.provers,
   ...zirenVerifiableProvers.provers,
   ...sp1HypercubeVerifiableProvers.provers,
+  ...openVmVerifiableProvers.provers,
 ] as const
 
 export const proverTypeMap = new Map<
   string,
-  "zisk" | "pico" | "pico-prism" | "ziren" | "sp1-hypercube"
+  "zisk" | "pico" | "pico-prism" | "ziren" | "sp1-hypercube" | "openvm"
 >([
   ...ziskVerifiableProvers.provers.map((id) => [id, "zisk"] as const),
   ...picoVerifiableProvers.provers.map((id) => [id, "pico"] as const),
@@ -53,11 +58,19 @@ export const proverTypeMap = new Map<
   ...sp1HypercubeVerifiableProvers.provers.map(
     (id) => [id, "sp1-hypercube"] as const
   ),
+  ...openVmVerifiableProvers.provers.map((id) => [id, "openvm"] as const),
 ])
 
 export function getProverType(
   id: string
-): "zisk" | "pico" | "pico-prism" | "ziren" | "sp1-hypercube" | undefined {
+):
+  | "zisk"
+  | "pico"
+  | "pico-prism"
+  | "ziren"
+  | "sp1-hypercube"
+  | "openvm"
+  | undefined {
   return proverTypeMap.get(id)
 }
 
