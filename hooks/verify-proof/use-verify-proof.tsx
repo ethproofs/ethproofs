@@ -2,10 +2,11 @@
 
 import { useCallback, useMemo, useState } from "react"
 
-import { usePicoVerifier } from "./verifier-hooks/usePicoVerifier"
-import { useSp1HypercubeVerifier } from "./verifier-hooks/useSp1HypercubeVerifier"
-import { useZirenVerifier } from "./verifier-hooks/useZirenVerifier"
-import { useZiskVerifier } from "./verifier-hooks/useZiskVerifier"
+import { useOpenVmVerifier } from "./verifier-hooks/use-openvm-verifier"
+import { usePicoVerifier } from "./verifier-hooks/use-pico-verifier"
+import { useSp1HypercubeVerifier } from "./verifier-hooks/use-sp1-hypercube-verifier"
+import { useZirenVerifier } from "./verifier-hooks/use-ziren-verifier"
+import { useZiskVerifier } from "./verifier-hooks/use-zisk-verifier"
 import { getProverType } from "./verify-proof.utils"
 
 export interface VerificationResult {
@@ -26,6 +27,7 @@ export function useVerifyProof(prover: string) {
   )
   const zirenVerifier = useZirenVerifier(proverType === "ziren")
   const ziskVerifier = useZiskVerifier(proverType === "zisk")
+  const openVmVerifier = useOpenVmVerifier(proverType === "openvm")
 
   // Check if the active verifier is initialized
   const isReady = useMemo(() => {
@@ -37,6 +39,8 @@ export function useVerifyProof(prover: string) {
       return zirenVerifier.isInitialized
     } else if (proverType === "zisk") {
       return ziskVerifier.isInitialized
+    } else if (proverType === "openvm") {
+      return openVmVerifier.isInitialized
     }
     return true // Unknown prover type, treat as ready to fail fast
   }, [
@@ -45,6 +49,7 @@ export function useVerifyProof(prover: string) {
     sp1HypercubeVerifier.isInitialized,
     zirenVerifier.isInitialized,
     ziskVerifier.isInitialized,
+    openVmVerifier.isInitialized,
   ])
 
   const verifyProof = useCallback(
@@ -65,6 +70,8 @@ export function useVerifyProof(prover: string) {
           result = zirenVerifier.verifyFn(proofBytes, vkBytes)
         } else if (proverType === "zisk") {
           result = ziskVerifier.verifyFn(proofBytes, vkBytes)
+        } else if (proverType === "openvm") {
+          result = openVmVerifier.verifyFn(proofBytes, vkBytes)
         } else {
           result = { isValid: false, error: "Proof cannot be verified" }
         }
@@ -84,6 +91,7 @@ export function useVerifyProof(prover: string) {
       sp1HypercubeVerifier,
       zirenVerifier,
       ziskVerifier,
+      openVmVerifier,
     ]
   )
 
