@@ -25,6 +25,24 @@ export async function checkRateLimit(
   resetTime: number
   error?: string
 }> {
+  // Check whitelist first - bypass rate limiting for whitelisted API keys
+  if (identifier.startsWith("apikey:")) {
+    const apiKey = identifier.substring(7) // remove 'apikey:' prefix
+    const whitelist = (process.env.RATE_LIMIT_WHITELIST || "")
+      .split(",")
+      .map((k) => k.trim())
+      .filter(Boolean)
+
+    if (whitelist.includes(apiKey)) {
+      return {
+        success: true,
+        remaining: -1, // unlimited
+        resetTime: Infinity,
+        error: undefined,
+      }
+    }
+  }
+
   try {
     const ratelimit = new Ratelimit({
       redis: redis,
