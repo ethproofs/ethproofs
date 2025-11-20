@@ -1,14 +1,11 @@
 import { db } from "@/db"
 import { downloadProofBinary } from "@/lib/api/proof-binaries"
 import { getTeam } from "@/lib/api/teams"
-import { withRateLimit } from "@/lib/middleware/with-rate-limit"
+import { withAuthAndRateLimit } from "@/lib/middleware/with-rate-limit"
 
-// Rate limit: 100 requests per 60 seconds per IP
-export const GET = withRateLimit(
-  async (
-    _request: Request,
-    { params }: { params: Promise<{ id: string }> }
-  ) => {
+// Rate limit: 30 requests per 60 seconds per API key
+export const GET = withAuthAndRateLimit(
+  async (_request, { params }: { params: Promise<{ id: string }> }) => {
     const { id } = await params
 
     const proofRow = await db.query.proofs.findFirst({
@@ -80,5 +77,5 @@ export const GET = withRateLimit(
       },
     })
   },
-  { requests: 100, window: 60 }
+  { requests: 30, window: 60 }
 )

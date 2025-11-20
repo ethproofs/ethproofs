@@ -35,7 +35,7 @@ export function useDownloadProof() {
 
         for (let attempt = 0; attempt <= maxRetries; attempt++) {
           try {
-            const response = await fetch(`/api/v0/proofs/download/${proofId}`)
+            const response = await fetch(`/api/proofs/download/${proofId}`)
             if (!response.ok) {
               // If it's a 404 and we haven't exhausted retries, retry
               if (response.status === 404 && attempt < maxRetries) {

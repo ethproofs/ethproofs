@@ -20,7 +20,7 @@ export function useDownloadVerificationKey() {
         for (let attempt = 0; attempt <= maxRetries; attempt++) {
           try {
             const response = await fetch(
-              `/api/v0/verification-keys/download/${proofId}`
+              `/api/verification-keys/download/${proofId}`
             )
             if (!response.ok) {
               // If it's a 404 and we haven't exhausted retries, retry
