@@ -5,7 +5,6 @@ import { downloadProofBinary } from "@/lib/api/proof-binaries"
 import { getTeam } from "@/lib/api/teams"
 import { withRateLimit } from "@/lib/middleware/with-rate-limit"
 
-// Rate limit: 5 bulk downloads per 60 seconds per IP (expensive operation)
 export const GET = withRateLimit(
   async (_request: Request, params: { params: Promise<{ block: string }> }) => {
     const { block: blockHash } = await params.params
@@ -106,5 +105,5 @@ export const GET = withRateLimit(
       },
     })
   },
-  { requests: 5, window: 60 }
+  { requests: 10, window: 60 }
 )

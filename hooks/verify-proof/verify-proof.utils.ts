@@ -28,7 +28,10 @@ export const zirenVerifiableProvers = {
 
 export const sp1HypercubeVerifiableProvers = {
   type: "sp1-hypercube",
-  provers: ["9d0bd54d-69f9-4404-8f30-020516a8155d"],
+  provers: [
+    "9d0bd54d-69f9-4404-8f30-020516a8155d",
+    "fbef2553-8cd0-4f45-b328-570b5c8688b2",
+  ],
 } as const
 
 export const openVmVerifiableProvers = {

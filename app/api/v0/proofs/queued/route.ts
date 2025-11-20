@@ -12,7 +12,6 @@ import { findOrCreateBlock } from "@/lib/api/blocks"
 import { withAuthAndRateLimit } from "@/lib/middleware/with-rate-limit"
 import { queuedProofSchema } from "@/lib/zod/schemas/proof"
 
-// Rate limit: 30 status updates per 60 seconds per API key
 export const POST = withAuthAndRateLimit(
   async ({ request, user, timestamp }) => {
     const payload = await request.json()
@@ -137,6 +136,5 @@ export const POST = withAuthAndRateLimit(
         status: 500,
       })
     }
-  },
-  { requests: 30, window: 60 }
+  }
 )

@@ -3,7 +3,6 @@ import { downloadProofBinary } from "@/lib/api/proof-binaries"
 import { getTeam } from "@/lib/api/teams"
 import { withAuthAndRateLimit } from "@/lib/middleware/with-rate-limit"
 
-// Rate limit: 30 requests per 60 seconds per API key
 export const GET = withAuthAndRateLimit(
   async (_request, { params }: { params: Promise<{ id: string }> }) => {
     const { id } = await params

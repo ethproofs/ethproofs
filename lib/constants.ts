@@ -29,6 +29,7 @@ export const LEARN_CONTENT_MD = "app/learn/content/index.md"
 
 export const AVERAGE_LABEL = "avg"
 
+export const DEFAULT_RATE_LIMIT = 60
 export const DEFAULT_FETCH_LIMIT = 200
 export const DEFAULT_PAGE_SIZE = 20
 export const DEFAULT_PAGE_INDEX = 0

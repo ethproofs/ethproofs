@@ -1,6 +1,8 @@
 import { Ratelimit } from "@upstash/ratelimit"
 import { Redis } from "@upstash/redis"
 
+import { DEFAULT_RATE_LIMIT } from "../constants"
+
 import { withAuth } from "./with-auth"
 
 // Check if Redis credentials are configured
@@ -23,7 +25,7 @@ const redis = hasRedisConfig
  */
 export async function checkRateLimit(
   identifier: string,
-  requests: number = 10,
+  requests: number = DEFAULT_RATE_LIMIT,
   window: number = 60
 ): Promise<{
   success: boolean
@@ -100,12 +102,12 @@ export function withRateLimit<
 >(
   handler: (request: Request, params: T) => Promise<Response>,
   options: {
-    requests?: number // Default: 10
+    requests?: number // Default: 60
     window?: number // Default: 60 seconds
     identifier?: (request: Request) => string // Custom identifier function
   } = {}
 ): (request: Request, params: T) => Promise<Response> {
-  const { requests = 10, window = 60, identifier } = options
+  const { requests = DEFAULT_RATE_LIMIT, window = 60, identifier } = options
 
   return async (request: Request, params: T) => {
     // Extract identifier (API key or IP)
@@ -171,11 +173,11 @@ export function withAuthAndRateLimit<
     params: T
   ) => Promise<Response>,
   options: {
-    requests?: number // Default: 10
+    requests?: number // Default: 60
     window?: number // Default: 60 seconds
   } = {}
 ): (request: Request, params: T) => Promise<Response> {
-  const { requests = 10, window = 60 } = options
+  const { requests = DEFAULT_RATE_LIMIT, window = 60 } = options
 
   // First apply auth, then rate limit based on API key
   const authHandler = withAuth(handler)
