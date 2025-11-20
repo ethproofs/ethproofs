@@ -34,9 +34,7 @@ export function useRealtimeProofsQuery() {
 
       return grouped
     },
-    refetchInterval: 100, // Poll every 100ms to catch rapid state changes
-    refetchIntervalInBackground: true, // Continue polling even when tab is not focused
-    staleTime: 0, // Always fresh since we're using real-time
-    gcTime: 5 * 60 * 1000, // Keep in cache for 5 minutes
+    staleTime: Infinity, // To be updated manually when needed
+    gcTime: 5 * 60 * 1000,
   })
 }
