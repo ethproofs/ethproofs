@@ -15,7 +15,6 @@ import { DataTable } from "../data-table/data-table"
 import { Spinner } from "../ui/spinner"
 
 import { columns, labels } from "./columns"
-import useRealtimeBlocks from "./use-realtime-blocks"
 
 import { MachineType } from "@/lib/api/blocks"
 import { mergeBlocksWithTeams } from "@/lib/blocks"
@@ -59,9 +58,10 @@ export function BlocksTable({
     queryKey,
     queryFn: getBlocksQueryFn(pageIndex, pageSize, machineType),
     placeholderData: keepPreviousData,
+    refetchInterval: 5000,
+    refetchIntervalInBackground: false,
+    staleTime: 0,
   })
-
-  useRealtimeBlocks()
 
   // Prefetch next page
   usePrefetchQuery({
