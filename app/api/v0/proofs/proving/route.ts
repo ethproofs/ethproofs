@@ -10,7 +10,7 @@ import { findOrCreateBlock } from "@/lib/api/blocks"
 import { withAuthAndRateLimit } from "@/lib/middleware/with-rate-limit"
 import { provingProofSchema } from "@/lib/zod/schemas/proof"
 
-// Rate limit: 20 status updates per 60 seconds per API key
+// Rate limit: 30 status updates per 60 seconds per API key
 export const POST = withAuthAndRateLimit(
   async ({ request, user, timestamp }) => {
     const payload = await request.json()
@@ -62,19 +62,20 @@ export const POST = withAuthAndRateLimit(
       return new Response("Cluster version not found", { status: 404 })
     }
 
-    // Ensure block exists asynchronously (non-blocking)
-    void (async () => {
-      try {
-        const block = await findOrCreateBlock(block_number)
-        console.log(`[Proving] Block ${block} found by team:`, teamId)
-      } catch (error) {
-        console.error(
-          `[Proving] Block ${block_number} not found by team:`,
-          teamId,
-          error
-        )
-      }
-    })()
+    // Ensure block exists (must be synchronous)
+    try {
+      const block = await findOrCreateBlock(block_number)
+      console.log(`[Proving] Block ${block} found by team:`, teamId)
+    } catch (error) {
+      console.error(
+        `[Proving] Block ${block_number} not found by team:`,
+        teamId,
+        error
+      )
+      return new Response("Internal server error", {
+        status: 500,
+      })
+    }
 
     // Check if proof already exists and is proved
     const existingProof = await db.query.proofs.findFirst({
@@ -136,5 +137,5 @@ export const POST = withAuthAndRateLimit(
       })
     }
   },
-  { requests: 20, window: 60 }
+  { requests: 30, window: 60 }
 )

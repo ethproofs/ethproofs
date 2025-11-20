@@ -14,7 +14,7 @@ import { Checkbox } from "../ui/checkbox"
 
 import { fetchBlock } from "@/lib/api/blocks"
 import { fetchProvedProofsByClusterId } from "@/lib/api/proofs"
-import { formatTimeAgo } from "@/lib/date"
+import { formatTimeAgoDetailed } from "@/lib/date"
 import { formatNumber, formatUsd } from "@/lib/number"
 import { getProvingCost, hasProvedTimestamp, isCompleted } from "@/lib/proofs"
 import { prettyMs } from "@/lib/time"
@@ -96,7 +96,7 @@ export const getColumns = (): ColumnDef<ProofRow>[] => {
         const blockNumber = row.getValue("block_number") as number
         const timestamp = row.original.block?.timestamp
         const formattedTimestamp = timestamp
-          ? formatTimeAgo(new Date(timestamp))
+          ? formatTimeAgoDetailed(new Date(timestamp))
           : null
 
         return (
