@@ -19,7 +19,7 @@ import { Progress } from "../ui/progress"
 
 import BlockMetric from "./block-metric"
 
-import { formatTimeAgo } from "@/lib/date"
+import { formatTimeAgoDetailed } from "@/lib/date"
 import { formatNumber } from "@/lib/number"
 import {
   getCostPerMgasStats,
@@ -92,8 +92,8 @@ export const columns: ColumnDef<Block>[] = [
 
       const timestamp = row.original.timestamp
       const formattedTimestamp = timestamp
-        ? formatTimeAgo(new Date(timestamp))
-        : "pending"
+        ? formatTimeAgoDetailed(new Date(timestamp))
+        : "-"
 
       return (
         <div className="w-[100px]">

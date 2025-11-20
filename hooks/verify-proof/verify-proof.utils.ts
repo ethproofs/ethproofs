@@ -33,7 +33,10 @@ export const sp1HypercubeVerifiableProvers = {
 
 export const openVmVerifiableProvers = {
   type: "openvm",
-  provers: ["425971e7-78eb-4d61-95d9-e9eea62f41da"],
+  provers: [
+    "425971e7-78eb-4d61-95d9-e9eea62f41da",
+    "9b6768c0-831d-488c-ba72-05f93975a3be",
+  ],
 } as const
 
 export const verifiableProvers = [
