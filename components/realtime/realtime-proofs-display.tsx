@@ -18,7 +18,7 @@ import useRealtimeProofs from "./use-realtime-proofs"
 import { formatNumber } from "@/lib/number"
 
 export function RealtimeProofsDisplay() {
-  // Use real-time subscription to invalidate cache
+  // Use real-time subscription to update cache directly
   useRealtimeProofs()
 
   const { data: proofsByBlock, isLoading, error } = useRealtimeProofsQuery()
