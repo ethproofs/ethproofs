@@ -54,10 +54,10 @@ export function useAutoVerifyProof(
           return
         }
 
-        if (!proofBytes || !vkBytes) {
+        if (!proofBytes) {
           setResult({
             status: "error",
-            error: "Failed to download proof or vk",
+            error: "Failed to download proof",
           })
           return
         }

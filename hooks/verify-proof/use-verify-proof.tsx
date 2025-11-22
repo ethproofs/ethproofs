@@ -2,6 +2,7 @@
 
 import { useCallback, useMemo, useState } from "react"
 
+import { useAirbenderVerifier } from "./verifier-hooks/use-airbender-verifier"
 import { useOpenVmVerifier } from "./verifier-hooks/use-openvm-verifier"
 import { usePicoVerifier } from "./verifier-hooks/use-pico-verifier"
 import { useSp1HypercubeVerifier } from "./verifier-hooks/use-sp1-hypercube-verifier"
@@ -28,6 +29,7 @@ export function useVerifyProof(prover: string) {
   const zirenVerifier = useZirenVerifier(proverType === "ziren")
   const ziskVerifier = useZiskVerifier(proverType === "zisk")
   const openVmVerifier = useOpenVmVerifier(proverType === "openvm")
+  const airbenderVerifier = useAirbenderVerifier(proverType === "airbender")
 
   // Check if the active verifier is initialized
   const isReady = useMemo(() => {
@@ -41,6 +43,8 @@ export function useVerifyProof(prover: string) {
       return ziskVerifier.isInitialized
     } else if (proverType === "openvm") {
       return openVmVerifier.isInitialized
+    } else if (proverType === "airbender") {
+      return airbenderVerifier.isInitialized
     }
     return true // Unknown prover type, treat as ready to fail fast
   }, [
@@ -50,28 +54,37 @@ export function useVerifyProof(prover: string) {
     zirenVerifier.isInitialized,
     ziskVerifier.isInitialized,
     openVmVerifier.isInitialized,
+    airbenderVerifier.isInitialized,
   ])
 
   const verifyProof = useCallback(
     async (
       proofBytes: Uint8Array,
-      vkBytes: Uint8Array
+      vkBytes?: Uint8Array
     ): Promise<VerificationResult> => {
       let result: VerificationResult
       try {
         const startTime = performance.now()
         if (proverType === "pico") {
+          if (!vkBytes) return { isValid: false, error: "VK is required" }
           result = picoVerifier.verifyFn("Pico", proofBytes, vkBytes)
         } else if (proverType === "pico-prism") {
+          if (!vkBytes) return { isValid: false, error: "VK is required" }
           result = picoVerifier.verifyFn("PicoPrism", proofBytes, vkBytes)
         } else if (proverType === "sp1-hypercube") {
+          if (!vkBytes) return { isValid: false, error: "VK is required" }
           result = sp1HypercubeVerifier.verifyFn(proofBytes, vkBytes)
         } else if (proverType === "ziren") {
+          if (!vkBytes) return { isValid: false, error: "VK is required" }
           result = zirenVerifier.verifyFn(proofBytes, vkBytes)
         } else if (proverType === "zisk") {
+          if (!vkBytes) return { isValid: false, error: "VK is required" }
           result = ziskVerifier.verifyFn(proofBytes, vkBytes)
         } else if (proverType === "openvm") {
+          if (!vkBytes) return { isValid: false, error: "VK is required" }
           result = openVmVerifier.verifyFn(proofBytes, vkBytes)
+        } else if (proverType === "airbender") {
+          result = airbenderVerifier.verifyFn(proofBytes)
         } else {
           result = { isValid: false, error: "Proof cannot be verified" }
         }
@@ -92,6 +105,7 @@ export function useVerifyProof(prover: string) {
       zirenVerifier,
       ziskVerifier,
       openVmVerifier,
+      airbenderVerifier,
     ]
   )
 
