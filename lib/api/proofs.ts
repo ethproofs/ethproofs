@@ -283,37 +283,76 @@ export const fetchProofsFiltered = async ({
 }
 
 export const fetchAllProofsForRealtime = async () => {
-  // Get the 3 most recent block numbers that have proofs
-  const topBlocks = await db
-    .selectDistinct({ block_number: proofs.block_number })
-    .from(proofs)
-    .orderBy((proofs) => desc(proofs.block_number))
-    .limit(3)
+  try {
+    // Get the 3 most recent block numbers that have proofs
+    const topBlocks = await db
+      .selectDistinct({ block_number: proofs.block_number })
+      .from(proofs)
+      .orderBy((proofs) => desc(proofs.block_number))
+      .limit(3)
 
-  if (topBlocks.length === 0) {
-    return []
-  }
+    if (topBlocks.length === 0) {
+      return []
+    }
 
-  const blockNumbersToFetch = topBlocks.map((row) => row.block_number)
+    const blockNumbersToFetch = topBlocks
+      .map((row) => row.block_number)
+      .filter((num): num is number => num !== null && num !== undefined)
 
-  // Fetch all proofs for those blocks
-  const proofsRows = await db.query.proofs.findMany({
-    with: {
-      block: true,
-      team: true,
-      cluster_version: {
-        with: {
-          cluster: true,
+    if (blockNumbersToFetch.length === 0) {
+      return []
+    }
+
+    // Check if new columns exist in clusters table
+    // If they don't exist, Drizzle will fail when trying to select them
+    // Note: Currently not used, but kept for potential future use
+    let _hasNewColumns = false
+    try {
+      const result = await db.execute(sql`
+        SELECT column_name 
+        FROM information_schema.columns 
+        WHERE table_name = 'clusters' 
+        AND column_name IN ('deployment_type', 'gpu_count')
+      `)
+      _hasNewColumns = Array.isArray(result) && result.length === 2
+    } catch {
+      _hasNewColumns = false
+    }
+
+    // Fetch all proofs for those blocks
+    // Use Drizzle query builder which will handle schema differences
+    const proofsRows = await db.query.proofs.findMany({
+      with: {
+        block: true,
+        team: true,
+        cluster_version: {
+          with: {
+            cluster: true,
+          },
         },
       },
-    },
-    where: (proofs, { inArray }) =>
-      inArray(proofs.block_number, blockNumbersToFetch),
-    orderBy: (proofs, { desc }) => [
-      desc(proofs.block_number),
-      desc(proofs.created_at),
-    ],
-  })
+      where: (proofs, { inArray }) =>
+        inArray(proofs.block_number, blockNumbersToFetch),
+      orderBy: (proofs, { desc }) => [
+        desc(proofs.block_number),
+        desc(proofs.created_at),
+      ],
+    })
 
-  return proofsRows
+    return proofsRows || []
+  } catch (error) {
+    // If error is due to missing columns, return empty array with helpful message
+    if (error instanceof Error && (
+      error.message.includes("deployment_type") || 
+      error.message.includes("gpu_count")
+    )) {
+      console.error("Error: The migration for deployment_type and gpu_count fields has not been applied yet.")
+      console.error("Please run migration 0034_add-cluster-deployment-and-gpu-fields.sql")
+      console.error("You can apply it via Supabase Studio or using: supabase db push")
+      // Return empty array instead of throwing to allow the app to continue
+      return []
+    }
+    console.error("Error in fetchAllProofsForRealtime:", error)
+    throw error
+  }
 }

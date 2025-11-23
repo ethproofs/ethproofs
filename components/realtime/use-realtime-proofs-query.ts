@@ -4,6 +4,8 @@ import { useQuery } from "@tanstack/react-query"
 
 import type { ProofWithCluster } from "@/lib/types"
 
+import { getApiUrl } from "@/lib/url"
+
 export interface ProofsByBlock {
   [blockNumber: number]: ProofWithCluster[]
 }
@@ -12,7 +14,7 @@ export function useRealtimeProofsQuery() {
   return useQuery({
     queryKey: ["proofs-by-block"],
     queryFn: async () => {
-      const response = await fetch("/api/realtime/proofs")
+      const response = await fetch(getApiUrl("/api/realtime/proofs"))
       if (!response.ok) {
         throw new Error("Failed to fetch realtime proofs")
       }
@@ -34,9 +36,11 @@ export function useRealtimeProofsQuery() {
 
       return grouped
     },
-    refetchInterval: 100, // Poll every 100ms to catch rapid state changes
+    refetchInterval: 50, // Poll every 50ms to catch rapid state changes
     refetchIntervalInBackground: true, // Continue polling even when tab is not focused
     staleTime: 0, // Always fresh since we're using real-time
     gcTime: 5 * 60 * 1000, // Keep in cache for 5 minutes
+    refetchOnMount: true, // Always refetch on mount
+    refetchOnWindowFocus: true, // Refetch when window gains focus
   })
 }
