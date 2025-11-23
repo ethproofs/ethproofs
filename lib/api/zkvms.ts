@@ -1,11 +1,39 @@
 import { desc, eq } from "drizzle-orm"
 import { unstable_cache as cache } from "next/cache"
 
+import { fetchFromApi,shouldUseExternalApi } from "../api-client"
+
 import { db } from "@/db"
 import { zkvms, zkvmVersions } from "@/db/schema"
 
 export const getZkvms = cache(async ({ limit }: { limit?: number } = {}) => {
-  const zkvms = await db.query.zkvms.findMany({
+  // Try to use external API if configured
+  if (shouldUseExternalApi()) {
+    try {
+      const params = new URLSearchParams()
+      if (limit) params.set("limit", limit.toString())
+      // Use a helper function to infer the return type
+      const _getZkvmsFromDb = async () => {
+        return await db.query.zkvms.findMany({
+          with: {
+            versions: {
+              orderBy: desc(zkvmVersions.release_date),
+            },
+            team: true,
+          },
+          limit,
+        })
+      }
+      return await fetchFromApi<Awaited<ReturnType<typeof _getZkvmsFromDb>>>(
+        `/api/zkvms?${params.toString()}`
+      )
+    } catch (error) {
+      // If API endpoint doesn't exist, fall back to database
+      console.warn("External API endpoint not available, falling back to database:", error)
+    }
+  }
+
+  const zkvmsResult = await db.query.zkvms.findMany({
     with: {
       versions: {
         orderBy: desc(zkvmVersions.release_date),
@@ -14,7 +42,7 @@ export const getZkvms = cache(async ({ limit }: { limit?: number } = {}) => {
     },
     limit,
   })
-  return zkvms
+  return zkvmsResult
 })
 
 export const getZkvm = cache(

@@ -5,7 +5,7 @@ import { notFound } from "next/navigation"
 import type { SummaryItem, Team, Zkvm } from "@/lib/types"
 
 import { BasicTabs } from "@/components/BasicTabs"
-import { ClustersTable } from "@/components/clusters-table/clusters-table"
+import { type ClusterRow,ClustersTable } from "@/components/clusters-table/clusters-table"
 import { DisplayTeam } from "@/components/DisplayTeamLink"
 import KPIs from "@/components/KPIs"
 import { Null } from "@/components/Null"
@@ -66,7 +66,7 @@ export default async function TeamDetailsPage({
 
   const zkvms: Zkvm[] = (await getZkvmsByTeamId(team.id)) ?? []
 
-  const clusters = activeClusters.map((cluster) => {
+  const clusters: ClusterRow[] = activeClusters.map((cluster) => {
     const stats = clusterSummary.find(
       (summary) => summary.cluster_id === cluster.id
     )
@@ -75,7 +75,7 @@ export default async function TeamDetailsPage({
       ...cluster,
       avg_cost: stats?.avg_cost_per_proof ?? 0,
       avg_time: Number(stats?.avg_proving_time ?? 0),
-    }
+    } as ClusterRow
   })
 
   const singleMachineClusters = clusters.filter(

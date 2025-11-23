@@ -54,6 +54,8 @@ export const getCluster = async (id: string) => {
   )(id)
 }
 
+import { fetchFromApi,shouldUseExternalApi } from "../api-client"
+
 export const getActiveClusters = async (filters?: {
   teamId?: string
   zkvmId?: number
@@ -64,6 +66,21 @@ export const getActiveClusters = async (filters?: {
   return cache(
     async (filters?: { teamId?: string; zkvmId?: number }) => {
       const { teamId, zkvmId } = filters ?? {}
+
+      // Try to use external API if configured
+      if (shouldUseExternalApi()) {
+        try {
+          const params = new URLSearchParams()
+          if (teamId) params.set("team_id", teamId)
+          if (zkvmId) params.set("zkvm_id", zkvmId.toString())
+          return await fetchFromApi<Awaited<ReturnType<typeof db.query.clusters.findMany>>>(
+            `/api/clusters/active?${params.toString()}`
+          )
+        } catch (error) {
+          // If API endpoint doesn't exist, fall back to database
+          console.warn("External API endpoint not available, falling back to database:", error)
+        }
+      }
 
       const existsConditions = [
         eq(clusterVersions.cluster_id, clusters.id),

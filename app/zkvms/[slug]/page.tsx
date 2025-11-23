@@ -2,7 +2,7 @@ import { Cpu } from "lucide-react"
 import { Metadata } from "next"
 import { notFound } from "next/navigation"
 
-import { ClustersTable } from "@/components/clusters-table/clusters-table"
+import { type ClusterRow,ClustersTable } from "@/components/clusters-table/clusters-table"
 import { DisplayTeamLink } from "@/components/DisplayTeamLink"
 import SoftwareDetails from "@/components/SoftwareDetails"
 import GitHubLogo from "@/components/svgs/github-logo.svg"
@@ -57,7 +57,7 @@ export default async function ZkvmDetailsPage({
     getZkvmMetrics(zkvm.id),
   ])
 
-  const clusters = activeClusters.map((cluster) => {
+  const clusters: ClusterRow[] = activeClusters.map((cluster) => {
     const stats = clusterSummary.find(
       (summary) => summary.cluster_id === cluster.id
     )
@@ -66,7 +66,7 @@ export default async function ZkvmDetailsPage({
       ...cluster,
       avg_cost: stats?.avg_cost_per_proof ?? 0,
       avg_time: Number(stats?.avg_proving_time ?? 0),
-    }
+    } as ClusterRow
   })
 
   const latestVersion = zkvm.versions.reduce((latest, version) =>

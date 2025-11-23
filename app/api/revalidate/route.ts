@@ -1,13 +1,13 @@
 import { revalidateTag } from "next/cache"
 import { NextRequest, NextResponse } from "next/server"
 
-const revalidateSecret = process.env.REVALIDATE_SECRET
-
-if (!revalidateSecret) {
-  throw new Error("REVALIDATE_SECRET is not set")
-}
-
 export async function GET(request: NextRequest) {
+  const revalidateSecret = process.env.REVALIDATE_SECRET
+
+  if (!revalidateSecret) {
+    return new Response("REVALIDATE_SECRET is not set", { status: 500 })
+  }
+
   const { searchParams } = new URL(request.url)
   const secret = searchParams.get("secret")
 

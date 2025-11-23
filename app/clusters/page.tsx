@@ -1,7 +1,7 @@
 import type { Metadata } from "next"
 
 import { BasicTabs } from "@/components/BasicTabs"
-import { ClustersTable } from "@/components/clusters-table/clusters-table"
+import { type ClusterRow,ClustersTable } from "@/components/clusters-table/clusters-table"
 
 import { getActiveClusters } from "@/lib/api/clusters"
 import { getClusterSummary } from "@/lib/api/stats"
@@ -15,7 +15,7 @@ export default async function ClustersPage() {
     getActiveClusters(),
   ])
 
-  const clusters = activeClusters.map((cluster) => {
+  const clusters: ClusterRow[] = activeClusters.map((cluster) => {
     const stats = clusterSummary.find(
       (summary) => summary.cluster_id === cluster.id
     )
@@ -24,7 +24,7 @@ export default async function ClustersPage() {
       ...cluster,
       avg_cost: stats?.avg_cost_per_proof ?? 0,
       avg_time: Number(stats?.avg_proving_time ?? 0),
-    }
+    } as ClusterRow
   })
 
   const singleMachineClusters = clusters

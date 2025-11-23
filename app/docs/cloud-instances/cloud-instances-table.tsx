@@ -27,7 +27,7 @@ export function CloudInstancesTable({
   providers: CloudProvider[]
   instances: (CloudInstance & { provider: CloudProvider })[]
 }) {
-  const [provider, setProvider] = useState<string>(providers[0].name)
+  const [provider, setProvider] = useState<string>(providers[0]?.name || "")
 
   const filteredInstances = instances.filter(
     (instance) => instance.provider.name === provider
