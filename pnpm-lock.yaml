@@ -20,9 +20,6 @@ importers:
       '@dnd-kit/utilities':
         specifier: ^3.2.2
         version: 3.2.2(react@19.1.0)
-      '@ethproofs/airbender-wasm-stark-verifier':
-        specifier: ^0.1.2
-        version: 0.1.2
       '@ethproofs/openvm-wasm-stark-verifier':
         specifier: ^0.1.0
         version: 0.1.0
@@ -1458,10 +1455,6 @@ packages:
   '@eslint/js@8.57.1':
     resolution: {integrity: sha512-d9zaMRSTIKDLhctzH12MtXvJKSSUhaHcjV+2Z+GK+EEY7XKpP5yR4x+N3TAcHTcu963nIr+TMcCb4DBCYX1z6Q==}
     engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
-
-  '@ethproofs/airbender-wasm-stark-verifier@0.1.2':
-    resolution: {integrity: sha512-7GZ8rq4xhwiTb5nuV57W18L7G1hc62zSaWzhjEvz9f5aEOUVoKeNwRZA9pQ+x3PonEuGPn7W68k+hiaKKpr0YA==}
-    engines: {node: '>=16.0.0'}
 
   '@ethproofs/openvm-wasm-stark-verifier@0.1.0':
     resolution: {integrity: sha512-wPe18L31LgaXClF36sd3ajseEXWxOyTT+gtvMcaAQ78Kb5nyW9aR8WC0LrohaHquuVDk2i53twBNZTEaleVluw==}
@@ -8778,8 +8771,6 @@ snapshots:
       - supports-color
 
   '@eslint/js@8.57.1': {}
-
-  '@ethproofs/airbender-wasm-stark-verifier@0.1.2': {}
 
   '@ethproofs/openvm-wasm-stark-verifier@0.1.0': {}
 

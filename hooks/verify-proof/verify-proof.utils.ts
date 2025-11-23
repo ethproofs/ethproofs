@@ -42,11 +42,6 @@ export const openVmVerifiableProvers = {
   ],
 } as const
 
-export const airbenderVerifiableProvers = {
-  type: "airbender",
-  provers: ["b18507c4-50f3-4638-854a-ed625c7e685a"],
-} as const
-
 export const verifiableProvers = [
   ...ziskVerifiableProvers.provers,
   ...picoVerifiableProvers.provers,
@@ -54,18 +49,11 @@ export const verifiableProvers = [
   ...zirenVerifiableProvers.provers,
   ...sp1HypercubeVerifiableProvers.provers,
   ...openVmVerifiableProvers.provers,
-  ...airbenderVerifiableProvers.provers,
 ] as const
 
 export const proverTypeMap = new Map<
   string,
-  | "zisk"
-  | "pico"
-  | "pico-prism"
-  | "ziren"
-  | "sp1-hypercube"
-  | "openvm"
-  | "airbender"
+  "zisk" | "pico" | "pico-prism" | "ziren" | "sp1-hypercube" | "openvm"
 >([
   ...ziskVerifiableProvers.provers.map((id) => [id, "zisk"] as const),
   ...picoVerifiableProvers.provers.map((id) => [id, "pico"] as const),
@@ -77,7 +65,6 @@ export const proverTypeMap = new Map<
     (id) => [id, "sp1-hypercube"] as const
   ),
   ...openVmVerifiableProvers.provers.map((id) => [id, "openvm"] as const),
-  ...airbenderVerifiableProvers.provers.map((id) => [id, "airbender"] as const),
 ])
 
 export function getProverType(
@@ -89,7 +76,6 @@ export function getProverType(
   | "ziren"
   | "sp1-hypercube"
   | "openvm"
-  | "airbender"
   | undefined {
   return proverTypeMap.get(id)
 }
