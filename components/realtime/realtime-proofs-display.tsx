@@ -5,7 +5,7 @@ import { AnimatePresence, motion } from "framer-motion"
 
 import type { ProofWithCluster } from "@/lib/types"
 
-import { useRealtimeProofsQuery } from "@/components/realtime/use-realtime-proofs-query"
+import { useBlocksQuery } from "@/components/hooks/use-blocks-query"
 import EthproofsIcon from "@/components/svgs/ethproofs-icon.svg"
 
 import { HidePunctuation } from "../StylePunctuation"
@@ -18,27 +18,25 @@ import useRealtimeProofs from "./use-realtime-proofs"
 import { formatNumber } from "@/lib/number"
 
 export function RealtimeProofsDisplay() {
-  // Use real-time subscription to invalidate cache
+  // Use real-time subscription to refetch blocks query
   useRealtimeProofs()
 
-  const { data: proofsByBlock, isLoading, error } = useRealtimeProofsQuery()
+  const { data, isLoading, error } = useBlocksQuery({
+    pageIndex: 0,
+    pageSize: 10,
+    machineType: "all",
+  })
 
-  // Get all block numbers sorted newest first
-  const blockNumbers = useMemo(
-    () =>
-      proofsByBlock
-        ? Object.keys(proofsByBlock)
-            .map(Number)
-            .sort((a, b) => b - a)
-        : [],
-    [proofsByBlock]
-  )
+  // Get all blocks sorted newest first
+  const blocksSorted = useMemo(() => {
+    return (data?.rows ?? []).sort((a, b) => b.block_number - a.block_number)
+  }, [data?.rows])
 
   // Determine which blocks to display
   // Always show the first 3 blocks (newest first)
-  const blocksToDisplay: number[] = useMemo(() => {
-    return blockNumbers.slice(0, 3)
-  }, [blockNumbers])
+  const blocksToDisplay = useMemo(() => {
+    return blocksSorted.slice(0, 3)
+  }, [blocksSorted])
 
   if (isLoading) {
     return (
@@ -74,13 +72,13 @@ export function RealtimeProofsDisplay() {
         <span className="text-xl">realtime proofs</span>
       </div>
       <AnimatePresence mode="popLayout">
-        {blocksToDisplay.map((blockNum) => {
-          const proofs = proofsByBlock?.[blockNum]
-          if (!proofs) return null
+        {blocksToDisplay.map((block) => {
+          const proofs = block.proofs ?? []
+          if (proofs.length === 0) return null
 
           return (
             <motion.div
-              key={blockNum}
+              key={block.block_number}
               layout
               initial={{ y: -50, opacity: 0 }}
               animate={{ y: 0, opacity: 1 }}
@@ -91,7 +89,9 @@ export function RealtimeProofsDisplay() {
               <Card>
                 <CardHeader>
                   <CardTitle className="text-xl font-normal">
-                    <HidePunctuation>{formatNumber(blockNum)}</HidePunctuation>
+                    <HidePunctuation>
+                      {formatNumber(block.block_number)}
+                    </HidePunctuation>
                   </CardTitle>
                 </CardHeader>
                 <CardContent className="space-y-4">

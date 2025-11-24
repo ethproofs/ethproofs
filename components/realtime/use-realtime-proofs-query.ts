@@ -12,12 +12,14 @@ export function useRealtimeProofsQuery() {
   return useQuery({
     queryKey: ["proofs-by-block"],
     queryFn: async () => {
+      console.log("[Query] Fetching proofs-by-block", new Date().toISOString())
       const response = await fetch("/api/realtime/proofs")
       if (!response.ok) {
         throw new Error("Failed to fetch realtime proofs")
       }
 
       const { proofs } = await response.json()
+      console.log("[Query] Got proofs, count:", proofs.length)
 
       // Group proofs by block_number
       const grouped = (proofs || []).reduce(
@@ -32,11 +34,10 @@ export function useRealtimeProofsQuery() {
         {} as ProofsByBlock
       )
 
+      console.log("[Query] Grouped into blocks:", Object.keys(grouped).length)
       return grouped
     },
-    refetchInterval: 100, // Poll every 100ms to catch rapid state changes
-    refetchIntervalInBackground: true, // Continue polling even when tab is not focused
-    staleTime: 0, // Always fresh since we're using real-time
+    staleTime: Infinity, // Data is kept fresh by websocket invalidations
     gcTime: 5 * 60 * 1000, // Keep in cache for 5 minutes
   })
 }
