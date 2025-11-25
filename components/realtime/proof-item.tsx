@@ -13,7 +13,7 @@ import {
   ProofStatus,
 } from "./utils"
 
-import { useAutoVerifyProof } from "@/lib/hooks/realtime/use-auto-verify-proof"
+import { useAutoVerifyProof } from "@/lib/hooks/verify-proof/use-auto-verify-proof"
 
 interface ProofItemProps {
   proof: ProofWithCluster

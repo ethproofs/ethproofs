@@ -14,13 +14,11 @@ import { Spinner } from "../ui/spinner"
 import { ProofItem } from "./proof-item"
 
 import { useBlocksQuery } from "@/lib/hooks/queries/use-blocks-query"
-import useRealtimeProofs from "@/lib/hooks/realtime/use-realtime-proofs"
+import useRealtimeBlockProofs from "@/lib/hooks/realtime/use-realtime-block-proofs"
 import { formatNumber } from "@/lib/number"
 
 export function RealtimeProofsDisplay() {
-  // Use real-time subscription to refetch blocks query
-  useRealtimeProofs()
-
+  useRealtimeBlockProofs()
   const { data, isLoading, error } = useBlocksQuery({
     pageIndex: 0,
     pageSize: 10,

@@ -20,6 +20,7 @@ import {
   getBlocksQueryKey,
   useBlocksQuery,
 } from "@/lib/hooks/queries/use-blocks-query"
+import useRealtimeBlockProofs from "@/lib/hooks/realtime/use-realtime-block-proofs"
 
 interface BlocksTableProps {
   className?: string
@@ -32,6 +33,7 @@ export function BlocksTable({
   teams,
   machineType,
 }: BlocksTableProps) {
+  useRealtimeBlockProofs()
   const tableState = useDataTableUrlState()
   const [deferredPagination] = useDebounceValue(tableState.pagination, 200)
   const { pageIndex, pageSize } = deferredPagination

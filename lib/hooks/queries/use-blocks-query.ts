@@ -32,7 +32,6 @@ interface UseBlocksQueryOptions {
   pageIndex?: number
   pageSize?: number
   machineType?: MachineType
-  refetchInterval?: number
   keepPreviousData?: boolean
 }
 
@@ -40,16 +39,13 @@ export function useBlocksQuery({
   pageIndex = 0,
   pageSize = 10,
   machineType = "all",
-  refetchInterval = 5000,
   keepPreviousData: keepPrevious = false,
 }: UseBlocksQueryOptions = {}) {
   return useQuery<BlocksQueryResult>({
     queryKey: getBlocksQueryKey(pageIndex, pageSize, machineType),
     queryFn: getBlocksQueryFn(pageIndex, pageSize, machineType),
     placeholderData: keepPrevious ? keepPreviousData : undefined,
-    refetchInterval,
-    refetchIntervalInBackground: false,
-    staleTime: 0,
+    staleTime: Infinity, // Data is kept fresh by realtime subscriptions
   })
 }
 

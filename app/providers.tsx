@@ -54,7 +54,7 @@ export default function Providers({ children }: { children: React.ReactNode }) {
       >
         <SidebarProvider defaultOpen={true}>{children}</SidebarProvider>
       </ThemeProvider>
-      <ReactQueryDevtools initialIsOpen={false} />
+      <ReactQueryDevtools initialIsOpen={false} buttonPosition="bottom-left" />
     </QueryClientProvider>
   )
 }
