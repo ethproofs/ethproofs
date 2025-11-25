@@ -6,6 +6,7 @@ import {
   QueryClient,
   QueryClientProvider,
 } from "@tanstack/react-query"
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools"
 
 import { SidebarProvider } from "@/components/ui/sidebar"
 
@@ -53,6 +54,7 @@ export default function Providers({ children }: { children: React.ReactNode }) {
       >
         <SidebarProvider defaultOpen={true}>{children}</SidebarProvider>
       </ThemeProvider>
+      <ReactQueryDevtools initialIsOpen={false} />
     </QueryClientProvider>
   )
 }
