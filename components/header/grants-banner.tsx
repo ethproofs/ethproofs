@@ -2,7 +2,7 @@
 
 import Link from "../ui/link"
 
-import { useIsMobile } from "@/hooks/useIsMobile"
+import { useIsMobile } from "@/lib/hooks/ui/use-is-mobile"
 
 const learnMoreLink = "https://x.com/eth_proofs/status/1930244636582334473"
 

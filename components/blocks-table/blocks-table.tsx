@@ -6,11 +6,6 @@ import { usePrefetchQuery } from "@tanstack/react-query"
 import type { Block, Team } from "@/lib/types"
 
 import { useDataTableUrlState } from "@/components/data-table/useDataTableUrlState"
-import {
-  getBlocksQueryFn,
-  getBlocksQueryKey,
-  useBlocksQuery,
-} from "@/components/hooks/use-blocks-query"
 
 import { DataTable } from "../data-table/data-table"
 import { Spinner } from "../ui/spinner"
@@ -20,6 +15,11 @@ import { columns, labels } from "./columns"
 import type { MachineType } from "@/lib/api/blocks"
 import { mergeBlocksWithTeams } from "@/lib/blocks"
 import { exportWithLabels } from "@/lib/csv-export"
+import {
+  getBlocksQueryFn,
+  getBlocksQueryKey,
+  useBlocksQuery,
+} from "@/lib/hooks/queries/use-blocks-query"
 
 interface BlocksTableProps {
   className?: string

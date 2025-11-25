@@ -25,7 +25,7 @@ import {
 
 import { cn } from "@/lib/utils"
 
-import { useIsMobile } from "@/hooks/useIsMobile"
+import { useIsMobile } from "@/lib/hooks/ui/use-is-mobile"
 
 const SIDEBAR_COOKIE_NAME = "sidebar_state"
 const SIDEBAR_COOKIE_MAX_AGE = 60 * 60 * 24 * 7

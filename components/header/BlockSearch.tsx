@@ -5,7 +5,7 @@ import { isHash } from "viem"
 
 import { SearchCommand, SearchItem } from "../SearchCommand"
 
-import { useBlockSearch } from "./useBlockSearch"
+import { useBlockSearch } from "@/lib/hooks/queries/use-block-search"
 
 export function BlockSearch() {
   const [query, setQuery] = useState("")

@@ -1,7 +1,8 @@
 "use client"
 
 import { ProofsTable } from "./proofs-table"
-import { useClusterProofs } from "./use-cluster-proofs"
+
+import { useClusterProofs } from "@/lib/hooks/queries/use-cluster-proofs"
 
 interface ClusterProofsSectionProps {
   clusterId: string

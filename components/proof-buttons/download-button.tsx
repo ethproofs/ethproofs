@@ -19,8 +19,8 @@ import {
   ProofForDownload,
 } from "./utils"
 
-import { useAnimateCheckmark } from "@/hooks/useAnimateCheckmark"
-import { useDownloadProof } from "@/hooks/verify-proof/use-download-proof"
+import { useAnimateCheckmark } from "@/lib/hooks/ui/use-animate-checkmark"
+import { useDownloadProof } from "@/lib/hooks/verify-proof/use-download-proof"
 
 interface DownloadButtonProps {
   proof: ProofForDownload

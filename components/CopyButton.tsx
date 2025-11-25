@@ -12,7 +12,7 @@ import {
   TooltipTrigger,
 } from "./ui/tooltip"
 
-import { useClipboard } from "@/hooks/useClipboard"
+import { useClipboard } from "@/lib/hooks/ui/use-clipboard"
 
 type CopyButtonProps = React.HTMLAttributes<HTMLButtonElement> & {
   message: string

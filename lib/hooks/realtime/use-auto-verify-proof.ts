@@ -4,10 +4,10 @@ import { useCallback, useEffect, useState } from "react"
 
 import { delay } from "@/lib/utils"
 
-import { useDownloadProof } from "@/hooks/verify-proof/use-download-proof"
-import { useDownloadVerificationKey } from "@/hooks/verify-proof/use-download-verification-key"
-import { useVerifyProof } from "@/hooks/verify-proof/use-verify-proof"
-import { isVerifiableProver } from "@/hooks/verify-proof/verify-proof.utils"
+import { useDownloadProof } from "@/lib/hooks/verify-proof/use-download-proof"
+import { useDownloadVerificationKey } from "@/lib/hooks/verify-proof/use-download-verification-key"
+import { useVerifyProof } from "@/lib/hooks/verify-proof/use-verify-proof"
+import { isVerifiableProver } from "@/lib/hooks/verify-proof/verify-proof.utils"
 
 export type VerificationStatus =
   | "idle"

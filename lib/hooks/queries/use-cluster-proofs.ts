@@ -8,8 +8,7 @@ import {
 } from "@tanstack/react-query"
 
 import { useDataTableUrlState } from "@/components/data-table/useDataTableUrlState"
-
-import type { ProofRow } from "./columns"
+import type { ProofRow } from "@/components/proofs-table/columns"
 
 const getClusterProofsQueryKey = (
   clusterId: string,

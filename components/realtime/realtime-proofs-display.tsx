@@ -5,7 +5,6 @@ import { AnimatePresence, motion } from "framer-motion"
 
 import type { ProofWithCluster } from "@/lib/types"
 
-import { useBlocksQuery } from "@/components/hooks/use-blocks-query"
 import EthproofsIcon from "@/components/svgs/ethproofs-icon.svg"
 
 import { HidePunctuation } from "../StylePunctuation"
@@ -13,8 +12,9 @@ import { Card, CardContent, CardHeader, CardTitle } from "../ui/card"
 import { Spinner } from "../ui/spinner"
 
 import { ProofItem } from "./proof-item"
-import useRealtimeProofs from "./use-realtime-proofs"
 
+import { useBlocksQuery } from "@/lib/hooks/queries/use-blocks-query"
+import useRealtimeProofs from "@/lib/hooks/realtime/use-realtime-proofs"
 import { formatNumber } from "@/lib/number"
 
 export function RealtimeProofsDisplay() {

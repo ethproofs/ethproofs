@@ -6,13 +6,14 @@ import { cn } from "@/lib/utils"
 
 import { Progress } from "../ui/progress"
 
-import { useAutoVerifyProof } from "./use-auto-verify-proof"
 import {
   getProofStatusClasses,
   getProofStatusProgressValue,
   getProofStatusText,
   ProofStatus,
 } from "./utils"
+
+import { useAutoVerifyProof } from "@/lib/hooks/realtime/use-auto-verify-proof"
 
 interface ProofItemProps {
   proof: ProofWithCluster

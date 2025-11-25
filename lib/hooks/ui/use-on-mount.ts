@@ -1,5 +1,6 @@
-import { isFunction } from "@/lib/utils"
 import { useEffect } from "react"
+
+import { isFunction } from "@/lib/utils"
 
 export function useOnMount(
   effect: () => void | (() => void) | Promise<unknown>

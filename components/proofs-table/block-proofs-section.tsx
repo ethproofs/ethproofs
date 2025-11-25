@@ -1,7 +1,8 @@
 "use client"
 
 import { ProofsTable } from "./proofs-table"
-import { useBlockProofs } from "./use-block-proofs"
+
+import { useBlockProofs } from "@/lib/hooks/queries/use-block-proofs"
 
 interface BlockProofsSectionProps {
   blockId: string
