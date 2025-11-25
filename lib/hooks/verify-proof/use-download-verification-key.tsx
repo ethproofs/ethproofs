@@ -58,7 +58,13 @@ export function useDownloadVerificationKey() {
           new Error("Failed to download verification key after retries")
         )
       } catch (err) {
-        console.error("Error downloading verification key:", err)
+        // Only log actual errors, not 404s (those are expected during retries)
+        if (
+          err instanceof Error &&
+          !err.message.includes("not yet available")
+        ) {
+          console.error("Error downloading verification key:", err)
+        }
       } finally {
         setIsDownloading(false)
       }

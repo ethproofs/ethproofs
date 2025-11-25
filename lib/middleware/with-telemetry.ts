@@ -29,6 +29,16 @@ const sample = (rate: number) => {
   return Math.random() < rate
 }
 
+// Paths where 404 is expected during retries (not actual errors)
+const isExpected404 = (path: string) => {
+  return (
+    path.includes("/api/proofs/download/") ||
+    path.includes("/api/verification-keys/download/") ||
+    path.includes("/api/v0/proofs/download/") ||
+    path.includes("/api/v0/verification-keys/download/")
+  )
+}
+
 const safeSend = (p: Promise<unknown>) => {
   // Ensure telemetry never explodes the request on success paths
   p.catch((err) => console.error("[telemetry] send failed:", err))
@@ -128,10 +138,16 @@ export const withTelemetry = <
       console.log("[telemetry]", line)
 
       // Always await on 5xx; sample others to avoid latency + cost
+      // Skip telemetry reporting for expected 404s (retried downloads)
+      const shouldReport =
+        status >= 500 ||
+        (status >= 400 && !(status === 404 && isExpected404(rep.path)))
+
       if (status >= 500) {
         await sendReport(line, rep)
       } else if (
-        status >= 400 ? sample(Math.max(sampleRate, 0.1)) : sample(sampleRate)
+        shouldReport &&
+        (status >= 400 ? sample(Math.max(sampleRate, 0.1)) : sample(sampleRate))
       ) {
         safeSend(sendReport(line, rep)) // fire-and-forget
       }

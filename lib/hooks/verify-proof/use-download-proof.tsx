@@ -86,7 +86,13 @@ export function useDownloadProof() {
 
         throw lastError || new Error("Failed to download proof after retries")
       } catch (err) {
-        console.error("Error downloading proof:", err)
+        // Only log actual errors, not 404s (those are expected during retries)
+        if (
+          err instanceof Error &&
+          !err.message.includes("not yet available")
+        ) {
+          console.error("Error downloading proof:", err)
+        }
       } finally {
         setDownloadProgress(0)
         setIsDownloading(false)
