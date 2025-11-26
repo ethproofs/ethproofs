@@ -41,7 +41,7 @@ const isExpected404 = (path: string) => {
 
 const safeSend = (p: Promise<unknown>) => {
   // Ensure telemetry never explodes the request on success paths
-  p.catch((err) => console.error("[telemetry] send failed:", err))
+  p.catch((err) => console.error("[Telemetry] send failed:", err))
 }
 
 const sendReport = async (message: string, report: Report) => {
@@ -53,7 +53,7 @@ const sendReport = async (message: string, report: Report) => {
     ${md.codeBlock(formattedReport, "json")}
   `
 
-  // Send to telegram
+  // Send to Telegram
   const response = await fetch(TELEGRAM_URL, {
     method: "POST",
     headers: {
@@ -68,7 +68,7 @@ const sendReport = async (message: string, report: Report) => {
 
   if (!response.ok) {
     const error = await response.json()
-    console.error("Failed to send report to telegram", error)
+    console.error("Failed to send report to Telegram", error)
   }
 }
 
@@ -114,7 +114,7 @@ export const withTelemetry = <
         }
         safeSend(
           sendReport(
-            `[timeout warning] ${warn.method} ${warn.path} 500 in ${warn.durationMs.toFixed(1)}ms ${warn.date}`,
+            `[Timeout] ${warn.method} ${warn.path} 500 in ${warn.durationMs.toFixed(1)}ms ${warn.date}`,
             warn
           )
         )
@@ -135,7 +135,7 @@ export const withTelemetry = <
       }
 
       const line = `${rep.method} ${rep.path} ${status} in ${durationMs.toFixed(1)}ms ${rep.date}`
-      console.log("[telemetry]", line)
+      console.log("[Telemetry]", line)
 
       // Always await on 5xx; sample others to avoid latency + cost
       // Skip telemetry reporting for expected 404s (retried downloads)
@@ -165,8 +165,8 @@ export const withTelemetry = <
         errorMessage: err instanceof Error ? err.message : "Unknown error",
       }
 
-      const line = `[unhandled error] ${rep.method} ${rep.path} 500 in ${durationMs.toFixed(1)}ms ${rep.date}`
-      console.error("[telemetry]", line, err)
+      const line = `[Unhandled Error] ${rep.method} ${rep.path} 500 in ${durationMs.toFixed(1)}ms ${rep.date}`
+      console.error("[Telemetry]", line, err)
 
       // Await to maximize chance we capture the crash
       await sendReport(line, rep)
