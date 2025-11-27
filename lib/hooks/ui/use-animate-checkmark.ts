@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState } from "react"
 
-import { ProofButtonState } from "@/components/proof-buttons/utils"
+import { ProofButtonState } from "@/components/proof-buttons/proof-buttons.utils"
 
 export function useAnimateCheckmark(buttonState: ProofButtonState) {
   const [checkmarkProgress, setCheckmarkProgress] = useState(0)

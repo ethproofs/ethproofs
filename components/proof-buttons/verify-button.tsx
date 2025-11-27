@@ -5,6 +5,8 @@ import { ArrowDown, CalendarCheck, Check, LoaderCircle } from "lucide-react"
 import prettyBytes from "pretty-bytes"
 
 import WasmErrorBoundary from "@/components/error-boundaries/WasmErrorBoundary"
+import { useDownloadVerificationKey } from "@/components/proof-buttons/use-download-verification-key"
+import { useVerifyProof } from "@/components/proof-buttons/use-verify-proof"
 
 import { cn } from "@/lib/utils"
 import { delay } from "@/lib/utils"
@@ -18,13 +20,11 @@ import {
   ProofButtonState,
   proofButtonStateMap,
   ProofForDownload,
-} from "./utils"
+} from "./proof-buttons.utils"
+import { useDownloadProof } from "./use-download-proof"
 
 import { useAnimateCheckmark } from "@/lib/hooks/ui/use-animate-checkmark"
-import { useDownloadProof } from "@/lib/hooks/verify-proof/use-download-proof"
-import { useDownloadVerificationKey } from "@/lib/hooks/verify-proof/use-download-verification-key"
-import { useVerifyProof } from "@/lib/hooks/verify-proof/use-verify-proof"
-import { isVerifiableProver } from "@/lib/hooks/verify-proof/verify-proof.utils"
+import { isVerifiableProver } from "@/lib/provers"
 
 interface VerifyButtonProps {
   proof: ProofForDownload
@@ -38,7 +38,7 @@ export function VerifyButton({
   containerClass = "flex-col",
   labelClass,
 }: VerifyButtonProps) {
-  const { proof_status, proof_id, size_bytes } = proof
+  const { proof_status, proof_id } = proof
   const [buttonState, setButtonState] = useState<ProofButtonState>("verify")
   const { downloadProof, downloadProgress, downloadSpeed } = useDownloadProof()
   const downloadVerificationKey = useDownloadVerificationKey()
@@ -149,11 +149,6 @@ export function VerifyButton({
               {downloadSpeed} MB/s
             </span>
           )}
-        {buttonState === "verifying" && (
-          <span className="animate-fade-in text-xs text-body-secondary">
-            {size_bytes ? prettyBytes(size_bytes) : ""}
-          </span>
-        )}
         {buttonState === "success" && (
           <span className="animate-fade-in text-xs text-body-secondary">
             {`${verifyTime}ms`}

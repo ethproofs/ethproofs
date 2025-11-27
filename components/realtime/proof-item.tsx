@@ -1,6 +1,7 @@
+import { useEffect } from "react"
 import { Check, X } from "lucide-react"
 
-import { ProofWithCluster } from "@/lib/types"
+import type { ProofWithCluster } from "@/lib/types"
 
 import { cn } from "@/lib/utils"
 
@@ -10,47 +11,62 @@ import {
   getProofStatusClasses,
   getProofStatusProgressValue,
   getProofStatusText,
-  ProofStatus,
-} from "./utils"
+  type ProofStatus,
+} from "./realtime.utils"
 
-import { useAutoVerifyProof } from "@/lib/hooks/verify-proof/use-auto-verify-proof"
+import { useServerVerifyProof } from "@/lib/hooks/realtime/use-server-verify-proof"
 
 interface ProofItemProps {
   proof: ProofWithCluster
 }
 
 export function ProofItem({ proof }: ProofItemProps) {
-  const verificationResult = useAutoVerifyProof(
-    proof.proof_id,
-    proof.cluster_id,
-    proof.proof_status
+  const { result: verificationResult, verify } = useServerVerifyProof(
+    proof.proof_id
   )
 
-  // Initial status
-  let statusText = getProofStatusText(proof.proof_status as ProofStatus)
-  let statusClasses = getProofStatusClasses(proof.proof_status as ProofStatus)
-  let statusProgressValue = getProofStatusProgressValue(
-    proof.proof_status as ProofStatus
-  )
+  // Start verification automatically when proof is "proved"
+  useEffect(() => {
+    if (
+      proof.proof_status === "proved" &&
+      verificationResult.status === "idle"
+    ) {
+      verify()
+    }
+  }, [proof.proof_status, verificationResult.status, verify])
 
-  // Verification status
-  const isVerifying =
-    verificationResult.status === "downloading" ||
-    verificationResult.status === "verifying"
-  const hasCompletedVerification =
-    verificationResult.status === "success" ||
-    verificationResult.status === "failed" ||
-    verificationResult.status === "error"
-
-  if (isVerifying || hasCompletedVerification) {
-    statusText = getProofStatusText(verificationResult.status as ProofStatus)
-    statusClasses = getProofStatusClasses(
-      verificationResult.status as ProofStatus
-    )
-    statusProgressValue = getProofStatusProgressValue(
-      verificationResult.status as ProofStatus
-    )
+  // Map server verification statuses to UI statuses
+  const mapServerStatusToUi = (status: string): ProofStatus => {
+    switch (status) {
+      case "downloading":
+        return "downloading"
+      case "verifying":
+        return "verifying"
+      case "complete":
+        // isValid can be true, false, or null (not available)
+        if (
+          verificationResult.isValid === null ||
+          verificationResult.isValid === undefined
+        ) {
+          return "proved"
+        }
+        return verificationResult.isValid ? "success" : "failed"
+      case "error":
+        return "error"
+      default:
+        return proof.proof_status as ProofStatus
+    }
   }
+
+  // Determine display status
+  const displayStatus =
+    verificationResult.status !== "idle"
+      ? mapServerStatusToUi(verificationResult.status)
+      : (proof.proof_status as ProofStatus)
+
+  const statusText = getProofStatusText(displayStatus)
+  const statusClasses = getProofStatusClasses(displayStatus)
+  const statusProgressValue = getProofStatusProgressValue(displayStatus)
 
   return (
     <div key={proof.proof_id} className="space-y-2">
@@ -67,11 +83,10 @@ export function ProofItem({ proof }: ProofItemProps) {
           <span className={cn("text-sm font-medium", statusClasses.text)}>
             {statusText}
           </span>
-          {verificationResult.status === "success" && (
+          {displayStatus === "success" && (
             <Check className="h-4 w-4 text-primary" />
           )}
-          {(verificationResult.status === "failed" ||
-            verificationResult.status === "error") && (
+          {(displayStatus === "failed" || displayStatus === "error") && (
             <X className="h-4 w-4 text-destructive" />
           )}
         </div>

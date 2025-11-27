@@ -83,8 +83,3 @@ export function getProverType(
 export function isVerifiableProver(id: string): boolean {
   return proverTypeMap.has(id)
 }
-
-export async function handleBlobRead(blob: Blob): Promise<Uint8Array> {
-  const buf = await blob.arrayBuffer()
-  return new Uint8Array(buf)
-}

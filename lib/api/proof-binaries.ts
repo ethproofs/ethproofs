@@ -49,7 +49,5 @@ export const downloadProofBinary = async (
     return null
   }
 
-  console.log("downloaded proof binary", data)
-
   return data
 }

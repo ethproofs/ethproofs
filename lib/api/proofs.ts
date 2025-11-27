@@ -6,6 +6,9 @@ import { PaginationState } from "@tanstack/react-table"
 
 import { DEFAULT_FETCH_LIMIT, TAGS } from "../constants"
 
+import { downloadProofBinary } from "./proof-binaries"
+import { getTeam } from "./teams"
+
 import { db } from "@/db"
 import { clusterVersions, proofs, teams } from "@/db/schema"
 
@@ -316,4 +319,78 @@ export const fetchAllProofsForRealtime = async () => {
   })
 
   return proofsRows
+}
+
+interface ProofData {
+  proof_id: number
+  cluster_id: string
+  proof_status: string
+  block_number: number
+  team_id: string
+}
+
+/**
+ * Fetch proof metadata needed for downloading and verifying
+ */
+export async function getProofData(proofId: string): Promise<ProofData> {
+  const proof = await db.query.proofs.findFirst({
+    where: eq(proofs.proof_id, parseInt(proofId)),
+    columns: {
+      proof_id: true,
+      cluster_id: true,
+      proof_status: true,
+      block_number: true,
+      team_id: true,
+    },
+  })
+
+  if (!proof) {
+    throw new Error(`Proof not found: ${proofId}`)
+  }
+
+  return proof
+}
+
+/**
+ * Download proof binary with fallback filename options, returns both binary and filename used
+ */
+export async function downloadBinaryForProofId(
+  proofId: number,
+  proofData: ProofData
+): Promise<{ arrayBuffer: ArrayBuffer; filename: string }> {
+  const team = await getTeam(proofData.team_id)
+  const teamSlug = team?.slug ? team.slug : proofData.cluster_id.split("-")[0]
+
+  // Try filenames in order of preference (new format first)
+  const filenamesToTry = [
+    `${teamSlug}_${proofData.cluster_id}_${proofId}.bin`,
+    `${teamSlug}_${proofData.block_number}_${proofId}.bin`,
+    ...(team?.name
+      ? [`${proofData.block_number}_${team.name}_${proofId}.bin`]
+      : []),
+  ]
+
+  let blob: Blob | null = null
+  let filename = filenamesToTry[0] // Default to new format
+
+  for (const filenameToTry of filenamesToTry) {
+    blob = await downloadProofBinary(filenameToTry, { silent: true })
+    if (blob) {
+      filename = filenameToTry
+      break
+    }
+  }
+
+  if (!blob) {
+    throw new Error(
+      `Failed to download proof: no binary found for proofId ${proofId}`
+    )
+  }
+
+  const arrayBuffer = await blob.arrayBuffer()
+
+  return {
+    arrayBuffer,
+    filename,
+  }
 }

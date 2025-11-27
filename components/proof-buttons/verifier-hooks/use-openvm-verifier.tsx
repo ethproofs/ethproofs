@@ -4,9 +4,9 @@ import { useCallback, useEffect, useState } from "react"
 
 import { wasmCache } from "@/lib/wasm-cache"
 
-export function usePicoVerifier(active: boolean = false) {
+export function useOpenVmVerifier(active: boolean = false) {
   const [wasmModule, setWasmModule] = useState<
-    typeof import("@ethproofs/pico-wasm-stark-verifier") | null
+    typeof import("@ethproofs/openvm-wasm-stark-verifier") | null
   >(null)
   const [isInitialized, setIsInitialized] = useState(false)
   const [error, setError] = useState<string | null>(null)
@@ -18,14 +18,14 @@ export function usePicoVerifier(active: boolean = false) {
       if (!active) return
 
       // Check if already cached and initialized
-      if (wasmCache.isModuleLoaded("pico")) {
+      if (wasmCache.isModuleLoaded("openvm")) {
         const cachedModule = await wasmCache.getModule(
-          "pico",
-          () => import("@ethproofs/pico-wasm-stark-verifier")
+          "openvm",
+          () => import("@ethproofs/openvm-wasm-stark-verifier")
         )
         if (mounted) {
           setWasmModule(
-            cachedModule as typeof import("@ethproofs/pico-wasm-stark-verifier")
+            cachedModule as typeof import("@ethproofs/openvm-wasm-stark-verifier")
           )
           setIsInitialized(true)
         }
@@ -35,22 +35,21 @@ export function usePicoVerifier(active: boolean = false) {
       try {
         setError(null)
         const loadedModule = await wasmCache.getModule(
-          "pico",
-          () => import("@ethproofs/pico-wasm-stark-verifier"),
+          "openvm",
+          () => import("@ethproofs/openvm-wasm-stark-verifier"),
           (wasmModule) =>
             (
-              wasmModule as typeof import("@ethproofs/pico-wasm-stark-verifier")
+              wasmModule as typeof import("@ethproofs/openvm-wasm-stark-verifier")
             ).main()
         )
 
         if (mounted) {
           setWasmModule(
-            loadedModule as typeof import("@ethproofs/pico-wasm-stark-verifier")
+            loadedModule as typeof import("@ethproofs/openvm-wasm-stark-verifier")
           )
           setIsInitialized(true)
         }
       } catch (error) {
-        console.error("[Pico] WASM initialization failed:", error)
         if (mounted) {
           setError(error instanceof Error ? error.message : "Unknown error")
         }
@@ -65,19 +64,18 @@ export function usePicoVerifier(active: boolean = false) {
   }, [active])
 
   const verifyFn = useCallback(
-    (vmType: string, proofBytes: Uint8Array, vkBytes: Uint8Array) => {
+    (proofBytes: Uint8Array, vkBytes: Uint8Array) => {
       if (!wasmModule || !isInitialized) {
-        const errorMsg = error || "[Pico] WASM module not initialized"
+        const errorMsg = error || "[OpenVM] WASM module not initialized"
         return { isValid: false, error: errorMsg }
       }
       try {
-        const result = wasmModule.verify_stark(vmType, proofBytes, vkBytes)
+        const result = wasmModule.verify_stark(proofBytes, vkBytes)
         return { isValid: result }
       } catch (err) {
-        console.error("[Pico] verify_stark failed:", err)
         return {
           isValid: false,
-          error: err instanceof Error ? err.message : "Pico verifier error",
+          error: err instanceof Error ? err.message : "OpenVM verifier error",
         }
       }
     },

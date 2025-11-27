@@ -2,8 +2,6 @@ import { useCallback, useEffect, useState } from "react"
 
 import { delay } from "@/lib/utils"
 
-import { handleBlobRead } from "./verify-proof.utils"
-
 export function useDownloadProof() {
   const [downloadSpeed, setDownloadSpeed] = useState("0")
   const [isDownloading, setIsDownloading] = useState(false)
@@ -51,7 +49,8 @@ export function useDownloadProof() {
               )
             }
             const blob = await response.blob()
-            const proofBytes = await handleBlobRead(blob)
+            const buf = await blob.arrayBuffer()
+            const proofBytes = new Uint8Array(buf)
 
             if (saveToFile) {
               const contentDisposition = response.headers.get(
@@ -73,7 +72,6 @@ export function useDownloadProof() {
             return proofBytes
           } catch (err) {
             lastError = err instanceof Error ? err : new Error(String(err))
-            // If it's the last attempt or not a retryable error, throw
             if (
               attempt === maxRetries ||
               !(err instanceof Error) ||

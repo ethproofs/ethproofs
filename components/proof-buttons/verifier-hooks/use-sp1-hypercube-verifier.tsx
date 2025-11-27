@@ -50,7 +50,6 @@ export function useSp1HypercubeVerifier(active: boolean = false) {
           setIsInitialized(true)
         }
       } catch (error) {
-        console.error("[SP1-Hypercube] WASM initialization failed:", error)
         if (mounted) {
           setError(error instanceof Error ? error.message : "Unknown error")
         }
@@ -74,7 +73,6 @@ export function useSp1HypercubeVerifier(active: boolean = false) {
         const result = wasmModule.verify_stark(proofBytes, vkBytes)
         return { isValid: result }
       } catch (err) {
-        console.error("[SP1-Hypercube] verify_stark failed:", err)
         return {
           isValid: false,
           error:
