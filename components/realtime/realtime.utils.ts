@@ -42,7 +42,7 @@ export function getProofStatusProgressValue(proofStatus: ProofStatus) {
     case "downloading":
       return 70
     case "verifying":
-      return 80
+      return 85
     case "success":
       return 100
     case "failed":

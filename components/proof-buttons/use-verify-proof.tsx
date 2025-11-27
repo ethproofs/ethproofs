@@ -7,7 +7,8 @@ import { usePicoVerifier } from "./verifier-hooks/use-pico-verifier"
 import { useSp1HypercubeVerifier } from "./verifier-hooks/use-sp1-hypercube-verifier"
 import { useZirenVerifier } from "./verifier-hooks/use-ziren-verifier"
 import { useZiskVerifier } from "./verifier-hooks/use-zisk-verifier"
-import { getProverType } from "./verify-proof.utils"
+
+import { getProverType } from "@/lib/provers"
 
 export interface VerificationResult {
   error?: string

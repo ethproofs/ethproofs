@@ -1,6 +1,5 @@
 import { db } from "@/db"
-import { downloadProofBinary } from "@/lib/api/proof-binaries"
-import { getTeam } from "@/lib/api/teams"
+import { downloadBinaryForProofId } from "@/lib/api/proofs"
 
 // Internal endpoint for downloading proofs
 export async function GET(
@@ -9,69 +8,43 @@ export async function GET(
 ) {
   const { id } = await params
 
-  const proofRow = await db.query.proofs.findFirst({
-    columns: {
-      block_number: true,
-      team_id: true,
-    },
-    with: {
-      cluster_version: {
-        with: {
-          cluster: {
-            columns: {
-              id: true,
-            },
-          },
-        },
+  try {
+    // Verify proof exists and is proved
+    const proofRow = await db.query.proofs.findFirst({
+      where: (proofs, { and, eq }) =>
+        and(eq(proofs.proof_id, Number(id)), eq(proofs.proof_status, "proved")),
+      columns: {
+        cluster_id: true,
+        block_number: true,
+        team_id: true,
       },
-    },
-    where: (proofs, { and, eq }) =>
-      and(eq(proofs.proof_id, Number(id)), eq(proofs.proof_status, "proved")),
-  })
+    })
 
-  if (!proofRow) {
-    return new Response("No proof found", { status: 404 })
-  }
-
-  const team = await getTeam(proofRow.team_id)
-
-  const teamSlug = team?.slug
-    ? team.slug
-    : proofRow.cluster_version.cluster.id.split("-")[0]
-  const clusterId = proofRow.cluster_version.cluster.id
-
-  // Try filenames in order of preference (new format first)
-  const filenamesToTry = [
-    // NEW format: teamSlug_clusterId_proofId
-    `${teamSlug}_${clusterId}_${id}.bin`,
-    // OLD format: teamSlug_blockNumber_proofId
-    `${teamSlug}_${proofRow.block_number}_${id}.bin`,
-    // LEGACY format: blockNumber_teamName_proofId
-    ...(team?.name ? [`${proofRow.block_number}_${team.name}_${id}.bin`] : []),
-  ]
-
-  let blob: Blob | null = null
-  let filename = filenamesToTry[0] // Default to new format for response
-
-  for (const filenameToTry of filenamesToTry) {
-    blob = await downloadProofBinary(filenameToTry, { silent: true })
-    if (blob) {
-      filename = filenameToTry
-      break
+    if (!proofRow) {
+      return new Response("No proof found", { status: 404 })
     }
+
+    const { arrayBuffer, filename } = await downloadBinaryForProofId(
+      Number(id),
+      {
+        proof_id: Number(id),
+        cluster_id: proofRow.cluster_id,
+        proof_status: "proved",
+        block_number: proofRow.block_number,
+        team_id: proofRow.team_id,
+      }
+    )
+
+    return new Response(arrayBuffer, {
+      status: 200,
+      headers: {
+        "Content-Type": "application/octet-stream",
+        "Content-Disposition": `attachment; filename="${filename}"`,
+      },
+    })
+  } catch (error) {
+    const message =
+      error instanceof Error ? error.message : "No proof binary found"
+    return new Response(message, { status: 404 })
   }
-
-  if (!blob) {
-    return new Response("No proof binary found", { status: 404 })
-  }
-
-  const arrayBuffer = await blob.arrayBuffer()
-
-  return new Response(arrayBuffer, {
-    status: 200,
-    headers: {
-      "Content-Type": "application/octet-stream",
-      "Content-Disposition": `attachment; filename="${filename}"`,
-    },
-  })
 }

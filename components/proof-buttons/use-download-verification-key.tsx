@@ -2,8 +2,6 @@ import { useCallback, useState } from "react"
 
 import { delay } from "@/lib/utils"
 
-import { handleBlobRead } from "./verify-proof.utils"
-
 export function useDownloadVerificationKey() {
   const [isDownloading, setIsDownloading] = useState(false)
 
@@ -37,12 +35,12 @@ export function useDownloadVerificationKey() {
               )
             }
             const blob = await response.blob()
-            const vkBytes = await handleBlobRead(blob)
+            const buf = await blob.arrayBuffer()
+            const vkBytes = new Uint8Array(buf)
 
             return vkBytes
           } catch (err) {
             lastError = err instanceof Error ? err : new Error(String(err))
-            // If it's the last attempt or not a retryable error, throw
             if (
               attempt === maxRetries ||
               !(err instanceof Error) ||
@@ -58,13 +56,7 @@ export function useDownloadVerificationKey() {
           new Error("Failed to download verification key after retries")
         )
       } catch (err) {
-        // Only log actual errors, not 404s (those are expected during retries)
-        if (
-          err instanceof Error &&
-          !err.message.includes("not yet available")
-        ) {
-          console.error("Error downloading verification key:", err)
-        }
+        console.error("Error downloading verification key:", err)
       } finally {
         setIsDownloading(false)
       }

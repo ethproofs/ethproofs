@@ -5,6 +5,8 @@ import { ArrowDown, Check } from "lucide-react"
 import prettyBytes from "pretty-bytes"
 import { toast } from "sonner"
 
+import { useDownloadProof } from "@/components/proof-buttons/use-download-proof"
+
 import { cn } from "@/lib/utils"
 import { delay } from "@/lib/utils"
 
@@ -17,10 +19,9 @@ import {
   getProofButtonTextColorClass,
   ProofButtonState,
   ProofForDownload,
-} from "./utils"
+} from "./proof-buttons.utils"
 
 import { useAnimateCheckmark } from "@/lib/hooks/ui/use-animate-checkmark"
-import { useDownloadProof } from "@/lib/hooks/verify-proof/use-download-proof"
 
 interface DownloadButtonProps {
   proof: ProofForDownload
