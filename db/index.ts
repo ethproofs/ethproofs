@@ -14,8 +14,8 @@ if (!process.env.DATABASE_URL) {
 // Configured for Supabase Shared Pooler (Transaction mode) with IPv4 support
 const client = postgres(process.env.DATABASE_URL, {
   prepare: false, // Required for Supabase Transaction pooler mode
-  max: 3, // Maximum connections per serverless instance
-  idle_timeout: 10, // Netlify serverless function idle timeout
+  max: 20, // Maximum connections per serverless instance
+  idle_timeout: 60, // Netlify serverless function idle timeout
   max_lifetime: 60 * 10, // Close connections after 10 minutes (shorter for serverless)
 })
 

@@ -16,7 +16,7 @@
 # Strict limit on proof write endpoints
 [[rate_limiting]]
   paths = ["/api/v0/proofs/proved", "/api/v0/proofs/proving", "/api/v0/proofs/queued"]
-  limit_per_ip = 30
+  limit_per_ip = 60
   actions = [{type = "block"}]
 
 # Strict limit on proof downloads
