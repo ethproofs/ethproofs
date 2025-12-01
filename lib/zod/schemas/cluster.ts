@@ -89,3 +89,10 @@ export const singleMachineSchema = baseClusterSchema.extend({
     example: "c5.xlarge",
   }),
 })
+
+export const activeClusterIdSchema = z.object({
+  id: z.number().openapi({
+    description: "Cluster ID (index)",
+    example: 1,
+  }),
+})
