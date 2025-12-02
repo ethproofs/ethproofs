@@ -36,7 +36,7 @@ export function LoginForm() {
 
       <Errors errors={state.errors} />
 
-      <SubmitButton>Log in</SubmitButton>
+      <SubmitButton>submit</SubmitButton>
     </form>
   )
 }
