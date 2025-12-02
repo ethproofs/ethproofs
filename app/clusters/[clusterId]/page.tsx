@@ -6,6 +6,7 @@ import { SummaryItem } from "@/lib/types"
 
 import ClusterMachineSummary from "@/components/ClusterMachineSummary"
 import { DisplayTeam } from "@/components/DisplayTeamLink"
+import { EditClusterModal } from "@/components/edit-cluster-modal"
 import KPIs from "@/components/KPIs"
 import MachineDetails from "@/components/MachineDetails"
 import { Null } from "@/components/Null"
@@ -24,6 +25,9 @@ import { getMetadata } from "@/lib/metadata"
 import { formatUsd } from "@/lib/number"
 import { prettyMs } from "@/lib/time"
 import { isUnverifiableZkvm } from "@/lib/zkvms"
+
+import { db } from "@/db"
+import { cloudInstances, zkvmVersions } from "@/db/schema"
 
 export type ClusterDetailsPageProps = {
   params: Promise<{ clusterId: string }>
@@ -63,6 +67,16 @@ export default async function ClusterDetailsPage({
   }
 
   const clusterSummary = await getClusterSummaryById(clusterId)
+
+  // Fetch zkvm versions and cloud instances for the edit modal
+  const [zkvmVersionList, cloudInstanceList] = await Promise.all([
+    db.query.zkvmVersions.findMany({
+      with: {
+        zkvm: true,
+      },
+    }),
+    db.query.cloudInstances.findMany(),
+  ])
 
   const team = cluster.team
   const lastVersion = cluster.versions[0]
@@ -131,6 +145,18 @@ export default async function ClusterDetailsPage({
             hideDot
           />
         )}
+
+        <div className="mt-4">
+          <EditClusterModal
+            cluster={{
+              ...cluster,
+              id: cluster.id,
+              team_id: cluster.team_id,
+            }}
+            zkvmVersions={zkvmVersionList}
+            cloudInstances={cloudInstanceList}
+          />
+        </div>
       </div>
 
       <Card className="mx-auto w-fit p-6">
@@ -166,6 +192,15 @@ export default async function ClusterDetailsPage({
           >
             {zkvm.name}
           </Link>
+          <div className="font-sans text-xs text-body-secondary">
+            v{lastVersion.zkvm_version.version}
+          </div>
+        </div>
+        <div className="flex flex-col items-center gap-1 p-4">
+          <div className="font-sans text-sm text-body-secondary">
+            Cluster Version
+          </div>
+          <div className="text-lg text-primary">{lastVersion.version}</div>
         </div>
         <div className="flex flex-col items-center gap-1 p-4">
           <MetricBox className="py-0">
