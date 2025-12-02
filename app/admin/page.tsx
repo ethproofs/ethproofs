@@ -1,6 +1,6 @@
-import { AdminApiKeyForm } from "@/components/forms/admin-api-key"
-import { AdminUserForm } from "@/components/forms/admin-user"
-import { LoginForm } from "@/components/forms/login"
+import { AdminApiKeyForm } from "@/components/forms/admin-api-key-form"
+import { AdminUserForm } from "@/components/forms/admin-user-form"
+import { SignInForm } from "@/components/forms/sign-in-form"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 
 import { db } from "@/db"
@@ -22,10 +22,10 @@ export default async function AdminPage() {
         <div className="flex justify-center">
           <Card className="flex min-w-96 flex-col gap-4">
             <CardHeader>
-              <CardTitle>account login</CardTitle>
+              <CardTitle>sign in</CardTitle>
             </CardHeader>
             <CardContent>
-              <LoginForm />
+              <SignInForm />
             </CardContent>
           </Card>
         </div>
@@ -34,18 +34,24 @@ export default async function AdminPage() {
   }
 
   return (
-    <div className="flex flex-col gap-8">
-      <h2 className="text-2xl font-bold">Welcome, {user.email}</h2>
-
-      <div className="flex gap-8">
+    <div className="mt-12 flex flex-col gap-8">
+      <div className="flex justify-center gap-8">
         <Card className="flex min-w-96 flex-col gap-4">
-          <h3 className="text-lg font-bold">Create User</h3>
-          <AdminUserForm />
+          <CardHeader>
+            <CardTitle>create user</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <AdminUserForm />
+          </CardContent>
         </Card>
 
         <Card className="flex min-w-96 flex-col gap-4">
-          <h3 className="text-lg font-bold">Generate API Key</h3>
-          <AdminApiKeyForm teams={existingTeams} />
+          <CardHeader>
+            <CardTitle>generate api key</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <AdminApiKeyForm teams={existingTeams} />
+          </CardContent>
         </Card>
       </div>
     </div>

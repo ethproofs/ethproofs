@@ -1,3 +1,6 @@
+"use server"
+
+import { revalidatePath } from "next/cache"
 import { ZodError } from "zod"
 
 import { db } from "@/db"
@@ -8,8 +11,8 @@ import {
   machines,
 } from "@/db/schema"
 import { getZkvmVersion } from "@/lib/api/zkvm-versions"
-import { withAuth } from "@/lib/middleware/with-auth"
 import { updateClusterSchema } from "@/lib/zod/schemas/cluster"
+import { createClient } from "@/utils/supabase/server"
 
 /**
  * Increment version string (e.g., "v0.1" -> "v0.2", "v0.9" -> "v0.10")
@@ -26,26 +29,28 @@ function incrementVersion(version: string): string {
   return `v${major}.${nextMinor}`
 }
 
-export const PUT = withAuth(async ({ request, user }, context: { params: Promise<{ clusterId: string }> }) => {
-  const { clusterId } = await context.params
-  const requestBody = await request.json()
+export async function updateCluster(
+  clusterId: string,
+  formData: any
+): Promise<{ success?: boolean; version_id?: number; message?: string; error?: string }> {
+  // 1. Get the authenticated user from session
+  const supabase = await createClient()
+  const { data: { user } } = await supabase.auth.getUser()
 
-  // Validate payload schema
+  // 2. If no user, reject
+  if (!user) {
+    return { error: "Not authenticated. Please sign in to edit clusters." }
+  }
+
+  // 3. Validate payload schema
   let updatePayload
   try {
-    updatePayload = updateClusterSchema.parse(requestBody)
+    updatePayload = updateClusterSchema.parse(formData)
   } catch (error) {
-    console.error("cluster update payload invalid", error)
-
     if (error instanceof ZodError) {
-      return new Response(error.message, {
-        status: 400,
-      })
+      return { error: "Invalid form data" }
     }
-
-    return new Response("Invalid payload", {
-      status: 400,
-    })
+    return { error: "Invalid payload" }
   }
 
   const {
@@ -58,7 +63,7 @@ export const PUT = withAuth(async ({ request, user }, context: { params: Promise
   } = updatePayload
 
   try {
-    // Get the cluster and verify ownership
+    // 4. Get the cluster and verify ownership
     const cluster = await db.query.clusters.findFirst({
       where: (c, { eq, and }) =>
         and(eq(c.id, clusterId), eq(c.team_id, user.id)),
@@ -70,25 +75,28 @@ export const PUT = withAuth(async ({ request, user }, context: { params: Promise
       },
     })
 
+    // 5. If cluster doesn't exist or doesn't belong to them, reject
     if (!cluster) {
-      return new Response("Cluster not found", { status: 404 })
+      return { error: "Cluster not found or access denied" }
     }
 
     const lastVersion = cluster.versions[0]
     if (!lastVersion) {
-      return new Response("Cluster has no versions", { status: 500 })
+      return { error: "Cluster has no versions" }
     }
 
     // Check if we need to create a new version (configuration or zkvm changed)
     const configurationChanged = configuration !== undefined
-    const zkvmChanged = zkvm_version_id !== undefined && zkvm_version_id !== lastVersion.zkvm_version_id
+    const zkvmChanged =
+      zkvm_version_id !== undefined &&
+      zkvm_version_id !== lastVersion.zkvm_version_id
 
     // Validate zkvm_version_id if provided
     if (zkvmChanged) {
       const zkvmVersion = await getZkvmVersion(zkvm_version_id!)
 
       if (!zkvmVersion) {
-        return new Response("Invalid zkvm version", { status: 400 })
+        return { error: "Invalid zkvm version" }
       }
     }
 
@@ -107,7 +115,7 @@ export const PUT = withAuth(async ({ request, user }, context: { params: Promise
       })
 
       if (cloudInstanceIds.length !== configuration!.length) {
-        return new Response("Invalid cluster configuration", { status: 400 })
+        return { error: "Invalid cluster configuration" }
       }
     }
 
@@ -115,7 +123,12 @@ export const PUT = withAuth(async ({ request, user }, context: { params: Promise
 
     await db.transaction(async (tx) => {
       // Update cluster metadata if provided
-      if (nickname !== undefined || description !== undefined || cycle_type !== undefined || proof_type !== undefined) {
+      if (
+        nickname !== undefined ||
+        description !== undefined ||
+        cycle_type !== undefined ||
+        proof_type !== undefined
+      ) {
         await tx
           .update(clusters)
           .set({
@@ -136,7 +149,9 @@ export const PUT = withAuth(async ({ request, user }, context: { params: Promise
           .insert(clusterVersions)
           .values({
             cluster_id: clusterId,
-            zkvm_version_id: zkvmChanged ? zkvm_version_id! : lastVersion.zkvm_version_id,
+            zkvm_version_id: zkvmChanged
+              ? zkvm_version_id!
+              : lastVersion.zkvm_version_id,
             version: newVersionString,
           })
           .returning({ id: clusterVersions.id })
@@ -201,12 +216,18 @@ export const PUT = withAuth(async ({ request, user }, context: { params: Promise
       }
     })
 
-    return Response.json({
+    // Revalidate the page to show new data
+    revalidatePath(`/clusters/${clusterId}`)
+
+    return {
+      success: true,
       version_id: versionId,
-      message: configurationChanged || zkvmChanged ? "Cluster updated. New version created." : "Cluster updated.",
-    })
+      message: configurationChanged || zkvmChanged
+        ? "Cluster updated. New version created."
+        : "Cluster updated.",
+    }
   } catch (error) {
-    console.error("error updating cluster", error)
-    return new Response("Internal server error", { status: 500 })
+    console.error("error updating cluster:", error)
+    return { error: "Failed to update cluster. Please try again." }
   }
-})
+}

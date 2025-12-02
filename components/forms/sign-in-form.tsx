@@ -13,7 +13,7 @@ const initialState = {
   errors: {},
 }
 
-export function LoginForm() {
+export function SignInForm() {
   const [state, formAction] = useFormState(login, initialState)
 
   return (
@@ -33,9 +33,7 @@ export function LoginForm() {
         autoComplete="current-password"
         required
       />
-
       <Errors errors={state.errors} />
-
       <SubmitButton>submit</SubmitButton>
     </form>
   )

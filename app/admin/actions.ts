@@ -54,6 +54,14 @@ export async function login(_prevState: unknown, formData: FormData) {
   redirect("/admin")
 }
 
+export async function signOut() {
+  const supabase = await createClient()
+  await supabase.auth.signOut()
+
+  revalidatePath("/", "layout")
+  redirect("/")
+}
+
 const userSchema = z.object({
   email: z.string().email(),
   name: z.string(),
