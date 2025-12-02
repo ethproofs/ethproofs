@@ -5,6 +5,7 @@ import {
   activeClusterIdSchema,
   clusterSchema,
   createClusterSchema,
+  updateClusterSchema,
 } from "../zod/schemas/cluster"
 
 export const clustersPaths: ZodOpenApiPathsObject = {

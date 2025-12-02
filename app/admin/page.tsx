@@ -1,7 +1,7 @@
 import { AdminApiKeyForm } from "@/components/forms/admin-api-key"
 import { AdminUserForm } from "@/components/forms/admin-user"
 import { LoginForm } from "@/components/forms/login"
-import { Card } from "@/components/ui/card"
+import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 
 import { db } from "@/db"
 import { teams } from "@/db/schema"
@@ -18,11 +18,15 @@ export default async function AdminPage() {
 
   if (!user) {
     return (
-      <div className="flex flex-col gap-8">
+      <div className="mt-12 flex flex-col gap-8">
         <div className="flex justify-center">
           <Card className="flex min-w-96 flex-col gap-4">
-            <h2 className="text-2xl font-bold">Login</h2>
-            <LoginForm />
+            <CardHeader>
+              <CardTitle>account login</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <LoginForm />
+            </CardContent>
           </Card>
         </div>
       </div>
