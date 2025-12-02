@@ -18,6 +18,8 @@ import { TooltipContentHeader } from "@/components/ui/tooltip"
 
 import { cn } from "@/lib/utils"
 
+import { db } from "@/db"
+import { cloudInstances, zkvmVersions } from "@/db/schema"
 import { getCluster } from "@/lib/api/clusters"
 import { getClusterSummaryById } from "@/lib/api/stats"
 import { hasPhysicalMachines, isMultiMachineCluster } from "@/lib/clusters"
@@ -25,9 +27,7 @@ import { getMetadata } from "@/lib/metadata"
 import { formatUsd } from "@/lib/number"
 import { prettyMs } from "@/lib/time"
 import { isUnverifiableZkvm } from "@/lib/zkvms"
-
-import { db } from "@/db"
-import { cloudInstances, zkvmVersions } from "@/db/schema"
+import { createClient } from "@/utils/supabase/server"
 
 export type ClusterDetailsPageProps = {
   params: Promise<{ clusterId: string }>
@@ -67,6 +67,13 @@ export default async function ClusterDetailsPage({
   }
 
   const clusterSummary = await getClusterSummaryById(clusterId)
+
+  // Check if user is authenticated
+  const supabase = await createClient()
+  const {
+    data: { user },
+  } = await supabase.auth.getUser()
+  const isAuthenticated = !!user
 
   // Fetch zkvm versions and cloud instances for the edit modal
   const [zkvmVersionList, cloudInstanceList] = await Promise.all([
@@ -155,6 +162,7 @@ export default async function ClusterDetailsPage({
             }}
             zkvmVersions={zkvmVersionList}
             cloudInstances={cloudInstanceList}
+            isAuthenticated={isAuthenticated}
           />
         </div>
       </div>
