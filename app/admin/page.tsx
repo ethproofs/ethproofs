@@ -1,9 +1,9 @@
 import { Cluster } from "@/lib/types"
 
-import { AdminApiKeyForm } from "@/components/forms/admin-api-key"
-import { AdminUserForm } from "@/components/forms/admin-user"
+import { AdminApiKeyForm } from "@/components/forms/admin-api-key-form"
+import { AdminUserForm } from "@/components/forms/admin-user-form"
 import { AdminVerificationKeyForm } from "@/components/forms/admin-verification-key"
-import { LoginForm } from "@/components/forms/login"
+import { SignInForm } from "@/components/forms/sign-in-form"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 
 import { db } from "@/db"
@@ -29,7 +29,7 @@ export default async function AdminPage() {
               <CardTitle>sign in</CardTitle>
             </CardHeader>
             <CardContent>
-              <LoginForm />
+              <SignInForm />
             </CardContent>
           </Card>
         </div>

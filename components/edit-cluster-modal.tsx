@@ -2,9 +2,11 @@
 
 import { useState } from "react"
 import { useRouter } from "next/navigation"
+import Link from "next/link"
 import { Loader2 } from "lucide-react"
 
-import type { Cluster } from "@/lib/zod/schemas/cluster"
+import type { ClusterBase, CloudInstanceBase, CloudProvider, ZkvmVersion, MachineBase } from "@/lib/types"
+import { updateCluster } from "@/app/clusters/[clusterId]/actions"
 import {
   Dialog,
   DialogContent,
@@ -19,54 +21,63 @@ import { Input } from "@/components/ui/input"
 import { Card } from "@/components/ui/card"
 
 interface EditClusterModalProps {
-  cluster: Cluster & {
-    id: string
-    team_id: string
+  cluster: ClusterBase & {
     versions: Array<{
       id: number
       version: string
       zkvm_version_id: number
-      zkvm_version: {
-        id: number
-        zkvm_id: number
-        version: string
+      zkvm_version: ZkvmVersion & {
+        zkvm: {
+          id: number
+          name: string
+          slug: string
+        }
       }
       cluster_machines: Array<{
         id: number
         machine_count: number
         cloud_instance_count: number
-        machine: any
-        cloud_instance: any
+        machine: MachineBase
+        cloud_instance: CloudInstanceBase & {
+          provider: CloudProvider
+        }
       }>
     }>
   }
-  zkvmVersions: Array<{
-    id: number
-    zkvm_id: number
-    version: string
-    zkvm: {
-      id: number
-      name: string
-      slug: string
+  zkvmVersions: Array<
+    ZkvmVersion & {
+      zkvm: {
+        id: number
+        name: string
+        slug: string
+      }
     }
-  }>
-  cloudInstances: Array<{
-    id: number
-    instance_name: string
-    provider_id: number
-    hourly_price: number
-  }>
+  >
+  cloudInstances: Array<CloudInstanceBase>
+  isAuthenticated: boolean
 }
 
 export function EditClusterModal({
   cluster,
   zkvmVersions,
   cloudInstances,
+  isAuthenticated,
 }: EditClusterModalProps) {
   const router = useRouter()
   const [isOpen, setIsOpen] = useState(false)
   const [isLoading, setIsLoading] = useState(false)
   const [error, setError] = useState<string | null>(null)
+
+  // If not authenticated, show sign in prompt
+  if (!isAuthenticated) {
+    return (
+      <Button variant="outline" disabled>
+        <Link href="/sign-in" className="pointer-events-none">
+          Sign in to Edit
+        </Link>
+      </Button>
+    )
+  }
 
   const lastVersion = cluster.versions[0]
 
@@ -110,20 +121,11 @@ export function EditClusterModal({
     setError(null)
 
     try {
-      const response = await fetch(
-        `/api/internal/clusters/${cluster.id}`,
-        {
-          method: "PUT",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify(formData),
-        }
-      )
+      const result = await updateCluster(cluster.id, formData)
 
-      if (!response.ok) {
-        const errorText = await response.text()
-        throw new Error(errorText || "Failed to update cluster")
+      if (result.error) {
+        setError(result.error)
+        return
       }
 
       setIsOpen(false)
