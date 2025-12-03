@@ -14,7 +14,7 @@ export function ProverCountdownBanner({
     <CountdownBanner
       displayText={
         isSuccess
-          ? "provers are all fully reproducible"
+          ? "all provers are now reproducible"
           : "reproducible provers required"
       }
       deadlineDate={deadlineDate}

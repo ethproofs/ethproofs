@@ -34,7 +34,7 @@ export default async function Index() {
           <section id="countdown-banners">
             <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:gap-4">
               <VerifierCountdownBanner isSuccess />
-              <ProverCountdownBanner />
+              <ProverCountdownBanner isSuccess />
             </div>
           </section>
         </div>
