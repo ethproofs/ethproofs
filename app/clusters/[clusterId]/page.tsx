@@ -145,7 +145,7 @@ export default async function ClusterDetailsPage({
 
       {cluster.software_link && (
         <aside className="flex items-center justify-center gap-2 rounded bg-accent px-6 py-4 text-center">
-          download the binary
+          download the binary or source code
           <Link
             href={cluster.software_link}
             className="text-primary hover:text-primary-light"
