@@ -8,7 +8,6 @@ import { clustersPaths } from "./clusters"
 import { cspBenchmarksPaths } from "./csp-benchmarks"
 import { proofsPaths } from "./proofs"
 import { singleMachinePaths } from "./single-machine"
-import { verificationKeysPaths } from "./verification-keys"
 
 export const document = createDocument({
   openapi: "3.1.0",
@@ -50,9 +49,6 @@ export const document = createDocument({
       name: "Cloud instances",
     },
     {
-      name: "Verification keys",
-    },
-    {
       name: "CSP benchmarks",
     },
   ],
@@ -62,7 +58,6 @@ export const document = createDocument({
     ...singleMachinePaths,
     ...proofsPaths,
     ...cloudInstancesPaths,
-    ...verificationKeysPaths,
     ...cspBenchmarksPaths,
   },
   components: {
