@@ -1,10 +1,11 @@
+import { NextRequest } from "next/server"
+
 import { db } from "@/db"
 import { getTeam } from "@/lib/api/teams"
 import { downloadVerificationKey } from "@/lib/api/verification-keys"
 
-// Internal endpoint for downloading verification keys
 export async function GET(
-  _request: Request,
+  _request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
   const { id } = await params
