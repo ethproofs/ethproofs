@@ -1,3 +1,4 @@
+import { desc } from "drizzle-orm"
 import { ZodError } from "zod"
 
 import { db } from "@/db"
@@ -79,14 +80,22 @@ export const POST = withAuth(async ({ request, user }) => {
       })
       .returning({ id: clusters.id, index: clusters.index })
 
+    // get the next version index for this cluster
+    const lastVersion = await tx.query.clusterVersions.findFirst({
+      where: (cv, { eq }) => eq(cv.cluster_id, cluster.id),
+      columns: { index: true },
+      orderBy: (cv) => desc(cv.index),
+    })
+    const nextIndex = (lastVersion?.index ?? 0) + 1
+
     // create cluster version
     const [clusterVersion] = await tx
       .insert(clusterVersions)
       .values({
         cluster_id: cluster.id,
+        index: nextIndex,
         zkvm_version_id,
-        // TODO:TEAM - remove this once we have a real version management system for users
-        version: "v0.1",
+        is_active: true,
       })
       .returning({ id: clusterVersions.id })
 

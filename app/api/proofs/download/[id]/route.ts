@@ -1,9 +1,10 @@
+import { NextRequest } from "next/server"
+
 import { db } from "@/db"
 import { downloadBinaryForProofId } from "@/lib/api/proofs"
 
-// Internal endpoint for downloading proofs
 export async function GET(
-  _request: Request,
+  _request: NextRequest,
   { params }: { params: Promise<{ id: string }> }
 ) {
   const { id } = await params

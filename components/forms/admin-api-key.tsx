@@ -30,7 +30,7 @@ export function AdminApiKeyForm({ teams }: { teams: Team[] }) {
     <form className="flex flex-col gap-4" action={formAction}>
       <Select name="team" required>
         <SelectTrigger>
-          <SelectValue placeholder="Select user" />
+          <SelectValue placeholder="select user" />
         </SelectTrigger>
         <SelectContent>
           {teams.map((team) => (
@@ -43,13 +43,13 @@ export function AdminApiKeyForm({ teams }: { teams: Team[] }) {
           ))}
         </SelectContent>
       </Select>
-      <Errors errors={state.errors ?? {}} />
 
-      <SubmitButton>Generate</SubmitButton>
+      <Errors errors={state.errors ?? {}} />
+      <SubmitButton>generate</SubmitButton>
 
       {state.data && (
         <div className="flex flex-col gap-2">
-          <h3 className="text-sm font-bold">API Key</h3>
+          <h3 className="text-sm font-bold">api key</h3>
           <div className="flex gap-2">
             <div>{state.data.apikey}</div>
             <CopyButton message={state.data.apikey} />

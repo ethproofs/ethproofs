@@ -147,14 +147,15 @@ export const clusterVersions = pgTable(
         onDelete: "cascade",
         onUpdate: "cascade",
       }),
+    index: smallint().notNull(),
     zkvm_version_id: bigint({ mode: "number" })
       .notNull()
       .references(() => zkvmVersions.id, {
         onDelete: "cascade",
         onUpdate: "cascade",
       }),
-    version: text().notNull(),
-    description: text(),
+    vk_path: text(),
+    is_active: boolean().notNull().default(false),
     created_at: timestamp("created_at", {
       withTimezone: true,
       mode: "string",
@@ -162,7 +163,17 @@ export const clusterVersions = pgTable(
       .defaultNow()
       .notNull(),
   },
-  (table) => [index("cluster_versions_cluster_id_idx").on(table.cluster_id)]
+  (table) => [
+    unique("cluster_versions_cluster_id_index_uk").on(
+      table.cluster_id,
+      table.index
+    ),
+    index("cluster_versions_cluster_id_idx").on(table.cluster_id),
+    index("cluster_versions_cluster_id_is_active_idx").on(
+      table.cluster_id,
+      table.is_active
+    ),
+  ]
 )
 
 export const clusterMachines = pgTable(

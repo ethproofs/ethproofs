@@ -232,6 +232,20 @@
       "when": 1761750145627,
       "tag": "0032_drop-programs-table",
       "breakpoints": true
+    },
+    {
+      "idx": 33,
+      "version": "7",
+      "when": 1765043743030,
+      "tag": "0033_update-cluster-versions",
+      "breakpoints": true
+    },
+    {
+      "idx": 34,
+      "version": "7",
+      "when": 1765138705971,
+      "tag": "0034_add-cluster-version-index",
+      "breakpoints": true
     }
   ]
 }

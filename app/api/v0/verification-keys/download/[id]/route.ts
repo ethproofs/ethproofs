@@ -4,7 +4,15 @@ import { downloadVerificationKey } from "@/lib/api/verification-keys"
 import { withAuthAndRateLimit } from "@/lib/middleware/with-rate-limit"
 
 export const GET = withAuthAndRateLimit(
-  async (_request, { params }: { params: Promise<{ id: string }> }) => {
+  async ({ apiKey }, { params }: { params: Promise<{ id: string }> }) => {
+    // Restrict to admin mode
+    if (apiKey?.mode !== "admin") {
+      return new Response(
+        "Forbidden: admin mode required for downloading verification keys",
+        { status: 403 }
+      )
+    }
+
     const { id } = await params
 
     const proofRow = await db.query.proofs.findFirst({

@@ -1,9 +1,9 @@
 "use client"
 
-import Link from "next/link"
 import { useFormState } from "react-dom"
 
 import { Input } from "../ui/input"
+import { Label } from "../ui/label"
 
 import { Errors } from "./errors"
 import { SubmitButton } from "./submit-button"
@@ -20,63 +20,50 @@ export function AdminUserForm() {
 
   return (
     <form className="flex flex-col gap-4" action={formAction}>
-      <Input id="name" name="name" type="text" placeholder="Name" required />
-
+      <Input id="name" name="name" type="text" placeholder="team" required />
       <Input
         id="email"
         name="email"
         type="email"
-        placeholder="Email"
+        placeholder="email"
         required
       />
-
       <Input
         id="github_org"
         name="github_org"
         type="text"
-        placeholder="GitHub Organization"
+        placeholder="github org"
       />
-
       <Input
         id="twitter_handle"
         name="twitter_handle"
         type="text"
-        placeholder="Twitter Handle"
+        placeholder="twitter handle"
       />
-
-      <Input id="website" name="website" type="text" placeholder="Website" />
-
-      <div className="mt-4 flex flex-col gap-2">
-        <label htmlFor="logo" className="text-sm font-bold">
-          Logo
-        </label>
-        <p className="text-sm text-secondary">
-          SVG file. Fill color black.{" "}
-          <Link
-            href="https://ndjfbkojyebmdbckigbe.supabase.co/storage/v1/object/public/public-assets/succinct-logo.svg"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-sm text-primary-light"
-          >
-            Example
-          </Link>
-        </p>
+      <Input id="website" name="website" type="text" placeholder="website" />
+      <div className="position-relative display-inline-block flex flex-col gap-2">
+        <span className="text-sm font-normal">logo (.svg)</span>
+        <Label
+          htmlFor="logo"
+          className="h-10 w-full cursor-pointer rounded-md border border-input bg-background px-3 py-2 text-sm font-normal text-muted-foreground ring-offset-background hover:bg-accent"
+        >
+          choose file
+        </Label>
         <Input
+          accept="image/svg+xml"
+          className="absolute left-[-9999px]"
           id="logo"
           name="logo"
           type="file"
-          placeholder="Logo"
-          accept="image/svg+xml"
         />
       </div>
 
       <Errors errors={state.errors ?? {}} />
-
-      <SubmitButton>Create</SubmitButton>
+      <SubmitButton>create</SubmitButton>
 
       {state.data && (
         <div className="flex flex-col gap-2">
-          <h3 className="text-sm font-bold">User</h3>
+          <h3 className="text-sm font-bold">user</h3>
           <pre>
             {JSON.stringify(
               {
