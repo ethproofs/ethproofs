@@ -39,6 +39,14 @@ const nextConfig = {
         port: "",
         pathname: "/storage/v1/object/public/public-assets/**",
       },
+      {
+        protocol: "https",
+        hostname: "**.ghost.io",
+      },
+      {
+        protocol: "https",
+        hostname: "**.ghost.org",
+      },
     ],
   },
 }

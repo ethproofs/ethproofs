@@ -1,6 +1,7 @@
 import {
   Activity,
   BarChart3,
+  BookOpen,
   Box,
   Bug,
   Cpu,
@@ -53,6 +54,11 @@ export const benchmarksNavItems = [
 ]
 
 export const moreNavItems = [
+  {
+    label: "blog",
+    href: "/blog",
+    icon: <BookOpen />,
+  },
   {
     label: "learn",
     href: "/learn",
