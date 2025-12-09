@@ -1,7 +1,6 @@
 "use client"
 
 import { useEffect, useRef, useState } from "react"
-import { Asterisk, Check } from "lucide-react"
 
 import type { Cluster, ClusterVersion } from "@/lib/types"
 
@@ -10,7 +9,10 @@ import { Label } from "../ui/label"
 import {
   Select,
   SelectContent,
+  SelectGroup,
   SelectItem,
+  SelectLabel,
+  SelectSeparator,
   SelectTrigger,
   SelectValue,
 } from "../ui/select"
@@ -171,11 +173,27 @@ export function AdminVerificationKeyForm({
             <SelectValue placeholder="select cluster" />
           </SelectTrigger>
           <SelectContent>
-            {clusters.map((cluster) => (
-              <SelectItem key={cluster.id} value={cluster.id}>
-                {cluster.nickname}
-              </SelectItem>
-            ))}
+            <SelectGroup>
+              <SelectLabel>active</SelectLabel>
+              {clusters
+                .filter((cluster) => cluster.is_active)
+                .map((cluster) => (
+                  <SelectItem key={cluster.id} value={cluster.id}>
+                    {cluster.id}
+                  </SelectItem>
+                ))}
+            </SelectGroup>
+            <SelectSeparator />
+            <SelectGroup>
+              <SelectLabel>inactive</SelectLabel>
+              {clusters
+                .filter((cluster) => !cluster.is_active)
+                .map((cluster) => (
+                  <SelectItem key={cluster.id} value={cluster.id}>
+                    {cluster.id}
+                  </SelectItem>
+                ))}
+            </SelectGroup>
           </SelectContent>
         </Select>
       </div>
