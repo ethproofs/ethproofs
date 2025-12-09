@@ -1,0 +1,334 @@
+/* Ghost Content Styles */
+
+/* Links in prose content */
+.prose a {
+  @apply text-primary no-underline transition-colors;
+}
+
+.prose a:hover {
+  @apply text-primary-light;
+}
+
+.prose a:visited {
+  @apply text-primary-visited;
+}
+
+/* Callout Cards */
+.kg-callout-card {
+  @apply my-6 flex gap-3 rounded-lg border p-4;
+}
+
+.kg-callout-emoji {
+  @apply text-2xl leading-none;
+  min-width: 1.5rem;
+}
+
+.kg-callout-text {
+  @apply flex-1;
+}
+
+/* Callout Color Variants */
+.kg-callout-card-grey {
+  @apply border-muted bg-muted/30;
+}
+
+.kg-callout-card-white {
+  @apply border-border bg-background;
+}
+
+.kg-callout-card-blue {
+  @apply border-info/50 bg-info/10;
+}
+
+.kg-callout-card-green {
+  @apply border-success/50 bg-success/10;
+}
+
+.kg-callout-card-yellow {
+  @apply border-warning/50 bg-warning/10;
+}
+
+.kg-callout-card-red {
+  @apply border-destructive/50 bg-destructive/10;
+}
+
+.kg-callout-card-pink {
+  @apply border-pink-500/50 bg-pink-500/10;
+}
+
+.kg-callout-card-purple {
+  @apply border-purple-500/50 bg-purple-500/10;
+}
+
+.kg-callout-card-accent {
+  @apply border-accent/50 bg-accent/10;
+}
+
+/* Code Cards */
+.kg-code-card {
+  @apply my-6;
+}
+
+.kg-code-card pre {
+  @apply m-0 rounded-lg bg-muted p-4;
+}
+
+/* Image Cards */
+.kg-image-card {
+  @apply my-6;
+}
+
+.kg-image-card img {
+  @apply w-full rounded-lg;
+}
+
+.kg-image-card figcaption {
+  @apply mt-2 text-center text-sm text-muted-foreground;
+}
+
+/* Gallery Cards */
+.kg-gallery-card {
+  @apply my-6;
+}
+
+.kg-gallery-container {
+  @apply flex flex-wrap gap-2;
+}
+
+.kg-gallery-image {
+  @apply flex-1;
+}
+
+.kg-gallery-image img {
+  @apply h-full w-full rounded-lg object-cover;
+}
+
+/* Bookmark Cards */
+.kg-bookmark-card {
+  @apply my-6 rounded-lg border border-border;
+}
+
+.kg-bookmark-container {
+  @apply flex overflow-hidden;
+}
+
+.kg-bookmark-content {
+  @apply flex flex-1 flex-col justify-center p-4;
+}
+
+.kg-bookmark-title {
+  @apply font-semibold text-foreground;
+}
+
+.kg-bookmark-description {
+  @apply mt-1 text-sm text-muted-foreground line-clamp-2;
+}
+
+.kg-bookmark-metadata {
+  @apply mt-2 flex items-center gap-2 text-xs text-muted-foreground;
+}
+
+.kg-bookmark-icon {
+  @apply h-4 w-4;
+}
+
+.kg-bookmark-author {
+  @apply truncate;
+}
+
+.kg-bookmark-publisher {
+  @apply truncate;
+}
+
+.kg-bookmark-thumbnail {
+  @apply relative w-1/3 min-w-[150px];
+}
+
+.kg-bookmark-thumbnail img {
+  @apply h-full w-full object-cover;
+}
+
+/* Button Cards */
+.kg-button-card {
+  @apply my-6 text-center;
+}
+
+.kg-btn {
+  @apply inline-flex items-center justify-center rounded-lg bg-primary px-6 py-3 font-medium text-primary-foreground transition-colors hover:bg-primary/90;
+}
+
+.kg-btn-accent {
+  @apply bg-accent text-accent-foreground hover:bg-accent/90;
+}
+
+/* Video Cards */
+.kg-video-card {
+  @apply my-6;
+}
+
+.kg-video-container {
+  @apply relative w-full overflow-hidden rounded-lg;
+  padding-bottom: 56.25%; /* 16:9 aspect ratio */
+}
+
+.kg-video-container video,
+.kg-video-container iframe {
+  @apply absolute left-0 top-0 h-full w-full;
+}
+
+/* Embed Cards */
+.kg-embed-card {
+  @apply my-6;
+}
+
+.kg-embed-card iframe {
+  @apply w-full rounded-lg;
+}
+
+/* Toggle Cards (Accordion) */
+.kg-toggle-card {
+  @apply my-4 rounded-lg border border-border;
+}
+
+.kg-toggle-heading {
+  @apply cursor-pointer p-4 font-medium;
+}
+
+.kg-toggle-content {
+  @apply border-t border-border p-4;
+}
+
+/* Product Cards */
+.kg-product-card {
+  @apply my-6 flex gap-4 rounded-lg border border-border p-4;
+}
+
+.kg-product-card-image {
+  @apply relative h-32 w-32 flex-shrink-0 overflow-hidden rounded-lg;
+}
+
+.kg-product-card-image img {
+  @apply h-full w-full object-cover;
+}
+
+.kg-product-card-title {
+  @apply text-lg font-semibold text-foreground;
+}
+
+.kg-product-card-description {
+  @apply mt-1 text-sm text-muted-foreground;
+}
+
+.kg-product-card-rating {
+  @apply mt-2 flex items-center gap-1 text-sm;
+}
+
+.kg-product-card-button {
+  @apply mt-3 inline-flex items-center justify-center rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90;
+}
+
+/* Header Cards */
+.kg-header-card {
+  @apply my-8 rounded-lg bg-muted p-8 text-center;
+}
+
+.kg-header-card h2 {
+  @apply text-3xl font-bold;
+}
+
+.kg-header-card h3 {
+  @apply text-2xl font-bold;
+}
+
+/* File Cards */
+.kg-file-card {
+  @apply my-6 flex items-center gap-3 rounded-lg border border-border p-4;
+}
+
+.kg-file-card-icon {
+  @apply text-2xl;
+}
+
+.kg-file-card-contents {
+  @apply flex-1;
+}
+
+.kg-file-card-title {
+  @apply font-medium text-foreground;
+}
+
+.kg-file-card-caption {
+  @apply text-sm text-muted-foreground;
+}
+
+.kg-file-card-metadata {
+  @apply text-xs text-muted-foreground;
+}
+
+.kg-file-card-button {
+  @apply flex-shrink-0 rounded-lg bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90;
+}
+
+/* Audio Cards */
+.kg-audio-card {
+  @apply my-6 rounded-lg border border-border p-4;
+}
+
+.kg-audio-title {
+  @apply mb-2 font-medium text-foreground;
+}
+
+.kg-audio-player {
+  @apply w-full;
+}
+
+/* NFT Cards */
+.kg-nft-card {
+  @apply my-6 overflow-hidden rounded-lg border border-border;
+}
+
+.kg-nft-image {
+  @apply relative w-full;
+  padding-bottom: 100%; /* 1:1 aspect ratio */
+}
+
+.kg-nft-image img {
+  @apply absolute left-0 top-0 h-full w-full object-cover;
+}
+
+.kg-nft-metadata {
+  @apply p-4;
+}
+
+.kg-nft-title {
+  @apply font-semibold text-foreground;
+}
+
+.kg-nft-description {
+  @apply mt-1 text-sm text-muted-foreground;
+}
+
+.kg-nft-creator {
+  @apply mt-2 text-xs text-muted-foreground;
+}
+
+/* Width variants for cards */
+.kg-width-wide {
+  @apply -mx-6;
+}
+
+.kg-width-full {
+  @apply -mx-6;
+}
+
+@media (min-width: 768px) {
+  .kg-width-wide {
+    @apply -mx-12;
+  }
+
+  .kg-width-full {
+    width: 100vw;
+    margin-left: 50%;
+    transform: translateX(-50%);
+  }
+}

@@ -1,6 +1,7 @@
 @import "@/styles/colors.css";
 @import "@/styles/fonts.css";
 @import "@/styles/tokens.css";
+@import "@/styles/ghost.css";
 
 @tailwind base;
 @tailwind components;
