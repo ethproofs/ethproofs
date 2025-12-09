@@ -10,8 +10,8 @@ DROP FUNCTION IF EXISTS send_team_alerts_from_temp();
 DROP FUNCTION IF EXISTS send_internal_summary();
 DROP FUNCTION IF EXISTS send_internal_summary_from_temp();
 
--- Update send_telegram_message to disable web page previews
-CREATE OR REPLACE FUNCTION send_telegram_message(chat_id TEXT, message_text TEXT, bot_token TEXT)
+-- Update send_telegram_message to disable web page previews and support topics
+CREATE OR REPLACE FUNCTION send_telegram_message(chat_id TEXT, message_text TEXT, bot_token TEXT, thread_id TEXT DEFAULT NULL)
 RETURNS RECORD
 LANGUAGE plpgsql
 SECURITY DEFINER
@@ -19,21 +19,30 @@ AS $$
 DECLARE
     telegram_response RECORD;
     telegram_url TEXT;
+    request_body JSONB;
 BEGIN
     telegram_url := 'https://api.telegram.org/bot' || bot_token || '/sendMessage';
 
-    RAISE LOG 'Sending Telegram message to %: %', chat_id, message_text;
+    RAISE LOG 'Sending Telegram message to % (thread: %): %', chat_id, COALESCE(thread_id, 'none'), message_text;
+
+    -- Build base request body
+    request_body := jsonb_build_object(
+        'chat_id', chat_id,
+        'text', message_text,
+        'parse_mode', 'MarkdownV2',
+        'disable_web_page_preview', true
+    );
+
+    -- Add thread_id if provided
+    IF thread_id IS NOT NULL THEN
+        request_body := request_body || jsonb_build_object('message_thread_id', thread_id::INTEGER);
+    END IF;
 
     SELECT INTO telegram_response
         net.http_post(
             url := telegram_url,
             headers := '{"Content-Type": "application/json"}'::jsonb,
-            body := jsonb_build_object(
-                'chat_id', chat_id,
-                'text', message_text,
-                'parse_mode', 'MarkdownV2',
-                'disable_web_page_preview', true
-            )
+            body := request_body
         );
 
     RETURN telegram_response;
@@ -53,6 +62,7 @@ DECLARE
     telegram_response RECORD;
     telegram_bot_token TEXT;
     telegram_chat_id TEXT;
+    telegram_thread_id TEXT;
     missing_blocks TEXT[];
     display_blocks TEXT;
     cluster_link TEXT;
@@ -66,6 +76,10 @@ BEGIN
     FROM vault.decrypted_secrets
     WHERE name = 'telegram_chat_id';
 
+    SELECT decrypted_secret INTO telegram_thread_id
+    FROM vault.decrypted_secrets
+    WHERE name = 'telegram_thread_id';
+
     IF telegram_bot_token IS NULL OR telegram_chat_id IS NULL THEN
         RAISE LOG 'Telegram configuration not found in Vault. Skipping proof alerts.';
         RETURN;
@@ -76,7 +90,7 @@ BEGIN
 
     RAISE LOG 'Sending proof alerts for % missing proofs', missing_count;
 
-    message_text := E'Found ' || missing_count || E' missing proofs on ' || escape_markdown_v2(to_char(CURRENT_DATE - INTERVAL '1 day', 'YYYY-MM-DD')) || E':\n\n';
+    message_text := E'\u200B\nFound ' || missing_count || E' missing proofs on ' || escape_markdown_v2(to_char(CURRENT_DATE - INTERVAL '1 day', 'YYYY-MM-DD')) || E':\n\n';
 
     FOR cluster IN
         SELECT DISTINCT team_name, cluster_nickname, cluster_id_suffix, cluster_id
@@ -104,46 +118,46 @@ BEGIN
         message_text := message_text || E'   Missing proofs for blocks: ' || display_blocks || E'\n\n';
     END LOOP;
 
-    -- Find top 5 blocks missed by multiple teams, ordered by number of teams
+    -- Find top 5 blocks missed by multiple clusters, ordered by number of clusters
     WITH duplicate_block_stats AS (
         SELECT
             block_number,
-            COUNT(DISTINCT team_id) as team_count
+            COUNT(DISTINCT cluster_id) as cluster_count
         FROM missing_proofs_temp
         GROUP BY block_number
-        HAVING COUNT(DISTINCT team_id) > 1
-        ORDER BY team_count DESC, block_number ASC
+        HAVING COUNT(DISTINCT cluster_id) > 1
+        ORDER BY cluster_count DESC, block_number ASC
     )
     SELECT
+        (SELECT COUNT(*) FROM duplicate_block_stats),
         string_agg(
-            format('[%s](https://ethproofs\.org/block/%s) \(%s teams\)',
+            format('[%s](https://ethproofs\.org/block/%s) \(%s clusters\)',
                 block_number,
                 block_number,
-                team_count
+                cluster_count
             ),
-            ', '
-        ),
-        COUNT(*)
-    INTO duplicate_blocks_display, total_duplicate_blocks
+            E'\n'
+        )
+    INTO total_duplicate_blocks, duplicate_blocks_display
     FROM (
-        SELECT block_number, team_count
+        SELECT block_number, cluster_count
         FROM duplicate_block_stats
         LIMIT 5
     ) top_blocks;
 
     -- Add duplicate blocks section if any exist
     IF total_duplicate_blocks > 0 THEN
-        message_text := message_text || E'*Blocks missed by multiple teams:*\n' || duplicate_blocks_display;
+        message_text := message_text || E'Blocks missed by multiple clusters:\n\n' || duplicate_blocks_display;
 
         IF total_duplicate_blocks > 5 THEN
-            message_text := message_text || E'\n\n_\+' || (total_duplicate_blocks - 5) || E' more duplicate blocks_';
+            message_text := message_text || E'\n[\+' || (total_duplicate_blocks - 5) || E' more](https://ethproofs\.org/status)';
         END IF;
 
         message_text := message_text || E'\n';
     END IF;
 
     -- Send to alerts Telegram channel
-    telegram_response := send_telegram_message(telegram_chat_id, message_text, telegram_bot_token);
+    telegram_response := send_telegram_message(telegram_chat_id, message_text, telegram_bot_token, telegram_thread_id);
 
     RAISE LOG 'Proof alerts sent. Response: %', telegram_response;
 END;
