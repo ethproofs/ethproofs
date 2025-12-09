@@ -36,8 +36,8 @@ const proversProfiles = [
     name: "Snarkify",
     logo_url:
       "https://ibkqxhjnroghhtfyualc.supabase.co/storage/v1/object/public/public-assets/snarkify-logo.svg",
-    website_url: "https://snarkify.xyz",
-    twitter_handle: "snarkify",
+    website_url: "https://snarkify.io",
+    twitter_handle: "Snarkify_ZKP",
     github_org: "snarkify",
   },
   {
