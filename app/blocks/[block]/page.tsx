@@ -324,6 +324,7 @@ export default async function BlockDetailsPage({
         <BasicTabs
           className="px-0"
           title="proofs"
+          defaultTab={multiMachineProofs.length === 0 ? "right" : "left"}
           contentLeft={
             <BlockProofsSection blockId={blockNumber} filterType="multi" />
           }

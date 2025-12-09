@@ -40,6 +40,7 @@ export default async function ClustersPage() {
       <section>
         <BasicTabs
           title="provers"
+          defaultTab={multiMachineClusters.length === 0 ? "right" : "left"}
           contentLeft={
             <ClustersTable
               className="mt-4 px-6"

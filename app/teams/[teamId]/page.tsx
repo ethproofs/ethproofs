@@ -210,6 +210,7 @@ export default async function TeamDetailsPage({
         <BasicTabs
           className="px-0"
           title="active clusters"
+          defaultTab={multiMachineClusters.length === 0 ? "right" : "left"}
           contentLeft={
             <ClustersTable className="mt-4" clusters={multiMachineClusters} />
           }

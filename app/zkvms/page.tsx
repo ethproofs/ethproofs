@@ -29,7 +29,7 @@ export default async function ZkvmsPage() {
       <section>
         <BasicTabs
           title="zkVMs"
-          defaultTab="left"
+          defaultTab={activeZkvmsWithMetrics.length === 0 ? "right" : "left"}
           contentLeft={
             <ZkvmsTable className="mt-4 px-6" zkvms={activeZkvmsWithMetrics} />
           }

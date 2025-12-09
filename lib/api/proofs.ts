@@ -10,7 +10,7 @@ import { downloadProofBinary } from "./proof-binaries"
 import { getTeam } from "./teams"
 
 import { db } from "@/db"
-import { clusterVersions, proofs, teams } from "@/db/schema"
+import { proofs, teams } from "@/db/schema"
 
 export const fetchTeamProofsPaginated = async (
   teamId: string,
@@ -146,17 +146,8 @@ export const fetchProvedProofsByClusterId = async (
         },
       },
     },
-    where: (proofs, { eq, and, inArray }) =>
-      and(
-        eq(proofs.proof_status, "proved"),
-        inArray(
-          proofs.cluster_version_id,
-          db
-            .select({ id: clusterVersions.id })
-            .from(clusterVersions)
-            .where(eq(clusterVersions.cluster_id, clusterId))
-        )
-      ),
+    where: (proofs, { eq, and }) =>
+      and(eq(proofs.proof_status, "proved"), eq(proofs.cluster_id, clusterId)),
     orderBy: (proofs, { desc }) => [desc(proofs.created_at)],
     limit: maxProofsToFetch,
   })
@@ -166,16 +157,7 @@ export const fetchProvedProofsByClusterId = async (
     .select({ count: count() })
     .from(proofs)
     .where(
-      and(
-        eq(proofs.proof_status, "proved"),
-        inArray(
-          proofs.cluster_version_id,
-          db
-            .select({ id: clusterVersions.id })
-            .from(clusterVersions)
-            .where(eq(clusterVersions.cluster_id, clusterId))
-        )
-      )
+      and(eq(proofs.proof_status, "proved"), eq(proofs.cluster_id, clusterId))
     )
 
   const totalCount = rowCountResult.count
