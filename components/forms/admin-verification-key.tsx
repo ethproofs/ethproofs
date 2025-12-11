@@ -135,8 +135,12 @@ export function AdminVerificationKeyForm({
     if (!selectedClusterId) {
       setVersions([])
       setSelectedVersionId("")
+      setState(initialState)
       return
     }
+
+    // Clear success state when switching clusters
+    setState(initialState)
 
     const fetchVersions = async () => {
       setLoadingVersions(true)

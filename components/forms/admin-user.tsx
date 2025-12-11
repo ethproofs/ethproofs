@@ -1,6 +1,6 @@
 "use client"
 
-import { useFormState } from "react-dom"
+import { useActionState } from "react"
 
 import { Input } from "../ui/input"
 import { Label } from "../ui/label"
@@ -16,7 +16,7 @@ const initialState = {
 }
 
 export function AdminUserForm() {
-  const [state, formAction] = useFormState(createUser, initialState)
+  const [state, formAction] = useActionState(createUser, initialState)
 
   return (
     <form className="flex flex-col gap-4" action={formAction}>

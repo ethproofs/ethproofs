@@ -2,7 +2,8 @@
 
 import { useEffect, useState } from "react"
 import { ArrowDown, CalendarCheck, Check, LoaderCircle } from "lucide-react"
-import prettyBytes from "pretty-bytes"
+
+import type { ProofWithCluster } from "@/lib/types"
 
 import WasmErrorBoundary from "@/components/error-boundaries/WasmErrorBoundary"
 import { useDownloadVerificationKey } from "@/components/proof-buttons/use-download-verification-key"
@@ -19,15 +20,14 @@ import {
   getProofButtonTextColorClass,
   ProofButtonState,
   proofButtonStateMap,
-  ProofForDownload,
 } from "./proof-buttons.utils"
 import { useDownloadProof } from "./use-download-proof"
 
 import { useAnimateCheckmark } from "@/lib/hooks/ui/use-animate-checkmark"
-import { isVerifiableProver } from "@/lib/provers"
+import { isVerifiableZkvm } from "@/lib/zkvm-verifiers"
 
 interface VerifyButtonProps {
-  proof: ProofForDownload
+  proof: ProofWithCluster
   className?: string
   containerClass?: string
   labelClass?: string
@@ -44,16 +44,22 @@ export function VerifyButton({
   const downloadVerificationKey = useDownloadVerificationKey()
   const { checkRef, checkmarkAnimation } = useAnimateCheckmark(buttonState)
 
-  const prover = proof.cluster_id
-  const { verifyProof, verifyTime } = useVerifyProof(prover)
+  const zkvmSlug = proof.cluster_version?.zkvm_version?.zkvm?.slug
+
+  const isVerifiable =
+    proof.cluster_version?.vk_path && zkvmSlug && isVerifiableZkvm(zkvmSlug)
+
+  const { verifyProof, verifyTime } = useVerifyProof(
+    isVerifiable ? zkvmSlug : undefined
+  )
 
   useEffect(() => {
     setButtonState((prev) => {
       if (prev !== "verify" && prev !== "disabled") return prev
       if (proof_status !== "proved") return "disabled"
-      return isVerifiableProver(prover) ? "verify" : "disabled"
+      return isVerifiable ? "verify" : "disabled"
     })
-  }, [prover, proof_status])
+  }, [isVerifiable, proof_status])
 
   async function onVerifyProof(proof_id: number) {
     // Downloading proof
