@@ -18,6 +18,8 @@ import { prettyMs } from "@/lib/time"
 
 export const metadata: Metadata = getMetadata({ title: "Proving Teams" })
 
+const TEAMS_TO_EXCLUDE = ["PSE", "Zkonduit", "Ethproofs"]
+
 export default async function TeamsPage() {
   const teamsSummary = await getTeamsSummary()
 
@@ -25,7 +27,7 @@ export default async function TeamsPage() {
     <div className="mx-auto mt-6 grid max-w-screen-xl gap-y-12 px-6 text-center md:gap-x-12 md:px-8 lg:grid-cols-[repeat(2,_auto)] xl:gap-x-32">
       {teamsSummary &&
         teamsSummary
-          .filter((team) => team.name !== "PSE")
+          .filter((team) => !TEAMS_TO_EXCLUDE.includes(team.name))
           .map(
             ({
               team_id,
