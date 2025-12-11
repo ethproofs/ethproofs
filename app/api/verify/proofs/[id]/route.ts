@@ -1,5 +1,5 @@
+import { canVerifyProofs } from "@/lib/api/proof-verification"
 import { downloadBinaryForProofId, getProofData } from "@/lib/api/proofs"
-import { isVerifiableProver } from "@/lib/provers"
 import { verifyProofServer } from "@/lib/server/verify-service"
 import { getCachedVk } from "@/lib/server/vk-cache"
 
@@ -37,11 +37,11 @@ function createVerificationStream(proofId: number, proofIdStr: string) {
             return
           }
 
-          // Check if this prover is verifiable
-          if (!isVerifiableProver(proofData.cluster_id)) {
+          // Check if we can verify proofs from this cluster
+          if (!(await canVerifyProofs(proofData.cluster_id))) {
             sendSseEvent(encoder, controller, "complete", {
               isValid: null,
-              error: `Verification not yet available: (${proofData.cluster_id})`,
+              error: `Cannot verify proofs from cluster ${proofData.cluster_id}`,
             })
             controller.close()
             return

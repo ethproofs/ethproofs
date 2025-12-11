@@ -2,11 +2,12 @@
 
 import { ColumnDef } from "@tanstack/react-table"
 
+import type { BlockBase } from "@/lib/types"
+
 import { BlockNumber } from "@/components/BlockNumber"
 import { DataTableColumnHeader } from "@/components/data-table/data-table-column-header"
 import { Null } from "@/components/Null"
 import DownloadButton from "@/components/proof-buttons/download-button"
-import type { ProofForDownload } from "@/components/proof-buttons/proof-buttons.utils"
 import { VerifyButton } from "@/components/proof-buttons/verify-button"
 import Link from "@/components/ui/link"
 
@@ -27,9 +28,11 @@ type BlockFromApi = NonNullable<Awaited<ReturnType<typeof fetchBlock>>>
 type ProofFromBlockApi = BlockFromApi["proofs"][number]
 
 // Union type that accepts proofs from either API
-// Extended with block property that's added by API endpoints
+// ProofFromBlockApi doesn't have 'block' since proofs are nested under block
+// ProofFromClusterApi does have 'block' property
+// So we add it as optional to the union
 export type ProofRow = (ProofFromClusterApi | ProofFromBlockApi) & {
-  block?: { block_number: number; timestamp?: string | null }
+  block?: BlockBase
 }
 
 export const labels = [
@@ -263,7 +266,7 @@ export const getColumns = (): ColumnDef<ProofRow>[] => {
       id: "actions",
       header: () => null,
       cell: ({ row }) => {
-        const proof = row.original as ProofForDownload
+        const proof = row.original
         return (
           <div className="flex flex-row justify-end gap-2">
             <DownloadButton

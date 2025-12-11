@@ -22,6 +22,11 @@ export const fetchTeamProofsPaginated = async (
       cluster_version: {
         with: {
           cluster: true,
+          zkvm_version: {
+            with: {
+              zkvm: true,
+            },
+          },
           cluster_machines: {
             with: {
               cloud_instance: true,
@@ -289,6 +294,11 @@ export const fetchAllProofsForRealtime = async () => {
       cluster_version: {
         with: {
           cluster: true,
+          zkvm_version: {
+            with: {
+              zkvm: true,
+            },
+          },
         },
       },
     },

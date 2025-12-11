@@ -1,4 +1,5 @@
-import { getProverType } from "@/lib/provers"
+import { getProofVerificationInfo } from "@/lib/api/proof-verification"
+import { type VerifiableZkvmSlug } from "@/lib/zkvm-verifiers"
 
 export interface VerificationResult {
   isValid: boolean
@@ -53,20 +54,20 @@ async function loadWasmModule(name: string): Promise<unknown> {
 }
 
 export async function verifyProofServer(
-  proverCluster: string,
+  clusterId: string,
   proofBytes: Uint8Array,
   vkBytes: Uint8Array
 ): Promise<VerificationResult> {
   try {
-    const proverType = getProverType(proverCluster)
-    if (!proverType) {
+    const verificationInfo = await getProofVerificationInfo(clusterId)
+    if (!verificationInfo) {
       return {
         isValid: false,
-        error: `Unknown prover cluster: ${proverCluster}`,
+        error: `Cannot verify proofs from cluster ${clusterId} (missing vk_path or unsupported zkvm)`,
       }
     }
 
-    const loadedModule = await loadWasmModule(proverType)
+    const loadedModule = await loadWasmModule(verificationInfo.zkvmSlug)
 
     let result: VerificationResult
 
@@ -76,24 +77,24 @@ export async function verifyProofServer(
     // Start timing just before verification
     const startTime = performance.now()
 
-    if (proverType === "pico") {
+    if (verificationInfo.zkvmSlug === "pico") {
       // Pico uses vmType "Pico"
       const verified = verifier.verify_stark("Pico", proofBytes, vkBytes)
       result = { isValid: verified }
-    } else if (proverType === "pico-prism") {
+    } else if (verificationInfo.zkvmSlug === "pico-prism") {
       // PicoPrism uses vmType "PicoPrism"
       const verified = verifier.verify_stark("PicoPrism", proofBytes, vkBytes)
       result = { isValid: verified }
-    } else if (proverType === "sp1-hypercube") {
+    } else if (verificationInfo.zkvmSlug === "sp1-hypercube") {
       const verified = verifier.verify_stark(proofBytes, vkBytes)
       result = { isValid: verified }
-    } else if (proverType === "ziren") {
+    } else if (verificationInfo.zkvmSlug === "ziren") {
       const verified = verifier.verify_stark(proofBytes, vkBytes)
       result = { isValid: verified }
-    } else if (proverType === "zisk") {
+    } else if (verificationInfo.zkvmSlug === "zisk") {
       const verified = verifier.verify_stark(proofBytes, vkBytes)
       result = { isValid: verified }
-    } else if (proverType === "openvm") {
+    } else if (verificationInfo.zkvmSlug === "openvm") {
       const verified = verifier.verify_stark(proofBytes, vkBytes)
       result = { isValid: verified }
     } else {

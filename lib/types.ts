@@ -135,6 +135,9 @@ export type ZkvmMetric = keyof ZkvmMetrics
 
 export type ClusterVersionExtensions = {
   cluster: ClusterBase
+  zkvm_version: ZkvmVersion & {
+    zkvm: Zkvm
+  }
   cluster_machines: (ClusterMachineBase & {
     cloud_instance: CloudInstanceBase
     machine: MachineBase

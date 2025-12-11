@@ -1,0 +1,39 @@
+/**
+ * Maps zkvm slugs to their corresponding verifier implementations.
+ * This replaces the old hardcoded cluster ID approach in lib/provers.ts
+ */
+
+export type VerifiableZkvmSlug =
+  | "zisk"
+  | "pico"
+  | "pico-prism"
+  | "ziren"
+  | "sp1-hypercube"
+  | "openvm"
+
+/**
+ * Check if a zkvm slug has a corresponding verifier implementation
+ */
+export function isVerifiableZkvm(slug: string): slug is VerifiableZkvmSlug {
+  return [
+    "zisk",
+    "pico",
+    "pico-prism",
+    "ziren",
+    "sp1-hypercube",
+    "openvm",
+  ].includes(slug)
+}
+
+/**
+ * Get the verifier type for a given zkvm slug
+ * Returns undefined if the zkvm doesn't have a verifier implementation
+ */
+export function getVerifierByZkvmSlug(
+  slug: string
+): VerifiableZkvmSlug | undefined {
+  if (isVerifiableZkvm(slug)) {
+    return slug
+  }
+  return undefined
+}
