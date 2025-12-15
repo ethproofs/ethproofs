@@ -10,7 +10,7 @@ import { downloadProofBinary } from "./proof-binaries"
 import { getTeam } from "./teams"
 
 import { db } from "@/db"
-import { proofs, teams } from "@/db/schema"
+import { proofs } from "@/db/schema"
 
 export const fetchTeamProofsPaginated = async (
   teamId: string,
@@ -319,6 +319,15 @@ interface ProofData {
   proof_status: string
   block_number: number
   team_id: string
+  cluster_version?: {
+    is_active: boolean
+    vk_path: string | null
+    zkvm_version: {
+      zkvm: {
+        slug: string
+      }
+    }
+  } | null
 }
 
 /**
@@ -333,6 +342,25 @@ export async function getProofData(proofId: string): Promise<ProofData> {
       proof_status: true,
       block_number: true,
       team_id: true,
+    },
+    with: {
+      cluster_version: {
+        columns: {
+          is_active: true,
+          vk_path: true,
+        },
+        with: {
+          zkvm_version: {
+            with: {
+              zkvm: {
+                columns: {
+                  slug: true,
+                },
+              },
+            },
+          },
+        },
+      },
     },
   })
 

@@ -75,7 +75,7 @@ export const POST = async (request: NextRequest) => {
 
     return new Response(
       JSON.stringify({
-        message: "Verification key uploaded and linked successfully",
+        message: "Verification key uploaded",
         path: result.path,
         version_id: versionId,
         filename: generatedFilename,

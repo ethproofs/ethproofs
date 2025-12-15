@@ -1,7 +1,7 @@
-import { canVerifyProofs } from "@/lib/api/proof-verification"
 import { downloadBinaryForProofId, getProofData } from "@/lib/api/proofs"
 import { verifyProofServer } from "@/lib/server/verify-service"
 import { getCachedVk } from "@/lib/server/vk-cache"
+import { isVerifiableZkvm } from "@/lib/zkvm-verifiers"
 
 function sendSseEvent(
   encoder: TextEncoder,
@@ -37,11 +37,39 @@ function createVerificationStream(proofId: number, proofIdStr: string) {
             return
           }
 
-          // Check if we can verify proofs from this cluster
-          if (!(await canVerifyProofs(proofData.cluster_id))) {
+          // Check if proof's cluster_version is active and has necessary data
+          if (!proofData.cluster_version) {
             sendSseEvent(encoder, controller, "complete", {
               isValid: null,
-              error: `Cannot verify proofs from cluster ${proofData.cluster_id}`,
+              error: `Proof cluster version not found`,
+            })
+            controller.close()
+            return
+          }
+
+          if (!proofData.cluster_version.is_active) {
+            sendSseEvent(encoder, controller, "complete", {
+              isValid: null,
+              error: `Proof's cluster version is no longer active (verification disabled)`,
+            })
+            controller.close()
+            return
+          }
+
+          if (!proofData.cluster_version.vk_path) {
+            sendSseEvent(encoder, controller, "complete", {
+              isValid: null,
+              error: `Verification key not available for this proof`,
+            })
+            controller.close()
+            return
+          }
+
+          const zkvmSlug = proofData.cluster_version.zkvm_version.zkvm.slug
+          if (!isVerifiableZkvm(zkvmSlug)) {
+            sendSseEvent(encoder, controller, "complete", {
+              isValid: null,
+              error: `Unsupported zkVM: ${zkvmSlug}`,
             })
             controller.close()
             return
@@ -72,11 +100,7 @@ function createVerificationStream(proofId: number, proofIdStr: string) {
 
           // Send verifying status
           sendSseEvent(encoder, controller, "verifying")
-          const result = await verifyProofServer(
-            proofData.cluster_id,
-            proofBytes,
-            vkBytes
-          )
+          const result = await verifyProofServer(zkvmSlug, proofBytes, vkBytes)
 
           // Send result
           sendSseEvent(encoder, controller, "complete", {
