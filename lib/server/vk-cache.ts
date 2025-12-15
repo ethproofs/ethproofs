@@ -44,13 +44,20 @@ async function downloadVkForCluster(
   clusterId: string
 ): Promise<Uint8Array> {
   try {
-    // Get the proof's team to construct the filename
     const proofRow = await db.query.proofs.findFirst({
       columns: {
         cluster_id: true,
+        cluster_version_id: true,
         team_id: true,
       },
       where: (proofs, { eq }) => eq(proofs.proof_id, proofId),
+      with: {
+        cluster_version: {
+          columns: {
+            index: true,
+          },
+        },
+      },
     })
 
     if (!proofRow) {
@@ -61,7 +68,8 @@ async function downloadVkForCluster(
     const teamSlug = team?.slug
       ? team.slug
       : (team?.name?.toLowerCase() ?? "unknown")
-    const filename = `${teamSlug}_${proofRow.cluster_id}.bin`
+    const versionIndex = proofRow.cluster_version?.index ?? 0
+    const filename = `${teamSlug}_${proofRow.cluster_id}_${versionIndex}.bin`
 
     const blob = await downloadVerificationKey(filename)
 

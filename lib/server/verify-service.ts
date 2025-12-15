@@ -1,4 +1,4 @@
-import { getProofVerificationInfo } from "@/lib/api/proof-verification"
+import { type VerifiableZkvmSlug } from "@/lib/zkvm-verifiers"
 
 export interface VerificationResult {
   isValid: boolean
@@ -52,20 +52,12 @@ async function loadWasmModule(name: string): Promise<unknown> {
 }
 
 export async function verifyProofServer(
-  clusterId: string,
+  zkvmSlug: VerifiableZkvmSlug,
   proofBytes: Uint8Array,
   vkBytes: Uint8Array
 ): Promise<VerificationResult> {
   try {
-    const verificationInfo = await getProofVerificationInfo(clusterId)
-    if (!verificationInfo) {
-      return {
-        isValid: false,
-        error: `Cannot verify proofs from cluster ${clusterId} (missing vk_path or unsupported zkvm)`,
-      }
-    }
-
-    const loadedModule = await loadWasmModule(verificationInfo.zkvmSlug)
+    const loadedModule = await loadWasmModule(zkvmSlug)
 
     let result: VerificationResult
 
@@ -75,19 +67,19 @@ export async function verifyProofServer(
     // Start timing just before verification
     const startTime = performance.now()
 
-    if (verificationInfo.zkvmSlug === "pico") {
+    if (zkvmSlug === "pico") {
       const verified = verifier.verify_stark("PicoPrism", proofBytes, vkBytes)
       result = { isValid: verified }
-    } else if (verificationInfo.zkvmSlug === "sp1-hypercube") {
+    } else if (zkvmSlug === "sp1-hypercube") {
       const verified = verifier.verify_stark(proofBytes, vkBytes)
       result = { isValid: verified }
-    } else if (verificationInfo.zkvmSlug === "ziren") {
+    } else if (zkvmSlug === "ziren") {
       const verified = verifier.verify_stark(proofBytes, vkBytes)
       result = { isValid: verified }
-    } else if (verificationInfo.zkvmSlug === "zisk") {
+    } else if (zkvmSlug === "zisk") {
       const verified = verifier.verify_stark(proofBytes, vkBytes)
       result = { isValid: verified }
-    } else if (verificationInfo.zkvmSlug === "openvm") {
+    } else if (zkvmSlug === "openvm") {
       const verified = verifier.verify_stark(proofBytes, vkBytes)
       result = { isValid: verified }
     } else {
