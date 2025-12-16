@@ -67,6 +67,9 @@ export const proofsPaths: ZodOpenApiPathsObject = {
             },
           },
         },
+        "401": {
+          description: "Invalid API key",
+        },
         "404": {
           description: "Proof not found",
         },
@@ -74,6 +77,7 @@ export const proofsPaths: ZodOpenApiPathsObject = {
           description: "Internal server error",
         },
       },
+      security: [{ apikey: [] }],
     },
   },
   "/proofs/download/block/{block}": {
@@ -191,6 +195,9 @@ export const proofsPaths: ZodOpenApiPathsObject = {
         "400": {
           description: "Invalid query parameters",
         },
+        "401": {
+          description: "Invalid API key",
+        },
         "422": {
           description: "Validation error",
           content: {
@@ -209,6 +216,7 @@ export const proofsPaths: ZodOpenApiPathsObject = {
           description: "Internal server error",
         },
       },
+      security: [{ apikey: [] }],
     },
   },
   "/proofs/queued": {

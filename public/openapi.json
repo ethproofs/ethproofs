@@ -912,6 +912,11 @@
         ],
         "summary": "Download proof",
         "description": "Download a single proved proof by its proof ID.",
+        "security": [
+          {
+            "apikey": []
+          }
+        ],
         "parameters": [
           {
             "name": "id",
@@ -936,6 +941,9 @@
                 }
               }
             }
+          },
+          "401": {
+            "description": "Invalid API key"
           },
           "404": {
             "description": "Proof not found"
@@ -994,6 +1002,11 @@
         ],
         "summary": "List proofs",
         "description": "Retrieve a filtered and paginated list of proofs.",
+        "security": [
+          {
+            "apikey": []
+          }
+        ],
         "parameters": [
           {
             "name": "block",
@@ -1419,6 +1432,9 @@
           },
           "400": {
             "description": "Invalid query parameters"
+          },
+          "401": {
+            "description": "Invalid API key"
           },
           "422": {
             "description": "Validation error",
