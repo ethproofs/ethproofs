@@ -5,6 +5,7 @@ export const ziskVerifiableProvers = {
     "817bbf03-07b4-466d-879b-e476322bd080",
     "534e6cf4-3dfe-47de-bba2-a0b11d544557",
     "884fcc21-d522-4b4a-b535-7cfde199485c", // ZkCloud
+    "03947099-51f5-4a52-9c90-8561a84f41fb", // LambdaClass,
   ],
 } as const
 
