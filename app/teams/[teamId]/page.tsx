@@ -198,7 +198,7 @@ export default async function TeamDetailsPage({
             </CardContent>
           </Card>
           <Card className="!space-y-0">
-            <CardHeader className="">1x4090 performance</CardHeader>
+            <CardHeader className="">single-GPU performance</CardHeader>
             <CardContent>
               <KPIs items={singleMachineSummary} layout="flipped" />
             </CardContent>

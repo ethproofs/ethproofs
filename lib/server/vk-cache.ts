@@ -2,7 +2,7 @@ import { db } from "@/db"
 import { getTeam } from "@/lib/api/teams"
 import { downloadVerificationKey } from "@/lib/api/verification-keys"
 
-// Server-side vk cache - keyed by clusterId to reuse across proofs
+// Server-side vk cache - keyed by clusterId and versionIndex to reuse across proofs
 const vkCache: Map<string, Uint8Array> = new Map()
 
 // Track in-flight downloads to prevent redundant network calls
@@ -12,52 +12,54 @@ const vkDownloadInProgress: Map<string, Promise<Uint8Array>> = new Map()
 const MAX_VK_CACHE_ENTRIES = 100 // Maximum number of VK entries to cache
 const MAX_VK_CACHE_BYTES = 500 * 1024 * 1024 // 500MB limit
 
+// Helper function to create a unique cache key
+function getCacheKey(clusterId: string, versionIndex: number): string {
+  return `${clusterId}_${versionIndex}`
+}
+
 export async function getCachedVk(
   proofId: number,
-  clusterId: string
+  clusterId: string,
+  versionIndex: number
 ): Promise<Uint8Array> {
-  // Check if we have this vk cached by cluster
-  if (vkCache.has(clusterId)) {
-    return vkCache.get(clusterId)!
+  const cacheKey = getCacheKey(clusterId, versionIndex)
+
+  // Check if we have this vk cached
+  if (vkCache.has(cacheKey)) {
+    return vkCache.get(cacheKey)!
   }
 
-  // Check if a download is already in progress for this cluster
-  if (vkDownloadInProgress.has(clusterId)) {
-    return vkDownloadInProgress.get(clusterId)!
+  // Check if a download is already in progress for this cluster version
+  if (vkDownloadInProgress.has(cacheKey)) {
+    return vkDownloadInProgress.get(cacheKey)!
   }
 
   // Start a new download
-  const downloadPromise = downloadVkForCluster(proofId, clusterId).finally(
-    () => {
-      // Clean up the in-progress tracker when done
-      vkDownloadInProgress.delete(clusterId)
-    }
-  )
+  const downloadPromise = downloadVkForCluster(
+    proofId,
+    clusterId,
+    versionIndex
+  ).finally(() => {
+    // Clean up the in-progress tracker when done
+    vkDownloadInProgress.delete(cacheKey)
+  })
 
-  vkDownloadInProgress.set(clusterId, downloadPromise)
+  vkDownloadInProgress.set(cacheKey, downloadPromise)
 
   return downloadPromise
 }
 
 async function downloadVkForCluster(
   proofId: number,
-  clusterId: string
+  clusterId: string,
+  versionIndex: number
 ): Promise<Uint8Array> {
   try {
     const proofRow = await db.query.proofs.findFirst({
       columns: {
-        cluster_id: true,
-        cluster_version_id: true,
         team_id: true,
       },
       where: (proofs, { eq }) => eq(proofs.proof_id, proofId),
-      with: {
-        cluster_version: {
-          columns: {
-            index: true,
-          },
-        },
-      },
     })
 
     if (!proofRow) {
@@ -68,8 +70,7 @@ async function downloadVkForCluster(
     const teamSlug = team?.slug
       ? team.slug
       : (team?.name?.toLowerCase() ?? "unknown")
-    const versionIndex = proofRow.cluster_version?.index ?? 0
-    const filename = `${teamSlug}_${proofRow.cluster_id}_${versionIndex}.bin`
+    const filename = `${teamSlug}_${clusterId}_${versionIndex}.bin`
 
     const blob = await downloadVerificationKey(filename)
 
@@ -80,20 +81,24 @@ async function downloadVkForCluster(
     const buffer = await blob.arrayBuffer()
     const vkBytes = new Uint8Array(buffer)
 
-    // Cache it by cluster for future use, enforcing cache limits
-    addToCache(clusterId, vkBytes)
+    // Cache it by cluster and version for future use, enforcing cache limits
+    const cacheKey = getCacheKey(clusterId, versionIndex)
+    addToCache(cacheKey, vkBytes)
 
     return vkBytes
   } catch (err) {
-    console.error(`Failed to get vk for cluster ${clusterId}:`, err)
+    console.error(
+      `Failed to get vk for cluster ${clusterId} version ${versionIndex}:`,
+      err
+    )
     throw err
   }
 }
 
-function addToCache(clusterId: string, vkBytes: Uint8Array) {
+function addToCache(cacheKey: string, vkBytes: Uint8Array) {
   // If entry already exists, remove it first to update position (LRU)
-  if (vkCache.has(clusterId)) {
-    vkCache.delete(clusterId)
+  if (vkCache.has(cacheKey)) {
+    vkCache.delete(cacheKey)
   }
 
   // Enforce entry count limit
@@ -116,7 +121,7 @@ function addToCache(clusterId: string, vkBytes: Uint8Array) {
     }
   }
 
-  vkCache.set(clusterId, vkBytes)
+  vkCache.set(cacheKey, vkBytes)
 }
 
 export function clearVkCache() {

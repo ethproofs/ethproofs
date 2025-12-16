@@ -212,7 +212,7 @@ export default async function BlockDetailsPage({
           <Separator />
           <CardContent className="p-6">
             <div className="text-center text-sm text-primary sm:text-start">
-              1x4090 performance
+              single-GPU performance
             </div>
             <div className="grid grid-cols-1 place-items-center gap-x-8 text-center sm:grid-cols-2 sm:place-items-start sm:text-start lg:grid-cols-4 xl:grid-cols-2">
               {singleMachineMetrics.map(
@@ -267,7 +267,7 @@ export default async function BlockDetailsPage({
           <Separator />
           <CardContent className="p-6">
             <div className="text-center text-sm text-primary sm:text-start">
-              1x4090 performance
+              single-GPU performance
             </div>
             <div className="grid grid-cols-1 place-items-center gap-x-8 text-center sm:grid-cols-2 sm:place-items-start sm:text-start lg:grid-cols-4 xl:grid-cols-2">
               {singleMachineBlockFeeMetrics.map(
