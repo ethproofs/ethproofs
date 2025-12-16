@@ -119,7 +119,9 @@ export default async function ClusterDetailsPage({
         <h1 className="text-4xl font-semibold">{cluster.nickname}</h1>
 
         <div className="text-center font-sans text-sm">
-          {cluster.is_multi_machine ? "multi-GPU cluster" : "1x4090 cluster"}
+          {cluster.is_multi_machine
+            ? "multi-GPU cluster"
+            : "single-GPU cluster"}
         </div>
         {team && (
           <DisplayTeam

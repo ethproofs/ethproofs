@@ -83,9 +83,11 @@ function createVerificationStream(proofId: number, proofIdStr: string) {
           const proofBytes = new Uint8Array(arrayBuffer)
           let vkBytes: Uint8Array | null = null
           try {
+            const versionIndex = proofData.cluster_version.index ?? 0
             vkBytes = await getCachedVk(
               proofData.proof_id,
-              proofData.cluster_id
+              proofData.cluster_id,
+              versionIndex
             )
           } catch (err) {
             const errorMsg =

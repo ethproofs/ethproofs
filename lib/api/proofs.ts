@@ -322,6 +322,7 @@ interface ProofData {
   cluster_version?: {
     is_active: boolean
     vk_path: string | null
+    index: number
     zkvm_version: {
       zkvm: {
         slug: string
@@ -348,6 +349,7 @@ export async function getProofData(proofId: string): Promise<ProofData> {
         columns: {
           is_active: true,
           vk_path: true,
+          index: true,
         },
         with: {
           zkvm_version: {

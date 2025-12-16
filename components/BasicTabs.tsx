@@ -17,7 +17,7 @@ export function BasicTabs({
   contentLeft,
   contentLeftTitle = "multi-GPU",
   contentRight,
-  contentRightTitle = "1x 4090",
+  contentRightTitle = "single-GPU",
   defaultTab = "left",
 }: BasicTabsProps) {
   return (
