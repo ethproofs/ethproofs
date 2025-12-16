@@ -1,11 +1,7 @@
 import { z } from "zod"
 import { ZodOpenApiPathsObject } from "zod-openapi"
 
-import {
-  activeClusterIdSchema,
-  clusterSchema,
-  createClusterSchema,
-} from "../zod/schemas/cluster"
+import { clusterSchema, createClusterSchema } from "../zod/schemas/cluster"
 
 export const clustersPaths: ZodOpenApiPathsObject = {
   "/clusters": {
@@ -55,48 +51,6 @@ export const clustersPaths: ZodOpenApiPathsObject = {
         },
         "401": {
           description: "Invalid API key",
-        },
-        "500": {
-          description: "Internal server error",
-        },
-      },
-      security: [{ apikey: [] }],
-    },
-  },
-  "/clusters/active": {
-    get: {
-      tags: ["Clusters"],
-      summary: "List active clusters for a team",
-      parameters: [
-        {
-          name: "team_id",
-          in: "query",
-          required: true,
-          description: "The UUID of the team",
-          schema: {
-            type: "string",
-            format: "uuid",
-          },
-          example: "550e8400-e29b-41d4-a716-446655440000",
-        },
-      ],
-      responses: {
-        "200": {
-          description: "Active cluster IDs list",
-          content: {
-            "application/json": {
-              schema: z.array(activeClusterIdSchema),
-            },
-          },
-        },
-        "401": {
-          description: "Invalid API key",
-        },
-        "403": {
-          description: "Admin mode required",
-        },
-        "422": {
-          description: "Invalid query parameters",
         },
         "500": {
           description: "Internal server error",
