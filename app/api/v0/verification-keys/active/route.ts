@@ -1,8 +1,8 @@
 import { db } from "@/db"
 import { downloadVerificationKey } from "@/lib/api/verification-keys"
-import { withAuthAndRateLimit } from "@/lib/middleware/with-rate-limit"
+import { withRateLimit } from "@/lib/middleware/with-rate-limit"
 
-export const GET = withAuthAndRateLimit(
+export const GET = withRateLimit(
   async () => {
     try {
       // Query all active cluster versions with their vk paths
