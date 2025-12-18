@@ -22,7 +22,7 @@ export default async function BlogPage() {
 
   return (
     <div className="mx-auto mt-2 flex max-w-screen-xl flex-1 flex-col px-6">
-      <div className="mb-8">
+      <div className="mb-4">
         <span className="text-2xl">blog</span>
       </div>
 

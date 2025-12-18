@@ -14,7 +14,7 @@ export const GET = withRateLimit(
             columns: {
               id: true,
               index: true,
-              nickname: true,
+              is_multi_machine: true,
             },
             with: {
               team: {
@@ -52,6 +52,11 @@ export const GET = withRateLimit(
       const results = await Promise.all(
         activeClusterVersions.map(async (version) => {
           if (!version.vk_path) {
+            return null
+          }
+
+          // Filter to only multi-machine clusters
+          if (!version.cluster.is_multi_machine) {
             return null
           }
 
