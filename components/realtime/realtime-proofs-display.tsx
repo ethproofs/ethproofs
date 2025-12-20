@@ -66,7 +66,7 @@ export function RealtimeProofsDisplay() {
   return (
     <div className="w-full space-y-4">
       <div className="flex items-center">
-        <EthproofsIcon className="h-12 w-12" />
+        <EthproofsIcon className="size-8" />
         <span className="text-xl">realtime proofs</span>
       </div>
       <AnimatePresence mode="popLayout">

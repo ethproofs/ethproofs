@@ -1,12 +1,6 @@
 import Link from "next/link"
 
-import {
-  Card,
-  CardContent,
-  CardDescription,
-  CardHeader,
-  CardTitle,
-} from "./ui/card"
+import { Card, CardContent, CardHeader, CardTitle } from "./ui/card"
 
 import { getActiveClusters } from "@/lib/api/clusters"
 import { getRecentSummary } from "@/lib/api/stats"
@@ -37,14 +31,12 @@ export async function MetricCards() {
     },
     {
       title: "avg proving time",
-      subtitle: "median",
       value: prettyMs(Number(recentSummary.avg_proving_time ?? 0)),
       subValue: prettyMs(Number(recentSummary.median_proving_time ?? 0)),
       href: "/metrics",
     },
     {
       title: "avg cost per proof",
-      subtitle: "median",
       value: formatUsd(Number(recentSummary.avg_cost_per_proof ?? 0)),
       subValue: formatUsd(Number(recentSummary.median_cost_per_proof ?? 0)),
       href: "/metrics",
@@ -59,17 +51,12 @@ export async function MetricCards() {
           className={`min-w-0 ${index >= cards.length - 2 ? "col-span-3" : "col-span-2"} xl:col-span-1`}
         >
           <Card className="flex h-full min-w-0 cursor-pointer flex-col bg-secondary/60 transition-colors hover:bg-secondary">
-            <CardHeader className="p-3 md:p-4 lg:p-6">
+            <CardHeader className="pb-2">
               <CardTitle className="overflow-hidden text-ellipsis text-base text-primary md:text-base lg:text-lg">
                 {card.title}
               </CardTitle>
-              {card.subtitle && (
-                <CardDescription className="mt-0.5 text-xs md:mt-0 md:text-xs">
-                  {card.subtitle} {card.subValue}
-                </CardDescription>
-              )}
             </CardHeader>
-            <CardContent className="flex flex-1 items-end overflow-hidden break-words px-3 pb-3 pt-1.5 text-2xl font-bold md:px-4 md:pb-4 md:pt-2 md:text-xl lg:px-6 lg:pb-6 lg:pt-3 lg:text-3xl">
+            <CardContent className="flex flex-1 items-end overflow-hidden break-words text-xl font-bold md:text-lg lg:text-2xl">
               {card.value}
             </CardContent>
           </Card>
