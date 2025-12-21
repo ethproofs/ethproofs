@@ -1,4 +1,4 @@
-import { Heart } from "lucide-react"
+import { Heart, Sigma } from "lucide-react"
 
 import { ClientOnlyWrapper } from "@/components/ClientOnlyWrapper"
 import { BlockSearch } from "@/components/header/BlockSearch"

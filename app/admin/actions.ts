@@ -37,7 +37,7 @@ export async function login(_prevState: unknown, formData: FormData) {
 
   const supabase = await createClient()
 
-  const { error } = await supabase.auth.signInWithPassword({
+  const { data, error } = await supabase.auth.signInWithPassword({
     email,
     password,
   })
@@ -50,8 +50,48 @@ export async function login(_prevState: unknown, formData: FormData) {
     }
   }
 
-  revalidatePath("/admin", "layout")
-  redirect("/admin")
+  // Check if the team is approved and get team data
+  if (data.user) {
+    // Check if user is an admin
+    if (data.user.role === API_KEY_MANAGER_ROLE) {
+      // Admin: redirect to admin panel
+      revalidatePath("/admin", "layout")
+      redirect("/admin")
+    }
+
+    const teamData = await db
+      .select()
+      .from(teams)
+      .where(eq(teams.id, data.user.id))
+
+    if (teamData.length === 0) {
+      // No team found for this user
+      await supabase.auth.signOut()
+      return {
+        errors: {
+          email: ["team not found"],
+        },
+      }
+    }
+
+    if (!teamData[0].approved) {
+      // Sign out the user since they're not approved yet
+      await supabase.auth.signOut()
+
+      return {
+        errors: {
+          email: ["your account is pending approval"],
+        },
+      }
+    }
+
+    revalidatePath("/teams", "layout")
+    redirect(`/teams/${teamData[0].slug}`)
+  }
+
+  // Fallback redirect (shouldn't reach here)
+  revalidatePath("/teams", "layout")
+  redirect("/teams")
 }
 
 export async function signOut() {
@@ -158,10 +198,12 @@ export async function createUser(_prevState: unknown, formData: FormData) {
       .update(teams)
       .set({
         name: name,
+        slug: name.toLowerCase().replace(/\s+/g, "-"),
         website_url: website,
         github_org,
         twitter_handle,
         logo_url: logoUrl,
+        approved: true, // Auto-approve admin-created users
       })
       .where(eq(teams.id, data.user.id))
 
@@ -177,6 +219,120 @@ export async function createUser(_prevState: unknown, formData: FormData) {
     return {
       errors: {
         email: ["Internal server error"],
+      },
+    }
+  }
+}
+
+const teamApprovalSchema = z.object({
+  teamId: z.string().uuid(),
+})
+
+export async function approveTeam(_prevState: unknown, formData: FormData) {
+  const validatedFields = teamApprovalSchema.safeParse({
+    teamId: formData.get("teamId"),
+  })
+
+  if (!validatedFields.success) {
+    return {
+      errors: validatedFields.error.flatten().fieldErrors,
+    }
+  }
+
+  const { teamId } = validatedFields.data
+
+  try {
+    const supabase = await createClient()
+
+    const {
+      data: { user },
+    } = await supabase.auth.getUser()
+
+    if (user?.role !== API_KEY_MANAGER_ROLE) {
+      return {
+        errors: {
+          teamId: ["Unauthorized"],
+        },
+      }
+    }
+
+    // Update the team to approved
+    await db.update(teams).set({ approved: true }).where(eq(teams.id, teamId))
+
+    // Auto-generate an API key for the newly approved team
+    const apikey = nanoid(24)
+    const hashedKey = await hashToken(apikey)
+
+    await db.insert(apiAuthTokens).values({
+      token: hashedKey,
+      mode: "write",
+      team_id: teamId,
+    })
+
+    return {
+      data: { success: true, apikey },
+    }
+  } catch (error) {
+    console.error("error approving team", error)
+
+    return {
+      errors: {
+        teamId: ["Internal server error"],
+      },
+    }
+  }
+}
+
+export async function rejectTeam(_prevState: unknown, formData: FormData) {
+  const validatedFields = teamApprovalSchema.safeParse({
+    teamId: formData.get("teamId"),
+  })
+
+  if (!validatedFields.success) {
+    return {
+      errors: validatedFields.error.flatten().fieldErrors,
+    }
+  }
+
+  const { teamId } = validatedFields.data
+
+  try {
+    const supabase = await createClient()
+
+    const {
+      data: { user },
+    } = await supabase.auth.getUser()
+
+    if (user?.role !== API_KEY_MANAGER_ROLE) {
+      return {
+        errors: {
+          teamId: ["Unauthorized"],
+        },
+      }
+    }
+
+    // Delete the team and associated auth user
+    // Note: This will cascade delete due to foreign key constraints
+    await db.delete(teams).where(eq(teams.id, teamId))
+
+    // Also delete from Supabase Auth
+    const { error } = await supabase.auth.admin.deleteUser(teamId)
+
+    if (error) {
+      console.error("error deleting user from auth", error)
+    }
+
+    revalidatePath("/admin", "page")
+
+    return {
+      data: { success: true },
+    }
+  } catch (error) {
+    console.error("error rejecting team", error)
+
+    return {
+      errors: {
+        teamId: ["Internal server error"],
       },
     }
   }

@@ -39,7 +39,7 @@ const CopyButton = ({ message, className }: CopyButtonProps) => {
           </Button>
         </TooltipTrigger>
         <TooltipContent>
-          <p>Copied!</p>
+          <p>copied!</p>
         </TooltipContent>
       </Tooltip>
     </TooltipProvider>

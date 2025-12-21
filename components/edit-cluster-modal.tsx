@@ -1,12 +1,20 @@
 "use client"
 
 import { useState } from "react"
-import { useRouter } from "next/navigation"
-import Link from "next/link"
 import { Loader2 } from "lucide-react"
+import Link from "next/link"
+import { useRouter } from "next/navigation"
 
-import type { ClusterBase, CloudInstanceBase, CloudProvider, ZkvmVersion, MachineBase } from "@/lib/types"
-import { updateCluster } from "@/app/clusters/[clusterId]/actions"
+import type {
+  CloudInstanceBase,
+  CloudProvider,
+  ClusterBase,
+  MachineBase,
+  ZkvmVersion,
+} from "@/lib/types"
+
+import { Button } from "@/components/ui/button"
+import { Card } from "@/components/ui/card"
 import {
   Dialog,
   DialogContent,
@@ -16,9 +24,9 @@ import {
   DialogTitle,
   DialogTrigger,
 } from "@/components/ui/dialog"
-import { Button } from "@/components/ui/button"
 import { Input } from "@/components/ui/input"
-import { Card } from "@/components/ui/card"
+
+import { updateCluster } from "@/app/clusters/[clusterId]/actions"
 
 interface EditClusterModalProps {
   cluster: ClusterBase & {
@@ -95,18 +103,14 @@ export function EditClusterModal({
     })),
   })
 
-  const handleChange = (field: string, value: any) => {
+  const handleChange = (field: string, value: unknown) => {
     setFormData((prev) => ({
       ...prev,
       [field]: value,
     }))
   }
 
-  const handleConfigChange = (
-    index: number,
-    field: string,
-    value: any
-  ) => {
+  const handleConfigChange = (index: number, field: string, value: unknown) => {
     setFormData((prev) => ({
       ...prev,
       configuration: prev.configuration.map((config, i) =>
@@ -146,14 +150,15 @@ export function EditClusterModal({
         <DialogHeader>
           <DialogTitle>Edit Cluster Configuration</DialogTitle>
           <DialogDescription>
-            Update your cluster settings. Configuration changes will create a new version.
+            Update your cluster settings. Configuration changes will create a
+            new version.
           </DialogDescription>
         </DialogHeader>
 
         <form onSubmit={handleSubmit} className="space-y-6">
           {/* Current Versions Info */}
           <Card className="bg-background-accent p-4">
-            <div className="text-sm space-y-2">
+            <div className="space-y-2 text-sm">
               <div>
                 <span className="font-medium">Current Cluster Version:</span>{" "}
                 <span className="text-primary">{lastVersion.version}</span>
@@ -161,8 +166,15 @@ export function EditClusterModal({
               <div>
                 <span className="font-medium">Current ZkVM Version:</span>{" "}
                 <span className="text-primary">
-                  {zkvmVersions.find((v) => v.id === formData.zkvm_version_id)?.zkvm?.name} v
-                  {zkvmVersions.find((v) => v.id === formData.zkvm_version_id)?.version}
+                  {
+                    zkvmVersions.find((v) => v.id === formData.zkvm_version_id)
+                      ?.zkvm?.name
+                  }{" "}
+                  v
+                  {
+                    zkvmVersions.find((v) => v.id === formData.zkvm_version_id)
+                      ?.version
+                  }
                 </span>
               </div>
             </div>
@@ -173,9 +185,7 @@ export function EditClusterModal({
             <h3 className="text-sm font-semibold">Basic Information</h3>
 
             <div>
-              <label className="block text-sm font-medium mb-1">
-                Nickname
-              </label>
+              <label className="mb-1 block text-sm font-medium">Nickname</label>
               <Input
                 value={formData.nickname}
                 onChange={(e) => handleChange("nickname", e.target.value)}
@@ -185,7 +195,7 @@ export function EditClusterModal({
             </div>
 
             <div>
-              <label className="block text-sm font-medium mb-1">
+              <label className="mb-1 block text-sm font-medium">
                 Description
               </label>
               <Input
@@ -198,7 +208,7 @@ export function EditClusterModal({
 
             <div className="grid grid-cols-2 gap-4">
               <div>
-                <label className="block text-sm font-medium mb-1">
+                <label className="mb-1 block text-sm font-medium">
                   Cycle Type
                 </label>
                 <Input
@@ -210,7 +220,7 @@ export function EditClusterModal({
               </div>
 
               <div>
-                <label className="block text-sm font-medium mb-1">
+                <label className="mb-1 block text-sm font-medium">
                   Proof Type
                 </label>
                 <Input
@@ -227,10 +237,12 @@ export function EditClusterModal({
           <div className="space-y-4">
             <h3 className="text-sm font-semibold">ZkVM Version</h3>
             <p className="text-xs text-body-secondary">
-              You can only upgrade to newer versions of the current zkVM. Switching to a different zkVM is not supported via cluster updates.
+              You can only upgrade to newer versions of the current zkVM.
+              Switching to a different zkVM is not supported via cluster
+              updates.
             </p>
             <div>
-              <label className="block text-sm font-medium mb-1">
+              <label className="mb-1 block text-sm font-medium">
                 Select Version
               </label>
               <select
@@ -258,12 +270,12 @@ export function EditClusterModal({
           <div className="space-y-4">
             <h3 className="text-sm font-semibold">Hardware Configuration</h3>
             {formData.configuration.map((config, index) => (
-              <Card key={index} className="p-4 space-y-3">
+              <Card key={index} className="space-y-3 p-4">
                 <div className="text-sm font-medium">Machine {index + 1}</div>
 
                 <div className="grid grid-cols-2 gap-4">
                   <div>
-                    <label className="block text-xs font-medium mb-1">
+                    <label className="mb-1 block text-xs font-medium">
                       Machine Count
                     </label>
                     <Input
@@ -281,7 +293,7 @@ export function EditClusterModal({
                   </div>
 
                   <div>
-                    <label className="block text-xs font-medium mb-1">
+                    <label className="mb-1 block text-xs font-medium">
                       Cloud Instance
                     </label>
                     <select
@@ -308,7 +320,7 @@ export function EditClusterModal({
                 </div>
 
                 <div>
-                  <label className="block text-xs font-medium mb-1">
+                  <label className="mb-1 block text-xs font-medium">
                     Cloud Instance Count
                   </label>
                   <Input
@@ -328,11 +340,12 @@ export function EditClusterModal({
                 <div className="space-y-2 rounded bg-background-accent p-2 text-xs">
                   <div>CPU: {config.machine.cpu_cores} cores</div>
                   {config.machine.gpu_count && (
-                    <div>GPU: {config.machine.gpu_count} {config.machine.gpu_models?.[0]}</div>
+                    <div>
+                      GPU: {config.machine.gpu_count}{" "}
+                      {config.machine.gpu_models?.[0]}
+                    </div>
                   )}
-                  <div>
-                    Memory: {config.machine.memory_size_gb[0]} GB
-                  </div>
+                  <div>Memory: {config.machine.memory_size_gb[0]} GB</div>
                 </div>
               </Card>
             ))}
