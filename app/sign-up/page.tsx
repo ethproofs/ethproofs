@@ -1,16 +1,16 @@
 import Link from "next/link"
 import { redirect } from "next/navigation"
 
-import { SignInForm } from "@/components/forms/sign-in-form"
+import { SignUpForm } from "@/components/forms/sign-up-form"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 
 import { createClient } from "@/utils/supabase/server"
 
 export const metadata = {
-  title: "Team Login",
+  title: "Team Sign Up",
 }
 
-export default async function LoginPage() {
+export default async function SignUpPage() {
   const supabase = await createClient()
   const {
     data: { user },
@@ -25,14 +25,14 @@ export default async function LoginPage() {
       <div className="flex justify-center">
         <Card className="flex min-w-96 flex-col gap-4">
           <CardHeader>
-            <CardTitle>sign in</CardTitle>
+            <CardTitle>sign up</CardTitle>
           </CardHeader>
           <CardContent className="flex flex-col gap-4">
-            <SignInForm />
+            <SignUpForm />
             <div className="text-center text-sm text-muted-foreground">
-              don&apos;t have an account?{" "}
-              <Link href="/sign-up" className="underline hover:text-foreground">
-                sign up
+              already have an account?{" "}
+              <Link href="/sign-in" className="underline hover:text-foreground">
+                sign in
               </Link>
             </div>
           </CardContent>

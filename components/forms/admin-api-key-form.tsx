@@ -5,7 +5,6 @@ import { useFormState } from "react-dom"
 import type { Team } from "@/lib/types"
 
 import CopyButton from "../CopyButton"
-import { SignOutButton } from "../sign-out-button"
 import {
   Select,
   SelectContent,
@@ -47,7 +46,6 @@ export function AdminApiKeyForm({ teams }: { teams: Team[] }) {
 
       <Errors errors={state.errors ?? {}} />
       <SubmitButton>generate</SubmitButton>
-      <SignOutButton />
 
       {state.data && (
         <div className="flex flex-col gap-2">

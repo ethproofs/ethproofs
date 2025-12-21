@@ -384,6 +384,7 @@ export const teams = pgTable(
     twitter_handle: text("twitter_handle"),
     website_url: text("website_url"),
     storage_quota_bytes: bigint("storage_quota_bytes", { mode: "number" }),
+    approved: boolean("approved").notNull().default(false),
     created_at: timestamp("created_at", {
       withTimezone: true,
       mode: "string",
