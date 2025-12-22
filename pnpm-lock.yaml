@@ -33,8 +33,8 @@ importers:
         specifier: ^0.1.8
         version: 0.1.8
       '@ethproofs/zisk-wasm-stark-verifier':
-        specifier: ^0.1.1
-        version: 0.1.1
+        specifier: ^0.1.2
+        version: 0.1.2
       '@radix-ui/react-accordion':
         specifier: 1.2.10
         version: 1.2.10(@types/react-dom@19.1.7(@types/react@19.1.10))(@types/react@19.1.10)(react-dom@19.1.2(react@19.1.2))(react@19.1.2)
@@ -1487,8 +1487,8 @@ packages:
     resolution: {integrity: sha512-CEb5KmCuEnOOovqElM+mtIiK3zKj1PtQk4HTS7vbTak00/6US1mE94DYaKQQDXU6BHp5Oi4JL6vrGrCHiYSEiQ==}
     engines: {node: '>=16.0.0'}
 
-  '@ethproofs/zisk-wasm-stark-verifier@0.1.1':
-    resolution: {integrity: sha512-RcNoTzqEf7nPA8wLAhrkbe06nkZWsOZvb6A5aQG5Q4LKgxLrkueG4GRhabGtM3vxLFbex+jHl8d6Nzzvbu0Xsg==}
+  '@ethproofs/zisk-wasm-stark-verifier@0.1.2':
+    resolution: {integrity: sha512-Sl3D9//njo9109PKyxji+3r7N49e+/3YrZxDFSMHXGCRzOaAPkiUb4l+VSWycUuEG/T/J969lZb0qMKHy+Kb0Q==}
     engines: {node: '>=16.0.0'}
 
   '@faker-js/faker@8.4.1':
@@ -8877,7 +8877,7 @@ snapshots:
 
   '@ethproofs/ziren-wasm-stark-verifier@0.1.8': {}
 
-  '@ethproofs/zisk-wasm-stark-verifier@0.1.1': {}
+  '@ethproofs/zisk-wasm-stark-verifier@0.1.2': {}
 
   '@faker-js/faker@8.4.1': {}
 
