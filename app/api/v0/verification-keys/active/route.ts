@@ -14,7 +14,7 @@ export const GET = withRateLimit(
             columns: {
               id: true,
               index: true,
-              is_multi_machine: true,
+              is_multi_gpu: true,
             },
             with: {
               team: {
@@ -56,7 +56,7 @@ export const GET = withRateLimit(
           }
 
           // Filter to only multi-machine clusters
-          if (!version.cluster.is_multi_machine) {
+          if (!version.cluster.is_multi_gpu) {
             return null
           }
 

@@ -91,7 +91,7 @@ export default async function StatusPage() {
                           href={`/clusters/${cluster.cluster_id}`}
                           className="text-primary hover:text-primary-light hover:underline"
                         >
-                          {cluster.cluster_nickname}
+                          {cluster.cluster_name}
                         </Link>
                       </div>
 

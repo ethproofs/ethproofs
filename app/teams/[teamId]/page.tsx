@@ -79,11 +79,11 @@ export default async function TeamDetailsPage({
   })
 
   const singleMachineClusters = clusters.filter(
-    (cluster) => !cluster.is_multi_machine
+    (cluster) => !cluster.is_multi_gpu
   )
 
   const multiMachineClusters = clusters.filter(
-    (cluster) => cluster.is_multi_machine
+    (cluster) => cluster.is_multi_gpu
   )
 
   const singleMachineSummary: SummaryItem[] = [

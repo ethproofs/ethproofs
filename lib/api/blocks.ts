@@ -115,7 +115,7 @@ export const fetchBlocksPaginated = async (
                     .where(
                       and(
                         eq(clusterVersions.id, proofs.cluster_version_id),
-                        eq(clusters.is_multi_machine, machineType === "multi")
+                        eq(clusters.is_multi_gpu, machineType === "multi")
                       )
                     )
                 ),
@@ -141,7 +141,7 @@ export const fetchBlocksPaginated = async (
               .where(
                 and(
                   eq(proofs.block_number, blocks.block_number),
-                  eq(clusters.is_multi_machine, machineType === "multi")
+                  eq(clusters.is_multi_gpu, machineType === "multi")
                 )
               )
           ),
@@ -162,7 +162,7 @@ export const fetchBlocksPaginated = async (
     .where(
       machineType === "all"
         ? undefined
-        : eq(clusters.is_multi_machine, machineType === "multi")
+        : eq(clusters.is_multi_gpu, machineType === "multi")
     )
 
   return {
@@ -266,7 +266,7 @@ export const fetchBlocks = cache(
                       .where(
                         and(
                           eq(clusterVersions.id, proofs.cluster_version_id),
-                          eq(clusters.is_multi_machine, machineType === "multi")
+                          eq(clusters.is_multi_gpu, machineType === "multi")
                         )
                       )
                   ),
@@ -295,7 +295,7 @@ export const fetchBlocks = cache(
                 .where(
                   and(
                     eq(proofs.block_number, blocks.block_number),
-                    eq(clusters.is_multi_machine, machineType === "multi")
+                    eq(clusters.is_multi_gpu, machineType === "multi")
                   )
                 )
             ),

@@ -28,11 +28,11 @@ export default async function ClustersPage() {
   })
 
   const singleMachineClusters = clusters
-    .filter((cluster) => !cluster.is_multi_machine)
+    .filter((cluster) => !cluster.is_multi_gpu)
     .sort((a, b) => a.avg_time - b.avg_time)
 
   const multiMachineClusters = clusters
-    .filter((cluster) => cluster.is_multi_machine)
+    .filter((cluster) => cluster.is_multi_gpu)
     .sort((a, b) => a.avg_time - b.avg_time)
 
   return (

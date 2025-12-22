@@ -98,21 +98,19 @@ export const clusters = pgTable(
   {
     id: uuid().defaultRandom().primaryKey().notNull(),
     index: smallint(),
-    nickname: text().notNull(),
+    name: text().notNull(),
     team_id: uuid()
       .notNull()
       .references(() => teams.id, {
         onDelete: "cascade",
         onUpdate: "cascade",
       }),
-    description: text(),
     // TODO:TEAM - remove this field
     // DEPRECATED: use cluster_hardware table instead
     hardware: text(),
-    cycle_type: varchar("cycle_type"),
-    proof_type: varchar("proof_type"),
     is_open_source: boolean().notNull().default(false),
-    is_multi_machine: boolean().notNull().default(false),
+    is_multi_gpu: boolean("is_multi_gpu").notNull().default(false),
+    num_gpus: integer("num_gpus").notNull().default(1),
     is_active: boolean().notNull().default(false),
     software_link: text(),
     created_at: timestamp("created_at", {
@@ -669,14 +667,14 @@ export const teamsSummary = pgView("teams_summary", {
       COALESCE(sum(cm.cloud_instance_count::double precision * ci.hourly_price * (p.proving_time::numeric / (1000.0 * 60::numeric * 60::numeric))::double precision) / NULLIF(count(p.proof_id), 0)::double precision, 0::double precision) AS avg_cost_per_proof,
       COALESCE(avg(p.proving_time), 0::numeric) AS avg_proving_time,
       count(p.proof_id) AS total_proofs,
-      -- Multi-machine proofs
-      COALESCE(sum(CASE WHEN c.is_multi_machine THEN (cm.cloud_instance_count::double precision * ci.hourly_price * (p.proving_time::numeric / (1000.0 * 60::numeric * 60::numeric))::double precision) ELSE 0 END) / NULLIF(sum(CASE WHEN c.is_multi_machine THEN 1 ELSE 0 END), 0)::double precision, 0::double precision) AS avg_cost_per_proof_multi,
-      COALESCE(avg(CASE WHEN c.is_multi_machine THEN p.proving_time ELSE NULL END), 0::numeric) AS avg_proving_time_multi,
-      sum(CASE WHEN c.is_multi_machine THEN 1 ELSE 0 END) AS total_proofs_multi,
-      -- Single-machine proofs
-      COALESCE(sum(CASE WHEN NOT c.is_multi_machine THEN (cm.cloud_instance_count::double precision * ci.hourly_price * (p.proving_time::numeric / (1000.0 * 60::numeric * 60::numeric))::double precision) ELSE 0 END) / NULLIF(sum(CASE WHEN NOT c.is_multi_machine THEN 1 ELSE 0 END), 0)::double precision, 0::double precision) AS avg_cost_per_proof_single,
-      COALESCE(avg(CASE WHEN NOT c.is_multi_machine THEN p.proving_time ELSE NULL END), 0::numeric) AS avg_proving_time_single,
-      sum(CASE WHEN NOT c.is_multi_machine THEN 1 ELSE 0 END) AS total_proofs_single
+      -- Multi-GPU proofs
+      COALESCE(sum(CASE WHEN c.is_multi_gpu THEN (cm.cloud_instance_count::double precision * ci.hourly_price * (p.proving_time::numeric / (1000.0 * 60::numeric * 60::numeric))::double precision) ELSE 0 END) / NULLIF(sum(CASE WHEN c.is_multi_gpu THEN 1 ELSE 0 END), 0)::double precision, 0::double precision) AS avg_cost_per_proof_multi,
+      COALESCE(avg(CASE WHEN c.is_multi_gpu THEN p.proving_time ELSE NULL END), 0::numeric) AS avg_proving_time_multi,
+      sum(CASE WHEN c.is_multi_gpu THEN 1 ELSE 0 END) AS total_proofs_multi,
+      -- Single-GPU proofs
+      COALESCE(sum(CASE WHEN NOT c.is_multi_gpu THEN (cm.cloud_instance_count::double precision * ci.hourly_price * (p.proving_time::numeric / (1000.0 * 60::numeric * 60::numeric))::double precision) ELSE 0 END) / NULLIF(sum(CASE WHEN NOT c.is_multi_gpu THEN 1 ELSE 0 END), 0)::double precision, 0::double precision) AS avg_cost_per_proof_single,
+      COALESCE(avg(CASE WHEN NOT c.is_multi_gpu THEN p.proving_time ELSE NULL END), 0::numeric) AS avg_proving_time_single,
+      sum(CASE WHEN NOT c.is_multi_gpu THEN 1 ELSE 0 END) AS total_proofs_single
     FROM teams t
     LEFT JOIN proofs p ON t.id = p.team_id AND p.proof_status = 'proved'::text
     LEFT JOIN cluster_versions cv ON p.cluster_version_id = cv.id
@@ -688,7 +686,7 @@ export const teamsSummary = pgView("teams_summary", {
 
 export const clusterSummary = pgView("cluster_summary", {
   cluster_id: uuid("cluster_id"),
-  cluster_nickname: text("cluster_nickname"),
+  cluster_name: text("cluster_name"),
   team_id: uuid("team_id"),
   avg_cost_per_proof: doublePrecision("avg_cost_per_proof"),
   avg_proving_time: numeric("avg_proving_time"),
@@ -697,7 +695,7 @@ export const clusterSummary = pgView("cluster_summary", {
   .as(
     sql`
     SELECT c.id as cluster_id,
-      c.nickname as cluster_nickname,
+      c.name as cluster_name,
       c.team_id,
       COALESCE(sum(cm.cloud_instance_count::double precision * ci.hourly_price * (p.proving_time::numeric / (1000.0 * 60::numeric * 60::numeric))::double precision) / NULLIF(count(p.proof_id), 0)::double precision, 0::double precision) AS avg_cost_per_proof,
       avg(p.proving_time) AS avg_proving_time

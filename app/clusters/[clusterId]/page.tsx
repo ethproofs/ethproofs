@@ -45,7 +45,7 @@ export async function generateMetadata({
   }
 
   return getMetadata({
-    title: cluster.nickname,
+    title: cluster.name,
   })
 }
 
@@ -116,12 +116,10 @@ export default async function ClusterDetailsPage({
   return (
     <div className="mx-auto mt-16 max-w-screen-xl space-y-8 px-6 md:mt-24 md:px-8 [&>section]:w-full">
       <div id="hero-section" className="flex flex-col items-center gap-2">
-        <h1 className="text-4xl font-semibold">{cluster.nickname}</h1>
+        <h1 className="text-4xl font-semibold">{cluster.name}</h1>
 
         <div className="text-center font-sans text-sm">
-          {cluster.is_multi_machine
-            ? "multi-GPU cluster"
-            : "single-GPU cluster"}
+          {cluster.is_multi_gpu ? "multi-GPU cluster" : "single-GPU cluster"}
         </div>
         {team && (
           <DisplayTeam
@@ -193,7 +191,7 @@ export default async function ClusterDetailsPage({
           <div className="font-sans text-sm text-body-secondary">
             proof type
           </div>
-          <div className="text-lg text-primary">{cluster.proof_type}</div>
+          <div className="text-lg text-primary">STARK</div>
         </div>
       </section>
 

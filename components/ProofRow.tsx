@@ -206,17 +206,11 @@ export function ProofRow({ proof, block }: ProofRowProps) {
               {cluster && machines && (
                 <PopoverContent>
                   <TooltipContentHeader>
-                    {cluster.nickname}
+                    {cluster.name}
                   </TooltipContentHeader>
 
                   <div className="space-y-2">
                     {cluster.hardware && <p>hardware: {cluster.hardware}</p>}
-                    {cluster.cycle_type && (
-                      <p>cycle type: {cluster.cycle_type}</p>
-                    )}
-                    {cluster.description && (
-                      <p>description: {cluster.description}</p>
-                    )}
                   </div>
 
                   <hr className="my-4 bg-body-secondary" />

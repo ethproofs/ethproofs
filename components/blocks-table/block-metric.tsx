@@ -31,7 +31,7 @@ const BlockMetric = ({ stats }: { stats: Stats }) => (
           )}{" "}
           <span className="text-xs text-muted-foreground">|</span>{" "}
           <span className="text-xs">
-            {stats.bestProof.cluster_version.cluster.nickname}
+            {stats.bestProof.cluster_version.cluster.name}
           </span>
         </div>
       </TooltipContent>

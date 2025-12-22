@@ -33,8 +33,6 @@ export const GET = withRateLimit(
             cluster: {
               columns: {
                 id: true,
-                proof_type: true,
-                cycle_type: true,
               },
             },
           },

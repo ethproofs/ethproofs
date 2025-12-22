@@ -83,7 +83,7 @@ const ClusterAccordionItem = ({
             href={`/clusters/${clusterDetails.id}`}
             className="text-xl text-primary hover:text-primary-light hover:underline"
           >
-            {clusterDetails.nickname}
+            {clusterDetails.name}
           </Link>
           <div className="flex items-center gap-2 text-sm">
             <Link
@@ -165,7 +165,7 @@ const ClusterAccordionItem = ({
               variant="outline"
               href={`/clusters/${clusterDetails.id}`}
             >
-              details for {clusterDetails.nickname}
+              details for {clusterDetails.name}
               <ChevronRight className="-mx-2 size-4" />
             </ButtonLink>
           </div>

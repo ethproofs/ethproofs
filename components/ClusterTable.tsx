@@ -16,7 +16,7 @@ type ClusterRowItemProps = { cluster: ClusterWithRelations }
 const ClusterRowItem = ({ cluster }: ClusterRowItemProps) => (
   <div className="col-span-full row-span-2 grid grid-cols-subgrid grid-rows-subgrid border-b border-border">
     <div className="row-span-2 grid grid-cols-1 grid-rows-subgrid px-6 py-4">
-      <div className="text-lg">{cluster.nickname}</div>
+      <div className="text-lg">{cluster.name}</div>
       <div className="mt-auto text-xs">
         <span className="text-body-secondary">updated</span>{" "}
         <span className="uppercase">
@@ -68,7 +68,7 @@ const ClusterRowItem = ({ cluster }: ClusterRowItemProps) => (
           </MetricInfo>
         </MetricLabel>
       </MetricBox>
-      <div className="">{cluster.proof_type}</div>
+      <div className="">STARK</div>
     </div>
     <div className="row-span-2 grid grid-cols-1 place-items-center px-6 py-4">
       <ButtonLink
