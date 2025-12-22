@@ -52,7 +52,7 @@ export const columns: ColumnDef<ClusterRow>[] = [
       return (
         <div className="w-[200px]">
           <Link href={`/clusters/${cluster.id}`} className="hover:underline">
-            {cluster.nickname}
+            {cluster.name}
           </Link>
           <div className="text-xs text-muted-foreground">
             {lastVersion.zkvm_version.zkvm.name} by {cluster.team.name}

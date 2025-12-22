@@ -5,12 +5,9 @@ import { machineSchema } from "./machine"
 
 export const clusterSchema = z.object({
   id: z.number().nullable(),
-  nickname: z.string(),
-  description: z.string().optional().nullable(),
+  name: z.string(),
   // DEPRECATED
   hardware: z.string().optional().nullable(),
-  cycle_type: z.string().optional().nullable(),
-  proof_type: z.string().optional().nullable(),
   machines: z.array(
     z.object({
       machine: machineSchema,
@@ -24,13 +21,9 @@ export const clusterSchema = z.object({
 export type Cluster = z.infer<typeof clusterSchema>
 
 const baseClusterSchema = z.object({
-  nickname: z.string().max(50).openapi({
+  name: z.string().max(50).openapi({
     description: "Human-readable name. Main display name in the UI",
     example: "ZKnight-01",
-  }),
-  description: z.string().max(200).optional().openapi({
-    description: "Description of the cluster",
-    example: "Primary RISC-V prover",
   }),
   zkvm_version_id: z.number().int().positive().openapi({
     description:
@@ -42,15 +35,6 @@ const baseClusterSchema = z.object({
       "Technical specifications. Use `configuration.cluster_machine` field instead.",
     example: "RISC-V Prover",
     deprecated: true,
-  }),
-  cycle_type: z.string().max(50).optional().openapi({
-    description: "Type of cycle",
-    example: "SP1",
-  }),
-  proof_type: z.string().max(50).optional().openapi({
-    description:
-      "Proof system used to generate proofs. (e.g., Groth16 or PlonK)",
-    example: "Groth16",
   }),
 })
 

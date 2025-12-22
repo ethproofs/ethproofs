@@ -260,6 +260,13 @@
       "when": 1766266415509,
       "tag": "0036_add-team-approval-status",
       "breakpoints": true
+    },
+    {
+      "idx": 37,
+      "version": "7",
+      "when": 1766416499356,
+      "tag": "0037_update-clusters-table",
+      "breakpoints": true
     }
   ]
 }

@@ -8,7 +8,7 @@ import { blocks, clusters, clusterVersions, proofs, teams } from "@/db/schema"
 
 export interface MissingProofCluster {
   cluster_id: string
-  cluster_nickname: string
+  cluster_name: string
   cluster_id_suffix: string
   missing_blocks: number[]
 }
@@ -58,7 +58,7 @@ export const fetchMissingProofsStatus = async (
           team_id: teams.id,
           team_name: teams.name,
           cluster_id: clusters.id,
-          cluster_nickname: clusters.nickname,
+          cluster_name: clusters.name,
           cluster_id_suffix: sql<string>`RIGHT(${clusters.id}::text, 6)`,
           block_number: blocks.block_number,
           block_timestamp: blocks.timestamp,
@@ -150,7 +150,7 @@ export const fetchMissingProofsStatus = async (
         if (!cluster) {
           cluster = {
             cluster_id: row.cluster_id,
-            cluster_nickname: row.cluster_nickname,
+            cluster_name: row.cluster_name,
             cluster_id_suffix: row.cluster_id_suffix,
             missing_blocks: [],
           }

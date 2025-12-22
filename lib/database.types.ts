@@ -372,7 +372,7 @@ export type Database = {
           id: string
           index: number | null
           is_active: boolean
-          is_multi_machine: boolean
+          is_multi_gpu: boolean
           is_open_source: boolean
           nickname: string
           proof_type: string | null
@@ -387,7 +387,7 @@ export type Database = {
           id?: string
           index?: number | null
           is_active?: boolean
-          is_multi_machine?: boolean
+          is_multi_gpu?: boolean
           is_open_source?: boolean
           nickname: string
           proof_type?: string | null
@@ -402,7 +402,7 @@ export type Database = {
           id?: string
           index?: number | null
           is_active?: boolean
-          is_multi_machine?: boolean
+          is_multi_gpu?: boolean
           is_open_source?: boolean
           nickname?: string
           proof_type?: string | null

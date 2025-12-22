@@ -17,10 +17,7 @@ export const GET = withAuth(async ({ user }) => {
     const clusters = await db.query.clusters.findMany({
       columns: {
         index: true,
-        nickname: true,
-        description: true,
-        cycle_type: true,
-        proof_type: true,
+        name: true,
       },
       where: (cluster, { eq }) => eq(cluster.team_id, user.id),
       with: {
@@ -78,15 +75,7 @@ export const POST = withAuth(async ({ request, user }) => {
     })
   }
 
-  const {
-    nickname,
-    description,
-    zkvm_version_id,
-    hardware,
-    configuration,
-    cycle_type,
-    proof_type,
-  } = clusterPayload
+  const { name, zkvm_version_id, hardware, configuration } = clusterPayload
 
   // get & validate cloud instance ids
   const cloudInstanceIds = await db.query.cloudInstances.findMany({
@@ -122,12 +111,9 @@ export const POST = withAuth(async ({ request, user }) => {
     const [cluster] = await tx
       .insert(clusters)
       .values({
-        nickname,
-        description,
+        name,
         hardware,
-        cycle_type,
-        proof_type,
-        is_multi_machine: isMultiMachine,
+        is_multi_gpu: isMultiMachine,
         team_id: user.id,
       })
       .returning({ id: clusters.id, index: clusters.index })

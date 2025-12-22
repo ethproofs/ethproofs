@@ -33,12 +33,9 @@ export const POST = withAuth(async ({ request, user }) => {
   }
 
   const {
-    nickname,
-    description,
+    name,
     zkvm_version_id,
     hardware,
-    cycle_type,
-    proof_type,
     cloud_instance_name,
     machine,
   } = singleMachinePayload
@@ -70,12 +67,9 @@ export const POST = withAuth(async ({ request, user }) => {
     const [cluster] = await tx
       .insert(clusters)
       .values({
-        nickname,
-        description,
+        name,
         hardware,
-        cycle_type,
-        proof_type,
-        is_multi_machine: false,
+        is_multi_gpu: false,
         team_id: user.id,
       })
       .returning({ id: clusters.id, index: clusters.index })

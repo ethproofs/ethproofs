@@ -73,7 +73,7 @@ export function ProofItem({ proof }: ProofItemProps) {
       <div className="flex items-center justify-between">
         <div className="flex items-end gap-2 text-sm">
           <span className={statusClasses.text}>
-            {proof.cluster_version.cluster.nickname}
+            {proof.cluster_version.cluster.name}
           </span>
           <span className="inline text-xs text-muted-foreground">
             {proof.cluster_id}

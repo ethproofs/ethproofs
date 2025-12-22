@@ -40,11 +40,11 @@ export async function GET(
     // Filter by machine type
     if (filterType === "single") {
       filteredProofs = filteredProofs.filter(
-        (proof) => !proof.cluster_version?.cluster.is_multi_machine
+        (proof) => !proof.cluster_version?.cluster.is_multi_gpu
       )
     } else if (filterType === "multi") {
       filteredProofs = filteredProofs.filter(
-        (proof) => proof.cluster_version?.cluster.is_multi_machine
+        (proof) => proof.cluster_version?.cluster.is_multi_gpu
       )
     }
 

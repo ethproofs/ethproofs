@@ -88,7 +88,7 @@ export default async function BlockDetailsPage({
   const proofsPerStatusCount = getProofsPerStatusCount(proofs)
 
   const singleMachineProofs = proofs
-    .filter((proof) => !proof.cluster_version?.cluster.is_multi_machine)
+    .filter((proof) => !proof.cluster_version?.cluster.is_multi_gpu)
     .map((proof) => ({
       ...proof,
       block_number,
@@ -96,7 +96,7 @@ export default async function BlockDetailsPage({
     }))
 
   const multiMachineProofs = proofs
-    .filter((proof) => proof.cluster_version?.cluster.is_multi_machine)
+    .filter((proof) => proof.cluster_version?.cluster.is_multi_gpu)
     .map((proof) => ({
       ...proof,
       block_number,
