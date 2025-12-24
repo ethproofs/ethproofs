@@ -750,3 +750,12 @@ export const proverDailyStats = pgTable(
     unique("prover_daily_stats_date_team_key").on(table.date, table.team_id),
   ]
 )
+
+export const gpuPriceIndex = pgTable("gpu_price_index", {
+  id: bigint({ mode: "number" }).primaryKey().generatedByDefaultAsIdentity(),
+  gpu_name: text("gpu_name").notNull(),
+  hourly_price: numeric("hourly_price", { precision: 10, scale: 6 }).notNull(),
+  created_at: timestamp("created_at", { withTimezone: true, mode: "string" })
+    .defaultNow()
+    .notNull(),
+})
