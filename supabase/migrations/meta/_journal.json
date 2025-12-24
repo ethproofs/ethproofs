@@ -267,6 +267,20 @@
       "when": 1766416499356,
       "tag": "0037_update-clusters-table",
       "breakpoints": true
+    },
+    {
+      "idx": 38,
+      "version": "7",
+      "when": 1766506356705,
+      "tag": "0038_add-gpu-price-index",
+      "breakpoints": true
+    },
+    {
+      "idx": 39,
+      "version": "7",
+      "when": 1766521417883,
+      "tag": "0039_add-gpu-price-index-cron",
+      "breakpoints": true
     }
   ]
 }
