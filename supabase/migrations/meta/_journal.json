@@ -288,6 +288,13 @@
       "when": 1766673551194,
       "tag": "0040_drop-recursive-root-proofs",
       "breakpoints": true
+    },
+    {
+      "idx": 41,
+      "version": "7",
+      "when": 1766697977395,
+      "tag": "0041_drop-benchmarks",
+      "breakpoints": true
     }
   ]
 }
