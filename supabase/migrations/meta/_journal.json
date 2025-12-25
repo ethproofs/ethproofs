@@ -281,6 +281,13 @@
       "when": 1766521417883,
       "tag": "0039_add-gpu-price-index-cron",
       "breakpoints": true
+    },
+    {
+      "idx": 40,
+      "version": "7",
+      "when": 1766673551194,
+      "tag": "0040_drop-recursive-root-proofs",
+      "breakpoints": true
     }
   ]
 }

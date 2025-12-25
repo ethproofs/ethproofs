@@ -23,16 +23,6 @@ import {
 } from "drizzle-orm/pg-core"
 import { authUsers } from "drizzle-orm/supabase"
 
-// Define a custom type for 'bytea'
-const bytea = customType<{
-  data: string
-  default: false
-}>({
-  dataType() {
-    return "bytea"
-  },
-})
-
 export const keyMode = pgEnum("key_mode", ["admin", "read", "write"])
 
 export const apiAuthTokens = pgTable(
@@ -332,39 +322,6 @@ export const benchmarks = pgTable("benchmarks", {
     .defaultNow()
     .notNull(),
 })
-
-export const recursiveRootProofs = pgTable(
-  "recursive_root_proofs",
-  {
-    root_proof_id: integer("root_proof_id")
-      .primaryKey()
-      .generatedByDefaultAsIdentity(),
-    block_number: bigint("block_number", { mode: "number" }).references(
-      () => blocks.block_number,
-      {
-        onDelete: "cascade",
-        onUpdate: "cascade",
-      }
-    ),
-    root_proof: bytea("root_proof").notNull(),
-    root_proof_size: bigint("root_proof_size", { mode: "number" }).notNull(),
-    total_proof_size: bigint("total_proof_size", { mode: "number" }).notNull(),
-    team_id: uuid()
-      .notNull()
-      .references(() => teams.id, {
-        onDelete: "cascade",
-        onUpdate: "cascade",
-      }),
-  },
-  () => [
-    pgPolicy("Enable read access for all users", {
-      as: "permissive",
-      for: "select",
-      to: ["public"],
-      using: sql`true`,
-    }),
-  ]
-)
 
 export const teams = pgTable(
   "teams",
