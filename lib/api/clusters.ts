@@ -172,7 +172,6 @@ export const getActiveMachineCount = cache(
 export const getClustersBenchmarks = cache(async () => {
   const clusters = await db.query.clusters.findMany({
     with: {
-      benchmarks: true,
       team: true,
     },
     where: (clusters, { and, exists, notIlike }) =>
@@ -191,12 +190,6 @@ export const getClustersBenchmarks = cache(async () => {
             )
         )
       ),
-    // order by the clusters that have benchmarks first
-    orderBy: (clusters) => [
-      desc(
-        sql`EXISTS (SELECT 1 FROM cluster_benchmarks WHERE cluster_benchmarks.cluster_id = ${clusters.id})`
-      ),
-    ],
   })
 
   return clusters

@@ -5,11 +5,9 @@ import { LevelMeterProps } from "@/components/LevelMeter"
 import { CHART_RANGES, ZKVM_THRESHOLDS } from "./constants"
 
 import {
-  benchmarks,
   blocks,
   cloudInstances,
   cloudProviders,
-  clusterBenchmarks,
   clusterMachines,
   clusters,
   clusterVersions,
@@ -86,16 +84,6 @@ export type Zkvm = typeof zkvms.$inferSelect
  * Represents a row in the zkvm_versions table.
  */
 export type ZkvmVersion = typeof zkvmVersions.$inferSelect
-
-/**
- * Represents a row in the benchmarks table.
- */
-export type Benchmark = typeof benchmarks.$inferSelect
-
-/**
- * Represents a row in the cluster_benchmarks table.
- */
-export type ClusterBenchmark = typeof clusterBenchmarks.$inferSelect
 
 /**
  * Represents a row in the teams_summary view.
