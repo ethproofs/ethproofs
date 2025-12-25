@@ -13,7 +13,6 @@ import {
   clusterVersions,
   machines,
   proofs,
-  recursiveRootProofs,
   teams,
   zkvmPerformanceMetrics,
   zkvms,
@@ -29,7 +28,6 @@ export const apiAuthTokensRelations = relations(apiAuthTokens, ({ one }) => ({
 }))
 
 export const usersRelations = relations(authUsers, ({ many }) => ({
-  recursive_root_proofs: many(recursiveRootProofs),
   teams: many(teams),
   clusters: many(clusters),
   api_auth_tokens: many(apiAuthTokens),
@@ -108,22 +106,7 @@ export const clusterBenchmarksRelations = relations(
   })
 )
 
-export const recursiveRootProofsRelations = relations(
-  recursiveRootProofs,
-  ({ one }) => ({
-    block: one(blocks, {
-      fields: [recursiveRootProofs.block_number],
-      references: [blocks.block_number],
-    }),
-    team: one(teams, {
-      fields: [recursiveRootProofs.team_id],
-      references: [teams.id],
-    }),
-  })
-)
-
 export const blocksRelations = relations(blocks, ({ many }) => ({
-  recursive_root_proofs: many(recursiveRootProofs),
   proofs: many(proofs),
 }))
 
