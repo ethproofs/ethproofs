@@ -164,135 +164,6 @@ export const clusterVersions = pgTable(
   ]
 )
 
-export const clusterMachines = pgTable(
-  "cluster_machines",
-  {
-    id: bigint({ mode: "number" }).primaryKey().generatedByDefaultAsIdentity(),
-    cluster_version_id: bigint("cluster_version_id", {
-      mode: "number",
-    })
-      .notNull()
-      .references(() => clusterVersions.id, {
-        onDelete: "cascade",
-        onUpdate: "cascade",
-      }),
-    machine_id: bigint("machine_id", { mode: "number" })
-      .notNull()
-      .references(() => machines.id, {
-        onDelete: "cascade",
-        onUpdate: "cascade",
-      }),
-    machine_count: smallint("machine_count").notNull(),
-    cloud_instance_id: bigint("cloud_instance_id", { mode: "number" })
-      .notNull()
-      .references(() => cloudInstances.id),
-    cloud_instance_count: smallint("cloud_instance_count").notNull(),
-  },
-  (table) => [
-    index("cluster_machines_cluster_version_id_idx").on(
-      table.cluster_version_id
-    ),
-    index("cluster_machines_cloud_instance_id_idx").on(table.cloud_instance_id),
-    pgPolicy("Enable read access for all users", {
-      as: "permissive",
-      for: "select",
-      to: ["public"],
-      using: sql`true`,
-    }),
-    pgPolicy("Enable insert for users with an api key", {
-      as: "permissive",
-      for: "insert",
-      to: ["public"],
-    }),
-  ]
-)
-
-export const machines = pgTable(
-  "machines",
-  {
-    id: bigint({ mode: "number" }).primaryKey().generatedByDefaultAsIdentity(),
-    cpu_model: text(),
-    cpu_cores: integer(),
-    gpu_models: text().array(),
-    gpu_count: integer().array(),
-    gpu_memory_gb: integer().array(),
-    memory_size_gb: integer().array(),
-    memory_count: integer().array(),
-    memory_type: text().array(),
-    storage_size_gb: integer(),
-    total_tera_flops: integer(),
-    network_between_machines: text(),
-    created_at: timestamp("created_at", { withTimezone: true, mode: "string" })
-      .defaultNow()
-      .notNull(),
-  },
-  () => [
-    pgPolicy("Enable read access for all users", {
-      as: "permissive",
-      for: "select",
-      to: ["public"],
-      using: sql`true`,
-    }),
-    pgPolicy("Enable insert for users with an api key", {
-      as: "permissive",
-      for: "insert",
-      to: ["public"],
-    }),
-  ]
-)
-
-export const cloudProviders = pgTable("cloud_providers", {
-  id: bigint({ mode: "number" }).primaryKey().generatedByDefaultAsIdentity(),
-  name: text("name").notNull().unique(),
-  display_name: text("display_name").notNull(),
-  created_at: timestamp("created_at", { withTimezone: true, mode: "string" })
-    .defaultNow()
-    .notNull(),
-})
-
-export const cloudInstances = pgTable(
-  "cloud_instances",
-  {
-    id: bigint({ mode: "number" }).primaryKey().generatedByDefaultAsIdentity(),
-    provider_id: bigint("provider_id", { mode: "number" })
-      .notNull()
-      .references(() => cloudProviders.id, {
-        onDelete: "cascade",
-        onUpdate: "cascade",
-      }),
-    instance_name: text("instance_name").notNull().unique(), // Instance name or machine ID
-    region: text("region").notNull(), // Region or geolocation
-    hourly_price: real("hourly_price").notNull(),
-    cpu_arch: text("cpu_arch"), // CPU architecture (e.g., x86)
-    cpu_cores: integer("cpu_cores").notNull(), // Number of CPU cores
-    cpu_effective_cores: integer("cpu_effective_cores"), // Effective CPU cores (optional)
-    cpu_name: text("cpu_name"), // Name of the CPU
-    memory: decimal("memory", { precision: 10, scale: 2 }).notNull(), // Total memory (in GB)
-    gpu_count: integer("gpu_count"), // Number of GPUs (optional)
-    gpu_arch: text("gpu_arch"), // GPU architecture (optional)
-    gpu_name: text("gpu_name"), // Name of the GPU (optional)
-    gpu_memory: decimal("gpu_memory", { precision: 10, scale: 2 }), // Total GPU memory (in GB, optional)
-    mobo_name: text("mobo_name"), // Motherboard name (optional, VastAI-specific)
-    disk_name: text("disk_name"), // Disk name (optional, VastAI-specific)
-    disk_space: decimal("disk_space", { precision: 10, scale: 2 }), // Total storage (in GB)
-    created_at: timestamp("created_at", { withTimezone: true, mode: "string" })
-      .defaultNow()
-      .notNull(), // Timestamp when the record was created
-    snapshot_date: timestamp("snapshot_date", {
-      withTimezone: true,
-      mode: "string",
-    }), // Date when the pricing/specs were captured
-  },
-  () => [
-    pgPolicy("Enable read access for all users", {
-      as: "permissive",
-      for: "select",
-      to: ["public"],
-      using: sql`true`,
-    }),
-  ]
-)
-
 export const teams = pgTable(
   "teams",
   {
@@ -554,10 +425,10 @@ export const recentSummary = pgView("recent_summary", {
   .as(
     sql`
     SELECT count(DISTINCT b.block_number) AS total_proven_blocks,
-      -- Calculate average cost per proof
-      COALESCE(avg(cm.cloud_instance_count::double precision * ci.hourly_price * p.proving_time::double precision / (1000.0 * 60::numeric * 60::numeric)::double precision), 0::numeric::double precision) AS avg_cost_per_proof,
+      -- Calculate average cost per proof using gpu_price_index
+      COALESCE(avg(c.num_gpus::double precision * gpi.hourly_price * p.proving_time::double precision / (1000.0 * 60::numeric * 60::numeric)::double precision), 0::numeric::double precision) AS avg_cost_per_proof,
       -- Calculate median cost per proof
-      COALESCE(PERCENTILE_CONT(0.5) WITHIN GROUP (ORDER BY cm.cloud_instance_count::double precision * ci.hourly_price * p.proving_time::double precision / (1000.0 * 60::numeric * 60::numeric)::double precision), 0::numeric::double precision) AS median_cost_per_proof,
+      COALESCE(PERCENTILE_CONT(0.5) WITHIN GROUP (ORDER BY c.num_gpus::double precision * gpi.hourly_price * p.proving_time::double precision / (1000.0 * 60::numeric * 60::numeric)::double precision), 0::numeric::double precision) AS median_cost_per_proof,
       -- Calculate average latency
       COALESCE(avg(p.proving_time), 0::numeric) AS avg_proving_time,
       -- Calculate median latency
@@ -565,8 +436,13 @@ export const recentSummary = pgView("recent_summary", {
     FROM blocks b
     INNER JOIN proofs p ON b.block_number = p.block_number AND p.proof_status = 'proved'::text
     INNER JOIN cluster_versions cv ON p.cluster_version_id = cv.id
-    INNER JOIN cluster_machines cm ON cv.id = cm.cluster_version_id
-    INNER JOIN cloud_instances ci ON cm.cloud_instance_id = ci.id
+    INNER JOIN clusters c ON cv.cluster_id = c.id
+    CROSS JOIN LATERAL (
+      SELECT hourly_price
+      FROM gpu_price_index
+      ORDER BY created_at DESC
+      LIMIT 1
+    ) gpi
     WHERE b."timestamp" >= (now() - '30 days'::interval)`
   )
 
@@ -591,23 +467,27 @@ export const teamsSummary = pgView("teams_summary", {
       t.name as team_name,
       t.logo_url,
       -- All proofs
-      COALESCE(sum(cm.cloud_instance_count::double precision * ci.hourly_price * (p.proving_time::numeric / (1000.0 * 60::numeric * 60::numeric))::double precision) / NULLIF(count(p.proof_id), 0)::double precision, 0::double precision) AS avg_cost_per_proof,
+      COALESCE(sum(c.num_gpus::double precision * gpi.hourly_price * (p.proving_time::numeric / (1000.0 * 60::numeric * 60::numeric))::double precision) / NULLIF(count(p.proof_id), 0)::double precision, 0::double precision) AS avg_cost_per_proof,
       COALESCE(avg(p.proving_time), 0::numeric) AS avg_proving_time,
       count(p.proof_id) AS total_proofs,
       -- Multi-GPU proofs
-      COALESCE(sum(CASE WHEN c.is_multi_gpu THEN (cm.cloud_instance_count::double precision * ci.hourly_price * (p.proving_time::numeric / (1000.0 * 60::numeric * 60::numeric))::double precision) ELSE 0 END) / NULLIF(sum(CASE WHEN c.is_multi_gpu THEN 1 ELSE 0 END), 0)::double precision, 0::double precision) AS avg_cost_per_proof_multi,
+      COALESCE(sum(CASE WHEN c.is_multi_gpu THEN (c.num_gpus::double precision * gpi.hourly_price * (p.proving_time::numeric / (1000.0 * 60::numeric * 60::numeric))::double precision) ELSE 0 END) / NULLIF(sum(CASE WHEN c.is_multi_gpu THEN 1 ELSE 0 END), 0)::double precision, 0::double precision) AS avg_cost_per_proof_multi,
       COALESCE(avg(CASE WHEN c.is_multi_gpu THEN p.proving_time ELSE NULL END), 0::numeric) AS avg_proving_time_multi,
       sum(CASE WHEN c.is_multi_gpu THEN 1 ELSE 0 END) AS total_proofs_multi,
       -- Single-GPU proofs
-      COALESCE(sum(CASE WHEN NOT c.is_multi_gpu THEN (cm.cloud_instance_count::double precision * ci.hourly_price * (p.proving_time::numeric / (1000.0 * 60::numeric * 60::numeric))::double precision) ELSE 0 END) / NULLIF(sum(CASE WHEN NOT c.is_multi_gpu THEN 1 ELSE 0 END), 0)::double precision, 0::double precision) AS avg_cost_per_proof_single,
+      COALESCE(sum(CASE WHEN NOT c.is_multi_gpu THEN (c.num_gpus::double precision * gpi.hourly_price * (p.proving_time::numeric / (1000.0 * 60::numeric * 60::numeric))::double precision) ELSE 0 END) / NULLIF(sum(CASE WHEN NOT c.is_multi_gpu THEN 1 ELSE 0 END), 0)::double precision, 0::double precision) AS avg_cost_per_proof_single,
       COALESCE(avg(CASE WHEN NOT c.is_multi_gpu THEN p.proving_time ELSE NULL END), 0::numeric) AS avg_proving_time_single,
       sum(CASE WHEN NOT c.is_multi_gpu THEN 1 ELSE 0 END) AS total_proofs_single
     FROM teams t
     LEFT JOIN proofs p ON t.id = p.team_id AND p.proof_status = 'proved'::text
     LEFT JOIN cluster_versions cv ON p.cluster_version_id = cv.id
     LEFT JOIN clusters c ON cv.cluster_id = c.id
-    LEFT JOIN cluster_machines cm ON cv.id = cm.cluster_version_id
-    LEFT JOIN cloud_instances ci ON cm.cloud_instance_id = ci.id
+    CROSS JOIN LATERAL (
+      SELECT hourly_price
+      FROM gpu_price_index
+      ORDER BY created_at DESC
+      LIMIT 1
+    ) gpi
     GROUP BY t.id`
   )
 
@@ -624,13 +504,17 @@ export const clusterSummary = pgView("cluster_summary", {
     SELECT c.id as cluster_id,
       c.name as cluster_name,
       c.team_id,
-      COALESCE(sum(cm.cloud_instance_count::double precision * ci.hourly_price * (p.proving_time::numeric / (1000.0 * 60::numeric * 60::numeric))::double precision) / NULLIF(count(p.proof_id), 0)::double precision, 0::double precision) AS avg_cost_per_proof,
+      COALESCE(sum(c.num_gpus::double precision * gpi.hourly_price * (p.proving_time::numeric / (1000.0 * 60::numeric * 60::numeric))::double precision) / NULLIF(count(p.proof_id), 0)::double precision, 0::double precision) AS avg_cost_per_proof,
       avg(p.proving_time) AS avg_proving_time
     FROM clusters c
     LEFT JOIN cluster_versions cv ON c.id = cv.cluster_id
     LEFT JOIN proofs p ON cv.id = p.cluster_version_id AND p.proof_status = 'proved'::text
-    LEFT JOIN cluster_machines cm ON cv.id = cm.cluster_version_id
-    LEFT JOIN cloud_instances ci ON cm.cloud_instance_id = ci.id
+    CROSS JOIN LATERAL (
+      SELECT hourly_price
+      FROM gpu_price_index
+      ORDER BY created_at DESC
+      LIMIT 1
+    ) gpi
     GROUP BY c.id`
   )
 

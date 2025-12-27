@@ -295,6 +295,13 @@
       "when": 1766697977395,
       "tag": "0041_drop-benchmarks",
       "breakpoints": true
+    },
+    {
+      "idx": 42,
+      "version": "7",
+      "when": 1766851785167,
+      "tag": "0042_drop-machine-tables",
+      "breakpoints": true
     }
   ]
 }
