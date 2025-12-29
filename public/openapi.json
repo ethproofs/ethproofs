@@ -23,13 +23,7 @@
       "name": "Clusters"
     },
     {
-      "name": "Single machine"
-    },
-    {
       "name": "Proofs"
-    },
-    {
-      "name": "Cloud instances"
     },
     {
       "name": "CSP benchmarks"
@@ -183,17 +177,11 @@
               "schema": {
                 "type": "object",
                 "properties": {
-                  "nickname": {
+                  "name": {
                     "type": "string",
                     "maxLength": 50,
                     "description": "Human-readable name. Main display name in the UI",
                     "example": "ZKnight-01"
-                  },
-                  "description": {
-                    "type": "string",
-                    "maxLength": 200,
-                    "description": "Description of the cluster",
-                    "example": "Primary RISC-V prover"
                   },
                   "zkvm_version_id": {
                     "type": "integer",
@@ -201,177 +189,23 @@
                     "description": "ID of the zkVM version. Visit [ZKVMs](/docs/zkvms) to view all available zkVMs and their IDs.",
                     "example": 1
                   },
-                  "hardware": {
+                  "num_gpus": {
+                    "type": "integer",
+                    "exclusiveMinimum": 0,
+                    "default": 1,
+                    "description": "Number of GPUs in the cluster. Determines if cluster is multi-GPU (>1) or single-GPU (1).",
+                    "example": 8
+                  },
+                  "hardware_description": {
                     "type": "string",
                     "maxLength": 200,
-                    "description": "Technical specifications. Use `configuration.cluster_machine` field instead.",
-                    "example": "RISC-V Prover",
-                    "deprecated": true
-                  },
-                  "cycle_type": {
-                    "type": "string",
-                    "maxLength": 50,
-                    "description": "Type of cycle",
-                    "example": "SP1"
-                  },
-                  "proof_type": {
-                    "type": "string",
-                    "maxLength": 50,
-                    "description": "Proof system used to generate proofs. (e.g., Groth16 or PlonK)",
-                    "example": "Groth16"
-                  },
-                  "configuration": {
-                    "type": "array",
-                    "items": {
-                      "type": "object",
-                      "properties": {
-                        "machine": {
-                          "type": "object",
-                          "properties": {
-                            "cpu_model": {
-                              "type": "string",
-                              "maxLength": 200,
-                              "description": "CPU model",
-                              "example": "Intel(R) Xeon(R) CPU @ 2.20GHz"
-                            },
-                            "cpu_cores": {
-                              "type": "integer",
-                              "exclusiveMinimum": 0,
-                              "description": "Number of CPU cores",
-                              "example": 2
-                            },
-                            "gpu_models": {
-                              "type": "array",
-                              "items": {
-                                "type": "string",
-                                "maxLength": 200
-                              },
-                              "description": "List of GPU models",
-                              "example": [
-                                "RTX 4090",
-                                "RTX 4080"
-                              ]
-                            },
-                            "gpu_count": {
-                              "type": "array",
-                              "items": {
-                                "type": "integer",
-                                "exclusiveMinimum": 0
-                              },
-                              "description": "Number of GPUs",
-                              "example": [
-                                1,
-                                1
-                              ]
-                            },
-                            "gpu_memory_gb": {
-                              "type": "array",
-                              "items": {
-                                "type": "integer",
-                                "exclusiveMinimum": 0
-                              },
-                              "description": "GPU memory size in GB",
-                              "example": [
-                                24,
-                                24
-                              ]
-                            },
-                            "memory_size_gb": {
-                              "type": "array",
-                              "items": {
-                                "type": "integer",
-                                "exclusiveMinimum": 0
-                              },
-                              "description": "Memory size in GB",
-                              "example": [
-                                32,
-                                32
-                              ]
-                            },
-                            "memory_count": {
-                              "type": "array",
-                              "items": {
-                                "type": "integer",
-                                "exclusiveMinimum": 0
-                              },
-                              "description": "Number of memory modules",
-                              "example": [
-                                8,
-                                8
-                              ]
-                            },
-                            "memory_type": {
-                              "type": "array",
-                              "items": {
-                                "type": "string",
-                                "maxLength": 200
-                              },
-                              "description": "Memory type",
-                              "example": [
-                                "DDR5-4800 ECC",
-                                "DDR5-4800 ECC"
-                              ]
-                            },
-                            "storage_size_gb": {
-                              "type": "integer",
-                              "exclusiveMinimum": 0,
-                              "description": "Storage size in GB",
-                              "example": 1000
-                            },
-                            "total_tera_flops": {
-                              "type": "integer",
-                              "exclusiveMinimum": 0,
-                              "description": "Total Tera Flops",
-                              "example": 1000
-                            },
-                            "network_between_machines": {
-                              "type": "string",
-                              "maxLength": 500,
-                              "description": "Network configuration details between machines in the cluster",
-                              "example": "Dual-port 100GbE NICs in mesh topology with RDMA enabled, primary and backup interconnects between all nodes"
-                            }
-                          },
-                          "required": [
-                            "cpu_model",
-                            "cpu_cores",
-                            "memory_size_gb",
-                            "memory_count",
-                            "memory_type"
-                          ],
-                          "description": "Physical hardware specifications of the machine"
-                        },
-                        "machine_count": {
-                          "type": "integer",
-                          "exclusiveMinimum": 0,
-                          "description": "Number of machines of this type",
-                          "example": 1
-                        },
-                        "cloud_instance_name": {
-                          "type": "string",
-                          "description": "The instance_name value of the cloud instance. Visit [Cloud Instances](/docs/cloud-instances) to view all available instances and their exact names.",
-                          "example": "c5.xlarge"
-                        },
-                        "cloud_instance_count": {
-                          "type": "integer",
-                          "exclusiveMinimum": 0,
-                          "description": "Number of equivalent cloud instances",
-                          "example": 10
-                        }
-                      },
-                      "required": [
-                        "machine",
-                        "machine_count",
-                        "cloud_instance_name",
-                        "cloud_instance_count"
-                      ]
-                    },
-                    "description": "Cluster configuration"
+                    "description": "Free-form text description of the cluster's hardware for display in the UI",
+                    "example": "8x NVIDIA H100 80GB GPUs, AMD EPYC 9654 96-Core Processor"
                   }
                 },
                 "required": [
-                  "nickname",
-                  "zkvm_version_id",
-                  "configuration"
+                  "name",
+                  "zkvm_version_id"
                 ]
               }
             }
@@ -433,468 +267,24 @@
                           "null"
                         ]
                       },
-                      "nickname": {
+                      "name": {
                         "type": "string"
                       },
-                      "description": {
+                      "hardware_description": {
                         "type": [
                           "string",
                           "null"
                         ]
-                      },
-                      "hardware": {
-                        "type": [
-                          "string",
-                          "null"
-                        ]
-                      },
-                      "cycle_type": {
-                        "type": [
-                          "string",
-                          "null"
-                        ]
-                      },
-                      "proof_type": {
-                        "type": [
-                          "string",
-                          "null"
-                        ]
-                      },
-                      "machines": {
-                        "type": "array",
-                        "items": {
-                          "type": "object",
-                          "properties": {
-                            "machine": {
-                              "type": "object",
-                              "properties": {
-                                "cpu_model": {
-                                  "type": "string",
-                                  "maxLength": 200,
-                                  "description": "CPU model",
-                                  "example": "Intel(R) Xeon(R) CPU @ 2.20GHz"
-                                },
-                                "cpu_cores": {
-                                  "type": "integer",
-                                  "exclusiveMinimum": 0,
-                                  "description": "Number of CPU cores",
-                                  "example": 2
-                                },
-                                "gpu_models": {
-                                  "type": "array",
-                                  "items": {
-                                    "type": "string",
-                                    "maxLength": 200
-                                  },
-                                  "description": "List of GPU models",
-                                  "example": [
-                                    "RTX 4090",
-                                    "RTX 4080"
-                                  ]
-                                },
-                                "gpu_count": {
-                                  "type": "array",
-                                  "items": {
-                                    "type": "integer",
-                                    "exclusiveMinimum": 0
-                                  },
-                                  "description": "Number of GPUs",
-                                  "example": [
-                                    1,
-                                    1
-                                  ]
-                                },
-                                "gpu_memory_gb": {
-                                  "type": "array",
-                                  "items": {
-                                    "type": "integer",
-                                    "exclusiveMinimum": 0
-                                  },
-                                  "description": "GPU memory size in GB",
-                                  "example": [
-                                    24,
-                                    24
-                                  ]
-                                },
-                                "memory_size_gb": {
-                                  "type": "array",
-                                  "items": {
-                                    "type": "integer",
-                                    "exclusiveMinimum": 0
-                                  },
-                                  "description": "Memory size in GB",
-                                  "example": [
-                                    32,
-                                    32
-                                  ]
-                                },
-                                "memory_count": {
-                                  "type": "array",
-                                  "items": {
-                                    "type": "integer",
-                                    "exclusiveMinimum": 0
-                                  },
-                                  "description": "Number of memory modules",
-                                  "example": [
-                                    8,
-                                    8
-                                  ]
-                                },
-                                "memory_type": {
-                                  "type": "array",
-                                  "items": {
-                                    "type": "string",
-                                    "maxLength": 200
-                                  },
-                                  "description": "Memory type",
-                                  "example": [
-                                    "DDR5-4800 ECC",
-                                    "DDR5-4800 ECC"
-                                  ]
-                                },
-                                "storage_size_gb": {
-                                  "type": "integer",
-                                  "exclusiveMinimum": 0,
-                                  "description": "Storage size in GB",
-                                  "example": 1000
-                                },
-                                "total_tera_flops": {
-                                  "type": "integer",
-                                  "exclusiveMinimum": 0,
-                                  "description": "Total Tera Flops",
-                                  "example": 1000
-                                },
-                                "network_between_machines": {
-                                  "type": "string",
-                                  "maxLength": 500,
-                                  "description": "Network configuration details between machines in the cluster",
-                                  "example": "Dual-port 100GbE NICs in mesh topology with RDMA enabled, primary and backup interconnects between all nodes"
-                                }
-                              },
-                              "required": [
-                                "cpu_model",
-                                "cpu_cores",
-                                "memory_size_gb",
-                                "memory_count",
-                                "memory_type"
-                              ]
-                            },
-                            "machine_count": {
-                              "type": "integer",
-                              "exclusiveMinimum": 0
-                            },
-                            "cloud_instance": {
-                              "type": "object",
-                              "properties": {
-                                "id": {
-                                  "type": "number"
-                                },
-                                "provider": {
-                                  "type": "string"
-                                },
-                                "instance_name": {
-                                  "type": "string"
-                                },
-                                "region": {
-                                  "type": "string"
-                                },
-                                "hourly_price": {
-                                  "type": "number"
-                                },
-                                "cpu_arch": {
-                                  "type": "string"
-                                },
-                                "cpu_cores": {
-                                  "type": "number"
-                                },
-                                "cpu_effective_cores": {
-                                  "type": "number"
-                                },
-                                "cpu_name": {
-                                  "type": "string"
-                                },
-                                "memory": {
-                                  "type": "number"
-                                },
-                                "gpu_count": {
-                                  "type": "number"
-                                },
-                                "gpu_arch": {
-                                  "type": "string"
-                                },
-                                "gpu_name": {
-                                  "type": "string"
-                                },
-                                "gpu_memory": {
-                                  "type": "number"
-                                },
-                                "mobo_name": {
-                                  "type": "string"
-                                },
-                                "disk_name": {
-                                  "type": "string"
-                                },
-                                "disk_space": {
-                                  "type": "number"
-                                },
-                                "created_at": {
-                                  "type": "string"
-                                },
-                                "snapshot_date": {
-                                  "type": "string"
-                                }
-                              },
-                              "required": [
-                                "id",
-                                "provider",
-                                "instance_name",
-                                "region",
-                                "hourly_price",
-                                "cpu_cores",
-                                "memory",
-                                "created_at"
-                              ]
-                            },
-                            "cloud_instance_count": {
-                              "type": "integer",
-                              "exclusiveMinimum": 0
-                            }
-                          },
-                          "required": [
-                            "machine",
-                            "machine_count",
-                            "cloud_instance",
-                            "cloud_instance_count"
-                          ]
-                        }
                       }
                     },
                     "required": [
                       "id",
-                      "nickname",
-                      "machines"
+                      "name"
                     ]
                   }
                 }
               }
             }
-          },
-          "401": {
-            "description": "Invalid API key"
-          },
-          "500": {
-            "description": "Internal server error"
-          }
-        }
-      }
-    },
-    "/single-machine": {
-      "post": {
-        "tags": [
-          "Single machine"
-        ],
-        "summary": "Create a single machine",
-        "security": [
-          {
-            "apikey": []
-          }
-        ],
-        "requestBody": {
-          "required": true,
-          "content": {
-            "application/json": {
-              "schema": {
-                "type": "object",
-                "properties": {
-                  "nickname": {
-                    "type": "string",
-                    "maxLength": 50,
-                    "description": "Human-readable name. Main display name in the UI",
-                    "example": "ZKnight-01"
-                  },
-                  "description": {
-                    "type": "string",
-                    "maxLength": 200,
-                    "description": "Description of the cluster",
-                    "example": "Primary RISC-V prover"
-                  },
-                  "zkvm_version_id": {
-                    "type": "integer",
-                    "exclusiveMinimum": 0,
-                    "description": "ID of the zkVM version. Visit [ZKVMs](/docs/zkvms) to view all available zkVMs and their IDs.",
-                    "example": 1
-                  },
-                  "hardware": {
-                    "type": "string",
-                    "maxLength": 200,
-                    "description": "Technical specifications. Use `configuration.cluster_machine` field instead.",
-                    "example": "RISC-V Prover",
-                    "deprecated": true
-                  },
-                  "cycle_type": {
-                    "type": "string",
-                    "maxLength": 50,
-                    "description": "Type of cycle",
-                    "example": "SP1"
-                  },
-                  "proof_type": {
-                    "type": "string",
-                    "maxLength": 50,
-                    "description": "Proof system used to generate proofs. (e.g., Groth16 or PlonK)",
-                    "example": "Groth16"
-                  },
-                  "machine": {
-                    "type": "object",
-                    "properties": {
-                      "cpu_model": {
-                        "type": "string",
-                        "maxLength": 200,
-                        "description": "CPU model",
-                        "example": "Intel(R) Xeon(R) CPU @ 2.20GHz"
-                      },
-                      "cpu_cores": {
-                        "type": "integer",
-                        "exclusiveMinimum": 0,
-                        "description": "Number of CPU cores",
-                        "example": 2
-                      },
-                      "gpu_models": {
-                        "type": "array",
-                        "items": {
-                          "type": "string",
-                          "maxLength": 200
-                        },
-                        "description": "List of GPU models",
-                        "example": [
-                          "RTX 4090",
-                          "RTX 4080"
-                        ]
-                      },
-                      "gpu_count": {
-                        "type": "array",
-                        "items": {
-                          "type": "integer",
-                          "exclusiveMinimum": 0
-                        },
-                        "description": "Number of GPUs",
-                        "example": [
-                          1,
-                          1
-                        ]
-                      },
-                      "gpu_memory_gb": {
-                        "type": "array",
-                        "items": {
-                          "type": "integer",
-                          "exclusiveMinimum": 0
-                        },
-                        "description": "GPU memory size in GB",
-                        "example": [
-                          24,
-                          24
-                        ]
-                      },
-                      "memory_size_gb": {
-                        "type": "array",
-                        "items": {
-                          "type": "integer",
-                          "exclusiveMinimum": 0
-                        },
-                        "description": "Memory size in GB",
-                        "example": [
-                          32,
-                          32
-                        ]
-                      },
-                      "memory_count": {
-                        "type": "array",
-                        "items": {
-                          "type": "integer",
-                          "exclusiveMinimum": 0
-                        },
-                        "description": "Number of memory modules",
-                        "example": [
-                          8,
-                          8
-                        ]
-                      },
-                      "memory_type": {
-                        "type": "array",
-                        "items": {
-                          "type": "string",
-                          "maxLength": 200
-                        },
-                        "description": "Memory type",
-                        "example": [
-                          "DDR5-4800 ECC",
-                          "DDR5-4800 ECC"
-                        ]
-                      },
-                      "storage_size_gb": {
-                        "type": "integer",
-                        "exclusiveMinimum": 0,
-                        "description": "Storage size in GB",
-                        "example": 1000
-                      },
-                      "total_tera_flops": {
-                        "type": "integer",
-                        "exclusiveMinimum": 0,
-                        "description": "Total Tera Flops",
-                        "example": 1000
-                      },
-                      "network_between_machines": {
-                        "type": "string",
-                        "maxLength": 500,
-                        "description": "Network configuration details between machines in the cluster",
-                        "example": "Dual-port 100GbE NICs in mesh topology with RDMA enabled, primary and backup interconnects between all nodes"
-                      }
-                    },
-                    "required": [
-                      "cpu_model",
-                      "cpu_cores",
-                      "memory_size_gb",
-                      "memory_count",
-                      "memory_type"
-                    ],
-                    "description": "Physical hardware specifications of the machine"
-                  },
-                  "cloud_instance_name": {
-                    "type": "string",
-                    "description": "The instance_name value of the cloud instance. Visit [Cloud Instances](/docs/cloud-instances) to view all available instances and their exact names.",
-                    "example": "c5.xlarge"
-                  }
-                },
-                "required": [
-                  "nickname",
-                  "zkvm_version_id",
-                  "machine",
-                  "cloud_instance_name"
-                ]
-              }
-            }
-          }
-        },
-        "responses": {
-          "200": {
-            "description": "Single machine created",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "object",
-                  "properties": {
-                    "id": {
-                      "type": "number"
-                    }
-                  },
-                  "required": [
-                    "id"
-                  ]
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Invalid request body"
           },
           "401": {
             "description": "Invalid API key"
@@ -1191,13 +581,22 @@
                                 "type": "string",
                                 "format": "uuid"
                               },
-                              "version": {
-                                "type": "string"
+                              "index": {
+                                "type": "integer"
+                              },
+                              "zkvm_version_id": {
+                                "type": "integer"
+                              },
+                              "vk_path": {
+                                "type": [
+                                  "string",
+                                  "null"
+                                ]
+                              },
+                              "is_active": {
+                                "type": "boolean"
                               },
                               "created_at": {
-                                "type": "string"
-                              },
-                              "updated_at": {
                                 "type": "string"
                               },
                               "cluster": {
@@ -1210,19 +609,48 @@
                                   "name": {
                                     "type": "string"
                                   },
-                                  "nickname": {
-                                    "type": "string"
+                                  "team_id": {
+                                    "type": "string",
+                                    "format": "uuid"
+                                  },
+                                  "hardware_description": {
+                                    "type": [
+                                      "string",
+                                      "null"
+                                    ]
+                                  },
+                                  "is_open_source": {
+                                    "type": "boolean"
+                                  },
+                                  "is_multi_gpu": {
+                                    "type": "boolean"
+                                  },
+                                  "num_gpus": {
+                                    "type": "integer"
+                                  },
+                                  "is_active": {
+                                    "type": "boolean"
+                                  },
+                                  "software_link": {
+                                    "type": [
+                                      "string",
+                                      "null"
+                                    ]
                                   },
                                   "created_at": {
-                                    "type": "string"
-                                  },
-                                  "updated_at": {
                                     "type": "string"
                                   }
                                 },
                                 "required": [
                                   "id",
                                   "name",
+                                  "team_id",
+                                  "hardware_description",
+                                  "is_open_source",
+                                  "is_multi_gpu",
+                                  "num_gpus",
+                                  "is_active",
+                                  "software_link",
                                   "created_at"
                                 ]
                               },
@@ -1284,118 +712,15 @@
                                   "release_date",
                                   "created_at"
                                 ]
-                              },
-                              "cluster_machines": {
-                                "type": "array",
-                                "items": {
-                                  "type": "object",
-                                  "properties": {
-                                    "id": {
-                                      "type": "integer"
-                                    },
-                                    "cluster_version_id": {
-                                      "type": "integer"
-                                    },
-                                    "machine_id": {
-                                      "type": "integer"
-                                    },
-                                    "cloud_instance_id": {
-                                      "type": "integer"
-                                    },
-                                    "created_at": {
-                                      "type": "string"
-                                    },
-                                    "cloud_instance": {
-                                      "type": "object",
-                                      "properties": {
-                                        "id": {
-                                          "type": "integer"
-                                        },
-                                        "instance_id": {
-                                          "type": "string"
-                                        },
-                                        "provider_id": {
-                                          "type": "integer"
-                                        },
-                                        "region": {
-                                          "type": "string"
-                                        },
-                                        "instance_type": {
-                                          "type": "string"
-                                        },
-                                        "created_at": {
-                                          "type": "string"
-                                        },
-                                        "provider": {
-                                          "type": "object",
-                                          "properties": {
-                                            "id": {
-                                              "type": "integer"
-                                            },
-                                            "name": {
-                                              "type": "string"
-                                            },
-                                            "created_at": {
-                                              "type": "string"
-                                            }
-                                          },
-                                          "required": [
-                                            "id",
-                                            "name",
-                                            "created_at"
-                                          ]
-                                        }
-                                      },
-                                      "required": [
-                                        "id",
-                                        "instance_id",
-                                        "provider_id",
-                                        "region",
-                                        "instance_type",
-                                        "created_at"
-                                      ]
-                                    },
-                                    "machine": {
-                                      "type": "object",
-                                      "properties": {
-                                        "id": {
-                                          "type": "integer"
-                                        },
-                                        "name": {
-                                          "type": "string"
-                                        },
-                                        "cpu_count": {
-                                          "type": "integer"
-                                        },
-                                        "memory_gb": {
-                                          "type": "number"
-                                        },
-                                        "created_at": {
-                                          "type": "string"
-                                        }
-                                      },
-                                      "required": [
-                                        "id",
-                                        "name",
-                                        "cpu_count",
-                                        "memory_gb",
-                                        "created_at"
-                                      ]
-                                    }
-                                  },
-                                  "required": [
-                                    "id",
-                                    "cluster_version_id",
-                                    "machine_id",
-                                    "created_at"
-                                  ]
-                                }
                               }
                             },
                             "required": [
                               "id",
                               "cluster_id",
-                              "version",
+                              "index",
+                              "zkvm_version_id",
+                              "vk_path",
+                              "is_active",
                               "created_at"
                             ]
                           }
@@ -1726,114 +1051,6 @@
           },
           "409": {
             "description": "Proof already proved"
-          },
-          "500": {
-            "description": "Internal server error"
-          }
-        }
-      }
-    },
-    "/cloud-instances": {
-      "get": {
-        "tags": [
-          "Cloud instances"
-        ],
-        "summary": "List cloud instances",
-        "description": "Returns a list of available cloud instances across different providers. Filter results by provider using the query parameter. See [Cloud Instances](/docs/cloud-instances) for a visual table view and more details.",
-        "parameters": [
-          {
-            "in": "query",
-            "name": "provider",
-            "schema": {
-              "type": "string"
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "Cloud instances",
-            "content": {
-              "application/json": {
-                "schema": {
-                  "type": "array",
-                  "items": {
-                    "type": "object",
-                    "properties": {
-                      "id": {
-                        "type": "number"
-                      },
-                      "provider": {
-                        "type": "string"
-                      },
-                      "instance_name": {
-                        "type": "string"
-                      },
-                      "region": {
-                        "type": "string"
-                      },
-                      "hourly_price": {
-                        "type": "number"
-                      },
-                      "cpu_arch": {
-                        "type": "string"
-                      },
-                      "cpu_cores": {
-                        "type": "number"
-                      },
-                      "cpu_effective_cores": {
-                        "type": "number"
-                      },
-                      "cpu_name": {
-                        "type": "string"
-                      },
-                      "memory": {
-                        "type": "number"
-                      },
-                      "gpu_count": {
-                        "type": "number"
-                      },
-                      "gpu_arch": {
-                        "type": "string"
-                      },
-                      "gpu_name": {
-                        "type": "string"
-                      },
-                      "gpu_memory": {
-                        "type": "number"
-                      },
-                      "mobo_name": {
-                        "type": "string"
-                      },
-                      "disk_name": {
-                        "type": "string"
-                      },
-                      "disk_space": {
-                        "type": "number"
-                      },
-                      "created_at": {
-                        "type": "string"
-                      },
-                      "snapshot_date": {
-                        "type": "string"
-                      }
-                    },
-                    "required": [
-                      "id",
-                      "provider",
-                      "instance_name",
-                      "region",
-                      "hourly_price",
-                      "cpu_cores",
-                      "memory",
-                      "created_at"
-                    ]
-                  }
-                }
-              }
-            }
-          },
-          "400": {
-            "description": "Invalid query parameters"
           },
           "500": {
             "description": "Internal server error"

@@ -16,40 +16,36 @@ export const fetchTeamProofsPaginated = async (
   teamId: string,
   pagination: PaginationState
 ) => {
-  const proofsRows = await db.query.proofs.findMany({
-    with: {
-      block: true,
-      cluster_version: {
-        with: {
-          cluster: true,
-          zkvm_version: {
-            with: {
-              zkvm: true,
-            },
-          },
-          cluster_machines: {
-            with: {
-              cloud_instance: true,
-              machine: true,
+  const [proofsRows, rowCountResult] = await Promise.all([
+    db.query.proofs.findMany({
+      with: {
+        block: true,
+        cluster_version: {
+          with: {
+            cluster: true,
+            zkvm_version: {
+              with: {
+                zkvm: true,
+              },
             },
           },
         },
+        gpu_price_index: true,
       },
-    },
-    where: (proofs, { eq }) => eq(proofs.team_id, teamId),
-    orderBy: (proofs, { desc }) => [desc(proofs.created_at)],
-    limit: pagination.pageSize,
-    offset: pagination.pageIndex * pagination.pageSize,
-  })
-
-  const [rowCount] = await db
-    .select({ count: count() })
-    .from(proofs)
-    .where(eq(proofs.team_id, teamId))
+      where: (proofs, { eq }) => eq(proofs.team_id, teamId),
+      orderBy: (proofs, { desc }) => [desc(proofs.created_at)],
+      limit: pagination.pageSize,
+      offset: pagination.pageIndex * pagination.pageSize,
+    }),
+    db
+      .select({ count: count() })
+      .from(proofs)
+      .where(eq(proofs.team_id, teamId)),
+  ])
 
   return {
     rows: proofsRows,
-    rowCount: rowCount.count,
+    rowCount: rowCountResult[0].count,
   }
 }
 
@@ -138,21 +134,15 @@ export const fetchProvedProofsByClusterId = async (
               zkvm: true,
             },
           },
-          cluster_machines: {
-            with: {
-              cloud_instance: {
-                with: {
-                  provider: true,
-                },
-              },
-              machine: true,
-            },
-          },
         },
       },
+      gpu_price_index: true,
     },
     where: (proofs, { eq, and }) =>
-      and(eq(proofs.proof_status, "proved"), eq(proofs.cluster_id, clusterId)),
+      and(
+        eq(proofs.proof_status, "proved"),
+        eq(proofs.cluster_id, clusterId)
+      ),
     orderBy: (proofs, { desc }) => [desc(proofs.created_at)],
     limit: maxProofsToFetch,
   })
@@ -241,18 +231,9 @@ export const fetchProofsFiltered = async ({
               zkvm: true,
             },
           },
-          cluster_machines: {
-            with: {
-              cloud_instance: {
-                with: {
-                  provider: true,
-                },
-              },
-              machine: true,
-            },
-          },
         },
       },
+      gpu_price_index: true,
     },
     where: and(...conditions),
     orderBy: (proofs, { desc }) => [desc(proofs.created_at)],
@@ -301,6 +282,7 @@ export const fetchAllProofsForRealtime = async () => {
           },
         },
       },
+      gpu_price_index: true,
     },
     where: (proofs, { inArray }) =>
       inArray(proofs.block_number, blockNumbersToFetch),

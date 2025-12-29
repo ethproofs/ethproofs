@@ -91,14 +91,9 @@ export const fetchBlocksPaginated = async (
                   zkvm: true,
                 },
               },
-              cluster_machines: {
-                with: {
-                  cloud_instance: true,
-                  machine: true,
-                },
-              },
             },
           },
+          gpu_price_index: true,
         },
         where:
           machineType === "all"
@@ -190,16 +185,6 @@ export const fetchBlock = async ({
               cluster_version: {
                 with: {
                   cluster: true,
-                  cluster_machines: {
-                    with: {
-                      machine: true,
-                      cloud_instance: {
-                        with: {
-                          provider: true,
-                        },
-                      },
-                    },
-                  },
                   zkvm_version: {
                     with: {
                       zkvm: true,
@@ -207,6 +192,7 @@ export const fetchBlock = async ({
                   },
                 },
               },
+              gpu_price_index: true,
             },
           },
         },
@@ -241,14 +227,9 @@ export const fetchBlocks = cache(
                     zkvm: true,
                   },
                 },
-                cluster_machines: {
-                  with: {
-                    cloud_instance: true,
-                    machine: true,
-                  },
-                },
               },
             },
+            gpu_price_index: true,
           },
           // Filter proofs by cluster type
           where:

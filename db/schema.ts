@@ -95,9 +95,7 @@ export const clusters = pgTable(
         onDelete: "cascade",
         onUpdate: "cascade",
       }),
-    // TODO:TEAM - remove this field
-    // DEPRECATED: use cluster_hardware table instead
-    hardware: text(),
+    hardware_description: text(),
     is_open_source: boolean().notNull().default(false),
     is_multi_gpu: boolean("is_multi_gpu").notNull().default(false),
     num_gpus: integer("num_gpus").notNull().default(1),
@@ -300,6 +298,13 @@ export const proofs = pgTable(
       }),
     proving_time: integer("proving_time"),
     size_bytes: bigint("size_bytes", { mode: "number" }),
+    gpu_price_index_id: bigint("gpu_price_index_id", { mode: "number" }).references(
+      () => gpuPriceIndex.id,
+      {
+        onDelete: "set null",
+        onUpdate: "cascade",
+      }
+    ),
   },
   (table) => [
     unique("unique_block_cluster_version").on(
@@ -425,7 +430,7 @@ export const recentSummary = pgView("recent_summary", {
   .as(
     sql`
     SELECT count(DISTINCT b.block_number) AS total_proven_blocks,
-      -- Calculate average cost per proof using gpu_price_index
+      -- Calculate average cost per proof using gpu_price_index snapshot
       COALESCE(avg(c.num_gpus::double precision * gpi.hourly_price * p.proving_time::double precision / (1000.0 * 60::numeric * 60::numeric)::double precision), 0::numeric::double precision) AS avg_cost_per_proof,
       -- Calculate median cost per proof
       COALESCE(PERCENTILE_CONT(0.5) WITHIN GROUP (ORDER BY c.num_gpus::double precision * gpi.hourly_price * p.proving_time::double precision / (1000.0 * 60::numeric * 60::numeric)::double precision), 0::numeric::double precision) AS median_cost_per_proof,
@@ -437,12 +442,7 @@ export const recentSummary = pgView("recent_summary", {
     INNER JOIN proofs p ON b.block_number = p.block_number AND p.proof_status = 'proved'::text
     INNER JOIN cluster_versions cv ON p.cluster_version_id = cv.id
     INNER JOIN clusters c ON cv.cluster_id = c.id
-    CROSS JOIN LATERAL (
-      SELECT hourly_price
-      FROM gpu_price_index
-      ORDER BY created_at DESC
-      LIMIT 1
-    ) gpi
+    LEFT JOIN gpu_price_index gpi ON p.gpu_price_index_id = gpi.id
     WHERE b."timestamp" >= (now() - '30 days'::interval)`
   )
 
@@ -482,12 +482,7 @@ export const teamsSummary = pgView("teams_summary", {
     LEFT JOIN proofs p ON t.id = p.team_id AND p.proof_status = 'proved'::text
     LEFT JOIN cluster_versions cv ON p.cluster_version_id = cv.id
     LEFT JOIN clusters c ON cv.cluster_id = c.id
-    CROSS JOIN LATERAL (
-      SELECT hourly_price
-      FROM gpu_price_index
-      ORDER BY created_at DESC
-      LIMIT 1
-    ) gpi
+    LEFT JOIN gpu_price_index gpi ON p.gpu_price_index_id = gpi.id
     GROUP BY t.id`
   )
 
@@ -509,12 +504,7 @@ export const clusterSummary = pgView("cluster_summary", {
     FROM clusters c
     LEFT JOIN cluster_versions cv ON c.id = cv.cluster_id
     LEFT JOIN proofs p ON cv.id = p.cluster_version_id AND p.proof_status = 'proved'::text
-    CROSS JOIN LATERAL (
-      SELECT hourly_price
-      FROM gpu_price_index
-      ORDER BY created_at DESC
-      LIMIT 1
-    ) gpi
+    LEFT JOIN gpu_price_index gpi ON p.gpu_price_index_id = gpi.id
     GROUP BY c.id`
   )
 
