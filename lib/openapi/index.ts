@@ -3,11 +3,9 @@ import { createDocument } from "zod-openapi"
 import { SITE_NAME, SITE_PREVIEW_URL, SITE_URL } from "../constants"
 
 import { blocksPaths } from "./blocks"
-import { cloudInstancesPaths } from "./cloud-instances"
 import { clustersPaths } from "./clusters"
 import { cspBenchmarksPaths } from "./csp-benchmarks"
 import { proofsPaths } from "./proofs"
-import { singleMachinePaths } from "./single-machine"
 
 export const document = createDocument({
   openapi: "3.1.0",
@@ -40,13 +38,7 @@ export const document = createDocument({
       name: "Clusters",
     },
     {
-      name: "Single machine",
-    },
-    {
       name: "Proofs",
-    },
-    {
-      name: "Cloud instances",
     },
     {
       name: "CSP benchmarks",
@@ -55,9 +47,7 @@ export const document = createDocument({
   paths: {
     ...blocksPaths,
     ...clustersPaths,
-    ...singleMachinePaths,
     ...proofsPaths,
-    ...cloudInstancesPaths,
     ...cspBenchmarksPaths,
   },
   components: {

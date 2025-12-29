@@ -1,81 +1,42 @@
 import z from ".."
 
-import { cloudInstanceSchema } from "./cloud-instance"
-import { machineSchema } from "./machine"
 import { zkvmVersionSchema } from "./zkvm"
 
 // Schema for the actual database structure
 export const clusterVersionSchema = z.object({
   id: z.number(),
-  version: z.string(),
-  description: z.string().optional(),
+  cluster_id: z.string().uuid(),
+  index: z.number().int(),
+  zkvm_version_id: z.number().int(),
+  vk_path: z.string().nullable(),
+  is_active: z.boolean(),
   created_at: z.string(),
-  cluster_machines: z.array(
-    z.object({
-      machine_id: z.number(),
-      machine_count: z.number().int().positive(),
-      machine: machineSchema,
-      cloud_instance_id: z.number(),
-      cloud_instance_count: z.number().int().positive(),
-      cloud_instance: cloudInstanceSchema,
-    })
-  ),
 })
 
 // Schema for what's returned by the API queries (with relationships)
 export const clusterVersionWithRelationsSchema = z.object({
   id: z.number().int(),
   cluster_id: z.string().uuid(),
-  version: z.string(),
+  index: z.number().int(),
+  zkvm_version_id: z.number().int(),
+  vk_path: z.string().nullable(),
+  is_active: z.boolean(),
   created_at: z.string(),
-  updated_at: z.string().optional(),
   cluster: z
     .object({
       id: z.string().uuid(),
       name: z.string(),
-      nickname: z.string().optional(),
+      team_id: z.string().uuid(),
+      hardware_description: z.string().nullable(),
+      is_open_source: z.boolean(),
+      is_multi_gpu: z.boolean(),
+      num_gpus: z.number().int(),
+      is_active: z.boolean(),
+      software_link: z.string().nullable(),
       created_at: z.string(),
-      updated_at: z.string().optional(),
     })
     .optional(),
   zkvm_version: zkvmVersionSchema.optional(),
-  cluster_machines: z
-    .array(
-      z.object({
-        id: z.number().int(),
-        cluster_version_id: z.number().int(),
-        machine_id: z.number().int(),
-        cloud_instance_id: z.number().int().optional(),
-        created_at: z.string(),
-        cloud_instance: z
-          .object({
-            id: z.number().int(),
-            instance_id: z.string(),
-            provider_id: z.number().int(),
-            region: z.string(),
-            instance_type: z.string(),
-            created_at: z.string(),
-            provider: z
-              .object({
-                id: z.number().int(),
-                name: z.string(),
-                created_at: z.string(),
-              })
-              .optional(),
-          })
-          .optional(),
-        machine: z
-          .object({
-            id: z.number().int(),
-            name: z.string(),
-            cpu_count: z.number().int(),
-            memory_gb: z.number(),
-            created_at: z.string(),
-          })
-          .optional(),
-      })
-    )
-    .optional(),
 })
 
 export type ClusterVersionWithRelations = z.infer<

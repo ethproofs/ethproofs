@@ -4,12 +4,9 @@ import { authUsers } from "drizzle-orm/supabase"
 import {
   apiAuthTokens,
   blocks,
-  cloudInstances,
-  cloudProviders,
-  clusterMachines,
   clusters,
   clusterVersions,
-  machines,
+  gpuPriceIndex,
   proofs,
   teams,
   zkvmPerformanceMetrics,
@@ -51,41 +48,7 @@ export const clusterVersionsRelations = relations(
       fields: [clusterVersions.zkvm_version_id],
       references: [zkvmVersions.id],
     }),
-    cluster_machines: many(clusterMachines),
     proofs: many(proofs),
-  })
-)
-
-export const clusterMachinesRelations = relations(
-  clusterMachines,
-  ({ one }) => ({
-    cluster_version: one(clusterVersions, {
-      fields: [clusterMachines.cluster_version_id],
-      references: [clusterVersions.id],
-    }),
-    machine: one(machines, {
-      fields: [clusterMachines.machine_id],
-      references: [machines.id],
-    }),
-    cloud_instance: one(cloudInstances, {
-      fields: [clusterMachines.cloud_instance_id],
-      references: [cloudInstances.id],
-    }),
-  })
-)
-
-export const machinesRelations = relations(machines, ({ many }) => ({
-  cluster_machines: many(clusterMachines),
-}))
-
-export const cloudInstancesRelations = relations(
-  cloudInstances,
-  ({ one, many }) => ({
-    cluster_machines: many(clusterMachines),
-    provider: one(cloudProviders, {
-      fields: [cloudInstances.provider_id],
-      references: [cloudProviders.id],
-    }),
   })
 )
 
@@ -136,4 +99,12 @@ export const proofsRelations = relations(proofs, ({ one }) => ({
     fields: [proofs.team_id],
     references: [teams.id],
   }),
+  gpu_price_index: one(gpuPriceIndex, {
+    fields: [proofs.gpu_price_index_id],
+    references: [gpuPriceIndex.id],
+  }),
+}))
+
+export const gpuPriceIndexRelations = relations(gpuPriceIndex, ({ many }) => ({
+  proofs: many(proofs),
 }))

@@ -6,12 +6,9 @@ import { CHART_RANGES, ZKVM_THRESHOLDS } from "./constants"
 
 import {
   blocks,
-  cloudInstances,
-  cloudProviders,
-  clusterMachines,
   clusters,
   clusterVersions,
-  machines,
+  gpuPriceIndex,
   proofs,
   proofsDailyStats,
   proverDailyStats,
@@ -24,16 +21,6 @@ import {
   zkvmSecurityMetrics,
   zkvmVersions,
 } from "@/db/schema"
-
-/**
- * Represents a row in the cloud_instances table.
- */
-export type CloudInstance = typeof cloudInstances.$inferSelect
-
-/**
- * Represents a row in the cloud_providers table.
- */
-export type CloudProvider = typeof cloudProviders.$inferSelect
 
 /**
  * Represents a row in the blocks table.
@@ -51,24 +38,14 @@ export type ClusterBase = typeof clusters.$inferSelect
 export type ClusterVersionBase = typeof clusterVersions.$inferSelect
 
 /**
- * Represents a row in the cluster_machines table.
- */
-export type ClusterMachineBase = typeof clusterMachines.$inferSelect
-
-/**
- * Represents a row in the machines table.
- */
-export type MachineBase = typeof machines.$inferSelect
-
-/**
- * Represents a row in the cloud_instances table.
- */
-export type CloudInstanceBase = typeof cloudInstances.$inferSelect
-
-/**
  * Represents a row in the proofs table.
  */
 export type ProofBase = typeof proofs.$inferSelect
+
+/**
+ * Represents a row in the gpu_price_index table.
+ */
+export type GpuPriceIndex = typeof gpuPriceIndex.$inferSelect
 
 /**
  * Represents a row in the teams table.
@@ -126,10 +103,6 @@ export type ClusterVersionExtensions = {
   zkvm_version: ZkvmVersion & {
     zkvm: Zkvm
   }
-  cluster_machines: (ClusterMachineBase & {
-    cloud_instance: CloudInstanceBase
-    machine: MachineBase
-  })[]
 }
 
 /**
@@ -145,11 +118,12 @@ export type Cluster = ClusterBase & {
 }
 
 /**
- * Extensions for the Proof type, adding optional block, cluster, and team properties.
+ * Extensions for the Proof type, adding optional block, cluster, team, and gpu_price_index properties.
  */
 export type ProofExtensions = {
   block?: BlockBase
   team?: Team
+  gpu_price_index?: GpuPriceIndex | null
 }
 
 /**

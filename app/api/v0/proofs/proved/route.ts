@@ -7,6 +7,7 @@ import { TAGS } from "@/lib/constants"
 import { db } from "@/db"
 import { clusters, proofs } from "@/db/schema"
 import { updateBlock } from "@/lib/api/blocks"
+import { getLatestGpuPriceIndex } from "@/lib/api/gpu-price-index"
 import { uploadProofBinary } from "@/lib/api/proof-binaries"
 import { getTeam } from "@/lib/api/teams"
 import { withAuthAndRateLimit } from "@/lib/middleware/with-rate-limit"
@@ -92,6 +93,9 @@ export const POST = withAuthAndRateLimit(
 
     const binaryBuffer = Buffer.from(proof, "base64")
 
+    // Get the current GPU price index to snapshot the price at time of proving
+    const gpuPriceIndex = await getLatestGpuPriceIndex()
+
     const dataToInsert = {
       ...restProofPayload,
       block_number,
@@ -101,6 +105,7 @@ export const POST = withAuthAndRateLimit(
       proved_timestamp: timestamp,
       size_bytes: binaryBuffer.byteLength,
       team_id: teamId,
+      gpu_price_index_id: gpuPriceIndex?.id ?? null,
     }
 
     try {

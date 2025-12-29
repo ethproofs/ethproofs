@@ -5,7 +5,6 @@ import { TAGS } from "@/lib/constants"
 
 import { db } from "@/db"
 import {
-  clusterMachines,
   clusters,
   clusterVersions,
   proofs,
@@ -27,16 +26,6 @@ export const getCluster = async (id: string) => {
               zkvm_version: {
                 with: {
                   zkvm: true,
-                },
-              },
-              cluster_machines: {
-                with: {
-                  machine: true,
-                  cloud_instance: {
-                    with: {
-                      provider: true,
-                    },
-                  },
                 },
               },
             },
@@ -104,11 +93,6 @@ export const getActiveClusters = async (filters?: {
                   zkvm: true,
                 },
               },
-              cluster_machines: {
-                with: {
-                  machine: true,
-                },
-              },
             },
           },
         },
@@ -142,27 +126,6 @@ export const getActiveClusterCountByZkvmId = cache(
     return result
   },
   ["active-clusters-by-zkvm-id"],
-  {
-    revalidate: 60 * 60 * 24, // daily
-    tags: [TAGS.CLUSTERS],
-  }
-)
-
-export const getActiveMachineCount = cache(
-  async () => {
-    const [machineCount] = await db
-      .select({ count: sum(clusterMachines.machine_count) })
-      .from(clusterMachines)
-      .innerJoin(
-        clusterVersions,
-        eq(clusterMachines.cluster_version_id, clusterVersions.id)
-      )
-      .innerJoin(clusters, eq(clusterVersions.cluster_id, clusters.id))
-      .where(eq(clusters.is_active, true))
-
-    return machineCount.count
-  },
-  ["active-machine-count"],
   {
     revalidate: 60 * 60 * 24, // daily
     tags: [TAGS.CLUSTERS],

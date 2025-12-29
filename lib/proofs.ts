@@ -15,17 +15,14 @@ export const isCompleted = (proof: { proof_status: string }) =>
 
 /**
  * Checks if the cost information is available for a given proof.
- * Requires proof proving_time, per-instance hourly_price, and instance_count
+ * Requires proof proving_time, cluster info, and gpu_price_index with hourly_price
  *
  * @param {Proof} p - The proof object to check.
  * @returns {boolean} `true` if information to calculate costs are available, otherwise `false`.
  */
 export const hasCostInfo = (p: ProofWithCluster) => {
-  if (!p.proving_time || !p.cluster_version) return false
-  return p.cluster_version.cluster_machines.some(
-    (config) =>
-      !!config.cloud_instance?.hourly_price && !!config.cloud_instance_count
-  )
+  if (!p.proving_time || !p.cluster_version?.cluster) return false
+  return !!p.gpu_price_index?.hourly_price
 }
 
 /**
@@ -122,46 +119,37 @@ export const getProofBestTimeToProof = (proofs: Proof[]): Proof | null => {
 }
 
 /**
- * Calculates the total hourly price for a cluster based on its configuration.
- * Multiplies the hourly price of each instance type by the number of that
- * instance being used within the cluster, and sums the results to get total
- * hourly price per cluster.
- *
- * @param configs - An array of cluster configurations.
- * @returns The total hourly price for the cluster.
- */
-export const getClusterHourlyPrice = (cluster: ClusterVersion): number => {
-  return cluster.cluster_machines.reduce((acc, config) => {
-    const { cloud_instance_count, cloud_instance } = config
-    if (!cloud_instance?.hourly_price || !cloud_instance_count) return acc
-    return acc + cloud_instance_count * cloud_instance.hourly_price
-  }, 0)
-}
-
-/**
  * Calculates the cost of proving based on the provided proof object.
- * The cost is calculated as the product of the proving time (milliseconds) and
- * the total hourly price of the cluster configuration.
+ * Uses the snapshot gpu_price_index.hourly_price from when the proof was created.
  *
- * @param proof - The proof object containing proving time and cluster info.
- * @example clusterHourlyPrice(USD/hr) * proving_time(ms) / 1e3(ms/s) / 60(s/min) / 60(min/hr) = provingCost(USD)
- * @returns The calculated proving cost in USD, as a number.
+ * @param proof - The proof object containing proving time, cluster info, and gpu_price_index.
+ * @example (num_gpus * hourlyPrice)(USD/hr) * proving_time(ms) / 1e3(ms/s) / 60(s/min) / 60(min/hr) = provingCost(USD)
+ * @returns The calculated proving cost in USD, or null if data is unavailable.
  */
 export const getProvingCost = (proof: {
   proving_time?: number | null
   cluster_version?: ClusterVersion | null
+  gpu_price_index?: { hourly_price: string | null } | null
 }): number | null => {
-  const { proving_time, cluster_version } = proof
+  const { proving_time, cluster_version, gpu_price_index } = proof
 
-  if (!proving_time || !cluster_version) return null
+  if (
+    !proving_time ||
+    !cluster_version?.cluster ||
+    !gpu_price_index?.hourly_price
+  )
+    return null
 
-  const clusterHourlyPrice = getClusterHourlyPrice(cluster_version)
+  const numGpus = cluster_version.cluster.num_gpus || 1
+  const hourlyPrice = parseFloat(gpu_price_index.hourly_price)
+  const clusterHourlyPrice = numGpus * hourlyPrice
 
   return (proving_time * clusterHourlyPrice) / 1e3 / 60 / 60
 }
 
 /**
  * Calculates the total proving cost from an array of proofs.
+ * Each proof uses its own snapshot gpu_price_index.hourly_price.
  *
  * @param proofs - An array of Proof objects.
  * @returns The total proving cost as a number (USD).
@@ -179,7 +167,8 @@ export const getSumProvingCost = (proofs: ProofWithCluster[]): number => {
 
 /**
  * Calculates the average proving cost of an array of proofs.
- * Filters to completed proofs and those with proving time and price information
+ * Filters to completed proofs and those with proving time and price information.
+ * Each proof uses its own snapshot gpu_price_index.hourly_price.
  *
  * @param {Proof[]} proofs - An array of proof objects.
  * @returns {number} - The average proving cost (USD) of the proofs.
@@ -211,7 +200,11 @@ export const getAvgCostPerTx = (
   transactionCount: number
 ): number => avgProofCost / transactionCount
 
-export const getProofBestProvingCost = (proofs: ProofWithCluster[]) => {
+export const getProofBestProvingCost = (
+  proofs: ProofWithCluster[]
+): ProofWithCluster | null => {
+  if (!proofs.length) return null
+
   return proofs.reduce((a, b) => {
     const costA = getProvingCost(a) || Infinity
     const costB = getProvingCost(b) || Infinity
@@ -273,7 +266,11 @@ export const getCostPerProofStats = (
 
   const bestProof = getProofBestProvingCost(availableProofs)
 
-  const best = getProvingCost(bestProof)!
+  if (!bestProof) return null
+
+  const best = getProvingCost(bestProof)
+
+  if (!best) return null
 
   return {
     avg,
