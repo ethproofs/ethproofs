@@ -6,7 +6,7 @@
 -- 4. Drops the four tables: cluster_machines, machines, cloud_instances, cloud_providers
 -- 5. Recreates views using proofs.gpu_price_index_id instead of latest price
 
--- Step 1: Update num_gpus for all clusters based on their active cluster_version
+-- Step 1: Update num_gpus for all clusters based on their latest cluster_version
 UPDATE clusters c
 SET num_gpus = (
   SELECT COALESCE(SUM(cm.machine_count * m.gpu_count[1]), 1)
@@ -14,12 +14,8 @@ SET num_gpus = (
   INNER JOIN cluster_machines cm ON cm.cluster_version_id = cv.id
   INNER JOIN machines m ON m.id = cm.machine_id
   WHERE cv.cluster_id = c.id
-    AND cv.is_active = true
+  ORDER BY cv.version DESC
   LIMIT 1
-)
-WHERE EXISTS (
-  SELECT 1 FROM cluster_versions cv
-  WHERE cv.cluster_id = c.id AND cv.is_active = true
 );
 
 -- Step 2: Add gpu_price_index_id to proofs table
