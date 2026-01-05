@@ -1,6 +1,6 @@
 "use client"
 
-import { useFormState } from "react-dom"
+import { useActionState } from "react"
 
 import { Input } from "../ui/input"
 
@@ -14,7 +14,7 @@ const initialState = {
 }
 
 export function SignInForm() {
-  const [state, formAction] = useFormState(login, initialState)
+  const [state, formAction] = useActionState(login, initialState)
 
   return (
     <form className="flex flex-col gap-2" action={formAction}>

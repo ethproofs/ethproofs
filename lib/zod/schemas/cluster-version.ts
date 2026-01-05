@@ -42,3 +42,9 @@ export const clusterVersionWithRelationsSchema = z.object({
 export type ClusterVersionWithRelations = z.infer<
   typeof clusterVersionWithRelationsSchema
 >
+
+export const createClusterVersionSchema = z.object({
+  cluster_id: z.string().uuid(),
+  zkvm_version_id: z.number().int().positive(),
+  vk_path: z.string().optional(),
+})

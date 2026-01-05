@@ -28,7 +28,7 @@ const filterData = (data: ChartData[], dayRange: DayRange) => {
     const date = new Date(item.date)
     const referenceDate = new Date()
     const startDate = new Date(referenceDate)
-    startDate.setDate(startDate.getDate() - dayRange - 1)
+    startDate.setDate(startDate.getDate() - dayRange)
     return date >= startDate
   })
 }

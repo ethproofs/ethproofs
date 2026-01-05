@@ -7,14 +7,12 @@ import { revalidatePath } from "next/cache"
 import { redirect } from "next/navigation"
 import { z } from "zod"
 
-import { PUBLIC_ASSETS_BUCKET } from "@/lib/constants"
+import { API_KEY_MANAGER_ROLE, PUBLIC_ASSETS_BUCKET } from "@/lib/constants"
 
 import { db } from "@/db"
 import { apiAuthTokens, teams } from "@/db/schema"
 import { hashToken } from "@/lib/auth/hash-token"
 import { createClient } from "@/utils/supabase/server"
-
-const API_KEY_MANAGER_ROLE = "api_key_manager"
 
 const loginSchema = z.object({
   email: z.string().email(),

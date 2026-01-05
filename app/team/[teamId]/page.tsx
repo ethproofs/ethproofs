@@ -1,9 +1,9 @@
 import { redirect } from "next/navigation"
 
-import type { TeamDetailsPageProps } from "@/app/teams/[teamId]/page"
+import type { TeamDetailsPageProps } from "@/app/teams/[teamSlug]/page"
 
 export default async function RedirectPage({ params }: TeamDetailsPageProps) {
-  const { teamId } = await params
+  const { teamSlug } = await params
 
-  redirect("/teams/" + teamId)
+  redirect("/teams/" + teamSlug)
 }
