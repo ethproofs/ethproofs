@@ -73,7 +73,7 @@ export default async function StatusPage() {
               <Card key={team.team_id} className="p-6">
                 <div>
                   <Link
-                    href={`/teams/${team.team_id}`}
+                    href={`/teams/${team.team_slug}`}
                     className="text-lg text-primary hover:text-primary-light"
                   >
                     {team.team_name}

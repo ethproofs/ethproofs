@@ -137,7 +137,7 @@ export const columns: ColumnDef<ClusterRow>[] = [
     id: "actions",
     header: () => null,
     cell: ({ row }) => (
-      <div className="mr-4 flex flex-row justify-end">
+      <div className="flex flex-row justify-end">
         <ButtonLink
           variant="outline"
           size="icon"

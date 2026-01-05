@@ -37,3 +37,10 @@ export const activeClusterIdSchema = z.object({
     example: 1,
   }),
 })
+
+export const updateClusterMetadataSchema = z.object({
+  id: z.string().uuid(),
+  name: z.string().max(50).optional(),
+  num_gpus: z.number().int().positive().optional(),
+  hardware_description: z.string().max(200).optional(),
+})

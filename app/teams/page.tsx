@@ -1,10 +1,9 @@
-import { ChevronRight } from "lucide-react"
 import type { Metadata } from "next"
+import Link from "next/link"
 
 import { metrics } from "@/components/Metrics"
 import { Null } from "@/components/Null"
 import TeamLogo from "@/components/TeamLogo"
-import { ButtonLink } from "@/components/ui/button"
 import { Card } from "@/components/ui/card"
 
 import { cn } from "@/lib/utils"
@@ -39,33 +38,33 @@ export default async function TeamsPage() {
             }) => {
               const isNewTeam = !avg_cost_per_proof || !avg_proving_time
               return (
-                <Card className="flex flex-1 flex-col gap-4 p-6" key={team_id}>
-                  <div className="relative mx-auto flex h-20 w-full justify-center">
-                    <TeamLogo
-                      src={logo_url}
-                      alt={team_name || "Prover logo"}
-                      className={cn(
-                        "mx-auto max-w-56 object-center",
-                        !logo_url && "opacity-50"
-                      )}
-                    />
-                    <h3
-                      className={cn(
-                        "absolute max-w-full truncate text-center text-3xl",
-                        logo_url && "sr-only"
-                      )}
-                    >
-                      {team_name}
-                    </h3>
-                  </div>
+                <Link href={`/teams/${slug}`} key={team_id}>
+                  <Card className="flex flex-1 cursor-pointer flex-col gap-4 p-6 transition-colors hover:bg-secondary/60">
+                    <div className="relative mx-auto flex h-20 w-full justify-center">
+                      <TeamLogo
+                        src={logo_url}
+                        alt={team_name || "Prover logo"}
+                        className={cn(
+                          "mx-auto max-w-56 object-center",
+                          !logo_url && "opacity-50"
+                        )}
+                      />
+                      <h3
+                        className={cn(
+                          "absolute max-w-full truncate text-center text-3xl",
+                          logo_url && "sr-only"
+                        )}
+                      >
+                        {team_name}
+                      </h3>
+                    </div>
 
-                  <div className="mx-auto flex flex-col items-center gap-6">
-                    {isNewTeam ? (
-                      <div className="py-8 text-center text-lg text-body-secondary">
-                        proving soon
-                      </div>
-                    ) : (
-                      <>
+                    <div className="mx-auto flex flex-col items-center gap-6">
+                      {isNewTeam ? (
+                        <div className="py-8 text-center text-lg text-body-secondary">
+                          proving soon
+                        </div>
+                      ) : (
                         <div className="flex w-full flex-nowrap justify-center">
                           <div className="flex flex-col items-center gap-2 px-4">
                             <div className="flex items-center gap-1 text-body-secondary">
@@ -90,14 +89,10 @@ export default async function TeamsPage() {
                             </div>
                           </div>
                         </div>
-                        <ButtonLink href={`/teams/${slug}`} variant="outline">
-                          details for {team_name}
-                          <ChevronRight className="-mx-2 size-4" />
-                        </ButtonLink>
-                      </>
-                    )}
-                  </div>
-                </Card>
+                      )}
+                    </div>
+                  </Card>
+                </Link>
               )
             }
           )}

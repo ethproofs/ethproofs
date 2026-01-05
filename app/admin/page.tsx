@@ -9,11 +9,11 @@ import { SignInForm } from "@/components/forms/sign-in-form"
 import { PendingTeamsList } from "@/components/pending-teams-list"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 
+import { API_KEY_MANAGER_ROLE } from "@/lib/constants"
+
 import { db } from "@/db"
 import { clusters, teams } from "@/db/schema"
 import { createClient } from "@/utils/supabase/server"
-
-const API_KEY_MANAGER_ROLE = "api_key_manager"
 
 export default async function AdminPage() {
   const supabase = await createClient()

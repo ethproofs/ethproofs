@@ -37,8 +37,8 @@ import { ColumnLabel } from "./data-table-view-options"
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[]
   data: TData[]
-  rowCount: number
-  pagination: PaginationState
+  rowCount?: number
+  pagination?: PaginationState
   setPagination?: OnChangeFn<PaginationState>
   sorting?: SortingState
   setSorting?: OnChangeFn<SortingState>
@@ -49,6 +49,7 @@ interface DataTableProps<TData, TValue> {
   toolbarFilterColumnId?: string
   toolbarFilterPlaceholder?: string
   onExport?: (rows: TData[], isFiltered: boolean) => void
+  onEdit?: (row: TData) => void
   columnLabels?: ColumnLabel[]
   className?: string
   showToolbar?: boolean
@@ -69,6 +70,7 @@ export function DataTable<TData, TValue>({
   toolbarFilterColumnId,
   toolbarFilterPlaceholder,
   onExport,
+  onEdit,
   columnLabels,
   className,
   showToolbar = true,
@@ -82,6 +84,10 @@ export function DataTable<TData, TValue>({
   const [internalSorting, setInternalSorting] = React.useState<SortingState>(
     externalSorting || []
   )
+  const [internalPagination, setInternalPagination] = React.useState<PaginationState>({
+    pageIndex: 0,
+    pageSize: DEFAULT_PAGE_SIZE,
+  })
 
   // Use external sorting if provided, otherwise use internal
   const sorting =
@@ -104,20 +110,26 @@ export function DataTable<TData, TValue>({
   const handleColumnFiltersChange =
     externalSetColumnFilters || setInternalColumnFilters
 
+  // Use external pagination if provided, otherwise use internal
+  const currentPagination = pagination ?? internalPagination
+  const handlePaginationChange = setPagination ?? setInternalPagination
+  const currentRowCount = rowCount ?? data.length
+
   const table = useReactTable({
     data,
     columns,
+    meta: { onEdit },
     state: {
       sorting,
       columnVisibility,
       rowSelection,
       columnFilters,
-      pagination,
+      pagination: currentPagination,
     },
-    rowCount,
+    rowCount: currentRowCount,
     enableRowSelection: true,
-    manualPagination: true,
-    onPaginationChange: setPagination,
+    manualPagination: setPagination !== undefined,
+    onPaginationChange: handlePaginationChange,
     onRowSelectionChange: setRowSelection,
     onSortingChange: handleSortingChange,
     onColumnFiltersChange: handleColumnFiltersChange,

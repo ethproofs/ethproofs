@@ -16,6 +16,7 @@ export interface MissingProofCluster {
 export interface MissingProofTeam {
   team_id: string
   team_name: string
+  team_slug: string
   clusters: MissingProofCluster[]
 }
 
@@ -57,6 +58,7 @@ export const fetchMissingProofsStatus = async (
         .select({
           team_id: teams.id,
           team_name: teams.name,
+          team_slug: teams.slug,
           cluster_id: clusters.id,
           cluster_name: clusters.name,
           cluster_id_suffix: sql<string>`RIGHT(${clusters.id}::text, 6)`,
@@ -140,6 +142,7 @@ export const fetchMissingProofsStatus = async (
           teamsMap.set(row.team_id, {
             team_id: row.team_id,
             team_name: row.team_name,
+            team_slug: row.team_slug,
             clusters: [],
           })
         }

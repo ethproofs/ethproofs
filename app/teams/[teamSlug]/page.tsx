@@ -18,24 +18,24 @@ import ZkvmProvidersAside from "@/components/ZkvmProvidersAside"
 
 import { getActiveClusters } from "@/lib/api/clusters"
 import { getClusterSummary, getTeamSummary } from "@/lib/api/stats"
+import { getTeamBySlug } from "@/lib/api/teams"
 import { getZkvmsByTeamId } from "@/lib/api/zkvms"
 import { getMetadata } from "@/lib/metadata"
 import { formatUsd } from "@/lib/number"
-import { getTeamByIdOrSlug } from "@/lib/teams"
 import { prettyMs } from "@/lib/time"
 import { getHost, getTwitterHandle } from "@/lib/url"
 
 export type TeamDetailsPageProps = {
-  params: Promise<{ teamId: string }>
+  params: Promise<{ teamSlug: string }>
 }
 
 export async function generateMetadata({
   params,
 }: TeamDetailsPageProps): Promise<Metadata> {
-  const { teamId } = await params
+  const { teamSlug } = await params
 
   try {
-    const team = await getTeamByIdOrSlug(teamId)
+    const team = await getTeamBySlug(teamSlug)
     if (!team) throw new Error()
     return getMetadata({ title: `${team.name}` })
   } catch {
@@ -46,11 +46,11 @@ export async function generateMetadata({
 export default async function TeamDetailsPage({
   params,
 }: TeamDetailsPageProps) {
-  const { teamId } = await params
+  const { teamSlug } = await params
 
   let team: Team | undefined
   try {
-    team = await getTeamByIdOrSlug(teamId)
+    team = await getTeamBySlug(teamSlug)
     if (!team) {
       throw new Error()
     }

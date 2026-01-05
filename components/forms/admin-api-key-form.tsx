@@ -1,6 +1,6 @@
 "use client"
 
-import { useFormState } from "react-dom"
+import { useActionState } from "react"
 
 import type { Team } from "@/lib/types"
 
@@ -24,7 +24,7 @@ const initialState = {
 }
 
 export function AdminApiKeyForm({ teams }: { teams: Team[] }) {
-  const [state, formAction] = useFormState(generateApiKey, initialState)
+  const [state, formAction] = useActionState(generateApiKey, initialState)
 
   return (
     <form className="flex flex-col gap-4" action={formAction}>
