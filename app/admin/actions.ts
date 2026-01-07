@@ -100,6 +100,101 @@ export async function signOut() {
   redirect("/")
 }
 
+const forgotPasswordSchema = z.object({
+  email: z.string().email(),
+})
+
+export async function forgotPassword(_prevState: unknown, formData: FormData) {
+  const validatedFields = forgotPasswordSchema.safeParse({
+    email: formData.get("email"),
+  })
+
+  if (!validatedFields.success) {
+    return {
+      errors: validatedFields.error.flatten().fieldErrors,
+    }
+  }
+
+  const { email } = validatedFields.data
+
+  const supabase = await createClient()
+
+  const { error } = await supabase.auth.resetPasswordForEmail(email, {
+    redirectTo: `${process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000"}/reset-password`,
+  })
+
+  if (error) {
+    console.error("Password reset error:", error)
+    return {
+      errors: {
+        email: [`failed to send reset email: ${error.message}`],
+      },
+    }
+  }
+
+  return {
+    success: true,
+  }
+}
+
+const resetPasswordSchema = z.object({
+  password: z.string().min(6, "password must be at least 6 characters"),
+  confirmPassword: z.string().min(6, "password must be at least 6 characters"),
+})
+
+export async function resetPassword(_prevState: unknown, formData: FormData) {
+  const validatedFields = resetPasswordSchema.safeParse({
+    password: formData.get("password"),
+    confirmPassword: formData.get("confirmPassword"),
+  })
+
+  if (!validatedFields.success) {
+    return {
+      errors: validatedFields.error.flatten().fieldErrors,
+    }
+  }
+
+  const { password, confirmPassword } = validatedFields.data
+
+  if (password !== confirmPassword) {
+    return {
+      errors: {
+        confirmPassword: ["passwords do not match"],
+      },
+    }
+  }
+
+  const supabase = await createClient()
+
+  const { data, error } = await supabase.auth.updateUser({
+    password: password,
+  })
+
+  if (error) {
+    return {
+      errors: {
+        password: ["failed to update password"],
+      },
+    }
+  }
+
+  // Get team slug for redirect
+  if (data.user) {
+    const teamData = await db
+      .select()
+      .from(teams)
+      .where(eq(teams.id, data.user.id))
+
+    if (teamData.length > 0 && teamData[0].slug) {
+      revalidatePath(`/teams/${teamData[0].slug}`, "layout")
+      redirect(`/teams/${teamData[0].slug}/dashboard`)
+    }
+  }
+
+  // Fallback to home if team not found
+  redirect("/")
+}
+
 const userSchema = z.object({
   email: z.string().email(),
   name: z.string(),

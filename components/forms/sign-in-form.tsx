@@ -1,6 +1,7 @@
 "use client"
 
 import { useActionState } from "react"
+import Link from "next/link"
 
 import { Input } from "../ui/input"
 
@@ -22,19 +23,25 @@ export function SignInForm() {
         id="email"
         name="email"
         type="email"
-        placeholder="Email"
+        placeholder="email"
         required
       />
       <Input
         id="password"
         name="password"
         type="password"
-        placeholder="Password"
+        placeholder="password"
         autoComplete="current-password"
         required
       />
       <Errors errors={state.errors} />
       <SubmitButton>submit</SubmitButton>
+      <Link
+        href="/forgot-password"
+        className="text-center text-sm text-muted-foreground hover:text-primary"
+      >
+        forgot password?
+      </Link>
     </form>
   )
 }
