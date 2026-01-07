@@ -54,3 +54,6 @@ public/api.html
 # storybook
 *storybook.log
 storybook-static
+
+#AI
+CLAUDE.md
