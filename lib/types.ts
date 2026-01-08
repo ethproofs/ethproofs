@@ -12,6 +12,7 @@ import {
   proofs,
   proofsDailyStats,
   proverDailyStats,
+  proverTypes,
   recentSummary,
   severityLevel,
   teams,
@@ -46,6 +47,11 @@ export type ProofBase = typeof proofs.$inferSelect
  * Represents a row in the gpu_price_index table.
  */
 export type GpuPriceIndex = typeof gpuPriceIndex.$inferSelect
+
+/**
+ * Represents a row in the prover_types table.
+ */
+export type ProverType = typeof proverTypes.$inferSelect
 
 /**
  * Represents a row in the teams table.

@@ -19,6 +19,10 @@ export const labels = [
     label: "prover",
   },
   {
+    value: "prover_type",
+    label: "prover type",
+  },
+  {
     value: "is_open_source",
     label: "prover open source",
   },
@@ -57,6 +61,19 @@ export const columns: ColumnDef<ClusterRow>[] = [
           <div className="text-xs text-muted-foreground">
             {lastVersion.zkvm_version.zkvm.name} by {cluster.team.name}
           </div>
+        </div>
+      )
+    },
+  },
+  {
+    id: "prover_type",
+    accessorKey: "prover_type",
+    header: "prover type",
+    cell: ({ row }) => {
+      const proverType = row.original.prover_type
+      return (
+        <div className="w-[180px]">
+          <div className="text-sm">{proverType?.name.toLowerCase() || "—"}</div>
         </div>
       )
     },

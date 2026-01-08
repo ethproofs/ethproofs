@@ -15,6 +15,7 @@ import { TooltipContentHeader } from "@/components/ui/tooltip"
 
 import { getCluster } from "@/lib/api/clusters"
 import { getClusterSummaryById } from "@/lib/api/stats"
+import { isMultiGpuCluster } from "@/lib/cluster"
 import { getMetadata } from "@/lib/metadata"
 import { formatUsd } from "@/lib/number"
 import { prettyMs } from "@/lib/time"
@@ -105,12 +106,14 @@ export default async function ClusterDetailsPage({
   ]
 
   return (
-    <div className="mx-auto mt-16 max-w-screen-xl space-y-8 px-6 md:mt-24 md:px-8 [&>section]:w-full">
+    <div className="mx-auto mt-12 max-w-screen-xl space-y-8 px-6 md:px-8 [&>section]:w-full">
       <div id="hero-section" className="flex flex-col items-center gap-2">
         <h1 className="text-4xl font-semibold">{cluster.name}</h1>
 
         <div className="text-center font-sans text-sm">
-          {cluster.is_multi_gpu ? "multi-GPU cluster" : "single-GPU cluster"}
+          {isMultiGpuCluster(cluster)
+            ? "multi-GPU cluster"
+            : "single-GPU cluster"}
         </div>
         {team && (
           <DisplayTeam
@@ -145,7 +148,7 @@ export default async function ClusterDetailsPage({
         </aside>
       )}
 
-      <section className="!mt-16 flex w-full flex-wrap justify-evenly gap-x-8 border-b">
+      <section className="mt-12 flex w-full flex-wrap justify-evenly gap-x-8">
         <div className="flex flex-col items-center gap-1 p-4">
           <div className="font-sans text-sm text-body-secondary">zkVM</div>
           <Link
@@ -185,7 +188,7 @@ export default async function ClusterDetailsPage({
         </div>
       </section>
 
-      <section className="pt-12">
+      <section>
         <span className="text-2xl">latest proofs</span>
         <ClusterProofsSection clusterId={clusterId} className="mt-4" />
       </section>

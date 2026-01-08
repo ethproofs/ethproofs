@@ -1,5 +1,6 @@
 "use server"
 
+import { and, eq } from "drizzle-orm"
 import { revalidatePath, revalidateTag } from "next/cache"
 import { z } from "zod"
 
@@ -16,6 +17,15 @@ const createClusterSchema = z.object({
   name: z.string().max(50, "name must be 50 characters or less"),
   zkvm_version_id: z.coerce.number().int().positive("zkvm version is required"),
   num_gpus: z.coerce.number().int().positive("number of gpus must be positive"),
+  prover_type_id: z.coerce.number().int().positive("prover type is required"),
+  is_active: z
+    .string()
+    .transform((val) => {
+      if (val === "on") return true
+      if (val === "false") return false
+      return true
+    })
+    .optional(),
   hardware_description: z
     .string()
     .max(200, "hardware description must be 200 characters or less")
@@ -37,13 +47,26 @@ const updateClusterSchema = z.object({
     .int()
     .positive("number of gpus must be positive")
     .optional(),
+  prover_type_id: z.coerce.number().int().positive().optional(),
+  is_active: z
+    .string()
+    .transform((val) => {
+      if (val === "on") return true
+      if (val === "false") return false
+      return undefined
+    })
+    .optional(),
   hardware_description: z
     .string()
     .max(200, "hardware description must be 200 characters or less")
     .optional()
     .nullable()
     .transform((val) => val ?? undefined),
-  vk_path: z.string().optional().nullable().transform((val) => val ?? undefined),
+  vk_path: z
+    .string()
+    .optional()
+    .nullable()
+    .transform((val) => val ?? undefined),
 })
 
 export async function createCluster(_prevState: unknown, formData: FormData) {
@@ -67,6 +90,8 @@ export async function createCluster(_prevState: unknown, formData: FormData) {
     name: formData.get("name"),
     zkvm_version_id: formData.get("zkvm_version_id"),
     num_gpus: formData.get("num_gpus"),
+    prover_type_id: formData.get("prover_type_id"),
+    is_active: formData.get("is_active") || undefined,
     hardware_description: formData.get("hardware_description") || undefined,
   })
 
@@ -76,8 +101,14 @@ export async function createCluster(_prevState: unknown, formData: FormData) {
     }
   }
 
-  const { name, zkvm_version_id, num_gpus, hardware_description } =
-    validatedFields.data
+  const {
+    name,
+    zkvm_version_id,
+    num_gpus,
+    prover_type_id,
+    is_active,
+    hardware_description,
+  } = validatedFields.data
 
   // Get team slug from form data
   const teamSlug = formData.get("team_slug") as string
@@ -99,7 +130,9 @@ export async function createCluster(_prevState: unknown, formData: FormData) {
     if (!isAdmin && team.id !== user.id) {
       return {
         errors: {
-          _form: ["you do not have permission to create clusters for this team"],
+          _form: [
+            "you do not have permission to create clusters for this team",
+          ],
         },
       }
     }
@@ -114,6 +147,38 @@ export async function createCluster(_prevState: unknown, formData: FormData) {
       }
     }
 
+    // Validate and fetch prover_type
+    const proverType = await db.query.proverTypes.findFirst({
+      where: (proverTypes, { eq }) => eq(proverTypes.id, prover_type_id),
+    })
+
+    if (!proverType) {
+      return {
+        errors: {
+          prover_type_id: ["invalid prover type"],
+        },
+      }
+    }
+
+    // Check if team already has an active cluster of this prover type (only if creating as active)
+    if (is_active) {
+      const existingActiveCluster = await db.query.clusters.findFirst({
+        where: and(
+          eq(clusters.team_id, team.id),
+          eq(clusters.prover_type_id, prover_type_id),
+          eq(clusters.is_active, true)
+        ),
+      })
+
+      if (existingActiveCluster) {
+        return {
+          errors: {
+            is_active: ["active cluster of this type already exists"],
+          },
+        }
+      }
+    }
+
     // Create cluster and version in database
     let clusterId: string | null = null
     let versionId: number | null = null
@@ -125,10 +190,10 @@ export async function createCluster(_prevState: unknown, formData: FormData) {
         .values({
           name,
           hardware_description,
-          is_multi_gpu: num_gpus > 1,
           num_gpus,
+          prover_type_id,
           team_id: team.id,
-          is_active: true,
+          is_active: is_active ?? true,
         })
         .returning({ id: clusters.id })
 
@@ -189,6 +254,8 @@ export async function updateCluster(_prevState: unknown, formData: FormData) {
     name: formData.get("name") || undefined,
     zkvm_version_id: formData.get("zkvm_version_id") || undefined,
     num_gpus: formData.get("num_gpus") || undefined,
+    prover_type_id: formData.get("prover_type_id") || undefined,
+    is_active: formData.get("is_active") || undefined,
     hardware_description: formData.get("hardware_description") || undefined,
     vk_path: formData.get("vk_path") || undefined,
   })
@@ -199,8 +266,16 @@ export async function updateCluster(_prevState: unknown, formData: FormData) {
     }
   }
 
-  const { id, name, zkvm_version_id, num_gpus, hardware_description, vk_path } =
-    validatedFields.data
+  const {
+    id,
+    name,
+    zkvm_version_id,
+    num_gpus,
+    prover_type_id,
+    is_active,
+    hardware_description,
+    vk_path,
+  } = validatedFields.data
 
   // Get original cluster data to determine what changed
   const originalName = formData.get("original_name") as string
@@ -208,6 +283,10 @@ export async function updateCluster(_prevState: unknown, formData: FormData) {
     formData.get("original_zkvm_version_id") as string
   )
   const originalNumGpus = parseInt(formData.get("original_num_gpus") as string)
+  const originalProverTypeId = formData.get("original_prover_type_id")
+    ? parseInt(formData.get("original_prover_type_id") as string)
+    : null
+  const originalIsActive = formData.get("original_is_active") === "true"
   const originalHardwareDescription = formData.get(
     "original_hardware_description"
   ) as string
@@ -239,12 +318,48 @@ export async function updateCluster(_prevState: unknown, formData: FormData) {
       }
     }
 
+    // Check if prover_type_id or is_active changed
+    const proverTypeChanged =
+      prover_type_id !== undefined && prover_type_id !== originalProverTypeId
+    const isActiveChanged =
+      is_active !== undefined && is_active !== originalIsActive
+
+    // If trying to activate or change to a type that already has an active cluster
+    if (proverTypeChanged || isActiveChanged) {
+      const targetProverTypeId = proverTypeChanged
+        ? prover_type_id
+        : originalProverTypeId
+      const targetIsActive = isActiveChanged ? is_active : originalIsActive
+
+      // Only check if the target state is active
+      if (targetIsActive && targetProverTypeId) {
+        const existingActiveCluster = await db.query.clusters.findFirst({
+          where: and(
+            eq(clusters.team_id, cluster.team_id),
+            eq(clusters.prover_type_id, targetProverTypeId),
+            eq(clusters.is_active, true)
+          ),
+        })
+
+        // If there's an existing active cluster and it's not the current cluster
+        if (existingActiveCluster && existingActiveCluster.id !== id) {
+          return {
+            errors: {
+              is_active: ["active cluster of this type already exists"],
+            },
+          }
+        }
+      }
+    }
+
     // Determine which fields changed
     const metadataChanged =
       (name !== undefined && name !== originalName) ||
       (num_gpus !== undefined && num_gpus !== originalNumGpus) ||
       (hardware_description !== undefined &&
-        hardware_description !== originalHardwareDescription)
+        hardware_description !== originalHardwareDescription) ||
+      proverTypeChanged ||
+      isActiveChanged
 
     const versionChanged =
       (zkvm_version_id !== undefined &&
@@ -257,6 +372,8 @@ export async function updateCluster(_prevState: unknown, formData: FormData) {
         name?: string
         num_gpus?: number
         hardware_description?: string
+        prover_type_id?: number
+        is_active?: boolean
       } = {}
 
       if (name !== undefined && name !== originalName)
@@ -269,6 +386,10 @@ export async function updateCluster(_prevState: unknown, formData: FormData) {
       ) {
         metadataUpdate.hardware_description = hardware_description
       }
+      if (proverTypeChanged) {
+        metadataUpdate.prover_type_id = prover_type_id
+      }
+      if (isActiveChanged) metadataUpdate.is_active = is_active
 
       await updateClusterMetadata(id, metadataUpdate)
     }

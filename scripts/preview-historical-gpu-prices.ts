@@ -58,7 +58,7 @@ async function main() {
     }
 
     console.log(`Found ${quarterlyData.length} quarters with proof data:\n`)
-    console.log("=" .repeat(80))
+    console.log("=".repeat(80))
 
     // Display what WOULD be created
     quarterlyData.forEach((quarter, idx) => {
@@ -96,7 +96,9 @@ async function main() {
 
       // Use the actual quarter start for created_at (first day of quarter in UTC)
       const quarterStartMonth = (quarterNum - 1) * 3
-      const createdAt = new Date(Date.UTC(year, quarterStartMonth, 1)).toISOString()
+      const createdAt = new Date(
+        Date.UTC(year, quarterStartMonth, 1)
+      ).toISOString()
 
       console.log(
         `INSERT INTO gpu_price_index (gpu_name, hourly_price, created_at) VALUES ('${gpuName}', ${hourlyPrice}, '${createdAt}');`

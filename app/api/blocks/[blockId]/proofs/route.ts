@@ -4,6 +4,7 @@ import { DEFAULT_FETCH_LIMIT } from "@/lib/constants"
 
 import { fetchBlock } from "@/lib/api/blocks"
 import { isBlockHash } from "@/lib/blocks"
+import { isMultiGpuCluster } from "@/lib/cluster"
 
 export async function GET(
   request: NextRequest,
@@ -40,11 +41,15 @@ export async function GET(
     // Filter by machine type
     if (filterType === "single") {
       filteredProofs = filteredProofs.filter(
-        (proof) => !proof.cluster_version?.cluster.is_multi_gpu
+        (proof) =>
+          proof.cluster_version?.cluster &&
+          !isMultiGpuCluster(proof.cluster_version.cluster)
       )
     } else if (filterType === "multi") {
       filteredProofs = filteredProofs.filter(
-        (proof) => proof.cluster_version?.cluster.is_multi_gpu
+        (proof) =>
+          proof.cluster_version?.cluster &&
+          isMultiGpuCluster(proof.cluster_version.cluster)
       )
     }
 

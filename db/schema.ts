@@ -83,6 +83,20 @@ export const blocks = pgTable(
   ]
 )
 
+export const proverTypes = pgTable("prover_types", {
+  id: smallint().primaryKey().notNull(),
+  name: text().notNull().unique(),
+  processing_ratio: text("processing_ratio").notNull(),
+  gpu_configuration: text("gpu_configuration").notNull(),
+  deployment_type: text("deployment_type").notNull(),
+  created_at: timestamp("created_at", {
+    withTimezone: true,
+    mode: "string",
+  })
+    .defaultNow()
+    .notNull(),
+})
+
 export const clusters = pgTable(
   "clusters",
   {
@@ -95,9 +109,9 @@ export const clusters = pgTable(
         onDelete: "cascade",
         onUpdate: "cascade",
       }),
+    prover_type_id: smallint("prover_type_id").references(() => proverTypes.id),
     hardware_description: text(),
     is_open_source: boolean().notNull().default(false),
-    is_multi_gpu: boolean("is_multi_gpu").notNull().default(false),
     num_gpus: integer("num_gpus").notNull().default(1),
     is_active: boolean().notNull().default(false),
     software_link: text(),
@@ -298,13 +312,12 @@ export const proofs = pgTable(
       }),
     proving_time: integer("proving_time"),
     size_bytes: bigint("size_bytes", { mode: "number" }),
-    gpu_price_index_id: bigint("gpu_price_index_id", { mode: "number" }).references(
-      () => gpuPriceIndex.id,
-      {
-        onDelete: "set null",
-        onUpdate: "cascade",
-      }
-    ),
+    gpu_price_index_id: bigint("gpu_price_index_id", {
+      mode: "number",
+    }).references(() => gpuPriceIndex.id, {
+      onDelete: "set null",
+      onUpdate: "cascade",
+    }),
   },
   (table) => [
     unique("unique_block_cluster_version").on(

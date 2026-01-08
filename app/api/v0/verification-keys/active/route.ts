@@ -1,5 +1,6 @@
 import { db } from "@/db"
 import { downloadVerificationKey } from "@/lib/api/verification-keys"
+import { isMultiGpuCluster } from "@/lib/cluster"
 import { withRateLimit } from "@/lib/middleware/with-rate-limit"
 
 export const GET = withRateLimit(
@@ -14,9 +15,9 @@ export const GET = withRateLimit(
             columns: {
               id: true,
               index: true,
-              is_multi_gpu: true,
             },
             with: {
+              prover_type: true,
               team: {
                 columns: {
                   id: true,
@@ -56,7 +57,7 @@ export const GET = withRateLimit(
           }
 
           // Filter to only multi-machine clusters
-          if (!version.cluster.is_multi_gpu) {
+          if (!isMultiGpuCluster(version.cluster)) {
             return null
           }
 

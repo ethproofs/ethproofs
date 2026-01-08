@@ -57,7 +57,8 @@ export const POST = withAuth(async ({ request, user }) => {
     })
   }
 
-  const { name, zkvm_version_id, num_gpus, hardware_description } = clusterPayload
+  const { name, zkvm_version_id, num_gpus, hardware_description } =
+    clusterPayload
 
   // validate zkvm_version_id
   const zkvmVersion = await getZkvmVersion(zkvm_version_id)
@@ -68,14 +69,18 @@ export const POST = withAuth(async ({ request, user }) => {
 
   let clusterIndex: number | null = null
   await db.transaction(async (tx) => {
+    // derive prover_type_id from num_gpus (default to cloud-hosted types)
+    // 1: 1:1 Multi-GPU Cloud, 3: 1:100 Single-GPU Cloud
+    const prover_type_id = num_gpus > 1 ? 1 : 3
+
     // create cluster
     const [cluster] = await tx
       .insert(clusters)
       .values({
         name,
         hardware_description,
-        is_multi_gpu: num_gpus > 1,
         num_gpus,
+        prover_type_id,
         team_id: user.id,
       })
       .returning({ id: clusters.id, index: clusters.index })

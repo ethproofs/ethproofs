@@ -8,6 +8,7 @@ import {
   clusters,
   clusterVersions,
   proofs,
+  proverTypes,
   teams,
   zkvms,
   zkvmVersions,
@@ -20,6 +21,7 @@ export const getCluster = async (id: string) => {
         where: (clusters, { eq }) => eq(clusters.id, id),
         with: {
           team: true,
+          prover_type: true,
           versions: {
             orderBy: desc(clusterVersions.created_at),
             with: {
@@ -61,6 +63,7 @@ export const getClusters = async (filters?: { teamId?: string }) => {
         where: whereConditions.length > 0 ? and(...whereConditions) : undefined,
         with: {
           team: true,
+          prover_type: true,
           versions: {
             orderBy: desc(clusterVersions.created_at),
             with: {
@@ -124,6 +127,7 @@ export const getActiveClusters = async (filters?: {
         where: and(...whereConditions),
         with: {
           team: true,
+          prover_type: true,
           versions: {
             orderBy: desc(clusterVersions.created_at),
             with: {
@@ -213,19 +217,35 @@ export const getZkvmVersions = cache(
   }
 )
 
+export const getProverTypes = cache(
+  async () => {
+    return db.query.proverTypes.findMany({
+      orderBy: (proverTypes) => proverTypes.id,
+    })
+  },
+  ["prover-types"],
+  {
+    revalidate: 60 * 60 * 24, // daily
+    tags: ["prover-types"],
+  }
+)
+
 export const updateClusterMetadata = async (
   clusterId: string,
   data: {
     name?: string
     num_gpus?: number
     hardware_description?: string
+    prover_type_id?: number
+    is_active?: boolean
   }
 ) => {
   const updateData: {
     name?: string
     num_gpus?: number
     hardware_description?: string
-    is_multi_gpu?: boolean
+    prover_type_id?: number
+    is_active?: boolean
   } = {}
 
   if (data.name !== undefined) {
@@ -234,11 +254,18 @@ export const updateClusterMetadata = async (
 
   if (data.num_gpus !== undefined) {
     updateData.num_gpus = data.num_gpus
-    updateData.is_multi_gpu = data.num_gpus > 1
   }
 
   if (data.hardware_description !== undefined) {
     updateData.hardware_description = data.hardware_description
+  }
+
+  if (data.prover_type_id !== undefined) {
+    updateData.prover_type_id = data.prover_type_id
+  }
+
+  if (data.is_active !== undefined) {
+    updateData.is_active = data.is_active
   }
 
   const [updatedCluster] = await db

@@ -24,7 +24,9 @@ async function main() {
 
   try {
     // Step 1: Extract quarterly pricing data
-    console.log("Step 1: Extracting quarterly pricing data from cloud_instances...")
+    console.log(
+      "Step 1: Extracting quarterly pricing data from cloud_instances..."
+    )
     const quarterlyData = await sql`
       SELECT
         DATE_TRUNC('quarter', p.proved_timestamp) as quarter_start,

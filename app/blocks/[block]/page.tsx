@@ -29,6 +29,7 @@ import {
 import { fetchBlock } from "@/lib/api/blocks"
 import { timestampToEpoch, timestampToSlot } from "@/lib/beaconchain"
 import { isBlockHash } from "@/lib/blocks"
+import { isMultiGpuCluster } from "@/lib/cluster"
 import { getMetadata } from "@/lib/metadata"
 import { formatNumber } from "@/lib/number"
 import {
@@ -88,7 +89,11 @@ export default async function BlockDetailsPage({
   const proofsPerStatusCount = getProofsPerStatusCount(proofs)
 
   const singleMachineProofs = proofs
-    .filter((proof) => !proof.cluster_version?.cluster.is_multi_gpu)
+    .filter(
+      (proof) =>
+        proof.cluster_version?.cluster &&
+        !isMultiGpuCluster(proof.cluster_version.cluster)
+    )
     .map((proof) => ({
       ...proof,
       block_number,
@@ -96,7 +101,11 @@ export default async function BlockDetailsPage({
     }))
 
   const multiMachineProofs = proofs
-    .filter((proof) => proof.cluster_version?.cluster.is_multi_gpu)
+    .filter(
+      (proof) =>
+        proof.cluster_version?.cluster &&
+        isMultiGpuCluster(proof.cluster_version.cluster)
+    )
     .map((proof) => ({
       ...proof,
       block_number,

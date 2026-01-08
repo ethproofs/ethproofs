@@ -6,7 +6,13 @@ import { fetchBlockData } from "../blocks"
 import { isUndefined } from "../utils"
 
 import { db } from "@/db"
-import { blocks, clusters, clusterVersions, proofs } from "@/db/schema"
+import {
+  blocks,
+  clusters,
+  clusterVersions,
+  proofs,
+  proverTypes,
+} from "@/db/schema"
 
 export type MachineType = "single" | "multi" | "all"
 
@@ -107,10 +113,17 @@ export const fetchBlocksPaginated = async (
                       clusters,
                       eq(clusterVersions.cluster_id, clusters.id)
                     )
+                    .innerJoin(
+                      proverTypes,
+                      eq(clusters.prover_type_id, proverTypes.id)
+                    )
                     .where(
                       and(
                         eq(clusterVersions.id, proofs.cluster_version_id),
-                        eq(clusters.is_multi_gpu, machineType === "multi")
+                        eq(
+                          proverTypes.gpu_configuration,
+                          machineType === "multi" ? "multi-gpu" : "single-gpu"
+                        )
                       )
                     )
                 ),
@@ -133,10 +146,17 @@ export const fetchBlocksPaginated = async (
                 eq(proofs.cluster_version_id, clusterVersions.id)
               )
               .innerJoin(clusters, eq(clusterVersions.cluster_id, clusters.id))
+              .innerJoin(
+                proverTypes,
+                eq(clusters.prover_type_id, proverTypes.id)
+              )
               .where(
                 and(
                   eq(proofs.block_number, blocks.block_number),
-                  eq(clusters.is_multi_gpu, machineType === "multi")
+                  eq(
+                    proverTypes.gpu_configuration,
+                    machineType === "multi" ? "multi-gpu" : "single-gpu"
+                  )
                 )
               )
           ),
@@ -154,10 +174,14 @@ export const fetchBlocksPaginated = async (
       eq(proofs.cluster_version_id, clusterVersions.id)
     )
     .innerJoin(clusters, eq(clusterVersions.cluster_id, clusters.id))
+    .innerJoin(proverTypes, eq(clusters.prover_type_id, proverTypes.id))
     .where(
       machineType === "all"
         ? undefined
-        : eq(clusters.is_multi_gpu, machineType === "multi")
+        : eq(
+            proverTypes.gpu_configuration,
+            machineType === "multi" ? "multi-gpu" : "single-gpu"
+          )
     )
 
   return {
@@ -184,7 +208,11 @@ export const fetchBlock = async ({
               team: true,
               cluster_version: {
                 with: {
-                  cluster: true,
+                  cluster: {
+                    with: {
+                      prover_type: true,
+                    },
+                  },
                   zkvm_version: {
                     with: {
                       zkvm: true,
@@ -244,10 +272,17 @@ export const fetchBlocks = cache(
                         clusters,
                         eq(clusterVersions.cluster_id, clusters.id)
                       )
+                      .innerJoin(
+                        proverTypes,
+                        eq(clusters.prover_type_id, proverTypes.id)
+                      )
                       .where(
                         and(
                           eq(clusterVersions.id, proofs.cluster_version_id),
-                          eq(clusters.is_multi_gpu, machineType === "multi")
+                          eq(
+                            proverTypes.gpu_configuration,
+                            machineType === "multi" ? "multi-gpu" : "single-gpu"
+                          )
                         )
                       )
                   ),
@@ -273,10 +308,17 @@ export const fetchBlocks = cache(
                   clusters,
                   eq(clusterVersions.cluster_id, clusters.id)
                 )
+                .innerJoin(
+                  proverTypes,
+                  eq(clusters.prover_type_id, proverTypes.id)
+                )
                 .where(
                   and(
                     eq(proofs.block_number, blocks.block_number),
-                    eq(clusters.is_multi_gpu, machineType === "multi")
+                    eq(
+                      proverTypes.gpu_configuration,
+                      machineType === "multi" ? "multi-gpu" : "single-gpu"
+                    )
                   )
                 )
             ),
