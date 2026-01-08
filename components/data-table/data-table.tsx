@@ -84,10 +84,11 @@ export function DataTable<TData, TValue>({
   const [internalSorting, setInternalSorting] = React.useState<SortingState>(
     externalSorting || []
   )
-  const [internalPagination, setInternalPagination] = React.useState<PaginationState>({
-    pageIndex: 0,
-    pageSize: DEFAULT_PAGE_SIZE,
-  })
+  const [internalPagination, setInternalPagination] =
+    React.useState<PaginationState>({
+      pageIndex: 0,
+      pageSize: DEFAULT_PAGE_SIZE,
+    })
 
   // Use external sorting if provided, otherwise use internal
   const sorting =

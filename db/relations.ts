@@ -8,6 +8,7 @@ import {
   clusterVersions,
   gpuPriceIndex,
   proofs,
+  proverTypes,
   teams,
   zkvmPerformanceMetrics,
   zkvms,
@@ -34,6 +35,10 @@ export const clustersRelations = relations(clusters, ({ one, many }) => ({
   team: one(teams, {
     fields: [clusters.team_id],
     references: [teams.id],
+  }),
+  prover_type: one(proverTypes, {
+    fields: [clusters.prover_type_id],
+    references: [proverTypes.id],
   }),
 }))
 
@@ -107,4 +112,8 @@ export const proofsRelations = relations(proofs, ({ one }) => ({
 
 export const gpuPriceIndexRelations = relations(gpuPriceIndex, ({ many }) => ({
   proofs: many(proofs),
+}))
+
+export const proverTypesRelations = relations(proverTypes, ({ many }) => ({
+  clusters: many(clusters),
 }))

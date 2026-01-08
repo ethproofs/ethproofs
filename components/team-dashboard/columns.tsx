@@ -24,6 +24,13 @@ export type DashboardCluster = {
   num_gpus: number
   hardware_description: string | null
   is_active: boolean
+  prover_type: {
+    id: number
+    name: string
+    processing_ratio: string
+    gpu_configuration: string
+    deployment_type: string
+  } | null
   versions: ClusterVersion[]
 }
 
@@ -62,6 +69,19 @@ export const columns: ColumnDef<DashboardCluster>[] = [
               <span className="text-sm text-level-worst">inactive</span>
             </div>
           )}
+        </div>
+      )
+    },
+  },
+  {
+    id: "prover_type",
+    accessorKey: "prover_type",
+    header: "prover type",
+    cell: ({ row }) => {
+      const proverType = row.original.prover_type
+      return (
+        <div className="min-w-[180px]">
+          <div className="text-sm">{proverType?.name.toLowerCase() || "—"}</div>
         </div>
       )
     },

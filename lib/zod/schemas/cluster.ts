@@ -24,7 +24,8 @@ const baseClusterSchema = z.object({
     example: 8,
   }),
   hardware_description: z.string().max(200).optional().openapi({
-    description: "Free-form text description of the cluster's hardware for display in the UI",
+    description:
+      "Free-form text description of the cluster's hardware for display in the UI",
     example: "8x NVIDIA H100 80GB GPUs, AMD EPYC 9654 96-Core Processor",
   }),
 })

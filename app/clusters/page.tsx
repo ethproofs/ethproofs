@@ -5,6 +5,7 @@ import { ClustersTable } from "@/components/clusters-table/clusters-table"
 
 import { getActiveClusters } from "@/lib/api/clusters"
 import { getClusterSummary } from "@/lib/api/stats"
+import { isMultiGpuCluster } from "@/lib/cluster"
 import { getMetadata } from "@/lib/metadata"
 
 export const metadata: Metadata = getMetadata({ title: "Provers" })
@@ -28,11 +29,11 @@ export default async function ClustersPage() {
   })
 
   const singleMachineClusters = clusters
-    .filter((cluster) => !cluster.is_multi_gpu)
+    .filter((cluster) => !isMultiGpuCluster(cluster))
     .sort((a, b) => a.avg_time - b.avg_time)
 
   const multiMachineClusters = clusters
-    .filter((cluster) => cluster.is_multi_gpu)
+    .filter((cluster) => isMultiGpuCluster(cluster))
     .sort((a, b) => a.avg_time - b.avg_time)
 
   return (

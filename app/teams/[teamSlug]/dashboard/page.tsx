@@ -4,7 +4,11 @@ import { API_KEY_MANAGER_ROLE } from "@/lib/constants"
 
 import { DashboardContent } from "./dashboard-content"
 
-import { getClusters, getZkvmVersions } from "@/lib/api/clusters"
+import {
+  getClusters,
+  getProverTypes,
+  getZkvmVersions,
+} from "@/lib/api/clusters"
 import { getTeamBySlug } from "@/lib/api/teams"
 import { createClient } from "@/utils/supabase/server"
 
@@ -51,6 +55,9 @@ export default async function DashboardPage({ params }: DashboardPageProps) {
   // Fetch all zkvm versions for dropdown
   const zkvmVersions = await getZkvmVersions()
 
+  // Fetch all prover types
+  const proverTypes = await getProverTypes()
+
   return (
     <div className="mx-auto mt-2 flex max-w-screen-xl flex-1 flex-col items-center gap-20 [&>section]:w-full">
       <section>
@@ -58,6 +65,7 @@ export default async function DashboardPage({ params }: DashboardPageProps) {
           team={team}
           clusters={clusters}
           zkvmVersions={zkvmVersions}
+          proverTypes={proverTypes}
         />
       </section>
     </div>

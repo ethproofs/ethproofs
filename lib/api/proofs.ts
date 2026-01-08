@@ -139,10 +139,7 @@ export const fetchProvedProofsByClusterId = async (
       gpu_price_index: true,
     },
     where: (proofs, { eq, and }) =>
-      and(
-        eq(proofs.proof_status, "proved"),
-        eq(proofs.cluster_id, clusterId)
-      ),
+      and(eq(proofs.proof_status, "proved"), eq(proofs.cluster_id, clusterId)),
     orderBy: (proofs, { desc }) => [desc(proofs.created_at)],
     limit: maxProofsToFetch,
   })

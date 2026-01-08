@@ -29,7 +29,6 @@ export const clusterVersionWithRelationsSchema = z.object({
       team_id: z.string().uuid(),
       hardware_description: z.string().nullable(),
       is_open_source: z.boolean(),
-      is_multi_gpu: z.boolean(),
       num_gpus: z.number().int(),
       is_active: z.boolean(),
       software_link: z.string().nullable(),

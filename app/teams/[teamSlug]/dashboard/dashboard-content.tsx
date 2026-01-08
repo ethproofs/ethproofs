@@ -26,12 +26,21 @@ type ZkvmVersion = {
   }
 }
 
+type ProverType = {
+  id: number
+  name: string
+  processing_ratio: string
+  gpu_configuration: string
+  deployment_type: string
+}
+
 type Cluster = {
   id: string
   name: string
   num_gpus: number
   hardware_description: string | null
   is_active: boolean
+  prover_type: ProverType | null
   versions: {
     id: number
     index: number
@@ -51,12 +60,14 @@ interface DashboardContentProps {
   team: Team
   clusters: Cluster[]
   zkvmVersions: ZkvmVersion[]
+  proverTypes: ProverType[]
 }
 
 export function DashboardContent({
   team,
   clusters,
   zkvmVersions,
+  proverTypes,
 }: DashboardContentProps) {
   const [drawerOpen, setDrawerOpen] = useState(false)
   const [editingCluster, setEditingCluster] = useState<DashboardCluster | null>(
@@ -102,6 +113,7 @@ export function DashboardContent({
         mode={editingCluster ? "edit" : "create"}
         cluster={editingCluster || undefined}
         zkvmVersions={zkvmVersions}
+        proverTypes={proverTypes}
         open={drawerOpen}
         onOpenChange={handleCloseDrawer}
         teamSlug={team.slug}

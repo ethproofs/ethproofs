@@ -5,6 +5,7 @@ import { useRouter } from "next/navigation"
 
 import { Errors } from "@/components/forms/errors"
 import { Button } from "@/components/ui/button"
+import { Checkbox } from "@/components/ui/checkbox"
 import {
   Drawer,
   DrawerClose,
@@ -41,10 +42,19 @@ type ZkvmVersion = {
   }
 }
 
+type ProverType = {
+  id: number
+  name: string
+  processing_ratio: string
+  gpu_configuration: string
+  deployment_type: string
+}
+
 interface ClusterManagementDrawerProps {
   mode: "create" | "edit"
   cluster?: DashboardCluster
   zkvmVersions: ZkvmVersion[]
+  proverTypes: ProverType[]
   open: boolean
   onOpenChange: (open: boolean) => void
   teamSlug: string
@@ -66,6 +76,7 @@ export function ClusterDrawer({
   mode,
   cluster,
   zkvmVersions,
+  proverTypes,
   open,
   onOpenChange,
   teamSlug,
@@ -75,14 +86,20 @@ export function ClusterDrawer({
   const [selectedFileName, setSelectedFileName] = useState<string>("")
   const fileInputRef = useRef<HTMLInputElement>(null)
 
+  // Reset state when drawer closes
+  useEffect(() => {
+    if (!open) {
+      setState(initialState)
+      setSelectedFileName("")
+      if (fileInputRef.current) fileInputRef.current.value = ""
+    }
+  }, [open])
+
   // Close drawer on successful submission
   useEffect(() => {
     if (state.success) {
       router.refresh()
       onOpenChange(false)
-      setState(initialState)
-      setSelectedFileName("")
-      if (fileInputRef.current) fileInputRef.current.value = ""
     }
   }, [state.success, onOpenChange, router])
 
@@ -206,6 +223,16 @@ export function ClusterDrawer({
                 />
                 <input
                   type="hidden"
+                  name="original_prover_type_id"
+                  value={cluster.prover_type?.id || ""}
+                />
+                <input
+                  type="hidden"
+                  name="original_is_active"
+                  value={cluster.is_active ? "true" : "false"}
+                />
+                <input
+                  type="hidden"
                   name="original_zkvm_version_id"
                   value={activeVersion?.zkvm_version_id || ""}
                 />
@@ -249,6 +276,43 @@ export function ClusterDrawer({
                   defaultValue={cluster?.num_gpus || 1}
                   required
                 />
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="prover_type_id">prover type</Label>
+                <Select
+                  name="prover_type_id"
+                  defaultValue={
+                    cluster?.prover_type?.id.toString() || undefined
+                  }
+                  required
+                >
+                  <SelectTrigger id="prover_type_id">
+                    <SelectValue placeholder="select a prover type" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {proverTypes.map((type) => (
+                      <SelectItem key={type.id} value={type.id.toString()}>
+                        {type.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
+              </div>
+
+              <div className="flex items-center space-x-2">
+                <Checkbox
+                  id="is_active"
+                  name="is_active"
+                  defaultChecked={cluster?.is_active ?? true}
+                />
+                <input type="hidden" name="is_active" value="false" />
+                <Label
+                  htmlFor="is_active"
+                  className="text-sm font-normal leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                >
+                  active
+                </Label>
               </div>
 
               <div className="space-y-2">

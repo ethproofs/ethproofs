@@ -20,6 +20,7 @@ import { getActiveClusters } from "@/lib/api/clusters"
 import { getClusterSummary, getTeamSummary } from "@/lib/api/stats"
 import { getTeamBySlug } from "@/lib/api/teams"
 import { getZkvmsByTeamId } from "@/lib/api/zkvms"
+import { isMultiGpuCluster } from "@/lib/cluster"
 import { getMetadata } from "@/lib/metadata"
 import { formatUsd } from "@/lib/number"
 import { prettyMs } from "@/lib/time"
@@ -79,11 +80,11 @@ export default async function TeamDetailsPage({
   })
 
   const singleMachineClusters = clusters.filter(
-    (cluster) => !cluster.is_multi_gpu
+    (cluster) => !isMultiGpuCluster(cluster)
   )
 
-  const multiMachineClusters = clusters.filter(
-    (cluster) => cluster.is_multi_gpu
+  const multiMachineClusters = clusters.filter((cluster) =>
+    isMultiGpuCluster(cluster)
   )
 
   const singleMachineSummary: SummaryItem[] = [
@@ -142,7 +143,7 @@ export default async function TeamDetailsPage({
 
   return (
     <div className="px-6 md:px-8">
-      <div id="hero-section" className="mb-24 mt-16 md:mt-24">
+      <div id="hero-section" className="my-12">
         <h1 className="flex justify-center pb-6 text-center font-serif text-4xl font-semibold">
           <DisplayTeam team={team} height={48} />
         </h1>
@@ -189,7 +190,7 @@ export default async function TeamDetailsPage({
         </HeroBody>
       </div>
 
-      <div className="mx-auto max-w-screen-xl space-y-20 [&>section]:w-full">
+      <div className="mx-auto max-w-screen-xl space-y-12 [&>section]:w-full">
         <section className="grid grid-cols-1 gap-6 md:grid-cols-2">
           <Card className="!space-y-0">
             <CardHeader className="">multi-GPU performance</CardHeader>
