@@ -4,3 +4,7 @@ CREATE TABLE IF NOT EXISTS "gpu_price_index" (
 	"hourly_price" numeric(10, 6) NOT NULL,
 	"created_at" timestamp with time zone DEFAULT now() NOT NULL
 );
+
+-- Add unique constraint to prevent duplicate (gpu_name, created_at) entries
+CREATE UNIQUE INDEX IF NOT EXISTS "gpu_price_index_gpu_name_created_at_unique"
+  ON "gpu_price_index" ("gpu_name", "created_at");

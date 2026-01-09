@@ -3,6 +3,7 @@ import { ZodError } from "zod"
 
 import { db } from "@/db"
 import { clusters, clusterVersions } from "@/db/schema"
+import { getProverTypes } from "@/lib/api/clusters"
 import { getZkvmVersion } from "@/lib/api/zkvm-versions"
 import { withAuth } from "@/lib/middleware/with-auth"
 import { createClusterSchema } from "@/lib/zod/schemas/cluster"
@@ -13,6 +14,7 @@ export const GET = withAuth(async ({ user }) => {
       columns: {
         index: true,
         name: true,
+        hardware_description: true,
       },
       where: (cluster, { eq }) => eq(cluster.team_id, user.id),
       with: {
@@ -56,7 +58,7 @@ export const POST = withAuth(async ({ request, user }) => {
     })
   }
 
-  const { name, zkvm_version_id, num_gpus, hardware_description } =
+  const { name, zkvm_version_id, num_gpus, hardware_description, deployment_type } =
     clusterPayload
 
   const zkvmVersion = await getZkvmVersion(zkvm_version_id)
@@ -65,21 +67,27 @@ export const POST = withAuth(async ({ request, user }) => {
     return new Response("Invalid zkvm version", { status: 400 })
   }
 
+  const proverTypes = await getProverTypes()
+  const gpuConfiguration = num_gpus > 1 ? "multi-gpu" : "single-gpu"
+  const proverType = proverTypes.find(
+    (pt) =>
+      pt.gpu_configuration === gpuConfiguration &&
+      pt.deployment_type === deployment_type
+  )
+
+  if (!proverType) {
+    return new Response("Invalid prover type for given num_gpus/deployment_type", { status: 400 })
+  }
+
   let clusterIndex: number | null = null
   await db.transaction(async (tx) => {
-    // Derive prover_type_id from num_gpus (default to cloud-hosted types)
-    const multiGpuProverTypeId = 1
-    const singleGpuProverTypeId = 3
-    const prover_type_id =
-      num_gpus > 1 ? multiGpuProverTypeId : singleGpuProverTypeId
-
     const [cluster] = await tx
       .insert(clusters)
       .values({
         name,
         hardware_description,
         num_gpus,
-        prover_type_id,
+        prover_type_id: proverType.id,
         team_id: user.id,
       })
       .returning({ id: clusters.id, index: clusters.index })

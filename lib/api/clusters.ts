@@ -1,5 +1,5 @@
-import { and, desc, eq, exists, gt, sql, sum } from "drizzle-orm"
-import { unstable_cache as cache } from "next/cache"
+import { and, desc, eq, exists, sql } from "drizzle-orm"
+import { revalidateTag, unstable_cache as cache } from "next/cache"
 
 import { TAGS } from "@/lib/constants"
 
@@ -7,8 +7,6 @@ import { db } from "@/db"
 import {
   clusters,
   clusterVersions,
-  proofs,
-  proverTypes,
   teams,
   zkvms,
   zkvmVersions,
@@ -282,6 +280,10 @@ export const updateClusterMetadata = async (
     .where(eq(clusters.id, clusterId))
     .returning()
 
+  // Invalidate caches
+  revalidateTag(TAGS.CLUSTERS)
+  revalidateTag(`cluster-${clusterId}`)
+
   return updatedCluster
 }
 
@@ -323,6 +325,10 @@ export const createClusterVersion = async (
 
     newVersion = createdVersion
   })
+
+  // Invalidate caches
+  revalidateTag(TAGS.CLUSTERS)
+  revalidateTag(`cluster-${clusterId}`)
 
   return newVersion
 }

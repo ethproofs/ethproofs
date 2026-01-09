@@ -10,12 +10,15 @@
 UPDATE clusters c
 SET num_gpus = (
   SELECT COALESCE(SUM(cm.machine_count * m.gpu_count[1]), 1)
-  FROM cluster_versions cv
-  INNER JOIN cluster_machines cm ON cm.cluster_version_id = cv.id
+  FROM cluster_machines cm
   INNER JOIN machines m ON m.id = cm.machine_id
-  WHERE cv.cluster_id = c.id
-  ORDER BY cv.version DESC
-  LIMIT 1
+  WHERE cm.cluster_version_id = (
+    SELECT cv.id
+    FROM cluster_versions cv
+    WHERE cv.cluster_id = c.id
+    ORDER BY cv.version DESC
+    LIMIT 1
+  )
 );
 
 -- Step 2: Add gpu_price_index_id to proofs table
@@ -23,17 +26,14 @@ ALTER TABLE proofs ADD COLUMN gpu_price_index_id BIGINT REFERENCES gpu_price_ind
 
 -- Step 3: Backfill gpu_price_index_id for existing proofs
 -- For each proof, find the gpu_price_index entry that was active at the time of proving
--- Fallback to id=1 (oldest price entry) if no matching price index found
+-- If no matching price index found, gpu_price_index_id will remain NULL (safe with LEFT JOINs)
 UPDATE proofs p
-SET gpu_price_index_id = COALESCE(
-  (
-    SELECT gpi.id
-    FROM gpu_price_index gpi
-    WHERE gpi.created_at <= COALESCE(p.proved_timestamp, p.created_at)
-    ORDER BY gpi.created_at DESC
-    LIMIT 1
-  ),
-  1 -- Fallback to first price index entry for historical proofs
+SET gpu_price_index_id = (
+  SELECT gpi.id
+  FROM gpu_price_index gpi
+  WHERE gpi.created_at <= COALESCE(p.proved_timestamp, p.created_at)
+  ORDER BY gpi.created_at DESC
+  LIMIT 1
 )
 WHERE p.proof_status = 'proved';
 
@@ -102,7 +102,7 @@ SELECT c.id as cluster_id,
   c.name as cluster_name,
   c.team_id,
   COALESCE(sum(c.num_gpus::double precision * gpi.hourly_price * (p.proving_time::numeric / (1000.0 * 60::numeric * 60::numeric))::double precision) / NULLIF(count(p.proof_id), 0)::double precision, 0::double precision) AS avg_cost_per_proof,
-  avg(p.proving_time) AS avg_proving_time
+  COALESCE(avg(p.proving_time), 0::numeric) AS avg_proving_time
 FROM clusters c
 LEFT JOIN cluster_versions cv ON c.id = cv.cluster_id
 LEFT JOIN proofs p ON cv.id = p.cluster_version_id AND p.proof_status = 'proved'::text

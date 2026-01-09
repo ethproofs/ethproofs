@@ -29,7 +29,10 @@ SET "prover_type_id" = CASE
 END;
 
 -- Handle teams with multiple active clusters of the same GPU configuration
--- For each team with duplicate active clusters, set the second one to on-prem variant
+-- For each team:
+--   - First cluster stays as cloud-hosted (1 or 3)
+--   - Second cluster becomes on-prem (2 or 4)
+--   - Third+ clusters are deactivated to prevent unique constraint violation
 WITH ranked_clusters AS (
   SELECT
     "id",
@@ -47,10 +50,16 @@ WITH ranked_clusters AS (
   WHERE "is_active" = true
 )
 UPDATE "clusters" c
-SET "prover_type_id" = CASE
-  WHEN rc."prover_type_id" = 1 THEN 2
-  WHEN rc."prover_type_id" = 3 THEN 4
-END
+SET
+  "prover_type_id" = CASE
+    WHEN rc.row_num = 2 AND rc."prover_type_id" = 1 THEN 2
+    WHEN rc.row_num = 2 AND rc."prover_type_id" = 3 THEN 4
+    ELSE rc."prover_type_id"
+  END,
+  "is_active" = CASE
+    WHEN rc.row_num > 2 THEN false
+    ELSE true
+  END
 FROM ranked_clusters rc
 WHERE c."id" = rc."id"
   AND rc.row_num > 1;
@@ -63,3 +72,6 @@ ALTER TABLE "clusters" ADD CONSTRAINT "clusters_prover_type_id_prover_types_id_f
 CREATE UNIQUE INDEX IF NOT EXISTS "unique_active_prover_per_type_per_team"
   ON "clusters" ("team_id", "prover_type_id")
   WHERE "is_active" = true;
+
+-- Set prover_type_id to NOT NULL now that all rows have been backfilled
+ALTER TABLE "clusters" ALTER COLUMN "prover_type_id" SET NOT NULL;

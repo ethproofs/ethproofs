@@ -73,27 +73,6 @@ export type Database = {
           },
         ]
       }
-      benchmarks: {
-        Row: {
-          created_at: string
-          display_name: string
-          id: number
-          operation_type: string
-        }
-        Insert: {
-          created_at?: string
-          display_name: string
-          id?: number
-          operation_type: string
-        }
-        Update: {
-          created_at?: string
-          display_name?: string
-          id?: number
-          operation_type?: string
-        }
-        Relationships: []
-      }
       blocks: {
         Row: {
           block_number: number
@@ -121,222 +100,32 @@ export type Database = {
         }
         Relationships: []
       }
-      cloud_instances: {
-        Row: {
-          cpu_arch: string | null
-          cpu_cores: number
-          cpu_effective_cores: number | null
-          cpu_name: string | null
-          created_at: string
-          disk_name: string
-          disk_space: number | null
-          gpu_arch: string | null
-          gpu_count: number | null
-          gpu_memory: number | null
-          gpu_name: string | null
-          hourly_price: number
-          id: number
-          instance_name: string
-          memory: number
-          mobo_name: string | null
-          provider_id: number
-          region: string
-          snapshot_date: string | null
-        }
-        Insert: {
-          cpu_arch?: string | null
-          cpu_cores: number
-          cpu_effective_cores?: number | null
-          cpu_name?: string | null
-          created_at?: string
-          disk_name: string
-          disk_space?: number | null
-          gpu_arch?: string | null
-          gpu_count?: number | null
-          gpu_memory?: number | null
-          gpu_name?: string | null
-          hourly_price: number
-          id?: number
-          instance_name: string
-          memory: number
-          mobo_name?: string | null
-          provider_id: number
-          region: string
-          snapshot_date?: string | null
-        }
-        Update: {
-          cpu_arch?: string | null
-          cpu_cores?: number
-          cpu_effective_cores?: number | null
-          cpu_name?: string | null
-          created_at?: string
-          disk_name?: string
-          disk_space?: number | null
-          gpu_arch?: string | null
-          gpu_count?: number | null
-          gpu_memory?: number | null
-          gpu_name?: string | null
-          hourly_price?: number
-          id?: number
-          instance_name?: string
-          memory?: number
-          mobo_name?: string | null
-          provider_id?: number
-          region?: string
-          snapshot_date?: string | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "cloud_instances_provider_id_cloud_providers_id_fk"
-            columns: ["provider_id"]
-            isOneToOne: false
-            referencedRelation: "cloud_providers"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      cloud_providers: {
-        Row: {
-          created_at: string
-          display_name: string
-          id: number
-          name: string
-        }
-        Insert: {
-          created_at?: string
-          display_name: string
-          id?: number
-          name: string
-        }
-        Update: {
-          created_at?: string
-          display_name?: string
-          id?: number
-          name?: string
-        }
-        Relationships: []
-      }
-      cluster_benchmarks: {
-        Row: {
-          benchmark_id: number
-          cluster_id: string
-          cost_usd: number
-          created_at: string
-          id: number
-          time_ms: number
-        }
-        Insert: {
-          benchmark_id: number
-          cluster_id: string
-          cost_usd: number
-          created_at?: string
-          id?: number
-          time_ms: number
-        }
-        Update: {
-          benchmark_id?: number
-          cluster_id?: string
-          cost_usd?: number
-          created_at?: string
-          id?: number
-          time_ms?: number
-        }
-        Relationships: [
-          {
-            foreignKeyName: "cluster_benchmarks_benchmark_id_benchmarks_id_fk"
-            columns: ["benchmark_id"]
-            isOneToOne: false
-            referencedRelation: "benchmarks"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "cluster_benchmarks_cluster_id_clusters_id_fk"
-            columns: ["cluster_id"]
-            isOneToOne: false
-            referencedRelation: "cluster_summary"
-            referencedColumns: ["cluster_id"]
-          },
-          {
-            foreignKeyName: "cluster_benchmarks_cluster_id_clusters_id_fk"
-            columns: ["cluster_id"]
-            isOneToOne: false
-            referencedRelation: "clusters"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
-      cluster_machines: {
-        Row: {
-          cloud_instance_count: number
-          cloud_instance_id: number
-          cluster_version_id: number
-          id: number
-          machine_count: number | null
-          machine_id: number | null
-        }
-        Insert: {
-          cloud_instance_count: number
-          cloud_instance_id: number
-          cluster_version_id: number
-          id?: number
-          machine_count?: number | null
-          machine_id?: number | null
-        }
-        Update: {
-          cloud_instance_count?: number
-          cloud_instance_id?: number
-          cluster_version_id?: number
-          id?: number
-          machine_count?: number | null
-          machine_id?: number | null
-        }
-        Relationships: [
-          {
-            foreignKeyName: "cluster_machines_cloud_instance_id_cloud_instances_id_fk"
-            columns: ["cloud_instance_id"]
-            isOneToOne: false
-            referencedRelation: "cloud_instances"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "cluster_machines_cluster_version_id_cluster_versions_id_fk"
-            columns: ["cluster_version_id"]
-            isOneToOne: false
-            referencedRelation: "cluster_versions"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "cluster_machines_machine_id_machines_id_fk"
-            columns: ["machine_id"]
-            isOneToOne: false
-            referencedRelation: "machines"
-            referencedColumns: ["id"]
-          },
-        ]
-      }
       cluster_versions: {
         Row: {
           cluster_id: string
           created_at: string
-          description: string | null
           id: number
-          version: string
+          index: number
+          is_active: boolean
+          vk_path: string | null
           zkvm_version_id: number
         }
         Insert: {
           cluster_id: string
           created_at?: string
-          description?: string | null
           id?: number
-          version: string
+          index: number
+          is_active?: boolean
+          vk_path?: string | null
           zkvm_version_id: number
         }
         Update: {
           cluster_id?: string
           created_at?: string
-          description?: string | null
           id?: number
-          version?: string
+          index?: number
+          is_active?: boolean
+          vk_path?: string | null
           zkvm_version_id?: number
         }
         Relationships: [
@@ -366,50 +155,51 @@ export type Database = {
       clusters: {
         Row: {
           created_at: string
-          cycle_type: string | null
-          description: string | null
-          hardware: string | null
+          hardware_description: string | null
           id: string
           index: number | null
           is_active: boolean
-          is_multi_gpu: boolean
           is_open_source: boolean
-          nickname: string
-          proof_type: string | null
+          name: string
+          num_gpus: number
+          prover_type_id: number
           software_link: string | null
           team_id: string
         }
         Insert: {
           created_at?: string
-          cycle_type?: string | null
-          description?: string | null
-          hardware?: string | null
+          hardware_description?: string | null
           id?: string
           index?: number | null
           is_active?: boolean
-          is_multi_gpu?: boolean
           is_open_source?: boolean
-          nickname: string
-          proof_type?: string | null
+          name: string
+          num_gpus?: number
+          prover_type_id: number
           software_link?: string | null
           team_id: string
         }
         Update: {
           created_at?: string
-          cycle_type?: string | null
-          description?: string | null
-          hardware?: string | null
+          hardware_description?: string | null
           id?: string
           index?: number | null
           is_active?: boolean
-          is_multi_gpu?: boolean
           is_open_source?: boolean
-          nickname?: string
-          proof_type?: string | null
+          name?: string
+          num_gpus?: number
+          prover_type_id?: number
           software_link?: string | null
           team_id?: string
         }
         Relationships: [
+          {
+            foreignKeyName: "clusters_prover_type_id_prover_types_id_fk"
+            columns: ["prover_type_id"]
+            isOneToOne: false
+            referencedRelation: "prover_types"
+            referencedColumns: ["id"]
+          },
           {
             foreignKeyName: "clusters_team_id_teams_id_fk"
             columns: ["team_id"]
@@ -426,78 +216,34 @@ export type Database = {
           },
         ]
       }
-      machines: {
-        Row: {
-          cpu_cores: number | null
-          cpu_model: string | null
-          created_at: string
-          gpu_count: number[] | null
-          gpu_memory_gb: number[] | null
-          gpu_models: string[] | null
-          id: number
-          memory_count: number[] | null
-          memory_size_gb: number[] | null
-          memory_type: string[] | null
-          network_between_machines: string | null
-          storage_size_gb: number | null
-          total_tera_flops: number | null
-        }
-        Insert: {
-          cpu_cores?: number | null
-          cpu_model?: string | null
-          created_at?: string
-          gpu_count?: number[] | null
-          gpu_memory_gb?: number[] | null
-          gpu_models?: string[] | null
-          id?: number
-          memory_count?: number[] | null
-          memory_size_gb?: number[] | null
-          memory_type?: string[] | null
-          network_between_machines?: string | null
-          storage_size_gb?: number | null
-          total_tera_flops?: number | null
-        }
-        Update: {
-          cpu_cores?: number | null
-          cpu_model?: string | null
-          created_at?: string
-          gpu_count?: number[] | null
-          gpu_memory_gb?: number[] | null
-          gpu_models?: string[] | null
-          id?: number
-          memory_count?: number[] | null
-          memory_size_gb?: number[] | null
-          memory_type?: string[] | null
-          network_between_machines?: string | null
-          storage_size_gb?: number | null
-          total_tera_flops?: number | null
-        }
-        Relationships: []
-      }
-      programs: {
+      gpu_price_index: {
         Row: {
           created_at: string
+          gpu_name: string
+          hourly_price: number
           id: number
-          verifier_id: string
         }
         Insert: {
           created_at?: string
+          gpu_name: string
+          hourly_price: number
           id?: number
-          verifier_id: string
         }
         Update: {
           created_at?: string
+          gpu_name?: string
+          hourly_price?: number
           id?: number
-          verifier_id?: string
         }
         Relationships: []
       }
       proofs: {
         Row: {
           block_number: number
+          cluster_id: string
           cluster_version_id: number
           created_at: string
-          program_id: number | null
+          gpu_price_index_id: number | null
           proof_id: number
           proof_status: string
           proved_timestamp: string | null
@@ -507,12 +253,14 @@ export type Database = {
           queued_timestamp: string | null
           size_bytes: number | null
           team_id: string
+          updated_at: string
         }
         Insert: {
           block_number: number
+          cluster_id: string
           cluster_version_id: number
           created_at?: string
-          program_id?: number | null
+          gpu_price_index_id?: number | null
           proof_id?: number
           proof_status: string
           proved_timestamp?: string | null
@@ -522,12 +270,14 @@ export type Database = {
           queued_timestamp?: string | null
           size_bytes?: number | null
           team_id: string
+          updated_at?: string
         }
         Update: {
           block_number?: number
+          cluster_id?: string
           cluster_version_id?: number
           created_at?: string
-          program_id?: number | null
+          gpu_price_index_id?: number | null
           proof_id?: number
           proof_status?: string
           proved_timestamp?: string | null
@@ -537,6 +287,7 @@ export type Database = {
           queued_timestamp?: string | null
           size_bytes?: number | null
           team_id?: string
+          updated_at?: string
         }
         Relationships: [
           {
@@ -547,6 +298,20 @@ export type Database = {
             referencedColumns: ["block_number"]
           },
           {
+            foreignKeyName: "proofs_cluster_id_fkey"
+            columns: ["cluster_id"]
+            isOneToOne: false
+            referencedRelation: "cluster_summary"
+            referencedColumns: ["cluster_id"]
+          },
+          {
+            foreignKeyName: "proofs_cluster_id_fkey"
+            columns: ["cluster_id"]
+            isOneToOne: false
+            referencedRelation: "clusters"
+            referencedColumns: ["id"]
+          },
+          {
             foreignKeyName: "proofs_cluster_version_id_cluster_versions_id_fk"
             columns: ["cluster_version_id"]
             isOneToOne: false
@@ -554,10 +319,10 @@ export type Database = {
             referencedColumns: ["id"]
           },
           {
-            foreignKeyName: "proofs_program_id_programs_id_fk"
-            columns: ["program_id"]
+            foreignKeyName: "proofs_gpu_price_index_id_fkey"
+            columns: ["gpu_price_index_id"]
             isOneToOne: false
-            referencedRelation: "programs"
+            referencedRelation: "gpu_price_index"
             referencedColumns: ["id"]
           },
           {
@@ -654,57 +419,36 @@ export type Database = {
           },
         ]
       }
-      recursive_root_proofs: {
+      prover_types: {
         Row: {
-          block_number: number | null
-          root_proof: string
-          root_proof_id: number
-          root_proof_size: number
-          team_id: string
-          total_proof_size: number
+          created_at: string
+          deployment_type: string
+          gpu_configuration: string
+          id: number
+          name: string
+          processing_ratio: string
         }
         Insert: {
-          block_number?: number | null
-          root_proof: string
-          root_proof_id?: number
-          root_proof_size: number
-          team_id: string
-          total_proof_size: number
+          created_at?: string
+          deployment_type: string
+          gpu_configuration: string
+          id: number
+          name: string
+          processing_ratio: string
         }
         Update: {
-          block_number?: number | null
-          root_proof?: string
-          root_proof_id?: number
-          root_proof_size?: number
-          team_id?: string
-          total_proof_size?: number
+          created_at?: string
+          deployment_type?: string
+          gpu_configuration?: string
+          id?: number
+          name?: string
+          processing_ratio?: string
         }
-        Relationships: [
-          {
-            foreignKeyName: "recursive_root_proofs_block_number_blocks_block_number_fk"
-            columns: ["block_number"]
-            isOneToOne: false
-            referencedRelation: "blocks"
-            referencedColumns: ["block_number"]
-          },
-          {
-            foreignKeyName: "recursive_root_proofs_team_id_teams_id_fk"
-            columns: ["team_id"]
-            isOneToOne: false
-            referencedRelation: "teams"
-            referencedColumns: ["id"]
-          },
-          {
-            foreignKeyName: "recursive_root_proofs_team_id_teams_id_fk"
-            columns: ["team_id"]
-            isOneToOne: false
-            referencedRelation: "teams_summary"
-            referencedColumns: ["team_id"]
-          },
-        ]
+        Relationships: []
       }
       teams: {
         Row: {
+          approved: boolean
           chat_id: string | null
           created_at: string
           github_org: string | null
@@ -717,6 +461,7 @@ export type Database = {
           website_url: string | null
         }
         Insert: {
+          approved?: boolean
           chat_id?: string | null
           created_at?: string
           github_org?: string | null
@@ -729,6 +474,7 @@ export type Database = {
           website_url?: string | null
         }
         Update: {
+          approved?: boolean
           chat_id?: string | null
           created_at?: string
           github_org?: string | null
@@ -831,21 +577,18 @@ export type Database = {
         Row: {
           created_at: string
           id: number
-          release_date: string | null
           version: string
           zkvm_id: number
         }
         Insert: {
           created_at?: string
           id?: number
-          release_date?: string | null
           version: string
           zkvm_id: number
         }
         Update: {
           created_at?: string
           id?: number
-          release_date?: string | null
           version?: string
           zkvm_id?: number
         }
@@ -932,7 +675,7 @@ export type Database = {
           avg_cost_per_proof: number | null
           avg_proving_time: number | null
           cluster_id: string | null
-          cluster_nickname: string | null
+          cluster_name: string | null
           team_id: string | null
         }
         Relationships: [
@@ -981,14 +724,9 @@ export type Database = {
       }
     }
     Functions: {
-      escape_markdown_v2: {
-        Args: { input_text: string }
-        Returns: string
-      }
-      get_telegram_bot_token: {
-        Args: Record<PropertyKey, never>
-        Returns: string
-      }
+      escape_markdown_v2: { Args: { input_text: string }; Returns: string }
+      get_telegram_bot_token: { Args: never; Returns: string }
+      get_vastai_api_key: { Args: never; Returns: string }
       is_allowed_apikey: {
         Args: {
           apikey: string
@@ -996,34 +734,20 @@ export type Database = {
         }
         Returns: boolean
       }
-      populate_missing_proofs_temp: {
-        Args: Record<PropertyKey, never>
-        Returns: number
-      }
-      send_internal_summary: {
-        Args: Record<PropertyKey, never>
-        Returns: undefined
-      }
-      send_internal_summary_from_temp: {
-        Args: Record<PropertyKey, never>
-        Returns: undefined
-      }
-      send_team_alerts: {
-        Args: Record<PropertyKey, never>
-        Returns: undefined
-      }
-      send_team_alerts_from_temp: {
-        Args: Record<PropertyKey, never>
-        Returns: undefined
-      }
+      populate_missing_proofs_temp: { Args: never; Returns: number }
+      send_proof_alerts: { Args: never; Returns: undefined }
+      send_proof_alerts_from_temp: { Args: never; Returns: undefined }
       send_telegram_message: {
-        Args: { bot_token: string; chat_id: string; message_text: string }
-        Returns: Record<string, unknown>
-      }
-      update_cluster_active_status: {
-        Args: Record<PropertyKey, never>
+        Args: {
+          bot_token: string
+          chat_id: string
+          message_text: string
+          thread_id?: string
+        }
         Returns: undefined
       }
+      update_cluster_active_status: { Args: never; Returns: undefined }
+      update_gpu_price_index: { Args: never; Returns: undefined }
     }
     Enums: {
       key_mode: "admin" | "read" | "write"
@@ -1163,3 +887,4 @@ export const Constants = {
     },
   },
 } as const
+

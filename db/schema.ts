@@ -49,7 +49,7 @@ export const apiAuthTokens = pgTable(
       using: sql`is_allowed_apikey(((current_setting('request.headers'::text, true))::json ->> 'ethkey'::text), '{admin,read,write}'::key_mode[])`,
     }),
   ]
-)
+).enableRLS()
 
 export const blocks = pgTable(
   "blocks",
@@ -81,7 +81,7 @@ export const blocks = pgTable(
       to: ["public"],
     }),
   ]
-)
+).enableRLS()
 
 export const proverTypes = pgTable("prover_types", {
   id: smallint().primaryKey().notNull(),
@@ -109,7 +109,9 @@ export const clusters = pgTable(
         onDelete: "cascade",
         onUpdate: "cascade",
       }),
-    prover_type_id: smallint("prover_type_id").references(() => proverTypes.id),
+    prover_type_id: smallint("prover_type_id")
+      .notNull()
+      .references(() => proverTypes.id),
     hardware_description: text(),
     is_open_source: boolean().notNull().default(false),
     num_gpus: integer("num_gpus").notNull().default(1),
@@ -135,7 +137,7 @@ export const clusters = pgTable(
       to: ["public"],
     }),
   ]
-)
+).enableRLS()
 
 export const clusterVersions = pgTable(
   "cluster_versions",
@@ -208,7 +210,7 @@ export const teams = pgTable(
       using: sql`true`,
     }),
   ]
-)
+).enableRLS()
 
 export const zkvms = pgTable("zkvms", {
   id: bigint({ mode: "number" }).primaryKey().generatedByDefaultAsIdentity(),
@@ -346,7 +348,7 @@ export const proofs = pgTable(
       sql`proof_status = ANY (ARRAY['queued'::text, 'proving'::text, 'proved'::text])`
     ),
   ]
-)
+).enableRLS()
 
 // Severity level enum for performance and security metrics
 export const severityLevel = pgEnum("severity_level", [
@@ -385,7 +387,7 @@ export const zkvmPerformanceMetrics = pgTable(
       using: sql`true`,
     }),
   ]
-)
+).enableRLS()
 
 export const zkvmSecurityMetrics = pgTable(
   "zkvm_security_metrics",
@@ -426,7 +428,7 @@ export const zkvmSecurityMetrics = pgTable(
       using: sql`true`,
     }),
   ]
-)
+).enableRLS()
 
 export const recentSummary = pgView("recent_summary", {
   total_proven_blocks: bigint("total_proven_blocks", { mode: "number" }),
@@ -479,18 +481,19 @@ export const teamsSummary = pgView("teams_summary", {
       COALESCE(sum(c.num_gpus::double precision * gpi.hourly_price * (p.proving_time::numeric / (1000.0 * 60::numeric * 60::numeric))::double precision) / NULLIF(count(p.proof_id), 0)::double precision, 0::double precision) AS avg_cost_per_proof,
       COALESCE(avg(p.proving_time), 0::numeric) AS avg_proving_time,
       count(p.proof_id) AS total_proofs,
-      -- Multi-GPU proofs
-      COALESCE(sum(CASE WHEN c.is_multi_gpu THEN (c.num_gpus::double precision * gpi.hourly_price * (p.proving_time::numeric / (1000.0 * 60::numeric * 60::numeric))::double precision) ELSE 0 END) / NULLIF(sum(CASE WHEN c.is_multi_gpu THEN 1 ELSE 0 END), 0)::double precision, 0::double precision) AS avg_cost_per_proof_multi,
-      COALESCE(avg(CASE WHEN c.is_multi_gpu THEN p.proving_time ELSE NULL END), 0::numeric) AS avg_proving_time_multi,
-      sum(CASE WHEN c.is_multi_gpu THEN 1 ELSE 0 END) AS total_proofs_multi,
-      -- Single-GPU proofs
-      COALESCE(sum(CASE WHEN NOT c.is_multi_gpu THEN (c.num_gpus::double precision * gpi.hourly_price * (p.proving_time::numeric / (1000.0 * 60::numeric * 60::numeric))::double precision) ELSE 0 END) / NULLIF(sum(CASE WHEN NOT c.is_multi_gpu THEN 1 ELSE 0 END), 0)::double precision, 0::double precision) AS avg_cost_per_proof_single,
-      COALESCE(avg(CASE WHEN NOT c.is_multi_gpu THEN p.proving_time ELSE NULL END), 0::numeric) AS avg_proving_time_single,
-      sum(CASE WHEN NOT c.is_multi_gpu THEN 1 ELSE 0 END) AS total_proofs_single
+      -- Multi-GPU proofs (using prover_types.gpu_configuration)
+      COALESCE(sum(CASE WHEN pt.gpu_configuration = 'multi-gpu' THEN (c.num_gpus::double precision * gpi.hourly_price * (p.proving_time::numeric / (1000.0 * 60::numeric * 60::numeric))::double precision) ELSE 0 END) / NULLIF(sum(CASE WHEN pt.gpu_configuration = 'multi-gpu' THEN 1 ELSE 0 END), 0)::double precision, 0::double precision) AS avg_cost_per_proof_multi,
+      COALESCE(avg(CASE WHEN pt.gpu_configuration = 'multi-gpu' THEN p.proving_time ELSE NULL END), 0::numeric) AS avg_proving_time_multi,
+      sum(CASE WHEN pt.gpu_configuration = 'multi-gpu' THEN 1 ELSE 0 END) AS total_proofs_multi,
+      -- Single-GPU proofs (using prover_types.gpu_configuration)
+      COALESCE(sum(CASE WHEN pt.gpu_configuration = 'single-gpu' THEN (c.num_gpus::double precision * gpi.hourly_price * (p.proving_time::numeric / (1000.0 * 60::numeric * 60::numeric))::double precision) ELSE 0 END) / NULLIF(sum(CASE WHEN pt.gpu_configuration = 'single-gpu' THEN 1 ELSE 0 END), 0)::double precision, 0::double precision) AS avg_cost_per_proof_single,
+      COALESCE(avg(CASE WHEN pt.gpu_configuration = 'single-gpu' THEN p.proving_time ELSE NULL END), 0::numeric) AS avg_proving_time_single,
+      sum(CASE WHEN pt.gpu_configuration = 'single-gpu' THEN 1 ELSE 0 END) AS total_proofs_single
     FROM teams t
     LEFT JOIN proofs p ON t.id = p.team_id AND p.proof_status = 'proved'::text
     LEFT JOIN cluster_versions cv ON p.cluster_version_id = cv.id
     LEFT JOIN clusters c ON cv.cluster_id = c.id
+    LEFT JOIN prover_types pt ON c.prover_type_id = pt.id
     LEFT JOIN gpu_price_index gpi ON p.gpu_price_index_id = gpi.id
     GROUP BY t.id`
   )
@@ -561,11 +564,23 @@ export const proverDailyStats = pgTable(
   ]
 )
 
-export const gpuPriceIndex = pgTable("gpu_price_index", {
-  id: bigint({ mode: "number" }).primaryKey().generatedByDefaultAsIdentity(),
-  gpu_name: text("gpu_name").notNull(),
-  hourly_price: numeric("hourly_price", { precision: 10, scale: 6 }).notNull(),
-  created_at: timestamp("created_at", { withTimezone: true, mode: "string" })
-    .defaultNow()
-    .notNull(),
-})
+export const gpuPriceIndex = pgTable(
+  "gpu_price_index",
+  {
+    id: bigint({ mode: "number" }).primaryKey().generatedByDefaultAsIdentity(),
+    gpu_name: text("gpu_name").notNull(),
+    hourly_price: numeric("hourly_price", {
+      precision: 10,
+      scale: 6,
+    }).notNull(),
+    created_at: timestamp("created_at", { withTimezone: true, mode: "string" })
+      .defaultNow()
+      .notNull(),
+  },
+  (table) => [
+    unique("gpu_price_index_gpu_name_created_at_unique").on(
+      table.gpu_name,
+      table.created_at
+    ),
+  ]
+)

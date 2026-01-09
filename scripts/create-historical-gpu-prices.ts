@@ -27,9 +27,12 @@ async function main() {
     console.log(
       "Step 1: Extracting quarterly pricing data from cloud_instances..."
     )
+    // Note: AVG is weighted by cluster_machines rows per cluster_version.
+    // If a proof's cluster_version has multiple cluster_machines, each contributes
+    // to the average, weighting by cluster_machine configurations rather than per-proof.
     const quarterlyData = await sql`
       SELECT
-        DATE_TRUNC('quarter', p.proved_timestamp) as quarter_start,
+        DATE_TRUNC('quarter', p.proved_timestamp AT TIME ZONE 'UTC') as quarter_start,
         COUNT(DISTINCT p.proof_id) as proof_count,
         AVG(
           CASE
@@ -55,7 +58,6 @@ async function main() {
 
     if (quarterlyData.length === 0) {
       console.log("No historical proof data found. Exiting.")
-      await sql.end()
       return
     }
 
@@ -92,17 +94,20 @@ async function main() {
       const quarterStartMonth = (quarterNum - 1) * 3
       const createdAt = new Date(Date.UTC(year, quarterStartMonth, 1))
 
-      await sql`
+      const result = await sql`
         INSERT INTO gpu_price_index (gpu_name, hourly_price, created_at)
         VALUES (
           ${gpuName},
           ${quarter.avg_per_gpu_price},
           ${createdAt}
         )
-        ON CONFLICT DO NOTHING
+        ON CONFLICT (gpu_name, created_at) DO NOTHING
+        RETURNING *
       `
 
-      console.log(`  ✓ Created: ${gpuName}`)
+      if (result.length > 0) {
+        console.log(`  ✓ Created: ${gpuName}`)
+      }
     }
 
     // Step 3: Verify what was created
