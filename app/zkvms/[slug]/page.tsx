@@ -11,7 +11,6 @@ import Link from "@/components/ui/link"
 import { getActiveClusters } from "@/lib/api/clusters"
 import { getClusterSummary } from "@/lib/api/stats"
 import { getZkvm } from "@/lib/api/zkvms"
-import { formatShortDate } from "@/lib/date"
 import { getMetadata } from "@/lib/metadata"
 import { getSoftwareDetailItems, getZkvmMetrics } from "@/lib/metrics"
 import { getZkvmWithUsage } from "@/lib/zkvms"
@@ -84,18 +83,10 @@ export default async function ZkvmDetailsPage({
         </div>
       </div>
 
-      <div className="mx-auto mb-20 grid w-fit max-w-screen-xl grid-cols-1 gap-x-20 gap-y-8 max-sm:gap-y-4 sm:grid-cols-2 md:px-24 lg:grid-cols-4">
+      <div className="mx-auto mb-20 grid w-fit max-w-screen-xl grid-cols-1 gap-x-20 gap-y-8 max-sm:gap-y-4 sm:grid-cols-2 md:px-24 lg:grid-cols-3">
         <div className="row-span-2 grid grid-cols-subgrid place-items-center gap-y-1 text-nowrap">
           <div className="text-body-secondary">latest version</div>
           <div className="">{latestVersion.version}</div>
-        </div>
-        <div className="row-span-2 grid grid-cols-subgrid place-items-center gap-y-1 text-nowrap">
-          <div className="text-body-secondary">release date</div>
-          <div className="uppercase">
-            {zkvm.versions[0].release_date
-              ? formatShortDate(new Date(zkvm.versions[0].release_date))
-              : "N/A"}
-          </div>
         </div>
         <div className="row-span-2 grid grid-cols-subgrid place-items-center gap-y-1 text-nowrap">
           <div className="text-body-secondary">ISA</div>

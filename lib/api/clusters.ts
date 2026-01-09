@@ -203,11 +203,19 @@ export const getClustersBenchmarks = cache(async () => {
 
 export const getZkvmVersions = cache(
   async () => {
-    return db.query.zkvmVersions.findMany({
+    const versions = await db.query.zkvmVersions.findMany({
       with: {
         zkvm: true,
       },
-      orderBy: desc(zkvmVersions.release_date),
+    })
+
+    // Sort by zkVM name first, then by id descending within each zkVM
+    return versions.sort((a, b) => {
+      const zkvmCompare = a.zkvm.name.localeCompare(b.zkvm.name)
+      if (zkvmCompare !== 0) return zkvmCompare
+
+      // Sort by id descending (newest first) within same zkVM
+      return b.id - a.id
     })
   },
   ["zkvm-versions"],

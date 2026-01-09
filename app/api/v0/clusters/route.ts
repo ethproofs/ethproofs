@@ -39,7 +39,6 @@ export const GET = withAuth(async ({ user }) => {
 export const POST = withAuth(async ({ request, user }) => {
   const requestBody = await request.json()
 
-  // validate payload schema
   let clusterPayload
   try {
     clusterPayload = createClusterSchema.parse(requestBody)
@@ -60,7 +59,6 @@ export const POST = withAuth(async ({ request, user }) => {
   const { name, zkvm_version_id, num_gpus, hardware_description } =
     clusterPayload
 
-  // validate zkvm_version_id
   const zkvmVersion = await getZkvmVersion(zkvm_version_id)
 
   if (!zkvmVersion) {
@@ -69,11 +67,12 @@ export const POST = withAuth(async ({ request, user }) => {
 
   let clusterIndex: number | null = null
   await db.transaction(async (tx) => {
-    // derive prover_type_id from num_gpus (default to cloud-hosted types)
-    // 1: 1:1 Multi-GPU Cloud, 3: 1:100 Single-GPU Cloud
-    const prover_type_id = num_gpus > 1 ? 1 : 3
+    // Derive prover_type_id from num_gpus (default to cloud-hosted types)
+    const multiGpuProverTypeId = 1
+    const singleGpuProverTypeId = 3
+    const prover_type_id =
+      num_gpus > 1 ? multiGpuProverTypeId : singleGpuProverTypeId
 
-    // create cluster
     const [cluster] = await tx
       .insert(clusters)
       .values({
@@ -85,7 +84,7 @@ export const POST = withAuth(async ({ request, user }) => {
       })
       .returning({ id: clusters.id, index: clusters.index })
 
-    // get the next version index for this cluster
+    // Get the next version index for this cluster
     const lastVersion = await tx.query.clusterVersions.findFirst({
       where: (cv, { eq }) => eq(cv.cluster_id, cluster.id),
       columns: { index: true },
@@ -93,7 +92,6 @@ export const POST = withAuth(async ({ request, user }) => {
     })
     const nextIndex = (lastVersion?.index ?? 0) + 1
 
-    // create cluster version
     await tx
       .insert(clusterVersions)
       .values({

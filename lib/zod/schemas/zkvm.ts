@@ -13,7 +13,6 @@ export const zkvmVersionSchema = z.object({
   id: z.number().int(),
   version: z.string(),
   zkvm_id: z.number().int(),
-  release_date: z.string(),
   created_at: z.string(),
   zkvm: zkvmSchema.optional(),
 })
