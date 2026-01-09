@@ -201,6 +201,16 @@
                     "maxLength": 200,
                     "description": "Free-form text description of the cluster's hardware for display in the UI",
                     "example": "8x NVIDIA H100 80GB GPUs, AMD EPYC 9654 96-Core Processor"
+                  },
+                  "deployment_type": {
+                    "type": "string",
+                    "enum": [
+                      "cloud-hosted",
+                      "on-prem"
+                    ],
+                    "default": "cloud-hosted",
+                    "description": "Deployment type of the cluster. Determines infrastructure configuration.",
+                    "example": "cloud-hosted"
                   }
                 },
                 "required": [
@@ -622,9 +632,6 @@
                                   "is_open_source": {
                                     "type": "boolean"
                                   },
-                                  "is_multi_gpu": {
-                                    "type": "boolean"
-                                  },
                                   "num_gpus": {
                                     "type": "integer"
                                   },
@@ -647,7 +654,6 @@
                                   "team_id",
                                   "hardware_description",
                                   "is_open_source",
-                                  "is_multi_gpu",
                                   "num_gpus",
                                   "is_active",
                                   "software_link",
@@ -665,9 +671,6 @@
                                   },
                                   "zkvm_id": {
                                     "type": "integer"
-                                  },
-                                  "release_date": {
-                                    "type": "string"
                                   },
                                   "created_at": {
                                     "type": "string"
@@ -709,7 +712,6 @@
                                   "id",
                                   "version",
                                   "zkvm_id",
-                                  "release_date",
                                   "created_at"
                                 ]
                               }

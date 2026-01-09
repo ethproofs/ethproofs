@@ -85,14 +85,31 @@ export function ClusterDrawer({
   const [selectedFileName, setSelectedFileName] = useState<string>("")
   const fileInputRef = useRef<HTMLInputElement>(null)
 
+  // Get active version for edit mode
+  const activeVersion =
+    cluster?.versions.find((v) => v.is_active) || cluster?.versions[0]
+
+  const [proverTypeId, setProverTypeId] = useState<string>(
+    cluster?.prover_type?.id.toString() || ""
+  )
+  const [zkvmVersionId, setZkvmVersionId] = useState<string>(
+    activeVersion?.zkvm_version_id?.toString() || ""
+  )
+  const [isActive, setIsActive] = useState<boolean>(
+    cluster?.is_active ?? true
+  )
+
   // Reset state when drawer closes
   useEffect(() => {
     if (!open) {
       setState(initialState)
       setSelectedFileName("")
+      setProverTypeId(cluster?.prover_type?.id.toString() || "")
+      setZkvmVersionId(activeVersion?.zkvm_version_id?.toString() || "")
+      setIsActive(cluster?.is_active ?? true)
       if (fileInputRef.current) fileInputRef.current.value = ""
     }
-  }, [open])
+  }, [open, cluster?.prover_type?.id, activeVersion?.zkvm_version_id, cluster?.is_active])
 
   // Close drawer on successful submission
   useEffect(() => {
@@ -101,10 +118,6 @@ export function ClusterDrawer({
       onOpenChange(false)
     }
   }, [state.success, onOpenChange, router])
-
-  // Get active version for edit mode
-  const activeVersion =
-    cluster?.versions.find((v) => v.is_active) || cluster?.versions[0]
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0]
@@ -200,7 +213,7 @@ export function ClusterDrawer({
         </DrawerHeader>
 
         <form onSubmit={handleSubmit} className="flex flex-1 flex-col px-4">
-          <div className="flex-1 space-y-6">
+          <div className="flex-1 space-y-4">
             {/* Hidden fields for edit mode */}
             {mode === "edit" && cluster && (
               <>
@@ -246,7 +259,9 @@ export function ClusterDrawer({
 
             {/* Cluster Metadata Section */}
             <div className="space-y-4">
-              <h3 className="text-sm font-semibold">cluster details</h3>
+              <h3 className="text-sm font-semibold underline">
+                cluster details
+              </h3>
 
               <div className="space-y-2">
                 <Label htmlFor="name">name</Label>
@@ -280,10 +295,8 @@ export function ClusterDrawer({
               <div className="space-y-2">
                 <Label htmlFor="prover_type_id">prover type</Label>
                 <Select
-                  name="prover_type_id"
-                  defaultValue={
-                    cluster?.prover_type?.id.toString() || undefined
-                  }
+                  value={proverTypeId}
+                  onValueChange={setProverTypeId}
                   required
                 >
                   <SelectTrigger id="prover_type_id">
@@ -297,15 +310,24 @@ export function ClusterDrawer({
                     ))}
                   </SelectContent>
                 </Select>
+                <input
+                  type="hidden"
+                  name="prover_type_id"
+                  value={proverTypeId}
+                />
               </div>
 
               <div className="flex items-center space-x-2">
                 <Checkbox
                   id="is_active"
-                  name="is_active"
-                  defaultChecked={cluster?.is_active ?? true}
+                  checked={isActive}
+                  onCheckedChange={(val) => setIsActive(Boolean(val))}
                 />
-                <input type="hidden" name="is_active" value="false" />
+                <input
+                  type="hidden"
+                  name="is_active"
+                  value={isActive ? "true" : "false"}
+                />
                 <Label
                   htmlFor="is_active"
                   className="text-sm font-normal leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
@@ -333,16 +355,14 @@ export function ClusterDrawer({
             </div>
 
             {/* Version Metadata Section */}
-            <div className="space-y-4">
-              <h3 className="text-sm font-semibold">version details</h3>
+            <div className="space-y-4 pt-2">
+              <h3 className="text-sm font-semibold underline">zkVM details</h3>
 
               <div className="space-y-2">
                 <Label htmlFor="zkvm_version_id">zkVM version</Label>
                 <Select
-                  name="zkvm_version_id"
-                  defaultValue={
-                    activeVersion?.zkvm_version_id?.toString() || undefined
-                  }
+                  value={zkvmVersionId}
+                  onValueChange={setZkvmVersionId}
                   required={mode === "create"}
                 >
                   <SelectTrigger id="zkvm_version_id">
@@ -359,6 +379,11 @@ export function ClusterDrawer({
                     ))}
                   </SelectContent>
                 </Select>
+                <input
+                  type="hidden"
+                  name="zkvm_version_id"
+                  value={zkvmVersionId}
+                />
                 {mode === "edit" && (
                   <p className="text-xs text-muted-foreground">
                     changing this will create a new cluster version

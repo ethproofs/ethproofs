@@ -55,7 +55,7 @@ export const columns: ColumnDef<DashboardCluster>[] = [
     accessorKey: "is_active",
     header: "status",
     cell: ({ row }) => {
-      const isActive = row.getValue("status") as boolean
+      const isActive = row.getValue("is_active") as boolean
       return (
         <div className="w-[100px]">
           {isActive ? (
@@ -91,7 +91,7 @@ export const columns: ColumnDef<DashboardCluster>[] = [
     accessorKey: "hardware_description",
     header: "hardware",
     cell: ({ row }) => {
-      const hardware = row.getValue("hardware") as string | null
+      const hardware = row.getValue("hardware_description") as string | null
       return (
         <div className="min-w-[200px] max-w-[300px]">
           <div className="truncate text-sm text-muted-foreground">
@@ -120,7 +120,7 @@ export const columns: ColumnDef<DashboardCluster>[] = [
     cell: ({ row }) => {
       const cluster = row.original
       const activeVersion =
-        cluster.versions.find((v) => v.is_active) || cluster.versions[0]
+        cluster.versions?.find((v) => v.is_active) || cluster.versions?.[0]
 
       if (!activeVersion?.zkvm_version) {
         return (
@@ -144,7 +144,7 @@ export const columns: ColumnDef<DashboardCluster>[] = [
     cell: ({ row }) => {
       const cluster = row.original
       const activeVersion =
-        cluster.versions.find((v) => v.is_active) || cluster.versions[0]
+        cluster.versions?.find((v) => v.is_active) || cluster.versions?.[0]
       const hasVkPath = activeVersion?.vk_path
 
       return (
