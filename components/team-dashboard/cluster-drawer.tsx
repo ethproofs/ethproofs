@@ -34,7 +34,6 @@ import {
 type ZkvmVersion = {
   id: number
   version: string
-  release_date: string | null
   zkvm: {
     id: number
     name: string

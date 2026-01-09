@@ -15,7 +15,11 @@ export default async function ZkvmsPage() {
     zkvmIds: zkvms.map((zkvm) => zkvm.id),
   })
 
-  const sortedZkvms = zkvms.sort((a, b) => b.activeClusters - a.activeClusters)
+  const sortedZkvms = zkvms.sort((a, b) => {
+    const clusterDiff = b.activeClusters - a.activeClusters
+    if (clusterDiff !== 0) return clusterDiff
+    return a.name.localeCompare(b.name)
+  })
   const activeZkvmsWithMetrics = sortedZkvms
     .filter((z) => z.activeClusters > 0)
     .map((zkvm) => ({

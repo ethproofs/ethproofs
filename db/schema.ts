@@ -246,10 +246,6 @@ export const zkvmVersions = pgTable("zkvm_versions", {
       onUpdate: "cascade",
     }),
   version: text().notNull(),
-  release_date: timestamp("release_date", {
-    withTimezone: true,
-    mode: "string",
-  }),
   created_at: timestamp("created_at", {
     withTimezone: true,
     mode: "string",
