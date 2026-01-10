@@ -1,6 +1,6 @@
--- GPU Price Index - Monthly Cron Job
+-- GPU Price Index - Weekly Cron Job
 -- This migration sets up a cron job to fetch GPU prices from Vast.ai API
--- and insert the median price into the gpu_price_index table monthly.
+-- and insert the median price into the gpu_price_index table weekly.
 --
 -- SETUP REQUIRED:
 -- Before running this migration, you must add the Vast.ai API key to Supabase Vault:
@@ -38,11 +38,29 @@ BEGIN
         SELECT decrypted_secret INTO api_key
         FROM vault.decrypted_secrets
         WHERE name = 'vastai_api_key';
-    EXCEPTION WHEN OTHERS THEN
-        -- Fallback to app_config table for local development
-        SELECT value INTO api_key
-        FROM app_config
-        WHERE key = 'vastai_api_key';
+
+        IF api_key IS NULL THEN
+            RAISE LOG 'Vast.ai API key not found in vault, trying fallback...';
+        END IF;
+    EXCEPTION
+        WHEN undefined_table OR undefined_column THEN
+            RAISE LOG 'Vault not available, trying local fallback...';
+        WHEN OTHERS THEN
+            RAISE LOG 'Error accessing vault: %, trying fallback...', SQLERRM;
+    END;
+
+    -- Fallback to app_config if vault didn't return a key
+    IF api_key IS NULL THEN
+        BEGIN
+            SELECT value INTO api_key
+            FROM app_config
+            WHERE key = 'vastai_api_key';
+        EXCEPTION
+            WHEN undefined_table THEN
+                RAISE LOG 'app_config table does not exist';
+            WHEN OTHERS THEN
+                RAISE LOG 'Error accessing app_config: %', SQLERRM;
+        END;
     END;
 
     RETURN api_key;
@@ -124,6 +142,23 @@ BEGIN
     -- Parse response
     response_body := response_record.content::jsonb;
 
+    -- Validate response structure
+    IF response_body IS NULL THEN
+        RAISE LOG 'Response body is NULL or invalid JSON';
+        RETURN;
+    END IF;
+
+    IF NOT (response_body ? 'offers') THEN
+        RAISE LOG 'Response body missing "offers" field. Response: %', response_body;
+        RETURN;
+    END IF;
+
+    IF jsonb_typeof(response_body->'offers') != 'array' THEN
+        RAISE LOG 'Response "offers" field is not an array, got type: %. Response: %',
+                  jsonb_typeof(response_body->'offers'), response_body;
+        RETURN;
+    END IF;
+
     -- Extract dph_total prices from all offers
     SELECT array_agg((offer->>'dph_total')::numeric)
     INTO prices
@@ -155,9 +190,14 @@ EXCEPTION
 END;
 $$;
 
--- Schedule cron job to run on the 1st of every month at 00:00 UTC
+-- Unschedule existing job if it exists (for idempotent re-runs)
+SELECT cron.unschedule(jobid)
+FROM cron.job
+WHERE jobname = 'update-gpu-price-index-weekly';
+
+-- Schedule cron job to run every Sunday at 00:00 UTC
 SELECT cron.schedule(
-    'update-gpu-price-index-monthly',
-    '0 0 1 * *',
+    'update-gpu-price-index-weekly',
+    '0 0 * * 0',
     'SELECT update_gpu_price_index();'
 );
