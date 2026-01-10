@@ -16,7 +16,7 @@ SET num_gpus = (
     SELECT cv.id
     FROM cluster_versions cv
     WHERE cv.cluster_id = c.id
-    ORDER BY cv.version DESC
+    ORDER BY cv.index DESC
     LIMIT 1
   )
 );
@@ -27,15 +27,19 @@ ALTER TABLE proofs ADD COLUMN gpu_price_index_id BIGINT REFERENCES gpu_price_ind
 -- Step 3: Backfill gpu_price_index_id for existing proofs
 -- For each proof, find the gpu_price_index entry that was active at the time of proving
 -- If no matching price index found, gpu_price_index_id will remain NULL (safe with LEFT JOINs)
+-- Using DISTINCT ON for better performance instead of correlated subquery
 UPDATE proofs p
-SET gpu_price_index_id = (
-  SELECT gpi.id
-  FROM gpu_price_index gpi
-  WHERE gpi.created_at <= COALESCE(p.proved_timestamp, p.created_at)
-  ORDER BY gpi.created_at DESC
-  LIMIT 1
-)
-WHERE p.proof_status = 'proved';
+SET gpu_price_index_id = subquery.gpi_id
+FROM (
+  SELECT DISTINCT ON (p.proof_id)
+    p.proof_id,
+    gpi.id as gpi_id
+  FROM proofs p
+  LEFT JOIN gpu_price_index gpi ON gpi.created_at <= COALESCE(p.proved_timestamp, p.created_at)
+  WHERE p.proof_status = 'proved'
+  ORDER BY p.proof_id, gpi.created_at DESC NULLS LAST
+) subquery
+WHERE p.proof_id = subquery.proof_id;
 
 -- Step 4: Drop views that depend on the tables we're removing
 DROP VIEW IF EXISTS recent_summary CASCADE;

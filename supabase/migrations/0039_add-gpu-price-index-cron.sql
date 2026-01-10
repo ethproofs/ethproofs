@@ -38,15 +38,10 @@ BEGIN
         SELECT decrypted_secret INTO api_key
         FROM vault.decrypted_secrets
         WHERE name = 'vastai_api_key';
-
-        IF api_key IS NULL THEN
-            RAISE LOG 'Vast.ai API key not found in vault, trying fallback...';
-        END IF;
     EXCEPTION
-        WHEN undefined_table OR undefined_column THEN
-            RAISE LOG 'Vault not available, trying local fallback...';
         WHEN OTHERS THEN
-            RAISE LOG 'Error accessing vault: %, trying fallback...', SQLERRM;
+            -- Vault not available, will try fallback
+            api_key := NULL;
     END;
 
     -- Fallback to app_config if vault didn't return a key
@@ -56,12 +51,11 @@ BEGIN
             FROM app_config
             WHERE key = 'vastai_api_key';
         EXCEPTION
-            WHEN undefined_table THEN
-                RAISE LOG 'app_config table does not exist';
             WHEN OTHERS THEN
-                RAISE LOG 'Error accessing app_config: %', SQLERRM;
+                -- app_config not available either
+                api_key := NULL;
         END;
-    END;
+    END IF;
 
     RETURN api_key;
 END;
