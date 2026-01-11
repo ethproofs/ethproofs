@@ -9,8 +9,8 @@ import { createClient } from "@/utils/supabase/server"
 
 const signUpSchema = z.object({
   email: z.string().email(),
-  password: z.string().min(8, "Password must be at least 8 characters"),
-  name: z.string().min(1, "Team name is required"),
+  password: z.string().min(8, "password must be at least 8 characters"),
+  name: z.string().min(1, "team name is required"),
 })
 
 export async function signUp(_prevState: unknown, formData: FormData) {
@@ -27,8 +27,23 @@ export async function signUp(_prevState: unknown, formData: FormData) {
   }
 
   const { email, password, name } = validatedFields.data
+  const slug = name.toLowerCase().replace(/\s+/g, "-")
 
   try {
+    const existingTeam = await db
+      .select({ id: teams.id })
+      .from(teams)
+      .where(eq(teams.slug, slug))
+      .limit(1)
+
+    if (existingTeam.length > 0) {
+      return {
+        errors: {
+          name: ["team name already exists"],
+        },
+      }
+    }
+
     const supabase = await createClient()
 
     // Create the user account with Supabase Auth
@@ -44,7 +59,7 @@ export async function signUp(_prevState: unknown, formData: FormData) {
       console.error("error creating user", error)
       return {
         errors: {
-          email: [error.message],
+          email: [error.message.toLowerCase()],
         },
       }
     }
@@ -52,18 +67,17 @@ export async function signUp(_prevState: unknown, formData: FormData) {
     if (!data.user) {
       return {
         errors: {
-          email: ["Failed to create user account"],
+          email: ["failed to create account"],
         },
       }
     }
 
-    // Update the teams table with team info and set approved to false
     await db
       .update(teams)
       .set({
+        approved: false,
         name: name,
-        slug: name.toLowerCase().replace(/\s+/g, "-"),
-        approved: false, // This is the key - user must be approved by admin
+        slug,
       })
       .where(eq(teams.id, data.user.id))
 
@@ -76,10 +90,9 @@ export async function signUp(_prevState: unknown, formData: FormData) {
     }
   } catch (error) {
     console.error("error creating user", error)
-
     return {
       errors: {
-        email: ["Internal server error"],
+        email: ["internal server error"],
       },
     }
   }

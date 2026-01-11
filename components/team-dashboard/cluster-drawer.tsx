@@ -95,9 +95,7 @@ export function ClusterDrawer({
   const [zkvmVersionId, setZkvmVersionId] = useState<string>(
     activeVersion?.zkvm_version_id?.toString() || ""
   )
-  const [isActive, setIsActive] = useState<boolean>(
-    cluster?.is_active ?? true
-  )
+  const [isActive, setIsActive] = useState<boolean>(cluster?.is_active ?? true)
 
   // Reset state when drawer closes
   useEffect(() => {
@@ -109,7 +107,12 @@ export function ClusterDrawer({
       setIsActive(cluster?.is_active ?? true)
       if (fileInputRef.current) fileInputRef.current.value = ""
     }
-  }, [open, cluster?.prover_type?.id, activeVersion?.zkvm_version_id, cluster?.is_active])
+  }, [
+    open,
+    cluster?.prover_type?.id,
+    activeVersion?.zkvm_version_id,
+    cluster?.is_active,
+  ])
 
   // Close drawer on successful submission
   useEffect(() => {

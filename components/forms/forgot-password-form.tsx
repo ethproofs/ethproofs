@@ -21,7 +21,7 @@ export function ForgotPasswordForm() {
     return (
       <div className="flex flex-col gap-4 text-center">
         <p className="text-sm text-muted-foreground">
-          check your email for a password reset link
+          check your email to reset your password
         </p>
         <Link href="/sign-in" className="text-sm text-primary hover:underline">
           back to sign in

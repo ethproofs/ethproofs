@@ -58,8 +58,13 @@ export const POST = withAuth(async ({ request, user }) => {
     })
   }
 
-  const { name, zkvm_version_id, num_gpus, hardware_description, deployment_type } =
-    clusterPayload
+  const {
+    name,
+    zkvm_version_id,
+    num_gpus,
+    hardware_description,
+    deployment_type,
+  } = clusterPayload
 
   const zkvmVersion = await getZkvmVersion(zkvm_version_id)
 
@@ -76,7 +81,10 @@ export const POST = withAuth(async ({ request, user }) => {
   )
 
   if (!proverType) {
-    return new Response("Invalid prover type for given num_gpus/deployment_type", { status: 400 })
+    return new Response(
+      "Invalid prover type for given num_gpus/deployment_type",
+      { status: 400 }
+    )
   }
 
   let clusterIndex: number | null = null

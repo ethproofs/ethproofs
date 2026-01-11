@@ -1,6 +1,3 @@
-import { DashboardButton } from "../dashboard-button"
-import { SignInButton } from "../sign-in-button"
-import { SignOutButton } from "../sign-out-button"
 import {
   Sidebar,
   SidebarContent,
@@ -12,6 +9,9 @@ import {
 import { AppNavSecondary } from "./app-nav-secondary"
 import { AppNavigation } from "./app-navigation"
 import { AppSidebarHeader } from "./app-sidebar-header"
+import { DashboardButton } from "./dashboard-button"
+import { SignInButton } from "./sign-in-button"
+import { SignOutButton } from "./sign-out-button"
 
 import { getTeam } from "@/lib/api/teams"
 import { createClient } from "@/utils/supabase/server"
@@ -35,10 +35,10 @@ export async function AppSidebar() {
       </SidebarContent>
       <SidebarFooter>
         {user ? (
-          <div className="flex flex-col gap-2">
+          <>
             {team && <DashboardButton teamSlug={team.slug} />}
             <SignOutButton />
-          </div>
+          </>
         ) : (
           <SignInButton />
         )}

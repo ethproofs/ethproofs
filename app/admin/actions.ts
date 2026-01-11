@@ -43,7 +43,7 @@ export async function login(_prevState: unknown, formData: FormData) {
   if (error) {
     return {
       errors: {
-        email: ["Invalid credentials"],
+        email: ["invalid credentials"],
       },
     }
   }
@@ -127,7 +127,7 @@ export async function forgotPassword(_prevState: unknown, formData: FormData) {
     console.error("Password reset error:", error)
     return {
       errors: {
-        email: [`failed to send reset email: ${error.message}`],
+        email: [`failed to send reset email: ${error.message.toLowerCase()}`],
       },
     }
   }
@@ -210,7 +210,7 @@ const userSchema = z.object({
         return file.type === "image/svg+xml"
       },
       {
-        message: "Logo must be a SVG file",
+        message: "logo must be an SVG file",
       }
     ),
 })
@@ -246,7 +246,7 @@ export async function createUser(_prevState: unknown, formData: FormData) {
     if (user?.role !== API_KEY_MANAGER_ROLE) {
       return {
         errors: {
-          email: ["Unauthorized"],
+          email: ["unauthorized"],
         },
       }
     }
@@ -260,7 +260,7 @@ export async function createUser(_prevState: unknown, formData: FormData) {
       console.error("error creating user", error)
       return {
         errors: {
-          email: ["Error creating user", error?.message],
+          email: ["error creating user", error?.message.toLowerCase()],
         },
       }
     }
@@ -275,7 +275,7 @@ export async function createUser(_prevState: unknown, formData: FormData) {
       if (error) {
         console.error("error uploading logo", error)
         return {
-          errors: { logo: ["Error uploading logo"] },
+          errors: { logo: ["error uploading logo"] },
         }
       }
 
@@ -311,7 +311,7 @@ export async function createUser(_prevState: unknown, formData: FormData) {
 
     return {
       errors: {
-        email: ["Internal server error"],
+        email: ["internal server error"],
       },
     }
   }
@@ -344,7 +344,7 @@ export async function approveTeam(_prevState: unknown, formData: FormData) {
     if (user?.role !== API_KEY_MANAGER_ROLE) {
       return {
         errors: {
-          teamId: ["Unauthorized"],
+          teamId: ["unauthorized"],
         },
       }
     }
@@ -370,7 +370,7 @@ export async function approveTeam(_prevState: unknown, formData: FormData) {
 
     return {
       errors: {
-        teamId: ["Internal server error"],
+        teamId: ["internal server error"],
       },
     }
   }
@@ -399,7 +399,7 @@ export async function rejectTeam(_prevState: unknown, formData: FormData) {
     if (user?.role !== API_KEY_MANAGER_ROLE) {
       return {
         errors: {
-          teamId: ["Unauthorized"],
+          teamId: ["unauthorized"],
         },
       }
     }
@@ -425,7 +425,7 @@ export async function rejectTeam(_prevState: unknown, formData: FormData) {
 
     return {
       errors: {
-        teamId: ["Internal server error"],
+        teamId: ["internal server error"],
       },
     }
   }
@@ -458,7 +458,7 @@ export async function generateApiKey(_prevState: unknown, formData: FormData) {
     if (user?.role !== API_KEY_MANAGER_ROLE) {
       return {
         errors: {
-          email: ["Unauthorized"],
+          email: ["unauthorized"],
         },
       }
     }
@@ -470,7 +470,7 @@ export async function generateApiKey(_prevState: unknown, formData: FormData) {
 
     if (userData.length === 0) {
       return {
-        errors: { email: ["User not found"] },
+        errors: { email: ["user not found"] },
       }
     }
 
@@ -492,7 +492,7 @@ export async function generateApiKey(_prevState: unknown, formData: FormData) {
 
     return {
       errors: {
-        email: ["Internal server error"],
+        email: ["internal server error"],
       },
     }
   }

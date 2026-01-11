@@ -74,7 +74,7 @@ function PendingTeamItem({ team }: { team: Team }) {
           requested: {new Date(team.created_at).toLocaleDateString()}
         </CardDescription>
       </CardHeader>
-      <CardContent className="p-4">
+      <CardContent className="flex gap-2 p-4">
         {approveState.errors?.teamId || rejectState.errors?.teamId ? (
           <p className="text-sm text-destructive">
             {approveState.errors?.teamId?.[0] ||

@@ -28,11 +28,14 @@ const baseClusterSchema = z.object({
       "Free-form text description of the cluster's hardware for display in the UI",
     example: "8x NVIDIA H100 80GB GPUs, AMD EPYC 9654 96-Core Processor",
   }),
-  deployment_type: z.enum(["cloud-hosted", "on-prem"]).default("cloud-hosted").openapi({
-    description:
-      "Deployment type of the cluster. Determines infrastructure configuration.",
-    example: "cloud-hosted",
-  }),
+  deployment_type: z
+    .enum(["cloud-hosted", "on-prem"])
+    .default("cloud-hosted")
+    .openapi({
+      description:
+        "Deployment type of the cluster. Determines infrastructure configuration.",
+      example: "cloud-hosted",
+    }),
 })
 
 export const createClusterSchema = baseClusterSchema
