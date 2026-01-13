@@ -48,7 +48,7 @@ type DisplayTeamLinkProps = {
   hideDot?: boolean
 }
 
-const DisplayTeamLink = ({
+const TeamLogoLink = ({
   team: { slug, logo_url, name },
   height = 16,
   className,
@@ -82,6 +82,6 @@ const DisplayTeamLink = ({
   </Link>
 )
 
-DisplayTeamLink.displayName = "DisplayTeamLink"
+TeamLogoLink.displayName = "TeamLogoLink"
 
-export { DisplayTeam, DisplayTeamLink }
+export { DisplayTeam, TeamLogoLink }

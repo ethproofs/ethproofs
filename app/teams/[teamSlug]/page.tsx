@@ -6,13 +6,13 @@ import type { SummaryItem, Team, Zkvm } from "@/lib/types"
 
 import { BasicTabs } from "@/components/BasicTabs"
 import { ClustersTable } from "@/components/clusters-table/clusters-table"
-import { DisplayTeam } from "@/components/DisplayTeamLink"
 import KPIs from "@/components/KPIs"
 import { Null } from "@/components/Null"
 import GitHubLogo from "@/components/svgs/github-logo.svg"
 import XLogo from "@/components/svgs/x-logo.svg"
+import { TeamLogoLink } from "@/components/team-logo-link"
 import { Card, CardContent, CardHeader } from "@/components/ui/card"
-import { HeroBody, HeroItem, HeroItemLabel } from "@/components/ui/hero"
+import { Item, ItemContent, ItemMedia } from "@/components/ui/item"
 import Link from "@/components/ui/link"
 import ZkvmProvidersAside from "@/components/ZkvmProvidersAside"
 
@@ -145,49 +145,53 @@ export default async function TeamDetailsPage({
     <div className="px-6 md:px-8">
       <div id="hero-section" className="my-12">
         <h1 className="flex justify-center pb-6 text-center font-serif text-4xl font-semibold">
-          <DisplayTeam team={team} height={48} />
+          <TeamLogoLink team={team} height={48} />
         </h1>
 
-        <HeroBody className="mx-auto mt-0 flex w-fit flex-wrap justify-center gap-x-6 border-t border-primary px-12 py-6">
+        <div className="mx-auto mt-0 flex w-fit flex-wrap justify-center gap-x-6 border-t border-primary px-12 py-6">
           {team.website_url && (
-            <HeroItem className="hover:underline">
-              <Link hideArrow className="text-body" href={team.website_url}>
-                <HeroItemLabel className="gap-x-2 text-body">
+            <Item asChild size="sm" className="p-0">
+              <Link hideArrow href={team.website_url}>
+                <ItemMedia>
                   <Globe className="size-4" />
+                </ItemMedia>
+                <ItemContent className="hover:underline">
                   {getHost(team.website_url)}
-                </HeroItemLabel>
+                </ItemContent>
               </Link>
-            </HeroItem>
+            </Item>
           )}
           {team.twitter_handle && (
-            <HeroItem className="hover:underline">
+            <Item asChild size="sm" className="p-0">
               <Link
                 hideArrow
-                className="text-body"
                 href={new URL(team.twitter_handle, "https://x.com/").toString()}
               >
-                <HeroItemLabel className="gap-x-2 text-body">
+                <ItemMedia>
                   <XLogo className="h-3 w-auto" />
+                </ItemMedia>
+                <ItemContent className="hover:underline">
                   {getTwitterHandle(team.twitter_handle)}
-                </HeroItemLabel>
+                </ItemContent>
               </Link>
-            </HeroItem>
+            </Item>
           )}
           {team.github_org && (
-            <HeroItem className="hover:underline">
+            <Item asChild size="sm" className="p-0">
               <Link
                 hideArrow
-                className="text-body"
                 href={new URL(team.github_org, "https://github.com").toString()}
               >
-                <HeroItemLabel className="gap-x-2 text-body">
+                <ItemMedia>
                   <GitHubLogo className="size-4" />
+                </ItemMedia>
+                <ItemContent className="hover:underline">
                   {team.github_org}
-                </HeroItemLabel>
+                </ItemContent>
               </Link>
-            </HeroItem>
+            </Item>
           )}
-        </HeroBody>
+        </div>
       </div>
 
       <div className="mx-auto max-w-screen-xl space-y-12 [&>section]:w-full">

@@ -1,5 +1,3 @@
-import { Slices, SoftwareDetailItem } from "./types"
-
 import { getActiveClusterCountByZkvmId } from "@/lib/api/clusters"
 import { getZkvm, getZkvms } from "@/lib/api/zkvms"
 
@@ -69,11 +67,6 @@ export const getZkvmsStats = async () => {
     isas: Array.from(isas),
   }
 }
-
-export const getSlices = (items: SoftwareDetailItem[]) =>
-  items
-    .sort((a, b) => a.position - b.position)
-    .map((item) => ({ level: item.severity })) as Slices
 
 export const UNVERIFIABLE_ZKVM_SLUGS = new Set<string>([])
 export function isUnverifiableZkvm(slug: string): boolean {

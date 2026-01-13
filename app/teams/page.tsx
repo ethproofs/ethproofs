@@ -23,7 +23,7 @@ export default async function TeamsPage() {
   const teamsSummary = await getTeamsSummary()
 
   return (
-    <div className="mx-auto mt-6 grid max-w-screen-xl gap-y-12 px-6 text-center md:gap-x-12 md:px-8 lg:grid-cols-[repeat(2,_auto)] xl:gap-x-32">
+    <div className="mx-auto mt-6 grid max-w-screen-xl gap-x-8 gap-y-8 px-6 text-center md:px-8 lg:grid-cols-[repeat(2,_auto)]">
       {teamsSummary &&
         teamsSummary
           .filter((team) => !TEAMS_TO_EXCLUDE.includes(team.name))
@@ -40,7 +40,7 @@ export default async function TeamsPage() {
               return (
                 <Link href={`/teams/${slug}`} key={team_id}>
                   <Card className="flex flex-1 cursor-pointer flex-col gap-4 p-6 transition-colors hover:bg-secondary/60">
-                    <div className="relative mx-auto flex h-20 w-full justify-center">
+                    <div className="relative mx-auto flex h-12 w-full justify-center">
                       <TeamLogo
                         src={logo_url}
                         alt={team_name || "Prover logo"}

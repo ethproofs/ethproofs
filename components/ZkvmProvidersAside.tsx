@@ -36,12 +36,7 @@ const ZkvmProviderAside = ({ team, zkvm }: { team: Team; zkvm: Zkvm }) => {
         )}
         <span className={cn(team.logo_url && "sr-only")}>{team.name}</span>
         is also the team behind the zkVM{" "}
-        <Link
-          href={`/zkvms/${zkvm.slug}`}
-          className="text-primary-light hover:underline"
-        >
-          {zkvm.name}
-        </Link>
+        <span className="text-primary-light">{zkvm.name}</span>
       </div>
     </aside>
   )
@@ -78,13 +73,7 @@ const ZkvmProviderAsideMatterLabs = ({
           ZKsync
         </Link>
         and the{" "}
-        <Link
-          href={`/zkvms/${zkvm.slug}`}
-          className="text-primary-light hover:underline"
-        >
-          {zkvm.name}
-        </Link>
-        zkVM
+        <span className="text-primary-light">{zkvm.name}</span> zkVM
       </div>
     </aside>
   )

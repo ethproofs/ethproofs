@@ -207,20 +207,19 @@ export type Slices = [
   SliceDetails,
   SliceDetails,
   SliceDetails,
-  SliceDetails,
 ]
 
 export type DayRange = (typeof CHART_RANGES)[number]
 
-export type SoftwareDetailItem = {
-  id: string
-  label: React.ReactNode
-  className?: string
-  popoverDetails: React.ReactNode
-  severity: SeverityLevel | undefined
-  position: 0 | 1 | 2 | 3 | 4 | 5 | 6 | 7
-} & ({ chartInfo: LevelMeterProps } | { value: string })
-
 export type MetricThresholds = Record<SeverityLevel, number>
 
 export type ZkvmThresholdMetric = keyof typeof ZKVM_THRESHOLDS
+
+export interface ClusterSummary {
+  id: string
+  name: string
+  team: {
+    name: string
+    slug: string
+  }
+}
