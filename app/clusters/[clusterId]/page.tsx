@@ -4,10 +4,10 @@ import { notFound } from "next/navigation"
 
 import { SummaryItem } from "@/lib/types"
 
-import { DisplayTeam } from "@/components/DisplayTeamLink"
 import KPIs from "@/components/KPIs"
 import { Null } from "@/components/Null"
 import { ClusterProofsSection } from "@/components/proofs-table/cluster-proofs-section"
+import { DisplayTeam } from "@/components/team-logo-link"
 import { Card } from "@/components/ui/card"
 import Link from "@/components/ui/link"
 import { MetricBox, MetricInfo, MetricLabel } from "@/components/ui/metric"
@@ -151,12 +151,7 @@ export default async function ClusterDetailsPage({
       <section className="mt-12 flex w-full flex-wrap justify-evenly gap-x-8">
         <div className="flex flex-col items-center gap-1 p-4">
           <div className="font-sans text-sm text-body-secondary">zkVM</div>
-          <Link
-            href={`/zkvms/${zkvm.slug}`}
-            className="text-lg text-primary hover:underline"
-          >
-            {zkvm.name}
-          </Link>
+          <div className="text-lg text-primary">{zkvm.name}</div>
         </div>
         <div className="flex flex-col items-center gap-1 p-4">
           <div className="font-sans text-sm text-body-secondary">version</div>

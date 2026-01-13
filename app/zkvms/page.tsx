@@ -3,6 +3,7 @@ import type { Metadata } from "next"
 import { BasicTabs } from "@/components/BasicTabs"
 import { ZkvmsTable } from "@/components/zkvms-table/zkvms-table"
 
+import { getActiveClustersByZkvmIds } from "@/lib/api/clusters-by-zkvm"
 import { getMetadata } from "@/lib/metadata"
 import { getZkvmsMetricsByZkvmId } from "@/lib/metrics"
 import { getZkvmsWithUsage } from "@/lib/zkvms"
@@ -11,9 +12,12 @@ export const metadata: Metadata = getMetadata({ title: "zkVMs" })
 
 export default async function ZkvmsPage() {
   const zkvms = await getZkvmsWithUsage()
-  const metricsByZkvmId = await getZkvmsMetricsByZkvmId({
-    zkvmIds: zkvms.map((zkvm) => zkvm.id),
-  })
+  const zkvmIds = zkvms.map((zkvm) => zkvm.id)
+
+  const [metricsByZkvmId, clustersByZkvmId] = await Promise.all([
+    getZkvmsMetricsByZkvmId({ zkvmIds }),
+    getActiveClustersByZkvmIds(zkvmIds),
+  ])
 
   const sortedZkvms = zkvms.sort((a, b) => {
     const clusterDiff = b.activeClusters - a.activeClusters
@@ -25,8 +29,14 @@ export default async function ZkvmsPage() {
     .map((zkvm) => ({
       ...zkvm,
       metrics: metricsByZkvmId.get(zkvm.id),
+      clusters: clustersByZkvmId[zkvm.id] ?? [],
     }))
-  const inactiveZkvms = sortedZkvms.filter((z) => z.activeClusters === 0)
+  const inactiveZkvms = sortedZkvms
+    .filter((z) => z.activeClusters === 0)
+    .map((zkvm) => ({
+      ...zkvm,
+      clusters: [],
+    }))
 
   return (
     <div className="mx-auto mt-2 flex max-w-screen-xl flex-1 flex-col items-center gap-20 [&>section]:w-full">

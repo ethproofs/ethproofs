@@ -4,11 +4,9 @@ import { Check, Pizza, X as RedX } from "lucide-react"
 import { ColumnDef } from "@tanstack/react-table"
 
 import { DataTableColumnHeader } from "@/components/data-table/data-table-column-header"
-import { ActiveZkvm } from "@/components/SoftwareAccordion/ActiveSoftwareAccordion"
-import Link from "@/components/ui/link"
 import { Progress } from "@/components/ui/progress"
 
-import { ButtonLink } from "../ui/button"
+import { Button } from "../ui/button"
 
 import { ZkvmRow } from "./zkvms-table"
 
@@ -43,7 +41,11 @@ export const labels = [
   },
 ]
 
-export const columns: ColumnDef<ZkvmRow>[] = [
+interface ColumnsOptions {
+  onOpenDrawer?: (zkvm: ZkvmRow) => void
+}
+
+export const getColumns = (options?: ColumnsOptions): ColumnDef<ZkvmRow>[] => [
   {
     id: "zkvm",
     accessorKey: "name",
@@ -55,9 +57,7 @@ export const columns: ColumnDef<ZkvmRow>[] = [
 
       return (
         <div className="w-[140px]">
-          <Link href={`/zkvms/${zkvm.slug}`} className="hover:underline">
-            {zkvm.name}
-          </Link>
+          <span>{zkvm.name}</span>
           <div className="text-xs text-muted-foreground">{zkvm.team.name}</div>
         </div>
       )
@@ -167,7 +167,7 @@ export const columns: ColumnDef<ZkvmRow>[] = [
       <DataTableColumnHeader column={column} title="version" />
     ),
     cell: ({ row }) => {
-      const versions = row.getValue("version") as ActiveZkvm["versions"]
+      const versions = row.getValue("version") as ZkvmRow["versions"]
       const latestVersion = versions.reduce((latest, version) =>
         version.id > latest.id ? version : latest
       )
@@ -190,13 +190,13 @@ export const columns: ColumnDef<ZkvmRow>[] = [
     header: () => null,
     cell: ({ row }) => (
       <div className="flex flex-row justify-end">
-        <ButtonLink
+        <Button
           variant="outline"
           size="icon"
-          href={`/zkvms/${row.original.slug}`}
+          onClick={() => options?.onOpenDrawer?.(row.original)}
         >
           <Pizza />
-        </ButtonLink>
+        </Button>
       </div>
     ),
   },

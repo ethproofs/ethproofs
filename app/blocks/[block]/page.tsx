@@ -11,7 +11,6 @@ import ProofStatus from "@/components/ProofStatus"
 import { HidePunctuation } from "@/components/StylePunctuation"
 import Timestamp from "@/components/Timestamp"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
-import { HeroItem, HeroItemLabel, HeroTitle } from "@/components/ui/hero"
 import {
   MetricBox,
   MetricInfo,
@@ -134,7 +133,7 @@ export default async function BlockDetailsPage({
 
   return (
     <div className="mx-auto max-w-screen-xl space-y-20 px-6 md:px-8 [&>section]:w-full">
-      <HeroTitle className="mx-auto mb-24 mt-16 w-fit items-center gap-4 md:mt-24">
+      <div className="mx-auto mb-24 mt-16 flex w-fit items-center gap-4 md:mt-24">
         <Box strokeWidth="1" className="size-[4.5rem] shrink-0 text-primary" />
         <div className="max-w-[14rem]">
           <h1 className="">
@@ -152,20 +151,20 @@ export default async function BlockDetailsPage({
             {hash ? <CopyButton message={hash} /> : <Null />}
           </div>
         </div>
-      </HeroTitle>
+      </div>
 
       <section className="grid w-fit grid-cols-2 gap-x-8 gap-y-4 px-6 md:grid-cols-[auto,auto,auto,auto]">
-        <HeroItem className="row-span-2 grid grid-rows-subgrid place-items-center gap-y-1">
-          <HeroItemLabel>
+        <div className="row-span-2 grid max-w-full grid-rows-subgrid place-items-center gap-y-1">
+          <div className="flex items-center gap-1 text-body-secondary">
             <Clock className="size-4" /> timestamp
-          </HeroItemLabel>
+          </div>
           {timestamp ? <Timestamp>{timestamp}</Timestamp> : <Null />}
-        </HeroItem>
+        </div>
 
-        <HeroItem className="row-span-2 grid grid-rows-subgrid place-items-center gap-y-1">
-          <HeroItemLabel>
+        <div className="row-span-2 grid max-w-full grid-rows-subgrid place-items-center gap-y-1">
+          <div className="flex items-center gap-1 text-body-secondary">
             <Cpu className="size-4" /> gas used
-          </HeroItemLabel>
+          </div>
           <p className="tracking-wide">
             {gas_used ? (
               <HidePunctuation>{formatNumber(gas_used)}</HidePunctuation>
@@ -173,12 +172,12 @@ export default async function BlockDetailsPage({
               <Null />
             )}
           </p>
-        </HeroItem>
+        </div>
 
-        <HeroItem className="row-span-2 grid grid-rows-subgrid place-items-center gap-y-1">
-          <HeroItemLabel>
+        <div className="row-span-2 grid max-w-full grid-rows-subgrid place-items-center gap-y-1">
+          <div className="flex items-center gap-1 text-body-secondary">
             <Layers className="size-4" /> slot
-          </HeroItemLabel>
+          </div>
           <p className="tracking-wide">
             {timestamp ? (
               <HidePunctuation>
@@ -188,12 +187,12 @@ export default async function BlockDetailsPage({
               <Null />
             )}
           </p>
-        </HeroItem>
+        </div>
 
-        <HeroItem className="row-span-2 grid grid-rows-subgrid place-items-center gap-y-1">
-          <HeroItemLabel>
+        <div className="row-span-2 grid max-w-full grid-rows-subgrid place-items-center gap-y-1">
+          <div className="flex items-center gap-1 text-body-secondary">
             <Hourglass className="size-4" /> epoch
-          </HeroItemLabel>
+          </div>
           <p className="tracking-wide">
             {timestamp ? (
               <HidePunctuation>
@@ -203,7 +202,7 @@ export default async function BlockDetailsPage({
               <Null />
             )}
           </p>
-        </HeroItem>
+        </div>
       </section>
 
       <section className="flex flex-col gap-8 xl:flex-row">
