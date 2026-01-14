@@ -330,6 +330,13 @@
       "when": 1767968398828,
       "tag": "0046_drop_release_date",
       "breakpoints": true
+    },
+    {
+      "idx": 47,
+      "version": "7",
+      "when": 1768397521130,
+      "tag": "0047_drop-zkvm-security-metrics-fields",
+      "breakpoints": true
     }
   ]
 }

@@ -49,9 +49,11 @@ export function ZkvmDrawer({
 }: ZkvmDrawerProps) {
   if (!zkvm) return null
 
-  const latestVersion = zkvm.versions.reduce((latest, version) =>
-    version.id > latest.id ? version : latest
-  )
+  const latestVersion = zkvm.versions.length
+    ? zkvm.versions.reduce((latest, version) =>
+        version.id > latest.id ? version : latest
+      )
+    : null
 
   const slices = getSlicesFromMetrics(metrics)
 
@@ -103,7 +105,7 @@ export function ZkvmDrawer({
                 <Link
                   hideArrow
                   href={new URL(
-                    team.github_org,
+                    "/" + team.github_org,
                     "https://github.com"
                   ).toString()}
                 >
@@ -123,7 +125,7 @@ export function ZkvmDrawer({
           <div className="grid grid-cols-4 gap-4 text-center text-sm">
             <div>
               <div className="text-body-secondary">version</div>
-              <div className="font-medium">{latestVersion.version}</div>
+              <div className="font-medium">{latestVersion?.version ?? "-"}</div>
             </div>
             <div>
               <div className="text-body-secondary">ISA</div>
@@ -158,13 +160,7 @@ export function ZkvmDrawer({
           ) : (
             <ItemGroup className="gap-2">
               {clusters.map((cluster) => (
-                <Item
-                  key={cluster.id}
-                  asChild
-                  variant="outline"
-                  size="sm"
-                  className="hover:bg-muted"
-                >
+                <Item key={cluster.id} asChild variant="outline" size="sm">
                   <Link href={`/clusters/${cluster.id}`} hideArrow>
                     <ItemContent>
                       <ItemTitle>{cluster.name}</ItemTitle>

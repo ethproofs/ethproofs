@@ -28,6 +28,10 @@ export const labels = [
     label: "mainnet capable",
   },
   {
+    value: "soundcalc_integration",
+    label: "soundcalc",
+  },
+  {
     value: "versions",
     label: "latest version",
   },
@@ -153,6 +157,26 @@ export const getColumns = (options?: ColumnsOptions): ColumnDef<ZkvmRow>[] => [
               <Check className="size-4" />
               <span>layer 1</span>
             </div>
+          ) : (
+            <RedX className="size-4 text-level-worst" />
+          )}
+        </div>
+      )
+    },
+  },
+  {
+    id: "soundcalc_integration",
+    accessorKey: "metrics.soundcalc_integration",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="soundcalc" />
+    ),
+    cell: ({ row }) => {
+      const hasIntegratedWithSoundcalc =
+        row.original.metrics?.soundcalc_integration
+      return (
+        <div className="w-[100px]">
+          {hasIntegratedWithSoundcalc ? (
+            <Check className="size-4 text-primary" />
           ) : (
             <RedX className="size-4 text-level-worst" />
           )}
