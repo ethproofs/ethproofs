@@ -6,6 +6,7 @@ import { PaginationState } from "@tanstack/react-table"
 import {
   ClusterBase,
   ClusterVersionBase,
+  GuestProgram,
   ProverType,
   Team,
   Zkvm,
@@ -21,6 +22,7 @@ import { columns } from "./columns"
 type ClusterWithRelations = ClusterBase & {
   team: Team
   prover_type: ProverType | null
+  guest_program: GuestProgram | null
   versions: Array<
     ClusterVersionBase & {
       zkvm_version: ZkvmVersion & {

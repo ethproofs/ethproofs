@@ -7,6 +7,7 @@ import {
   Cpu,
   HeartPulse,
   Library,
+  SquareCode,
   Target,
   Users,
   Zap,
@@ -22,6 +23,11 @@ export const exploreNavItems = [
     label: "zkVMs",
     href: "/zkvms",
     icon: <Zap />,
+  },
+  {
+    label: "guests",
+    href: "/guests",
+    icon: <SquareCode />,
   },
   {
     label: "provers",
