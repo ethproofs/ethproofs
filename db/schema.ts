@@ -97,6 +97,22 @@ export const proverTypes = pgTable("prover_types", {
     .notNull(),
 })
 
+export const guestPrograms = pgTable("guest_programs", {
+  id: bigint({ mode: "number" }).primaryKey().generatedByDefaultAsIdentity(),
+  name: text().notNull(),
+  language: text().notNull(),
+  maintainer: text().notNull(),
+  ecosystem: text().notNull(),
+  license: text().notNull(),
+  repo_url: text().notNull(),
+  created_at: timestamp("created_at", {
+    withTimezone: true,
+    mode: "string",
+  })
+    .defaultNow()
+    .notNull(),
+})
+
 export const clusters = pgTable(
   "clusters",
   {
@@ -112,6 +128,13 @@ export const clusters = pgTable(
     prover_type_id: smallint("prover_type_id")
       .notNull()
       .references(() => proverTypes.id),
+    guest_program_id: bigint("guest_program_id", { mode: "number" }).references(
+      () => guestPrograms.id,
+      {
+        onDelete: "set null",
+        onUpdate: "cascade",
+      }
+    ),
     hardware_description: text(),
     is_open_source: boolean().notNull().default(false),
     num_gpus: integer("num_gpus").notNull().default(1),

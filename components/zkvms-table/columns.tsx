@@ -176,7 +176,10 @@ export const getColumns = (options?: ColumnsOptions): ColumnDef<ZkvmRow>[] => [
       return (
         <div className="w-[100px]">
           {hasIntegratedWithSoundcalc ? (
-            <Check className="size-4 text-primary" />
+            <div className="flex items-center gap-1 text-primary">
+              <Check className="size-4" />
+              <span>integrated</span>
+            </div>
           ) : (
             <RedX className="size-4 text-level-worst" />
           )}

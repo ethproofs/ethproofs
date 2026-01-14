@@ -20,6 +20,7 @@ export const getCluster = async (id: string) => {
         with: {
           team: true,
           prover_type: true,
+          guest_program: true,
           versions: {
             orderBy: desc(clusterVersions.created_at),
             with: {
@@ -62,6 +63,7 @@ export const getClusters = async (filters?: { teamId?: string }) => {
         with: {
           team: true,
           prover_type: true,
+          guest_program: true,
           versions: {
             orderBy: desc(clusterVersions.created_at),
             with: {
@@ -126,6 +128,7 @@ export const getActiveClusters = async (filters?: {
         with: {
           team: true,
           prover_type: true,
+          guest_program: true,
           versions: {
             orderBy: desc(clusterVersions.created_at),
             with: {

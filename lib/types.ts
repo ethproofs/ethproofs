@@ -9,6 +9,7 @@ import {
   clusters,
   clusterVersions,
   gpuPriceIndex,
+  guestPrograms,
   proofs,
   proofsDailyStats,
   proverDailyStats,
@@ -57,6 +58,11 @@ export type ProverType = typeof proverTypes.$inferSelect
  * Represents a row in the teams table.
  */
 export type Team = typeof teams.$inferSelect
+
+/**
+ * Represents a row in the guest_programs table.
+ */
+export type GuestProgram = typeof guestPrograms.$inferSelect
 
 /**
  * Represents a row in the zkvms table.

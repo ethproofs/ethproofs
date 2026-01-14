@@ -23,6 +23,10 @@ export const labels = [
     label: "prover type",
   },
   {
+    value: "guest_program",
+    label: "guest program",
+  },
+  {
     value: "is_open_source",
     label: "prover open source",
   },
@@ -30,6 +34,7 @@ export const labels = [
     value: "software_link",
     label: "binary available",
   },
+
   {
     value: "avg_cost",
     label: "avg cost per proof",
@@ -72,10 +77,21 @@ export const columns: ColumnDef<ClusterRow>[] = [
     cell: ({ row }) => {
       const proverType = row.original.prover_type
       return (
-        <div className="w-[180px]">
+        <div className="w-[150px]">
           <div className="text-sm">{proverType?.name.toLowerCase() || "—"}</div>
         </div>
       )
+    },
+  },
+  {
+    id: "guest_program",
+    accessorKey: "guest_program",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="guest" />
+    ),
+    cell: ({ row }) => {
+      const guestProgram = row.original.guest_program
+      return <div className="w-[100px]">{guestProgram?.name ?? "—"}</div>
     },
   },
   {

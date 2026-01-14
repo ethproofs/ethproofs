@@ -7,6 +7,7 @@ import {
   clusters,
   clusterVersions,
   gpuPriceIndex,
+  guestPrograms,
   proofs,
   proverTypes,
   teams,
@@ -39,6 +40,10 @@ export const clustersRelations = relations(clusters, ({ one, many }) => ({
   prover_type: one(proverTypes, {
     fields: [clusters.prover_type_id],
     references: [proverTypes.id],
+  }),
+  guest_program: one(guestPrograms, {
+    fields: [clusters.guest_program_id],
+    references: [guestPrograms.id],
   }),
 }))
 
@@ -115,5 +120,9 @@ export const gpuPriceIndexRelations = relations(gpuPriceIndex, ({ many }) => ({
 }))
 
 export const proverTypesRelations = relations(proverTypes, ({ many }) => ({
+  clusters: many(clusters),
+}))
+
+export const guestProgramsRelations = relations(guestPrograms, ({ many }) => ({
   clusters: many(clusters),
 }))
