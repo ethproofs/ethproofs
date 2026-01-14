@@ -530,10 +530,9 @@ export type Database = {
           id: number
           implementation_soundness: Database["public"]["Enums"]["severity_level"]
           max_bounty_amount: number
-          protocol_soundness: Database["public"]["Enums"]["severity_level"]
           quantum_security: Database["public"]["Enums"]["severity_level"]
           security_target_bits: number
-          trusted_setup: boolean
+          soundcalc_integration: boolean
           updated_at: string
           zkvm_id: number
         }
@@ -543,10 +542,9 @@ export type Database = {
           id?: number
           implementation_soundness: Database["public"]["Enums"]["severity_level"]
           max_bounty_amount: number
-          protocol_soundness: Database["public"]["Enums"]["severity_level"]
           quantum_security: Database["public"]["Enums"]["severity_level"]
           security_target_bits: number
-          trusted_setup?: boolean
+          soundcalc_integration?: boolean
           updated_at?: string
           zkvm_id: number
         }
@@ -556,10 +554,9 @@ export type Database = {
           id?: number
           implementation_soundness?: Database["public"]["Enums"]["severity_level"]
           max_bounty_amount?: number
-          protocol_soundness?: Database["public"]["Enums"]["severity_level"]
           quantum_security?: Database["public"]["Enums"]["severity_level"]
           security_target_bits?: number
-          trusted_setup?: boolean
+          soundcalc_integration?: boolean
           updated_at?: string
           zkvm_id?: number
         }

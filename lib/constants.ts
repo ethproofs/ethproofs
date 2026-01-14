@@ -56,8 +56,8 @@ export const BENCHMARK_UPPER_THRESHOLD = 90_000 // milliseconds
 
 export const ZKVM_THRESHOLDS = {
   size_bytes: {
-    red: 512 * 1024, // 512 KiB
-    yellow: 32 * 1024, // 32 KiB
+    red: 600 * 1024 + 1, // > 600 KiB
+    yellow: 300 * 1024 + 1, // > 300 KiB
     green: 0,
   },
   verification_ms: {

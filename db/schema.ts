@@ -402,7 +402,6 @@ export const zkvmSecurityMetrics = pgTable(
         onUpdate: "cascade",
       })
       .unique(),
-    protocol_soundness: severityLevel("protocol_soundness").notNull(),
     implementation_soundness: severityLevel(
       "implementation_soundness"
     ).notNull(),
@@ -412,7 +411,9 @@ export const zkvmSecurityMetrics = pgTable(
     max_bounty_amount: bigint("max_bounty_amount", {
       mode: "number",
     }).notNull(),
-    trusted_setup: boolean("trusted_setup").notNull().default(false),
+    soundcalc_integration: boolean("soundcalc_integration")
+      .notNull()
+      .default(false),
     created_at: timestamp("created_at", { withTimezone: true, mode: "string" })
       .defaultNow()
       .notNull(),
