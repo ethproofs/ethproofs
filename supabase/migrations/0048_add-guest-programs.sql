@@ -10,6 +10,13 @@ CREATE TABLE IF NOT EXISTS "guest_programs" (
   "created_at" timestamp with time zone DEFAULT now() NOT NULL
 );
 
+-- Enable RLS on guest_programs
+ALTER TABLE "guest_programs" ENABLE ROW LEVEL SECURITY;
+
+-- Create read policy for guest_programs
+CREATE POLICY "Enable read access for all users" ON "guest_programs"
+  AS PERMISSIVE FOR SELECT TO public USING (true);
+
 -- Add guest_program_id column to clusters table
 ALTER TABLE "clusters" ADD COLUMN "guest_program_id" bigint;
 
