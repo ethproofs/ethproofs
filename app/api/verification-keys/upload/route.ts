@@ -1,15 +1,26 @@
 import { eq } from "drizzle-orm"
 import { NextRequest } from "next/server"
 
+import { API_KEY_MANAGER_ROLE } from "@/lib/constants"
+
 import { db } from "@/db"
 import { clusterVersions } from "@/db/schema"
 import { getTeam } from "@/lib/api/teams"
 import { uploadVerificationKey } from "@/lib/api/verification-keys"
+import { createClient } from "@/utils/supabase/server"
 
-// Internal API route for verification key uploads
-// Uploads file and links it to a specific cluster version
 export const POST = async (request: NextRequest) => {
   try {
+    const supabase = await createClient()
+    const {
+      data: { user },
+      error: authError,
+    } = await supabase.auth.getUser()
+
+    if (authError || !user) {
+      return new Response("Unauthorized", { status: 401 })
+    }
+
     const formData = await request.formData()
     const file = formData.get("file") as File
 
@@ -27,7 +38,6 @@ export const POST = async (request: NextRequest) => {
       return new Response("No version_id provided", { status: 400 })
     }
 
-    // Get cluster and team info to generate filename
     const cluster = await db.query.clusters.findFirst({
       where: (c, { eq }) => eq(c.id, clusterId),
       columns: {
@@ -37,6 +47,11 @@ export const POST = async (request: NextRequest) => {
 
     if (!cluster) {
       return new Response("Cluster not found", { status: 404 })
+    }
+
+    const isAdmin = user.role === API_KEY_MANAGER_ROLE
+    if (!isAdmin && cluster.team_id !== user.id) {
+      return new Response("Forbidden", { status: 403 })
     }
 
     const team = await getTeam(cluster.team_id)
