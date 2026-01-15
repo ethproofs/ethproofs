@@ -97,21 +97,32 @@ export const proverTypes = pgTable("prover_types", {
     .notNull(),
 })
 
-export const guestPrograms = pgTable("guest_programs", {
-  id: bigint({ mode: "number" }).primaryKey().generatedByDefaultAsIdentity(),
-  name: text().notNull(),
-  language: text().notNull(),
-  maintainer: text().notNull(),
-  ecosystem: text().notNull(),
-  license: text().notNull(),
-  repo_url: text().notNull(),
-  created_at: timestamp("created_at", {
-    withTimezone: true,
-    mode: "string",
-  })
-    .defaultNow()
-    .notNull(),
-})
+export const guestPrograms = pgTable(
+  "guest_programs",
+  {
+    id: bigint({ mode: "number" }).primaryKey().generatedByDefaultAsIdentity(),
+    name: text().notNull(),
+    language: text().notNull(),
+    maintainer: text().notNull(),
+    ecosystem: text().notNull(),
+    license: text().notNull(),
+    repo_url: text().notNull(),
+    created_at: timestamp("created_at", {
+      withTimezone: true,
+      mode: "string",
+    })
+      .defaultNow()
+      .notNull(),
+  },
+  () => [
+    pgPolicy("Enable read access for all users", {
+      as: "permissive",
+      for: "select",
+      to: ["public"],
+      using: sql`true`,
+    }),
+  ]
+).enableRLS()
 
 export const clusters = pgTable(
   "clusters",

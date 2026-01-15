@@ -24,9 +24,9 @@ export default async function GuestsPage() {
   return (
     <div className="mx-auto mt-2 flex max-w-screen-xl flex-1 flex-col items-center gap-20 [&>section]:w-full">
       <section>
-        <span className="text-2xl">guests</span>
+        <span className="px-6 text-2xl">guests</span>
         <GuestProgramsTable
-          className="mt-4"
+          className="mt-4 px-6"
           guestPrograms={sortedPrograms}
           totalActiveClusters={totalActiveClusters}
         />
