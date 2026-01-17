@@ -58,8 +58,9 @@ export function getProofButtonClasses(buttonState: ProofButtonState) {
     case "success":
       return `${baseClasses} border-green-500 bg-green-500/20`
     case "failed":
-    case "error":
       return `${baseClasses} border-destructive bg-transparent`
+    case "error":
+      return `${baseClasses} border-indigo-500 bg-transparent`
     default:
       return `${baseClasses} border-primary bg-transparent hover:bg-green-500/10`
   }
@@ -79,8 +80,9 @@ export function getProofButtonTextColorClass(buttonState: ProofButtonState) {
     case "success":
       return "text-green-500"
     case "failed":
-    case "error":
       return "text-destructive"
+    case "error":
+      return "text-indigo-500"
     default:
       return "text-muted-foreground"
   }

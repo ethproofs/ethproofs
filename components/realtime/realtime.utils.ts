@@ -25,7 +25,7 @@ export function getProofStatusText(proofStatus: ProofStatus) {
     case "failed":
       return "proved (verification failed)"
     case "error":
-      return "proved (verification error)"
+      return "proved (error during verification)"
     default:
       return "unknown"
   }
@@ -93,10 +93,15 @@ export function getProofStatusClasses(status: string) {
         animate: "",
       }
     case "failed":
-    case "error":
       return {
         text: "text-destructive",
         background: "bg-destructive",
+        animate: "",
+      }
+    case "error":
+      return {
+        text: "text-chart-12",
+        background: "bg-chart-12",
         animate: "",
       }
     default:

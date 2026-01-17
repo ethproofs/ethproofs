@@ -24,7 +24,10 @@ import {
 import { useDownloadProof } from "./use-download-proof"
 
 import { useAnimateCheckmark } from "@/lib/hooks/ui/use-animate-checkmark"
-import { isVerifiableZkvm } from "@/lib/zkvm-verifiers"
+import {
+  isVerifiableZkvm,
+  isVerifiableZkvmWithoutVk,
+} from "@/lib/zkvm-verifiers"
 
 interface VerifyButtonProps {
   proof: ProofWithCluster
@@ -47,7 +50,9 @@ export function VerifyButton({
   const zkvmSlug = proof.cluster_version?.zkvm_version?.zkvm?.slug
 
   const isVerifiable =
-    proof.cluster_version?.vk_path && zkvmSlug && isVerifiableZkvm(zkvmSlug)
+    zkvmSlug &&
+    isVerifiableZkvm(zkvmSlug) &&
+    (isVerifiableZkvmWithoutVk(zkvmSlug) || proof.cluster_version?.vk_path)
 
   const { verifyProof, verifyTime } = useVerifyProof(
     isVerifiable ? zkvmSlug : undefined
@@ -62,20 +67,25 @@ export function VerifyButton({
   }, [isVerifiable, proof_status])
 
   async function onVerifyProof(proof_id: number) {
-    // Downloading proof
     console.log("Downloading proof...")
     setButtonState(proofButtonStateMap.downloading)
+
+    const needsVk = zkvmSlug && !isVerifiableZkvmWithoutVk(zkvmSlug)
     const [proofBytes, vkBytes] = await Promise.all([
       downloadProof(proof_id),
-      downloadVerificationKey(proof_id),
+      needsVk
+        ? downloadVerificationKey(proof_id)
+        : Promise.resolve(new Uint8Array(0)),
     ])
-    if (!proofBytes || !vkBytes)
+
+    if (!proofBytes || (needsVk && !vkBytes)) {
       return setButtonState(proofButtonStateMap.error)
-    // Verifying proof
+    }
+
     setButtonState(proofButtonStateMap.verifying)
     await delay(100)
     console.log("Verifying proof...")
-    const result = await verifyProof(proofBytes, vkBytes)
+    const result = await verifyProof(proofBytes, vkBytes ?? new Uint8Array(0))
     setButtonState(
       result.isValid ? proofButtonStateMap.success : proofButtonStateMap.failed
     )
