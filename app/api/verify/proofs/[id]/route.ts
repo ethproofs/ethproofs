@@ -1,7 +1,10 @@
 import { downloadBinaryForProofId, getProofData } from "@/lib/api/proofs"
 import { verifyProofServer } from "@/lib/server/verify-service"
 import { getCachedVk } from "@/lib/server/vk-cache"
-import { isVerifiableZkvm } from "@/lib/zkvm-verifiers"
+import {
+  isVerifiableZkvm,
+  isVerifiableZkvmWithoutVk,
+} from "@/lib/zkvm-verifiers"
 
 function sendSseEvent(
   encoder: TextEncoder,
@@ -56,20 +59,23 @@ function createVerificationStream(proofId: number, proofIdStr: string) {
             return
           }
 
-          if (!proofData.cluster_version.vk_path) {
-            sendSseEvent(encoder, controller, "complete", {
-              isValid: null,
-              error: `Verification key not available for this proof`,
-            })
-            controller.close()
-            return
-          }
-
           const zkvmSlug = proofData.cluster_version.zkvm_version.zkvm.slug
           if (!isVerifiableZkvm(zkvmSlug)) {
             sendSseEvent(encoder, controller, "complete", {
               isValid: null,
               error: `Unsupported zkVM: ${zkvmSlug}`,
+            })
+            controller.close()
+            return
+          }
+
+          if (
+            !isVerifiableZkvmWithoutVk(zkvmSlug) &&
+            !proofData.cluster_version.vk_path
+          ) {
+            sendSseEvent(encoder, controller, "complete", {
+              isValid: null,
+              error: `Verification key not available for this proof`,
             })
             controller.close()
             return
@@ -82,27 +88,33 @@ function createVerificationStream(proofId: number, proofIdStr: string) {
           )
           const proofBytes = new Uint8Array(arrayBuffer)
           let vkBytes: Uint8Array | null = null
-          try {
-            const versionIndex = proofData.cluster_version.index ?? 0
-            vkBytes = await getCachedVk(
-              proofData.proof_id,
-              proofData.cluster_id,
-              versionIndex
-            )
-          } catch (err) {
-            const errorMsg =
-              err instanceof Error ? err.message : "Unknown error"
-            sendSseEvent(encoder, controller, "complete", {
-              isValid: null,
-              error: `vk not available: ${errorMsg}`,
-            })
-            controller.close()
-            return
+          if (!isVerifiableZkvmWithoutVk(zkvmSlug)) {
+            try {
+              const versionIndex = proofData.cluster_version.index ?? 0
+              vkBytes = await getCachedVk(
+                proofData.proof_id,
+                proofData.cluster_id,
+                versionIndex
+              )
+            } catch (err) {
+              const errorMsg =
+                err instanceof Error ? err.message : "Unknown error"
+              sendSseEvent(encoder, controller, "complete", {
+                isValid: null,
+                error: `vk not available: ${errorMsg}`,
+              })
+              controller.close()
+              return
+            }
           }
 
           // Send verifying status
           sendSseEvent(encoder, controller, "verifying")
-          const result = await verifyProofServer(zkvmSlug, proofBytes, vkBytes)
+          const result = await verifyProofServer(
+            zkvmSlug,
+            proofBytes,
+            vkBytes ?? new Uint8Array(0)
+          )
 
           // Send result
           sendSseEvent(encoder, controller, "complete", {

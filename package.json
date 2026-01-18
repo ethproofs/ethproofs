@@ -29,6 +29,7 @@
     "@dnd-kit/modifiers": "^9.0.0",
     "@dnd-kit/sortable": "^10.0.0",
     "@dnd-kit/utilities": "^3.2.2",
+    "@ethproofs/airbender-wasm-stark-verifier": "^0.4.0",
     "@ethproofs/openvm-wasm-stark-verifier": "^0.1.0",
     "@ethproofs/pico-wasm-stark-verifier": "^0.1.6",
     "@ethproofs/sp1-hypercube-wasm-verifier": "^0.1.1",
