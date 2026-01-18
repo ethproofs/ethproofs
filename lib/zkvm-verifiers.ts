@@ -8,12 +8,29 @@ export type VerifiableZkvmSlug =
   | "ziren"
   | "sp1-hypercube"
   | "openvm"
+  | "airbender"
 
 /**
  * Check if a zkvm slug has a corresponding verifier implementation
  */
 export function isVerifiableZkvm(slug: string): slug is VerifiableZkvmSlug {
-  return ["zisk", "pico", "ziren", "sp1-hypercube", "openvm"].includes(slug)
+  return [
+    "zisk",
+    "pico",
+    "ziren",
+    "sp1-hypercube",
+    "openvm",
+    "airbender",
+  ].includes(slug)
+}
+
+/**
+ * Verifier handles vk internally
+ */
+export function isVerifiableZkvmWithoutVk(
+  slug: string
+): slug is VerifiableZkvmSlug {
+  return ["airbender"].includes(slug)
 }
 
 /**

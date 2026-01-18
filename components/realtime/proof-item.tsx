@@ -87,7 +87,7 @@ export function ProofItem({ proof }: ProofItemProps) {
             <Check className="h-4 w-4 text-primary" />
           )}
           {(displayStatus === "failed" || displayStatus === "error") && (
-            <X className="h-4 w-4 text-destructive" />
+            <X className={cn("h-4 w-4", statusClasses.text)} />
           )}
         </div>
       </div>

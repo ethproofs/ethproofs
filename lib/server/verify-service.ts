@@ -1,4 +1,7 @@
-import { type VerifiableZkvmSlug } from "@/lib/zkvm-verifiers"
+import {
+  isVerifiableZkvmWithoutVk,
+  type VerifiableZkvmSlug,
+} from "@/lib/zkvm-verifiers"
 
 export interface VerificationResult {
   isValid: boolean
@@ -32,6 +35,9 @@ async function loadWasmModule(name: string): Promise<unknown> {
       case "openvm":
         loadedModule = await import("@ethproofs/openvm-wasm-stark-verifier")
         break
+      case "airbender":
+        loadedModule = await import("@ethproofs/airbender-wasm-stark-verifier")
+        break
       default:
         throw new Error(`Unknown prover type: ${name}`)
     }
@@ -58,38 +64,23 @@ export async function verifyProofServer(
 ): Promise<VerificationResult> {
   try {
     const loadedModule = await loadWasmModule(zkvmSlug)
-
-    let result: VerificationResult
-
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     const verifier = loadedModule as any
 
-    // Start timing just before verification
     const startTime = performance.now()
 
+    let verified: boolean
     if (zkvmSlug === "pico") {
-      const verified = verifier.verify_stark("PicoPrism", proofBytes, vkBytes)
-      result = { isValid: verified }
-    } else if (zkvmSlug === "sp1-hypercube") {
-      const verified = verifier.verify_stark(proofBytes, vkBytes)
-      result = { isValid: verified }
-    } else if (zkvmSlug === "ziren") {
-      const verified = verifier.verify_stark(proofBytes, vkBytes)
-      result = { isValid: verified }
-    } else if (zkvmSlug === "zisk") {
-      const verified = verifier.verify_stark(proofBytes, vkBytes)
-      result = { isValid: verified }
-    } else if (zkvmSlug === "openvm") {
-      const verified = verifier.verify_stark(proofBytes, vkBytes)
-      result = { isValid: verified }
+      verified = verifier.verify_stark("PicoPrism", proofBytes, vkBytes)
+    } else if (isVerifiableZkvmWithoutVk(zkvmSlug)) {
+      verified = verifier.verify_stark(proofBytes)
     } else {
-      result = { isValid: false, error: "Proof cannot be verified" }
+      verified = verifier.verify_stark(proofBytes, vkBytes)
     }
 
-    const duration = performance.now() - startTime
-    result.verifyTime = duration
+    const verifyTime = performance.now() - startTime
 
-    return result
+    return { isValid: verified, verifyTime }
   } catch (error) {
     return {
       isValid: false,

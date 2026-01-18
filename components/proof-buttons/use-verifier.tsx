@@ -3,29 +3,28 @@
 import { useCallback, useEffect, useState } from "react"
 
 import { wasmCache } from "@/lib/wasm-cache"
-import type { VerifiableZkvmSlug } from "@/lib/zkvm-verifiers"
+import {
+  isVerifiableZkvmWithoutVk,
+  type VerifiableZkvmSlug,
+} from "@/lib/zkvm-verifiers"
 
 interface WasmModule {
-  main: () => void
-  verify_stark: (
-    ...args: [Uint8Array, Uint8Array] | [string, Uint8Array, Uint8Array]
-  ) => boolean
+  main(): void
+  verify_stark(
+    ...args:
+      | [Uint8Array]
+      | [Uint8Array, Uint8Array]
+      | [string, Uint8Array, Uint8Array]
+  ): boolean
 }
 
-// Static import mapping for bundler compatibility
-// Typed as Promise<WasmModule> since actual module signatures differ
-// (zisk takes 2 params, pico takes 3) but we handle both via the union type
-const MODULE_LOADERS: Record<VerifiableZkvmSlug, () => Promise<WasmModule>> = {
-  zisk: () =>
-    import("@ethproofs/zisk-wasm-stark-verifier") as Promise<WasmModule>,
-  pico: () =>
-    import("@ethproofs/pico-wasm-stark-verifier") as Promise<WasmModule>,
-  ziren: () =>
-    import("@ethproofs/ziren-wasm-stark-verifier") as Promise<WasmModule>,
-  "sp1-hypercube": () =>
-    import("@ethproofs/sp1-hypercube-wasm-verifier") as Promise<WasmModule>,
-  openvm: () =>
-    import("@ethproofs/openvm-wasm-stark-verifier") as Promise<WasmModule>,
+const MODULE_LOADERS: Record<VerifiableZkvmSlug, () => Promise<unknown>> = {
+  zisk: () => import("@ethproofs/zisk-wasm-stark-verifier"),
+  pico: () => import("@ethproofs/pico-wasm-stark-verifier"),
+  ziren: () => import("@ethproofs/ziren-wasm-stark-verifier"),
+  "sp1-hypercube": () => import("@ethproofs/sp1-hypercube-wasm-verifier"),
+  openvm: () => import("@ethproofs/openvm-wasm-stark-verifier"),
+  airbender: () => import("@ethproofs/airbender-wasm-stark-verifier"),
 }
 
 interface VerifyResult {
@@ -49,7 +48,6 @@ export function useVerifier(
 
       const moduleLoader = MODULE_LOADERS[zkvmSlug]
 
-      // Check if already cached and initialized
       if (wasmCache.isModuleLoaded(zkvmSlug)) {
         const cachedModule = await wasmCache.getModule(zkvmSlug, moduleLoader)
         if (mounted) {
@@ -64,16 +62,21 @@ export function useVerifier(
         const loadedModule = await wasmCache.getModule(
           zkvmSlug,
           moduleLoader,
-          (wasmModule) => (wasmModule as WasmModule).main()
+          (wasmModule) => {
+            const mod = wasmModule as { main?: () => void }
+            if (mod.main) {
+              mod.main()
+            }
+          }
         )
 
         if (mounted) {
           setWasmModule(loadedModule as WasmModule)
           setIsInitialized(true)
         }
-      } catch (error) {
+      } catch (err) {
         if (mounted) {
-          setError(error instanceof Error ? error.message : "Unknown error")
+          setError(err instanceof Error ? err.message : "Unknown error")
         }
       }
     }
@@ -95,13 +98,12 @@ export function useVerifier(
 
       try {
         let result: boolean
-
-        switch (zkvmSlug) {
-          case "pico":
-            result = wasmModule.verify_stark("PicoPrism", proofBytes, vkBytes)
-            break
-          default:
-            result = wasmModule.verify_stark(proofBytes, vkBytes)
+        if (zkvmSlug === "pico") {
+          result = wasmModule.verify_stark("PicoPrism", proofBytes, vkBytes)
+        } else if (isVerifiableZkvmWithoutVk(zkvmSlug)) {
+          result = wasmModule.verify_stark(proofBytes)
+        } else {
+          result = wasmModule.verify_stark(proofBytes, vkBytes)
         }
 
         return { isValid: result }
