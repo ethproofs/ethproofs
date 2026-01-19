@@ -101,7 +101,7 @@ export function AdminVerificationKeyForm({
         setState({
           loading: false,
           errors: {
-            submit: [errorText || "Failed to upload vk"],
+            submit: [errorText || "failed to upload vk"],
           },
           success: false,
         })
@@ -120,13 +120,13 @@ export function AdminVerificationKeyForm({
       if (fileInputRef.current) fileInputRef.current.value = ""
       setSelectedFileName("")
     } catch (error) {
-      setState({
-        loading: false,
-        errors: {
-          submit: [error instanceof Error ? error.message : "Unknown error"],
-        },
-        success: false,
-      })
+        setState({
+          loading: false,
+          errors: {
+            submit: [error instanceof Error ? error.message : "unknown error"],
+          },
+          success: false,
+        })
     }
   }
 
