@@ -175,7 +175,7 @@ export const columns: ColumnDef<Block>[] = [
     id: "cost_per_mgas",
     accessorKey: "proofs",
     header: ({ column }) => (
-      <DataTableColumnHeader column={column} title="cost per Mgas" />
+      <DataTableColumnHeader column={column} title="cost per mgas" />
     ),
     cell: ({ row }) => {
       const { proofs, gas_used } = row.original
