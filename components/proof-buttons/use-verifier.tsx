@@ -27,6 +27,13 @@ const MODULE_LOADERS: Record<VerifiableZkvmSlug, () => Promise<unknown>> = {
   airbender: () => import("@ethproofs/airbender-wasm-stark-verifier"),
 }
 
+// Fallback module loaders for backwards compatibility
+const FALLBACK_MODULE_LOADERS: Partial<
+  Record<VerifiableZkvmSlug, () => Promise<unknown>>
+> = {
+  zisk: () => import("@ethproofs/zisk-wasm-stark-verifier-v0.12.0"),
+}
+
 interface VerifyResult {
   isValid: boolean
   error?: string
@@ -37,6 +44,7 @@ export function useVerifier(
   active: boolean = false
 ) {
   const [wasmModule, setWasmModule] = useState<WasmModule | null>(null)
+  const [fallbackModule, setFallbackModule] = useState<WasmModule | null>(null)
   const [isInitialized, setIsInitialized] = useState(false)
   const [error, setError] = useState<string | null>(null)
 
@@ -47,11 +55,28 @@ export function useVerifier(
       if (!active || !zkvmSlug) return
 
       const moduleLoader = MODULE_LOADERS[zkvmSlug]
+      const fallbackLoader = FALLBACK_MODULE_LOADERS[zkvmSlug]
+      const fallbackCacheKey = `${zkvmSlug}-fallback`
 
+      // Check if primary module is already cached
       if (wasmCache.isModuleLoaded(zkvmSlug)) {
         const cachedModule = await wasmCache.getModule(zkvmSlug, moduleLoader)
         if (mounted) {
           setWasmModule(cachedModule as WasmModule)
+        }
+
+        // Also load fallback if available and cached
+        if (fallbackLoader && wasmCache.isModuleLoaded(fallbackCacheKey)) {
+          const cachedFallback = await wasmCache.getModule(
+            fallbackCacheKey,
+            fallbackLoader
+          )
+          if (mounted) {
+            setFallbackModule(cachedFallback as WasmModule)
+          }
+        }
+
+        if (mounted) {
           setIsInitialized(true)
         }
         return
@@ -59,6 +84,8 @@ export function useVerifier(
 
       try {
         setError(null)
+
+        // Load primary module
         const loadedModule = await wasmCache.getModule(
           zkvmSlug,
           moduleLoader,
@@ -72,6 +99,29 @@ export function useVerifier(
 
         if (mounted) {
           setWasmModule(loadedModule as WasmModule)
+        }
+
+        // Load fallback module if available (non-blocking)
+        if (fallbackLoader) {
+          wasmCache
+            .getModule(fallbackCacheKey, fallbackLoader, (wasmModule) => {
+              const mod = wasmModule as { main?: () => void }
+              if (mod.main) {
+                mod.main()
+              }
+            })
+            .then((loadedFallback) => {
+              if (mounted) {
+                setFallbackModule(loadedFallback as WasmModule)
+              }
+            })
+            .catch((err) => {
+              // Fallback load failure is not critical
+              console.warn(`Failed to load fallback module for ${zkvmSlug}:`, err)
+            })
+        }
+
+        if (mounted) {
           setIsInitialized(true)
         }
       } catch (err) {
@@ -88,6 +138,23 @@ export function useVerifier(
     }
   }, [active, zkvmSlug])
 
+  const verifyWithModule = useCallback(
+    (
+      module: WasmModule,
+      proofBytes: Uint8Array,
+      vkBytes: Uint8Array
+    ): boolean => {
+      if (zkvmSlug === "pico") {
+        return module.verify_stark("PicoPrism", proofBytes, vkBytes)
+      } else if (isVerifiableZkvmWithoutVk(zkvmSlug!)) {
+        return module.verify_stark(proofBytes)
+      } else {
+        return module.verify_stark(proofBytes, vkBytes)
+      }
+    },
+    [zkvmSlug]
+  )
+
   const verifyFn = useCallback(
     (proofBytes: Uint8Array, vkBytes: Uint8Array): VerifyResult => {
       if (!wasmModule || !isInitialized || !zkvmSlug) {
@@ -96,26 +163,64 @@ export function useVerifier(
         return { isValid: false, error: errorMsg }
       }
 
+      // Try primary module first
       try {
-        let result: boolean
-        if (zkvmSlug === "pico") {
-          result = wasmModule.verify_stark("PicoPrism", proofBytes, vkBytes)
-        } else if (isVerifiableZkvmWithoutVk(zkvmSlug)) {
-          result = wasmModule.verify_stark(proofBytes)
-        } else {
-          result = wasmModule.verify_stark(proofBytes, vkBytes)
+        const result = verifyWithModule(wasmModule, proofBytes, vkBytes)
+        if (result) {
+          return { isValid: true }
+        }
+      } catch (primaryErr) {
+        // Primary verification failed, try fallback if available
+        if (fallbackModule) {
+          try {
+            const fallbackResult = verifyWithModule(
+              fallbackModule,
+              proofBytes,
+              vkBytes
+            )
+            if (fallbackResult) {
+              return { isValid: true }
+            }
+          } catch (fallbackErr) {
+            console.error(fallbackErr)
+            // Both failed, return primary error
+            return {
+              isValid: false,
+              error:
+                primaryErr instanceof Error
+                  ? primaryErr.message
+                  : `${zkvmSlug} verifier error`,
+            }
+          }
         }
 
-        return { isValid: result }
-      } catch (err) {
         return {
           isValid: false,
           error:
-            err instanceof Error ? err.message : `${zkvmSlug} verifier error`,
+            primaryErr instanceof Error
+              ? primaryErr.message
+              : `${zkvmSlug} verifier error`,
         }
       }
+
+      // Primary returned false, try fallback
+      if (fallbackModule) {
+        try {
+          const fallbackResult = verifyWithModule(
+            fallbackModule,
+            proofBytes,
+            vkBytes
+          )
+          return { isValid: fallbackResult }
+        } catch {
+          // Fallback also failed, return primary result (false)
+          return { isValid: false }
+        }
+      }
+
+      return { isValid: false }
     },
-    [wasmModule, isInitialized, error, zkvmSlug]
+    [wasmModule, fallbackModule, isInitialized, error, zkvmSlug, verifyWithModule]
   )
 
   return { verifyFn, isInitialized }

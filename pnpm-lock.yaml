@@ -38,6 +38,9 @@ importers:
       '@ethproofs/zisk-wasm-stark-verifier':
         specifier: ^0.1.2
         version: 0.1.2
+      '@ethproofs/zisk-wasm-stark-verifier-v0.12.0':
+        specifier: npm:@ethproofs/zisk-wasm-stark-verifier@0.1.1
+        version: '@ethproofs/zisk-wasm-stark-verifier@0.1.1'
       '@radix-ui/react-accordion':
         specifier: 1.2.10
         version: 1.2.10(@types/react-dom@19.1.7(@types/react@19.1.10))(@types/react@19.1.10)(react-dom@19.1.2(react@19.1.2))(react@19.1.2)
@@ -1500,6 +1503,10 @@ packages:
 
   '@ethproofs/ziren-wasm-stark-verifier@0.1.8':
     resolution: {integrity: sha512-CEb5KmCuEnOOovqElM+mtIiK3zKj1PtQk4HTS7vbTak00/6US1mE94DYaKQQDXU6BHp5Oi4JL6vrGrCHiYSEiQ==}
+    engines: {node: '>=16.0.0'}
+
+  '@ethproofs/zisk-wasm-stark-verifier@0.1.1':
+    resolution: {integrity: sha512-RcNoTzqEf7nPA8wLAhrkbe06nkZWsOZvb6A5aQG5Q4LKgxLrkueG4GRhabGtM3vxLFbex+jHl8d6Nzzvbu0Xsg==}
     engines: {node: '>=16.0.0'}
 
   '@ethproofs/zisk-wasm-stark-verifier@0.1.2':
@@ -8901,6 +8908,8 @@ snapshots:
   '@ethproofs/sp1-hypercube-wasm-verifier@0.1.1': {}
 
   '@ethproofs/ziren-wasm-stark-verifier@0.1.8': {}
+
+  '@ethproofs/zisk-wasm-stark-verifier@0.1.1': {}
 
   '@ethproofs/zisk-wasm-stark-verifier@0.1.2': {}
 

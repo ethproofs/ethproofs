@@ -9,15 +9,26 @@ export interface VerificationResult {
   verifyTime?: number
 }
 
-// Server-side WASM module caches
-const wasmModules: Record<string, unknown> = {}
+interface WasmModule {
+  main?(): void
+  verify_stark(
+    ...args:
+      | [Uint8Array]
+      | [Uint8Array, Uint8Array]
+      | [string, Uint8Array, Uint8Array]
+  ): boolean
+}
 
-async function loadWasmModule(name: string): Promise<unknown> {
+// Server-side WASM module caches
+const wasmModules: Record<string, WasmModule> = {}
+const fallbackModules: Record<string, WasmModule> = {}
+
+async function loadWasmModule(name: string): Promise<WasmModule> {
   if (wasmModules[name]) {
     return wasmModules[name]
   }
 
-  let loadedModule: unknown
+  let loadedModule: WasmModule
   try {
     switch (name) {
       case "pico":
@@ -43,10 +54,8 @@ async function loadWasmModule(name: string): Promise<unknown> {
     }
 
     // Initialize the WASM module
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const wasmModule = loadedModule as any
-    if (wasmModule.main) {
-      wasmModule.main()
+    if (loadedModule.main) {
+      loadedModule.main()
     }
 
     wasmModules[name] = loadedModule
@@ -57,34 +66,121 @@ async function loadWasmModule(name: string): Promise<unknown> {
   }
 }
 
+async function loadFallbackModule(name: string): Promise<WasmModule | null> {
+  if (fallbackModules[name]) {
+    return fallbackModules[name]
+  }
+
+  let loadedModule: WasmModule
+  try {
+    switch (name) {
+      case "zisk":
+        loadedModule = await import(
+          "@ethproofs/zisk-wasm-stark-verifier-v0.12.0"
+        )
+        break
+      default:
+        return null
+    }
+
+    // Initialize the WASM module
+    if (loadedModule.main) {
+      loadedModule.main()
+    }
+
+    fallbackModules[name] = loadedModule
+    return loadedModule
+  } catch (err) {
+    console.warn(`Failed to load fallback WASM module for ${name}:`, err)
+    return null
+  }
+}
+
+function verifyWithModule(
+  verifier: WasmModule,
+  zkvmSlug: VerifiableZkvmSlug,
+  proofBytes: Uint8Array,
+  vkBytes: Uint8Array
+): boolean {
+  if (zkvmSlug === "pico") {
+    return verifier.verify_stark("PicoPrism", proofBytes, vkBytes)
+  } else if (isVerifiableZkvmWithoutVk(zkvmSlug)) {
+    return verifier.verify_stark(proofBytes)
+  } else {
+    return verifier.verify_stark(proofBytes, vkBytes)
+  }
+}
+
 export async function verifyProofServer(
   zkvmSlug: VerifiableZkvmSlug,
   proofBytes: Uint8Array,
   vkBytes: Uint8Array
 ): Promise<VerificationResult> {
+  const startTime = performance.now()
+
   try {
-    const loadedModule = await loadWasmModule(zkvmSlug)
-    // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    const verifier = loadedModule as any
+    const verifier = await loadWasmModule(zkvmSlug)
+    const verified = verifyWithModule(verifier, zkvmSlug, proofBytes, vkBytes)
 
-    const startTime = performance.now()
-
-    let verified: boolean
-    if (zkvmSlug === "pico") {
-      verified = verifier.verify_stark("PicoPrism", proofBytes, vkBytes)
-    } else if (isVerifiableZkvmWithoutVk(zkvmSlug)) {
-      verified = verifier.verify_stark(proofBytes)
-    } else {
-      verified = verifier.verify_stark(proofBytes, vkBytes)
+    if (verified) {
+      const verifyTime = performance.now() - startTime
+      return { isValid: true, verifyTime }
+    }
+  } catch (primaryError) {
+    // Primary verification threw an error, try fallback if available
+    const fallbackModule = await loadFallbackModule(zkvmSlug)
+    if (fallbackModule) {
+      try {
+        const fallbackVerified = verifyWithModule(
+          fallbackModule,
+          zkvmSlug,
+          proofBytes,
+          vkBytes
+        )
+        if (fallbackVerified) {
+          const verifyTime = performance.now() - startTime
+          return { isValid: true, verifyTime }
+        }
+      } catch {
+        // Both failed, return primary error
+        return {
+          isValid: false,
+          error:
+            primaryError instanceof Error
+              ? primaryError.message
+              : "Verification failed",
+        }
+      }
     }
 
-    const verifyTime = performance.now() - startTime
-
-    return { isValid: verified, verifyTime }
-  } catch (error) {
     return {
       isValid: false,
-      error: error instanceof Error ? error.message : "Verification failed",
+      error:
+        primaryError instanceof Error
+          ? primaryError.message
+          : "Verification failed",
     }
   }
+
+  // Primary returned false, try fallback
+  const fallbackModule = await loadFallbackModule(zkvmSlug)
+  if (fallbackModule) {
+    try {
+      const fallbackVerified = verifyWithModule(
+        fallbackModule,
+        zkvmSlug,
+        proofBytes,
+        vkBytes
+      )
+      const verifyTime = performance.now() - startTime
+      return { isValid: fallbackVerified, verifyTime }
+    } catch {
+      // Fallback also failed, return primary result (false)
+      const verifyTime = performance.now() - startTime
+      return { isValid: false, verifyTime }
+    }
+  }
+
+  const verifyTime = performance.now() - startTime
+  return { isValid: false, verifyTime }
 }

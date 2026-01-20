@@ -37,6 +37,7 @@
     "@ethproofs/sp1-hypercube-wasm-verifier": "^0.1.1",
     "@ethproofs/ziren-wasm-stark-verifier": "^0.1.8",
     "@ethproofs/zisk-wasm-stark-verifier": "^0.1.2",
+    "@ethproofs/zisk-wasm-stark-verifier-v0.12.0": "npm:@ethproofs/zisk-wasm-stark-verifier@0.1.1",
     "@radix-ui/react-accordion": "1.2.10",
     "@radix-ui/react-checkbox": "^1.3.3",
     "@radix-ui/react-collapsible": "^1.1.12",

@@ -25,6 +25,9 @@ export const BLOCK_GAS_LIMIT = 45_000_000 // TODO:TEAM - fetch from execution bl
 export const FALLBACK_TEAM_LOGO_SRC =
   "https://ibkqxhjnroghhtfyualc.supabase.co/storage/v1/object/public/public-assets/fallback-team-logo.svg"
 
+// Authentication roles
+export const API_KEY_MANAGER_ROLE = "api_key_manager"
+
 export const LEARN_CONTENT_MD = "app/learn/content/index.md"
 
 export const AVERAGE_LABEL = "avg"
