@@ -5,6 +5,8 @@ import { z } from "zod"
 
 import { db } from "@/db"
 import { teams } from "@/db/schema"
+import { sendEmail } from "@/lib/server/email-service"
+import { teamSignupPendingEmail } from "@/lib/server/email-templates"
 import { createClient } from "@/utils/supabase/server"
 
 const signUpSchema = z.object({
@@ -81,8 +83,9 @@ export async function signUp(_prevState: unknown, formData: FormData) {
       })
       .where(eq(teams.id, data.user.id))
 
-    // Sign out the user immediately since they're not approved yet
-    // This prevents them from accessing protected pages
+    const { subject, html } = teamSignupPendingEmail({ teamName: name })
+    await sendEmail({ to: email, subject, html })
+
     await supabase.auth.signOut()
 
     return {

@@ -1,0 +1,64 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <title>reset your password</title>
+</head>
+
+<body
+  style="margin:0;padding:0;background-color:#09090b;font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',Roboto,'Helvetica Neue',Arial,sans-serif;-webkit-font-smoothing:antialiased;">
+  <table role="presentation" width="100%" cellpadding="0" cellspacing="0" style="background-color:#09090b;">
+    <tr>
+      <td align="center" style="padding:40px 20px;">
+        <table role="presentation" width="100%" cellpadding="0" cellspacing="0"
+          style="max-width:600px;background-color:#18181b;border:1px solid #3f3f46;border-radius:12px;">
+          <tr>
+            <td style="padding:40px;">
+              <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
+                <tr>
+                  <td align="center" style="padding-bottom:32px;">
+                    <a href="{{ .SiteURL }}"
+                      style="font-size:24px;font-weight:700;color:#03dc58;text-decoration:none;letter-spacing:-0.5px;">Ethproofs</a>
+                  </td>
+                </tr>
+                <tr>
+                  <td>
+                    <h1 style="color:#fafafa;font-size:24px;font-weight:600;margin:0 0 16px;line-height:1.3;">reset your
+                      password</h1>
+                    <p style="color:#71717a;font-size:16px;line-height:1.6;margin:0 0 16px;">we received a request to
+                      reset your password. click the button below to choose a new one.</p>
+
+                    <table role="presentation" cellpadding="0" cellspacing="0" style="margin:24px 0;">
+                      <tr>
+                        <td align="center" style="background-color:#03dc58;border-radius:8px;">
+                          <a href="{{ .ConfirmationURL }}"
+                            style="display:inline-block;padding:12px 24px;font-size:14px;font-weight:600;color:#09090b;text-decoration:none;">reset
+                            password</a>
+                        </td>
+                      </tr>
+                    </table>
+
+                    <p style="color:#71717a;font-size:14px;line-height:1.6;margin:16px 0 32px;">if you didn't make this
+                      request,
+                      you can safely ignore this email.</p>
+                  </td>
+                </tr>
+                <tr>
+                  <td style="padding-top:32px;border-top:1px solid #3f3f46;text-align:center;">
+                    <a href="{{ .SiteURL }}"
+                      style="color:#71717a;font-size:14px;text-decoration:none;">ethproofs.org</a>
+                  </td>
+                </tr>
+              </table>
+            </td>
+          </tr>
+        </table>
+      </td>
+    </tr>
+  </table>
+</body>
+
+</html>
