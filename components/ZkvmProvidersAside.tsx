@@ -72,8 +72,7 @@ const ZkvmProviderAsideMatterLabs = ({
         >
           ZKsync
         </Link>
-        and the{" "}
-        <span className="text-primary-light">{zkvm.name}</span> zkVM
+        and the <span className="text-primary-light">{zkvm.name}</span> zkVM
       </div>
     </aside>
   )

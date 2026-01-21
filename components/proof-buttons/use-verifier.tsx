@@ -117,7 +117,10 @@ export function useVerifier(
             })
             .catch((err) => {
               // Fallback load failure is not critical
-              console.warn(`Failed to load fallback module for ${zkvmSlug}:`, err)
+              console.warn(
+                `Failed to load fallback module for ${zkvmSlug}:`,
+                err
+              )
             })
         }
 
@@ -220,7 +223,14 @@ export function useVerifier(
 
       return { isValid: false }
     },
-    [wasmModule, fallbackModule, isInitialized, error, zkvmSlug, verifyWithModule]
+    [
+      wasmModule,
+      fallbackModule,
+      isInitialized,
+      error,
+      zkvmSlug,
+      verifyWithModule,
+    ]
   )
 
   return { verifyFn, isInitialized }

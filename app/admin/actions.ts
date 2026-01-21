@@ -7,11 +7,20 @@ import { revalidatePath } from "next/cache"
 import { redirect } from "next/navigation"
 import { z } from "zod"
 
-import { API_KEY_MANAGER_ROLE, PUBLIC_ASSETS_BUCKET } from "@/lib/constants"
+import {
+  API_KEY_MANAGER_ROLE,
+  PUBLIC_ASSETS_BUCKET,
+  SITE_URL,
+} from "@/lib/constants"
 
 import { db } from "@/db"
 import { apiAuthTokens, teams } from "@/db/schema"
 import { hashToken } from "@/lib/auth/hash-token"
+import { sendEmail } from "@/lib/server/email-service"
+import {
+  teamApprovedEmail,
+  teamRejectedEmail,
+} from "@/lib/server/email-templates"
 import { createClient } from "@/utils/supabase/server"
 
 const loginSchema = z.object({
@@ -127,7 +136,7 @@ export async function forgotPassword(_prevState: unknown, formData: FormData) {
     console.error("Password reset error:", error)
     return {
       errors: {
-        email: [`failed to send reset email: ${error.message.toLowerCase()}`],
+        email: [`${error.message.toLowerCase()}`],
       },
     }
   }
@@ -349,10 +358,18 @@ export async function approveTeam(_prevState: unknown, formData: FormData) {
       }
     }
 
-    // Update the team to approved
+    const [teamData] = await db.select().from(teams).where(eq(teams.id, teamId))
+
+    if (!teamData) {
+      return {
+        errors: {
+          teamId: ["team not found"],
+        },
+      }
+    }
+
     await db.update(teams).set({ approved: true }).where(eq(teams.id, teamId))
 
-    // Auto-generate an API key for the newly approved team
     const apikey = nanoid(24)
     const hashedKey = await hashToken(apikey)
 
@@ -361,6 +378,23 @@ export async function approveTeam(_prevState: unknown, formData: FormData) {
       mode: "write",
       team_id: teamId,
     })
+
+    const { data: authUser } = await supabase.auth.admin.getUserById(teamId)
+
+    if (authUser.user?.email) {
+      const dashboardUrl = `${SITE_URL}/teams/${teamData.slug}/dashboard`
+      const { subject, html } = teamApprovedEmail({
+        teamName: teamData.name,
+        apiKey: apikey,
+        dashboardUrl,
+      })
+
+      await sendEmail({
+        to: authUser.user.email,
+        subject,
+        html,
+      })
+    }
 
     return {
       data: { success: true, apikey },
@@ -404,15 +438,21 @@ export async function rejectTeam(_prevState: unknown, formData: FormData) {
       }
     }
 
-    // Delete the team and associated auth user
-    // Note: This will cascade delete due to foreign key constraints
+    const [teamData] = await db.select().from(teams).where(eq(teams.id, teamId))
+
+    const { data: authUser } = await supabase.auth.admin.getUserById(teamId)
+
     await db.delete(teams).where(eq(teams.id, teamId))
 
-    // Also delete from Supabase Auth
     const { error } = await supabase.auth.admin.deleteUser(teamId)
 
     if (error) {
       console.error("error deleting user from auth", error)
+    }
+
+    if (authUser.user?.email && teamData) {
+      const { subject, html } = teamRejectedEmail({ teamName: teamData.name })
+      await sendEmail({ to: authUser.user.email, subject, html })
     }
 
     revalidatePath("/admin", "page")

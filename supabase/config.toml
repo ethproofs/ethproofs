@@ -66,7 +66,7 @@ enabled = true
 # Port to use for the email testing server web interface.
 port = 54324
 # Uncomment to expose additional ports for testing user applications that send emails.
-# smtp_port = 54325
+smtp_port = 54325
 # pop3_port = 54326
 
 [storage]
@@ -126,19 +126,39 @@ enable_confirmations = false
 # Controls the minimum amount of time that must pass before sending another signup confirmation or password reset email.
 max_frequency = "1s"
 
-# Use a production-ready SMTP server
-# [auth.email.smtp]
-# host = "smtp.sendgrid.net"
-# port = 587
-# user = "apikey"
-# pass = "env(SENDGRID_API_KEY)"
-# admin_email = "admin@email.com"
-# sender_name = "Admin"
+# Use local Inbucket SMTP for development
+[auth.email.smtp]
+host = "supabase_inbucket_ethproofs"
+port = 1025
+user = "test"
+pass = "test"
+admin_email = "test@ethproofs.org"
+sender_name = "Ethproofs"
 
-# Uncomment to customize email template
-# [auth.email.template.invite]
-# subject = "You have been invited"
-# content_path = "./supabase/templates/invite.html"
+# Custom email templates
+[auth.email.template.confirmation]
+subject = "confirm your Ethproofs email"
+content_path = "supabase/templates/confirmation.html"
+
+[auth.email.template.recovery]
+subject = "reset your Ethproofs password"
+content_path = "supabase/templates/recovery.html"
+
+[auth.email.template.magic_link]
+subject = "your Ethproofs login link"
+content_path = "supabase/templates/magic_link.html"
+
+[auth.email.template.invite]
+subject = "you've been invited to Ethproofs"
+content_path = "supabase/templates/invite.html"
+
+[auth.email.template.email_change]
+subject = "[Ethproofs] confirm your new email address"
+content_path = "supabase/templates/email_change.html"
+
+[auth.email.template.reauthentication]
+subject = "[Ethproofs] confirm your identity"
+content_path = "supabase/templates/reauthentication.html"
 
 [auth.sms]
 # Allow/disallow new user signups via SMS to your project.
