@@ -440,6 +440,15 @@ export async function rejectTeam(_prevState: unknown, formData: FormData) {
 
     const [teamData] = await db.select().from(teams).where(eq(teams.id, teamId))
 
+    if (!teamData) {
+      return {
+        data: null,
+        errors: {
+          teamId: ["team not found"],
+        },
+      }
+    }
+
     const { data: authUser } = await supabase.auth.admin.getUserById(teamId)
 
     await db.delete(teams).where(eq(teams.id, teamId))
@@ -450,7 +459,7 @@ export async function rejectTeam(_prevState: unknown, formData: FormData) {
       console.error("error deleting user from auth", error)
     }
 
-    if (authUser.user?.email && teamData) {
+    if (authUser.user?.email) {
       const { subject, html } = teamRejectedEmail({ teamName: teamData.name })
       await sendEmail({ to: authUser.user.email, subject, html })
     }
