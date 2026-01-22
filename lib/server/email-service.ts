@@ -2,11 +2,13 @@
 
 import nodemailer from "nodemailer"
 
+import { SITE_NAME } from "@/lib/constants"
+
 const SMTP_HOST = process.env.SMTP_HOST
 const SMTP_PORT = parseInt(process.env.SMTP_PORT || "587", 10)
 const SMTP_USER = process.env.SMTP_USER
 const SMTP_PASS = process.env.SMTP_PASS
-const EMAIL_FROM = process.env.EMAIL_FROM || "noreply@ethproofs.org"
+const EMAIL_FROM_ADDRESS = process.env.EMAIL_FROM || "noreply@ethproofs.org"
 
 interface EmailOptions {
   to: string
@@ -40,7 +42,10 @@ export async function sendEmail(options: EmailOptions): Promise<boolean> {
 
   try {
     await transporter.sendMail({
-      from: EMAIL_FROM,
+      from: {
+        name: SITE_NAME,
+        address: EMAIL_FROM_ADDRESS,
+      },
       to: options.to,
       subject: options.subject,
       html: options.html,

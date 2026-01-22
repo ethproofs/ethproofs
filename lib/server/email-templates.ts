@@ -80,7 +80,7 @@ export function teamSignupPendingEmail({
   const body = `
     <h1 style="color:${COLORS.foreground};font-size:24px;font-weight:600;margin:0 0 16px;line-height:1.3;">thanks for signing up!</h1>
     <p style="color:${COLORS.mutedForeground};font-size:16px;line-height:1.6;margin:0 0 16px;">we've received your request to sign up a new team on ${SITE_NAME}.</p>
-    <p style="color:${COLORS.mutedForeground};font-size:16px;line-height:1.6;margin:0 0 16px;">our team will review your application and you'll receive a follow-up email with further instructions once your account has been reviewed.</p>
+    <p style="color:${COLORS.mutedForeground};font-size:16px;line-height:1.6;margin:0 0 16px;">we will review your application and you'll receive a follow-up email with further instructions once your account has been reviewed.</p>
   `
 
   return {
