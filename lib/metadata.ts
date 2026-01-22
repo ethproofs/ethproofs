@@ -21,8 +21,8 @@ export const defaults = (custom: CustomMetadata): Metadata => {
   const description = custom.description || SITE_DESCRIPTION
   const images = custom.images || [
     {
-      url: "images/just-prove-it.png",
-      alt: "JUST PROVE IT",
+      url: "images/ethproofs.png",
+      alt: "Ethproofs",
     },
   ]
 

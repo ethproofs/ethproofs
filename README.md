@@ -2,7 +2,7 @@
 
 # Ethproofs
 
-![Header PNG](./public/images/just-prove-it.png)
+![Header PNG](./public/images/ethproofs.png)
 
 ## App local development
 
