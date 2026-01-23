@@ -382,7 +382,7 @@ export async function approveTeam(_prevState: unknown, formData: FormData) {
     const { data: authUser } = await supabase.auth.admin.getUserById(teamId)
 
     if (authUser.user?.email) {
-      const dashboardUrl = `${SITE_URL}/teams/${teamData.slug}/dashboard`
+      const dashboardUrl = `${SITE_URL.replace(/\/+$/, "")}/teams/${teamData.slug}/dashboard`
       const { subject, html } = teamApprovedEmail({
         teamName: teamData.name,
         apiKey: apikey,

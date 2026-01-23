@@ -79,8 +79,8 @@ export function teamSignupPendingEmail({
 
   const body = `
     <h1 style="color:${COLORS.foreground};font-size:24px;font-weight:600;margin:0 0 16px;line-height:1.3;">thanks for signing up!</h1>
-    <p style="color:${COLORS.mutedForeground};font-size:16px;line-height:1.6;margin:0 0 16px;">we've received your request to sign up a new team on ${SITE_NAME}.</p>
-    <p style="color:${COLORS.mutedForeground};font-size:16px;line-height:1.6;margin:0 0 16px;">we will review your application and you'll receive a follow-up email with further instructions once your account has been reviewed.</p>
+    <p style="color:${COLORS.mutedForeground};font-size:16px;line-height:1.6;margin:0 0 16px;">We've received your request to sign up a new team on ${SITE_NAME}.</p>
+    <p style="color:${COLORS.mutedForeground};font-size:16px;line-height:1.6;margin:0 0 16px;">We will review your application and you'll receive a follow-up email with further instructions once your account has been reviewed.</p>
   `
 
   return {
@@ -105,8 +105,8 @@ export function teamRejectedEmail({
 
   const body = `
     <h1 style="color:${COLORS.foreground};font-size:24px;font-weight:600;margin:0 0 16px;line-height:1.3;">signup update</h1>
-    <p style="color:${COLORS.mutedForeground};font-size:16px;line-height:1.6;margin:0 0 16px;">thank you for your interest in ${SITE_NAME}. after reviewing your signup request, we're unable to approve your account at this time.</p>
-    <p style="color:${COLORS.mutedForeground};font-size:16px;line-height:1.6;margin:0 0 16px;">we appreciate your understanding.</p>
+    <p style="color:${COLORS.mutedForeground};font-size:16px;line-height:1.6;margin:0 0 16px;">Thank you for your interest in ${SITE_NAME}. After reviewing your signup request, we're unable to approve your account at this time.</p>
+    <p style="color:${COLORS.mutedForeground};font-size:16px;line-height:1.6;margin:0 0 16px;">We appreciate your understanding.</p>
   `
 
   return {
@@ -137,9 +137,9 @@ export function teamApprovedEmail({
 
   const body = `
     <h1 style="color:${COLORS.foreground};font-size:24px;font-weight:600;margin:0 0 16px;line-height:1.3;">welcome to ${SITE_NAME}!</h1>
-    <p style="color:${COLORS.mutedForeground};font-size:16px;line-height:1.6;margin:0 0 16px;">your team has been approved! you can now access your dashboard and start submitting proofs.</p>
+    <p style="color:${COLORS.mutedForeground};font-size:16px;line-height:1.6;margin:0 0 16px;">Your team has been approved! You can now access your dashboard and start submitting proofs.</p>
 
-    <p style="color:${COLORS.mutedForeground};font-size:16px;line-height:1.6;margin:0 0 8px;">here's your API key:</p>
+    <p style="color:${COLORS.mutedForeground};font-size:16px;line-height:1.6;margin:0 0 8px;">Here's your API key:</p>
     <table role="presentation" width="100%" cellpadding="0" cellspacing="0">
       <tr>
         <td style="background-color:${COLORS.codeBackground};border:1px solid ${COLORS.border};border-radius:8px;padding:16px;font-family:'SF Mono',Monaco,'Andale Mono',monospace;font-size:14px;color:${COLORS.primary};word-break:break-all;">
@@ -147,7 +147,7 @@ export function teamApprovedEmail({
         </td>
       </tr>
     </table>
-    <p style="color:${COLORS.mutedForeground};font-size:14px;line-height:1.6;margin:8px 0 24px;">save this key securely — it won't be shown again.</p>
+    <p style="color:${COLORS.mutedForeground};font-size:14px;line-height:1.6;margin:8px 0 24px;">Save this key securely — it won't be shown again.</p>
 
     <table role="presentation" cellpadding="0" cellspacing="0" style="margin:0 auto 24px;">
       <tr>
