@@ -34,7 +34,7 @@
                     <table role="presentation" cellpadding="0" cellspacing="0" style="margin:24px 0;">
                       <tr>
                         <td align="center" style="background-color:#03dc58;border-radius:8px;">
-                          <a href="{{ .ConfirmationURL }}"
+                          <a href="{{ .SiteURL }}/auth/confirm?token_hash={{ .TokenHash }}&type=email_change"
                             style="display:inline-block;padding:12px 24px;font-size:14px;font-weight:600;color:#09090b;text-decoration:none;">confirm
                             email</a>
                         </td>
