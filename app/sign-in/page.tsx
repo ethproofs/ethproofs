@@ -29,12 +29,12 @@ export default async function LoginPage() {
           </CardHeader>
           <CardContent className="flex flex-col gap-4">
             <SignInForm />
-            <div className="text-center text-sm text-muted-foreground">
+            {/* <div className="text-center text-sm text-muted-foreground">
               don&apos;t have an account?{" "}
               <Link href="/sign-up" className="underline hover:text-foreground">
                 sign up
               </Link>
-            </div>
+            </div> */}
           </CardContent>
         </Card>
       </div>
