@@ -77,7 +77,9 @@ async function main() {
         total_proofs = EXCLUDED.total_proofs
     `
 
-    console.log(`  ✓ Inserted ${proofsResult.count} rows into proofs_daily_stats\n`)
+    console.log(
+      `  ✓ Inserted ${proofsResult.count} rows into proofs_daily_stats\n`
+    )
 
     console.log("Step 2: Truncating and re-populating prover_daily_stats...")
 
@@ -120,7 +122,9 @@ async function main() {
         total_proofs = EXCLUDED.total_proofs
     `
 
-    console.log(`  ✓ Inserted ${proverResult.count} rows into prover_daily_stats\n`)
+    console.log(
+      `  ✓ Inserted ${proverResult.count} rows into prover_daily_stats\n`
+    )
 
     console.log("Step 3: Verifying results...")
 

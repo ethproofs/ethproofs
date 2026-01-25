@@ -1,7 +1,10 @@
+import { eq } from "drizzle-orm"
 import { type NextRequest, NextResponse } from "next/server"
 import { createServerClient } from "@supabase/ssr"
 import { type EmailOtpType } from "@supabase/supabase-js"
 
+import { db } from "@/db"
+import { teams } from "@/db/schema"
 import type { Database } from "@/lib/database.types"
 
 function isValidRedirectPath(path: string): boolean {
@@ -46,6 +49,24 @@ export async function GET(request: NextRequest) {
     })
 
     if (!error) {
+      if (type !== "recovery") {
+        const {
+          data: { user },
+        } = await supabase.auth.getUser()
+
+        if (user) {
+          const [team] = await db
+            .select({ approved: teams.approved })
+            .from(teams)
+            .where(eq(teams.id, user.id))
+
+          if (!team?.approved) {
+            await supabase.auth.signOut()
+            return NextResponse.redirect(new URL("/sign-in", request.url))
+          }
+        }
+      }
+
       return response
     }
   }

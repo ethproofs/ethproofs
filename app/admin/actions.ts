@@ -187,7 +187,6 @@ export async function resetPassword(_prevState: unknown, formData: FormData) {
     }
   }
 
-  // Get team slug for redirect
   if (data.user) {
     const teamData = await db
       .select()
@@ -195,12 +194,16 @@ export async function resetPassword(_prevState: unknown, formData: FormData) {
       .where(eq(teams.id, data.user.id))
 
     if (teamData.length > 0 && teamData[0].slug) {
+      if (!teamData[0].approved) {
+        await supabase.auth.signOut()
+        redirect("/sign-in")
+      }
+
       revalidatePath(`/teams/${teamData[0].slug}`, "layout")
       redirect(`/teams/${teamData[0].slug}/dashboard`)
     }
   }
 
-  // Fallback to home if team not found
   redirect("/")
 }
 
