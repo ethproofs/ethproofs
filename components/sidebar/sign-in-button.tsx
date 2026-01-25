@@ -1,7 +1,6 @@
 "use client"
 
 import { LogIn } from "lucide-react"
-import Link from "next/link"
 
 import {
   SidebarMenu,
@@ -14,17 +13,13 @@ export function SignInButton() {
     <SidebarMenu>
       <SidebarMenuItem>
         <SidebarMenuButton
-          asChild
           variant="outline"
           tooltip="sign in"
-          className="justify-center"
+          className="justify-center cursor-not-allowed opacity-50"
+          disabled
         >
-          <Link href="/sign-in">
-            <LogIn className="hidden group-data-[collapsible=icon]:block" />
-            <span className="group-data-[collapsible=icon]:hidden">
-              sign in
-            </span>
-          </Link>
+          <LogIn className="hidden group-data-[collapsible=icon]:block" />
+          <span className="group-data-[collapsible=icon]:hidden">sign in</span>
         </SidebarMenuButton>
       </SidebarMenuItem>
     </SidebarMenu>
