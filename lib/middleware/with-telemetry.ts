@@ -39,6 +39,10 @@ const isExpected404 = (path: string) => {
   )
 }
 
+const isExpected401 = (path: string) => {
+  return path.startsWith("/api/v0/")
+}
+
 const safeSend = (p: Promise<unknown>) => {
   // Ensure telemetry never explodes the request on success paths
   p.catch((err) => console.error("[Telemetry] send failed:", err))
@@ -138,10 +142,12 @@ export const withTelemetry = <
       console.log("[Telemetry]", line)
 
       // Always await on 5xx; sample others to avoid latency + cost
-      // Skip telemetry reporting for expected 404s (retried downloads)
+      // Skip telemetry reporting for expected 404s (retried downloads) and 401s on public APIs
       const shouldReport =
         status >= 500 ||
-        (status >= 400 && !(status === 404 && isExpected404(rep.path)))
+        (status >= 400 &&
+          !(status === 404 && isExpected404(rep.path)) &&
+          !(status === 401 && isExpected401(rep.path)))
 
       if (status >= 500) {
         await sendReport(line, rep)
