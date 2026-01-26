@@ -21,7 +21,7 @@ import {
   teamApprovedEmail,
   teamRejectedEmail,
 } from "@/lib/server/email-templates"
-import { createClient } from "@/utils/supabase/server"
+import { createAuthClient, createClient } from "@/utils/supabase/server"
 
 const loginSchema = z.object({
   email: z.string().email(),
@@ -42,7 +42,7 @@ export async function login(_prevState: unknown, formData: FormData) {
 
   const { email, password } = validatedFields.data
 
-  const supabase = await createClient()
+  const supabase = await createAuthClient()
 
   const { data, error } = await supabase.auth.signInWithPassword({
     email,
@@ -102,7 +102,7 @@ export async function login(_prevState: unknown, formData: FormData) {
 }
 
 export async function signOut() {
-  const supabase = await createClient()
+  const supabase = await createAuthClient()
   await supabase.auth.signOut()
 
   revalidatePath("/", "layout")
@@ -126,7 +126,7 @@ export async function forgotPassword(_prevState: unknown, formData: FormData) {
 
   const { email } = validatedFields.data
 
-  const supabase = await createClient()
+  const supabase = await createAuthClient()
 
   const { error } = await supabase.auth.resetPasswordForEmail(email, {
     redirectTo: `${process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000"}/reset-password`,
@@ -173,7 +173,7 @@ export async function resetPassword(_prevState: unknown, formData: FormData) {
     }
   }
 
-  const supabase = await createClient()
+  const supabase = await createAuthClient()
 
   const { data, error } = await supabase.auth.updateUser({
     password: password,

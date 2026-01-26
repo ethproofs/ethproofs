@@ -14,20 +14,17 @@ export function SignInButton() {
     <SidebarMenu>
       <SidebarMenuItem>
         <SidebarMenuButton
-          // asChild
+          asChild
           variant="outline"
           tooltip="sign in"
-          className="cursor-not-allowed justify-center opacity-50"
-          disabled
+          className="justify-center"
         >
-          <LogIn className="hidden group-data-[collapsible=icon]:block" />
-          <span className="group-data-[collapsible=icon]:hidden">sign in</span>
-          {/* <Link href="/sign-in">
+          <Link href="/sign-in">
             <LogIn className="hidden group-data-[collapsible=icon]:block" />
             <span className="group-data-[collapsible=icon]:hidden">
               sign in
             </span>
-          </Link> */}
+          </Link>
         </SidebarMenuButton>
       </SidebarMenuItem>
     </SidebarMenu>
