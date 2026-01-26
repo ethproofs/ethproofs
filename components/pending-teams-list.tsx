@@ -11,7 +11,7 @@ import {
   CardHeader,
   CardTitle,
 } from "./ui/card"
-import CopyButton from "./CopyButton"
+import CopyButton from "./copy-button"
 
 import { approveTeam, rejectTeam } from "@/app/admin/actions"
 

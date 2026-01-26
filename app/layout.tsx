@@ -58,7 +58,7 @@ export default function RootLayout({
             <div className="relative w-full flex-1">
               <main className="isolate min-h-[50vh]">{children}</main>
             </div>
-            <footer className="mt-20 flex h-20 flex-col items-center justify-center border-t">
+            <footer className="mt-10 flex h-20 flex-col items-center justify-center border-t">
               <div className="flex flex-row items-center justify-center gap-2">
                 made with{" "}
                 <Heart className="mb-0.5 inline size-4 text-xl text-primary motion-safe:animate-heart-beat" />{" "}

@@ -33,6 +33,11 @@ type ProverType = {
   deployment_type: string
 }
 
+type GuestProgram = {
+  id: number
+  name: string
+}
+
 type Cluster = {
   id: string
   name: string
@@ -40,6 +45,7 @@ type Cluster = {
   hardware_description: string | null
   is_active: boolean
   prover_type: ProverType | null
+  guest_program: GuestProgram | null
   versions: {
     id: number
     index: number
@@ -60,6 +66,7 @@ interface DashboardContentProps {
   clusters: Cluster[]
   zkvmVersions: ZkvmVersion[]
   proverTypes: ProverType[]
+  guestPrograms: GuestProgram[]
 }
 
 export function DashboardContent({
@@ -67,6 +74,7 @@ export function DashboardContent({
   clusters,
   zkvmVersions,
   proverTypes,
+  guestPrograms,
 }: DashboardContentProps) {
   const [drawerOpen, setDrawerOpen] = useState(false)
   const [editingCluster, setEditingCluster] = useState<DashboardCluster | null>(
@@ -113,6 +121,7 @@ export function DashboardContent({
         cluster={editingCluster || undefined}
         zkvmVersions={zkvmVersions}
         proverTypes={proverTypes}
+        guestPrograms={guestPrograms}
         open={drawerOpen}
         onOpenChange={handleCloseDrawer}
         teamSlug={team.slug}

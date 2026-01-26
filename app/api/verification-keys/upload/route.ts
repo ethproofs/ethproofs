@@ -1,7 +1,8 @@
 import { eq } from "drizzle-orm"
+import { revalidateTag } from "next/cache"
 import { NextRequest } from "next/server"
 
-import { API_KEY_MANAGER_ROLE } from "@/lib/constants"
+import { API_KEY_MANAGER_ROLE, TAGS } from "@/lib/constants"
 
 import { db } from "@/db"
 import { clusterVersions } from "@/db/schema"
@@ -82,11 +83,14 @@ export const POST = async (request: NextRequest) => {
       return new Response("Failed to upload file", { status: 500 })
     }
 
-    // Link vk to the specified version
     await db
       .update(clusterVersions)
       .set({ vk_path: result.path })
       .where(eq(clusterVersions.id, Number(versionId)))
+
+    revalidateTag(TAGS.CLUSTERS)
+    revalidateTag(`team-clusters-${cluster.team_id}`)
+    revalidateTag(`cluster-${clusterId}`)
 
     return new Response(
       JSON.stringify({

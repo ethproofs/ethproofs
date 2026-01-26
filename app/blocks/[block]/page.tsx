@@ -3,7 +3,7 @@ import type { Metadata } from "next"
 import { notFound } from "next/navigation"
 
 import { BasicTabs } from "@/components/BasicTabs"
-import CopyButton from "@/components/CopyButton"
+import CopyButton from "@/components/copy-button"
 import { Null } from "@/components/Null"
 import DownloadAllButton from "@/components/proof-buttons/download-all-button"
 import { BlockProofsSection } from "@/components/proofs-table/block-proofs-section"

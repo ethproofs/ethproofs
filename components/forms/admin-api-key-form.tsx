@@ -4,7 +4,7 @@ import { useActionState } from "react"
 
 import type { Team } from "@/lib/types"
 
-import CopyButton from "../CopyButton"
+import CopyButton from "../copy-button"
 import {
   Select,
   SelectContent,

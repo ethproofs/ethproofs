@@ -18,6 +18,13 @@ const createClusterSchema = z.object({
   zkvm_version_id: z.coerce.number().int().positive("zkvm version is required"),
   num_gpus: z.coerce.number().int().positive("number of gpus must be positive"),
   prover_type_id: z.coerce.number().int().positive("prover type is required"),
+  guest_program_id: z.coerce
+    .number()
+    .int()
+    .positive()
+    .optional()
+    .nullable()
+    .transform((val) => val ?? undefined),
   is_active: z
     .string()
     .transform((val) => {
@@ -48,10 +55,17 @@ const updateClusterSchema = z.object({
     .positive("number of gpus must be positive")
     .optional(),
   prover_type_id: z.coerce.number().int().positive().optional(),
+  guest_program_id: z.coerce
+    .number()
+    .int()
+    .positive()
+    .optional()
+    .nullable()
+    .transform((val) => val ?? undefined),
   is_active: z
     .string()
     .transform((val) => {
-      if (val === "on") return true
+      if (val === "on" || val === "true") return true
       if (val === "false") return false
       return undefined
     })
@@ -85,12 +99,12 @@ export async function createCluster(_prevState: unknown, formData: FormData) {
     }
   }
 
-  // Validate form data
   const validatedFields = createClusterSchema.safeParse({
     name: formData.get("name"),
     zkvm_version_id: formData.get("zkvm_version_id"),
     num_gpus: formData.get("num_gpus"),
     prover_type_id: formData.get("prover_type_id"),
+    guest_program_id: formData.get("guest_program_id") || undefined,
     is_active: formData.get("is_active") || undefined,
     hardware_description: formData.get("hardware_description") || undefined,
   })
@@ -106,6 +120,7 @@ export async function createCluster(_prevState: unknown, formData: FormData) {
     zkvm_version_id,
     num_gpus,
     prover_type_id,
+    guest_program_id,
     is_active,
     hardware_description,
   } = validatedFields.data
@@ -184,7 +199,6 @@ export async function createCluster(_prevState: unknown, formData: FormData) {
     let versionId: number | null = null
 
     await db.transaction(async (tx) => {
-      // Create cluster
       const [cluster] = await tx
         .insert(clusters)
         .values({
@@ -192,6 +206,7 @@ export async function createCluster(_prevState: unknown, formData: FormData) {
           hardware_description,
           num_gpus,
           prover_type_id,
+          guest_program_id,
           team_id: team.id,
           is_active: is_active ?? true,
         })
@@ -213,9 +228,9 @@ export async function createCluster(_prevState: unknown, formData: FormData) {
       versionId = version.id
     })
 
-    // Revalidate cache
     revalidatePath(`/teams/${teamSlug}/dashboard`)
     revalidateTag(TAGS.CLUSTERS)
+    revalidateTag(`team-clusters-${team.id}`)
 
     return {
       success: true,
@@ -248,13 +263,13 @@ export async function updateCluster(_prevState: unknown, formData: FormData) {
     }
   }
 
-  // Validate form data
   const validatedFields = updateClusterSchema.safeParse({
     id: formData.get("id"),
     name: formData.get("name") || undefined,
     zkvm_version_id: formData.get("zkvm_version_id") || undefined,
     num_gpus: formData.get("num_gpus") || undefined,
     prover_type_id: formData.get("prover_type_id") || undefined,
+    guest_program_id: formData.get("guest_program_id") || undefined,
     is_active: formData.get("is_active") || undefined,
     hardware_description: formData.get("hardware_description") || undefined,
     vk_path: formData.get("vk_path") || undefined,
@@ -272,12 +287,12 @@ export async function updateCluster(_prevState: unknown, formData: FormData) {
     zkvm_version_id,
     num_gpus,
     prover_type_id,
+    guest_program_id,
     is_active,
     hardware_description,
     vk_path,
   } = validatedFields.data
 
-  // Get original cluster data to determine what changed
   const originalName = formData.get("original_name") as string
   const originalZkvmVersionId = parseInt(
     formData.get("original_zkvm_version_id") as string
@@ -285,6 +300,9 @@ export async function updateCluster(_prevState: unknown, formData: FormData) {
   const originalNumGpus = parseInt(formData.get("original_num_gpus") as string)
   const originalProverTypeId = formData.get("original_prover_type_id")
     ? parseInt(formData.get("original_prover_type_id") as string)
+    : null
+  const originalGuestProgramId = formData.get("original_guest_program_id")
+    ? parseInt(formData.get("original_guest_program_id") as string)
     : null
   const originalIsActive = formData.get("original_is_active") === "true"
   const originalHardwareDescription = formData.get(
@@ -352,13 +370,17 @@ export async function updateCluster(_prevState: unknown, formData: FormData) {
       }
     }
 
-    // Determine which fields changed
+    const guestProgramChanged =
+      guest_program_id !== undefined &&
+      guest_program_id !== originalGuestProgramId
+
     const metadataChanged =
       (name !== undefined && name !== originalName) ||
       (num_gpus !== undefined && num_gpus !== originalNumGpus) ||
       (hardware_description !== undefined &&
         hardware_description !== originalHardwareDescription) ||
       proverTypeChanged ||
+      guestProgramChanged ||
       isActiveChanged
 
     const versionChanged =
@@ -366,13 +388,13 @@ export async function updateCluster(_prevState: unknown, formData: FormData) {
         zkvm_version_id !== originalZkvmVersionId) ||
       (vk_path !== undefined && vk_path !== originalVkPath)
 
-    // Update metadata if changed
     if (metadataChanged) {
       const metadataUpdate: {
         name?: string
         num_gpus?: number
         hardware_description?: string
         prover_type_id?: number
+        guest_program_id?: number | null
         is_active?: boolean
       } = {}
 
@@ -388,6 +410,9 @@ export async function updateCluster(_prevState: unknown, formData: FormData) {
       }
       if (proverTypeChanged) {
         metadataUpdate.prover_type_id = prover_type_id
+      }
+      if (guestProgramChanged) {
+        metadataUpdate.guest_program_id = guest_program_id ?? null
       }
       if (isActiveChanged) metadataUpdate.is_active = is_active
 
@@ -417,9 +442,9 @@ export async function updateCluster(_prevState: unknown, formData: FormData) {
       })
     }
 
-    // Revalidate cache
     revalidatePath(`/teams/${teamSlug}/dashboard`)
     revalidateTag(TAGS.CLUSTERS)
+    revalidateTag(`team-clusters-${cluster.team_id}`)
     revalidateTag(`cluster-${id}`)
 
     return {

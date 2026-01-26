@@ -17,7 +17,7 @@ export function SignInButton() {
           // asChild
           variant="outline"
           tooltip="sign in"
-          className="justify-center cursor-not-allowed opacity-50"
+          className="cursor-not-allowed justify-center opacity-50"
           disabled
         >
           <LogIn className="hidden group-data-[collapsible=icon]:block" />

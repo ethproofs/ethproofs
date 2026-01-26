@@ -153,7 +153,7 @@ export function DataTable<TData, TValue>({
           columnLabels={columnLabels}
         />
       )}
-      <div className="h-[calc(100vh-250px)] overflow-auto rounded-md border">
+      <div className="max-h-[calc(100vh-250px)] overflow-auto rounded-md border">
         <Table>
           {table.getRowModel().rows?.length > 0 && (
             <TableHeader>

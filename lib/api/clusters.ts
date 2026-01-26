@@ -47,6 +47,9 @@ export const getCluster = async (id: string) => {
 export const getClusters = async (filters?: { teamId?: string }) => {
   const { teamId } = filters ?? {}
   const cacheKey = `clusters-${teamId}`
+  const tags = teamId
+    ? [TAGS.CLUSTERS, `team-clusters-${teamId}`]
+    : [TAGS.CLUSTERS]
 
   return cache(
     async (filters?: { teamId?: string }) => {
@@ -79,8 +82,8 @@ export const getClusters = async (filters?: { teamId?: string }) => {
     },
     [cacheKey],
     {
-      revalidate: 60 * 60 * 24, // daily
-      tags: [TAGS.CLUSTERS],
+      revalidate: false,
+      tags,
     }
   )(filters)
 }
@@ -246,6 +249,7 @@ export const updateClusterMetadata = async (
     num_gpus?: number
     hardware_description?: string
     prover_type_id?: number
+    guest_program_id?: number | null
     is_active?: boolean
   }
 ) => {
@@ -254,6 +258,7 @@ export const updateClusterMetadata = async (
     num_gpus?: number
     hardware_description?: string
     prover_type_id?: number
+    guest_program_id?: number | null
     is_active?: boolean
   } = {}
 
@@ -273,6 +278,10 @@ export const updateClusterMetadata = async (
     updateData.prover_type_id = data.prover_type_id
   }
 
+  if (data.guest_program_id !== undefined) {
+    updateData.guest_program_id = data.guest_program_id
+  }
+
   if (data.is_active !== undefined) {
     updateData.is_active = data.is_active
   }
@@ -283,7 +292,6 @@ export const updateClusterMetadata = async (
     .where(eq(clusters.id, clusterId))
     .returning()
 
-  // Invalidate caches
   revalidateTag(TAGS.CLUSTERS)
   revalidateTag(`cluster-${clusterId}`)
 

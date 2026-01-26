@@ -1,8 +1,14 @@
 import { Check, Pencil, X as RedX } from "lucide-react"
 import { ColumnDef } from "@tanstack/react-table"
 
+import CopyButton from "@/components/copy-button"
 import { DataTableColumnHeader } from "@/components/data-table/data-table-column-header"
 import { Button } from "@/components/ui/button"
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipTrigger,
+} from "@/components/ui/tooltip"
 
 type ClusterVersion = {
   id: number
@@ -31,6 +37,10 @@ export type DashboardCluster = {
     gpu_configuration: string
     deployment_type: string
   } | null
+  guest_program: {
+    id: number
+    name: string
+  } | null
   versions: ClusterVersion[]
 }
 
@@ -43,9 +53,27 @@ export const columns: ColumnDef<DashboardCluster>[] = [
     ),
     cell: ({ row }) => {
       const cluster = row.original
+      const truncatedId = `${cluster.id.slice(0, 8)}...`
       return (
-        <div className="min-w-[100px]">
+        <div className="min-w-[120px]">
           <div className="font-medium">{cluster.name}</div>
+          <div className="flex items-center">
+            <Tooltip>
+              <TooltipTrigger asChild>
+                <span className="cursor-default text-xs text-muted-foreground">
+                  {truncatedId}
+                </span>
+              </TooltipTrigger>
+              <TooltipContent>
+                <p className="font-mono text-xs">{cluster.id}</p>
+              </TooltipContent>
+            </Tooltip>
+            <CopyButton
+              message={cluster.id}
+              className="size-5 text-muted-foreground"
+              iconClassName="!size-3"
+            />
+          </div>
         </div>
       )
     },
@@ -55,9 +83,9 @@ export const columns: ColumnDef<DashboardCluster>[] = [
     accessorKey: "is_active",
     header: "status",
     cell: ({ row }) => {
-      const isActive = row.getValue("is_active") as boolean
+      const isActive = row.original.is_active
       return (
-        <div className="w-[100px]">
+        <div className="w-[80px]">
           {isActive ? (
             <div className="flex items-center gap-1 text-primary">
               <Check className="size-4" />
@@ -80,8 +108,23 @@ export const columns: ColumnDef<DashboardCluster>[] = [
     cell: ({ row }) => {
       const proverType = row.original.prover_type
       return (
-        <div className="min-w-[180px]">
+        <div className="min-w-[150px]">
           <div className="text-sm">{proverType?.name.toLowerCase() || "—"}</div>
+        </div>
+      )
+    },
+  },
+  {
+    id: "guest_program",
+    accessorKey: "guest_program",
+    header: "guest",
+    cell: ({ row }) => {
+      const guestProgram = row.original.guest_program
+      return (
+        <div className="min-w-[80px]">
+          <div className="text-sm">
+            {guestProgram?.name.toLowerCase() || "—"}
+          </div>
         </div>
       )
     },
@@ -91,7 +134,7 @@ export const columns: ColumnDef<DashboardCluster>[] = [
     accessorKey: "hardware_description",
     header: "hardware",
     cell: ({ row }) => {
-      const hardware = row.getValue("hardware_description") as string | null
+      const hardware = row.original.hardware_description
       return (
         <div className="min-w-[200px] max-w-[300px]">
           <div className="truncate text-sm text-muted-foreground">
@@ -106,7 +149,7 @@ export const columns: ColumnDef<DashboardCluster>[] = [
     accessorKey: "num_gpus",
     header: "GPUs",
     cell: ({ row }) => {
-      const numGpus = row.getValue("num_gpus") as number
+      const numGpus = row.original.num_gpus
       return (
         <div className="w-[80px]">
           <div className="text-sm">{numGpus}</div>
@@ -116,7 +159,7 @@ export const columns: ColumnDef<DashboardCluster>[] = [
   },
   {
     id: "version",
-    header: "current version",
+    header: "version",
     cell: ({ row }) => {
       const cluster = row.original
       const activeVersion =
@@ -124,12 +167,12 @@ export const columns: ColumnDef<DashboardCluster>[] = [
 
       if (!activeVersion?.zkvm_version) {
         return (
-          <div className="min-w-[150px] text-sm text-muted-foreground">—</div>
+          <div className="min-w-[80px] text-sm text-muted-foreground">—</div>
         )
       }
 
       return (
-        <div className="min-w-[100px]">
+        <div className="min-w-[80px]">
           <div className="text-sm">{activeVersion.zkvm_version.zkvm.name}</div>
           <div className="text-xs text-muted-foreground">
             v{activeVersion.zkvm_version.version}

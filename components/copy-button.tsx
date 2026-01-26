@@ -14,10 +14,12 @@ import {
 
 import { useClipboard } from "@/lib/hooks/ui/use-clipboard"
 
-type CopyButtonProps = React.HTMLAttributes<HTMLButtonElement> & {
+interface CopyButtonProps extends React.HTMLAttributes<HTMLButtonElement> {
   message: string
+  iconClassName?: string
 }
-const CopyButton = ({ message, className }: CopyButtonProps) => {
+
+function CopyButton({ message, className, iconClassName }: CopyButtonProps) {
   const { onCopy, hasCopied } = useClipboard()
 
   return (
@@ -32,9 +34,9 @@ const CopyButton = ({ message, className }: CopyButtonProps) => {
             onClick={onCopy(message)}
           >
             {hasCopied ? (
-              <ClipboardCheck className="size-4" />
+              <ClipboardCheck className={cn("size-4", iconClassName)} />
             ) : (
-              <Copy className="size-4" />
+              <Copy className={cn("size-4", iconClassName)} />
             )}
           </Button>
         </TooltipTrigger>

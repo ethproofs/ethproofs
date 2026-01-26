@@ -49,11 +49,17 @@ type ProverType = {
   deployment_type: string
 }
 
+type GuestProgram = {
+  id: number
+  name: string
+}
+
 interface ClusterManagementDrawerProps {
   mode: "create" | "edit"
   cluster?: DashboardCluster
   zkvmVersions: ZkvmVersion[]
   proverTypes: ProverType[]
+  guestPrograms: GuestProgram[]
   open: boolean
   onOpenChange: (open: boolean) => void
   teamSlug: string
@@ -76,6 +82,7 @@ export function ClusterDrawer({
   cluster,
   zkvmVersions,
   proverTypes,
+  guestPrograms,
   open,
   onOpenChange,
   teamSlug,
@@ -95,22 +102,24 @@ export function ClusterDrawer({
   const [zkvmVersionId, setZkvmVersionId] = useState<string>(
     activeVersion?.zkvm_version_id?.toString() || ""
   )
+  const [guestProgramId, setGuestProgramId] = useState<string>(
+    cluster?.guest_program?.id.toString() || ""
+  )
   const [isActive, setIsActive] = useState<boolean>(cluster?.is_active ?? true)
 
-  // Reset state when drawer closes
   useEffect(() => {
-    if (!open) {
-      setState(initialState)
-      setSelectedFileName("")
-      setProverTypeId(cluster?.prover_type?.id.toString() || "")
-      setZkvmVersionId(activeVersion?.zkvm_version_id?.toString() || "")
-      setIsActive(cluster?.is_active ?? true)
-      if (fileInputRef.current) fileInputRef.current.value = ""
-    }
+    setState(initialState)
+    setSelectedFileName("")
+    setProverTypeId(cluster?.prover_type?.id.toString() || "")
+    setZkvmVersionId(activeVersion?.zkvm_version_id?.toString() || "")
+    setGuestProgramId(cluster?.guest_program?.id.toString() || "")
+    setIsActive(cluster?.is_active ?? true)
+    if (fileInputRef.current) fileInputRef.current.value = ""
   }, [
     open,
     cluster?.prover_type?.id,
     activeVersion?.zkvm_version_id,
+    cluster?.guest_program?.id,
     cluster?.is_active,
   ])
 
@@ -209,10 +218,15 @@ export function ClusterDrawer({
   return (
     <Drawer open={open} onOpenChange={onOpenChange}>
       <DrawerContent className="h-full w-[500px] overflow-y-auto border-l">
-        <DrawerHeader>
+        <DrawerHeader className="flex flex-row items-center justify-between">
           <DrawerTitle>
             {mode === "create" ? "create cluster" : "edit cluster"}
           </DrawerTitle>
+          {mode === "edit" && cluster && (
+            <span className="font-mono text-xs text-muted-foreground">
+              {cluster.id}
+            </span>
+          )}
         </DrawerHeader>
 
         <form onSubmit={handleSubmit} className="flex flex-1 flex-col px-4">
@@ -221,6 +235,11 @@ export function ClusterDrawer({
             {mode === "edit" && cluster && (
               <>
                 <input type="hidden" name="id" value={cluster.id} />
+                <input
+                  type="hidden"
+                  name="original_is_active"
+                  value={cluster.is_active ? "true" : "false"}
+                />
                 <input
                   type="hidden"
                   name="original_name"
@@ -243,8 +262,8 @@ export function ClusterDrawer({
                 />
                 <input
                   type="hidden"
-                  name="original_is_active"
-                  value={cluster.is_active ? "true" : "false"}
+                  name="original_guest_program_id"
+                  value={cluster.guest_program?.id || ""}
                 />
                 <input
                   type="hidden"
@@ -265,6 +284,25 @@ export function ClusterDrawer({
               <h3 className="text-sm font-semibold underline">
                 cluster details
               </h3>
+
+              <div className="flex items-center space-x-2">
+                <Checkbox
+                  id="is_active"
+                  checked={isActive}
+                  onCheckedChange={(val) => setIsActive(Boolean(val))}
+                />
+                <input
+                  type="hidden"
+                  name="is_active"
+                  value={isActive ? "true" : "false"}
+                />
+                <Label
+                  htmlFor="is_active"
+                  className="text-sm font-normal leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
+                >
+                  active
+                </Label>
+              </div>
 
               <div className="space-y-2">
                 <Label htmlFor="name">name</Label>
@@ -320,23 +358,33 @@ export function ClusterDrawer({
                 />
               </div>
 
-              <div className="flex items-center space-x-2">
-                <Checkbox
-                  id="is_active"
-                  checked={isActive}
-                  onCheckedChange={(val) => setIsActive(Boolean(val))}
-                />
+              <div className="space-y-2">
+                <Label htmlFor="guest_program_id">
+                  guest program (optional)
+                </Label>
+                <Select
+                  value={guestProgramId}
+                  onValueChange={setGuestProgramId}
+                >
+                  <SelectTrigger id="guest_program_id">
+                    <SelectValue placeholder="select a guest program" />
+                  </SelectTrigger>
+                  <SelectContent>
+                    {guestPrograms.map((program) => (
+                      <SelectItem
+                        key={program.id}
+                        value={program.id.toString()}
+                      >
+                        {program.name}
+                      </SelectItem>
+                    ))}
+                  </SelectContent>
+                </Select>
                 <input
                   type="hidden"
-                  name="is_active"
-                  value={isActive ? "true" : "false"}
+                  name="guest_program_id"
+                  value={guestProgramId}
                 />
-                <Label
-                  htmlFor="is_active"
-                  className="text-sm font-normal leading-none peer-disabled:cursor-not-allowed peer-disabled:opacity-70"
-                >
-                  active
-                </Label>
               </div>
 
               <div className="space-y-2">
