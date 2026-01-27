@@ -159,6 +159,113 @@
         }
       }
     },
+    "/clusters/{id}": {
+      "patch": {
+        "tags": [
+          "Clusters"
+        ],
+        "summary": "Update a cluster",
+        "description": "Update cluster metadata and/or create a new cluster version. Changing zkvm_version_id or vk_path creates a new cluster version.",
+        "security": [
+          {
+            "apikey": []
+          }
+        ],
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "schema": {
+              "type": "integer"
+            },
+            "description": "Cluster ID (index)",
+            "example": 1
+          }
+        ],
+        "requestBody": {
+          "required": true,
+          "content": {
+            "application/json": {
+              "schema": {
+                "type": "object",
+                "properties": {
+                  "name": {
+                    "type": "string",
+                    "maxLength": 50,
+                    "description": "Human-readable name. Main display name in the UI",
+                    "example": "ZKnight-01"
+                  },
+                  "num_gpus": {
+                    "type": "integer",
+                    "exclusiveMinimum": 0,
+                    "description": "Number of GPUs in the cluster. Determines if cluster is multi-GPU (>1) or single-GPU (1).",
+                    "example": 8
+                  },
+                  "hardware_description": {
+                    "type": "string",
+                    "maxLength": 200,
+                    "description": "Free-form text description of the cluster's hardware for display in the UI",
+                    "example": "8x NVIDIA H100 80GB GPUs, AMD EPYC 9654 96-Core Processor"
+                  },
+                  "is_active": {
+                    "type": "boolean",
+                    "description": "Whether the cluster is active and can receive proofs",
+                    "example": true
+                  },
+                  "zkvm_version_id": {
+                    "type": "integer",
+                    "exclusiveMinimum": 0,
+                    "description": "ID of the zkVM version. Changing this creates a new cluster version. Visit [ZKVMs](/docs/zkvms) to view all available zkVMs and their IDs.",
+                    "example": 1
+                  },
+                  "vk_path": {
+                    "type": "string",
+                    "description": "Verification key path for the cluster version",
+                    "example": "/path/to/vk"
+                  }
+                }
+              }
+            }
+          }
+        },
+        "responses": {
+          "200": {
+            "description": "Cluster updated successfully",
+            "content": {
+              "application/json": {
+                "schema": {
+                  "type": "object",
+                  "properties": {
+                    "success": {
+                      "type": "boolean"
+                    }
+                  },
+                  "required": [
+                    "success"
+                  ]
+                }
+              }
+            }
+          },
+          "400": {
+            "description": "Invalid request body, no fields to update, or invalid configuration"
+          },
+          "401": {
+            "description": "Invalid API key"
+          },
+          "404": {
+            "description": "Cluster not found"
+          },
+          "409": {
+            "description": "Conflict - active cluster of this prover type already exists"
+          },
+          "500": {
+            "description": "Internal server error"
+          }
+        }
+      }
+    },
     "/clusters": {
       "post": {
         "tags": [

@@ -53,3 +53,33 @@ export const updateClusterMetadataSchema = z.object({
   num_gpus: z.number().int().positive().optional(),
   hardware_description: z.string().max(200).optional(),
 })
+
+export const updateClusterApiSchema = z.object({
+  name: z.string().max(50).optional().openapi({
+    description: "Human-readable name. Main display name in the UI",
+    example: "ZKnight-01",
+  }),
+  num_gpus: z.number().int().positive().optional().openapi({
+    description:
+      "Number of GPUs in the cluster. Determines if cluster is multi-GPU (>1) or single-GPU (1).",
+    example: 8,
+  }),
+  hardware_description: z.string().max(200).optional().openapi({
+    description:
+      "Free-form text description of the cluster's hardware for display in the UI",
+    example: "8x NVIDIA H100 80GB GPUs, AMD EPYC 9654 96-Core Processor",
+  }),
+  is_active: z.boolean().optional().openapi({
+    description: "Whether the cluster is active and can receive proofs",
+    example: true,
+  }),
+  zkvm_version_id: z.number().int().positive().optional().openapi({
+    description:
+      "ID of the zkVM version. Changing this creates a new cluster version. Visit [ZKVMs](/docs/zkvms) to view all available zkVMs and their IDs.",
+    example: 1,
+  }),
+  vk_path: z.string().optional().openapi({
+    description: "Verification key path for the cluster version",
+    example: "/path/to/vk",
+  }),
+})
