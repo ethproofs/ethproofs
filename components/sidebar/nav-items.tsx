@@ -3,7 +3,6 @@ import {
   BarChart3,
   BookOpen,
   Box,
-  Bug,
   Cpu,
   HeartPulse,
   Library,

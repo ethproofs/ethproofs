@@ -14,7 +14,7 @@ export const document = createDocument({
     description: `This document outlines the available API endpoints for ${SITE_NAME}.
     \n\n**Base URL**
     \n\nAll API endpoints are relative to:
-    \n\n\`${new URL("/api/v0", SITE_PREVIEW_URL).toString()}\`
+    \n\n\`${new URL("/api/v0", SITE_URL).toString()}\`
     \n\n**Authentication**
     \n\nAll endpoints require authentication using an API key in the request header:
     \n\n\`Authorization: Bearer <api_key>\``,

@@ -19,7 +19,7 @@
     "db:types": "supabase gen types typescript --local > lib/database.types.ts",
     "clean:cache": "rm -rf .next node_modules/.cache",
     "clean:all": "rm -rf .next node_modules package-lock.json pnpm-lock.yaml node_modules/.cache && pnpm install",
-    "api:docs": "tsx scripts/generate-openapi.ts & npx @redocly/cli build-docs public/openapi.json --output=public/api.html",
+    "api:docs": "tsx scripts/generate-openapi.ts && npx @redocly/cli build-docs public/openapi.json --output=public/api.html && tsx scripts/fix-api-docs-fouc.ts",
     "prepare": "husky",
     "storybook": "storybook dev -p 6006",
     "build-storybook": "storybook build"
