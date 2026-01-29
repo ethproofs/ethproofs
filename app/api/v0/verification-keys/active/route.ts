@@ -15,6 +15,7 @@ export const GET = withRateLimit(
             columns: {
               id: true,
               index: true,
+              is_active: true,
             },
             with: {
               prover_type: true,
@@ -56,7 +57,10 @@ export const GET = withRateLimit(
             return null
           }
 
-          // Filter to only multi-machine clusters
+          if (!version.cluster.is_active) {
+            return null
+          }
+
           if (!isMultiGpuCluster(version.cluster)) {
             return null
           }
