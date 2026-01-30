@@ -8,6 +8,8 @@ import { LEARN_CONTENT_MD } from "@/lib/constants"
 
 import { getMetadata } from "@/lib/metadata"
 
+export const dynamic = "force-static"
+
 export const metadata = getMetadata({ title: "Learn" })
 
 export default function LearnPage() {

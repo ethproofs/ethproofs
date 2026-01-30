@@ -73,7 +73,7 @@ export function BlocksTable({
     return (
       <div className="mt-4 flex items-center gap-2 px-6">
         <Spinner className="text-muted-foreground" />
-        <p className="text-muted-foreground">loading proofs...</p>
+        <p className="text-muted-foreground">loading blocks...</p>
       </div>
     )
   }

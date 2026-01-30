@@ -81,10 +81,10 @@ export const updateBlock = async (blockNumber: number) => {
   }
 }
 
-export const fetchBlocksPaginated = async (
+export async function fetchBlocksPaginated(
   pagination: PaginationState,
   machineType: MachineType = "all"
-) => {
+) {
   const blocksRows = await db.query.blocks.findMany({
     with: {
       proofs: {
