@@ -1,3 +1,5 @@
+"use client"
+
 import { useEffect } from "react"
 import { Check, X } from "lucide-react"
 
@@ -16,16 +18,15 @@ import {
 
 import { useServerVerifyProof } from "@/lib/hooks/realtime/use-server-verify-proof"
 
-interface ProofItemProps {
+interface RealtimeProofRowProps {
   proof: ProofWithCluster
 }
 
-export function ProofItem({ proof }: ProofItemProps) {
+export function RealtimeProofRow({ proof }: RealtimeProofRowProps) {
   const { result: verificationResult, verify } = useServerVerifyProof(
     proof.proof_id
   )
 
-  // Start verification automatically when proof is "proved"
   useEffect(() => {
     if (
       proof.proof_status === "proved" &&
@@ -35,7 +36,6 @@ export function ProofItem({ proof }: ProofItemProps) {
     }
   }, [proof.proof_status, verificationResult.status, verify])
 
-  // Map server verification statuses to UI statuses
   const mapServerStatusToUi = (status: string): ProofStatus => {
     switch (status) {
       case "downloading":
@@ -43,7 +43,6 @@ export function ProofItem({ proof }: ProofItemProps) {
       case "verifying":
         return "verifying"
       case "complete":
-        // isValid can be true, false, or null (not available)
         if (
           verificationResult.isValid === null ||
           verificationResult.isValid === undefined
@@ -58,42 +57,38 @@ export function ProofItem({ proof }: ProofItemProps) {
     }
   }
 
-  // Determine display status
   const displayStatus =
     verificationResult.status !== "idle"
       ? mapServerStatusToUi(verificationResult.status)
       : (proof.proof_status as ProofStatus)
 
-  const statusText = getProofStatusText(displayStatus)
   const statusClasses = getProofStatusClasses(displayStatus)
-  const statusProgressValue = getProofStatusProgressValue(displayStatus)
+  const statusText = getProofStatusText(displayStatus)
+  const progressValue = getProofStatusProgressValue(displayStatus)
+
+  const isVerified = displayStatus === "success"
+  const isFailed = displayStatus === "failed" || displayStatus === "error"
 
   return (
-    <div key={proof.proof_id} className="space-y-2">
-      <div className="flex items-center justify-between">
-        <div className="flex items-end gap-2 text-sm">
-          <span className={statusClasses.text}>
-            {proof.cluster_version.cluster.name}
-          </span>
-          <span className="inline text-xs text-muted-foreground">
-            {proof.cluster_id}
-          </span>
-        </div>
-        <div className="flex items-center gap-2">
-          <span className={cn("text-sm font-medium", statusClasses.text)}>
+    <div className="rounded-md py-1">
+      <div className="mb-1.5 flex items-center justify-between gap-2">
+        <span
+          className={cn("truncate text-xs font-medium", statusClasses.text)}
+          title={proof.cluster_version.cluster.name}
+        >
+          {proof.cluster_version.cluster.name}
+        </span>
+        <div className="flex shrink-0 items-center gap-1.5">
+          <span className={cn("text-[10px] font-medium", statusClasses.text)}>
             {statusText}
           </span>
-          {displayStatus === "success" && (
-            <Check className="h-4 w-4 text-primary" />
-          )}
-          {(displayStatus === "failed" || displayStatus === "error") && (
-            <X className={cn("h-4 w-4", statusClasses.text)} />
-          )}
+          {isVerified && <Check className="size-3 text-primary" />}
+          {isFailed && <X className={cn("size-3", statusClasses.text)} />}
         </div>
       </div>
       <Progress
-        className="h-2"
-        value={statusProgressValue}
+        className="h-1.5"
+        value={progressValue}
         indicatorClassName={cn(statusClasses.background, statusClasses.animate)}
       />
     </div>

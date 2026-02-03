@@ -8,6 +8,7 @@ import {
 } from "@tanstack/react-query"
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools"
 
+import { RealtimeSidebarProvider } from "@/components/realtime/realtime-sidebar-provider"
 import { SidebarProvider } from "@/components/ui/sidebar"
 
 function makeQueryClient() {
@@ -52,7 +53,11 @@ export default function Providers({ children }: { children: React.ReactNode }) {
         defaultTheme="system"
         storageKey="theme"
       >
-        <SidebarProvider defaultOpen={true}>{children}</SidebarProvider>
+        <SidebarProvider defaultOpen={true}>
+          <RealtimeSidebarProvider defaultOpen={true}>
+            {children}
+          </RealtimeSidebarProvider>
+        </SidebarProvider>
       </ThemeProvider>
       <ReactQueryDevtools initialIsOpen={false} buttonPosition="bottom-right" />
     </QueryClientProvider>
