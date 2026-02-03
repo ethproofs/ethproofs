@@ -8,6 +8,7 @@
 - Use object method shorthand syntax in objects and interfaces.
 - Prefer constants over magic numbers or strings.
 - Default to lowercase casing for UI text strings.
+- Prefer one component per file.
 
 ## Drizzle migrations
 
@@ -58,7 +59,7 @@
 
 - Use kebab-case file names
 - File names must explain their contents, e.g., a file containing `AlternateHeaderLayout`
-  is called `alternate-header-layout.tsx`
+  is called `alternate-header.layout.tsx`
 - Avoid using index.ts(x) files, except for the following scenarios:
   - Barrel exports from library packages
   - Required by file-based router

@@ -2,7 +2,6 @@ import type { Metadata } from "next"
 
 import { MetricCards } from "@/components/metric-cards"
 import { ProvableSecurityDisplay } from "@/components/provable-security/provable-security-display"
-import { RealtimeProofsDisplay } from "@/components/realtime/realtime-proofs-display"
 
 import { getMetadata } from "@/lib/metadata"
 
@@ -46,14 +45,6 @@ export default async function Index() {
         <section id="provable-security">
           <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:gap-4">
             <ProvableSecurityDisplay />
-          </div>
-        </section>
-      </div>
-
-      <div className="mx-auto mb-16 flex max-w-screen-xl flex-col items-center px-6 [&>section]:w-full">
-        <section id="realtime-proofs">
-          <div className="flex flex-col gap-4 lg:flex-row lg:items-center lg:gap-4">
-            <RealtimeProofsDisplay />
           </div>
         </section>
       </div>
