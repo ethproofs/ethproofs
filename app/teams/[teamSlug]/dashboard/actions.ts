@@ -9,7 +9,7 @@ import { API_KEY_MANAGER_ROLE, TAGS } from "@/lib/constants"
 import { db } from "@/db"
 import { clusters, clusterVersions } from "@/db/schema"
 import { createClusterVersion, updateClusterMetadata } from "@/lib/api/clusters"
-import { getTeamBySlug } from "@/lib/api/teams"
+import { getTeamBySlug, updateTeam } from "@/lib/api/teams"
 import { getZkvmVersion } from "@/lib/api/zkvm-versions"
 import { createClient } from "@/utils/supabase/server"
 
@@ -453,6 +453,125 @@ export async function updateCluster(_prevState: unknown, formData: FormData) {
     }
   } catch (error) {
     console.error("Error updating cluster:", error)
+    return {
+      errors: {
+        _form: ["an unexpected error occurred"],
+      },
+    }
+  }
+}
+
+const updateTeamProfileSchema = z.object({
+  team_id: z.string().uuid(),
+  name: z
+    .string()
+    .min(1, "name is required")
+    .max(100, "name must be 100 characters or less"),
+  github_org: z
+    .string()
+    .max(100, "github org must be 100 characters or less")
+    .optional()
+    .nullable()
+    .transform((val) => (val === "" ? null : val)),
+  twitter_handle: z
+    .string()
+    .max(50, "twitter handle must be 50 characters or less")
+    .optional()
+    .nullable()
+    .transform((val) => (val === "" ? null : val)),
+  website_url: z
+    .string()
+    .max(200, "website url must be 200 characters or less")
+    .optional()
+    .nullable()
+    .transform((val) => (val === "" ? null : val))
+    .refine(
+      (val) => {
+        if (!val) return true
+        try {
+          new URL(val)
+          return true
+        } catch {
+          return false
+        }
+      },
+      { message: "invalid url format" }
+    ),
+})
+
+export async function updateTeamProfile(
+  _prevState: unknown,
+  formData: FormData
+) {
+  const supabase = await createClient()
+  const {
+    data: { user },
+    error: authError,
+  } = await supabase.auth.getUser()
+
+  if (authError || !user) {
+    return {
+      errors: {
+        _form: ["you must be logged in to update team profile"],
+      },
+    }
+  }
+
+  const validatedFields = updateTeamProfileSchema.safeParse({
+    team_id: formData.get("team_id"),
+    name: formData.get("name"),
+    github_org: formData.get("github_org") || null,
+    twitter_handle: formData.get("twitter_handle") || null,
+    website_url: formData.get("website_url") || null,
+  })
+
+  if (!validatedFields.success) {
+    return {
+      errors: validatedFields.error.flatten().fieldErrors,
+    }
+  }
+
+  const { team_id, name, github_org, twitter_handle, website_url } =
+    validatedFields.data
+
+  try {
+    const isAdmin = user.role === API_KEY_MANAGER_ROLE
+
+    if (!isAdmin && team_id !== user.id) {
+      return {
+        errors: {
+          _form: ["you do not have permission to edit this team"],
+        },
+      }
+    }
+
+    const team = await getTeamBySlug(
+      (formData.get("team_slug") as string) || ""
+    )
+    if (!team || team.id !== team_id) {
+      return {
+        errors: {
+          _form: ["team not found"],
+        },
+      }
+    }
+
+    await updateTeam(team_id, {
+      name,
+      github_org,
+      twitter_handle,
+      website_url,
+    })
+
+    revalidatePath(`/teams/${team.slug}/dashboard`)
+    revalidatePath(`/teams/${team.slug}`)
+    revalidateTag(TAGS.TEAMS)
+
+    return {
+      success: true,
+    }
+  } catch (error) {
+    console.error("Error updating team profile:", error)
     return {
       errors: {
         _form: ["an unexpected error occurred"],
