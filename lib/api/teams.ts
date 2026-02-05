@@ -1,10 +1,21 @@
-import { count, notIlike } from "drizzle-orm"
+import { count, eq, notIlike } from "drizzle-orm"
 import { unstable_cache as cache } from "next/cache"
 
 import { TAGS } from "@/lib/constants"
 
 import { db } from "@/db"
 import { teams } from "@/db/schema"
+
+interface UpdateTeamData {
+  name?: string
+  github_org?: string | null
+  twitter_handle?: string | null
+  website_url?: string | null
+}
+
+export async function updateTeam(id: string, data: UpdateTeamData) {
+  await db.update(teams).set(data).where(eq(teams.id, id))
+}
 
 export const getTeam = cache(async (id: string) => {
   const team = await db.query.teams.findFirst({
