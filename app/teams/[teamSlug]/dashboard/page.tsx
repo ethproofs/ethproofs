@@ -10,7 +10,9 @@ import {
   getZkvmVersions,
 } from "@/lib/api/clusters"
 import { getGuestPrograms } from "@/lib/api/guest-programs"
+import { getZkvmsWithMetrics } from "@/lib/api/metrics"
 import { getTeamBySlug } from "@/lib/api/teams"
+import { getZkvmsByTeamId } from "@/lib/api/zkvms"
 import { createClient } from "@/utils/supabase/server"
 
 interface DashboardPageProps {
@@ -50,13 +52,27 @@ export default async function DashboardPage({ params }: DashboardPageProps) {
     notFound()
   }
 
-  const [clusters, zkvmVersions, proverTypes, guestPrograms] =
+  const [clusters, teamZkvms, zkvmVersions, proverTypes, guestPrograms] =
     await Promise.all([
       getClusters({ teamId: team.id }),
+      getZkvmsByTeamId(team.id, { includeUnapproved: true }),
       getZkvmVersions(),
       getProverTypes(),
       getGuestPrograms(),
     ])
+
+  const zkvmIds = teamZkvms.map((z) => z.id)
+  const zkvmsWithMetrics =
+    zkvmIds.length > 0 ? await getZkvmsWithMetrics({ zkvmIds }) : []
+
+  const zkvms = teamZkvms.map((zkvm) => {
+    const metrics = zkvmsWithMetrics.find((m) => m.id === zkvm.id)
+    return {
+      ...zkvm,
+      security_metrics: metrics?.security_metrics ?? null,
+      performance_metrics: metrics?.performance_metrics ?? null,
+    }
+  })
 
   return (
     <div className="mx-auto mt-2 flex max-w-screen-xl flex-1 flex-col items-center gap-20 [&>section]:w-full">
@@ -64,6 +80,7 @@ export default async function DashboardPage({ params }: DashboardPageProps) {
         <DashboardContent
           team={team}
           clusters={clusters}
+          zkvms={zkvms}
           zkvmVersions={zkvmVersions}
           proverTypes={proverTypes}
           guestPrograms={guestPrograms}

@@ -8,6 +8,7 @@ import {
   doublePrecision,
   index,
   integer,
+  jsonb,
   numeric,
   pgEnum,
   pgPolicy,
@@ -257,38 +258,47 @@ export const zkvms = pgTable("zkvms", {
   name: text().notNull(),
   slug: text("slug").notNull().unique(),
   isa: text().notNull(),
-  repo_url: text().notNull(),
-  continuations: boolean().notNull().default(false),
-  dual_licenses: boolean().notNull().default(false),
+  repo_url: text(),
+  is_dual_licensed: boolean().notNull().default(false),
   is_open_source: boolean().notNull().default(false),
   is_proving_mainnet: boolean().notNull().default(false),
-  parallelizable_proving: boolean().notNull().default(false),
-  precompiles: boolean().notNull().default(false),
-  frontend: text().notNull(),
+  approved: boolean().notNull().default(false),
+  pending_updates: jsonb("pending_updates"),
+  update_status: text("update_status"),
   created_at: timestamp("created_at", {
     withTimezone: true,
     mode: "string",
   })
     .defaultNow()
     .notNull(),
+  updated_at: timestamp("updated_at", {
+    withTimezone: true,
+    mode: "string",
+  }).defaultNow(),
 })
 
-export const zkvmVersions = pgTable("zkvm_versions", {
-  id: bigint({ mode: "number" }).primaryKey().generatedByDefaultAsIdentity(),
-  zkvm_id: bigint({ mode: "number" })
-    .notNull()
-    .references(() => zkvms.id, {
-      onDelete: "cascade",
-      onUpdate: "cascade",
-    }),
-  version: text().notNull(),
-  created_at: timestamp("created_at", {
-    withTimezone: true,
-    mode: "string",
-  })
-    .defaultNow()
-    .notNull(),
-})
+export const zkvmVersions = pgTable(
+  "zkvm_versions",
+  {
+    id: bigint({ mode: "number" }).primaryKey().generatedByDefaultAsIdentity(),
+    zkvm_id: bigint({ mode: "number" })
+      .notNull()
+      .references(() => zkvms.id, {
+        onDelete: "cascade",
+        onUpdate: "cascade",
+      }),
+    version: text().notNull(),
+    created_at: timestamp("created_at", {
+      withTimezone: true,
+      mode: "string",
+    })
+      .defaultNow()
+      .notNull(),
+  },
+  (table) => [
+    unique("zkvm_versions_zkvm_id_version_uk").on(table.zkvm_id, table.version),
+  ]
+)
 
 export const proofs = pgTable(
   "proofs",

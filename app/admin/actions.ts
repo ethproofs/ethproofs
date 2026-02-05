@@ -3,18 +3,36 @@
 import { eq } from "drizzle-orm"
 import { authUsers } from "drizzle-orm/supabase"
 import { nanoid } from "nanoid"
-import { revalidatePath } from "next/cache"
+import { revalidatePath, revalidateTag } from "next/cache"
 import { redirect } from "next/navigation"
 import { z } from "zod"
+
+import { isZkvmPendingUpdates } from "@/lib/types"
 
 import {
   API_KEY_MANAGER_ROLE,
   PUBLIC_ASSETS_BUCKET,
   SITE_URL,
+  TAGS,
 } from "@/lib/constants"
 
 import { db } from "@/db"
-import { apiAuthTokens, teams } from "@/db/schema"
+import { apiAuthTokens, teams, zkvms } from "@/db/schema"
+import {
+  createOrUpdateZkvmPerformanceMetrics,
+  createOrUpdateZkvmSecurityMetrics,
+  getZkvmPerformanceMetricsByZkvmId,
+  getZkvmSecurityMetricsByZkvmId,
+} from "@/lib/api/metrics"
+import {
+  createZkvmVersion,
+  getZkvmVersionByVersion,
+} from "@/lib/api/zkvm-versions"
+import {
+  clearZkvmPendingUpdates,
+  rejectZkvmUpdates,
+  updateZkvm as updateZkvmInDb,
+} from "@/lib/api/zkvms"
 import { hashToken } from "@/lib/auth/hash-token"
 import { sendEmail } from "@/lib/server/email-service"
 import {
@@ -545,6 +563,218 @@ export async function generateApiKey(_prevState: unknown, formData: FormData) {
     return {
       errors: {
         email: ["internal server error"],
+      },
+    }
+  }
+}
+
+const zkvmApprovalSchema = z.object({
+  zkvmId: z.coerce.number().int().positive(),
+})
+
+export async function approveZkvm(_prevState: unknown, formData: FormData) {
+  const validatedFields = zkvmApprovalSchema.safeParse({
+    zkvmId: formData.get("zkvmId"),
+  })
+
+  if (!validatedFields.success) {
+    return {
+      errors: validatedFields.error.flatten().fieldErrors,
+    }
+  }
+
+  const { zkvmId } = validatedFields.data
+
+  try {
+    const supabase = await createClient()
+
+    const {
+      data: { user },
+    } = await supabase.auth.getUser()
+
+    if (user?.role !== API_KEY_MANAGER_ROLE) {
+      return {
+        errors: {
+          zkvmId: ["unauthorized"],
+        },
+      }
+    }
+
+    const [zkvm] = await db.select().from(zkvms).where(eq(zkvms.id, zkvmId))
+
+    if (!zkvm) {
+      return {
+        errors: {
+          zkvmId: ["zkvm not found"],
+        },
+      }
+    }
+
+    if (zkvm.approved && zkvm.pending_updates) {
+      if (!isZkvmPendingUpdates(zkvm.pending_updates)) {
+        return {
+          errors: {
+            zkvmId: ["invalid pending changes data"],
+          },
+        }
+      }
+
+      const { security_metrics, performance_metrics, version, ...mainFields } =
+        zkvm.pending_updates
+
+      if (Object.keys(mainFields).length > 0) {
+        await updateZkvmInDb(zkvmId, mainFields)
+      }
+
+      if (security_metrics && Object.keys(security_metrics).length > 0) {
+        const currentSecurityMetrics =
+          await getZkvmSecurityMetricsByZkvmId(zkvmId)
+        const merged = {
+          implementation_soundness:
+            security_metrics.implementation_soundness ??
+            currentSecurityMetrics?.implementation_soundness,
+          evm_stf_bytecode:
+            security_metrics.evm_stf_bytecode ??
+            currentSecurityMetrics?.evm_stf_bytecode,
+          quantum_security:
+            security_metrics.quantum_security ??
+            currentSecurityMetrics?.quantum_security,
+          security_target_bits:
+            security_metrics.security_target_bits ??
+            currentSecurityMetrics?.security_target_bits,
+          max_bounty_amount:
+            security_metrics.max_bounty_amount ??
+            currentSecurityMetrics?.max_bounty_amount,
+        }
+
+        if (
+          merged.implementation_soundness &&
+          merged.evm_stf_bytecode &&
+          merged.quantum_security &&
+          merged.security_target_bits !== undefined &&
+          merged.max_bounty_amount !== undefined
+        ) {
+          await createOrUpdateZkvmSecurityMetrics(zkvmId, {
+            implementation_soundness: merged.implementation_soundness,
+            evm_stf_bytecode: merged.evm_stf_bytecode,
+            quantum_security: merged.quantum_security,
+            security_target_bits: merged.security_target_bits,
+            max_bounty_amount: merged.max_bounty_amount,
+          })
+        }
+      }
+
+      if (performance_metrics && Object.keys(performance_metrics).length > 0) {
+        const currentPerformanceMetrics =
+          await getZkvmPerformanceMetricsByZkvmId(zkvmId)
+        const merged = {
+          size_bytes:
+            performance_metrics.size_bytes ??
+            currentPerformanceMetrics?.size_bytes,
+          verification_ms:
+            performance_metrics.verification_ms ??
+            currentPerformanceMetrics?.verification_ms,
+        }
+
+        if (
+          merged.size_bytes !== undefined &&
+          merged.verification_ms !== undefined
+        ) {
+          await createOrUpdateZkvmPerformanceMetrics(zkvmId, {
+            size_bytes: merged.size_bytes,
+            verification_ms: merged.verification_ms,
+          })
+        }
+      }
+
+      if (version) {
+        const existingVersion = await getZkvmVersionByVersion(zkvmId, version)
+        if (!existingVersion) {
+          await createZkvmVersion(zkvmId, version)
+        }
+      }
+
+      await clearZkvmPendingUpdates(zkvmId)
+    } else {
+      await db
+        .update(zkvms)
+        .set({ approved: true, update_status: null })
+        .where(eq(zkvms.id, zkvmId))
+    }
+
+    revalidatePath("/admin", "page")
+    revalidatePath("/zkvms")
+    revalidateTag(TAGS.ZKVMS)
+
+    return {
+      data: { success: true },
+    }
+  } catch (error) {
+    console.error("error approving zkvm", error)
+    const message =
+      error instanceof Error ? error.message : "internal server error"
+
+    return {
+      errors: {
+        zkvmId: [message],
+      },
+    }
+  }
+}
+
+export async function rejectZkvm(_prevState: unknown, formData: FormData) {
+  const validatedFields = zkvmApprovalSchema.safeParse({
+    zkvmId: formData.get("zkvmId"),
+  })
+
+  if (!validatedFields.success) {
+    return {
+      errors: validatedFields.error.flatten().fieldErrors,
+    }
+  }
+
+  const { zkvmId } = validatedFields.data
+
+  try {
+    const supabase = await createClient()
+
+    const {
+      data: { user },
+    } = await supabase.auth.getUser()
+
+    if (user?.role !== API_KEY_MANAGER_ROLE) {
+      return {
+        errors: {
+          zkvmId: ["unauthorized"],
+        },
+      }
+    }
+
+    const [zkvm] = await db.select().from(zkvms).where(eq(zkvms.id, zkvmId))
+
+    if (!zkvm) {
+      return {
+        errors: {
+          zkvmId: ["zkvm not found"],
+        },
+      }
+    }
+
+    await rejectZkvmUpdates(zkvmId)
+
+    revalidatePath("/admin", "page")
+    revalidatePath("/zkvms")
+    revalidateTag(TAGS.ZKVMS)
+
+    return {
+      data: { success: true },
+    }
+  } catch (error) {
+    console.error("error rejecting zkvm", error)
+
+    return {
+      errors: {
+        zkvmId: ["internal server error"],
       },
     }
   }

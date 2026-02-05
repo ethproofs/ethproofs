@@ -15,7 +15,7 @@ export function TeamClustersTable({
 }: TeamClustersTableProps) {
   return (
     <DataTable
-      className="mt-4 px-6"
+      className="mt-4"
       columns={columns}
       data={clusters}
       onEdit={onEdit}

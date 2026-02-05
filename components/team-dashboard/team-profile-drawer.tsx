@@ -3,6 +3,8 @@
 import { useEffect, useState } from "react"
 import { useRouter } from "next/navigation"
 
+import type { Team } from "@/lib/types"
+
 import { Errors } from "@/components/forms/errors"
 import { Button } from "@/components/ui/button"
 import {
@@ -17,15 +19,6 @@ import { Input } from "@/components/ui/input"
 import { Label } from "@/components/ui/label"
 
 import { updateTeamProfile } from "@/app/teams/[teamSlug]/dashboard/actions"
-
-interface Team {
-  id: string
-  name: string
-  slug: string
-  github_org: string | null
-  twitter_handle: string | null
-  website_url: string | null
-}
 
 interface TeamProfileDrawerProps {
   team: Team

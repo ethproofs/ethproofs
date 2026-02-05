@@ -1556,7 +1556,8 @@
       },
       "policies": {},
       "checkConstraints": {},
-      "isRLSEnabled": false
+      "isRLSEnabled": false,
+      "indexes": {}
     }
   },
   "enums": {
