@@ -1,3 +1,5 @@
+import { API_KEY_MANAGER_ROLE } from "@/lib/constants"
+
 import {
   Sidebar,
   SidebarContent,
@@ -6,6 +8,7 @@ import {
   SidebarRail,
 } from "../ui/sidebar"
 
+import { AdminButton } from "./admin-button"
 import { AppNavSecondary } from "./app-nav-secondary"
 import { AppNavigation } from "./app-navigation"
 import { AppSidebarHeader } from "./app-sidebar-header"
@@ -22,6 +25,7 @@ export async function AppSidebar() {
     data: { user },
   } = await supabase.auth.getUser()
 
+  const isAdmin = user?.role === API_KEY_MANAGER_ROLE
   const team = user ? await getTeam(user.id) : null
 
   return (
@@ -36,6 +40,7 @@ export async function AppSidebar() {
       <SidebarFooter>
         {user ? (
           <>
+            {isAdmin && <AdminButton />}
             {team && <DashboardButton teamSlug={team.slug} />}
             <SignOutButton />
           </>

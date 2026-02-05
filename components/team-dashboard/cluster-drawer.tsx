@@ -359,9 +359,7 @@ export function ClusterDrawer({
               </div>
 
               <div className="space-y-2">
-                <Label htmlFor="guest_program_id">
-                  guest program (optional)
-                </Label>
+                <Label htmlFor="guest_program_id">guest program</Label>
                 <Select
                   value={guestProgramId}
                   onValueChange={setGuestProgramId}

@@ -20,7 +20,7 @@ export const labels = [
     label: "verifier open source",
   },
   {
-    value: "dual_licenses",
+    value: "is_dual_licensed",
     label: "dual license",
   },
   {
@@ -118,16 +118,16 @@ export const getColumns = (options?: ColumnsOptions): ColumnDef<ZkvmRow>[] => [
     },
   },
   {
-    id: "dual_licenses",
-    accessorKey: "dual_licenses",
+    id: "is_dual_licensed",
+    accessorKey: "is_dual_licensed",
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="license" />
     ),
     cell: ({ row }) => {
-      const dualLicenses = row.getValue("dual_licenses") as boolean
+      const isDualLicensed = row.getValue("is_dual_licensed") as boolean
       return (
         <div className="w-[100px]">
-          {dualLicenses ? (
+          {isDualLicensed ? (
             <div className="flex items-center gap-1 text-primary">
               <Check className="size-4" />
               <span>dual</span>
@@ -158,7 +158,10 @@ export const getColumns = (options?: ColumnsOptions): ColumnDef<ZkvmRow>[] => [
               <span>layer 1</span>
             </div>
           ) : (
-            <RedX className="size-4 text-level-worst" />
+            <div className="flex items-center gap-1 text-level-worst">
+              <RedX className="size-4" />
+              <span>layer 1</span>
+            </div>
           )}
         </div>
       )
@@ -195,10 +198,13 @@ export const getColumns = (options?: ColumnsOptions): ColumnDef<ZkvmRow>[] => [
     ),
     cell: ({ row }) => {
       const versions = row.getValue("version") as ZkvmRow["versions"]
-      const latestVersion = versions.reduce((latest, version) =>
-        version.id > latest.id ? version : latest
-      )
-      return <div className="w-[100px]">{latestVersion.version || "N/A"}</div>
+      const latestVersion =
+        versions.length > 0
+          ? versions.reduce((latest, version) =>
+              version.id > latest.id ? version : latest
+            )
+          : null
+      return <div className="w-[100px]">{latestVersion?.version ?? "N/A"}</div>
     },
   },
   {

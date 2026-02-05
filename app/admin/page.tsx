@@ -7,12 +7,13 @@ import { AdminUserForm } from "@/components/forms/admin-user-form"
 import { AdminVerificationKeyForm } from "@/components/forms/admin-verification-key"
 import { SignInForm } from "@/components/forms/sign-in-form"
 import { PendingTeamsList } from "@/components/pending-teams-list"
+import { PendingZkvmsList } from "@/components/pending-zkvms-list"
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 
 import { API_KEY_MANAGER_ROLE } from "@/lib/constants"
 
 import { db } from "@/db"
-import { clusters, teams } from "@/db/schema"
+import { clusters, teams, zkvms } from "@/db/schema"
 import { createClient } from "@/utils/supabase/server"
 
 export default async function AdminPage() {
@@ -28,6 +29,12 @@ export default async function AdminPage() {
     .select()
     .from(teams)
     .where(eq(teams.approved, false))
+  const pendingZkvms = await db.query.zkvms.findMany({
+    where: eq(zkvms.update_status, "pending"),
+    with: {
+      team: true,
+    },
+  })
 
   if (!user || user.role !== API_KEY_MANAGER_ROLE) {
     return (
@@ -85,6 +92,19 @@ export default async function AdminPage() {
             </CardHeader>
             <CardContent>
               <PendingTeamsList teams={pendingTeams} />
+            </CardContent>
+          </Card>
+        </div>
+      )}
+
+      {pendingZkvms.length > 0 && (
+        <div className="flex justify-center">
+          <Card className="flex flex-1 flex-col gap-4">
+            <CardHeader>
+              <CardTitle>pending zkvms</CardTitle>
+            </CardHeader>
+            <CardContent>
+              <PendingZkvmsList zkvms={pendingZkvms} />
             </CardContent>
           </Card>
         </div>

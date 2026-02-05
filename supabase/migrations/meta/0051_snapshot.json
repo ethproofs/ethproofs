@@ -1,6 +1,6 @@
 {
-  "id": "1fc7f477-3cc6-421c-8b81-a26b0387c7eb",
-  "prevId": "8b4fddbd-cb91-450e-9c0a-265337d278e1",
+  "id": "5d2d01bb-7b1c-42e6-9fb1-7975848d2bdf",
+  "prevId": "f0e1d2c3-b4a5-9687-8796-a5b4c3d2e1f0",
   "version": "7",
   "dialect": "postgresql",
   "tables": {
@@ -255,6 +255,89 @@
       "checkConstraints": {},
       "isRLSEnabled": false
     },
+    "public.guest_programs": {
+      "name": "guest_programs",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "bigint",
+          "primaryKey": true,
+          "notNull": true,
+          "identity": {
+            "name": "guest_programs_id_seq",
+            "increment": "1",
+            "minValue": "1",
+            "maxValue": "9223372036854775807",
+            "startWith": "1",
+            "cache": "1",
+            "cycle": false,
+            "schema": "public",
+            "type": "byDefault"
+          }
+        },
+        "name": {
+          "name": "name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "language": {
+          "name": "language",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "maintainer": {
+          "name": "maintainer",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "ecosystem": {
+          "name": "ecosystem",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "license": {
+          "name": "license",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "repo_url": {
+          "name": "repo_url",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {},
+      "policies": {
+        "Enable read access for all users": {
+          "name": "Enable read access for all users",
+          "as": "PERMISSIVE",
+          "for": "SELECT",
+          "to": [
+            "public"
+          ],
+          "using": "true"
+        }
+      },
+      "checkConstraints": {},
+      "isRLSEnabled": true
+    },
     "public.clusters": {
       "name": "clusters",
       "schema": "",
@@ -272,11 +355,35 @@
           "primaryKey": false,
           "notNull": false
         },
+        "name": {
+          "name": "name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
         "team_id": {
           "name": "team_id",
           "type": "uuid",
           "primaryKey": false,
           "notNull": true
+        },
+        "prover_type_id": {
+          "name": "prover_type_id",
+          "type": "smallint",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "guest_program_id": {
+          "name": "guest_program_id",
+          "type": "bigint",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "hardware_description": {
+          "name": "hardware_description",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
         },
         "is_open_source": {
           "name": "is_open_source",
@@ -284,6 +391,13 @@
           "primaryKey": false,
           "notNull": true,
           "default": false
+        },
+        "num_gpus": {
+          "name": "num_gpus",
+          "type": "integer",
+          "primaryKey": false,
+          "notNull": true,
+          "default": 1
         },
         "is_active": {
           "name": "is_active",
@@ -304,64 +418,9 @@
           "primaryKey": false,
           "notNull": true,
           "default": "now()"
-        },
-        "name": {
-          "name": "name",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "is_multi_gpu": {
-          "name": "is_multi_gpu",
-          "type": "boolean",
-          "primaryKey": false,
-          "notNull": true,
-          "default": false
-        },
-        "num_gpus": {
-          "name": "num_gpus",
-          "type": "integer",
-          "primaryKey": false,
-          "notNull": true,
-          "default": "1"
-        },
-        "hardware_description": {
-          "name": "hardware_description",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "prover_type_id": {
-          "name": "prover_type_id",
-          "type": "smallint",
-          "primaryKey": false,
-          "notNull": true
         }
       },
-      "indexes": {
-        "unique_active_prover_per_type_per_team": {
-          "name": "unique_active_prover_per_type_per_team",
-          "columns": [
-            {
-              "expression": "team_id",
-              "isExpression": false,
-              "asc": true,
-              "nulls": "last"
-            },
-            {
-              "expression": "prover_type_id",
-              "isExpression": false,
-              "asc": true,
-              "nulls": "last"
-            }
-          ],
-          "isUnique": true,
-          "where": "\"is_active\" = true",
-          "with": {},
-          "method": "btree",
-          "concurrently": false
-        }
-      },
+      "indexes": {},
       "foreignKeys": {
         "clusters_team_id_teams_id_fk": {
           "name": "clusters_team_id_teams_id_fk",
@@ -388,6 +447,19 @@
           ],
           "onUpdate": "no action",
           "onDelete": "no action"
+        },
+        "clusters_guest_program_id_guest_programs_id_fk": {
+          "name": "clusters_guest_program_id_guest_programs_id_fk",
+          "tableFrom": "clusters",
+          "columnsFrom": [
+            "guest_program_id"
+          ],
+          "tableTo": "guest_programs",
+          "columnsTo": [
+            "id"
+          ],
+          "onUpdate": "cascade",
+          "onDelete": "set null"
         }
       },
       "compositePrimaryKeys": {},
@@ -412,76 +484,7 @@
         }
       },
       "checkConstraints": {},
-      "isRLSEnabled": false
-    },
-    "public.programs": {
-      "name": "programs",
-      "schema": "",
-      "columns": {
-        "id": {
-          "name": "id",
-          "type": "bigint",
-          "primaryKey": true,
-          "notNull": true,
-          "identity": {
-            "name": "programs_id_seq",
-            "increment": "1",
-            "minValue": "1",
-            "maxValue": "9223372036854775807",
-            "startWith": "1",
-            "cache": "1",
-            "cycle": false,
-            "schema": "public",
-            "type": "byDefault"
-          }
-        },
-        "verifier_id": {
-          "name": "verifier_id",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "created_at": {
-          "name": "created_at",
-          "type": "timestamp with time zone",
-          "primaryKey": false,
-          "notNull": true,
-          "default": "now()"
-        }
-      },
-      "indexes": {},
-      "foreignKeys": {},
-      "compositePrimaryKeys": {},
-      "uniqueConstraints": {
-        "programs_verifier_id_unique": {
-          "name": "programs_verifier_id_unique",
-          "columns": [
-            "verifier_id"
-          ],
-          "nullsNotDistinct": false
-        }
-      },
-      "policies": {
-        "Enable read access for all users": {
-          "name": "Enable read access for all users",
-          "as": "PERMISSIVE",
-          "for": "SELECT",
-          "to": [
-            "public"
-          ],
-          "using": "true"
-        },
-        "Enable insert for users with an api key": {
-          "name": "Enable insert for users with an api key",
-          "as": "PERMISSIVE",
-          "for": "INSERT",
-          "to": [
-            "public"
-          ]
-        }
-      },
-      "checkConstraints": {},
-      "isRLSEnabled": false
+      "isRLSEnabled": true
     },
     "public.proofs": {
       "name": "proofs",
@@ -573,12 +576,6 @@
         },
         "size_bytes": {
           "name": "size_bytes",
-          "type": "bigint",
-          "primaryKey": false,
-          "notNull": false
-        },
-        "gpu_price_index_id": {
-          "name": "gpu_price_index_id",
           "type": "bigint",
           "primaryKey": false,
           "notNull": false
@@ -678,19 +675,6 @@
             "program_id"
           ],
           "tableTo": "programs",
-          "columnsTo": [
-            "id"
-          ],
-          "onUpdate": "cascade",
-          "onDelete": "set null"
-        },
-        "proofs_gpu_price_index_id_gpu_price_index_id_fk": {
-          "name": "proofs_gpu_price_index_id_gpu_price_index_id_fk",
-          "tableFrom": "proofs",
-          "columnsFrom": [
-            "gpu_price_index_id"
-          ],
-          "tableTo": "gpu_price_index",
           "columnsTo": [
             "id"
           ],
@@ -1135,13 +1119,6 @@
           "primaryKey": false,
           "notNull": true
         },
-        "protocol_soundness": {
-          "name": "protocol_soundness",
-          "type": "severity_level",
-          "typeSchema": "public",
-          "primaryKey": false,
-          "notNull": true
-        },
         "implementation_soundness": {
           "name": "implementation_soundness",
           "type": "severity_level",
@@ -1175,8 +1152,8 @@
           "primaryKey": false,
           "notNull": true
         },
-        "trusted_setup": {
-          "name": "trusted_setup",
+        "soundcalc_integration": {
+          "name": "soundcalc_integration",
           "type": "boolean",
           "primaryKey": false,
           "notNull": true,
@@ -1301,7 +1278,16 @@
         }
       },
       "compositePrimaryKeys": {},
-      "uniqueConstraints": {},
+      "uniqueConstraints": {
+        "zkvm_versions_zkvm_id_version_uk": {
+          "name": "zkvm_versions_zkvm_id_version_uk",
+          "nullsNotDistinct": false,
+          "columns": [
+            "zkvm_id",
+            "version"
+          ]
+        }
+      },
       "policies": {},
       "checkConstraints": {},
       "isRLSEnabled": false
@@ -1355,17 +1341,10 @@
           "name": "repo_url",
           "type": "text",
           "primaryKey": false,
-          "notNull": true
+          "notNull": false
         },
-        "continuations": {
-          "name": "continuations",
-          "type": "boolean",
-          "primaryKey": false,
-          "notNull": true,
-          "default": false
-        },
-        "dual_licenses": {
-          "name": "dual_licenses",
+        "is_dual_licensed": {
+          "name": "is_dual_licensed",
           "type": "boolean",
           "primaryKey": false,
           "notNull": true,
@@ -1385,25 +1364,12 @@
           "notNull": true,
           "default": false
         },
-        "parallelizable_proving": {
-          "name": "parallelizable_proving",
+        "approved": {
+          "name": "approved",
           "type": "boolean",
           "primaryKey": false,
           "notNull": true,
           "default": false
-        },
-        "precompiles": {
-          "name": "precompiles",
-          "type": "boolean",
-          "primaryKey": false,
-          "notNull": true,
-          "default": false
-        },
-        "frontend": {
-          "name": "frontend",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true
         },
         "created_at": {
           "name": "created_at",
@@ -1411,6 +1377,25 @@
           "primaryKey": false,
           "notNull": true,
           "default": "now()"
+        },
+        "updated_at": {
+          "name": "updated_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": false,
+          "default": "now()"
+        },
+        "pending_updates": {
+          "name": "pending_updates",
+          "type": "jsonb",
+          "primaryKey": false,
+          "notNull": false
+        },
+        "update_status": {
+          "name": "update_status",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
         }
       },
       "indexes": {},
@@ -1435,6 +1420,64 @@
           "name": "zkvms_slug_unique",
           "columns": [
             "slug"
+          ],
+          "nullsNotDistinct": false
+        }
+      },
+      "policies": {},
+      "checkConstraints": {},
+      "isRLSEnabled": false
+    },
+    "public.prover_types": {
+      "name": "prover_types",
+      "schema": "",
+      "columns": {
+        "id": {
+          "name": "id",
+          "type": "smallint",
+          "primaryKey": true,
+          "notNull": true
+        },
+        "name": {
+          "name": "name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "processing_ratio": {
+          "name": "processing_ratio",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "gpu_configuration": {
+          "name": "gpu_configuration",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "deployment_type": {
+          "name": "deployment_type",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": true
+        },
+        "created_at": {
+          "name": "created_at",
+          "type": "timestamp with time zone",
+          "primaryKey": false,
+          "notNull": true,
+          "default": "now()"
+        }
+      },
+      "indexes": {},
+      "foreignKeys": {},
+      "compositePrimaryKeys": {},
+      "uniqueConstraints": {
+        "prover_types_name_unique": {
+          "name": "prover_types_name_unique",
+          "columns": [
+            "name"
           ],
           "nullsNotDistinct": false
         }
@@ -1484,93 +1527,22 @@
           "default": "now()"
         }
       },
-      "indexes": {
-        "gpu_price_index_gpu_name_created_at_unique": {
-          "name": "gpu_price_index_gpu_name_created_at_unique",
-          "columns": [
-            {
-              "expression": "gpu_name",
-              "isExpression": false,
-              "asc": true,
-              "nulls": "last"
-            },
-            {
-              "expression": "created_at",
-              "isExpression": false,
-              "asc": true,
-              "nulls": "last"
-            }
-          ],
-          "isUnique": true,
-          "with": {},
-          "method": "btree",
-          "concurrently": false
-        }
-      },
-      "foreignKeys": {},
-      "compositePrimaryKeys": {},
-      "uniqueConstraints": {},
-      "policies": {},
-      "checkConstraints": {},
-      "isRLSEnabled": false
-    },
-    "public.prover_types": {
-      "name": "prover_types",
-      "schema": "",
-      "columns": {
-        "id": {
-          "name": "id",
-          "type": "smallint",
-          "primaryKey": true,
-          "notNull": true
-        },
-        "name": {
-          "name": "name",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "processing_ratio": {
-          "name": "processing_ratio",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "gpu_configuration": {
-          "name": "gpu_configuration",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "deployment_type": {
-          "name": "deployment_type",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": true
-        },
-        "created_at": {
-          "name": "created_at",
-          "type": "timestamp with time zone",
-          "primaryKey": false,
-          "notNull": true,
-          "default": "now()"
-        }
-      },
+      "indexes": {},
       "foreignKeys": {},
       "compositePrimaryKeys": {},
       "uniqueConstraints": {
-        "prover_types_name_unique": {
-          "name": "prover_types_name_unique",
+        "gpu_price_index_gpu_name_created_at_unique": {
+          "name": "gpu_price_index_gpu_name_created_at_unique",
           "columns": [
-            "name"
+            "gpu_name",
+            "created_at"
           ],
           "nullsNotDistinct": false
         }
       },
       "policies": {},
       "checkConstraints": {},
-      "isRLSEnabled": false,
-      "indexes": {}
+      "isRLSEnabled": false
     }
   },
   "enums": {
@@ -1605,6 +1577,12 @@
           "primaryKey": false,
           "notNull": false
         },
+        "cluster_nickname": {
+          "name": "cluster_nickname",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
+        },
         "team_id": {
           "name": "team_id",
           "type": "uuid",
@@ -1622,15 +1600,9 @@
           "type": "numeric",
           "primaryKey": false,
           "notNull": false
-        },
-        "cluster_name": {
-          "name": "cluster_name",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": false
         }
       },
-      "definition": "\nSELECT c.id as cluster_id,\n  c.name as cluster_name,\n  c.team_id,\n  COALESCE(sum(c.num_gpus::double precision * gpi.hourly_price * (p.proving_time::numeric / (1000.0 * 60::numeric * 60::numeric))::double precision) / NULLIF(count(p.proof_id), 0)::double precision, 0::double precision) AS avg_cost_per_proof,\n  COALESCE(avg(p.proving_time), 0::numeric) AS avg_proving_time\nFROM clusters c\nLEFT JOIN cluster_versions cv ON c.id = cv.cluster_id\nLEFT JOIN proofs p ON cv.id = p.cluster_version_id AND p.proof_status = 'proved'::text\nLEFT JOIN gpu_price_index gpi ON p.gpu_price_index_id = gpi.id\nGROUP BY c.id",
+      "definition": "\n    SELECT c.id as cluster_id,\n      c.nickname as cluster_nickname,\n      c.team_id,\n      COALESCE(sum(cm.cloud_instance_count::double precision * ci.hourly_price * (p.proving_time::numeric / (1000.0 * 60::numeric * 60::numeric))::double precision) / NULLIF(count(p.proof_id), 0)::double precision, 0::double precision) AS avg_cost_per_proof,\n      avg(p.proving_time) AS avg_proving_time\n    FROM clusters c\n    LEFT JOIN cluster_versions cv ON c.id = cv.cluster_id\n    LEFT JOIN proofs p ON cv.id = p.cluster_version_id AND p.proof_status = 'proved'::text\n    LEFT JOIN cluster_machines cm ON cv.id = cm.cluster_version_id\n    LEFT JOIN cloud_instances ci ON cm.cloud_instance_id = ci.id\n    GROUP BY c.id",
       "materialized": false,
       "with": {
         "securityInvoker": true
@@ -1672,7 +1644,7 @@
           "notNull": false
         }
       },
-      "definition": "\nSELECT count(DISTINCT b.block_number) AS total_proven_blocks,\n  COALESCE(avg(c.num_gpus::double precision * gpi.hourly_price * p.proving_time::double precision / (1000.0 * 60::numeric * 60::numeric)::double precision), 0::numeric::double precision) AS avg_cost_per_proof,\n  COALESCE(PERCENTILE_CONT(0.5) WITHIN GROUP (ORDER BY c.num_gpus::double precision * gpi.hourly_price * p.proving_time::double precision / (1000.0 * 60::numeric * 60::numeric)::double precision), 0::numeric::double precision) AS median_cost_per_proof,\n  COALESCE(avg(p.proving_time), 0::numeric) AS avg_proving_time,\n  COALESCE(PERCENTILE_CONT(0.5) WITHIN GROUP (ORDER BY p.proving_time), 0::numeric) AS median_proving_time\nFROM blocks b\nINNER JOIN proofs p ON b.block_number = p.block_number AND p.proof_status = 'proved'::text\nINNER JOIN cluster_versions cv ON p.cluster_version_id = cv.id\nINNER JOIN clusters c ON cv.cluster_id = c.id\nLEFT JOIN gpu_price_index gpi ON p.gpu_price_index_id = gpi.id\nWHERE b.\"timestamp\" >= (now() - '30 days'::interval)",
+      "definition": "\n    SELECT count(DISTINCT b.block_number) AS total_proven_blocks,\n      -- Calculate average cost per proof\n      COALESCE(avg(cm.cloud_instance_count::double precision * ci.hourly_price * p.proving_time::double precision / (1000.0 * 60::numeric * 60::numeric)::double precision), 0::numeric::double precision) AS avg_cost_per_proof,\n      -- Calculate median cost per proof\n      COALESCE(PERCENTILE_CONT(0.5) WITHIN GROUP (ORDER BY cm.cloud_instance_count::double precision * ci.hourly_price * p.proving_time::double precision / (1000.0 * 60::numeric * 60::numeric)::double precision), 0::numeric::double precision) AS median_cost_per_proof,\n      -- Calculate average latency\n      COALESCE(avg(p.proving_time), 0::numeric) AS avg_proving_time,\n      -- Calculate median latency\n      COALESCE(PERCENTILE_CONT(0.5) WITHIN GROUP (ORDER BY p.proving_time), 0::numeric) AS median_proving_time\n    FROM blocks b\n    INNER JOIN proofs p ON b.block_number = p.block_number AND p.proof_status = 'proved'::text\n    INNER JOIN cluster_versions cv ON p.cluster_version_id = cv.id\n    INNER JOIN cluster_machines cm ON cv.id = cm.cluster_version_id\n    INNER JOIN cloud_instances ci ON cm.cloud_instance_id = ci.id\n    WHERE b.\"timestamp\" >= (now() - '30 days'::interval)",
       "materialized": false,
       "with": {
         "securityInvoker": true
@@ -1756,7 +1728,7 @@
           "notNull": false
         }
       },
-      "definition": "\nSELECT t.id as team_id,\n  t.name as team_name,\n  t.logo_url,\n  COALESCE(sum(c.num_gpus::double precision * gpi.hourly_price * (p.proving_time::numeric / (1000.0 * 60::numeric * 60::numeric))::double precision) / NULLIF(count(p.proof_id), 0)::double precision, 0::double precision) AS avg_cost_per_proof,\n  COALESCE(avg(p.proving_time), 0::numeric) AS avg_proving_time,\n  count(p.proof_id) AS total_proofs,\n  COALESCE(sum(CASE WHEN c.is_multi_gpu THEN (c.num_gpus::double precision * gpi.hourly_price * (p.proving_time::numeric / (1000.0 * 60::numeric * 60::numeric))::double precision) ELSE 0 END) / NULLIF(sum(CASE WHEN c.is_multi_gpu THEN 1 ELSE 0 END), 0)::double precision, 0::double precision) AS avg_cost_per_proof_multi,\n  COALESCE(avg(CASE WHEN c.is_multi_gpu THEN p.proving_time ELSE NULL END), 0::numeric) AS avg_proving_time_multi,\n  sum(CASE WHEN c.is_multi_gpu THEN 1 ELSE 0 END) AS total_proofs_multi,\n  COALESCE(sum(CASE WHEN NOT c.is_multi_gpu THEN (c.num_gpus::double precision * gpi.hourly_price * (p.proving_time::numeric / (1000.0 * 60::numeric * 60::numeric))::double precision) ELSE 0 END) / NULLIF(sum(CASE WHEN NOT c.is_multi_gpu THEN 1 ELSE 0 END), 0)::double precision, 0::double precision) AS avg_cost_per_proof_single,\n  COALESCE(avg(CASE WHEN NOT c.is_multi_gpu THEN p.proving_time ELSE NULL END), 0::numeric) AS avg_proving_time_single,\n  sum(CASE WHEN NOT c.is_multi_gpu THEN 1 ELSE 0 END) AS total_proofs_single\nFROM teams t\nLEFT JOIN proofs p ON t.id = p.team_id AND p.proof_status = 'proved'::text\nLEFT JOIN cluster_versions cv ON p.cluster_version_id = cv.id\nLEFT JOIN clusters c ON cv.cluster_id = c.id\nLEFT JOIN gpu_price_index gpi ON p.gpu_price_index_id = gpi.id\nGROUP BY t.id",
+      "definition": "\n    SELECT t.id as team_id,\n      t.name as team_name,\n      t.logo_url,\n      -- All proofs\n      COALESCE(sum(cm.cloud_instance_count::double precision * ci.hourly_price * (p.proving_time::numeric / (1000.0 * 60::numeric * 60::numeric))::double precision) / NULLIF(count(p.proof_id), 0)::double precision, 0::double precision) AS avg_cost_per_proof,\n      COALESCE(avg(p.proving_time), 0::numeric) AS avg_proving_time,\n      count(p.proof_id) AS total_proofs,\n      -- Multi-machine proofs\n      COALESCE(sum(CASE WHEN c.is_multi_machine THEN (cm.cloud_instance_count::double precision * ci.hourly_price * (p.proving_time::numeric / (1000.0 * 60::numeric * 60::numeric))::double precision) ELSE 0 END) / NULLIF(sum(CASE WHEN c.is_multi_machine THEN 1 ELSE 0 END), 0)::double precision, 0::double precision) AS avg_cost_per_proof_multi,\n      COALESCE(avg(CASE WHEN c.is_multi_machine THEN p.proving_time ELSE NULL END), 0::numeric) AS avg_proving_time_multi,\n      sum(CASE WHEN c.is_multi_machine THEN 1 ELSE 0 END) AS total_proofs_multi,\n      -- Single-machine proofs\n      COALESCE(sum(CASE WHEN NOT c.is_multi_machine THEN (cm.cloud_instance_count::double precision * ci.hourly_price * (p.proving_time::numeric / (1000.0 * 60::numeric * 60::numeric))::double precision) ELSE 0 END) / NULLIF(sum(CASE WHEN NOT c.is_multi_machine THEN 1 ELSE 0 END), 0)::double precision, 0::double precision) AS avg_cost_per_proof_single,\n      COALESCE(avg(CASE WHEN NOT c.is_multi_machine THEN p.proving_time ELSE NULL END), 0::numeric) AS avg_proving_time_single,\n      sum(CASE WHEN NOT c.is_multi_machine THEN 1 ELSE 0 END) AS total_proofs_single\n    FROM teams t\n    LEFT JOIN proofs p ON t.id = p.team_id AND p.proof_status = 'proved'::text\n    LEFT JOIN cluster_versions cv ON p.cluster_version_id = cv.id\n    LEFT JOIN clusters c ON cv.cluster_id = c.id\n    LEFT JOIN cluster_machines cm ON cv.id = cm.cluster_version_id\n    LEFT JOIN cloud_instances ci ON cm.cloud_instance_id = ci.id\n    GROUP BY t.id",
       "materialized": false,
       "with": {
         "securityInvoker": true

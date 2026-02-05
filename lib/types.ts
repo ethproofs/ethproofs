@@ -106,6 +106,53 @@ export type ZkvmPerformanceMetric = typeof zkvmPerformanceMetrics.$inferSelect
 
 export type SeverityLevel = (typeof severityLevel.enumValues)[number]
 
+export interface SecurityMetricsData {
+  implementation_soundness: SeverityLevel
+  evm_stf_bytecode: SeverityLevel
+  quantum_security: SeverityLevel
+  security_target_bits: number
+  max_bounty_amount: number
+  soundcalc_integration?: boolean
+}
+
+export interface PerformanceMetricsData {
+  size_bytes: number
+  verification_ms: number
+}
+
+export type UpdateStatus = "pending" | "rejected"
+
+export interface ZkvmPendingUpdates {
+  name?: string
+  isa?: string
+  repo_url?: string | null
+  is_open_source?: boolean
+  is_dual_licensed?: boolean
+  is_proving_mainnet?: boolean
+  version?: string
+  security_metrics?: Partial<SecurityMetricsData>
+  performance_metrics?: Partial<PerformanceMetricsData>
+}
+
+const PENDING_UPDATES_KEYS = new Set([
+  "name",
+  "isa",
+  "repo_url",
+  "is_open_source",
+  "is_dual_licensed",
+  "is_proving_mainnet",
+  "version",
+  "security_metrics",
+  "performance_metrics",
+])
+
+export function isZkvmPendingUpdates(
+  value: unknown
+): value is ZkvmPendingUpdates {
+  if (typeof value !== "object" || value === null) return false
+  return Object.keys(value).every((key) => PENDING_UPDATES_KEYS.has(key))
+}
+
 export type ZkvmMetrics = ZkvmSecurityMetric & ZkvmPerformanceMetric
 
 export type ZkvmMetric = keyof ZkvmMetrics
