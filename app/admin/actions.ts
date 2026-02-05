@@ -3,7 +3,7 @@
 import { eq } from "drizzle-orm"
 import { authUsers } from "drizzle-orm/supabase"
 import { nanoid } from "nanoid"
-import { revalidatePath } from "next/cache"
+import { revalidatePath, revalidateTag } from "next/cache"
 import { redirect } from "next/navigation"
 import { z } from "zod"
 
@@ -11,10 +11,11 @@ import {
   API_KEY_MANAGER_ROLE,
   PUBLIC_ASSETS_BUCKET,
   SITE_URL,
+  TAGS,
 } from "@/lib/constants"
 
 import { db } from "@/db"
-import { apiAuthTokens, teams } from "@/db/schema"
+import { apiAuthTokens, teams, zkvms } from "@/db/schema"
 import { hashToken } from "@/lib/auth/hash-token"
 import { sendEmail } from "@/lib/server/email-service"
 import {
@@ -545,6 +546,126 @@ export async function generateApiKey(_prevState: unknown, formData: FormData) {
     return {
       errors: {
         email: ["internal server error"],
+      },
+    }
+  }
+}
+
+const zkvmApprovalSchema = z.object({
+  zkvmId: z.coerce.number().int().positive(),
+})
+
+export async function approveZkvm(_prevState: unknown, formData: FormData) {
+  const validatedFields = zkvmApprovalSchema.safeParse({
+    zkvmId: formData.get("zkvmId"),
+  })
+
+  if (!validatedFields.success) {
+    return {
+      errors: validatedFields.error.flatten().fieldErrors,
+    }
+  }
+
+  const { zkvmId } = validatedFields.data
+
+  try {
+    const supabase = await createClient()
+
+    const {
+      data: { user },
+    } = await supabase.auth.getUser()
+
+    if (user?.role !== API_KEY_MANAGER_ROLE) {
+      return {
+        errors: {
+          zkvmId: ["unauthorized"],
+        },
+      }
+    }
+
+    const [zkvm] = await db.select().from(zkvms).where(eq(zkvms.id, zkvmId))
+
+    if (!zkvm) {
+      return {
+        errors: {
+          zkvmId: ["zkvm not found"],
+        },
+      }
+    }
+
+    await db.update(zkvms).set({ approved: true }).where(eq(zkvms.id, zkvmId))
+
+    revalidatePath("/admin", "page")
+    revalidatePath("/zkvms")
+    revalidateTag(TAGS.ZKVMS)
+
+    return {
+      data: { success: true },
+    }
+  } catch (error) {
+    console.error("error approving zkvm", error)
+
+    return {
+      errors: {
+        zkvmId: ["internal server error"],
+      },
+    }
+  }
+}
+
+export async function rejectZkvm(_prevState: unknown, formData: FormData) {
+  const validatedFields = zkvmApprovalSchema.safeParse({
+    zkvmId: formData.get("zkvmId"),
+  })
+
+  if (!validatedFields.success) {
+    return {
+      errors: validatedFields.error.flatten().fieldErrors,
+    }
+  }
+
+  const { zkvmId } = validatedFields.data
+
+  try {
+    const supabase = await createClient()
+
+    const {
+      data: { user },
+    } = await supabase.auth.getUser()
+
+    if (user?.role !== API_KEY_MANAGER_ROLE) {
+      return {
+        errors: {
+          zkvmId: ["unauthorized"],
+        },
+      }
+    }
+
+    const [zkvm] = await db.select().from(zkvms).where(eq(zkvms.id, zkvmId))
+
+    if (!zkvm) {
+      return {
+        errors: {
+          zkvmId: ["zkvm not found"],
+        },
+      }
+    }
+
+    await db.delete(zkvms).where(eq(zkvms.id, zkvmId))
+
+    revalidatePath("/admin", "page")
+    revalidatePath("/zkvms")
+    revalidateTag(TAGS.ZKVMS)
+
+    return {
+      data: { success: true },
+    }
+  } catch (error) {
+    console.error("error rejecting zkvm", error)
+
+    return {
+      errors: {
+        zkvmId: ["internal server error"],
       },
     }
   }

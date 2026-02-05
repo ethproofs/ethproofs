@@ -257,20 +257,21 @@ export const zkvms = pgTable("zkvms", {
   name: text().notNull(),
   slug: text("slug").notNull().unique(),
   isa: text().notNull(),
-  repo_url: text().notNull(),
-  continuations: boolean().notNull().default(false),
-  dual_licenses: boolean().notNull().default(false),
+  repo_url: text(),
+  is_dual_licensed: boolean().notNull().default(false),
   is_open_source: boolean().notNull().default(false),
   is_proving_mainnet: boolean().notNull().default(false),
-  parallelizable_proving: boolean().notNull().default(false),
-  precompiles: boolean().notNull().default(false),
-  frontend: text().notNull(),
+  approved: boolean().notNull().default(false),
   created_at: timestamp("created_at", {
     withTimezone: true,
     mode: "string",
   })
     .defaultNow()
     .notNull(),
+  updated_at: timestamp("updated_at", {
+    withTimezone: true,
+    mode: "string",
+  }).defaultNow(),
 })
 
 export const zkvmVersions = pgTable("zkvm_versions", {

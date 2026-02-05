@@ -140,7 +140,7 @@ export function ZkvmDrawer({
             <div>
               <div className="text-body-secondary">license</div>
               <div className="font-medium">
-                {zkvm.dual_licenses ? "dual" : "single"}
+                {zkvm.is_dual_licensed ? "dual" : "single"}
               </div>
             </div>
           </div>

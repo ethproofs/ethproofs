@@ -9,7 +9,11 @@ import { ClusterDrawer } from "@/components/team-dashboard/cluster-drawer"
 import { DashboardCluster } from "@/components/team-dashboard/columns"
 import { TeamClustersTable } from "@/components/team-dashboard/team-clusters-table"
 import { TeamProfileDrawer } from "@/components/team-dashboard/team-profile-drawer"
+import { TeamZkvmsTable } from "@/components/team-dashboard/team-zkvms-table"
+import { DashboardZkvm } from "@/components/team-dashboard/zkvm-columns"
+import { ZkvmDrawer } from "@/components/team-dashboard/zkvm-drawer"
 import { Button } from "@/components/ui/button"
+import { BaseLink } from "@/components/ui/link"
 
 type Team = {
   id: string
@@ -70,6 +74,7 @@ type Cluster = {
 interface DashboardContentProps {
   team: Team
   clusters: Cluster[]
+  zkvms: DashboardZkvm[]
   zkvmVersions: ZkvmVersion[]
   proverTypes: ProverType[]
   guestPrograms: GuestProgram[]
@@ -78,22 +83,25 @@ interface DashboardContentProps {
 export function DashboardContent({
   team,
   clusters,
+  zkvms,
   zkvmVersions,
   proverTypes,
   guestPrograms,
 }: DashboardContentProps) {
   const [clusterDrawerOpen, setClusterDrawerOpen] = useState(false)
   const [profileDrawerOpen, setProfileDrawerOpen] = useState(false)
+  const [zkvmDrawerOpen, setZkvmDrawerOpen] = useState(false)
   const [editingCluster, setEditingCluster] = useState<DashboardCluster | null>(
     null
   )
+  const [editingZkvm, setEditingZkvm] = useState<DashboardZkvm | null>(null)
 
-  const handleCreate = () => {
+  const handleCreateCluster = () => {
     setEditingCluster(null)
     setClusterDrawerOpen(true)
   }
 
-  const handleEdit = (cluster: DashboardCluster) => {
+  const handleEditCluster = (cluster: DashboardCluster) => {
     setEditingCluster(cluster)
     setClusterDrawerOpen(true)
   }
@@ -105,75 +113,115 @@ export function DashboardContent({
     }
   }
 
+  const handleCreateZkvm = () => {
+    setEditingZkvm(null)
+    setZkvmDrawerOpen(true)
+  }
+
+  const handleEditZkvm = (zkvm: DashboardZkvm) => {
+    setEditingZkvm(zkvm)
+    setZkvmDrawerOpen(true)
+  }
+
+  const handleCloseZkvmDrawer = (open: boolean) => {
+    setZkvmDrawerOpen(open)
+    if (!open) {
+      setEditingZkvm(null)
+    }
+  }
+
   const hasTeamLinks =
     team.website_url || team.twitter_handle || team.github_org
 
   return (
     <>
-      <div className="space-y-4 px-6">
+      <div className="space-y-2 px-6">
         <div className="flex items-end justify-between">
           <span className="text-2xl">{team.name} dashboard</span>
-          <div className="flex gap-2">
-            <Button
-              variant="outline"
-              onClick={() => setProfileDrawerOpen(true)}
-              className="h-8"
-            >
-              <Pencil className="size-4" />
-              edit profile
-            </Button>
-            <Button onClick={handleCreate} className="h-8">
-              <Plus className="size-4" />
-              create cluster
-            </Button>
-          </div>
+          <Button
+            variant="outline"
+            onClick={() => setProfileDrawerOpen(true)}
+            className="h-8"
+          >
+            <Pencil className="size-4" />
+            edit profile
+          </Button>
         </div>
 
         {hasTeamLinks && (
-          <div className="flex flex-wrap gap-4 text-sm text-muted-foreground">
+          <div className="flex flex-wrap gap-4">
             {team.website_url && (
-              <a
+              <BaseLink
                 href={team.website_url}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center gap-1.5 hover:text-foreground"
+                hideArrow
+                className="flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground"
               >
                 <Globe className="size-4" />
                 {new URL(team.website_url).host}
-              </a>
+              </BaseLink>
             )}
             {team.twitter_handle && (
-              <a
+              <BaseLink
                 href={`https://x.com/${team.twitter_handle}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center gap-1.5 hover:text-foreground"
+                hideArrow
+                className="flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground"
               >
                 <XLogo className="h-3 w-auto" />@{team.twitter_handle}
-              </a>
+              </BaseLink>
             )}
             {team.github_org && (
-              <a
+              <BaseLink
                 href={`https://github.com/${team.github_org}`}
-                target="_blank"
-                rel="noopener noreferrer"
-                className="flex items-center gap-1.5 hover:text-foreground"
+                hideArrow
+                className="flex items-center gap-1.5 text-sm text-muted-foreground hover:text-foreground"
               >
                 <GitHubLogo className="size-4" />
                 {team.github_org}
-              </a>
+              </BaseLink>
             )}
           </div>
         )}
       </div>
 
-      {clusters.length === 0 ? (
-        <div className="py-12 text-center">
-          <p className="text-muted-foreground">create one to get started!</p>
+      <div className="mt-6 flex flex-col gap-6">
+        <div className="space-y-2 px-6">
+          <div className="flex items-end justify-between">
+            <span className="text-xl">zkvms</span>
+            <div className="p-1">
+              <Button onClick={handleCreateZkvm} className="h-8">
+                <Plus className="size-4" />
+                create zkvm
+              </Button>
+            </div>
+          </div>
+          {zkvms.length === 0 ? (
+            <div className="py-8 text-center">
+              <p className="text-muted-foreground">no zkvms yet</p>
+            </div>
+          ) : (
+            <TeamZkvmsTable zkvms={zkvms} onEdit={handleEditZkvm} />
+          )}
         </div>
-      ) : (
-        <TeamClustersTable clusters={clusters} onEdit={handleEdit} />
-      )}
+      </div>
+
+      <div className="mt-6 space-y-2 px-6">
+        <div className="flex items-end justify-between">
+          <span className="text-xl">clusters</span>
+          <div className="p-1">
+            <Button onClick={handleCreateCluster} className="h-8">
+              <Plus className="size-4" />
+              create cluster
+            </Button>
+          </div>
+        </div>
+        {clusters.length === 0 ? (
+          <div className="py-8 text-center">
+            <p className="text-muted-foreground">no clusters yet</p>
+          </div>
+        ) : (
+          <TeamClustersTable clusters={clusters} onEdit={handleEditCluster} />
+        )}
+      </div>
 
       <ClusterDrawer
         mode={editingCluster ? "edit" : "create"}
@@ -183,6 +231,14 @@ export function DashboardContent({
         guestPrograms={guestPrograms}
         open={clusterDrawerOpen}
         onOpenChange={handleCloseClusterDrawer}
+        teamSlug={team.slug}
+      />
+
+      <ZkvmDrawer
+        mode={editingZkvm ? "edit" : "create"}
+        zkvm={editingZkvm || undefined}
+        open={zkvmDrawerOpen}
+        onOpenChange={handleCloseZkvmDrawer}
         teamSlug={team.slug}
       />
 

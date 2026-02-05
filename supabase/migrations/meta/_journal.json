@@ -351,6 +351,13 @@
       "when": 1768500000000,
       "tag": "0049_fix-proof-alerts-column-name",
       "breakpoints": true
+    },
+    {
+      "idx": 50,
+      "version": "7",
+      "when": 1768600000000,
+      "tag": "0050_zkvm-management",
+      "breakpoints": true
     }
   ]
 }

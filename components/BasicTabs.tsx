@@ -26,7 +26,7 @@ export function BasicTabs({
         className={cn("flex items-end justify-between gap-2 px-6", className)}
       >
         <span className="text-2xl">{title}</span>
-        <TabsList className="m h-8 w-[250px] px-0.5">
+        <TabsList className="h-8 w-[250px] px-0.5">
           <TabsTrigger
             className="flex-1 py-1 data-[state=active]:text-primary"
             value="left"

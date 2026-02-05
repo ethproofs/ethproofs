@@ -7,10 +7,18 @@ import { z } from "zod"
 import { API_KEY_MANAGER_ROLE, TAGS } from "@/lib/constants"
 
 import { db } from "@/db"
-import { clusters, clusterVersions } from "@/db/schema"
+import { clusters, clusterVersions, zkvms } from "@/db/schema"
 import { createClusterVersion, updateClusterMetadata } from "@/lib/api/clusters"
+import {
+  createOrUpdateZkvmPerformanceMetrics,
+  createOrUpdateZkvmSecurityMetrics,
+} from "@/lib/api/metrics"
 import { getTeamBySlug, updateTeam } from "@/lib/api/teams"
-import { getZkvmVersion } from "@/lib/api/zkvm-versions"
+import { createZkvmVersion, getZkvmVersion } from "@/lib/api/zkvm-versions"
+import {
+  createZkvm as createZkvmInDb,
+  updateZkvm as updateZkvmInDb,
+} from "@/lib/api/zkvms"
 import { createClient } from "@/utils/supabase/server"
 
 const createClusterSchema = z.object({
@@ -572,6 +580,389 @@ export async function updateTeamProfile(
     }
   } catch (error) {
     console.error("Error updating team profile:", error)
+    return {
+      errors: {
+        _form: ["an unexpected error occurred"],
+      },
+    }
+  }
+}
+
+const severityLevelSchema = z.enum(["red", "yellow", "green"])
+
+const createZkvmSchema = z.object({
+  name: z
+    .string()
+    .min(1, "name is required")
+    .max(100, "name must be 100 characters or less"),
+  slug: z
+    .string()
+    .min(1, "slug is required")
+    .max(100, "slug must be 100 characters or less")
+    .regex(/^[a-z0-9-]+$/, "slug must be lowercase alphanumeric with hyphens"),
+  isa: z.string().min(1, "isa is required"),
+  repo_url: z
+    .string()
+    .max(200, "repo url must be 200 characters or less")
+    .optional()
+    .nullable()
+    .transform((val) => (val === "" ? null : val))
+    .refine(
+      (val) => {
+        if (!val) return true
+        try {
+          new URL(val)
+          return true
+        } catch {
+          return false
+        }
+      },
+      { message: "invalid url format" }
+    ),
+  is_open_source: z
+    .string()
+    .transform((val) => val === "true" || val === "on")
+    .optional()
+    .default("false"),
+  is_dual_licensed: z
+    .string()
+    .transform((val) => val === "true" || val === "on")
+    .optional()
+    .default("false"),
+  is_proving_mainnet: z
+    .string()
+    .transform((val) => val === "true" || val === "on")
+    .optional()
+    .default("false"),
+  version: z
+    .string()
+    .min(1, "version is required")
+    .regex(/^[0-9.]+$/, "version must contain only numbers and dots"),
+  implementation_soundness: severityLevelSchema.optional(),
+  evm_stf_bytecode: severityLevelSchema.optional(),
+  quantum_security: severityLevelSchema.optional(),
+  security_target_bits: z.coerce.number().int().min(0).optional(),
+  max_bounty_amount: z.coerce.number().int().min(0).optional(),
+  size_bytes: z.coerce.number().int().min(0).optional(),
+  verification_ms: z.coerce.number().int().min(0).optional(),
+})
+
+export async function createZkvm(_prevState: unknown, formData: FormData) {
+  const supabase = await createClient()
+  const {
+    data: { user },
+    error: authError,
+  } = await supabase.auth.getUser()
+
+  if (authError || !user) {
+    return {
+      errors: {
+        _form: ["you must be logged in to create a zkvm"],
+      },
+    }
+  }
+
+  const validatedFields = createZkvmSchema.safeParse({
+    name: formData.get("name"),
+    slug: formData.get("slug"),
+    isa: formData.get("isa"),
+    repo_url: formData.get("repo_url") || null,
+    is_open_source: formData.get("is_open_source") || "false",
+    is_dual_licensed: formData.get("is_dual_licensed") || "false",
+    is_proving_mainnet: formData.get("is_proving_mainnet") || "false",
+    version: formData.get("version"),
+    implementation_soundness:
+      formData.get("implementation_soundness") || undefined,
+    evm_stf_bytecode: formData.get("evm_stf_bytecode") || undefined,
+    quantum_security: formData.get("quantum_security") || undefined,
+    security_target_bits: formData.get("security_target_bits") || undefined,
+    max_bounty_amount: formData.get("max_bounty_amount") || undefined,
+    size_bytes: formData.get("size_bytes") || undefined,
+    verification_ms: formData.get("verification_ms") || undefined,
+  })
+
+  if (!validatedFields.success) {
+    return {
+      errors: validatedFields.error.flatten().fieldErrors,
+    }
+  }
+
+  const teamSlug = formData.get("team_slug") as string
+
+  try {
+    const isAdmin = user.role === API_KEY_MANAGER_ROLE
+    const team = await getTeamBySlug(teamSlug)
+
+    if (!team) {
+      return {
+        errors: {
+          _form: ["team not found"],
+        },
+      }
+    }
+
+    if (!isAdmin && team.id !== user.id) {
+      return {
+        errors: {
+          _form: ["you do not have permission to create zkvms for this team"],
+        },
+      }
+    }
+
+    const existingZkvm = await db.query.zkvms.findFirst({
+      where: eq(zkvms.slug, validatedFields.data.slug),
+    })
+
+    if (existingZkvm) {
+      return {
+        errors: {
+          slug: ["a zkvm with this slug already exists"],
+        },
+      }
+    }
+
+    const zkvm = await createZkvmInDb({
+      team_id: team.id,
+      name: validatedFields.data.name,
+      slug: validatedFields.data.slug,
+      isa: validatedFields.data.isa,
+      repo_url: validatedFields.data.repo_url,
+      is_open_source: validatedFields.data.is_open_source,
+      is_dual_licensed: validatedFields.data.is_dual_licensed,
+      is_proving_mainnet: validatedFields.data.is_proving_mainnet,
+    })
+
+    await createZkvmVersion(zkvm.id, validatedFields.data.version)
+
+    const hasSecurityMetrics =
+      validatedFields.data.implementation_soundness &&
+      validatedFields.data.evm_stf_bytecode &&
+      validatedFields.data.quantum_security &&
+      validatedFields.data.security_target_bits !== undefined &&
+      validatedFields.data.max_bounty_amount !== undefined
+
+    if (hasSecurityMetrics) {
+      await createOrUpdateZkvmSecurityMetrics(zkvm.id, {
+        implementation_soundness:
+          validatedFields.data.implementation_soundness!,
+        evm_stf_bytecode: validatedFields.data.evm_stf_bytecode!,
+        quantum_security: validatedFields.data.quantum_security!,
+        security_target_bits: validatedFields.data.security_target_bits!,
+        max_bounty_amount: validatedFields.data.max_bounty_amount!,
+      })
+    }
+
+    const hasPerformanceMetrics =
+      validatedFields.data.size_bytes !== undefined &&
+      validatedFields.data.verification_ms !== undefined
+
+    if (hasPerformanceMetrics) {
+      await createOrUpdateZkvmPerformanceMetrics(zkvm.id, {
+        size_bytes: validatedFields.data.size_bytes!,
+        verification_ms: validatedFields.data.verification_ms!,
+      })
+    }
+
+    revalidatePath(`/teams/${teamSlug}/dashboard`)
+    revalidatePath(`/teams/${teamSlug}`)
+    revalidatePath("/zkvms")
+    revalidateTag(TAGS.ZKVMS)
+
+    return {
+      success: true,
+      zkvmId: zkvm.id,
+    }
+  } catch (error) {
+    console.error("Error creating zkvm:", error)
+    return {
+      errors: {
+        _form: ["an unexpected error occurred"],
+      },
+    }
+  }
+}
+
+const updateZkvmSchema = z.object({
+  id: z.coerce.number().int().positive(),
+  name: z
+    .string()
+    .min(1, "name is required")
+    .max(100, "name must be 100 characters or less"),
+  isa: z.string().min(1, "isa is required"),
+  repo_url: z
+    .string()
+    .max(200, "repo url must be 200 characters or less")
+    .optional()
+    .nullable()
+    .transform((val) => (val === "" ? null : val))
+    .refine(
+      (val) => {
+        if (!val) return true
+        try {
+          new URL(val)
+          return true
+        } catch {
+          return false
+        }
+      },
+      { message: "invalid url format" }
+    ),
+  is_open_source: z
+    .string()
+    .transform((val) => val === "true" || val === "on")
+    .optional()
+    .default("false"),
+  is_dual_licensed: z
+    .string()
+    .transform((val) => val === "true" || val === "on")
+    .optional()
+    .default("false"),
+  is_proving_mainnet: z
+    .string()
+    .transform((val) => val === "true" || val === "on")
+    .optional()
+    .default("false"),
+  version: z
+    .string()
+    .min(1, "version is required")
+    .regex(/^[0-9.]+$/, "version must contain only numbers and dots")
+    .optional(),
+  implementation_soundness: severityLevelSchema.optional(),
+  evm_stf_bytecode: severityLevelSchema.optional(),
+  quantum_security: severityLevelSchema.optional(),
+  security_target_bits: z.coerce.number().int().min(0).optional(),
+  max_bounty_amount: z.coerce.number().int().min(0).optional(),
+  size_bytes: z.coerce.number().int().min(0).optional(),
+  verification_ms: z.coerce.number().int().min(0).optional(),
+})
+
+export async function updateZkvm(_prevState: unknown, formData: FormData) {
+  const supabase = await createClient()
+  const {
+    data: { user },
+    error: authError,
+  } = await supabase.auth.getUser()
+
+  if (authError || !user) {
+    return {
+      errors: {
+        _form: ["you must be logged in to update a zkvm"],
+      },
+    }
+  }
+
+  const validatedFields = updateZkvmSchema.safeParse({
+    id: formData.get("id"),
+    name: formData.get("name"),
+    isa: formData.get("isa"),
+    repo_url: formData.get("repo_url") || null,
+    is_open_source: formData.get("is_open_source") || "false",
+    is_dual_licensed: formData.get("is_dual_licensed") || "false",
+    is_proving_mainnet: formData.get("is_proving_mainnet") || "false",
+    version: formData.get("version") || undefined,
+    implementation_soundness:
+      formData.get("implementation_soundness") || undefined,
+    evm_stf_bytecode: formData.get("evm_stf_bytecode") || undefined,
+    quantum_security: formData.get("quantum_security") || undefined,
+    security_target_bits: formData.get("security_target_bits") || undefined,
+    max_bounty_amount: formData.get("max_bounty_amount") || undefined,
+    size_bytes: formData.get("size_bytes") || undefined,
+    verification_ms: formData.get("verification_ms") || undefined,
+  })
+
+  if (!validatedFields.success) {
+    return {
+      errors: validatedFields.error.flatten().fieldErrors,
+    }
+  }
+
+  const teamSlug = formData.get("team_slug") as string
+
+  try {
+    const isAdmin = user.role === API_KEY_MANAGER_ROLE
+    const team = await getTeamBySlug(teamSlug)
+
+    if (!team) {
+      return {
+        errors: {
+          _form: ["team not found"],
+        },
+      }
+    }
+
+    const zkvm = await db.query.zkvms.findFirst({
+      where: eq(zkvms.id, validatedFields.data.id),
+    })
+
+    if (!zkvm) {
+      return {
+        errors: {
+          _form: ["zkvm not found"],
+        },
+      }
+    }
+
+    if (!isAdmin && zkvm.team_id !== user.id) {
+      return {
+        errors: {
+          _form: ["you do not have permission to update this zkvm"],
+        },
+      }
+    }
+
+    await updateZkvmInDb(zkvm.id, {
+      name: validatedFields.data.name,
+      isa: validatedFields.data.isa,
+      repo_url: validatedFields.data.repo_url,
+      is_open_source: validatedFields.data.is_open_source,
+      is_dual_licensed: validatedFields.data.is_dual_licensed,
+      is_proving_mainnet: validatedFields.data.is_proving_mainnet,
+    })
+
+    if (validatedFields.data.version) {
+      await createZkvmVersion(zkvm.id, validatedFields.data.version)
+    }
+
+    const hasSecurityMetrics =
+      validatedFields.data.implementation_soundness &&
+      validatedFields.data.evm_stf_bytecode &&
+      validatedFields.data.quantum_security &&
+      validatedFields.data.security_target_bits !== undefined &&
+      validatedFields.data.max_bounty_amount !== undefined
+
+    if (hasSecurityMetrics) {
+      await createOrUpdateZkvmSecurityMetrics(zkvm.id, {
+        implementation_soundness:
+          validatedFields.data.implementation_soundness!,
+        evm_stf_bytecode: validatedFields.data.evm_stf_bytecode!,
+        quantum_security: validatedFields.data.quantum_security!,
+        security_target_bits: validatedFields.data.security_target_bits!,
+        max_bounty_amount: validatedFields.data.max_bounty_amount!,
+      })
+    }
+
+    const hasPerformanceMetrics =
+      validatedFields.data.size_bytes !== undefined &&
+      validatedFields.data.verification_ms !== undefined
+
+    if (hasPerformanceMetrics) {
+      await createOrUpdateZkvmPerformanceMetrics(zkvm.id, {
+        size_bytes: validatedFields.data.size_bytes!,
+        verification_ms: validatedFields.data.verification_ms!,
+      })
+    }
+
+    revalidatePath(`/teams/${teamSlug}/dashboard`)
+    revalidatePath(`/teams/${teamSlug}`)
+    revalidatePath("/zkvms")
+    revalidateTag(TAGS.ZKVMS)
+
+    return {
+      success: true,
+      zkvmId: zkvm.id,
+    }
+  } catch (error) {
+    console.error("Error updating zkvm:", error)
     return {
       errors: {
         _form: ["an unexpected error occurred"],
