@@ -5,7 +5,7 @@ import type { ZkvmPendingUpdates } from "@/lib/types"
 
 import { TAGS } from "@/lib/constants"
 
-import { db } from "@/db"
+import { db, type Transaction } from "@/db"
 import { zkvms, zkvmVersions } from "@/db/schema"
 
 interface GetZkvmsOptions {
@@ -72,8 +72,13 @@ interface UpdateZkvmData {
   is_proving_mainnet?: boolean
 }
 
-export async function updateZkvm(id: number, data: UpdateZkvmData) {
-  const [zkvm] = await db
+export async function updateZkvm(
+  id: number,
+  data: UpdateZkvmData,
+  tx?: Transaction
+) {
+  const executor = tx ?? db
+  const [zkvm] = await executor
     .update(zkvms)
     .set({
       ...data,
@@ -101,8 +106,9 @@ export async function setZkvmPendingUpdates(
   return zkvm
 }
 
-export async function clearZkvmPendingUpdates(id: number) {
-  const [zkvm] = await db
+export async function clearZkvmPendingUpdates(id: number, tx?: Transaction) {
+  const executor = tx ?? db
+  const [zkvm] = await executor
     .update(zkvms)
     .set({
       pending_updates: null,
@@ -134,6 +140,7 @@ export async function approveZkvm(id: number) {
       approved: true,
       pending_updates: null,
       update_status: null,
+      updated_at: new Date().toISOString(),
     })
     .where(eq(zkvms.id, id))
     .returning()

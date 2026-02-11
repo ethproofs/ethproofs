@@ -2,7 +2,7 @@ import { eq, inArray } from "drizzle-orm"
 
 import type { PerformanceMetricsData, SecurityMetricsData } from "@/lib/types"
 
-import { db } from "@/db"
+import { db, type Transaction } from "@/db"
 import { zkvmPerformanceMetrics, zkvms, zkvmSecurityMetrics } from "@/db/schema"
 
 export async function getZkvmsWithMetrics({ zkvmIds }: { zkvmIds: number[] }) {
@@ -18,15 +18,23 @@ export async function getZkvmsWithMetrics({ zkvmIds }: { zkvmIds: number[] }) {
   return metrics
 }
 
-export async function getZkvmSecurityMetricsByZkvmId(zkvmId: number) {
-  const metrics = await db.query.zkvmSecurityMetrics.findFirst({
+export async function getZkvmSecurityMetricsByZkvmId(
+  zkvmId: number,
+  tx?: Transaction
+) {
+  const executor = tx ?? db
+  const metrics = await executor.query.zkvmSecurityMetrics.findFirst({
     where: eq(zkvmSecurityMetrics.zkvm_id, zkvmId),
   })
   return metrics
 }
 
-export async function getZkvmPerformanceMetricsByZkvmId(zkvmId: number) {
-  const metrics = await db.query.zkvmPerformanceMetrics.findFirst({
+export async function getZkvmPerformanceMetricsByZkvmId(
+  zkvmId: number,
+  tx?: Transaction
+) {
+  const executor = tx ?? db
+  const metrics = await executor.query.zkvmPerformanceMetrics.findFirst({
     where: eq(zkvmPerformanceMetrics.zkvm_id, zkvmId),
   })
   return metrics
@@ -34,12 +42,14 @@ export async function getZkvmPerformanceMetricsByZkvmId(zkvmId: number) {
 
 export async function createOrUpdateZkvmSecurityMetrics(
   zkvmId: number,
-  data: SecurityMetricsData
+  data: SecurityMetricsData,
+  tx?: Transaction
 ) {
-  const existing = await getZkvmSecurityMetricsByZkvmId(zkvmId)
+  const executor = tx ?? db
+  const existing = await getZkvmSecurityMetricsByZkvmId(zkvmId, tx)
 
   if (existing) {
-    const [metrics] = await db
+    const [metrics] = await executor
       .update(zkvmSecurityMetrics)
       .set({
         ...data,
@@ -50,7 +60,7 @@ export async function createOrUpdateZkvmSecurityMetrics(
     return metrics
   }
 
-  const [metrics] = await db
+  const [metrics] = await executor
     .insert(zkvmSecurityMetrics)
     .values({
       zkvm_id: zkvmId,
@@ -63,12 +73,14 @@ export async function createOrUpdateZkvmSecurityMetrics(
 
 export async function createOrUpdateZkvmPerformanceMetrics(
   zkvmId: number,
-  data: PerformanceMetricsData
+  data: PerformanceMetricsData,
+  tx?: Transaction
 ) {
-  const existing = await getZkvmPerformanceMetricsByZkvmId(zkvmId)
+  const executor = tx ?? db
+  const existing = await getZkvmPerformanceMetricsByZkvmId(zkvmId, tx)
 
   if (existing) {
-    const [metrics] = await db
+    const [metrics] = await executor
       .update(zkvmPerformanceMetrics)
       .set({
         ...data,
@@ -79,7 +91,7 @@ export async function createOrUpdateZkvmPerformanceMetrics(
     return metrics
   }
 
-  const [metrics] = await db
+  const [metrics] = await executor
     .insert(zkvmPerformanceMetrics)
     .values({
       zkvm_id: zkvmId,

@@ -35,10 +35,11 @@ export function PendingZkvmsList({ zkvms }: PendingZkvmsListProps) {
 }
 
 function PendingZkvmItem({ zkvm }: { zkvm: PendingZkvm }) {
-  const [approveState, approveAction] = useActionState(approveZkvm, {
-    errors: {},
-  })
-  const [rejectState, rejectAction] = useActionState(rejectZkvm, {
+  const [approveState, approveAction, isApproving] = useActionState(
+    approveZkvm,
+    { errors: {} }
+  )
+  const [rejectState, rejectAction, isRejecting] = useActionState(rejectZkvm, {
     errors: {},
   })
 
@@ -114,14 +115,24 @@ function PendingZkvmItem({ zkvm }: { zkvm: PendingZkvm }) {
             <>
               <form action={approveAction}>
                 <input type="hidden" name="zkvmId" value={zkvm.id} />
-                <Button type="submit" size="sm" variant="default">
-                  approve
+                <Button
+                  type="submit"
+                  size="sm"
+                  variant="default"
+                  disabled={isApproving || isRejecting}
+                >
+                  {isApproving ? "approving..." : "approve"}
                 </Button>
               </form>
               <form action={rejectAction}>
                 <input type="hidden" name="zkvmId" value={zkvm.id} />
-                <Button type="submit" size="sm" variant="destructive">
-                  reject
+                <Button
+                  type="submit"
+                  size="sm"
+                  variant="destructive"
+                  disabled={isApproving || isRejecting}
+                >
+                  {isRejecting ? "rejecting..." : "reject"}
                 </Button>
               </form>
             </>

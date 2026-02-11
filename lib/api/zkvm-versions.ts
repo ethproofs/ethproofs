@@ -1,6 +1,6 @@
 import { and, eq } from "drizzle-orm"
 
-import { db } from "@/db"
+import { db, type Transaction } from "@/db"
 import { zkvmVersions } from "@/db/schema"
 
 export async function getZkvmVersion(id: number) {
@@ -10,8 +10,13 @@ export async function getZkvmVersion(id: number) {
   return zkvmVersion
 }
 
-export async function getZkvmVersionByVersion(zkvmId: number, version: string) {
-  const zkvmVersion = await db.query.zkvmVersions.findFirst({
+export async function getZkvmVersionByVersion(
+  zkvmId: number,
+  version: string,
+  tx?: Transaction
+) {
+  const executor = tx ?? db
+  const zkvmVersion = await executor.query.zkvmVersions.findFirst({
     where: and(
       eq(zkvmVersions.zkvm_id, zkvmId),
       eq(zkvmVersions.version, version)
@@ -20,8 +25,13 @@ export async function getZkvmVersionByVersion(zkvmId: number, version: string) {
   return zkvmVersion ?? null
 }
 
-export async function createZkvmVersion(zkvmId: number, version: string) {
-  const [inserted] = await db
+export async function createZkvmVersion(
+  zkvmId: number,
+  version: string,
+  tx?: Transaction
+) {
+  const executor = tx ?? db
+  const [inserted] = await executor
     .insert(zkvmVersions)
     .values({
       zkvm_id: zkvmId,
@@ -32,7 +42,7 @@ export async function createZkvmVersion(zkvmId: number, version: string) {
 
   if (inserted) return inserted
 
-  const existing = await getZkvmVersionByVersion(zkvmId, version)
+  const existing = await getZkvmVersionByVersion(zkvmId, version, tx)
   if (!existing) throw new Error("failed to create or find zkvm version")
   return existing
 }
