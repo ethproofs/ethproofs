@@ -568,12 +568,6 @@
           "primaryKey": false,
           "notNull": false
         },
-        "program_id": {
-          "name": "program_id",
-          "type": "bigint",
-          "primaryKey": false,
-          "notNull": false
-        },
         "size_bytes": {
           "name": "size_bytes",
           "type": "bigint",
@@ -667,19 +661,6 @@
           ],
           "onUpdate": "cascade",
           "onDelete": "cascade"
-        },
-        "proofs_program_id_programs_id_fk": {
-          "name": "proofs_program_id_programs_id_fk",
-          "tableFrom": "proofs",
-          "columnsFrom": [
-            "program_id"
-          ],
-          "tableTo": "programs",
-          "columnsTo": [
-            "id"
-          ],
-          "onUpdate": "cascade",
-          "onDelete": "set null"
         }
       },
       "compositePrimaryKeys": {},
@@ -1577,12 +1558,6 @@
           "primaryKey": false,
           "notNull": false
         },
-        "cluster_nickname": {
-          "name": "cluster_nickname",
-          "type": "text",
-          "primaryKey": false,
-          "notNull": false
-        },
         "team_id": {
           "name": "team_id",
           "type": "uuid",
@@ -1600,9 +1575,15 @@
           "type": "numeric",
           "primaryKey": false,
           "notNull": false
+        },
+        "cluster_name": {
+          "name": "cluster_name",
+          "type": "text",
+          "primaryKey": false,
+          "notNull": false
         }
       },
-      "definition": "\n    SELECT c.id as cluster_id,\n      c.nickname as cluster_nickname,\n      c.team_id,\n      COALESCE(sum(cm.cloud_instance_count::double precision * ci.hourly_price * (p.proving_time::numeric / (1000.0 * 60::numeric * 60::numeric))::double precision) / NULLIF(count(p.proof_id), 0)::double precision, 0::double precision) AS avg_cost_per_proof,\n      avg(p.proving_time) AS avg_proving_time\n    FROM clusters c\n    LEFT JOIN cluster_versions cv ON c.id = cv.cluster_id\n    LEFT JOIN proofs p ON cv.id = p.cluster_version_id AND p.proof_status = 'proved'::text\n    LEFT JOIN cluster_machines cm ON cv.id = cm.cluster_version_id\n    LEFT JOIN cloud_instances ci ON cm.cloud_instance_id = ci.id\n    GROUP BY c.id",
+      "definition": "\nSELECT c.id as cluster_id,\n  c.name as cluster_name,\n  c.team_id,\n  COALESCE(sum(c.num_gpus::double precision * gpi.hourly_price * (p.proving_time::numeric / (1000.0 * 60::numeric * 60::numeric))::double precision) / NULLIF(count(p.proof_id), 0)::double precision, 0::double precision) AS avg_cost_per_proof,\n  COALESCE(avg(p.proving_time), 0::numeric) AS avg_proving_time\nFROM clusters c\nLEFT JOIN cluster_versions cv ON c.id = cv.cluster_id\nLEFT JOIN proofs p ON cv.id = p.cluster_version_id AND p.proof_status = 'proved'::text\nLEFT JOIN gpu_price_index gpi ON p.gpu_price_index_id = gpi.id\nGROUP BY c.id",
       "materialized": false,
       "with": {
         "securityInvoker": true
@@ -1644,7 +1625,7 @@
           "notNull": false
         }
       },
-      "definition": "\n    SELECT count(DISTINCT b.block_number) AS total_proven_blocks,\n      -- Calculate average cost per proof\n      COALESCE(avg(cm.cloud_instance_count::double precision * ci.hourly_price * p.proving_time::double precision / (1000.0 * 60::numeric * 60::numeric)::double precision), 0::numeric::double precision) AS avg_cost_per_proof,\n      -- Calculate median cost per proof\n      COALESCE(PERCENTILE_CONT(0.5) WITHIN GROUP (ORDER BY cm.cloud_instance_count::double precision * ci.hourly_price * p.proving_time::double precision / (1000.0 * 60::numeric * 60::numeric)::double precision), 0::numeric::double precision) AS median_cost_per_proof,\n      -- Calculate average latency\n      COALESCE(avg(p.proving_time), 0::numeric) AS avg_proving_time,\n      -- Calculate median latency\n      COALESCE(PERCENTILE_CONT(0.5) WITHIN GROUP (ORDER BY p.proving_time), 0::numeric) AS median_proving_time\n    FROM blocks b\n    INNER JOIN proofs p ON b.block_number = p.block_number AND p.proof_status = 'proved'::text\n    INNER JOIN cluster_versions cv ON p.cluster_version_id = cv.id\n    INNER JOIN cluster_machines cm ON cv.id = cm.cluster_version_id\n    INNER JOIN cloud_instances ci ON cm.cloud_instance_id = ci.id\n    WHERE b.\"timestamp\" >= (now() - '30 days'::interval)",
+      "definition": "\nSELECT count(DISTINCT b.block_number) AS total_proven_blocks,\n  COALESCE(avg(c.num_gpus::double precision * gpi.hourly_price * p.proving_time::double precision / (1000.0 * 60::numeric * 60::numeric)::double precision), 0::numeric::double precision) AS avg_cost_per_proof,\n  COALESCE(PERCENTILE_CONT(0.5) WITHIN GROUP (ORDER BY c.num_gpus::double precision * gpi.hourly_price * p.proving_time::double precision / (1000.0 * 60::numeric * 60::numeric)::double precision), 0::numeric::double precision) AS median_cost_per_proof,\n  COALESCE(avg(p.proving_time), 0::numeric) AS avg_proving_time,\n  COALESCE(PERCENTILE_CONT(0.5) WITHIN GROUP (ORDER BY p.proving_time), 0::numeric) AS median_proving_time\nFROM blocks b\nINNER JOIN proofs p ON b.block_number = p.block_number AND p.proof_status = 'proved'::text\nINNER JOIN cluster_versions cv ON p.cluster_version_id = cv.id\nINNER JOIN clusters c ON cv.cluster_id = c.id\nLEFT JOIN gpu_price_index gpi ON p.gpu_price_index_id = gpi.id\nWHERE b.\"timestamp\" >= (now() - '30 days'::interval)",
       "materialized": false,
       "with": {
         "securityInvoker": true
@@ -1728,7 +1709,7 @@
           "notNull": false
         }
       },
-      "definition": "\n    SELECT t.id as team_id,\n      t.name as team_name,\n      t.logo_url,\n      -- All proofs\n      COALESCE(sum(cm.cloud_instance_count::double precision * ci.hourly_price * (p.proving_time::numeric / (1000.0 * 60::numeric * 60::numeric))::double precision) / NULLIF(count(p.proof_id), 0)::double precision, 0::double precision) AS avg_cost_per_proof,\n      COALESCE(avg(p.proving_time), 0::numeric) AS avg_proving_time,\n      count(p.proof_id) AS total_proofs,\n      -- Multi-machine proofs\n      COALESCE(sum(CASE WHEN c.is_multi_machine THEN (cm.cloud_instance_count::double precision * ci.hourly_price * (p.proving_time::numeric / (1000.0 * 60::numeric * 60::numeric))::double precision) ELSE 0 END) / NULLIF(sum(CASE WHEN c.is_multi_machine THEN 1 ELSE 0 END), 0)::double precision, 0::double precision) AS avg_cost_per_proof_multi,\n      COALESCE(avg(CASE WHEN c.is_multi_machine THEN p.proving_time ELSE NULL END), 0::numeric) AS avg_proving_time_multi,\n      sum(CASE WHEN c.is_multi_machine THEN 1 ELSE 0 END) AS total_proofs_multi,\n      -- Single-machine proofs\n      COALESCE(sum(CASE WHEN NOT c.is_multi_machine THEN (cm.cloud_instance_count::double precision * ci.hourly_price * (p.proving_time::numeric / (1000.0 * 60::numeric * 60::numeric))::double precision) ELSE 0 END) / NULLIF(sum(CASE WHEN NOT c.is_multi_machine THEN 1 ELSE 0 END), 0)::double precision, 0::double precision) AS avg_cost_per_proof_single,\n      COALESCE(avg(CASE WHEN NOT c.is_multi_machine THEN p.proving_time ELSE NULL END), 0::numeric) AS avg_proving_time_single,\n      sum(CASE WHEN NOT c.is_multi_machine THEN 1 ELSE 0 END) AS total_proofs_single\n    FROM teams t\n    LEFT JOIN proofs p ON t.id = p.team_id AND p.proof_status = 'proved'::text\n    LEFT JOIN cluster_versions cv ON p.cluster_version_id = cv.id\n    LEFT JOIN clusters c ON cv.cluster_id = c.id\n    LEFT JOIN cluster_machines cm ON cv.id = cm.cluster_version_id\n    LEFT JOIN cloud_instances ci ON cm.cloud_instance_id = ci.id\n    GROUP BY t.id",
+      "definition": "\nSELECT t.id as team_id,\n  t.name as team_name,\n  t.logo_url,\n  COALESCE(sum(c.num_gpus::double precision * gpi.hourly_price * (p.proving_time::numeric / (1000.0 * 60::numeric * 60::numeric))::double precision) / NULLIF(count(p.proof_id), 0)::double precision, 0::double precision) AS avg_cost_per_proof,\n  COALESCE(avg(p.proving_time), 0::numeric) AS avg_proving_time,\n  count(p.proof_id) AS total_proofs,\n  COALESCE(sum(CASE WHEN c.is_multi_gpu THEN (c.num_gpus::double precision * gpi.hourly_price * (p.proving_time::numeric / (1000.0 * 60::numeric * 60::numeric))::double precision) ELSE 0 END) / NULLIF(sum(CASE WHEN c.is_multi_gpu THEN 1 ELSE 0 END), 0)::double precision, 0::double precision) AS avg_cost_per_proof_multi,\n  COALESCE(avg(CASE WHEN c.is_multi_gpu THEN p.proving_time ELSE NULL END), 0::numeric) AS avg_proving_time_multi,\n  sum(CASE WHEN c.is_multi_gpu THEN 1 ELSE 0 END) AS total_proofs_multi,\n  COALESCE(sum(CASE WHEN NOT c.is_multi_gpu THEN (c.num_gpus::double precision * gpi.hourly_price * (p.proving_time::numeric / (1000.0 * 60::numeric * 60::numeric))::double precision) ELSE 0 END) / NULLIF(sum(CASE WHEN NOT c.is_multi_gpu THEN 1 ELSE 0 END), 0)::double precision, 0::double precision) AS avg_cost_per_proof_single,\n  COALESCE(avg(CASE WHEN NOT c.is_multi_gpu THEN p.proving_time ELSE NULL END), 0::numeric) AS avg_proving_time_single,\n  sum(CASE WHEN NOT c.is_multi_gpu THEN 1 ELSE 0 END) AS total_proofs_single\nFROM teams t\nLEFT JOIN proofs p ON t.id = p.team_id AND p.proof_status = 'proved'::text\nLEFT JOIN cluster_versions cv ON p.cluster_version_id = cv.id\nLEFT JOIN clusters c ON cv.cluster_id = c.id\nLEFT JOIN gpu_price_index gpi ON p.gpu_price_index_id = gpi.id\nGROUP BY t.id",
       "materialized": false,
       "with": {
         "securityInvoker": true
