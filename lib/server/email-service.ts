@@ -21,6 +21,9 @@ function createTransporter() {
     return null
   }
 
+  const CONNECTION_TIMEOUT_MS = 10_000
+  const SOCKET_TIMEOUT_MS = 15_000
+
   return nodemailer.createTransport({
     host: SMTP_HOST,
     port: SMTP_PORT,
@@ -29,6 +32,9 @@ function createTransporter() {
       user: SMTP_USER,
       pass: SMTP_PASS,
     },
+    connectionTimeout: CONNECTION_TIMEOUT_MS,
+    greetingTimeout: CONNECTION_TIMEOUT_MS,
+    socketTimeout: SOCKET_TIMEOUT_MS,
   })
 }
 

@@ -5,6 +5,7 @@ import { authUsers } from "drizzle-orm/supabase"
 import { nanoid } from "nanoid"
 import { revalidatePath, revalidateTag } from "next/cache"
 import { redirect } from "next/navigation"
+import { after } from "next/server"
 import { z } from "zod"
 
 import { isZkvmPendingUpdates } from "@/lib/types"
@@ -401,22 +402,24 @@ export async function approveTeam(_prevState: unknown, formData: FormData) {
       team_id: teamId,
     })
 
-    const { data: authUser } = await supabase.auth.admin.getUserById(teamId)
+    after(async () => {
+      const { data: authUser } = await supabase.auth.admin.getUserById(teamId)
 
-    if (authUser.user?.email) {
-      const dashboardUrl = `${SITE_URL.replace(/\/+$/, "")}/teams/${teamData.slug}/dashboard`
-      const { subject, html } = teamApprovedEmail({
-        teamName: teamData.name,
-        apiKey: apikey,
-        dashboardUrl,
-      })
+      if (authUser.user?.email) {
+        const dashboardUrl = `${SITE_URL.replace(/\/+$/, "")}/teams/${teamData.slug}/dashboard`
+        const { subject, html } = teamApprovedEmail({
+          teamName: teamData.name,
+          apiKey: apikey,
+          dashboardUrl,
+        })
 
-      await sendEmail({
-        to: authUser.user.email,
-        subject,
-        html,
-      })
-    }
+        await sendEmail({
+          to: authUser.user.email,
+          subject,
+          html,
+        })
+      }
+    })
 
     return {
       data: { success: true, apikey },
@@ -475,18 +478,20 @@ export async function rejectTeam(_prevState: unknown, formData: FormData) {
 
     await db.delete(teams).where(eq(teams.id, teamId))
 
-    const { error } = await supabase.auth.admin.deleteUser(teamId)
-
-    if (error) {
-      console.error("error deleting user from auth", error)
-    }
-
-    if (authUser.user?.email) {
-      const { subject, html } = teamRejectedEmail({ teamName: teamData.name })
-      await sendEmail({ to: authUser.user.email, subject, html })
-    }
-
     revalidatePath("/admin", "page")
+
+    after(async () => {
+      const { error } = await supabase.auth.admin.deleteUser(teamId)
+
+      if (error) {
+        console.error("error deleting user from auth", error)
+      }
+
+      if (authUser.user?.email) {
+        const { subject, html } = teamRejectedEmail({ teamName: teamData.name })
+        await sendEmail({ to: authUser.user.email, subject, html })
+      }
+    })
 
     return {
       data: { success: true },
