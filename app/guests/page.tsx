@@ -22,7 +22,7 @@ export default async function GuestsPage() {
   })
 
   return (
-    <div className="mx-auto mt-2 flex max-w-screen-xl flex-1 flex-col items-center gap-20 [&>section]:w-full">
+    <div className="mx-auto mt-2 flex max-w-screen-2xl flex-1 flex-col items-center gap-20 [&>section]:w-full">
       <section>
         <span className="px-6 text-2xl">guests</span>
         <GuestProgramsTable

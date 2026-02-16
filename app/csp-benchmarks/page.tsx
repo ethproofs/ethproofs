@@ -21,7 +21,7 @@ export default async function CspBenchmarksPage() {
     })
 
   return (
-    <div className="mx-auto mt-2 max-w-screen-xl space-y-4 px-6">
+    <div className="mx-auto mt-2 max-w-screen-2xl space-y-4 px-6">
       <section className="w-full">
         <CspBenchmarksSelector benchmarks={sortedBenchmarks} />
       </section>
