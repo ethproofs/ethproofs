@@ -1,12 +1,23 @@
 "use client"
 
 import { useMemo, useState } from "react"
-import { PolarAngleAxis, PolarGrid, PolarRadiusAxis, Radar, RadarChart } from "recharts"
+import {
+  PolarAngleAxis,
+  PolarGrid,
+  PolarRadiusAxis,
+  Radar,
+  RadarChart,
+} from "recharts"
 import { keys } from "remeda"
 
 import { ChartContainer } from "@/components/ui/chart"
 
-import { buildChartConfig, getProverKey, type MetricKey, radarMetrics } from "./metrics"
+import {
+  buildChartConfig,
+  getProverKey,
+  type MetricKey,
+  radarMetrics,
+} from "./metrics"
 import { ChartLegend, EmptyState, useSeriesSelection } from "./shared"
 
 import type { Metrics } from "@/lib/api/csp-benchmarks"
@@ -201,22 +212,14 @@ function CustomTick({ payload, x, y, cx, cy, textAnchor }: CustomTickProps) {
 export function RadarComparison({ benchmarks }: RadarComparisonProps) {
   const [hoveredProver, setHoveredProver] = useState<string | null>(null)
 
-  const scores = useMemo(
-    () => aggregateRadarScores(benchmarks),
-    [benchmarks]
-  )
+  const scores = useMemo(() => aggregateRadarScores(benchmarks), [benchmarks])
 
-  const allProvers = useMemo(
-    () => Array.from(scores.keys()).sort(),
-    [scores]
-  )
+  const allProvers = useMemo(() => Array.from(scores.keys()).sort(), [scores])
 
-  const { hidden: hiddenProvers, onToggle: handleToggleProver } = useSeriesSelection(allProvers)
+  const { hidden: hiddenProvers, onToggle: handleToggleProver } =
+    useSeriesSelection(allProvers)
 
-  const chartConfig = useMemo(
-    () => buildChartConfig(allProvers),
-    [allProvers]
-  )
+  const chartConfig = useMemo(() => buildChartConfig(allProvers), [allProvers])
 
   const chartData = useMemo(() => {
     return radarMetrics.map((metric) => {
@@ -238,14 +241,22 @@ export function RadarComparison({ benchmarks }: RadarComparisonProps) {
   }
 
   if (allProvers.length <= 1) {
-    return <EmptyState message="comparison requires at least two proving systems" />
+    return (
+      <EmptyState message="comparison requires at least two proving systems" />
+    )
   }
 
-  const activeHover = hoveredProver !== null && !hiddenProvers.has(hoveredProver) ? hoveredProver : null
+  const activeHover =
+    hoveredProver !== null && !hiddenProvers.has(hoveredProver)
+      ? hoveredProver
+      : null
   const hasHover = activeHover !== null
 
   return (
-    <div className="flex flex-col items-center gap-4 md:gap-6" aria-label="aggregated performance comparison">
+    <div
+      className="flex flex-col items-center gap-4 md:gap-6"
+      aria-label="aggregated performance comparison"
+    >
       <ChartContainer
         config={chartConfig}
         className="mx-auto aspect-square w-full max-w-[400px] overflow-hidden sm:max-w-[500px] md:max-w-[700px]"
@@ -258,21 +269,23 @@ export function RadarComparison({ benchmarks }: RadarComparisonProps) {
           <PolarAngleAxis dataKey="metric" tick={CustomTick} />
           <PolarGrid />
           <PolarRadiusAxis domain={radarDomain} tick={false} axisLine={false} />
-          {allProvers.filter((p) => !hiddenProvers.has(p)).map((key) => {
-            const isHovered = activeHover === key
-            return (
-              <Radar
-                key={key}
-                dataKey={key}
-                fill={chartConfig[key]?.color}
-                fillOpacity={isHovered ? 0.7 : hasHover ? 0.08 : 0.5}
-                stroke={chartConfig[key]?.color}
-                strokeOpacity={isHovered ? 1 : hasHover ? 0.15 : 1}
-                strokeWidth={isHovered ? 2.5 : 1.5}
-                isAnimationActive={false}
-              />
-            )
-          })}
+          {allProvers
+            .filter((p) => !hiddenProvers.has(p))
+            .map((key) => {
+              const isHovered = activeHover === key
+              return (
+                <Radar
+                  key={key}
+                  dataKey={key}
+                  fill={chartConfig[key]?.color}
+                  fillOpacity={isHovered ? 0.7 : hasHover ? 0.08 : 0.5}
+                  stroke={chartConfig[key]?.color}
+                  strokeOpacity={isHovered ? 1 : hasHover ? 0.15 : 1}
+                  strokeWidth={isHovered ? 2.5 : 1.5}
+                  isAnimationActive={false}
+                />
+              )
+            })}
         </RadarChart>
       </ChartContainer>
       <ChartLegend

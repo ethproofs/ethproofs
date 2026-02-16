@@ -95,16 +95,12 @@ function DrawerBody({ system }: DrawerBodyProps) {
       )}
 
       <div className="border-b p-4">
-        <h3 className="mb-3 text-base font-medium">
-          security overview
-        </h3>
+        <h3 className="mb-3 text-base font-medium">security overview</h3>
         <SystemLegend slices={slices} className="w-full" />
       </div>
 
       <div className="p-4">
-        <h3 className="mb-3 text-base font-medium">
-          properties
-        </h3>
+        <h3 className="mb-3 text-base font-medium">properties</h3>
         <div className="grid grid-cols-2 gap-4 text-center text-sm">
           <PropertyCell label="proving system" value={system.proving_system} />
           <PropertyCell label="field/curve" value={system.field_curve} />

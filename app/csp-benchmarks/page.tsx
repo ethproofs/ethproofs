@@ -35,10 +35,7 @@ export default async function CspBenchmarksPage() {
         <Selector benchmarks={sortedBenchmarks} />
       </section>
       <section>
-        <BenchmarkContext
-          lastUpdated={lastUpdated}
-          failedCount={failedCount}
-        />
+        <BenchmarkContext lastUpdated={lastUpdated} failedCount={failedCount} />
       </section>
     </div>
   )

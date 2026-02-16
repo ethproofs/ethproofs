@@ -19,7 +19,8 @@ const targetToDataKeyMap = {
 
 export type DataTarget = (typeof targetToDataKeyMap)[CircuitTarget]
 
-export const targetToDataKey: Record<CircuitTarget, DataTarget> = targetToDataKeyMap
+export const targetToDataKey: Record<CircuitTarget, DataTarget> =
+  targetToDataKeyMap
 
 export const dataKeyToTarget: Record<DataTarget, CircuitTarget> = {
   sha256: "sha-256",
@@ -29,14 +30,19 @@ export const dataKeyToTarget: Record<DataTarget, CircuitTarget> = {
   ecdsa: "ecdsa",
 }
 
-const fieldElementTargets: ReadonlyArray<CircuitTarget> = ["poseidon", "poseidon2"]
+const fieldElementTargets: ReadonlyArray<CircuitTarget> = [
+  "poseidon",
+  "poseidon2",
+]
 
 function isFieldElementTarget(target: string): boolean {
   return fieldElementTargets.some((t) => t === target)
 }
 
 export function getInputSizeUnit(target: string): string {
-  return isFieldElementTarget(target) ? "input size, field elements" : "input size, bytes"
+  return isFieldElementTarget(target)
+    ? "input size, field elements"
+    : "input size, bytes"
 }
 
 export function formatInputSizeWithUnit(size: number, target: string): string {

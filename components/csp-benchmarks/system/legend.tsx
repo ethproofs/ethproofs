@@ -11,7 +11,10 @@ export const severityColors: Record<CspSeverityLevel, string> = {
   none: "hsl(var(--muted-foreground))",
 }
 
-const severityIcons: Record<CspSeverityLevel, React.ComponentType<{ className?: string }>> = {
+const severityIcons: Record<
+  CspSeverityLevel,
+  React.ComponentType<{ className?: string }>
+> = {
   green: Check,
   yellow: CircleAlert,
   red: X,
@@ -23,10 +26,7 @@ interface SystemLegendProps {
   className?: string
 }
 
-export function SystemLegend({
-  slices,
-  className,
-}: SystemLegendProps) {
+export function SystemLegend({ slices, className }: SystemLegendProps) {
   return (
     <div className={cn("flex flex-col gap-3 text-sm", className)}>
       {slices.map((slice) => {
@@ -40,9 +40,7 @@ export function SystemLegend({
             >
               <Icon className="size-4" />
             </span>
-            <span className="flex-1">
-              {slice.label}
-            </span>
+            <span className="flex-1">{slice.label}</span>
             <span
               className="text-right font-medium"
               style={{ color: severityColors[slice.level] }}

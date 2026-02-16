@@ -31,19 +31,29 @@ export const Table = memo(function Table({
   onOpenDrawer,
 }: TableProps) {
   const [sorting, setSorting] = useState<SortingState>(defaultSorting)
-  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>(defaultColumnVisibility)
+  const [columnVisibility, setColumnVisibility] = useState<VisibilityState>(
+    defaultColumnVisibility
+  )
   const { filters, setFilter, activeCount, applyFilters } = useTableFilters()
-  const filtered = useMemo(() => applyFilters(benchmarks), [applyFilters, benchmarks])
+  const filtered = useMemo(
+    () => applyFilters(benchmarks),
+    [applyFilters, benchmarks]
+  )
 
   const columns = useMemo(() => getColumns({ onOpenDrawer }), [onOpenDrawer])
 
-  const handleExport = useCallback((rows: Metrics[], isFiltered: boolean) => {
-    const date = new Date().toISOString().split("T")[0]
-    const hasActiveFilters = isFiltered || activeCount > 0
-    const dataToExport = hasActiveFilters ? rows : (allBenchmarks ?? benchmarks)
-    const filename = `csp-benchmarks-${date}${hasActiveFilters ? "-filtered" : ""}`
-    exportWithLabels(dataToExport, labels, filename)
-  }, [activeCount, allBenchmarks, benchmarks])
+  const handleExport = useCallback(
+    (rows: Metrics[], isFiltered: boolean) => {
+      const date = new Date().toISOString().split("T")[0]
+      const hasActiveFilters = isFiltered || activeCount > 0
+      const dataToExport = hasActiveFilters
+        ? rows
+        : (allBenchmarks ?? benchmarks)
+      const filename = `csp-benchmarks-${date}${hasActiveFilters ? "-filtered" : ""}`
+      exportWithLabels(dataToExport, labels, filename)
+    },
+    [activeCount, allBenchmarks, benchmarks]
+  )
 
   return (
     <div className="flex flex-col gap-4">
