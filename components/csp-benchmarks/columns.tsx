@@ -12,7 +12,10 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip"
 
-import { buildSystemPropertiesFromRow, type SystemProperties } from "./system/properties"
+import {
+  buildSystemPropertiesFromRow,
+  type SystemProperties,
+} from "./system/properties"
 import { nanosecondsPerMillisecond } from "./metrics"
 
 import type { Metrics } from "@/lib/api/csp-benchmarks"
@@ -147,11 +150,18 @@ function createNumberColumn(
       const value = row.original[id]
       return (
         <div style={{ width }}>
-          {typeof value === "number"
-            ? options?.isCompact
-              ? formatNumber(value, { notation: "compact", compactDisplay: "short" })
-              : formatNumber(value)
-            : <Null />}
+          {typeof value === "number" ? (
+            options?.isCompact ? (
+              formatNumber(value, {
+                notation: "compact",
+                compactDisplay: "short",
+              })
+            ) : (
+              formatNumber(value)
+            )
+          ) : (
+            <Null />
+          )}
         </div>
       )
     },
@@ -206,11 +216,7 @@ function createBytesColumn(
       const value = row.original[id]
       return (
         <div style={{ width }}>
-          {typeof value === "number" ? (
-            formatBytes(value)
-          ) : (
-            <Null />
-          )}
+          {typeof value === "number" ? formatBytes(value) : <Null />}
         </div>
       )
     },

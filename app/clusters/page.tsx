@@ -37,7 +37,7 @@ export default async function ClustersPage() {
     .sort((a, b) => a.avg_time - b.avg_time)
 
   return (
-    <div className="mx-auto mt-2 flex max-w-screen-xl flex-1 flex-col items-center gap-20 [&>section]:w-full">
+    <div className="mx-auto mt-2 flex max-w-screen-2xl flex-1 flex-col items-center gap-20 [&>section]:w-full">
       <section>
         <BasicTabs
           title="provers"

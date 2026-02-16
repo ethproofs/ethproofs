@@ -194,7 +194,7 @@ export default async function TeamDetailsPage({
         </div>
       </div>
 
-      <div className="mx-auto max-w-screen-xl space-y-12 [&>section]:w-full">
+      <div className="mx-auto max-w-screen-2xl space-y-12 [&>section]:w-full">
         <section className="grid grid-cols-1 gap-6 md:grid-cols-2">
           <Card className="!space-y-0">
             <CardHeader className="">multi-GPU performance</CardHeader>
