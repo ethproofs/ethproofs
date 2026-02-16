@@ -20,7 +20,12 @@ interface CspMetricInfo {
   statusLabels: Partial<Record<CspSeverityLevel, string>>
 }
 
-type CspMetricId = "is_zk" | "is_pq" | "is_maintained" | "is_audited" | "security_bits"
+type CspMetricId =
+  | "is_zk"
+  | "is_pq"
+  | "is_maintained"
+  | "is_audited"
+  | "security_bits"
 
 const cspMetricInfo: Record<CspMetricId, CspMetricInfo> = {
   is_zk: {
@@ -37,7 +42,11 @@ const cspMetricInfo: Record<CspMetricId, CspMetricInfo> = {
   },
   is_maintained: {
     label: "maintained",
-    statusLabels: { green: "maintained", red: "not maintained", none: "unknown" },
+    statusLabels: {
+      green: "maintained",
+      red: "not maintained",
+      none: "unknown",
+    },
   },
   is_audited: {
     label: "audited",
@@ -59,7 +68,9 @@ const cspMetricInfo: Record<CspMetricId, CspMetricInfo> = {
   },
 }
 
-export function getBooleanSeverity(value: boolean | undefined): CspSeverityLevel {
+export function getBooleanSeverity(
+  value: boolean | undefined
+): CspSeverityLevel {
   if (typeof value !== "boolean") return "none"
   return value ? "green" : "red"
 }
@@ -97,7 +108,10 @@ export function getSlicesFromSystemProperties(
   return [
     buildSlice(getBooleanSeverity(props.is_zk), cspMetricInfo.is_zk),
     buildSlice(getBooleanSeverity(props.is_pq), cspMetricInfo.is_pq),
-    buildSlice(getBooleanSeverity(props.is_maintained), cspMetricInfo.is_maintained),
+    buildSlice(
+      getBooleanSeverity(props.is_maintained),
+      cspMetricInfo.is_maintained
+    ),
     buildSlice(getAuditSeverity(props.is_audited), cspMetricInfo.is_audited),
     {
       level: getSecurityBitsSeverity(props.security_bits),

@@ -5,7 +5,11 @@ import { Info } from "lucide-react"
 
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card"
 import type { ChartConfig } from "@/components/ui/chart"
-import { Popover, PopoverContent, PopoverTrigger } from "@/components/ui/popover"
+import {
+  Popover,
+  PopoverContent,
+  PopoverTrigger,
+} from "@/components/ui/popover"
 import { Toggle } from "@/components/ui/toggle"
 
 import { cn } from "@/lib/utils"
@@ -67,11 +71,20 @@ interface ChartCardProps {
   footer?: React.ReactNode
 }
 
-export function ChartCard({ title, description, children, height, label, ariaLabel, footer }: ChartCardProps) {
+export function ChartCard({
+  title,
+  description,
+  children,
+  height,
+  label,
+  ariaLabel,
+  footer,
+}: ChartCardProps) {
   const style = height
     ? {
         height: typeof height === "number" ? `${height}px` : height,
-        transition: typeof height === "number" ? "height 200ms ease-out" : undefined,
+        transition:
+          typeof height === "number" ? "height 200ms ease-out" : undefined,
       }
     : undefined
 
@@ -80,11 +93,19 @@ export function ChartCard({ title, description, children, height, label, ariaLab
       <CardHeader>
         <div className="flex items-center justify-center">
           {description ? (
-            <InfoPopover trigger={<CardTitle className="text-base font-medium sm:text-lg">{title}</CardTitle>}>
+            <InfoPopover
+              trigger={
+                <CardTitle className="text-base font-medium sm:text-lg">
+                  {title}
+                </CardTitle>
+              }
+            >
               <p>{description}</p>
             </InfoPopover>
           ) : (
-            <CardTitle className="text-center text-base font-medium sm:text-lg">{title}</CardTitle>
+            <CardTitle className="text-center text-base font-medium sm:text-lg">
+              {title}
+            </CardTitle>
           )}
           {label && (
             <span className="ml-auto font-mono text-xs text-muted-foreground">
@@ -191,7 +212,7 @@ export function ChartLegend({
             aria-label={isHidden ? `show ${key}` : `hide ${key}`}
             className={cn(
               "h-auto min-w-0 justify-start gap-1.5 rounded-sm px-2.5 py-1.5 text-xs focus-visible:ring-2 focus-visible:ring-ring md:gap-2 md:px-3 md:py-1.5 md:text-sm",
-              isHidden && "opacity-40 line-through"
+              isHidden && "line-through opacity-40"
             )}
             onMouseEnter={() => {
               if (!isHidden) onHover?.(key)

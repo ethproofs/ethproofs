@@ -15,7 +15,7 @@ export default async function MetricsPage() {
   const recentSummary = await getRecentSummary()
 
   return (
-    <div className="mx-auto mb-16 mt-2 flex max-w-screen-xl flex-col items-center px-6 [&>section]:w-full">
+    <div className="mx-auto mb-16 mt-2 flex max-w-screen-2xl flex-col items-center px-6 [&>section]:w-full">
       <section id="proof-metrics">
         <span className="text-2xl">proof metrics</span>
         <div className="mt-4 flex flex-col gap-4 lg:flex-row lg:items-center lg:gap-4">

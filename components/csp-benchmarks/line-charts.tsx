@@ -5,14 +5,27 @@ import { CartesianGrid, Line, LineChart, XAxis, YAxis } from "recharts"
 import { entries } from "remeda"
 
 import type { ChartConfig } from "@/components/ui/chart"
-import {
-  ChartContainer,
-  ChartTooltip,
-} from "@/components/ui/chart"
+import { ChartContainer, ChartTooltip } from "@/components/ui/chart"
 
-import { dataKeyToTarget, type DataTarget, formatInputSizeWithUnit } from "./circuits"
-import { autoLogDomain, chartMetrics, getProverKey, metricConfigs, nanosecondsPerMillisecond } from "./metrics"
-import { ChartCard, ChartLegend, ChartTooltipBody, type ChartTooltipBodyEntry, EmptyState } from "./shared"
+import {
+  dataKeyToTarget,
+  type DataTarget,
+  formatInputSizeWithUnit,
+} from "./circuits"
+import {
+  autoLogDomain,
+  chartMetrics,
+  getProverKey,
+  metricConfigs,
+  nanosecondsPerMillisecond,
+} from "./metrics"
+import {
+  ChartCard,
+  ChartLegend,
+  ChartTooltipBody,
+  type ChartTooltipBodyEntry,
+  EmptyState,
+} from "./shared"
 
 import type { Metrics } from "@/lib/api/csp-benchmarks"
 import { formatBytes } from "@/lib/number"
@@ -177,13 +190,16 @@ function LineMetricChart({
   )
 
   const tooltipContent = useCallback(
-    ({ active, payload }: { active?: boolean; payload?: ReadonlyArray<ChartTooltipBodyEntry> }) => {
+    ({
+      active,
+      payload,
+    }: {
+      active?: boolean
+      payload?: ReadonlyArray<ChartTooltipBodyEntry>
+    }) => {
       if (!active || !payload || payload.length === 0) return null
       return (
-        <ChartTooltipBody
-          entries={payload}
-          formatValue={tooltipFormatter}
-        />
+        <ChartTooltipBody entries={payload} formatValue={tooltipFormatter} />
       )
     },
     [tooltipFormatter]
@@ -202,13 +218,19 @@ function LineMetricChart({
   )
 
   return (
-    <ChartCard title={title} description={description} height="auto" label={label} ariaLabel={ariaLabel} footer={legendFooter}>
-      <ChartContainer config={chartConfig} className="h-[300px] w-full md:h-[400px]">
-        <LineChart
-          accessibilityLayer
-          data={data}
-          margin={lineChartMargin}
-        >
+    <ChartCard
+      title={title}
+      description={description}
+      height="auto"
+      label={label}
+      ariaLabel={ariaLabel}
+      footer={legendFooter}
+    >
+      <ChartContainer
+        config={chartConfig}
+        className="h-[300px] w-full md:h-[400px]"
+      >
+        <LineChart accessibilityLayer data={data} margin={lineChartMargin}>
           <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
           <XAxis
             dataKey="input_size"
@@ -225,10 +247,7 @@ function LineMetricChart({
             ticks={ticks}
             tickFormatter={yAxisTickFormatter}
           />
-          <ChartTooltip
-            cursor={tooltipCursorStyle}
-            content={tooltipContent}
-          />
+          <ChartTooltip cursor={tooltipCursorStyle} content={tooltipContent} />
           {seriesKeys
             .filter((key) => !hiddenSeries.has(key))
             .map((key) => (

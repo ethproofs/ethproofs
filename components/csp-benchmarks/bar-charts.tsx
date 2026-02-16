@@ -6,8 +6,18 @@ import { Bar, BarChart, XAxis, YAxis } from "recharts"
 import type { ChartConfig } from "@/components/ui/chart"
 import { ChartContainer } from "@/components/ui/chart"
 
-import { dataKeyToTarget, type DataTarget, formatInputSizeWithUnit } from "./circuits"
-import { autoLogDomain, chartColors, chartMetrics, getProverKey, metricConfigs } from "./metrics"
+import {
+  dataKeyToTarget,
+  type DataTarget,
+  formatInputSizeWithUnit,
+} from "./circuits"
+import {
+  autoLogDomain,
+  chartColors,
+  chartMetrics,
+  getProverKey,
+  metricConfigs,
+} from "./metrics"
 import { ChartCard, EmptyState } from "./shared"
 
 import type { Metrics } from "@/lib/api/csp-benchmarks"
@@ -21,7 +31,8 @@ const barChartMargin = { top: 10, right: 70, left: 10, bottom: 10 }
 const barYAxisTickStyle = { fontSize: barFontSize }
 
 function computeBarChartHeight(visibleCount: number): number {
-  const contentHeight = visibleCount * barHeightPerProver + barChartVerticalPadding
+  const contentHeight =
+    visibleCount * barHeightPerProver + barChartVerticalPadding
   return Math.min(Math.max(contentHeight, barChartMinHeight), barChartMaxHeight)
 }
 
@@ -49,7 +60,9 @@ interface CustomLabelProps {
   formatValue(value: number): string
 }
 
-function isCustomLabelProps(props: Record<string, unknown>): props is Omit<CustomLabelProps, "formatValue"> {
+function isCustomLabelProps(
+  props: Record<string, unknown>
+): props is Omit<CustomLabelProps, "formatValue"> {
   return (
     typeof props.x === "number" &&
     typeof props.y === "number" &&
@@ -59,7 +72,14 @@ function isCustomLabelProps(props: Record<string, unknown>): props is Omit<Custo
   )
 }
 
-function CustomLabel({ x, y, width, height, value, formatValue }: CustomLabelProps) {
+function CustomLabel({
+  x,
+  y,
+  width,
+  height,
+  value,
+  formatValue,
+}: CustomLabelProps) {
   return (
     <text
       x={x + width + 5}
@@ -115,7 +135,10 @@ function BarMetricChart({
       label={label}
       ariaLabel={ariaLabel}
     >
-      <ChartContainer config={chartConfig} className="h-full w-full [&_.recharts-cartesian-axis-tick_text]:fill-foreground">
+      <ChartContainer
+        config={chartConfig}
+        className="h-full w-full [&_.recharts-cartesian-axis-tick_text]:fill-foreground"
+      >
         <BarChart
           accessibilityLayer
           data={data}
@@ -173,7 +196,13 @@ export function BarCharts({
           const raw = b[metricKey]
           if (typeof raw !== "number" || raw <= 0) return []
           const prover = getProverKey(b)
-          return [{ prover, value: raw, fill: chartConfig[prover]?.color ?? chartColors[0] }]
+          return [
+            {
+              prover,
+              value: raw,
+              fill: chartConfig[prover]?.color ?? chartColors[0],
+            },
+          ]
         })
         .sort((a, b) => a.value - b.value),
     }))
@@ -195,16 +224,19 @@ export function BarCharts({
     )
   }
 
-  const chartLabel = target === "ecdsa"
-    ? "ecdsa"
-    : `${dataKeyToTarget[target]} · ${formatInputSizeWithUnit(selectedInputSize, target)}`
+  const chartLabel =
+    target === "ecdsa"
+      ? "ecdsa"
+      : `${dataKeyToTarget[target]} · ${formatInputSizeWithUnit(selectedInputSize, target)}`
 
   return (
     <div className="grid w-full grid-cols-1 gap-4 sm:grid-cols-2">
       {metricsData.map(({ key, config, data }, index) => (
         <div
           key={key}
-          className={index === metricsData.length - 1 ? "sm:col-span-2" : undefined}
+          className={
+            index === metricsData.length - 1 ? "sm:col-span-2" : undefined
+          }
         >
           <BarMetricChart
             title={config.label}

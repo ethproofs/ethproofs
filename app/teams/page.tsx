@@ -23,7 +23,7 @@ export default async function TeamsPage() {
   const teamsSummary = await getTeamsSummary()
 
   return (
-    <div className="mx-auto mt-6 grid max-w-screen-xl gap-x-8 gap-y-8 px-6 text-center md:px-8 lg:grid-cols-[repeat(2,_auto)]">
+    <div className="mx-auto mt-6 grid max-w-screen-2xl gap-x-8 gap-y-8 px-6 text-center md:px-8 lg:grid-cols-[repeat(2,_auto)]">
       {teamsSummary &&
         teamsSummary
           .filter((team) => !TEAMS_TO_EXCLUDE.includes(team.name))

@@ -55,13 +55,20 @@ export const SystemPropertiesTable = memo(function SystemPropertiesTable({
   benchmarks,
 }: SystemPropertiesTableProps) {
   const { filters, setFilter, activeCount, applyFilters } = useTableFilters()
-  const filtered = useMemo(() => applyFilters(benchmarks), [applyFilters, benchmarks])
+  const filtered = useMemo(
+    () => applyFilters(benchmarks),
+    [applyFilters, benchmarks]
+  )
   const provers = useMemo(() => deduplicateProvers(filtered), [filtered])
 
   return (
     <div className="flex flex-col gap-4">
       <div>
-        <TableFilters filters={filters} setFilter={setFilter} activeCount={activeCount} />
+        <TableFilters
+          filters={filters}
+          setFilter={setFilter}
+          activeCount={activeCount}
+        />
       </div>
       {provers.length === 0 ? (
         <EmptyState message="no provers match the selected filters" />
@@ -92,7 +99,7 @@ export const SystemPropertiesTable = memo(function SystemPropertiesTable({
                   prover.security_bits > 0
 
                 const auditText = prover.is_audited
-                  ? auditStatusDisplay[prover.is_audited] ?? prover.is_audited
+                  ? (auditStatusDisplay[prover.is_audited] ?? prover.is_audited)
                   : undefined
 
                 return (
@@ -104,17 +111,34 @@ export const SystemPropertiesTable = memo(function SystemPropertiesTable({
                       {prover.proving_system ?? <Null />}
                     </TableCell>
                     <TableCell className={cellClass}>
-                      <span style={{ color: severityColors[getBooleanSeverity(prover.is_zk)] }}>
+                      <span
+                        style={{
+                          color:
+                            severityColors[getBooleanSeverity(prover.is_zk)],
+                        }}
+                      >
                         {formatBooleanText(prover.is_zk)}
                       </span>
                     </TableCell>
                     <TableCell className={cellClass}>
-                      <span style={{ color: severityColors[getBooleanSeverity(prover.is_pq)] }}>
+                      <span
+                        style={{
+                          color:
+                            severityColors[getBooleanSeverity(prover.is_pq)],
+                        }}
+                      >
                         {formatBooleanText(prover.is_pq)}
                       </span>
                     </TableCell>
                     <TableCell className={cellClass}>
-                      <span style={{ color: severityColors[getSecurityBitsSeverity(prover.security_bits)] }}>
+                      <span
+                        style={{
+                          color:
+                            severityColors[
+                              getSecurityBitsSeverity(prover.security_bits)
+                            ],
+                        }}
+                      >
                         {hasSecurityBits ? `${prover.security_bits}-bit` : "--"}
                       </span>
                     </TableCell>
@@ -125,12 +149,24 @@ export const SystemPropertiesTable = memo(function SystemPropertiesTable({
                       {prover.isa ?? <Null />}
                     </TableCell>
                     <TableCell className={cellClass}>
-                      <span style={{ color: severityColors[getAuditSeverity(prover.is_audited)] }}>
+                      <span
+                        style={{
+                          color:
+                            severityColors[getAuditSeverity(prover.is_audited)],
+                        }}
+                      >
                         {auditText ?? "--"}
                       </span>
                     </TableCell>
                     <TableCell className={cellClass}>
-                      <span style={{ color: severityColors[getBooleanSeverity(prover.is_maintained)] }}>
+                      <span
+                        style={{
+                          color:
+                            severityColors[
+                              getBooleanSeverity(prover.is_maintained)
+                            ],
+                        }}
+                      >
                         {formatBooleanText(prover.is_maintained)}
                       </span>
                     </TableCell>

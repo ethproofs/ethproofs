@@ -1,6 +1,12 @@
 "use client"
 
-import { startTransition, useCallback, useLayoutEffect, useRef, useState } from "react"
+import {
+  startTransition,
+  useCallback,
+  useLayoutEffect,
+  useRef,
+  useState,
+} from "react"
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 
@@ -17,10 +23,9 @@ interface CircuitTabsProps {
   renderTabContent(target: CircuitTarget): React.ReactNode
 }
 
-export function CircuitTabs({
-  renderTabContent,
-}: CircuitTabsProps) {
-  const [activeTarget, setActiveTarget] = useState<CircuitTarget>(defaultCircuitTarget)
+export function CircuitTabs({ renderTabContent }: CircuitTabsProps) {
+  const [activeTarget, setActiveTarget] =
+    useState<CircuitTarget>(defaultCircuitTarget)
 
   useLayoutEffect(() => {
     const params = new URLSearchParams(window.location.search)
@@ -47,7 +52,9 @@ export function CircuitTabs({
   return (
     <Tabs value={activeTarget} onValueChange={handleTargetChange}>
       <div className="relative flex items-center justify-center gap-4 px-4 sm:justify-between sm:px-6">
-        <span className="hidden shrink-0 text-sm font-medium sm:block">circuit</span>
+        <span className="hidden shrink-0 text-sm font-medium sm:block">
+          circuit
+        </span>
         <div className="overflow-x-auto">
           <TabsList className="h-auto p-0.5">
             {circuitTargets.map((target) => (

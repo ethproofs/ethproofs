@@ -9,7 +9,12 @@ import { cn } from "@/lib/utils"
 import { SystemDrawer } from "./system/drawer"
 import type { SystemProperties } from "./system/properties"
 import { BarCharts } from "./bar-charts"
-import { type CircuitTarget, getInputSizeUnit, inputSizeSearchParam, targetToDataKey } from "./circuits"
+import {
+  type CircuitTarget,
+  getInputSizeUnit,
+  inputSizeSearchParam,
+  targetToDataKey,
+} from "./circuits"
 import { LineCharts } from "./line-charts"
 import { buildChartConfig, getAllProverKeys, getInputSizes } from "./metrics"
 import { ChartLegend, EmptyState, useSeriesSelection } from "./shared"
@@ -36,7 +41,9 @@ function ComparisonSection({
   availableInputSizes,
 }: ComparisonSectionProps) {
   const dataKey = targetToDataKey[target]
-  const [selectedInputSize, setSelectedInputSize] = useState(availableInputSizes[0] ?? 0)
+  const [selectedInputSize, setSelectedInputSize] = useState(
+    availableInputSizes[0] ?? 0
+  )
 
   useLayoutEffect(() => {
     const params = new URLSearchParams(window.location.search)
@@ -49,7 +56,9 @@ function ComparisonSection({
   }, [availableInputSizes])
 
   const isSelectedSizeValid = availableInputSizes.includes(selectedInputSize)
-  const effectiveInputSize = isSelectedSizeValid ? selectedInputSize : (availableInputSizes[0] ?? 0)
+  const effectiveInputSize = isSelectedSizeValid
+    ? selectedInputSize
+    : (availableInputSizes[0] ?? 0)
 
   const handleSizeChange = useCallback((size: number) => {
     setSelectedInputSize(size)
@@ -124,12 +133,10 @@ export const CircuitContent = memo(function CircuitContent({
     [filteredMetrics]
   )
 
-  const chartConfig = useMemo(
-    () => buildChartConfig(allProvers),
-    [allProvers]
-  )
+  const chartConfig = useMemo(() => buildChartConfig(allProvers), [allProvers])
 
-  const { hidden: hiddenProvers, onToggle: handleToggleProver } = useSeriesSelection(allProvers)
+  const { hidden: hiddenProvers, onToggle: handleToggleProver } =
+    useSeriesSelection(allProvers)
 
   const availableInputSizes = useMemo(
     () => getInputSizes(filteredMetrics),
@@ -137,7 +144,9 @@ export const CircuitContent = memo(function CircuitContent({
   )
 
   const [drawerOpen, setDrawerOpen] = useState(false)
-  const [selectedSystem, setSelectedSystem] = useState<SystemProperties | null>(null)
+  const [selectedSystem, setSelectedSystem] = useState<SystemProperties | null>(
+    null
+  )
 
   const handleOpenDrawer = useCallback((system: SystemProperties) => {
     setSelectedSystem(system)

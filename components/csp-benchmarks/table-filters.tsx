@@ -47,9 +47,15 @@ const initialFilterState: FilterState = {
 
 const auditedStatus = "audited"
 
-function matchesFilter(row: Metrics, key: BooleanFilterKey, value: boolean): boolean {
+function matchesFilter(
+  row: Metrics,
+  key: BooleanFilterKey,
+  value: boolean
+): boolean {
   if (key === "is_audited") {
-    return value ? row.is_audited === auditedStatus : row.is_audited !== undefined && row.is_audited !== auditedStatus
+    return value
+      ? row.is_audited === auditedStatus
+      : row.is_audited !== undefined && row.is_audited !== auditedStatus
   }
   const field = row[key]
   return value ? field === true : field === false
@@ -65,12 +71,9 @@ interface UseTableFiltersReturn {
 export function useTableFilters(): UseTableFiltersReturn {
   const [filters, setFilters] = useState<FilterState>(initialFilterState)
 
-  const setFilter = useCallback(
-    (key: BooleanFilterKey, value: FilterValue) => {
-      setFilters((prev) => ({ ...prev, [key]: value }))
-    },
-    []
-  )
+  const setFilter = useCallback((key: BooleanFilterKey, value: FilterValue) => {
+    setFilters((prev) => ({ ...prev, [key]: value }))
+  }, [])
 
   const activeCount = useMemo(
     () => Object.values(filters).filter((v) => v !== null).length,
@@ -112,7 +115,12 @@ export function TableFilters({
   return (
     <Popover>
       <PopoverTrigger asChild>
-        <Button variant="outline" size="sm" className="h-8" aria-label="filter properties">
+        <Button
+          variant="outline"
+          size="sm"
+          className="h-8"
+          aria-label="filter properties"
+        >
           <ListFilter />
           properties
           {activeCount > 0 && (
@@ -127,7 +135,11 @@ export function TableFilters({
           {filterDefinitions.map(({ key, label }) => (
             <div key={key} className="flex items-center justify-between">
               <span className="text-sm">{label}</span>
-              <div className="flex rounded-md border" role="group" aria-label={`${label} filter`}>
+              <div
+                className="flex rounded-md border"
+                role="group"
+                aria-label={`${label} filter`}
+              >
                 {segmentOptions.map((option) => (
                   <button
                     key={String(option.value)}

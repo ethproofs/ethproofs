@@ -15,14 +15,13 @@ interface SelectorProps {
   benchmarks: BenchmarkCollection[]
 }
 
-export function Selector({
-  benchmarks,
-}: SelectorProps) {
+export function Selector({ benchmarks }: SelectorProps) {
   const allMetrics = useMemo(
-    () => uniqueBy(
-      benchmarks.flatMap((b) => b.data),
-      (m) => `${m.name}\0${m.feat ?? ""}\0${m.target}\0${m.input_size}`
-    ),
+    () =>
+      uniqueBy(
+        benchmarks.flatMap((b) => b.data),
+        (m) => `${m.name}\0${m.feat ?? ""}\0${m.target}\0${m.input_size}`
+      ),
     [benchmarks]
   )
 
