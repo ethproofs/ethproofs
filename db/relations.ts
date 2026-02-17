@@ -10,6 +10,7 @@ import {
   guestPrograms,
   proofs,
   proverTypes,
+  rtpCohortSnapshots,
   teams,
   zkvmPerformanceMetrics,
   zkvms,
@@ -126,3 +127,13 @@ export const proverTypesRelations = relations(proverTypes, ({ many }) => ({
 export const guestProgramsRelations = relations(guestPrograms, ({ many }) => ({
   clusters: many(clusters),
 }))
+
+export const rtpCohortSnapshotsRelations = relations(
+  rtpCohortSnapshots,
+  ({ one }) => ({
+    cluster: one(clusters, {
+      fields: [rtpCohortSnapshots.cluster_id],
+      references: [clusters.id],
+    }),
+  })
+)

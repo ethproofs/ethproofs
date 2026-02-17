@@ -565,6 +565,54 @@ export const clusterSummary = pgView("cluster_summary", {
     GROUP BY c.id`
   )
 
+export const rtpCohortSnapshots = pgTable(
+  "rtp_cohort_snapshots",
+  {
+    id: bigint({ mode: "number" }).primaryKey().generatedByDefaultAsIdentity(),
+    cluster_id: uuid("cluster_id")
+      .notNull()
+      .references(() => clusters.id, {
+        onDelete: "cascade",
+        onUpdate: "cascade",
+      }),
+    snapshot_week: timestamp("snapshot_week", {
+      withTimezone: true,
+      mode: "string",
+    }).notNull(),
+    total_blocks: integer("total_blocks").notNull(),
+    blocks_proven: integer("blocks_proven").notNull(),
+    sub_10s_proofs: integer("sub_10s_proofs").notNull(),
+    over_10s_proofs: integer("over_10s_proofs").notNull(),
+    paralyzed_blocks: integer("paralyzed_blocks").notNull(),
+    performance_score: doublePrecision("performance_score").notNull(),
+    liveness_score: doublePrecision("liveness_score").notNull(),
+    stunner_rate: doublePrecision("stunner_rate").notNull(),
+    paralyzer_rate: doublePrecision("paralyzer_rate").notNull(),
+    is_eligible: boolean("is_eligible").notNull().default(false),
+    avg_cost_per_proof: doublePrecision("avg_cost_per_proof"),
+    created_at: timestamp("created_at", {
+      withTimezone: true,
+      mode: "string",
+    })
+      .defaultNow()
+      .notNull(),
+  },
+  (table) => [
+    unique("rtp_cohort_snapshots_cluster_id_snapshot_week_uk").on(
+      table.cluster_id,
+      table.snapshot_week
+    ),
+    index("rtp_cohort_snapshots_cluster_id_idx").on(table.cluster_id),
+    index("rtp_cohort_snapshots_snapshot_week_idx").on(table.snapshot_week),
+    pgPolicy("Enable read access for all users", {
+      as: "permissive",
+      for: "select",
+      to: ["public"],
+      using: sql`true`,
+    }),
+  ]
+).enableRLS()
+
 // Tables for aggregated data and charts
 
 // Daily aggregated metrics for proofs
