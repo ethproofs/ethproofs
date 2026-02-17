@@ -29,7 +29,7 @@ const cohortScores: CohortScore[] = [
   {
     name: "liveness score",
     abbreviation: "LS",
-    formula: "(blocks queued / total blocks) x 100",
+    formula: "(blocks proven / total blocks) x 100",
     target: ">95%",
     isMinimize: false,
   },
