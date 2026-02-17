@@ -77,6 +77,12 @@ export const ZKVM_THRESHOLDS = {
   },
 } as const satisfies Record<string, MetricThresholds>
 
+export const RTP_WINDOW_DAYS = 7
+export const RTP_PARALYZER_CUTOFF_MINUTES = 20
+export const RTP_PERFORMANCE_SCORE_THRESHOLD = 75
+export const RTP_LIVENESS_SCORE_THRESHOLD = 75
+export const RTP_PERFORMANCE_TIME_THRESHOLD_MS = 10_000
+
 export const TAGS = {
   CLUSTERS: "clusters",
   TEAMS: "teams",
@@ -88,4 +94,5 @@ export const TAGS = {
   ZKVM_VERSIONS: "zkvm-versions",
   ZKVMS: "zkvms",
   CSP_BENCHMARKS: "csp-benchmarks",
+  RTP_COHORT: "rtp-cohort",
 } as const

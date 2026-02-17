@@ -15,6 +15,7 @@ import {
   proverDailyStats,
   proverTypes,
   recentSummary,
+  rtpCohortSnapshots,
   severityLevel,
   teams,
   teamsSummary,
@@ -275,4 +276,30 @@ export interface ClusterSummary {
     name: string
     slug: string
   }
+}
+
+export type RtpCohortSnapshot = typeof rtpCohortSnapshots.$inferSelect
+
+export interface RtpCohortRow {
+  cluster_id: string
+  cluster_name: string
+  num_gpus: number
+  hardware_description: string | null
+  team_name: string
+  team_slug: string
+  team_logo_url: string | null
+  zkvm_name: string
+  guest_program_name: string | null
+  soundcalc_integration: boolean
+  total_blocks: number
+  blocks_proven: number
+  sub_10s_proofs: number
+  over_10s_proofs: number
+  paralyzed_blocks: number
+  performance_score: number
+  liveness_score: number
+  stunner_rate: number
+  paralyzer_rate: number
+  is_eligible: boolean
+  avg_cost_per_proof: number | null
 }
