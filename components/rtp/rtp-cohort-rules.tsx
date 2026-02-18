@@ -8,6 +8,11 @@ import {
   TableRow,
 } from "@/components/ui/table"
 
+import {
+  RTP_LIVENESS_SCORE_THRESHOLD,
+  RTP_PERFORMANCE_SCORE_THRESHOLD,
+} from "@/lib/constants"
+
 import Link from "../ui/link"
 
 interface CohortRule {
@@ -27,7 +32,7 @@ const cohortRules: CohortRule[] = [
           href="https://github.com/ethereum/soundcalc"
           target="_blank"
           rel="noopener noreferrer"
-          className="text-sm text-primary hover:text-primary-light"
+          className="text-xs text-primary hover:text-primary-light"
         >
           soundcalc
         </a>
@@ -49,8 +54,10 @@ const cohortRules: CohortRule[] = [
     description: (
       <>
         prover must maintain a{" "}
-        <span className="text-primary">performance score of &ge;95%</span> or
-        higher during the previous 7-day window
+        <span className="text-primary">
+          performance score of &ge;{RTP_PERFORMANCE_SCORE_THRESHOLD}%
+        </span>{" "}
+        or higher during the previous 7-day window
       </>
     ),
   },
@@ -59,8 +66,10 @@ const cohortRules: CohortRule[] = [
     description: (
       <>
         prover must maintain a{" "}
-        <span className="text-primary">liveness score of &ge;95%</span> or
-        higher during the previous 7-day window
+        <span className="text-primary">
+          liveness score of &ge;{RTP_LIVENESS_SCORE_THRESHOLD}%
+        </span>{" "}
+        or higher during the previous 7-day window
       </>
     ),
   },

@@ -280,6 +280,51 @@ export interface ClusterSummary {
 
 export type RtpCohortSnapshot = typeof rtpCohortSnapshots.$inferSelect
 
+export interface RtpWeekEntry {
+  week: string
+  isEligible: boolean
+}
+
+export interface RtpCohortMember {
+  clusterName: string
+  teamName: string
+  teamLogoUrl: string | null
+  weeksInCohort: number
+  totalWeeks: number
+  cohortPercentage: number
+  isCurrentlyEligible: boolean
+  weeklyTimeline: RtpWeekEntry[]
+}
+
+export interface RtpCohortCompositionData {
+  currentCohortSize: number
+  avgTenureWeeks: number
+  trackedPeriodWeeks: number
+  members: RtpCohortMember[]
+}
+
+export interface RtpCohortPerformanceData {
+  totalBlockSlots: number
+  sub10sCount: number
+  stunnedCount: number
+  paralyzedCount: number
+  offlineCount: number
+}
+
+export interface RtpProofTimeBucket {
+  bucket: string
+  count: number
+  percentage: number
+  isRtp: boolean
+}
+
+export interface RtpProofTimeDistributionData {
+  total: number
+  rtpTotal: number
+  rtpRate: number
+  buckets: RtpProofTimeBucket[]
+}
+
 export interface RtpCohortRow {
   cluster_id: string
   cluster_name: string
