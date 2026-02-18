@@ -1,14 +1,19 @@
 import { sql } from "drizzle-orm"
 import { unstable_cache as cache } from "next/cache"
 
-import type { RtpCohortRow } from "@/lib/types"
+import type {
+  RtpCohortCompositionData,
+  RtpCohortMember,
+  RtpCohortPerformanceData,
+  RtpCohortRow,
+  RtpProofTimeBucket,
+  RtpProofTimeDistributionData,
+  RtpWeekEntry,
+} from "@/lib/types"
 
 import {
-  RTP_LIVENESS_SCORE_THRESHOLD,
   RTP_PARALYZER_CUTOFF_MINUTES,
-  RTP_PERFORMANCE_SCORE_THRESHOLD,
   RTP_PERFORMANCE_TIME_THRESHOLD_MS,
-  RTP_WINDOW_DAYS,
   TAGS,
 } from "@/lib/constants"
 
@@ -48,53 +53,12 @@ function toRtpCohortRow(row: Record<string, unknown>): RtpCohortRow {
 export const getRtpCohortScores = cache(
   async (): Promise<RtpCohortRow[]> => {
     const result = await db.execute(sql`
-      WITH window_blocks AS (
-        SELECT block_number, "timestamp"
-        FROM blocks
-        WHERE "timestamp" >= NOW() - make_interval(days => ${RTP_WINDOW_DAYS})
-      ),
-      total_block_count AS (
-        SELECT COUNT(*)::integer AS cnt FROM window_blocks
-      ),
-      cluster_stats AS (
-        SELECT
-          p.cluster_id,
-          COUNT(DISTINCT CASE
-            WHEN p.proof_status = 'proved' AND p.proving_time < ${RTP_PERFORMANCE_TIME_THRESHOLD_MS}
-            THEN p.block_number
-          END)::integer AS sub_10s_proofs,
-          COUNT(DISTINCT CASE
-            WHEN p.proof_status = 'proved'
-            THEN p.block_number
-          END)::integer AS blocks_proven,
-          COUNT(DISTINCT CASE
-            WHEN p.proof_status = 'proved' AND p.proving_time >= ${RTP_PERFORMANCE_TIME_THRESHOLD_MS}
-            THEN p.block_number
-          END)::integer AS over_10s_proofs,
-          COUNT(DISTINCT CASE
-            WHEN p.proof_status IN ('queued', 'proving')
-              AND wb."timestamp" < NOW() - make_interval(mins => ${RTP_PARALYZER_CUTOFF_MINUTES})
-            THEN p.block_number
-          END)::integer AS paralyzed_blocks,
-          COALESCE(
-            SUM(
-              CASE WHEN p.proof_status = 'proved' THEN
-                c.num_gpus::double precision
-                * gpi.hourly_price::double precision
-                * p.proving_time::double precision
-                / 3600000.0
-              END
-            ) / NULLIF(COUNT(CASE WHEN p.proof_status = 'proved' THEN 1 END), 0),
-            NULL
-          ) AS avg_cost_per_proof
-        FROM proofs p
-        INNER JOIN window_blocks wb ON p.block_number = wb.block_number
-        INNER JOIN clusters c ON p.cluster_id = c.id
-        LEFT JOIN gpu_price_index gpi ON p.gpu_price_index_id = gpi.id
-        GROUP BY p.cluster_id
+      WITH latest_snapshot AS (
+        SELECT MAX(snapshot_week) AS week
+        FROM rtp_cohort_snapshots
       )
       SELECT
-        c.id AS cluster_id,
+        s.cluster_id,
         c.name AS cluster_name,
         c.num_gpus,
         c.hardware_description,
@@ -103,43 +67,22 @@ export const getRtpCohortScores = cache(
         t.logo_url AS team_logo_url,
         z.name AS zkvm_name,
         gp.name AS guest_program_name,
-        COALESCE(zsm.soundcalc_integration, false) AS soundcalc_integration,
-        tbc.cnt AS total_blocks,
-        COALESCE(cs.blocks_proven, 0) AS blocks_proven,
-        COALESCE(cs.sub_10s_proofs, 0) AS sub_10s_proofs,
-        COALESCE(cs.over_10s_proofs, 0) AS over_10s_proofs,
-        COALESCE(cs.paralyzed_blocks, 0) AS paralyzed_blocks,
-        CASE WHEN tbc.cnt > 0
-          THEN ROUND((COALESCE(cs.sub_10s_proofs, 0)::numeric / tbc.cnt * 100), 2)::double precision
-          ELSE 0
-        END AS performance_score,
-        CASE WHEN tbc.cnt > 0
-          THEN ROUND((COALESCE(cs.blocks_proven, 0)::numeric / tbc.cnt * 100), 2)::double precision
-          ELSE 0
-        END AS liveness_score,
-        CASE WHEN tbc.cnt > 0
-          THEN ROUND((COALESCE(cs.over_10s_proofs, 0)::numeric / tbc.cnt * 100), 2)::double precision
-          ELSE 0
-        END AS stunner_rate,
-        CASE WHEN tbc.cnt > 0
-          THEN ROUND((COALESCE(cs.paralyzed_blocks, 0)::numeric / tbc.cnt * 100), 2)::double precision
-          ELSE 0
-        END AS paralyzer_rate,
-        cs.avg_cost_per_proof,
-        (
-          COALESCE(zsm.soundcalc_integration, false) = true
-          AND CASE WHEN tbc.cnt > 0
-            THEN (COALESCE(cs.sub_10s_proofs, 0)::numeric / tbc.cnt * 100) >= ${RTP_PERFORMANCE_SCORE_THRESHOLD}
-            ELSE false
-          END
-          AND CASE WHEN tbc.cnt > 0
-            THEN (COALESCE(cs.blocks_proven, 0)::numeric / tbc.cnt * 100) >= ${RTP_LIVENESS_SCORE_THRESHOLD}
-            ELSE false
-          END
-        ) AS is_eligible
-      FROM clusters c
+        true AS soundcalc_integration,
+        s.total_blocks,
+        s.blocks_proven,
+        s.sub_10s_proofs,
+        s.over_10s_proofs,
+        s.paralyzed_blocks,
+        s.performance_score,
+        s.liveness_score,
+        s.stunner_rate,
+        s.paralyzer_rate,
+        s.is_eligible,
+        s.avg_cost_per_proof
+      FROM rtp_cohort_snapshots s
+      INNER JOIN latest_snapshot ls ON s.snapshot_week = ls.week
+      INNER JOIN clusters c ON s.cluster_id = c.id
       INNER JOIN teams t ON c.team_id = t.id
-      INNER JOIN prover_types pt ON c.prover_type_id = pt.id
       INNER JOIN LATERAL (
         SELECT cv_inner.zkvm_version_id
         FROM cluster_versions cv_inner
@@ -149,24 +92,9 @@ export const getRtpCohortScores = cache(
       ) cv ON true
       INNER JOIN zkvm_versions zv ON cv.zkvm_version_id = zv.id
       INNER JOIN zkvms z ON zv.zkvm_id = z.id
-      LEFT JOIN zkvm_security_metrics zsm ON zsm.zkvm_id = z.id
       LEFT JOIN guest_programs gp ON c.guest_program_id = gp.id
-      CROSS JOIN total_block_count tbc
-      LEFT JOIN cluster_stats cs ON cs.cluster_id = c.id
-      WHERE c.is_active = true
-        AND pt.gpu_configuration = 'multi-gpu'
-        AND COALESCE(zsm.soundcalc_integration, false) = true
-        AND CASE WHEN tbc.cnt > 0
-          THEN (COALESCE(cs.sub_10s_proofs, 0)::numeric / tbc.cnt * 100) >= ${RTP_PERFORMANCE_SCORE_THRESHOLD}
-          ELSE false
-        END
-        AND CASE WHEN tbc.cnt > 0
-          THEN (COALESCE(cs.blocks_proven, 0)::numeric / tbc.cnt * 100) >= ${RTP_LIVENESS_SCORE_THRESHOLD}
-          ELSE false
-        END
-      ORDER BY
-        CASE WHEN tbc.cnt > 0 THEN COALESCE(cs.sub_10s_proofs, 0)::numeric / tbc.cnt ELSE 0 END DESC,
-        CASE WHEN tbc.cnt > 0 THEN COALESCE(cs.blocks_proven, 0)::numeric / tbc.cnt ELSE 0 END DESC
+      WHERE s.is_eligible = true
+      ORDER BY s.performance_score DESC, s.liveness_score DESC
     `)
 
     const rows = Array.isArray(result) ? result : []
@@ -178,3 +106,318 @@ export const getRtpCohortScores = cache(
     tags: [TAGS.RTP_COHORT],
   }
 )
+
+function isRtpWeekEntry(value: unknown): value is RtpWeekEntry {
+  if (typeof value !== "object" || value === null) return false
+  const entry = value as Record<string, unknown>
+  return typeof entry.week === "string" && typeof entry.isEligible === "boolean"
+}
+
+function parseWeeklyTimeline(raw: unknown): RtpWeekEntry[] {
+  const parsed = typeof raw === "string" ? JSON.parse(raw) : raw
+  if (!Array.isArray(parsed)) return []
+  return parsed.filter(isRtpWeekEntry)
+}
+
+function toRtpCohortMember(row: Record<string, unknown>): RtpCohortMember {
+  const totalWeeks = Number(row.total_weeks)
+  const weeksInCohort = Number(row.weeks_in_cohort)
+  return {
+    clusterName: String(row.cluster_name),
+    teamName: String(row.team_name),
+    teamLogoUrl: row.team_logo_url ? String(row.team_logo_url) : null,
+    weeksInCohort,
+    totalWeeks,
+    cohortPercentage:
+      totalWeeks > 0 ? Math.round((weeksInCohort / totalWeeks) * 100) : 0,
+    isCurrentlyEligible: Boolean(row.is_currently_eligible),
+    weeklyTimeline: parseWeeklyTimeline(row.weekly_timeline),
+  }
+}
+
+export const getRtpCohortComposition = async (
+  days: number
+): Promise<RtpCohortCompositionData> => {
+  return cache(
+    async (days: number) => {
+      const result = await db.execute(sql`
+        WITH all_weeks AS (
+          SELECT week::timestamptz
+          FROM generate_series(
+            date_trunc('week', NOW() - make_interval(days => ${days})),
+            date_trunc('week', NOW()),
+            '1 week'::interval
+          ) AS week
+        ),
+        snapshot_range AS (
+          SELECT
+            (SELECT COUNT(*)::integer FROM all_weeks) AS total_weeks,
+            (SELECT MAX(snapshot_week) FROM rtp_cohort_snapshots
+              WHERE snapshot_week >= NOW() - make_interval(days => ${days})
+            ) AS latest_week
+        ),
+        cluster_tenure AS (
+          SELECT
+            s.cluster_id,
+            c.name AS cluster_name,
+            t.name AS team_name,
+            t.logo_url AS team_logo_url,
+            COUNT(DISTINCT s.snapshot_week) FILTER (WHERE s.is_eligible)::integer AS weeks_in_cohort,
+            sr.total_weeks,
+            EXISTS (
+              SELECT 1
+              FROM rtp_cohort_snapshots latest
+              WHERE latest.cluster_id = s.cluster_id
+                AND latest.snapshot_week = sr.latest_week
+                AND latest.is_eligible = true
+            ) AS is_currently_eligible
+          FROM rtp_cohort_snapshots s
+          INNER JOIN clusters c ON s.cluster_id = c.id
+          INNER JOIN teams t ON c.team_id = t.id
+          CROSS JOIN snapshot_range sr
+          WHERE s.snapshot_week >= NOW() - make_interval(days => ${days})
+          GROUP BY s.cluster_id, c.name, t.name, t.logo_url, sr.total_weeks, sr.latest_week
+          HAVING COUNT(DISTINCT s.snapshot_week) FILTER (WHERE s.is_eligible) > 0
+        ),
+        cluster_timelines AS (
+          SELECT
+            ct.cluster_id,
+            json_agg(
+              json_build_object('week', aw.week, 'isEligible', COALESCE(s.is_eligible, false))
+              ORDER BY aw.week
+            ) AS weekly_timeline
+          FROM cluster_tenure ct
+          CROSS JOIN all_weeks aw
+          LEFT JOIN rtp_cohort_snapshots s
+            ON s.cluster_id = ct.cluster_id AND s.snapshot_week = aw.week
+          GROUP BY ct.cluster_id
+        )
+        SELECT
+          ct.cluster_name,
+          ct.team_name,
+          ct.team_logo_url,
+          ct.weeks_in_cohort,
+          ct.total_weeks,
+          ct.is_currently_eligible,
+          ctl.weekly_timeline
+        FROM cluster_tenure ct
+        INNER JOIN cluster_timelines ctl ON ctl.cluster_id = ct.cluster_id
+        ORDER BY ct.weeks_in_cohort DESC, ct.team_name ASC
+      `)
+
+      const rows = Array.isArray(result) ? result : []
+      const members = rows.map((row: Record<string, unknown>) =>
+        toRtpCohortMember(row)
+      )
+
+      const currentMembers = members.filter((m) => m.isCurrentlyEligible)
+      const trackedPeriodWeeks = members.length > 0 ? members[0].totalWeeks : 0
+      const avgTenureWeeks =
+        currentMembers.length > 0
+          ? Math.round(
+              currentMembers.reduce((sum, m) => sum + m.weeksInCohort, 0) /
+                currentMembers.length
+            )
+          : 0
+
+      return {
+        currentCohortSize: currentMembers.length,
+        avgTenureWeeks,
+        trackedPeriodWeeks,
+        members,
+      }
+    },
+    ["rtp-cohort-composition", String(days)],
+    {
+      revalidate: 60 * 60,
+      tags: [TAGS.RTP_COHORT],
+    }
+  )(days)
+}
+
+const BUCKET_ORDER = [
+  "0 - 5s",
+  "5 - 8s",
+  "8 - 10s",
+  "10 - 12s",
+  "12 - 14s",
+  "+14s",
+] as const
+
+const RTP_BUCKET_BOUNDARY_MS = 10_000
+
+function toRtpProofTimeBucket(
+  row: Record<string, unknown>,
+  total: number
+): RtpProofTimeBucket {
+  const bucket = String(row.bucket)
+  const count = Number(row.count)
+  return {
+    bucket,
+    count,
+    percentage: total > 0 ? Math.round((count / total) * 10000) / 100 : 0,
+    isRtp: BUCKET_ORDER.indexOf(bucket as (typeof BUCKET_ORDER)[number]) < 3,
+  }
+}
+
+export const getRtpCohortPerformance = async (
+  days: number
+): Promise<RtpCohortPerformanceData> => {
+  return cache(
+    async (days: number) => {
+      const result = await db.execute(sql`
+        WITH eligible_clusters AS (
+          SELECT s.cluster_id
+          FROM rtp_cohort_snapshots s
+          WHERE s.is_eligible = true
+            AND s.snapshot_week = (
+              SELECT MAX(snapshot_week) FROM rtp_cohort_snapshots
+            )
+        ),
+        window_blocks AS (
+          SELECT block_number, "timestamp"
+          FROM blocks
+          WHERE "timestamp" >= NOW() - make_interval(days => ${days})
+        ),
+        total_block_count AS (
+          SELECT COUNT(*)::integer AS cnt FROM window_blocks
+        ),
+        cluster_stats AS (
+          SELECT
+            p.cluster_id,
+            COUNT(DISTINCT CASE
+              WHEN p.proof_status = 'proved' AND p.proving_time < ${RTP_PERFORMANCE_TIME_THRESHOLD_MS}
+              THEN p.block_number
+            END)::integer AS sub_10s_proofs,
+            COUNT(DISTINCT CASE
+              WHEN p.proof_status = 'proved' AND p.proving_time >= ${RTP_PERFORMANCE_TIME_THRESHOLD_MS}
+              THEN p.block_number
+            END)::integer AS over_10s_proofs,
+            COUNT(DISTINCT CASE
+              WHEN p.proof_status IN ('queued', 'proving')
+                AND wb."timestamp" < NOW() - make_interval(mins => ${RTP_PARALYZER_CUTOFF_MINUTES})
+              THEN p.block_number
+            END)::integer AS paralyzed_blocks
+          FROM proofs p
+          INNER JOIN window_blocks wb ON p.block_number = wb.block_number
+          INNER JOIN eligible_clusters ec ON p.cluster_id = ec.cluster_id
+          GROUP BY p.cluster_id
+        )
+        SELECT
+          COALESCE(SUM(tbc.cnt), 0)::integer AS total_block_slots,
+          COALESCE(SUM(cs.sub_10s_proofs), 0)::integer AS sub_10s_count,
+          COALESCE(SUM(cs.over_10s_proofs), 0)::integer AS stunned_count,
+          COALESCE(SUM(cs.paralyzed_blocks), 0)::integer AS paralyzed_count
+        FROM cluster_stats cs
+        CROSS JOIN total_block_count tbc
+      `)
+
+      const row =
+        Array.isArray(result) && result.length > 0
+          ? (result[0] as Record<string, unknown>)
+          : null
+      const totalBlockSlots = row ? Number(row.total_block_slots) : 0
+      const sub10sCount = row ? Number(row.sub_10s_count) : 0
+      const stunnedCount = row ? Number(row.stunned_count) : 0
+      const paralyzedCount = row ? Number(row.paralyzed_count) : 0
+
+      return {
+        totalBlockSlots,
+        sub10sCount,
+        stunnedCount,
+        paralyzedCount,
+        offlineCount: Math.max(
+          0,
+          totalBlockSlots - sub10sCount - stunnedCount - paralyzedCount
+        ),
+      }
+    },
+    ["rtp-cohort-performance", String(days)],
+    {
+      revalidate: 60 * 60,
+      tags: [TAGS.RTP_COHORT],
+    }
+  )(days)
+}
+
+export const getRtpProofTimeDistribution = async (
+  days: number
+): Promise<RtpProofTimeDistributionData> => {
+  return cache(
+    async (days: number) => {
+      const result = await db.execute(sql`
+        WITH eligible_clusters AS (
+          SELECT s.cluster_id
+          FROM rtp_cohort_snapshots s
+          WHERE s.is_eligible = true
+            AND s.snapshot_week = (
+              SELECT MAX(snapshot_week) FROM rtp_cohort_snapshots
+            )
+        ),
+        window_blocks AS (
+          SELECT block_number
+          FROM blocks
+          WHERE "timestamp" >= NOW() - make_interval(days => ${days})
+        ),
+        cohort_proofs AS (
+          SELECT p.proving_time
+          FROM proofs p
+          INNER JOIN window_blocks wb ON p.block_number = wb.block_number
+          INNER JOIN eligible_clusters ec ON p.cluster_id = ec.cluster_id
+          WHERE p.proof_status = 'proved'
+            AND p.proving_time IS NOT NULL
+        )
+        SELECT
+          CASE
+            WHEN proving_time < 5000 THEN '0 - 5s'
+            WHEN proving_time < 8000 THEN '5 - 8s'
+            WHEN proving_time < ${RTP_BUCKET_BOUNDARY_MS} THEN '8 - 10s'
+            WHEN proving_time < 12000 THEN '10 - 12s'
+            WHEN proving_time < 14000 THEN '12 - 14s'
+            ELSE '+14s'
+          END AS bucket,
+          COUNT(*)::integer AS count
+        FROM cohort_proofs
+        GROUP BY bucket
+      `)
+
+      const rows = Array.isArray(result) ? result : []
+      const total = rows.reduce(
+        (sum, r: Record<string, unknown>) => sum + Number(r.count),
+        0
+      )
+      const bucketMap = new Map(
+        rows.map((r: Record<string, unknown>) => [
+          String(r.bucket),
+          toRtpProofTimeBucket(r, total),
+        ])
+      )
+
+      const buckets = BUCKET_ORDER.map(
+        (name) =>
+          bucketMap.get(name) ?? {
+            bucket: name,
+            count: 0,
+            percentage: 0,
+            isRtp: BUCKET_ORDER.indexOf(name) < 3,
+          }
+      )
+
+      const rtpTotal = buckets
+        .filter((b) => b.isRtp)
+        .reduce((sum, b) => sum + b.count, 0)
+
+      return {
+        total,
+        rtpTotal,
+        rtpRate: total > 0 ? Math.round((rtpTotal / total) * 1000) / 10 : 0,
+        buckets,
+      }
+    },
+    ["rtp-proof-time-distribution", String(days)],
+    {
+      revalidate: 60 * 60,
+      tags: [TAGS.RTP_COHORT],
+    }
+  )(days)
+}
