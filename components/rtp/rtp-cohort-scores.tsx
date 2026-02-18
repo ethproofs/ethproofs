@@ -10,6 +10,11 @@ import {
 
 import { cn } from "@/lib/utils"
 
+import {
+  RTP_LIVENESS_SCORE_THRESHOLD,
+  RTP_PERFORMANCE_SCORE_THRESHOLD,
+} from "@/lib/constants"
+
 interface CohortScore {
   name: string
   abbreviation: string
@@ -23,14 +28,14 @@ const cohortScores: CohortScore[] = [
     name: "performance score",
     abbreviation: "PS",
     formula: "(sub-10s proofs / total blocks) x 100",
-    target: ">95%",
+    target: `>${RTP_PERFORMANCE_SCORE_THRESHOLD}%`,
     isMinimize: false,
   },
   {
     name: "liveness score",
     abbreviation: "LS",
     formula: "(blocks proven / total blocks) x 100",
-    target: ">95%",
+    target: `>${RTP_LIVENESS_SCORE_THRESHOLD}%`,
     isMinimize: false,
   },
   {

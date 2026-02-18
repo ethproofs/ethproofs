@@ -116,7 +116,7 @@ export function RealtimeSidebar() {
       </Sheet>
       <aside
         className={cn(
-          "hidden h-svh flex-col border-l bg-background transition-[width] duration-200 ease-linear lg:flex",
+          "sticky top-0 hidden h-svh flex-col border-l bg-background transition-[width] duration-200 ease-linear lg:flex",
           !open && "w-0 overflow-hidden border-l-0"
         )}
         style={{ width: open ? REALTIME_SIDEBAR_WIDTH : undefined }}
