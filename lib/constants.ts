@@ -87,4 +87,5 @@ export const TAGS = {
   TEAM_SUMMARY: "team-summary",
   ZKVM_VERSIONS: "zkvm-versions",
   ZKVMS: "zkvms",
+  CSP_BENCHMARKS: "csp-benchmarks",
 } as const
