@@ -42,12 +42,11 @@ export function AdminUserForm() {
       />
       <Input id="website" name="website" type="text" placeholder="website" />
       <div className="position-relative display-inline-block flex flex-col gap-2">
-        <span className="text-sm font-normal">logo (.svg)</span>
         <Label
           htmlFor="logo"
           className="h-10 w-full cursor-pointer rounded-md border border-input bg-background px-3 py-2 text-sm font-normal text-muted-foreground ring-offset-background hover:bg-accent"
         >
-          choose file
+          choose file (.svg)
         </Label>
         <Input
           accept="image/svg+xml"
@@ -63,8 +62,7 @@ export function AdminUserForm() {
 
       {state.data && (
         <div className="flex flex-col gap-2">
-          <h3 className="text-sm font-bold">user</h3>
-          <pre>
+          <pre className="text-xs text-muted-foreground">
             {JSON.stringify(
               {
                 id: state.data.user.id,

@@ -18,10 +18,11 @@ export async function GET(request: NextRequest) {
   const nextParam = searchParams.get("next")
   const next = nextParam && isValidRedirectPath(nextParam) ? nextParam : "/"
 
-  const redirectTo =
-    type === "recovery"
-      ? new URL("/reset-password", request.url)
-      : new URL(next, request.url)
+  const isPasswordSetup = type === "recovery" || type === "invite"
+
+  const redirectTo = isPasswordSetup
+    ? new URL("/reset-password", request.url)
+    : new URL(next, request.url)
 
   if (token_hash && type) {
     const response = NextResponse.redirect(redirectTo)
@@ -49,7 +50,7 @@ export async function GET(request: NextRequest) {
     })
 
     if (!error) {
-      if (type !== "recovery") {
+      if (!isPasswordSetup) {
         const {
           data: { user },
         } = await supabase.auth.getUser()

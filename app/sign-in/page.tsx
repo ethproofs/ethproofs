@@ -27,12 +27,22 @@ export default async function LoginPage() {
           <CardHeader>
             <CardTitle>sign in</CardTitle>
           </CardHeader>
-          <CardContent className="flex flex-col gap-4">
+          <CardContent>
             <SignInForm />
-            <div className="text-center text-sm text-muted-foreground">
-              don&apos;t have an account?{" "}
-              <Link href="/sign-up" className="underline hover:text-foreground">
-                sign up
+            <div className="mt-2 text-center text-sm text-muted-foreground">
+              need an account?{" "}
+              <Link
+                className="text-sm text-muted-foreground hover:text-primary"
+                href="https://x.com/eth_proofs"
+              >
+                X
+              </Link>{" "}
+              or{" "}
+              <Link
+                className="text-sm text-muted-foreground hover:text-primary"
+                href="https://t.me/ethproofs_community"
+              >
+                Telegram
               </Link>
             </div>
           </CardContent>

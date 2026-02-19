@@ -116,7 +116,6 @@ export function AdminVerificationKeyForm({
         filename: data.filename,
       })
 
-      // Reset form
       if (fileInputRef.current) fileInputRef.current.value = ""
       setSelectedFileName("")
     } catch (error) {
@@ -130,7 +129,6 @@ export function AdminVerificationKeyForm({
     }
   }
 
-  // Fetch versions when cluster is selected
   useEffect(() => {
     if (!selectedClusterId) {
       setVersions([])
@@ -139,7 +137,6 @@ export function AdminVerificationKeyForm({
       return
     }
 
-    // Clear success state when switching clusters
     setState(initialState)
 
     const fetchVersions = async () => {
@@ -151,7 +148,6 @@ export function AdminVerificationKeyForm({
         if (response.ok) {
           const data = await response.json()
           setVersions(data.versions || [])
-          // Auto-select active version
           const activeVersion = data.versions?.find(
             (v: ClusterVersion) => v.is_active
           )
@@ -224,12 +220,11 @@ export function AdminVerificationKeyForm({
       </div>
 
       <div className="position-relative display-inline-block flex flex-col gap-2">
-        <span className="text-sm font-normal">verification key (.bin)</span>
         <Label
           htmlFor="file"
           className="h-10 w-full cursor-pointer rounded-md border border-input bg-background px-3 py-2 text-sm font-normal text-muted-foreground ring-offset-background hover:bg-accent"
         >
-          choose file
+          choose file (.bin)
         </Label>
         <Input
           ref={fileInputRef}

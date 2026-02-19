@@ -54,11 +54,11 @@ export default async function AdminPage() {
   }
 
   return (
-    <div className="mt-12 flex w-full flex-col gap-8 px-48">
-      <div className="flex justify-center gap-8">
+    <div className="mt-12 flex w-full flex-col gap-8 px-6">
+      <div className="flex justify-center gap-6">
         <Card className="flex flex-1 flex-col gap-4">
           <CardHeader>
-            <CardTitle>create user</CardTitle>
+            <CardTitle>invite team</CardTitle>
           </CardHeader>
           <CardContent>
             <AdminUserForm />

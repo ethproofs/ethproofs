@@ -209,7 +209,7 @@ export function DashboardContent({
           </div>
         </div>
         {clusters.length === 0 ? (
-          <div className="py-8 text-center">
+          <div className="rounded-md border p-4 py-8 text-center">
             <p className="text-muted-foreground">no clusters yet</p>
           </div>
         ) : (

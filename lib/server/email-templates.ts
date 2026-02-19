@@ -67,27 +67,39 @@ interface EmailResult {
   html: string
 }
 
-interface TeamSignupPendingEmailOptions {
+interface TeamInviteEmailOptions {
   teamName: string
+  passwordSetupUrl: string
 }
 
-export function teamSignupPendingEmail({
+export function teamInviteEmail({
   teamName,
-}: TeamSignupPendingEmailOptions): EmailResult {
+  passwordSetupUrl,
+}: TeamInviteEmailOptions): EmailResult {
   const safeTeamName = escapeHtml(teamName)
-  const subject = `your ${SITE_NAME} signup is under review`
+  const safePasswordSetupUrl = escapeHtml(passwordSetupUrl)
+  const subject = `you've been invited to ${SITE_NAME}`
 
   const body = `
-    <h1 style="color:${COLORS.foreground};font-size:24px;font-weight:600;margin:0 0 16px;line-height:1.3;">thanks for signing up!</h1>
-    <p style="color:${COLORS.mutedForeground};font-size:16px;line-height:1.6;margin:0 0 16px;">We've received your request to sign up a new team on ${SITE_NAME}.</p>
-    <p style="color:${COLORS.mutedForeground};font-size:16px;line-height:1.6;margin:0 0 16px;">We will review your application and you'll receive a follow-up email with further instructions once your account has been reviewed.</p>
+    <h1 style="color:${COLORS.foreground};font-size:24px;font-weight:600;margin:0 0 16px;line-height:1.3;">you've been invited</h1>
+    <p style="color:${COLORS.mutedForeground};font-size:16px;line-height:1.6;margin:0 0 16px;">You've been invited to join ${SITE_NAME}. Click the button below to set your password and get started.</p>
+
+    <table role="presentation" cellpadding="0" cellspacing="0" style="margin:0 auto 24px;">
+      <tr>
+        <td align="center" style="background-color:${COLORS.primary};border-radius:8px;">
+          <a href="${safePasswordSetupUrl}" style="display:inline-block;padding:12px 24px;font-size:14px;font-weight:600;color:${COLORS.primaryForeground};text-decoration:none;">set your password</a>
+        </td>
+      </tr>
+    </table>
+
+    <p style="color:${COLORS.mutedForeground};font-size:14px;line-height:1.6;margin:16px 0 24px;">If you didn't expect this invitation, you can safely ignore this email.</p>
   `
 
   return {
     subject,
     html: baseTemplate({
       title: subject,
-      preheader: `we're reviewing your signup for ${safeTeamName}`,
+      preheader: `${safeTeamName} has been invited to ${SITE_NAME}`,
       body,
     }),
   }

@@ -39,6 +39,7 @@ import { hashToken } from "@/lib/auth/hash-token"
 import { sendEmail } from "@/lib/server/email-service"
 import {
   teamApprovedEmail,
+  teamInviteEmail,
   teamRejectedEmail,
 } from "@/lib/server/email-templates"
 import { createAuthClient, createClient } from "@/utils/supabase/server"
@@ -283,6 +284,21 @@ export async function createUser(_prevState: unknown, formData: FormData) {
       }
     }
 
+    const slug = name.toLowerCase().replace(/\s+/g, "-")
+    const existingTeam = await db
+      .select({ id: teams.id })
+      .from(teams)
+      .where(eq(teams.slug, slug))
+      .limit(1)
+
+    if (existingTeam.length > 0) {
+      return {
+        errors: {
+          name: ["team name already exists"],
+        },
+      }
+    }
+
     const { data, error } = await supabase.auth.admin.createUser({
       email,
       email_confirm: true,
@@ -311,7 +327,6 @@ export async function createUser(_prevState: unknown, formData: FormData) {
         }
       }
 
-      // Get public url
       const { data: publicUrlData } = supabase.storage
         .from(PUBLIC_ASSETS_BUCKET)
         .getPublicUrl(data.path)
@@ -323,16 +338,36 @@ export async function createUser(_prevState: unknown, formData: FormData) {
       .update(teams)
       .set({
         name: name,
-        slug: name.toLowerCase().replace(/\s+/g, "-"),
+        slug,
         website_url: website,
         github_org,
         twitter_handle,
         logo_url: logoUrl,
-        approved: true, // Auto-approve admin-created users
+        approved: true,
       })
       .where(eq(teams.id, data.user.id))
 
-    // Revalidate admin page to show new user
+    const { data: linkData } = await supabase.auth.admin.generateLink({
+      type: "recovery",
+      email,
+    })
+
+    const tokenHash = linkData?.properties?.hashed_token
+    const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000"
+    const passwordSetupUrl = tokenHash
+      ? `${baseUrl}/auth/confirm?token_hash=${tokenHash}&type=recovery`
+      : undefined
+
+    after(async () => {
+      if (passwordSetupUrl) {
+        const { subject, html } = teamInviteEmail({
+          teamName: name,
+          passwordSetupUrl,
+        })
+        await sendEmail({ to: email, subject, html })
+      }
+    })
+
     revalidatePath("/admin", "page")
 
     return {
