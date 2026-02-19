@@ -353,9 +353,8 @@ export async function createUser(_prevState: unknown, formData: FormData) {
     })
 
     const tokenHash = linkData?.properties?.hashed_token
-    const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || "http://localhost:3000"
     const passwordSetupUrl = tokenHash
-      ? `${baseUrl}/auth/confirm?token_hash=${tokenHash}&type=recovery`
+      ? `${SITE_URL}/auth/confirm?token_hash=${tokenHash}&type=recovery`
       : undefined
 
     after(async () => {
