@@ -6,7 +6,7 @@ import { useRouter, useSearchParams } from "next/navigation"
 import { cn } from "@/lib/utils"
 
 import { BarCharts } from "./bar-charts"
-import { type CircuitTarget, inputSizeSearchParam, getInputSizeUnit, targetToDataKey } from "./circuits"
+import { type CircuitTarget, getInputSizeUnit, inputSizeSearchParam, targetToDataKey } from "./circuits"
 import { LineCharts } from "./line-charts"
 import { buildChartConfig, getInputSizes, getProverKey } from "./metrics"
 import { ChartLegend, EmptyState, useSeriesSelection } from "./shared"
