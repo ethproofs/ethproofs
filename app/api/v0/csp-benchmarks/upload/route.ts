@@ -33,9 +33,7 @@ export const POST = withAuth(async ({ apiKey, request }) => {
     )
   }
 
-  const filenameWithExtension = filename.endsWith(".json")
-    ? filename
-    : `${filename}.json`
+  const filenameWithExtension = `${filename}.json`
 
   const arrayBuffer = await file.arrayBuffer()
   const buffer = Buffer.from(arrayBuffer)

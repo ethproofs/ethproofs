@@ -13,6 +13,8 @@ import { defaultColumnVisibility, getColumns, labels } from "./columns"
 import type { Metrics } from "@/lib/api/csp-benchmarks"
 import { exportWithLabels } from "@/lib/csv-export"
 
+const defaultSorting: SortingState = [{ id: "proof_duration", desc: false }]
+
 interface TableProps {
   className?: string
   benchmarks: Metrics[]
@@ -24,7 +26,6 @@ export function Table({
   benchmarks,
   allBenchmarks,
 }: TableProps) {
-  const defaultSorting: SortingState = [{ id: "proof_duration", desc: false }]
   const tableState = useDataTableUrlState({
     initialVisibility: defaultColumnVisibility,
   })
