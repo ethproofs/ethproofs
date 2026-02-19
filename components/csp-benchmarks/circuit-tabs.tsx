@@ -6,11 +6,11 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 
 import {
   type CircuitTarget,
-  inputSizeSearchParam,
-  targetSearchParam,
   circuitTargets,
   defaultCircuitTarget,
+  inputSizeSearchParam,
   isValidCircuitTarget,
+  targetSearchParam,
 } from "./circuits"
 
 interface CircuitTabsProps {
