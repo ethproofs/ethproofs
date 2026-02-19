@@ -52,7 +52,7 @@ export const exploreNavItems = [
 
 export const benchmarksNavItems = [
   {
-    label: "dashboard",
+    label: "benchmarks",
     href: "/csp-benchmarks",
     icon: <BarChart3 />,
   },

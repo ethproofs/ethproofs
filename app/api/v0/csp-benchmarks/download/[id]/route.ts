@@ -1,4 +1,5 @@
 import { downloadCspBenchmarks } from "@/lib/api/csp-benchmarks"
+import { isValidFilename } from "@/utils/validation"
 
 export async function GET(
   _request: Request,
@@ -6,8 +7,8 @@ export async function GET(
 ) {
   const { id } = await params
 
-  if (!id) {
-    return new Response("No filename provided", { status: 400 })
+  if (!id || !isValidFilename(id)) {
+    return new Response("Invalid filename", { status: 400 })
   }
 
   const filename = `${id}.json`
