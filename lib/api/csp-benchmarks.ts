@@ -6,12 +6,17 @@ import { CSP_BENCHMARKS_BUCKET, TAGS } from "../constants"
 
 import { createClient } from "@/utils/supabase/server"
 
-function createStorageClient() {
+let storageClient: ReturnType<typeof createSupabaseClient> | null = null
+
+function getStorageClient() {
+  if (storageClient) return storageClient
+
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL
   const key = process.env.SUPABASE_SERVICE_KEY
   if (!url || !key) return null
 
-  return createSupabaseClient(url, key)
+  storageClient = createSupabaseClient(url, key)
+  return storageClient
 }
 
 const benchPropertiesSchema = z.object({
@@ -137,7 +142,7 @@ export async function uploadCspBenchmarks(filename: string, buffer: Buffer) {
 }
 
 export async function downloadCspBenchmarks(filename: string) {
-  const supabase = createStorageClient()
+  const supabase = getStorageClient()
   if (!supabase) return null
 
   const { data, error } = await supabase.storage
@@ -153,7 +158,7 @@ export async function downloadCspBenchmarks(filename: string) {
 }
 
 export async function listCspBenchmarks() {
-  const supabase = createStorageClient()
+  const supabase = getStorageClient()
   if (!supabase) return null
 
   const { data, error } = await supabase.storage

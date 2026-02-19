@@ -279,7 +279,7 @@ export function getColumns(options?: CspColumnsOptions): ColumnDef<Metrics>[] {
         return (
           <div style={{ width: 100 }}>
             <span className="text-xs">
-              {row.original.input_size.toLocaleString()}
+              {formatNumber(row.original.input_size)}
             </span>
           </div>
         )
