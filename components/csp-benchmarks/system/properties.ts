@@ -27,7 +27,7 @@ interface ProverMeta {
   website?: string
 }
 
-const proverMetadata: Record<string, ProverMeta> = {
+const proverMetadata: Partial<Record<string, ProverMeta>> = {
   risc0: { github: "risc0/risc0", website: "https://risczero.com" },
   miden: { github: "0xMiden/miden-vm", website: "https://miden.xyz" },
   "cairo-m": { github: "starkware-libs/cairo", website: "https://starkware.co" },

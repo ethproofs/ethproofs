@@ -3,10 +3,10 @@
 import { useMemo } from "react"
 import { useRouter, useSearchParams } from "next/navigation"
 
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { cn } from "@/lib/utils"
 
 import { BarCharts } from "./bar-charts"
-import { type CircuitTarget, getInputSizeUnit, targetToDataKey } from "./circuits"
+import { type CircuitTarget, inputSizeSearchParam, getInputSizeUnit, targetToDataKey } from "./circuits"
 import { LineCharts } from "./line-charts"
 import { buildChartConfig, getInputSizes, getProverKey } from "./metrics"
 import { ChartLegend, EmptyState, useSeriesSelection } from "./shared"
@@ -55,7 +55,7 @@ export function CircuitContent({
     [filteredMetrics]
   )
 
-  const inputSizeParam = searchParams.get("inputSize")
+  const inputSizeParam = searchParams.get(inputSizeSearchParam)
   const parsedInputSize = inputSizeParam !== null ? Number(inputSizeParam) : NaN
 
   const selectedInputSize =
@@ -65,7 +65,7 @@ export function CircuitContent({
 
   const handleInputSizeChange = (size: number) => {
     const params = new URLSearchParams(searchParams.toString())
-    params.set("inputSize", String(size))
+    params.set(inputSizeSearchParam, String(size))
     router.replace(`?${params.toString()}`, { scroll: false })
   }
 
@@ -74,33 +74,35 @@ export function CircuitContent({
   }
 
   return (
-    <div className="space-y-8 px-4 sm:space-y-12 sm:px-6">
-      {target === "ecdsa" ? (
-        <span className="text-sm font-medium">single signature</span>
-      ) : availableInputSizes.length > 1 ? (
-        <Tabs value={String(selectedInputSize)} onValueChange={(v) => handleInputSizeChange(Number(v))}>
-          <div className="relative flex items-center justify-center gap-4 sm:justify-between">
-            <span className="hidden shrink-0 text-sm font-medium sm:block">{getInputSizeUnit(dataKey)}</span>
-            <div className="overflow-x-auto">
-              <TabsList className="h-auto p-0.5">
-                {availableInputSizes.map((size) => (
-                  <TabsTrigger
-                    key={size}
-                    className="px-3 py-1.5 text-sm data-[state=active]:text-primary"
-                    value={String(size)}
-                  >
-                    {size}
-                  </TabsTrigger>
-                ))}
-              </TabsList>
-            </div>
-          </div>
-        </Tabs>
-      ) : (
-        <span className="text-sm font-medium">
-          {getInputSizeUnit(dataKey)} {availableInputSizes[0]}
+    <div className="space-y-8 px-4 pt-4 sm:space-y-12 sm:px-6 sm:pt-6">
+      <div className="flex min-h-10 items-center gap-3">
+        <span className="shrink-0 text-sm font-medium text-muted-foreground">
+          {target === "ecdsa" ? "input" : getInputSizeUnit(dataKey)}
         </span>
-      )}
+        {target === "ecdsa" ? (
+          <span className="text-sm">single signature</span>
+        ) : availableInputSizes.length > 1 ? (
+          <div className="flex items-center gap-1 overflow-x-auto">
+            {availableInputSizes.map((size) => (
+              <button
+                key={size}
+                type="button"
+                className={cn(
+                  "rounded-md px-2.5 py-1 text-sm transition-colors",
+                  size === selectedInputSize
+                    ? "bg-primary/10 font-medium text-primary"
+                    : "text-muted-foreground hover:text-foreground"
+                )}
+                onClick={() => handleInputSizeChange(size)}
+              >
+                {size}
+              </button>
+            ))}
+          </div>
+        ) : (
+          <span className="text-sm">{availableInputSizes[0]}</span>
+        )}
+      </div>
 
       <section>
         <h2 className="mb-4 text-lg sm:text-xl">comparison</h2>

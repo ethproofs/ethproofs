@@ -196,8 +196,12 @@ async function fetchAllCspBenchmarksUncached(): Promise<CspBenchmarksResult> {
           validatedData = flatResult.data
         } else {
           console.error(
-            `Failed to parse ${file.name}:`,
+            `Failed to parse ${file.name} (structured):`,
             structuredResult.error.issues.slice(0, 3)
+          )
+          console.error(
+            `Failed to parse ${file.name} (flat):`,
+            flatResult?.error.issues.slice(0, 3)
           )
           return null
         }

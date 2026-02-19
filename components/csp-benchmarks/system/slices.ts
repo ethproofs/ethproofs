@@ -20,7 +20,9 @@ interface CspMetricInfo {
   statusLabels: Partial<Record<CspSeverityLevel, string>>
 }
 
-const cspMetricInfo: Record<string, CspMetricInfo> = {
+type CspMetricId = "is_zk" | "is_pq" | "is_maintained" | "is_audited" | "security_bits"
+
+const cspMetricInfo: Record<CspMetricId, CspMetricInfo> = {
   is_zk: {
     label: "zero knowledge",
     statusLabels: { green: "ZK", red: "not ZK", none: "unknown" },

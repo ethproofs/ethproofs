@@ -15,10 +15,14 @@ interface CspBenchmarksErrorProps {
   reset(): void
 }
 
-export default function CspBenchmarksError({ reset }: CspBenchmarksErrorProps) {
+export default function CspBenchmarksError({ error, reset }: CspBenchmarksErrorProps) {
   const [isRefreshing, setIsRefreshing] = useState(false)
   const retryCount = useRef(0)
   const hasExhaustedRetries = retryCount.current >= maxRetries
+
+  useEffect(() => {
+    console.error(error)
+  }, [error])
 
   useEffect(() => {
     if (!isRefreshing) return

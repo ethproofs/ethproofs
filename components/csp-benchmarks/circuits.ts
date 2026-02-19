@@ -42,6 +42,9 @@ export function formatInputSizeWithUnit(size: number, target: string): string {
   return `${size} B`
 }
 
+export const targetSearchParam = "target"
+export const inputSizeSearchParam = "inputSize"
+
 export function isValidCircuitTarget(
   value: string | null
 ): value is CircuitTarget {

@@ -6,6 +6,8 @@ import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 
 import {
   type CircuitTarget,
+  inputSizeSearchParam,
+  targetSearchParam,
   circuitTargets,
   defaultCircuitTarget,
   isValidCircuitTarget,
@@ -21,15 +23,15 @@ export function CircuitTabs({
   const router = useRouter()
   const searchParams = useSearchParams()
 
-  const targetParam = searchParams.get("target")
+  const targetParam = searchParams.get(targetSearchParam)
   const activeTarget: CircuitTarget = isValidCircuitTarget(targetParam)
     ? targetParam
     : defaultCircuitTarget
 
   const handleTargetChange = (value: string) => {
     const params = new URLSearchParams(searchParams.toString())
-    params.set("target", value)
-    params.delete("inputSize")
+    params.set(targetSearchParam, value)
+    params.delete(inputSizeSearchParam)
     router.replace(`?${params.toString()}`, { scroll: false })
   }
 

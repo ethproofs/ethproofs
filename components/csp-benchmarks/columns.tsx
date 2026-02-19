@@ -13,15 +13,15 @@ import {
 
 import { buildSystemPropertiesFromRow, type SystemProperties } from "./system/properties"
 
+import type { Metrics } from "@/lib/api/csp-benchmarks"
+import { formatBytes, formatNumber } from "@/lib/number"
+import { prettyMs } from "@/lib/time"
+
 const auditStatusDisplay: Record<string, string> = {
   audited: "audited",
   not_audited: "not audited",
   partially_audited: "partially audited",
 }
-
-import type { Metrics } from "@/lib/api/csp-benchmarks"
-import { formatBytes, formatNumber } from "@/lib/number"
-import { prettyMs } from "@/lib/time"
 
 export const labels = [
   { value: "name", label: "name" },

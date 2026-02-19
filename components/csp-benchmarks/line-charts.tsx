@@ -1,6 +1,6 @@
 "use client"
 
-import { useCallback, useMemo } from "react"
+import { useMemo } from "react"
 import { CartesianGrid, Line, LineChart, XAxis, YAxis } from "recharts"
 
 import type { ChartConfig } from "@/components/ui/chart"
@@ -142,8 +142,8 @@ function LineMetricChart({
       )
   )
   if (allValues.length === 0) return null
-  const minValue = Math.min(...allValues)
-  const maxValue = Math.max(...allValues)
+  const minValue = allValues.reduce((acc, v) => Math.min(acc, v), Infinity)
+  const maxValue = allValues.reduce((acc, v) => Math.max(acc, v), -Infinity)
   const ticks = generateYAxisTicks(minValue, maxValue, isBytes)
 
   const tooltipFormatter = (value: number) => {
@@ -241,10 +241,8 @@ export function LineCharts({
     [benchmarks]
   )
 
-  const createChartData = useCallback(
-    (metricKey: MetricKey): ChartDataPoint[] => {
-      if (benchmarks.length === 0) return []
-
+  const metricsData = useMemo(() => {
+    return chartMetrics.map((metricKey) => {
       const grouped = new Map<number, Map<string, number>>()
 
       benchmarks.forEach((benchmark) => {
@@ -262,23 +260,20 @@ export function LineCharts({
         grouped.get(inputSize)?.set(key, metricValue)
       })
 
-      return Array.from(grouped.entries())
+      const data: ChartDataPoint[] = Array.from(grouped.entries())
         .sort(([sizeA], [sizeB]) => sizeA - sizeB)
         .map(([inputSize, metrics]) => ({
           input_size: inputSize,
           ...Object.fromEntries(metrics),
         }))
-    },
-    [benchmarks]
-  )
 
-  const metricsData = useMemo(() => {
-    return chartMetrics.map((metricKey) => ({
-      key: metricKey,
-      config: metricConfigs[metricKey],
-      data: createChartData(metricKey),
-    }))
-  }, [createChartData])
+      return {
+        key: metricKey,
+        config: metricConfigs[metricKey],
+        data,
+      }
+    })
+  }, [benchmarks])
 
   if (benchmarks.length === 0) {
     return <EmptyState message={`no benchmark data available for ${target}`} />
