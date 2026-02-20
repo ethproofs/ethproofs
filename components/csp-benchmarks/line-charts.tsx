@@ -219,7 +219,7 @@ function LineMetricChart({
                 dot={false}
                 connectNulls
                 isAnimationActive={false}
-                strokeWidth={2}
+                strokeWidth={2.5}
               />
             ))}
         </LineChart>

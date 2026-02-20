@@ -29,18 +29,18 @@ interface ProverMeta {
 
 const proverMetadata: Partial<Record<string, ProverMeta>> = {
   risc0: { github: "risc0/risc0", website: "https://risczero.com" },
-  miden: { github: "0xMiden/miden-vm", website: "https://miden.xyz" },
+  miden: { github: "0xmiden/miden-vm", website: "https://miden.xyz" },
   "cairo-m": { github: "starkware-libs/cairo", website: "https://starkware.co" },
   nexus: { github: "nexus-xyz/nexus-zkvm", website: "https://nexus.xyz" },
   ligetron: { github: "ligetron/ligetron" },
-  binius64: { github: "IrreducibleOSS/binius", website: "https://irreducible.com" },
-  plonky2: { github: "0xPolygonZero/plonky2" },
+  binius64: { github: "irreducibleoss/binius", website: "https://irreducible.com" },
+  plonky2: { github: "0xpolygonzero/plonky2" },
   circom: { github: "iden3/circom", website: "https://iden3.io" },
-  barretenberg: { github: "AztecProtocol/aztec-packages", website: "https://aztec.network" },
-  expander: { github: "PolyhedraZK/Expander", website: "https://polyhedra.network" },
-  provekit: { github: "worldfnd/ProveKit", website: "https://world.org" },
+  barretenberg: { github: "aztecprotocol/aztec-packages", website: "https://aztec.network" },
+  expander: { github: "polyhedrazk/expander", website: "https://polyhedra.network" },
+  provekit: { github: "worldfnd/provekit", website: "https://world.org" },
   "rookie-numbers": { github: "clementwalter/rookie-numbers" },
-  spartan2: { github: "microsoft/Spartan2" },
+  spartan2: { github: "microsoft/spartan2" },
 }
 
 export function buildSystemPropertiesFromRow(row: Metrics): SystemProperties {
