@@ -55,7 +55,7 @@ export const metricConfigs: Record<MetricKey, MetricConfig> = {
   },
   preprocessing_size: {
     key: "preprocessing_size",
-    label: "preprocessing data size",
+    label: "preprocessing size",
     description:
       "preprocessed artifacts size, such as SRS or proving key (lower is better)",
     format: (value) => formatBytes(value, 0),
@@ -72,23 +72,26 @@ export const chartMetrics: readonly MetricKey[] = [
 ]
 
 export const chartColors = [
-  "hsl(var(--chart-1))",
-  "hsl(var(--chart-2))",
-  "hsl(var(--chart-3))",
-  "hsl(var(--chart-4))",
-  "hsl(var(--chart-5))",
-  "hsl(var(--chart-6))",
-  "hsl(var(--chart-7))",
-  "hsl(var(--chart-8))",
-  "hsl(var(--chart-9))",
-  "hsl(var(--chart-10))",
-  "hsl(var(--chart-11))",
-  "hsl(var(--chart-12))",
-  "hsl(var(--chart-13))",
-  "hsl(var(--chart-14))",
-  "hsl(var(--chart-15))",
-  "hsl(var(--chart-16))",
-  "hsl(var(--chart-17))",
+  "#f9a8d4",
+  "#a3e635",
+  "#4f46e5",
+  "#facc15",
+  "#a21caf",
+  "#22c55e",
+  "#e879f9",
+  "#4d7c0f",
+  "#3b82f6",
+  "#f97316",
+  "#38bdf8",
+  "#ef4444",
+  "#5eead4",
+  "#db2777",
+  "#0f766e",
+  "#fb7185",
+  "#0369a1",
+  "#a16207",
+  "#c4b5fd",
+  "#fdba74",
 ] as const
 
 export const radarMetrics: ReadonlyArray<{ key: MetricKey; label: string }> = [

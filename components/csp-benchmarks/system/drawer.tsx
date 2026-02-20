@@ -58,7 +58,7 @@ function DrawerBody({ system }: DrawerBodyProps) {
         <DrawerTitle className="text-xl">{system.proverKey}</DrawerTitle>
         <div className="flex flex-wrap gap-1.5 pt-1">
           <Badge variant="outline">
-            {system.is_zkvm ? "zkVM" : "native circuit"}
+            {system.is_zkvm ? "zkVM" : "proving system"}
           </Badge>
         </div>
       </DrawerHeader>
@@ -105,7 +105,7 @@ function DrawerBody({ system }: DrawerBodyProps) {
         <h3 className="mb-3 text-base font-medium">
           properties
         </h3>
-        <div className="grid grid-cols-2 gap-4 text-center text-sm">
+        <div className="grid grid-cols-2 gap-4 text-center text-sm lowercase">
           <PropertyCell label="proving system" value={system.proving_system} />
           <PropertyCell label="field/curve" value={system.field_curve} />
           <PropertyCell label="IOP" value={system.iop} />

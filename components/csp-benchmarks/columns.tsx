@@ -1,10 +1,11 @@
 "use client"
 
-import { Check, Info, X as RedX } from "lucide-react"
+import { Check, Eye, Info, X as RedX } from "lucide-react"
 import type { ColumnDef, VisibilityState } from "@tanstack/react-table"
 
 import { DataTableColumnHeader } from "@/components/data-table/data-table-column-header"
 import { Null } from "@/components/Null"
+import { Button } from "@/components/ui/button"
 import {
   Tooltip,
   TooltipContent,
@@ -255,20 +256,32 @@ export function getColumns(options?: CspColumnsOptions): ColumnDef<Metrics>[] {
         <DataTableColumnHeader column={column} title="name" />
       ),
       cell: ({ row }) => (
-        <div style={{ width: 120 }}>
-          <button
-            type="button"
-            className="font-medium text-primary underline-offset-2 hover:underline"
-            onClick={() =>
-              options?.onOpenDrawer?.(buildSystemPropertiesFromRow(row.original))
-            }
-          >
-            {row.original.name}
-          </button>
+        <div style={{ width: 100 }}>
+          <span className="font-medium">{row.original.name}</span>
         </div>
       ),
     },
-    createTextColumn("feat", "feature", 100),
+    {
+      id: "actions",
+      header: () => <span className="text-xs text-muted-foreground">info</span>,
+      enableSorting: false,
+      enableHiding: false,
+      size: 28,
+      cell: ({ row }) => (
+        <Button
+          variant="ghost"
+          size="icon"
+          className="size-7"
+          aria-label={`view ${row.original.name} details`}
+          onClick={() =>
+            options?.onOpenDrawer?.(buildSystemPropertiesFromRow(row.original))
+          }
+        >
+          <Eye className="size-3.5" />
+        </Button>
+      ),
+    },
+    createTextColumn("feat", "feature", 80),
     {
       id: "input_size",
       accessorKey: "input_size",
@@ -277,7 +290,7 @@ export function getColumns(options?: CspColumnsOptions): ColumnDef<Metrics>[] {
       ),
       cell: ({ row }) => {
         return (
-          <div style={{ width: 100 }}>
+          <div style={{ width: 80 }}>
             <span className="text-xs">
               {formatNumber(row.original.input_size)}
             </span>
@@ -285,22 +298,22 @@ export function getColumns(options?: CspColumnsOptions): ColumnDef<Metrics>[] {
         )
       },
     },
-    createDurationColumn("proof_duration", "proof gen", 100),
-    createDurationColumn("verify_duration", "verification", 110),
-    createBytesColumn("peak_memory", "memory", 100),
-    createBytesColumn("proof_size", "proof size", 100),
-    createBytesColumn("preprocessing_size", "preprocessing", 120),
-    createNumberColumn("num_constraints", "constraints", 100, {
-      tooltip: "constraint count for native circuits (not applicable to zkVMs)",
+    createDurationColumn("proof_duration", "proof gen", 80),
+    createDurationColumn("verify_duration", "verification", 80),
+    createBytesColumn("peak_memory", "memory", 72),
+    createBytesColumn("proof_size", "proof size", 72),
+    createBytesColumn("preprocessing_size", "preprocessing", 80),
+    createNumberColumn("num_constraints", "constraints", 72, {
+      tooltip: "constraint count for proving systems (not applicable to zkVMs)",
       isCompact: true,
     }),
-    createTextColumn("target", "target", 100),
-    createBooleanColumn("is_zkvm", "zkVM", 80),
-    createTextColumn("proving_system", "proving system", 120),
-    createTextColumn("field_curve", "field/curve", 120),
-    createBooleanColumn("is_zk", "ZK", 80),
-    createBooleanColumn("is_pq", "post-quantum", 100),
-    createNumberColumn("security_bits", "security bits", 100),
+    createTextColumn("target", "target", 80),
+    createBooleanColumn("is_zkvm", "zkVM", 48),
+    createTextColumn("proving_system", "proving system", 100),
+    createTextColumn("field_curve", "field/curve", 100),
+    createBooleanColumn("is_zk", "ZK", 48),
+    createBooleanColumn("is_pq", "post-quantum", 48),
+    createNumberColumn("security_bits", "security bits", 72),
     {
       id: "is_audited",
       accessorKey: "is_audited",
@@ -310,7 +323,7 @@ export function getColumns(options?: CspColumnsOptions): ColumnDef<Metrics>[] {
       cell: ({ row }) => {
         const value = row.original.is_audited
         return (
-          <div style={{ width: 100 }}>
+          <div style={{ width: 80 }}>
             {value ? (
               <span className="text-xs">
                 {auditStatusDisplay[value] ?? value}
@@ -322,14 +335,14 @@ export function getColumns(options?: CspColumnsOptions): ColumnDef<Metrics>[] {
         )
       },
     },
-    createBooleanColumn("is_maintained", "maintained", 100),
-    createTextColumn("iop", "IOP", 100, "interactive oracle proof"),
-    createTextColumn("pcs", "PCS", 100, "polynomial commitment scheme"),
-    createTextColumn("arithm", "arithmetization", 120, "arithmetization method"),
-    createNumberColumn("cycles", "cycles", 100, {
-      tooltip: "execution cycles for zkVMs (not applicable to native circuits)",
+    createBooleanColumn("is_maintained", "maintained", 48),
+    createTextColumn("iop", "IOP", 80, "interactive oracle proof"),
+    createTextColumn("pcs", "PCS", 80, "polynomial commitment scheme"),
+    createTextColumn("arithm", "arithmetization", 80, "arithmetization method"),
+    createNumberColumn("cycles", "cycles", 72, {
+      tooltip: "execution cycles for zkVMs (not applicable to proving systems)",
       isCompact: true,
     }),
-    createTextColumn("isa", "ISA", 100, "instruction set architecture"),
+    createTextColumn("isa", "ISA", 80, "instruction set architecture"),
   ]
 }

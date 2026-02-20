@@ -1,15 +1,18 @@
 "use client"
 
-import { useMemo } from "react"
+import { useCallback, useMemo, useState } from "react"
 import { useRouter, useSearchParams } from "next/navigation"
 
 import { cn } from "@/lib/utils"
 
+import { SystemDrawer } from "./system/drawer"
+import type { SystemProperties } from "./system/properties"
 import { BarCharts } from "./bar-charts"
 import { type CircuitTarget, getInputSizeUnit, inputSizeSearchParam, targetToDataKey } from "./circuits"
 import { LineCharts } from "./line-charts"
 import { buildChartConfig, getInputSizes, getProverKey } from "./metrics"
 import { ChartLegend, EmptyState, useSeriesSelection } from "./shared"
+import { SystemPropertiesTable } from "./system-properties-table"
 import { Table } from "./table"
 
 import type { Metrics } from "@/lib/api/csp-benchmarks"
@@ -69,6 +72,14 @@ export function CircuitContent({
     router.replace(`?${params.toString()}`, { scroll: false })
   }
 
+  const [drawerOpen, setDrawerOpen] = useState(false)
+  const [selectedSystem, setSelectedSystem] = useState<SystemProperties | null>(null)
+
+  const handleOpenDrawer = useCallback((system: SystemProperties) => {
+    setSelectedSystem(system)
+    setDrawerOpen(true)
+  }, [])
+
   if (filteredMetrics.length === 0) {
     return <EmptyState message={`no benchmark data available for ${target}`} />
   }
@@ -123,6 +134,11 @@ export function CircuitContent({
         onToggle={handleToggleProver}
       />
 
+      <section>
+        <h2 className="mb-4 text-lg sm:text-xl">system properties</h2>
+        <SystemPropertiesTable benchmarks={filteredMetrics} />
+      </section>
+
       {target !== "ecdsa" && (
         <section>
           <h2 className="mb-4 text-lg sm:text-xl">scaling</h2>
@@ -139,8 +155,18 @@ export function CircuitContent({
 
       <section>
         <h2 className="mb-4 text-lg sm:text-xl">all results</h2>
-        <Table benchmarks={filteredMetrics} allBenchmarks={metrics} />
+        <Table
+          benchmarks={filteredMetrics}
+          allBenchmarks={metrics}
+          onOpenDrawer={handleOpenDrawer}
+        />
       </section>
+
+      <SystemDrawer
+        open={drawerOpen}
+        onOpenChange={setDrawerOpen}
+        system={selectedSystem}
+      />
     </div>
   )
 }

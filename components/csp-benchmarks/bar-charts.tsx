@@ -169,8 +169,6 @@ export function BarCharts({
     )
   }
 
-  const visibleProverCount = allProvers.filter((p) => !hiddenProvers.has(p)).length
-
   const chartLabel = target === "ecdsa"
     ? "ecdsa"
     : `${dataKeyToTarget[target]} · ${formatInputSizeWithUnit(selectedInputSize, target)}`
@@ -191,7 +189,7 @@ export function BarCharts({
             shouldUseLogScale={config.shouldUseLogScale}
             label={chartLabel}
             ariaLabel={`${config.label} comparison`}
-            totalProvers={visibleProverCount}
+            totalProvers={allProvers.length}
           />
         </div>
       ))}
