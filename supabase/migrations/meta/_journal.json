@@ -365,6 +365,27 @@
       "when": 1770676966040,
       "tag": "0051_add-zkvm-pending-updates",
       "breakpoints": true
+    },
+    {
+      "idx": 52,
+      "version": "7",
+      "when": 1771342028278,
+      "tag": "0052_add-rtp-cohort-snapshots",
+      "breakpoints": true
+    },
+    {
+      "idx": 53,
+      "version": "7",
+      "when": 1771347109986,
+      "tag": "0053_add-rtp-cohort-snapshot-cron",
+      "breakpoints": true
+    },
+    {
+      "idx": 54,
+      "version": "7",
+      "when": 1771695980527,
+      "tag": "0054_proof-alerts-prover-type-grouping",
+      "breakpoints": true
     }
   ]
 }

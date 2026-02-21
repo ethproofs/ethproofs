@@ -148,10 +148,6 @@ content_path = "supabase/templates/recovery.html"
 subject = "your Ethproofs login link"
 content_path = "supabase/templates/magic_link.html"
 
-[auth.email.template.invite]
-subject = "you've been invited to Ethproofs"
-content_path = "supabase/templates/invite.html"
-
 [auth.email.template.email_change]
 subject = "[Ethproofs] confirm your new email address"
 content_path = "supabase/templates/email_change.html"

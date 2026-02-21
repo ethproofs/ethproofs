@@ -4,7 +4,14 @@ import { unstable_cache as cache } from "next/cache"
 import { TAGS } from "../constants"
 
 import { db } from "@/db"
-import { blocks, clusters, clusterVersions, proofs, teams } from "@/db/schema"
+import {
+  blocks,
+  clusters,
+  clusterVersions,
+  proofs,
+  proverTypes,
+  teams,
+} from "@/db/schema"
 
 export interface MissingProofCluster {
   cluster_id: string
@@ -20,10 +27,31 @@ export interface MissingProofTeam {
   clusters: MissingProofCluster[]
 }
 
+export interface PerfectCluster {
+  cluster_id: string
+  cluster_name: string
+  cluster_id_suffix: string
+  team_name: string
+  team_slug: string
+}
+
+export interface ProverTypeGroup {
+  prover_type_id: number
+  prover_type_name: string
+  teams: MissingProofTeam[]
+}
+
+export interface PerfectProverTypeGroup {
+  prover_type_id: number
+  prover_type_name: string
+  clusters: PerfectCluster[]
+}
+
 export interface MissingProofsStatus {
   date: string
   total_missing: number
-  teams: MissingProofTeam[]
+  missing_by_prover_type: ProverTypeGroup[]
+  perfect_by_prover_type: PerfectProverTypeGroup[]
   checked_at: string
   missing_block_range: {
     start: number | null
@@ -42,18 +70,15 @@ export interface MissingProofsStatus {
 export const fetchMissingProofsStatus = async (
   daysBack: number = 0
 ): Promise<MissingProofsStatus> => {
-  // Check the last 6 hours, or go back to specified days
   const now = new Date()
   const hoursBack = daysBack === 0 ? 6 : daysBack * 24
 
-  // Bucket endTime to 5-minute windows for stable cache keys
   const BUCKET_MS = 5 * 60 * 1000
   const endTime = new Date(Math.floor(now.getTime() / BUCKET_MS) * BUCKET_MS)
   const startTime = new Date(endTime.getTime() - hoursBack * 60 * 60 * 1000)
 
   return cache(
     async (startTime: Date, endTime: Date) => {
-      // Find all missing proofs for the time range
       const missingProofsData = await db
         .select({
           team_id: teams.id,
@@ -64,10 +89,13 @@ export const fetchMissingProofsStatus = async (
           cluster_id_suffix: sql<string>`RIGHT(${clusters.id}::text, 6)`,
           block_number: blocks.block_number,
           block_timestamp: blocks.timestamp,
+          prover_type_id: proverTypes.id,
+          prover_type_name: proverTypes.name,
         })
         .from(blocks)
         .innerJoin(clusters, and(eq(clusters.is_active, true)))
         .innerJoin(teams, eq(teams.id, clusters.team_id))
+        .innerJoin(proverTypes, eq(proverTypes.id, clusters.prover_type_id))
         .where(
           and(
             gte(blocks.timestamp, startTime.toISOString()),
@@ -93,7 +121,21 @@ export const fetchMissingProofsStatus = async (
         )
         .orderBy(blocks.block_number)
 
-      // Get total block range that was checked (all blocks in time range)
+      const activeClustersData = await db
+        .select({
+          cluster_id: clusters.id,
+          cluster_name: clusters.name,
+          cluster_id_suffix: sql<string>`RIGHT(${clusters.id}::text, 6)`,
+          team_name: teams.name,
+          team_slug: teams.slug,
+          prover_type_id: proverTypes.id,
+          prover_type_name: proverTypes.name,
+        })
+        .from(clusters)
+        .innerJoin(teams, eq(teams.id, clusters.team_id))
+        .innerJoin(proverTypes, eq(proverTypes.id, clusters.prover_type_id))
+        .where(eq(clusters.is_active, true))
+
       const totalBlocksData = await db
         .select({
           block_number: blocks.block_number,
@@ -108,7 +150,6 @@ export const fetchMissingProofsStatus = async (
         )
         .orderBy(blocks.block_number)
 
-      // Calculate block ranges for metadata
       const missingBlockNumbers = missingProofsData.map((row) =>
         Number(row.block_number)
       )
@@ -134,22 +175,36 @@ export const fetchMissingProofsStatus = async (
           totalBlockNumbers.length > 0 ? Math.max(...totalBlockNumbers) : null,
       }
 
-      // Group data by team and cluster
-      const teamsMap = new Map<string, MissingProofTeam>()
+      const missingClusterIds = new Set(
+        missingProofsData.map((row) => row.cluster_id)
+      )
+
+      const proverTypeMap = new Map<number, ProverTypeGroup>()
 
       for (const row of missingProofsData) {
-        if (!teamsMap.has(row.team_id)) {
-          teamsMap.set(row.team_id, {
+        if (!proverTypeMap.has(row.prover_type_id)) {
+          proverTypeMap.set(row.prover_type_id, {
+            prover_type_id: row.prover_type_id,
+            prover_type_name: row.prover_type_name,
+            teams: [],
+          })
+        }
+
+        const proverTypeGroup = proverTypeMap.get(row.prover_type_id)
+        if (!proverTypeGroup) continue
+
+        let team = proverTypeGroup.teams.find((t) => t.team_id === row.team_id)
+        if (!team) {
+          team = {
             team_id: row.team_id,
             team_name: row.team_name,
             team_slug: row.team_slug,
             clusters: [],
-          })
+          }
+          proverTypeGroup.teams.push(team)
         }
 
-        const team = teamsMap.get(row.team_id)!
         let cluster = team.clusters.find((c) => c.cluster_id === row.cluster_id)
-
         if (!cluster) {
           cluster = {
             cluster_id: row.cluster_id,
@@ -163,17 +218,44 @@ export const fetchMissingProofsStatus = async (
         cluster.missing_blocks.push(Number(row.block_number))
       }
 
-      // Sort missing blocks for each cluster
-      for (const team of teamsMap.values()) {
-        for (const cluster of team.clusters) {
-          cluster.missing_blocks.sort((a, b) => a - b)
+      for (const group of proverTypeMap.values()) {
+        for (const team of group.teams) {
+          for (const cluster of team.clusters) {
+            cluster.missing_blocks.sort((a, b) => a - b)
+          }
         }
+      }
+
+      const perfectMap = new Map<number, PerfectProverTypeGroup>()
+
+      for (const row of activeClustersData) {
+        if (missingClusterIds.has(row.cluster_id)) continue
+
+        if (!perfectMap.has(row.prover_type_id)) {
+          perfectMap.set(row.prover_type_id, {
+            prover_type_id: row.prover_type_id,
+            prover_type_name: row.prover_type_name,
+            clusters: [],
+          })
+        }
+
+        const group = perfectMap.get(row.prover_type_id)
+        if (!group) continue
+
+        group.clusters.push({
+          cluster_id: row.cluster_id,
+          cluster_name: row.cluster_name,
+          cluster_id_suffix: row.cluster_id_suffix,
+          team_name: row.team_name,
+          team_slug: row.team_slug,
+        })
       }
 
       return {
         date: startTime.toISOString().split("T")[0],
         total_missing: missingProofsData.length,
-        teams: Array.from(teamsMap.values()),
+        missing_by_prover_type: Array.from(proverTypeMap.values()),
+        perfect_by_prover_type: Array.from(perfectMap.values()),
         checked_at: new Date().toISOString(),
         missing_block_range: missingBlockRange,
         total_block_range: totalBlockRange,
@@ -184,12 +266,12 @@ export const fetchMissingProofsStatus = async (
       }
     },
     [
-      `missing-proofs-status:v1:days=${daysBack}:hours=${hoursBack}:end=${endTime.toISOString()}`,
+      `missing-proofs-status:v2:days=${daysBack}:hours=${hoursBack}:end=${endTime.toISOString()}`,
       startTime.toISOString(),
       endTime.toISOString(),
     ],
     {
-      revalidate: 60 * 60 * 3, // 3 hours
+      revalidate: 60 * 60 * 3,
       tags: [TAGS.PROOFS, TAGS.BLOCKS, TAGS.CLUSTERS, TAGS.TEAMS],
     }
   )(startTime, endTime)
