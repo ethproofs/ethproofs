@@ -6,7 +6,7 @@ import { CSP_BENCHMARKS_BUCKET, TAGS } from "../constants"
 
 import { createClient } from "@/utils/supabase/server"
 
-const CSP_BENCHMARKS_REVALIDATE_SECONDS = 60 * 60
+const cspBenchmarksRevalidateSeconds = 60 * 60
 
 let storageClient: ReturnType<typeof createSupabaseClient> | null = null
 
@@ -15,7 +15,16 @@ function getStorageClient() {
 
   const url = process.env.NEXT_PUBLIC_SUPABASE_URL
   const key = process.env.SUPABASE_SERVICE_KEY
-  if (!url || !key) return null
+  if (!url || !key) {
+    const missing = [
+      !url && "NEXT_PUBLIC_SUPABASE_URL",
+      !key && "SUPABASE_SERVICE_KEY",
+    ].filter(Boolean)
+    console.error(
+      `Supabase storage client creation skipped: missing ${missing.join(", ")}`
+    )
+    return null
+  }
 
   storageClient = createSupabaseClient(url, key)
   return storageClient
@@ -216,9 +225,7 @@ async function fetchAllCspBenchmarksUncached(): Promise<CspBenchmarksResult> {
 
         const collection: BenchmarkCollection = {
           filename: file.name,
-          benchmarksId: file.name.endsWith(".json")
-            ? file.name.slice(0, -".json".length)
-            : file.name,
+          benchmarksId: file.name.slice(0, -".json".length),
           updatedAt: file.updated_at || file.created_at,
           data: validatedData,
         }
@@ -242,5 +249,5 @@ async function fetchAllCspBenchmarksUncached(): Promise<CspBenchmarksResult> {
 export const fetchAllCspBenchmarks = cache(
   fetchAllCspBenchmarksUncached,
   ["csp-benchmarks"],
-  { revalidate: CSP_BENCHMARKS_REVALIDATE_SECONDS, tags: [TAGS.CSP_BENCHMARKS] }
+  { revalidate: cspBenchmarksRevalidateSeconds, tags: [TAGS.CSP_BENCHMARKS] }
 )
