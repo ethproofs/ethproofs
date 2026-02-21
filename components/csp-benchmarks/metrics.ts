@@ -96,13 +96,16 @@ export const chartColors = [
   "#fdba74",
 ] as const
 
-export const radarMetrics: ReadonlyArray<{ key: MetricKey; label: string }> = [
-  { key: "preprocessing_size", label: "preprocessing size" },
-  { key: "proof_size", label: "proof size" },
-  { key: "proof_duration", label: "proof generation" },
-  { key: "verify_duration", label: "proof verification" },
-  { key: "peak_memory", label: "peak memory" },
+const radarMetricKeys: readonly MetricKey[] = [
+  "preprocessing_size",
+  "proof_size",
+  "proof_duration",
+  "verify_duration",
+  "peak_memory",
 ]
+
+export const radarMetrics: ReadonlyArray<{ key: MetricKey; label: string }> =
+  radarMetricKeys.map((key) => ({ key, label: metricConfigs[key].label }))
 
 export function getProverKey(benchmark: Metrics): string {
   return `${benchmark.name}${benchmark.feat ? ` (${benchmark.feat})` : ""}`
