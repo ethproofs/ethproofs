@@ -4,6 +4,8 @@ import type { Metrics } from "@/lib/api/csp-benchmarks"
 import { formatBytes } from "@/lib/number"
 import { prettyMs } from "@/lib/time"
 
+const nanosecondsPerMillisecond = 1_000_000
+
 export type MetricKey =
   | "proof_duration"
   | "verify_duration"
@@ -25,7 +27,7 @@ export const metricConfigs: Record<MetricKey, MetricConfig> = {
     label: "proof generation",
     description: "proof generation time (lower is better)",
     format: (value) =>
-      prettyMs(value / 1_000_000, {
+      prettyMs(value / nanosecondsPerMillisecond, {
         keepDecimalsOnWholeSeconds: false,
         unitCount: 1,
       }),
@@ -35,7 +37,7 @@ export const metricConfigs: Record<MetricKey, MetricConfig> = {
     label: "proof verification",
     description: "proof verification time (lower is better)",
     format: (value) =>
-      prettyMs(value / 1_000_000, {
+      prettyMs(value / nanosecondsPerMillisecond, {
         keepDecimalsOnWholeSeconds: false,
         unitCount: 1,
       }),
