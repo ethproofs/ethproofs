@@ -18,6 +18,8 @@ import type { Metrics } from "@/lib/api/csp-benchmarks"
 import { formatBytes, formatNumber } from "@/lib/number"
 import { prettyMs } from "@/lib/time"
 
+const nanosecondsPerMillisecond = 1_000_000
+
 const auditStatusDisplay: Record<string, string> = {
   audited: "audited",
   not_audited: "not audited",
@@ -87,7 +89,6 @@ function TooltipHeader({ tooltip }: TooltipHeaderProps) {
         <button
           type="button"
           className="shrink-0 text-muted-foreground hover:text-foreground"
-          tabIndex={0}
         >
           <Info className="size-3.5" />
           <span className="sr-only">{tooltip}</span>
@@ -233,7 +234,7 @@ function createDurationColumn(
       return (
         <div style={{ width }}>
           {typeof value === "number" && value !== 0 ? (
-            prettyMs(value / 1_000_000)
+            prettyMs(value / nanosecondsPerMillisecond)
           ) : (
             <Null />
           )}
@@ -282,22 +283,7 @@ export function getColumns(options?: CspColumnsOptions): ColumnDef<Metrics>[] {
       ),
     },
     createTextColumn("feat", "feature", 80),
-    {
-      id: "input_size",
-      accessorKey: "input_size",
-      header: ({ column }) => (
-        <DataTableColumnHeader column={column} title="input" />
-      ),
-      cell: ({ row }) => {
-        return (
-          <div style={{ width: 80 }}>
-            <span className="text-xs">
-              {formatNumber(row.original.input_size)}
-            </span>
-          </div>
-        )
-      },
-    },
+    createNumberColumn("input_size", "input", 80),
     createDurationColumn("proof_duration", "proof gen", 80),
     createDurationColumn("verify_duration", "verification", 80),
     createBytesColumn("peak_memory", "memory", 72),

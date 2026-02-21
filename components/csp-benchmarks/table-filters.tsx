@@ -45,12 +45,14 @@ const initialFilterState: FilterState = {
   is_maintained: null,
 }
 
+const AUDITED_STATUS = "audited"
+
 function matchesFilter(row: Metrics, key: BooleanFilterKey, value: boolean): boolean {
   if (key === "is_audited") {
-    return value ? row.is_audited === "audited" : row.is_audited !== "audited"
+    return value ? row.is_audited === AUDITED_STATUS : row.is_audited !== AUDITED_STATUS
   }
   const field = row[key]
-  return value ? field === true : field !== true
+  return value ? field === true : field === false
 }
 
 interface UseTableFiltersReturn {

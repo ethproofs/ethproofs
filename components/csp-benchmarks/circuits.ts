@@ -29,8 +29,10 @@ export const dataKeyToTarget: Record<DataTarget, CircuitTarget> = {
   ecdsa: "ecdsa",
 }
 
+const fieldElementTargets: ReadonlyArray<string> = [circuitTargets[2], circuitTargets[3]]
+
 function isFieldElementTarget(target: string): boolean {
-  return target === "poseidon" || target === "poseidon2"
+  return fieldElementTargets.includes(target)
 }
 
 export function getInputSizeUnit(target: string): string {

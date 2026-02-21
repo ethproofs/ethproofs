@@ -84,6 +84,7 @@ export function SystemPropertiesTable({
           {provers.map((prover) => {
             const zk = formatBoolean(prover.is_zk)
             const pq = formatBoolean(prover.is_pq)
+            const maintained = formatBoolean(prover.is_maintained)
 
             const hasSecurityBits =
               typeof prover.security_bits === "number" &&
@@ -139,14 +140,9 @@ export function SystemPropertiesTable({
                   )}
                 </TableCell>
                 <TableCell className={cellClass}>
-                  {(() => {
-                    const maintained = formatBoolean(prover.is_maintained)
-                    return (
-                      <span className={maintained.isMuted ? "text-muted-foreground" : ""}>
-                        {maintained.text}
-                      </span>
-                    )
-                  })()}
+                  <span className={maintained.isMuted ? "text-muted-foreground" : ""}>
+                    {maintained.text}
+                  </span>
                 </TableCell>
               </TableRow>
             )

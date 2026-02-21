@@ -6,6 +6,8 @@ import { CSP_BENCHMARKS_BUCKET, TAGS } from "../constants"
 
 import { createClient } from "@/utils/supabase/server"
 
+const CSP_BENCHMARKS_REVALIDATE_SECONDS = 60 * 60
+
 let storageClient: ReturnType<typeof createSupabaseClient> | null = null
 
 function getStorageClient() {
@@ -204,16 +206,19 @@ async function fetchAllCspBenchmarksUncached(): Promise<CspBenchmarksResult> {
             `Failed to parse ${file.name} (structured):`,
             structuredResult.error.issues.slice(0, 3)
           )
+          const flatIssues = flatResult?.error?.issues ?? []
           console.error(
             `Failed to parse ${file.name} (flat):`,
-            flatResult?.error.issues.slice(0, 3)
+            flatIssues.slice(0, 3)
           )
           return null
         }
 
         const collection: BenchmarkCollection = {
           filename: file.name,
-          benchmarksId: file.name.replace(".json", ""),
+          benchmarksId: file.name.endsWith(".json")
+            ? file.name.slice(0, -".json".length)
+            : file.name,
           updatedAt: file.updated_at || file.created_at,
           data: validatedData,
         }
@@ -237,5 +242,5 @@ async function fetchAllCspBenchmarksUncached(): Promise<CspBenchmarksResult> {
 export const fetchAllCspBenchmarks = cache(
   fetchAllCspBenchmarksUncached,
   ["csp-benchmarks"],
-  { revalidate: 60 * 60, tags: [TAGS.CSP_BENCHMARKS] }
+  { revalidate: CSP_BENCHMARKS_REVALIDATE_SECONDS, tags: [TAGS.CSP_BENCHMARKS] }
 )
