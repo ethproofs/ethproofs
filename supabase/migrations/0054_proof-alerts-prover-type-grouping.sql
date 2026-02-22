@@ -109,7 +109,9 @@ BEGIN
 
     yesterday_text := to_char(CURRENT_DATE - 1, 'YYYY-MM-DD');
 
-    message_text := E'\u200B\n';
+    message_text := E'\u200B\n*Proof status for '
+        || escape_markdown_v2(yesterday_text)
+        || E':*\n\n';
 
     FOR prover_type_rec IN
         SELECT pt.id AS prover_type_id, pt.name AS prover_type_name
@@ -127,7 +129,7 @@ BEGIN
     LOOP
         IF NOT has_perfect_clusters THEN
             message_text := message_text
-                || E'✅ *Perfect clusters:*\n\n';
+                || E'✅ *Clusters up to date:*\n\n';
             has_perfect_clusters := true;
         END IF;
 
@@ -161,9 +163,7 @@ BEGIN
     message_text := message_text
         || E'⚠️ *Found '
         || missing_count
-        || ' missing proofs on '
-        || escape_markdown_v2(yesterday_text)
-        || E':*\n\n';
+        || E' missing proofs:*\n\n';
 
     FOR prover_type_rec IN
         SELECT DISTINCT prover_type_id, prover_type_name
@@ -250,7 +250,7 @@ BEGIN
 
     IF total_duplicate_blocks > 0 THEN
         message_text := message_text
-            || E'*Blocks missed by multiple clusters:*\n\n';
+            || E'🚨 *Blocks missed by multiple clusters:*\n\n';
 
         WITH ordered_blocks AS (
             SELECT block_number, cluster_count
