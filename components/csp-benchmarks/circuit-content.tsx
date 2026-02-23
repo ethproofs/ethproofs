@@ -141,7 +141,7 @@ export function CircuitContent({
 
       {target !== "ecdsa" && (
         <section>
-          <h2 className="mb-4 text-lg sm:text-xl">scaling</h2>
+          <h2 className="mb-4 text-lg sm:text-xl">trends</h2>
           <LineCharts
             benchmarks={filteredMetrics}
             target={dataKey}
