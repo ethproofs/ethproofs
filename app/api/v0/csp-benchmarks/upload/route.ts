@@ -14,7 +14,13 @@ export const POST = withAuth(async ({ apiKey, request }) => {
     )
   }
 
-  const formData = await request.formData()
+  let formData: FormData
+  try {
+    formData = await request.formData()
+  } catch {
+    return new Response("Invalid form data", { status: 400 })
+  }
+
   const file = formData.get("file")
 
   if (!(file instanceof File)) {
@@ -37,6 +43,12 @@ export const POST = withAuth(async ({ apiKey, request }) => {
 
   const arrayBuffer = await file.arrayBuffer()
   const buffer = Buffer.from(arrayBuffer)
+
+  try {
+    JSON.parse(buffer.toString("utf-8"))
+  } catch {
+    return new Response("File does not contain valid JSON", { status: 400 })
+  }
 
   const result = await uploadCspBenchmarks(filenameWithExtension, buffer)
 
