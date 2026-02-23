@@ -34,7 +34,7 @@ function isFieldElementTarget(target: string): boolean {
 }
 
 export function getInputSizeUnit(target: string): string {
-  return isFieldElementTarget(target) ? "field elements" : "bytes"
+  return isFieldElementTarget(target) ? "input size, field elements" : "input size, bytes"
 }
 
 export function formatInputSizeWithUnit(size: number, target: string): string {

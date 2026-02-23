@@ -4,7 +4,7 @@ import { cn } from "@/lib/utils"
 
 import type { CspSeverityLevel, CspSlices } from "./slices"
 
-const severityColors: Record<CspSeverityLevel, string> = {
+export const severityColors: Record<CspSeverityLevel, string> = {
   green: "hsl(var(--level-best))",
   yellow: "hsl(var(--level-middle))",
   red: "hsl(var(--level-worst))",

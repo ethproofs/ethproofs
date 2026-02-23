@@ -282,8 +282,8 @@ export function LineCharts({
   if (uniqueInputSizes <= 1) {
     const message =
       target === "ecdsa"
-        ? "ECDSA uses a single fixed input size of 32 bytes, scaling comparison not applicable"
-        : "scaling trends require multiple input sizes"
+        ? "ECDSA uses a single fixed input size of 32 bytes, trend comparison not applicable"
+        : "trends require multiple input sizes"
     return <EmptyState message={message} />
   }
 
@@ -303,7 +303,7 @@ export function LineCharts({
           formatValue={config.format}
           isBytes={!durationMetrics.has(key)}
           label={dataKeyToTarget[target]}
-          ariaLabel={`${config.label} scaling trend`}
+          ariaLabel={`${config.label} trend`}
         />
       ))}
     </div>
