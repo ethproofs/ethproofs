@@ -23,6 +23,8 @@ import {
   CardTitle,
 } from "@/components/ui/card"
 
+import { cn } from "@/lib/utils"
+
 const RANGE_OPTIONS = [
   { label: "24h", days: 1 },
   { label: "7d", days: 7 },
@@ -128,14 +130,18 @@ export function RtpProofTimeDistribution({
           <CardTitle className="text-lg">RTP proof time distribution</CardTitle>
           <CardDescription>timing distribution across blocks</CardDescription>
         </div>
-        <div className="flex gap-1 rounded-lg bg-background p-1">
+        <div className="flex gap-1 rounded-lg bg-muted p-1">
           {RANGE_OPTIONS.map((option) => (
             <Button
               key={option.days}
               onClick={() => setRangeDays(option.days)}
               size="sm"
-              variant={rangeDays === option.days ? "secondary" : "ghost"}
-              className="h-7 px-2 text-xs"
+              variant="ghost"
+              className={cn(
+                "h-7 px-2 text-xs",
+                rangeDays === option.days &&
+                  "bg-background text-foreground shadow-sm"
+              )}
             >
               {option.label}
             </Button>
@@ -224,7 +230,7 @@ export function RtpProofTimeDistribution({
               />
               <Tooltip
                 content={<CustomTooltip />}
-                cursor={{ fill: "rgba(255,255,255,0.03)" }}
+                cursor={{ fill: "hsl(var(--muted))", fillOpacity: 0.2 }}
               />
               <Bar dataKey="percentage" radius={[0, 4, 4, 0]} barSize={24}>
                 {chartData.map((entry, index) => (

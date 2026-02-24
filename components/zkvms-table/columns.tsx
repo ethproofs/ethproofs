@@ -167,29 +167,29 @@ export const getColumns = (options?: ColumnsOptions): ColumnDef<ZkvmRow>[] => [
       )
     },
   },
-  // {
-  //   id: "soundcalc_integration",
-  //   accessorKey: "metrics.soundcalc_integration",
-  //   header: ({ column }) => (
-  //     <DataTableColumnHeader column={column} title="soundcalc" />
-  //   ),
-  //   cell: ({ row }) => {
-  //     const hasIntegratedWithSoundcalc =
-  //       row.original.metrics?.soundcalc_integration
-  //     return (
-  //       <div className="w-[100px]">
-  //         {hasIntegratedWithSoundcalc ? (
-  //           <div className="flex items-center gap-1 text-primary">
-  //             <Check className="size-4" />
-  //             <span>integrated</span>
-  //           </div>
-  //         ) : (
-  //           <RedX className="size-4 text-level-worst" />
-  //         )}
-  //       </div>
-  //     )
-  //   },
-  // },
+  {
+    id: "soundcalc_integration",
+    accessorKey: "metrics.soundcalc_integration",
+    header: ({ column }) => (
+      <DataTableColumnHeader column={column} title="soundcalc" />
+    ),
+    cell: ({ row }) => {
+      const hasIntegratedWithSoundcalc =
+        row.original.metrics?.soundcalc_integration
+      return (
+        <div className="w-[100px]">
+          {hasIntegratedWithSoundcalc ? (
+            <div className="flex items-center gap-1 text-primary">
+              <Check className="size-4" />
+              <span>integrated</span>
+            </div>
+          ) : (
+            <RedX className="size-4 text-level-worst" />
+          )}
+        </div>
+      )
+    },
+  },
   {
     id: "version",
     accessorKey: "versions",

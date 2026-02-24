@@ -175,15 +175,7 @@ export function DataTable<TData, TValue>({
               ))}
             </TableHeader>
           )}
-          <TableBody
-            className={
-              (table.getState().columnFilters.length === 0 &&
-                table.getRowModel().rows?.length > DEFAULT_PAGE_SIZE) ||
-              table.getRowModel().rows?.length === 0
-                ? "[&_tr:last-child]:border-0"
-                : ""
-            }
-          >
+          <TableBody className="[&_tr:last-child]:border-0">
             {table.getRowModel().rows?.length ? (
               table.getRowModel().rows.map((row) => (
                 <TableRow
