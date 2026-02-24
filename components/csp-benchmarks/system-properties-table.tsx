@@ -66,7 +66,7 @@ export function SystemPropertiesTable({
 
   return (
     <div className="rounded-lg border">
-      <Table className="lowercase">
+      <Table>
         <TableHeader>
           <TableRow>
             <TableHead className={headClass}>prover</TableHead>
@@ -74,14 +74,14 @@ export function SystemPropertiesTable({
             <TableHead className={headClass}>zero-knowledge</TableHead>
             <TableHead className={headClass}>post-quantum</TableHead>
             <TableHead className={headClass}>security</TableHead>
-            <TableHead className={headClass}>zkvm</TableHead>
-            <TableHead className={headClass}>isa</TableHead>
+            <TableHead className={headClass}>VM</TableHead>
+            <TableHead className={headClass}>ISA</TableHead>
             <TableHead className={headClass}>audit</TableHead>
             <TableHead className={headClass}>maintained</TableHead>
             <TableHead className={headClass}>field / curve</TableHead>
             <TableHead className={headClass}>arithmetization</TableHead>
-            <TableHead className={headClass}>iop</TableHead>
-            <TableHead className={headClass}>pcs</TableHead>
+            <TableHead className={headClass}>IOP</TableHead>
+            <TableHead className={headClass}>PCS</TableHead>
           </TableRow>
         </TableHeader>
         <TableBody>

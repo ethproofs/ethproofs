@@ -105,7 +105,7 @@ function DrawerBody({ system }: DrawerBodyProps) {
         <h3 className="mb-3 text-base font-medium">
           properties
         </h3>
-        <div className="grid grid-cols-2 gap-4 text-center text-sm lowercase">
+        <div className="grid grid-cols-2 gap-4 text-center text-sm">
           <PropertyCell label="proving system" value={system.proving_system} />
           <PropertyCell label="field/curve" value={system.field_curve} />
           <PropertyCell label="IOP" value={system.iop} />
