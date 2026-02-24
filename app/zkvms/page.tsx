@@ -10,6 +10,8 @@ import { getZkvmsWithUsage } from "@/lib/zkvms"
 
 export const metadata: Metadata = getMetadata({ title: "zkVMs" })
 
+export const dynamic = "force-dynamic"
+
 export default async function ZkvmsPage() {
   const zkvms = await getZkvmsWithUsage()
   const zkvmIds = zkvms.map((zkvm) => zkvm.id)
@@ -35,6 +37,7 @@ export default async function ZkvmsPage() {
     .filter((z) => z.activeClusters === 0)
     .map((zkvm) => ({
       ...zkvm,
+      metrics: metricsByZkvmId.get(zkvm.id),
       clusters: [],
     }))
 

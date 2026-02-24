@@ -15,6 +15,8 @@ import {
   CardTitle,
 } from "@/components/ui/card"
 
+import { cn } from "@/lib/utils"
+
 const RANGE_OPTIONS = [
   { label: "24h", days: 1 },
   { label: "7d", days: 7 },
@@ -152,14 +154,18 @@ export function RtpCohortPerformance({
             aggregated success rate for the RTP cohort
           </CardDescription>
         </div>
-        <div className="flex gap-1 rounded-lg bg-background p-1">
+        <div className="flex gap-1 rounded-lg bg-muted p-1">
           {RANGE_OPTIONS.map((option) => (
             <Button
               key={option.days}
               onClick={() => setRangeDays(option.days)}
               size="sm"
-              variant={rangeDays === option.days ? "secondary" : "ghost"}
-              className="h-7 px-2 text-xs"
+              variant="ghost"
+              className={cn(
+                "h-7 px-2 text-xs",
+                rangeDays === option.days &&
+                  "bg-background text-foreground shadow-sm"
+              )}
             >
               {option.label}
             </Button>
