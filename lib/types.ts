@@ -325,6 +325,55 @@ export interface RtpProofTimeDistributionData {
   buckets: RtpProofTimeBucket[]
 }
 
+export interface ProverTypeMetrics {
+  avgLatency: number
+  avgCost: number
+  latencyChange: number
+  costChange: number
+}
+
+export interface MetricsSummary {
+  totalProvenBlocks: number
+  totalProofs: number
+  blocksChange: number
+  proofsChange: number
+  multiGpu: ProverTypeMetrics
+  singleGpu: ProverTypeMetrics
+  activeZkvmCount: number
+  activeGuestCount: number
+  multiGpuProverCount: number
+  singleGpuProverCount: number
+}
+
+export interface ReliabilityDailyStats {
+  date: string
+  sub10sCount: number
+  stunnerCount: number
+  paralyzerCount: number
+  totalCount: number
+  sub10sRate: number
+  stunnerRate: number
+  paralyzerRate: number
+}
+
+export interface GpuPriceHistoryEntry {
+  week: string
+  avgGpuPrice: number
+  avgProofCost: number | null
+}
+
+export interface PersonaComparisonData {
+  persona: string
+  gpuConfiguration: string
+  deploymentType: string
+  proverCount: number
+  proofCount: number
+  avgLatency: number
+  avgCost: number
+  performanceScore: number
+  livenessScore: number
+}
+
 export interface RtpCohortRow {
   cluster_id: string
   cluster_name: string

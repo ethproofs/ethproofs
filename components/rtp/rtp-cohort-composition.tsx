@@ -77,14 +77,18 @@ export function RtpCohortComposition({
             who&apos;s been in the cohort and for how long
           </CardDescription>
         </div>
-        <div className="flex gap-1 rounded-lg bg-background p-1">
+        <div className="flex gap-1 rounded-lg bg-muted p-1">
           {RANGE_OPTIONS.map((option) => (
             <Button
               key={option.value}
               onClick={() => setRange(option.value)}
               size="sm"
-              variant={range === option.value ? "secondary" : "ghost"}
-              className="h-7 px-2 text-xs"
+              variant="ghost"
+              className={cn(
+                "h-7 px-2 text-xs",
+                range === option.value &&
+                  "bg-background text-foreground shadow-sm"
+              )}
             >
               {option.label}
             </Button>
