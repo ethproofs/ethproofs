@@ -6,6 +6,7 @@ import type {
   RtpProofTimeDistributionData,
 } from "@/lib/types"
 
+import { BasicTabs } from "@/components/BasicTabs"
 import { PageHeader } from "@/components/layout/page-header"
 import { RoadmapBanner } from "@/components/roadmap/roadmap-banner"
 import { RtpCohortComposition } from "@/components/rtp/rtp-cohort-composition"
@@ -13,6 +14,7 @@ import { RtpCohortPerformance } from "@/components/rtp/rtp-cohort-performance"
 import { RtpDetailsSection } from "@/components/rtp/rtp-details-section"
 import { RtpProofTimeDistribution } from "@/components/rtp/rtp-proof-time-distribution"
 import { RtpCohortTable } from "@/components/rtp-cohort-table/rtp-cohort-table"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 
 import {
   getRtpCohortComposition,
@@ -82,8 +84,28 @@ export default async function Index() {
       </section>
 
       <section className="mb-8">
-        <h2 className="mb-4 text-xl font-semibold">RTP cohort</h2>
-        <RtpCohortTable rows={rtpCohortRows} />
+        <Tabs defaultValue="left">
+          <div className="flex items-end justify-between gap-2">
+            <TabsList className="border-none">
+              <TabsTrigger
+                className="flex-1 cursor-default border-none py-1 text-xl"
+                value="left"
+              >
+                RTP cohort
+              </TabsTrigger>
+              <TabsTrigger
+                disabled
+                className="flex-1 border-none py-1 text-xl"
+                value="right"
+              >
+                1:10 cohort (soon™)
+              </TabsTrigger>
+            </TabsList>
+          </div>
+          <TabsContent value="left">
+            <RtpCohortTable rows={rtpCohortRows} />
+          </TabsContent>
+        </Tabs>
       </section>
 
       <section className="mb-8 grid gap-6 lg:grid-cols-2 2xl:grid-cols-3">
