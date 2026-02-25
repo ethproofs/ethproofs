@@ -23,6 +23,8 @@ import {
   getSecurityBitsSeverity,
 } from "./system/slices"
 import { getProverKey } from "./metrics"
+import { EmptyState } from "./shared"
+import { TableFilters, useTableFilters } from "./table-filters"
 
 import type { Metrics } from "@/lib/api/csp-benchmarks"
 
@@ -60,12 +62,18 @@ interface SystemPropertiesTableProps {
 export function SystemPropertiesTable({
   benchmarks,
 }: SystemPropertiesTableProps) {
-  const provers = useMemo(() => deduplicateProvers(benchmarks), [benchmarks])
-
-  if (provers.length === 0) return null
+  const { filters, setFilter, activeCount, applyFilters } = useTableFilters()
+  const filtered = useMemo(() => applyFilters(benchmarks), [applyFilters, benchmarks])
+  const provers = useMemo(() => deduplicateProvers(filtered), [filtered])
 
   return (
-    <div className="rounded-lg border">
+    <div className="flex flex-col gap-4">
+      <div>
+        <TableFilters filters={filters} setFilter={setFilter} activeCount={activeCount} />
+      </div>
+      {provers.length === 0 ? (
+        <EmptyState message="no provers match the selected filters" />
+      ) : <div className="rounded-lg border">
       <Table>
         <TableHeader>
           <TableRow>
@@ -150,6 +158,7 @@ export function SystemPropertiesTable({
           })}
         </TableBody>
       </Table>
+      </div>}
     </div>
   )
 }
