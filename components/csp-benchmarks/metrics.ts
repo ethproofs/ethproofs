@@ -4,7 +4,7 @@ import type { Metrics } from "@/lib/api/csp-benchmarks"
 import { formatBytes } from "@/lib/number"
 import { prettyMs } from "@/lib/time"
 
-const nanosecondsPerMillisecond = 1_000_000
+export const nanosecondsPerMillisecond = 1_000_000
 
 export type MetricKey =
   | "proof_duration"

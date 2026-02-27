@@ -45,11 +45,11 @@ const initialFilterState: FilterState = {
   is_maintained: null,
 }
 
-const AUDITED_STATUS = "audited"
+const auditedStatus = "audited"
 
 function matchesFilter(row: Metrics, key: BooleanFilterKey, value: boolean): boolean {
   if (key === "is_audited") {
-    return value ? row.is_audited === AUDITED_STATUS : row.is_audited !== AUDITED_STATUS
+    return value ? row.is_audited === auditedStatus : row.is_audited !== undefined && row.is_audited !== auditedStatus
   }
   const field = row[key]
   return value ? field === true : field === false

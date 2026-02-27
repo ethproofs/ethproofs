@@ -7,7 +7,7 @@ export async function GET(
 ) {
   const { id } = await params
 
-  if (!id || !isValidFilename(id)) {
+  if (!isValidFilename(id)) {
     return new Response("Invalid filename", { status: 400 })
   }
 
