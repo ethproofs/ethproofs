@@ -13,12 +13,11 @@ import {
 } from "@/components/ui/tooltip"
 
 import { buildSystemPropertiesFromRow, type SystemProperties } from "./system/properties"
+import { nanosecondsPerMillisecond } from "./metrics"
 
 import type { Metrics } from "@/lib/api/csp-benchmarks"
 import { formatBytes, formatNumber } from "@/lib/number"
 import { prettyMs } from "@/lib/time"
-
-const nanosecondsPerMillisecond = 1_000_000
 
 const auditStatusDisplay: Record<string, string> = {
   audited: "audited",
