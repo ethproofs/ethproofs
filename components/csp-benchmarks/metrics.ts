@@ -52,7 +52,7 @@ export const metricConfigs: Record<MetricKey, MetricConfig> = {
   proof_size: {
     key: "proof_size",
     label: "proof size",
-    description: "generated proof size in bytes (lower is better)",
+    description: "generated proof size (lower is better)",
     format: (value) => formatBytes(value, 0),
   },
   preprocessing_size: {
