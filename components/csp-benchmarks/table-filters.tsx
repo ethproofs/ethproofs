@@ -30,7 +30,7 @@ const filterDefinitions: ReadonlyArray<{
   key: BooleanFilterKey
   label: string
 }> = [
-  { key: "is_zkvm", label: "zkVM" },
+  { key: "is_zkvm", label: "VM" },
   { key: "is_zk", label: "zero-knowledge" },
   { key: "is_pq", label: "post-quantum" },
   { key: "is_audited", label: "audited" },
