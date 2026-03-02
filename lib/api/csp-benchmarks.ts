@@ -64,13 +64,15 @@ const measurementSchema = z.object({
   feat: z.string().optional(),
 })
 
+const metadataSchema = z.object({
+  timestamp: z.string().optional(),
+  commit_sha: z.string().optional(),
+  workflow_run_url: z.string().optional(),
+  artifact_urls: z.array(z.string()).optional(),
+})
+
 const collectedBenchmarkSchema = z.object({
-  metadata: z.object({
-    timestamp: z.string(),
-    commit_sha: z.string(),
-    workflow_run_url: z.string().optional(),
-    artifact_urls: z.array(z.string()).optional(),
-  }),
+  metadata: metadataSchema.optional(),
   systems: z.record(z.string(), systemPropertiesSchema),
   measurements: z.array(measurementSchema),
 })
@@ -132,6 +134,13 @@ export interface BenchmarkCollection {
 export interface CspBenchmarksResult {
   benchmarks: BenchmarkCollection[]
   failedCount: number
+}
+
+export function isValidCspBenchmarkData(data: unknown): boolean {
+  return (
+    collectedBenchmarkSchema.safeParse(data).success ||
+    z.array(metricsSchema).safeParse(data).success
+  )
 }
 
 export async function uploadCspBenchmarks(filename: string, buffer: Buffer) {

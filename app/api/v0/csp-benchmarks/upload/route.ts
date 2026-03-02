@@ -2,7 +2,10 @@ import { revalidateTag } from "next/cache"
 
 import { TAGS } from "@/lib/constants"
 
-import { uploadCspBenchmarks } from "@/lib/api/csp-benchmarks"
+import {
+  isValidCspBenchmarkData,
+  uploadCspBenchmarks,
+} from "@/lib/api/csp-benchmarks"
 import { withAuth } from "@/lib/middleware/with-auth"
 import { isValidFilename } from "@/utils/validation"
 
@@ -44,10 +47,18 @@ export const POST = withAuth(async ({ apiKey, request }) => {
   const arrayBuffer = await file.arrayBuffer()
   const buffer = Buffer.from(arrayBuffer)
 
+  let rawData: unknown
   try {
-    JSON.parse(buffer.toString("utf-8"))
+    rawData = JSON.parse(buffer.toString("utf-8"))
   } catch {
     return new Response("File does not contain valid JSON", { status: 400 })
+  }
+
+  if (!isValidCspBenchmarkData(rawData)) {
+    return new Response(
+      "File does not match expected benchmark format (structured or flat)",
+      { status: 400 }
+    )
   }
 
   const result = await uploadCspBenchmarks(filenameWithExtension, buffer)
