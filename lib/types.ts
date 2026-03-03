@@ -397,3 +397,32 @@ export interface RtpCohortRow {
   is_eligible: boolean
   avg_cost_per_proof: number | null
 }
+
+export interface ZkvmSummaryData {
+  totalZkvms: number
+  pqCryptographyCount: number
+  rtpEligibleProverCount: number
+  isaCount: number
+  soundcalcCount: number
+  security100BitCount: number
+  proofSize600KibCount: number
+  security128BitCount: number
+  proofSize300KibCount: number
+}
+
+export type MilestoneStatus = "achieved" | "in_progress" | "not_yet"
+
+export interface ZkvmMilestoneEntry {
+  zkvmName: string
+  m1: MilestoneStatus
+  m2a: MilestoneStatus
+  m2b: MilestoneStatus
+  m3a: MilestoneStatus
+  m3b: MilestoneStatus
+}
+
+export interface ZkvmPerformancePoint {
+  week: string
+  zkvmName: string
+  avgProvingTimeMs: number
+}

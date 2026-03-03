@@ -393,6 +393,13 @@
       "when": 1771891200000,
       "tag": "0055_fix-gpu-price-index-cron",
       "breakpoints": true
+    },
+    {
+      "idx": 56,
+      "version": "7",
+      "when": 1772870400000,
+      "tag": "0056_update-rtp-score-thresholds",
+      "breakpoints": true
     }
   ]
 }
