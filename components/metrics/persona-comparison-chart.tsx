@@ -325,16 +325,27 @@ export function PersonaComparisonChart() {
         )}
       </CardContent>
 
-      <CardFooter className="min-h-[67px] gap-4 border-t pt-6 text-xs text-muted-foreground">
-        {personas.map((p, i) => (
-          <div key={p.persona} className="flex items-center gap-1.5">
-            <div
-              className="size-2 rounded-full"
-              style={{ backgroundColor: getPersonaColor(i) }}
-            />
-            <span>{p.persona}</span>
-          </div>
-        ))}
+      <CardFooter className="flex-wrap justify-between gap-x-4 gap-y-4 border-t pt-6 text-xs text-muted-foreground">
+        <div className="flex items-center gap-4">
+          {personas.map((p, i) => (
+            <div key={p.persona} className="flex items-center gap-1.5">
+              <div
+                className="size-2 rounded-full"
+                style={{ backgroundColor: getPersonaColor(i) }}
+              />
+              <span>{p.persona}</span>
+            </div>
+          ))}
+        </div>
+        <div className="min-h-14">
+          <p className="text-xs text-muted-foreground">
+            <span className="font-medium text-placeholder">Key insight:</span>{" "}
+            1:1 on-prem leads on performance and cost efficiency. 1:1 cloud
+            trades slightly higher cost for operational flexibility. 1:100
+            provers (sampling mode) don&apos;t have performance scores but offer
+            lowest cost entry point.
+          </p>
+        </div>
       </CardFooter>
     </Card>
   )

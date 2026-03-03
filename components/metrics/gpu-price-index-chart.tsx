@@ -251,7 +251,7 @@ export function GpuPriceIndexChart() {
         )}
       </CardContent>
 
-      <CardFooter className="flex-wrap justify-between gap-x-4 gap-y-2 border-t pt-6 text-xs text-muted-foreground">
+      <CardFooter className="flex-wrap justify-between gap-x-4 gap-y-4 border-t pt-6 text-xs text-muted-foreground">
         <div className="flex items-center gap-4">
           <div className="flex items-center gap-1.5">
             <div className="size-2 rounded-full bg-[hsl(var(--chart-9))]" />
@@ -264,7 +264,19 @@ export function GpuPriceIndexChart() {
             </div>
           )}
         </div>
-        {lastUpdated && <span>last updated: {lastUpdated}</span>}
+        {lastUpdated && <span>Last updated: {lastUpdated}</span>}
+        <div className="min-h-14">
+          <p className="text-xs text-muted-foreground">
+            <span className="font-medium text-placeholder">
+              Why this matters:
+            </span>{" "}
+            Proving economics depend on GPU rental costs. When GPU prices drop,
+            proving becomes cheaper — but software optimizations can outpace
+            hardware savings. The gap between the blue and yellow lines shows
+            how much efficiency the ecosystem has gained beyond just cheaper
+            GPUs.
+          </p>
+        </div>
       </CardFooter>
     </Card>
   )

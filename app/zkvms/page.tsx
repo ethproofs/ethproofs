@@ -1,12 +1,39 @@
 import type { Metadata } from "next"
+import dynamicImport from "next/dynamic"
 
-import { BasicTabs } from "@/components/BasicTabs"
+import { PageHeader } from "@/components/layout/page-header"
+import { ChartCardSkeleton } from "@/components/metrics/chart-card-skeleton"
+import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { ZkvmSummaryCards } from "@/components/zkvms/zkvm-summary-cards"
 import { ZkvmsTable } from "@/components/zkvms-table/zkvms-table"
 
 import { getActiveClustersByZkvmIds } from "@/lib/api/clusters-by-zkvm"
+import {
+  fetchZkvmMilestones,
+  fetchZkvmPerformanceTrajectory,
+  fetchZkvmSummary,
+} from "@/lib/api/zkvms-metrics"
 import { getMetadata } from "@/lib/metadata"
 import { getZkvmsMetricsByZkvmId } from "@/lib/metrics"
 import { getZkvmsWithUsage } from "@/lib/zkvms"
+
+const ZkvmSecurityMilestonesChart = dynamicImport(
+  () =>
+    import("@/components/zkvms/zkvm-security-milestones-chart").then((mod) => ({
+      default: mod.ZkvmSecurityMilestonesChart,
+    })),
+  { loading: () => <ChartCardSkeleton /> }
+)
+
+const ZkvmPerformanceTrajectoryChart = dynamicImport(
+  () =>
+    import("@/components/zkvms/zkvm-performance-trajectory-chart").then(
+      (mod) => ({
+        default: mod.ZkvmPerformanceTrajectoryChart,
+      })
+    ),
+  { loading: () => <ChartCardSkeleton /> }
+)
 
 export const metadata: Metadata = getMetadata({ title: "zkVMs" })
 
@@ -16,9 +43,18 @@ export default async function ZkvmsPage() {
   const zkvms = await getZkvmsWithUsage()
   const zkvmIds = zkvms.map((zkvm) => zkvm.id)
 
-  const [metricsByZkvmId, clustersByZkvmId] = await Promise.all([
+  const [
+    metricsByZkvmId,
+    clustersByZkvmId,
+    summaryData,
+    milestonesData,
+    trajectoryData,
+  ] = await Promise.all([
     getZkvmsMetricsByZkvmId({ zkvmIds }),
     getActiveClustersByZkvmIds(zkvmIds),
+    fetchZkvmSummary(),
+    fetchZkvmMilestones(),
+    fetchZkvmPerformanceTrajectory(),
   ])
 
   const sortedZkvms = zkvms.sort((a, b) => {
@@ -42,22 +78,46 @@ export default async function ZkvmsPage() {
     }))
 
   return (
-    <div className="mx-auto mt-2 flex max-w-screen-2xl flex-1 flex-col items-center gap-20 [&>section]:w-full">
-      <section>
-        <BasicTabs
-          title="zkVMs"
-          defaultTab={activeZkvmsWithMetrics.length === 0 ? "right" : "left"}
-          contentLeft={
-            <ZkvmsTable className="mt-4 px-6" zkvms={activeZkvmsWithMetrics} />
-          }
-          contentLeftTitle="active"
-          contentRight={
-            inactiveZkvms.length > 0 ? (
-              <ZkvmsTable className="mt-4 px-6" zkvms={inactiveZkvms} />
-            ) : null
-          }
-          contentRightTitle="coming soon"
-        />
+    <div className="mx-auto max-w-screen-2xl px-6">
+      <PageHeader
+        title="zkVMs"
+        description="track which proving systems are race-ready for mainnet-grade security"
+      />
+
+      <section className="mb-8">
+        <ZkvmSummaryCards data={summaryData} />
+      </section>
+
+      <section className="mb-8">
+        <Tabs defaultValue="left">
+          <div className="flex items-end justify-between gap-2">
+            <TabsList className="border-none">
+              <TabsTrigger
+                className="flex-1 cursor-default border-none py-1 text-lg"
+                value="left"
+              >
+                zkVMs, active
+              </TabsTrigger>
+              <TabsTrigger
+                className="flex-1 border-none py-1 text-lg"
+                value="right"
+              >
+                inactive
+              </TabsTrigger>
+            </TabsList>
+          </div>
+          <TabsContent value="left">
+            <ZkvmsTable className="mt-4" zkvms={activeZkvmsWithMetrics} />
+
+            <div className="mt-8 grid gap-6 lg:grid-cols-2">
+              <ZkvmSecurityMilestonesChart data={milestonesData} />
+              <ZkvmPerformanceTrajectoryChart data={trajectoryData} />
+            </div>
+          </TabsContent>
+          <TabsContent value="right">
+            <ZkvmsTable className="mt-4" zkvms={inactiveZkvms} />
+          </TabsContent>
+        </Tabs>
       </section>
     </div>
   )
