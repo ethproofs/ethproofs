@@ -31,7 +31,7 @@
     "@dnd-kit/utilities": "^3.2.2",
     "@ethproofs/airbender-wasm-stark-verifier": "^0.4.0",
     "@ethproofs/openvm-wasm-stark-verifier": "^0.1.0",
-    "@ethproofs/pico-wasm-stark-verifier": "^0.1.6",
+    "@ethproofs/pico-wasm-stark-verifier": "^0.1.7",
     "@ethproofs/sp1-hypercube-wasm-verifier": "^0.1.1",
     "@ethproofs/ziren-wasm-stark-verifier": "^0.1.8",
     "@ethproofs/zisk-wasm-stark-verifier": "^0.1.2",
