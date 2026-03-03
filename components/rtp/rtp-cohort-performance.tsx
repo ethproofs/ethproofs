@@ -17,6 +17,8 @@ import {
 
 import { cn } from "@/lib/utils"
 
+import { RTP_PERFORMANCE_SCORE_THRESHOLD } from "@/lib/constants"
+
 const RANGE_OPTIONS = [
   { label: "24h", days: 1 },
   { label: "7d", days: 7 },
@@ -237,7 +239,7 @@ export function RtpCohortPerformance({
         </div>
       </CardContent>
 
-      <CardFooter className="flex-wrap justify-between gap-x-4 gap-y-2 border-t pt-6 text-xs text-muted-foreground">
+      <CardFooter className="flex-wrap justify-between gap-x-4 gap-y-4 border-t pt-6 text-xs text-muted-foreground">
         <div className="flex items-center gap-2">
           <span>current:</span>
           <span className="font-mono font-semibold text-foreground">
@@ -246,7 +248,18 @@ export function RtpCohortPerformance({
         </div>
         <div className="flex items-center gap-2">
           <span>target:</span>
-          <span className="font-mono text-foreground">{"\u2265"}75%</span>
+          <span className="font-mono text-foreground">
+            {"\u2265"}
+            {RTP_PERFORMANCE_SCORE_THRESHOLD}%
+          </span>
+        </div>
+        <div className="min-h-14">
+          <p className="text-xs text-muted-foreground">
+            <span className="font-medium text-placeholder">Key insight:</span>{" "}
+            Green shows sub-10s successes (the goal). Yellow (stunners) and red
+            (paralyzers) should be minimized. A healthy RTP cohort is ≥95%
+            green.
+          </p>
         </div>
       </CardFooter>
     </Card>

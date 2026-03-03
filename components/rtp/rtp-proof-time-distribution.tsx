@@ -251,14 +251,24 @@ export function RtpProofTimeDistribution({
         </div>
       </CardContent>
 
-      <CardFooter className="gap-4 border-t pt-6 text-xs text-muted-foreground">
-        <div className="flex items-center gap-1.5">
-          <div className="size-2 rounded-full bg-primary" />
-          <span>{"\u2264"}10s (RTP eligible)</span>
+      <CardFooter className="flex-wrap justify-between gap-x-4 gap-y-4 border-t pt-6 text-xs text-muted-foreground">
+        <div className="flex items-center gap-4">
+          <div className="flex items-center gap-1.5">
+            <div className="size-2 rounded-full bg-primary" />
+            <span>{"\u2264"}10s (RTP eligible)</span>
+          </div>
+          <div className="flex items-center gap-1.5">
+            <div className="size-2 rounded-full bg-muted-foreground" />
+            <span>&gt;10s (stunners)</span>
+          </div>
         </div>
-        <div className="flex items-center gap-1.5">
-          <div className="size-2 rounded-full bg-muted-foreground" />
-          <span>&gt;10s (stunners)</span>
+        <div className="min-h-14">
+          <p className="text-xs text-muted-foreground">
+            <span className="font-medium text-placeholder">Key insight:</span>{" "}
+            Green bars above the threshold are RTP-eligible. Most proofs should
+            cluster in the 8-10s bucket. If 0-5s grows, proving is getting
+            faster. If gray bars grow, investigate the cause.
+          </p>
         </div>
       </CardFooter>
     </Card>
