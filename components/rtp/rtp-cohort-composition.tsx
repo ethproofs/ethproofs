@@ -173,7 +173,7 @@ export function RtpCohortComposition({
         </div>
       </CardContent>
 
-      <CardFooter className="flex-wrap justify-between gap-x-4 gap-y-2 border-t pt-6 text-xs text-muted-foreground">
+      <CardFooter className="flex-wrap justify-between gap-x-4 gap-y-4 border-t pt-6 text-xs text-muted-foreground">
         <div className="flex items-center gap-4">
           <div className="flex items-center gap-1.5">
             <div className="size-2 rounded-full bg-primary" />
@@ -185,6 +185,14 @@ export function RtpCohortComposition({
           </div>
         </div>
         <span>sorted by weeks in cohort</span>
+        <div className="min-h-14">
+          <p className="text-xs text-muted-foreground">
+            <span className="font-medium text-placeholder">Key insight:</span>{" "}
+            Solid green bars indicate consistent RTP membership. Gaps reveal
+            periods where performance or liveness dropped below thresholds. This
+            rewards sustained excellence.
+          </p>
+        </div>
       </CardFooter>
     </Card>
   )

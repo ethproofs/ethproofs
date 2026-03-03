@@ -29,8 +29,6 @@ import { cn } from "@/lib/utils"
 
 import { CHART_RANGES } from "@/lib/constants"
 
-import { Separator } from "../ui/separator"
-
 import { formatUsd } from "@/lib/number"
 import { prettyMs } from "@/lib/time"
 
@@ -250,7 +248,7 @@ export function ProvingEfficiencyChart() {
         )}
       </CardContent>
 
-      <CardFooter className="flex-wrap justify-between gap-x-4 gap-y-2 border-t pt-6 text-xs text-muted-foreground">
+      <CardFooter className="flex-wrap justify-between gap-x-4 gap-y-4 border-t pt-6 text-xs text-muted-foreground">
         <div className="flex items-center gap-4">
           {showLatency && (
             <div className="flex items-center gap-1.5">
@@ -264,6 +262,17 @@ export function ProvingEfficiencyChart() {
               <span>cost</span>
             </div>
           )}
+        </div>
+        <div className="min-h-14">
+          <p className="text-xs text-muted-foreground">
+            <span className="font-medium text-placeholder">
+              Reading the chart:
+            </span>{" "}
+            Blue line (latency) should trend down toward 10s threshold. Yellow
+            line (cost) should trend down toward $0.01. Blue shaded area shows
+            gas limit increases — efficiency improving despite harder blocks is
+            the success story.
+          </p>
         </div>
       </CardFooter>
     </Card>

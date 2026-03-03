@@ -1,40 +1,34 @@
-import { unstable_cache as cache } from "next/cache"
-
 import type { ClusterSummary } from "@/lib/types"
-
-import { TAGS } from "@/lib/constants"
 
 import { getActiveClusters } from "./clusters"
 
-export function getActiveClustersByZkvmIds(
+export async function getActiveClustersByZkvmIds(
   zkvmIds: number[]
 ): Promise<Record<number, ClusterSummary[]>> {
-  const sortedIds = [...zkvmIds].sort((a, b) => a - b)
+  const allClusters = await getActiveClusters()
 
-  return cache(
-    async (): Promise<Record<number, ClusterSummary[]>> => {
-      const clustersByZkvmId: Record<number, ClusterSummary[]> = {}
+  const clustersByZkvmId: Record<number, ClusterSummary[]> = {}
+  for (const zkvmId of zkvmIds) {
+    clustersByZkvmId[zkvmId] = []
+  }
 
-      await Promise.all(
-        zkvmIds.map(async (zkvmId) => {
-          const clusters = await getActiveClusters({ zkvmId })
-          clustersByZkvmId[zkvmId] = clusters.map((cluster) => ({
-            id: cluster.id,
-            name: cluster.name,
-            team: {
-              name: cluster.team.name,
-              slug: cluster.team.slug,
-            },
-          }))
+  for (const cluster of allClusters) {
+    const clusterZkvmIds = new Set(
+      cluster.versions.map((v) => v.zkvm_version.zkvm.id)
+    )
+    for (const zkvmId of zkvmIds) {
+      if (clusterZkvmIds.has(zkvmId)) {
+        clustersByZkvmId[zkvmId].push({
+          id: cluster.id,
+          name: cluster.name,
+          team: {
+            name: cluster.team.name,
+            slug: cluster.team.slug,
+          },
         })
-      )
-
-      return clustersByZkvmId
-    },
-    ["active-clusters-by-zkvm-ids", sortedIds.join(",")],
-    {
-      revalidate: 60 * 60 * 24,
-      tags: [TAGS.CLUSTERS],
+      }
     }
-  )()
+  }
+
+  return clustersByZkvmId
 }

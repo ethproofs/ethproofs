@@ -274,7 +274,7 @@ export function ProvingReliabilityChart() {
         )}
       </CardContent>
 
-      <CardFooter className="flex-wrap justify-between gap-x-4 gap-y-2 border-t pt-6 text-xs text-muted-foreground">
+      <CardFooter className="flex-wrap justify-between gap-x-4 gap-y-4 border-t pt-6 text-xs text-muted-foreground">
         <div className="flex items-center gap-4">
           <div className="flex items-center gap-1.5">
             <div
@@ -299,6 +299,15 @@ export function ProvingReliabilityChart() {
           </div>
         </div>
         <span>{aggregates.totalProofs.toLocaleString()} total proofs</span>
+        <div className="min-h-14">
+          <p className="text-xs text-muted-foreground">
+            <span className="font-medium text-placeholder">Key insight:</span> A
+            healthy ecosystem is mostly green (sub-10s), with thin yellow and
+            red bands. The 95% threshold is the RTP cohort eligibility bar.
+            Growing yellow/red bands indicate emerging issues — investigate gas
+            spikes, difficult blocks, or prover problems.
+          </p>
+        </div>
       </CardFooter>
     </Card>
   )
