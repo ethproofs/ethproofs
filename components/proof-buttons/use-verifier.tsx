@@ -148,6 +148,12 @@ export function useVerifier(
       vkBytes: Uint8Array
     ): boolean => {
       if (zkvmSlug === "pico") {
+        try {
+          const result = module.verify_stark("Pico", proofBytes, vkBytes)
+          if (result) return true
+        } catch {
+          // "Pico" type not supported, fall through to "PicoPrism"
+        }
         return module.verify_stark("PicoPrism", proofBytes, vkBytes)
       } else if (isVerifiableZkvmWithoutVk(zkvmSlug!)) {
         return module.verify_stark(proofBytes)
