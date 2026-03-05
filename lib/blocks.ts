@@ -96,11 +96,12 @@ export const isBlockHash = (block: string) => {
 }
 
 export const mergeBlocksWithTeams = (blocks: Block[], teams: Team[]) => {
+  const teamsById = new Map(teams.map((team) => [team.id, team]))
+
   return blocks.map((block) => {
-    const { proofs } = block
-    const proofsWithTeams = proofs.map((proof) => ({
+    const proofsWithTeams = block.proofs.map((proof) => ({
       ...proof,
-      team: teams.find((team) => team.id === proof.team_id),
+      team: teamsById.get(proof.team_id),
     }))
 
     return { ...block, proofs: proofsWithTeams }
