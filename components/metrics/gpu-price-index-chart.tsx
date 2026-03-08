@@ -227,7 +227,7 @@ export function GpuPriceIndexChart() {
                 yAxisId="gpu"
                 dataKey="avgGpuPrice"
                 type="monotone"
-                stroke="hsl(var(--chart-9))"
+                stroke="hsl(var(--chart-3))"
                 strokeWidth={2}
                 dot={false}
                 connectNulls
@@ -238,7 +238,7 @@ export function GpuPriceIndexChart() {
                   yAxisId="cost"
                   dataKey="avgProofCost"
                   type="monotone"
-                  stroke="hsl(var(--chart-4))"
+                  stroke="hsl(var(--chart-6))"
                   strokeWidth={2}
                   strokeDasharray="4 4"
                   dot={false}
@@ -254,12 +254,12 @@ export function GpuPriceIndexChart() {
       <CardFooter className="flex-wrap justify-between gap-x-4 gap-y-4 border-t pt-6 text-xs text-muted-foreground">
         <div className="flex items-center gap-4">
           <div className="flex items-center gap-1.5">
-            <div className="size-2 rounded-full bg-[hsl(var(--chart-9))]" />
+            <div className="size-2 rounded-full bg-[hsl(var(--chart-3))]" />
             <span>GPU price</span>
           </div>
           {showCorrelation && (
             <div className="flex items-center gap-1.5">
-              <div className="size-2 rounded-full bg-[hsl(var(--chart-4))]" />
+              <div className="size-2 rounded-full bg-[hsl(var(--chart-6))]" />
               <span>proof cost</span>
             </div>
           )}
@@ -272,7 +272,7 @@ export function GpuPriceIndexChart() {
             </span>{" "}
             Proving economics depend on GPU rental costs. When GPU prices drop,
             proving becomes cheaper — but software optimizations can outpace
-            hardware savings. The gap between the blue and yellow lines shows
+            hardware savings. The gap between the orange and green lines shows
             how much efficiency the ecosystem has gained beyond just cheaper
             GPUs.
           </p>

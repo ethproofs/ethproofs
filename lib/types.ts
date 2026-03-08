@@ -426,3 +426,24 @@ export interface ZkvmPerformancePoint {
   zkvmName: string
   avgProvingTimeMs: number
 }
+
+export interface GuestSummaryData {
+  dominantGuest: string
+  dominantGuestShare: number
+  distribution: GuestDistributionEntry[]
+  activeGuestsCount: number
+  activeGuestsChange: number
+  totalProofs: number
+}
+
+export interface GuestDistributionEntry {
+  name: string
+  share: number
+}
+
+export interface GuestDiversityPoint {
+  week: string
+  guestName: string
+  proofCount: number
+  share: number
+}
