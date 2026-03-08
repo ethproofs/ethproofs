@@ -224,7 +224,7 @@ export function ProvingEfficiencyChart() {
                   yAxisId="latency"
                   dataKey="avgLatency"
                   type="monotone"
-                  stroke="hsl(var(--chart-9))"
+                  stroke="hsl(var(--chart-3))"
                   strokeWidth={2}
                   dot={false}
                   connectNulls
@@ -236,7 +236,7 @@ export function ProvingEfficiencyChart() {
                   yAxisId="cost"
                   dataKey="avgCost"
                   type="monotone"
-                  stroke="hsl(var(--chart-4))"
+                  stroke="hsl(var(--chart-6))"
                   strokeWidth={2}
                   dot={false}
                   connectNulls
@@ -252,13 +252,13 @@ export function ProvingEfficiencyChart() {
         <div className="flex items-center gap-4">
           {showLatency && (
             <div className="flex items-center gap-1.5">
-              <div className="size-2 rounded-full bg-[hsl(var(--chart-9))]" />
+              <div className="size-2 rounded-full bg-[hsl(var(--chart-3))]" />
               <span>latency</span>
             </div>
           )}
           {showCost && (
             <div className="flex items-center gap-1.5">
-              <div className="size-2 rounded-full bg-[hsl(var(--chart-4))]" />
+              <div className="size-2 rounded-full bg-[hsl(var(--chart-6))]" />
               <span>cost</span>
             </div>
           )}
@@ -268,7 +268,7 @@ export function ProvingEfficiencyChart() {
             <span className="font-medium text-placeholder">
               Reading the chart:
             </span>{" "}
-            Blue line (latency) should trend down toward 10s threshold. Yellow
+            Orange line (latency) should trend down toward 10s threshold. Green
             line (cost) should trend down toward $0.01. Blue shaded area shows
             gas limit increases — efficiency improving despite harder blocks is
             the success story.

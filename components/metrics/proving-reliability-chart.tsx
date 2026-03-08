@@ -40,9 +40,9 @@ const MAX_FETCH_DAYS = 90
 const TARGET_RATE = 75
 
 const CATEGORY_COLORS = {
-  sub10s: "hsl(var(--level-best))",
-  stunner: "hsl(var(--level-middle))",
-  paralyzer: "hsl(var(--level-worst))",
+  sub10s: "hsl(var(--success))",
+  stunner: "hsl(var(--warning))",
+  paralyzer: "hsl(var(--destructive))",
 } as const
 
 function filterByRange(
