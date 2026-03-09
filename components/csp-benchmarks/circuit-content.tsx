@@ -1,7 +1,8 @@
 "use client"
 
-import { useCallback, useMemo, useState } from "react"
-import { useRouter, useSearchParams } from "next/navigation"
+import { memo, useCallback, useLayoutEffect, useMemo, useState } from "react"
+
+import type { ChartConfig } from "@/components/ui/chart"
 
 import { cn } from "@/lib/utils"
 
@@ -10,17 +11,97 @@ import type { SystemProperties } from "./system/properties"
 import { BarCharts } from "./bar-charts"
 import { type CircuitTarget, getInputSizeUnit, inputSizeSearchParam, targetToDataKey } from "./circuits"
 import { LineCharts } from "./line-charts"
-import { buildChartConfig, getInputSizes, getProverKey } from "./metrics"
+import { buildChartConfig, getAllProverKeys, getInputSizes } from "./metrics"
 import { ChartLegend, EmptyState, useSeriesSelection } from "./shared"
 import { SystemPropertiesTable } from "./system-properties-table"
 import { Table } from "./table"
 
 import type { Metrics } from "@/lib/api/csp-benchmarks"
 
-function getAllProverKeys(benchmarks: Metrics[]): string[] {
-  const keySet = new Set<string>()
-  benchmarks.forEach((b) => keySet.add(getProverKey(b)))
-  return Array.from(keySet).sort()
+interface ComparisonSectionProps {
+  target: CircuitTarget
+  filteredMetrics: Metrics[]
+  hiddenProvers: Set<string>
+  allProvers: string[]
+  chartConfig: ChartConfig
+  availableInputSizes: number[]
+}
+
+function ComparisonSection({
+  target,
+  filteredMetrics,
+  hiddenProvers,
+  allProvers,
+  chartConfig,
+  availableInputSizes,
+}: ComparisonSectionProps) {
+  const dataKey = targetToDataKey[target]
+  const [selectedInputSize, setSelectedInputSize] = useState(availableInputSizes[0] ?? 0)
+
+  useLayoutEffect(() => {
+    const params = new URLSearchParams(window.location.search)
+    const raw = params.get(inputSizeSearchParam)
+    if (raw === null) return
+    const parsed = Number(raw)
+    if (!Number.isNaN(parsed) && availableInputSizes.includes(parsed)) {
+      setSelectedInputSize(parsed)
+    }
+  }, [availableInputSizes])
+
+  const isSelectedSizeValid = availableInputSizes.includes(selectedInputSize)
+  const effectiveInputSize = isSelectedSizeValid ? selectedInputSize : (availableInputSizes[0] ?? 0)
+
+  const handleSizeChange = useCallback((size: number) => {
+    setSelectedInputSize(size)
+    const params = new URLSearchParams(window.location.search)
+    params.set(inputSizeSearchParam, String(size))
+    window.history.replaceState(null, "", `?${params.toString()}`)
+  }, [])
+
+  return (
+    <>
+      <div className="flex min-h-10 items-center gap-3">
+        <span className="shrink-0 text-sm font-medium text-muted-foreground">
+          {target === "ecdsa" ? "input" : getInputSizeUnit(dataKey)}
+        </span>
+        {target === "ecdsa" ? (
+          <span className="text-sm">single signature</span>
+        ) : availableInputSizes.length > 1 ? (
+          <div className="flex items-center gap-1 overflow-x-auto">
+            {availableInputSizes.map((size) => (
+              <button
+                key={size}
+                type="button"
+                className={cn(
+                  "rounded-md px-2.5 py-1 text-sm transition-colors",
+                  size === effectiveInputSize
+                    ? "bg-primary/10 font-medium text-primary"
+                    : "text-muted-foreground hover:text-foreground"
+                )}
+                onClick={() => handleSizeChange(size)}
+              >
+                {size}
+              </button>
+            ))}
+          </div>
+        ) : (
+          <span className="text-sm">{availableInputSizes[0]}</span>
+        )}
+      </div>
+
+      <section>
+        <h2 className="mb-4 text-lg sm:text-xl">comparison</h2>
+        <BarCharts
+          benchmarks={filteredMetrics}
+          selectedInputSize={effectiveInputSize}
+          target={dataKey}
+          hiddenProvers={hiddenProvers}
+          allProvers={allProvers}
+          chartConfig={chartConfig}
+        />
+      </section>
+    </>
+  )
 }
 
 interface CircuitContentProps {
@@ -28,13 +109,10 @@ interface CircuitContentProps {
   metrics: Metrics[]
 }
 
-export function CircuitContent({
+export const CircuitContent = memo(function CircuitContent({
   target,
   metrics,
 }: CircuitContentProps) {
-  const router = useRouter()
-  const searchParams = useSearchParams()
-
   const dataKey = targetToDataKey[target]
   const filteredMetrics = useMemo(
     () => metrics.filter((m) => m.target === dataKey),
@@ -58,20 +136,6 @@ export function CircuitContent({
     [filteredMetrics]
   )
 
-  const inputSizeParam = searchParams.get(inputSizeSearchParam)
-  const parsedInputSize = inputSizeParam !== null ? Number(inputSizeParam) : NaN
-
-  const selectedInputSize =
-    !Number.isNaN(parsedInputSize) && availableInputSizes.includes(parsedInputSize)
-      ? parsedInputSize
-      : availableInputSizes[0] ?? 0
-
-  const handleInputSizeChange = (size: number) => {
-    const params = new URLSearchParams(searchParams.toString())
-    params.set(inputSizeSearchParam, String(size))
-    router.replace(`?${params.toString()}`, { scroll: false })
-  }
-
   const [drawerOpen, setDrawerOpen] = useState(false)
   const [selectedSystem, setSelectedSystem] = useState<SystemProperties | null>(null)
 
@@ -86,46 +150,14 @@ export function CircuitContent({
 
   return (
     <div className="space-y-8 px-4 pt-4 sm:space-y-12 sm:px-6 sm:pt-6">
-      <div className="flex min-h-10 items-center gap-3">
-        <span className="shrink-0 text-sm font-medium text-muted-foreground">
-          {target === "ecdsa" ? "input" : getInputSizeUnit(dataKey)}
-        </span>
-        {target === "ecdsa" ? (
-          <span className="text-sm">single signature</span>
-        ) : availableInputSizes.length > 1 ? (
-          <div className="flex items-center gap-1 overflow-x-auto">
-            {availableInputSizes.map((size) => (
-              <button
-                key={size}
-                type="button"
-                className={cn(
-                  "rounded-md px-2.5 py-1 text-sm transition-colors",
-                  size === selectedInputSize
-                    ? "bg-primary/10 font-medium text-primary"
-                    : "text-muted-foreground hover:text-foreground"
-                )}
-                onClick={() => handleInputSizeChange(size)}
-              >
-                {size}
-              </button>
-            ))}
-          </div>
-        ) : (
-          <span className="text-sm">{availableInputSizes[0]}</span>
-        )}
-      </div>
-
-      <section>
-        <h2 className="mb-4 text-lg sm:text-xl">comparison</h2>
-        <BarCharts
-          benchmarks={filteredMetrics}
-          selectedInputSize={selectedInputSize}
-          target={dataKey}
-          hiddenProvers={hiddenProvers}
-          allProvers={allProvers}
-          chartConfig={chartConfig}
-        />
-      </section>
+      <ComparisonSection
+        target={target}
+        filteredMetrics={filteredMetrics}
+        hiddenProvers={hiddenProvers}
+        allProvers={allProvers}
+        chartConfig={chartConfig}
+        availableInputSizes={availableInputSizes}
+      />
 
       <ChartLegend
         keys={allProvers}
@@ -149,6 +181,7 @@ export function CircuitContent({
             onToggleSeries={handleToggleProver}
             seriesKeys={allProvers}
             chartConfig={chartConfig}
+            inputSizeCount={availableInputSizes.length}
           />
         </section>
       )}
@@ -169,4 +202,4 @@ export function CircuitContent({
       />
     </div>
   )
-}
+})

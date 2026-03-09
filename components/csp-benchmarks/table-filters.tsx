@@ -114,7 +114,7 @@ export function TableFilters({
       <PopoverTrigger asChild>
         <Button variant="outline" size="sm" className="h-8" aria-label="filter properties">
           <ListFilter />
-          <span className="hidden md:block">properties</span>
+          properties
           {activeCount > 0 && (
             <Badge className="size-5 justify-center rounded-full px-0 text-[10px]">
               {activeCount}

@@ -6,6 +6,8 @@ import { prettyMs } from "@/lib/time"
 
 export const nanosecondsPerMillisecond = 1_000_000
 
+export const autoLogDomain: [string, string] = ["auto", "auto"]
+
 export type MetricKey =
   | "proof_duration"
   | "verify_duration"
@@ -14,53 +16,53 @@ export type MetricKey =
   | "preprocessing_size"
 
 export interface MetricConfig {
-  key: MetricKey
   label: string
   description: string
-  format: (value: number) => string
+  unit: "duration" | "bytes"
+  format(value: number): string
   shouldUseLogScale?: boolean
 }
 
+const formatDuration = (value: number) =>
+  prettyMs(value / nanosecondsPerMillisecond, {
+    keepDecimalsOnWholeSeconds: false,
+    unitCount: 1,
+  })
+
+const formatBytesCompact = (value: number) => formatBytes(value, 0)
+
 export const metricConfigs: Record<MetricKey, MetricConfig> = {
   proof_duration: {
-    key: "proof_duration",
     label: "proof generation",
     description: "proof generation time (lower is better)",
-    format: (value) =>
-      prettyMs(value / nanosecondsPerMillisecond, {
-        keepDecimalsOnWholeSeconds: false,
-        unitCount: 1,
-      }),
+    unit: "duration",
+    format: formatDuration,
   },
   verify_duration: {
-    key: "verify_duration",
     label: "proof verification",
     description: "proof verification time (lower is better)",
-    format: (value) =>
-      prettyMs(value / nanosecondsPerMillisecond, {
-        keepDecimalsOnWholeSeconds: false,
-        unitCount: 1,
-      }),
+    unit: "duration",
+    format: formatDuration,
   },
   peak_memory: {
-    key: "peak_memory",
     label: "memory consumption",
     description:
       "maximum RAM consumed during proof generation (lower is better)",
-    format: (value) => formatBytes(value, 0),
+    unit: "bytes",
+    format: formatBytesCompact,
   },
   proof_size: {
-    key: "proof_size",
     label: "proof size",
     description: "generated proof size (lower is better)",
-    format: (value) => formatBytes(value, 0),
+    unit: "bytes",
+    format: formatBytesCompact,
   },
   preprocessing_size: {
-    key: "preprocessing_size",
     label: "preprocessing size",
     description:
       "preprocessed artifacts size, such as SRS or proving key (lower is better)",
-    format: (value) => formatBytes(value, 0),
+    unit: "bytes",
+    format: formatBytesCompact,
     shouldUseLogScale: true,
   },
 }
@@ -96,7 +98,7 @@ export const chartColors = [
   "#fdba74",
 ] as const
 
-const radarMetricKeys: readonly MetricKey[] = [
+const radarMetricOrder: readonly MetricKey[] = [
   "preprocessing_size",
   "proof_size",
   "proof_duration",
@@ -105,7 +107,7 @@ const radarMetricKeys: readonly MetricKey[] = [
 ]
 
 export const radarMetrics: ReadonlyArray<{ key: MetricKey; label: string }> =
-  radarMetricKeys.map((key) => ({ key, label: metricConfigs[key].label }))
+  radarMetricOrder.map((key) => ({ key, label: metricConfigs[key].label }))
 
 export function getProverKey(benchmark: Metrics): string {
   return `${benchmark.name}${benchmark.feat ? ` (${benchmark.feat})` : ""}`
@@ -119,6 +121,12 @@ export function buildChartConfig(provers: string[]): ChartConfig {
     }
     return acc
   }, {})
+}
+
+export function getAllProverKeys(benchmarks: Metrics[]): string[] {
+  const keySet = new Set<string>()
+  benchmarks.forEach((b) => keySet.add(getProverKey(b)))
+  return Array.from(keySet).sort()
 }
 
 export function getInputSizes(benchmarks: Metrics[]): number[] {

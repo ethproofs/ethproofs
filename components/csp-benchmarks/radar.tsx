@@ -2,6 +2,7 @@
 
 import { useMemo, useState } from "react"
 import { PolarAngleAxis, PolarGrid, PolarRadiusAxis, Radar, RadarChart } from "recharts"
+import { keys } from "remeda"
 
 import { ChartContainer } from "@/components/ui/chart"
 
@@ -11,6 +12,8 @@ import { ChartLegend, EmptyState, useSeriesSelection } from "./shared"
 import type { Metrics } from "@/lib/api/csp-benchmarks"
 
 const minValidMetricsForRadar = radarMetrics.length
+const radarChartMargin = { top: 30, right: 50, bottom: 30, left: 50 }
+const radarDomain: [number, number] = [0, 100]
 
 interface PercentileEntry {
   key: string
@@ -125,7 +128,7 @@ function aggregateRadarScores(
       }
     })
 
-    const validMetricCount = Object.keys(scores).length
+    const validMetricCount = keys(scores).length
     if (validMetricCount >= minValidMetricsForRadar) {
       finalScores.set(prover, scores)
     }
@@ -230,11 +233,6 @@ export function RadarComparison({ benchmarks }: RadarComparisonProps) {
     })
   }, [scores, allProvers])
 
-  const visibleProvers = useMemo(
-    () => allProvers.filter((p) => !hiddenProvers.has(p)),
-    [allProvers, hiddenProvers]
-  )
-
   if (benchmarks.length === 0 || chartData.length === 0) {
     return <EmptyState message="no benchmark data available" />
   }
@@ -255,12 +253,12 @@ export function RadarComparison({ benchmarks }: RadarComparisonProps) {
         <RadarChart
           accessibilityLayer
           data={chartData}
-          margin={{ top: 30, right: 50, bottom: 30, left: 50 }}
+          margin={radarChartMargin}
         >
           <PolarAngleAxis dataKey="metric" tick={CustomTick} />
           <PolarGrid />
-          <PolarRadiusAxis domain={[0, 100]} tick={false} axisLine={false} />
-          {visibleProvers.map((key) => {
+          <PolarRadiusAxis domain={radarDomain} tick={false} axisLine={false} />
+          {allProvers.filter((p) => !hiddenProvers.has(p)).map((key) => {
             const isHovered = activeHover === key
             return (
               <Radar

@@ -1,7 +1,8 @@
 "use client"
 
-import { useMemo } from "react"
+import { useCallback, useMemo } from "react"
 import { CartesianGrid, Line, LineChart, XAxis, YAxis } from "recharts"
+import { entries } from "remeda"
 
 import type { ChartConfig } from "@/components/ui/chart"
 import {
@@ -10,8 +11,8 @@ import {
 } from "@/components/ui/chart"
 
 import { dataKeyToTarget, type DataTarget, formatInputSizeWithUnit } from "./circuits"
-import { chartMetrics, getInputSizes, getProverKey, metricConfigs,type MetricKey } from "./metrics"
-import { ChartCard, ChartLegend, ChartTooltipBody, EmptyState } from "./shared"
+import { autoLogDomain, chartMetrics, getProverKey, metricConfigs, nanosecondsPerMillisecond } from "./metrics"
+import { ChartCard, ChartLegend, ChartTooltipBody, type ChartTooltipBodyEntry, EmptyState } from "./shared"
 
 import type { Metrics } from "@/lib/api/csp-benchmarks"
 import { formatBytes } from "@/lib/number"
@@ -24,6 +25,7 @@ interface LineChartsProps {
   onToggleSeries(key: string): void
   seriesKeys: string[]
   chartConfig: ChartConfig
+  inputSizeCount: number
 }
 
 interface ChartDataPoint {
@@ -31,10 +33,9 @@ interface ChartDataPoint {
   [key: string]: number | string
 }
 
-const durationMetrics: ReadonlySet<MetricKey> = new Set<MetricKey>([
-  "proof_duration",
-  "verify_duration",
-])
+const lineChartMargin = { top: 20, right: 20, left: 20, bottom: 20 }
+const axisTickStyle = { fontSize: 12 }
+const tooltipCursorStyle = { strokeDasharray: "3 3" }
 
 function generateYAxisTicks(
   min: number,
@@ -43,42 +44,42 @@ function generateYAxisTicks(
 ): number[] {
   if (min === max) return [min]
 
-  const KB = 1024
-  const MB = KB * 1024
-  const GB = MB * 1024
-  const TB = GB * 1024
+  const kb = 1024
+  const mb = kb * 1024
+  const gb = mb * 1024
+  const tb = gb * 1024
 
-  const US = 1_000
-  const MS = 1_000_000
-  const S = 1_000_000_000
+  const us = 1_000
+  const ms = 1_000_000
+  const sec = 1_000_000_000
 
   const magnitudes = isBytes
     ? [
         1,
         10,
         100,
-        KB,
-        10 * KB,
-        100 * KB,
-        MB,
-        10 * MB,
-        100 * MB,
-        GB,
-        10 * GB,
-        100 * GB,
-        TB,
+        kb,
+        10 * kb,
+        100 * kb,
+        mb,
+        10 * mb,
+        100 * mb,
+        gb,
+        10 * gb,
+        100 * gb,
+        tb,
       ]
     : [
-        US,
-        10 * US,
-        100 * US,
-        MS,
-        10 * MS,
-        100 * MS,
-        S,
-        10 * S,
-        100 * S,
-        1000 * S,
+        us,
+        10 * us,
+        100 * us,
+        ms,
+        10 * ms,
+        100 * ms,
+        sec,
+        10 * sec,
+        100 * sec,
+        1000 * sec,
       ]
 
   let valid = magnitudes.filter((m) => m >= min && m <= max)
@@ -134,27 +135,61 @@ function LineMetricChart({
   label,
   ariaLabel,
 }: LineMetricChartProps) {
-  const allValues = data.flatMap((point) =>
-    Object.entries(point)
-      .filter(([key]) => key !== "input_size")
-      .flatMap(([, value]) =>
-        typeof value === "number" && value > 0 ? [value] : []
-      )
-  )
-  if (allValues.length === 0) return null
-  const minValue = allValues.reduce((acc, v) => Math.min(acc, v), Infinity)
-  const maxValue = allValues.reduce((acc, v) => Math.max(acc, v), -Infinity)
-  const ticks = generateYAxisTicks(minValue, maxValue, isBytes)
+  const ticks = useMemo(() => {
+    const allValues = data.flatMap((point) =>
+      entries(point)
+        .filter(([key]) => key !== "input_size")
+        .flatMap(([, value]) =>
+          typeof value === "number" && value > 0 ? [value] : []
+        )
+    )
+    if (allValues.length === 0) return null
+    const minValue = allValues.reduce((acc, v) => Math.min(acc, v), Infinity)
+    const maxValue = allValues.reduce((acc, v) => Math.max(acc, v), -Infinity)
+    return generateYAxisTicks(minValue, maxValue, isBytes)
+  }, [data, isBytes])
 
-  const tooltipFormatter = (value: number) => {
-    if (isBytes) {
-      return formatBytes(value, 2)
-    }
-    return prettyMs(value / 1_000_000, {
-      keepDecimalsOnWholeSeconds: false,
-      unitCount: 1,
-    })
-  }
+  const tooltipFormatter = useCallback(
+    (value: number) => {
+      if (isBytes) {
+        return formatBytes(value, 2)
+      }
+      return prettyMs(value / nanosecondsPerMillisecond, {
+        keepDecimalsOnWholeSeconds: false,
+        unitCount: 1,
+      })
+    },
+    [isBytes]
+  )
+
+  const xAxisTickFormatter = useCallback(
+    (value: unknown) =>
+      typeof value === "number"
+        ? formatInputSizeWithUnit(value, target)
+        : String(value),
+    [target]
+  )
+
+  const yAxisTickFormatter = useCallback(
+    (value: unknown) =>
+      typeof value === "number" ? formatValue(value) : String(value),
+    [formatValue]
+  )
+
+  const tooltipContent = useCallback(
+    ({ active, payload }: { active?: boolean; payload?: ReadonlyArray<ChartTooltipBodyEntry> }) => {
+      if (!active || !payload || payload.length === 0) return null
+      return (
+        <ChartTooltipBody
+          entries={payload}
+          formatValue={tooltipFormatter}
+        />
+      )
+    },
+    [tooltipFormatter]
+  )
+
+  if (ticks === null) return null
 
   const legendFooter = (
     <ChartLegend
@@ -172,41 +207,27 @@ function LineMetricChart({
         <LineChart
           accessibilityLayer
           data={data}
-          margin={{ top: 20, right: 20, left: 20, bottom: 20 }}
+          margin={lineChartMargin}
         >
           <CartesianGrid strokeDasharray="3 3" stroke="hsl(var(--border))" />
           <XAxis
             dataKey="input_size"
-            tick={{ fontSize: 12 }}
+            tick={axisTickStyle}
             tickMargin={6}
-            tickFormatter={(value) =>
-              typeof value === "number"
-                ? formatInputSizeWithUnit(value, target)
-                : String(value)
-            }
+            tickFormatter={xAxisTickFormatter}
           />
           <YAxis
             scale="log"
-            domain={["auto", "auto"]}
-            tick={{ fontSize: 12 }}
+            domain={autoLogDomain}
+            tick={axisTickStyle}
             tickMargin={6}
             type="number"
             ticks={ticks}
-            tickFormatter={(value) =>
-              typeof value === "number" ? formatValue(value) : String(value)
-            }
+            tickFormatter={yAxisTickFormatter}
           />
           <ChartTooltip
-            cursor={{ strokeDasharray: "3 3" }}
-            content={({ active, payload }) => {
-              if (!active || !payload || payload.length === 0) return null
-              return (
-                <ChartTooltipBody
-                  entries={payload}
-                  formatValue={tooltipFormatter}
-                />
-              )
-            }}
+            cursor={tooltipCursorStyle}
+            content={tooltipContent}
           />
           {seriesKeys
             .filter((key) => !hiddenSeries.has(key))
@@ -235,12 +256,8 @@ export function LineCharts({
   onToggleSeries,
   seriesKeys,
   chartConfig,
+  inputSizeCount,
 }: LineChartsProps) {
-  const uniqueInputSizes = useMemo(
-    () => getInputSizes(benchmarks).length,
-    [benchmarks]
-  )
-
   const metricsData = useMemo(() => {
     return chartMetrics.map((metricKey) => {
       const grouped = new Map<number, Map<string, number>>()
@@ -279,7 +296,7 @@ export function LineCharts({
     return <EmptyState message={`no benchmark data available for ${target}`} />
   }
 
-  if (uniqueInputSizes <= 1) {
+  if (inputSizeCount <= 1) {
     const message =
       target === "ecdsa"
         ? "ECDSA uses a single fixed input size of 32 bytes, trend comparison not applicable"
@@ -301,7 +318,7 @@ export function LineCharts({
           onToggleSeries={onToggleSeries}
           target={target}
           formatValue={config.format}
-          isBytes={!durationMetrics.has(key)}
+          isBytes={config.unit === "bytes"}
           label={dataKeyToTarget[target]}
           ariaLabel={`${config.label} trend`}
         />

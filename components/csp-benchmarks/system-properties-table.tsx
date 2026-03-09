@@ -1,6 +1,7 @@
 "use client"
 
-import { useMemo } from "react"
+import { memo, useMemo } from "react"
+import { map, pipe, sortBy, uniqueBy } from "remeda"
 
 import { Null } from "@/components/Null"
 import {
@@ -22,17 +23,12 @@ import {
   getBooleanSeverity,
   getSecurityBitsSeverity,
 } from "./system/slices"
+import { auditStatusDisplay } from "./columns"
 import { getProverKey } from "./metrics"
 import { EmptyState } from "./shared"
 import { TableFilters, useTableFilters } from "./table-filters"
 
 import type { Metrics } from "@/lib/api/csp-benchmarks"
-
-const auditStatusDisplay: Record<string, string> = {
-  audited: "audited",
-  not_audited: "not audited",
-  partially_audited: "partial",
-}
 
 function formatBooleanText(value: boolean | undefined): string {
   if (typeof value !== "boolean") return "--"
@@ -40,15 +36,11 @@ function formatBooleanText(value: boolean | undefined): string {
 }
 
 function deduplicateProvers(metrics: Metrics[]): SystemProperties[] {
-  const seen = new Map<string, SystemProperties>()
-  for (const row of metrics) {
-    const key = getProverKey(row)
-    if (!seen.has(key)) {
-      seen.set(key, buildSystemPropertiesFromRow(row))
-    }
-  }
-  return Array.from(seen.values()).sort((a, b) =>
-    a.proverKey.localeCompare(b.proverKey)
+  return pipe(
+    metrics,
+    uniqueBy((row) => getProverKey(row)),
+    map(buildSystemPropertiesFromRow),
+    sortBy((p) => p.proverKey)
   )
 }
 
@@ -59,7 +51,7 @@ interface SystemPropertiesTableProps {
   benchmarks: Metrics[]
 }
 
-export function SystemPropertiesTable({
+export const SystemPropertiesTable = memo(function SystemPropertiesTable({
   benchmarks,
 }: SystemPropertiesTableProps) {
   const { filters, setFilter, activeCount, applyFilters } = useTableFilters()
@@ -161,4 +153,4 @@ export function SystemPropertiesTable({
       </div>}
     </div>
   )
-}
+})
