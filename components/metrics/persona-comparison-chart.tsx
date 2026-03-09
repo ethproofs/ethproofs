@@ -51,11 +51,7 @@ const PERSONA_COLORS = [
   "hsl(var(--chart-2))",
   "hsl(var(--chart-9))",
   "hsl(var(--chart-13))",
-  "hsl(var(--chart-3))",
   "hsl(var(--chart-11))",
-  "hsl(var(--chart-15))",
-  "hsl(var(--chart-8))",
-  "hsl(var(--chart-12))",
 ] as const
 
 function getPersonaColor(index: number): string {
