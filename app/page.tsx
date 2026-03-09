@@ -88,14 +88,14 @@ export default async function Index() {
           <div className="flex items-end justify-between gap-2">
             <TabsList className="border-none">
               <TabsTrigger
-                className="flex-1 cursor-default border-none py-1 text-lg font-semibold"
+                className="flex-1 cursor-default border-none py-1 text-lg"
                 value="left"
               >
                 RTP cohort
               </TabsTrigger>
               <TabsTrigger
                 disabled
-                className="flex-1 border-none py-1 text-lg font-semibold"
+                className="flex-1 border-none py-1 text-lg"
                 value="right"
               >
                 1:10 cohort (soon™)

@@ -303,6 +303,31 @@ export interface RtpCohortCompositionData {
   members: RtpCohortMember[]
 }
 
+export interface RtpConsistencyWeekEntry {
+  week: string
+  isEligible: boolean
+  hasData: boolean
+}
+
+export interface RtpCohortConsistencyMember {
+  clusterName: string
+  teamName: string
+  teamLogoUrl: string | null
+  weeksIncluded: number
+  totalWeeks: number
+  trackedWeeks: number
+  inclusionRate: number
+  isCurrentlyIncluded: boolean
+  weeklyTimeline: RtpConsistencyWeekEntry[]
+}
+
+export interface RtpCohortConsistencyData {
+  currentIncludedCount: number
+  avgTenureWeeks: number
+  trackedPeriodWeeks: number
+  members: RtpCohortConsistencyMember[]
+}
+
 export interface RtpCohortPerformanceData {
   totalBlockSlots: number
   sub10sCount: number
@@ -446,4 +471,22 @@ export interface GuestDiversityPoint {
   guestName: string
   proofCount: number
   share: number
+}
+
+export interface ProverSummaryData {
+  totalProvers: number
+  rtpEligibleCount: number
+  totalProofs: number
+  avgPerformance: number
+}
+
+export interface ProverScatterPoint {
+  teamName: string
+  clusterName: string
+  persona: string
+  avgCost: number
+  performanceScore: number
+  livenessScore: number
+  proofCount: number
+  isRtpEligible: boolean
 }
