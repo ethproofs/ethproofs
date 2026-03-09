@@ -265,9 +265,7 @@ export function ProvingEfficiencyChart() {
         </div>
         <div className="min-h-14">
           <p className="text-xs text-muted-foreground">
-            <span className="font-medium text-placeholder">
-              Reading the chart:
-            </span>{" "}
+            <span className="font-medium text-placeholder">Key insight:</span>{" "}
             Orange line (latency) should trend down toward 10s threshold. Green
             line (cost) should trend down toward $0.01. Blue shaded area shows
             gas limit increases — efficiency improving despite harder blocks is

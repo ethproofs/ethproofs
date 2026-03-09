@@ -267,9 +267,7 @@ export function GpuPriceIndexChart() {
         {lastUpdated && <span>Last updated: {lastUpdated}</span>}
         <div className="min-h-14">
           <p className="text-xs text-muted-foreground">
-            <span className="font-medium text-placeholder">
-              Why this matters:
-            </span>{" "}
+            <span className="font-medium text-placeholder">Key insight:</span>{" "}
             Proving economics depend on GPU rental costs. When GPU prices drop,
             proving becomes cheaper — but software optimizations can outpace
             hardware savings. The gap between the orange and green lines shows
