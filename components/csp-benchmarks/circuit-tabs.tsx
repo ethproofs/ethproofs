@@ -1,6 +1,6 @@
 "use client"
 
-import { useRouter, useSearchParams } from "next/navigation"
+import { startTransition, useCallback, useLayoutEffect, useRef, useState } from "react"
 
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 
@@ -20,20 +20,29 @@ interface CircuitTabsProps {
 export function CircuitTabs({
   renderTabContent,
 }: CircuitTabsProps) {
-  const router = useRouter()
-  const searchParams = useSearchParams()
+  const [activeTarget, setActiveTarget] = useState<CircuitTarget>(defaultCircuitTarget)
 
-  const targetParam = searchParams.get(targetSearchParam)
-  const activeTarget: CircuitTarget = isValidCircuitTarget(targetParam)
-    ? targetParam
-    : defaultCircuitTarget
+  useLayoutEffect(() => {
+    const params = new URLSearchParams(window.location.search)
+    const param = params.get(targetSearchParam)
+    if (isValidCircuitTarget(param)) {
+      setActiveTarget(param)
+    }
+  }, [])
 
-  const handleTargetChange = (value: string) => {
-    const params = new URLSearchParams(searchParams.toString())
+  const mountedTabs = useRef(new Set<CircuitTarget>())
+  mountedTabs.current.add(activeTarget)
+
+  const handleTargetChange = useCallback((value: string) => {
+    if (!isValidCircuitTarget(value)) return
+    const params = new URLSearchParams(window.location.search)
     params.set(targetSearchParam, value)
     params.delete(inputSizeSearchParam)
-    router.replace(`?${params.toString()}`, { scroll: false })
-  }
+    window.history.replaceState(null, "", `?${params.toString()}`)
+    startTransition(() => {
+      setActiveTarget(value)
+    })
+  }, [])
 
   return (
     <Tabs value={activeTarget} onValueChange={handleTargetChange}>
@@ -54,8 +63,13 @@ export function CircuitTabs({
         </div>
       </div>
       {circuitTargets.map((target) => (
-        <TabsContent key={target} value={target}>
-          {renderTabContent(target)}
+        <TabsContent
+          key={target}
+          value={target}
+          forceMount
+          className="data-[state=inactive]:hidden"
+        >
+          {mountedTabs.current.has(target) && renderTabContent(target)}
         </TabsContent>
       ))}
     </Tabs>

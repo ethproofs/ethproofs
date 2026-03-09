@@ -19,7 +19,7 @@ import type { Metrics } from "@/lib/api/csp-benchmarks"
 import { formatBytes, formatNumber } from "@/lib/number"
 import { prettyMs } from "@/lib/time"
 
-const auditStatusDisplay: Record<string, string> = {
+export const auditStatusDisplay: Record<string, string> = {
   audited: "audited",
   not_audited: "not audited",
   partially_audited: "partially audited",

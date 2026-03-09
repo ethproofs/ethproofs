@@ -109,7 +109,7 @@ export function EmptyState({ message }: EmptyStateProps) {
   return <div className="py-8 text-center text-muted-foreground">{message}</div>
 }
 
-interface ChartTooltipBodyEntry {
+export interface ChartTooltipBodyEntry {
   name?: string | number
   value?: number | string | Array<number | string>
   color?: string
