@@ -113,7 +113,7 @@ export function ZkvmPerformanceTrajectoryChart({
             no performance data available
           </div>
         ) : (
-          <ResponsiveContainer width="100%" height={380}>
+          <ResponsiveContainer width="100%" height={430}>
             <LineChart
               data={rows}
               margin={{ top: 5, right: 10, left: 0, bottom: 0 }}

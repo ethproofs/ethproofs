@@ -7,8 +7,10 @@ import type { Block, Team } from "@/lib/types"
 
 import { useDataTableUrlState } from "@/components/data-table/useDataTableUrlState"
 
+import { cn } from "@/lib/utils"
+
 import { DataTable } from "../data-table/data-table"
-import { Spinner } from "../ui/spinner"
+import { Skeleton } from "../ui/skeleton"
 
 import { columns, labels } from "./columns"
 
@@ -70,17 +72,12 @@ export function BlocksTable({
   }
 
   if (blocksQuery.isLoading) {
-    return (
-      <div className="mt-4 flex items-center gap-2 px-6">
-        <Spinner className="text-muted-foreground" />
-        <p className="text-muted-foreground">loading blocks...</p>
-      </div>
-    )
+    return <Skeleton className="h-[32rem] w-full rounded-lg" />
   }
 
   return (
     <DataTable
-      className={className}
+      className={cn("[&>div]:max-h-none", className)}
       data={blocks}
       columns={columns}
       rowCount={blocksQuery.data?.rowCount ?? 0}

@@ -89,15 +89,15 @@ export default async function ZkvmsPage() {
       </section>
 
       <section className="mb-8">
-        <span className="text-lg font-semibold">zkVMs, active</span>
-        <ZkvmsTable className="mt-4" zkvms={activeZkvmsWithMetrics} />
-      </section>
-
-      <section className="mb-8">
         <div className="mt-8 grid gap-6 lg:grid-cols-2">
           <ZkvmSecurityMilestonesChart data={milestonesData} />
           <ZkvmPerformanceTrajectoryChart data={trajectoryData} />
         </div>
+      </section>
+
+      <section className="mb-8">
+        <span className="text-lg font-semibold">zkVMs, active</span>
+        <ZkvmsTable className="mt-4" zkvms={activeZkvmsWithMetrics} />
       </section>
 
       <section className="mb-8">

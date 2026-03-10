@@ -50,7 +50,7 @@ function formatWeekTick(value: string): string {
 }
 
 export function GpuPriceIndexChart() {
-  const [showCorrelation, setShowCorrelation] = useState(false)
+  const [showCorrelation, setShowCorrelation] = useState(true)
 
   const { data: rawData, isLoading } = useQuery<GpuPriceHistoryEntry[]>({
     queryKey: ["gpu-price-history"],
