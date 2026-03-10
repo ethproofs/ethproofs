@@ -1,60 +1,39 @@
 import type { Metadata } from "next"
-import {
-  dehydrate,
-  HydrationBoundary,
-  QueryClient,
-} from "@tanstack/react-query"
 
-import { BasicTabs } from "@/components/BasicTabs"
-import { BlocksTableWithSuspense } from "@/components/blocks-table/blocks-table-with-suspense"
+import { BlockDifficultyDistributionChart } from "@/components/blocks/block-difficulty-distribution-chart"
+import { ProvingTimeDistributionChart } from "@/components/blocks/proving-time-distribution-chart"
+import { RecentBlocksBanner } from "@/components/blocks/recent-blocks-banner"
+import { BlocksTabbedTable } from "@/components/blocks-table/blocks-tabbed-table"
+import { PageHeader } from "@/components/layout/page-header"
 
-import { DEFAULT_PAGE_STATE } from "@/lib/constants"
-
-import { fetchBlocksPaginated } from "@/lib/api/blocks"
 import { getTeams } from "@/lib/api/teams"
 import { getMetadata } from "@/lib/metadata"
 
 export const metadata: Metadata = getMetadata({ title: "blocks" })
 
 export default async function BlocksPage() {
-  const queryClient = new QueryClient()
-
   const teams = await getTeams()
 
-  // Prefetch initial data in the background without blocking page render
-  queryClient.prefetchQuery({
-    queryKey: ["blocks", "single", DEFAULT_PAGE_STATE],
-    queryFn: () => fetchBlocksPaginated(DEFAULT_PAGE_STATE, "single"),
-  })
-  queryClient.prefetchQuery({
-    queryKey: ["blocks", "multi", DEFAULT_PAGE_STATE],
-    queryFn: () => fetchBlocksPaginated(DEFAULT_PAGE_STATE, "multi"),
-  })
-
   return (
-    <div className="mx-auto mt-2 flex max-w-screen-2xl flex-1 flex-col items-center gap-20 [&>section]:w-full">
-      <section>
-        <BasicTabs
-          title="blocks"
-          contentLeft={
-            <HydrationBoundary state={dehydrate(queryClient)}>
-              <BlocksTableWithSuspense
-                className="px-6"
-                machineType="multi"
-                teams={teams}
-              />
-            </HydrationBoundary>
-          }
-          contentRight={
-            <HydrationBoundary state={dehydrate(queryClient)}>
-              <BlocksTableWithSuspense
-                className="px-6"
-                machineType="single"
-                teams={teams}
-              />
-            </HydrationBoundary>
-          }
-        />
+    <div className="mx-auto max-w-screen-2xl px-6">
+      <PageHeader
+        title="blocks"
+        description="track block-level proving coverage and identify performance edge cases"
+      />
+
+      <section className="mb-8">
+        <RecentBlocksBanner />
+      </section>
+
+      <section className="mb-8">
+        <div className="grid gap-6 lg:grid-cols-2">
+          <ProvingTimeDistributionChart />
+          <BlockDifficultyDistributionChart />
+        </div>
+      </section>
+
+      <section className="mb-8">
+        <BlocksTabbedTable teams={teams} />
       </section>
     </div>
   )
