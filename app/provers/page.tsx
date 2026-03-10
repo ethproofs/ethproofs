@@ -23,14 +23,14 @@ export default function ProversPage() {
       </section>
 
       <section className="mb-8">
-        <ProversTabbedTable />
-      </section>
-
-      <section className="mb-8">
         <div className="mt-8 grid gap-6 lg:grid-cols-2">
           <RtpCohortConsistency />
           <PerformanceCostChart />
         </div>
+      </section>
+
+      <section className="mb-8">
+        <ProversTabbedTable />
       </section>
     </div>
   )

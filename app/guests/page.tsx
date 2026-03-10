@@ -66,19 +66,19 @@ export default async function GuestsPage() {
       </section>
 
       <section className="mb-8">
+        <div className="mt-8 grid gap-6 lg:grid-cols-2">
+          <GuestDiversityCurrentChart data={summaryData.distribution} />
+          <GuestDiversityTrendChart data={trendData} />
+        </div>
+      </section>
+
+      <section className="mb-8">
         <span className="text-lg font-semibold">guests, active</span>
         <GuestProgramsTable
           className="mt-4"
           guestPrograms={activePrograms}
           totalActiveClusters={totalActiveClusters}
         />
-      </section>
-
-      <section className="mb-8">
-        <div className="mt-8 grid gap-6 lg:grid-cols-2">
-          <GuestDiversityCurrentChart data={summaryData.distribution} />
-          <GuestDiversityTrendChart data={trendData} />
-        </div>
       </section>
 
       {inactivePrograms.length > 0 && (
