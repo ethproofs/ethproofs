@@ -125,12 +125,16 @@ export function buildChartConfig(provers: string[]): ChartConfig {
 
 export function getAllProverKeys(benchmarks: Metrics[]): string[] {
   const keySet = new Set<string>()
-  benchmarks.forEach((b) => keySet.add(getProverKey(b)))
+  for (const b of benchmarks) {
+    keySet.add(getProverKey(b))
+  }
   return Array.from(keySet).sort()
 }
 
 export function getInputSizes(benchmarks: Metrics[]): number[] {
   const sizes = new Set<number>()
-  benchmarks.forEach((b) => sizes.add(b.input_size))
+  for (const b of benchmarks) {
+    sizes.add(b.input_size)
+  }
   return Array.from(sizes).sort((a, b) => a - b)
 }

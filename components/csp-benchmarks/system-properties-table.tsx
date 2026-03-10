@@ -65,92 +65,94 @@ export const SystemPropertiesTable = memo(function SystemPropertiesTable({
       </div>
       {provers.length === 0 ? (
         <EmptyState message="no provers match the selected filters" />
-      ) : <div className="rounded-lg border">
-      <Table>
-        <TableHeader>
-          <TableRow>
-            <TableHead className={headClass}>prover</TableHead>
-            <TableHead className={headClass}>proving system</TableHead>
-            <TableHead className={headClass}>zero-knowledge</TableHead>
-            <TableHead className={headClass}>post-quantum</TableHead>
-            <TableHead className={headClass}>security</TableHead>
-            <TableHead className={headClass}>VM</TableHead>
-            <TableHead className={headClass}>ISA</TableHead>
-            <TableHead className={headClass}>audit</TableHead>
-            <TableHead className={headClass}>maintained</TableHead>
-            <TableHead className={headClass}>field / curve</TableHead>
-            <TableHead className={headClass}>arithmetization</TableHead>
-            <TableHead className={headClass}>IOP</TableHead>
-            <TableHead className={headClass}>PCS</TableHead>
-          </TableRow>
-        </TableHeader>
-        <TableBody>
-          {provers.map((prover) => {
-            const hasSecurityBits =
-              typeof prover.security_bits === "number" &&
-              prover.security_bits > 0
-
-            const auditText = prover.is_audited
-              ? auditStatusDisplay[prover.is_audited] ?? prover.is_audited
-              : undefined
-
-            return (
-              <TableRow key={prover.proverKey}>
-                <TableCell className={cellClass}>
-                  <span className="font-medium">{prover.proverKey}</span>
-                </TableCell>
-                <TableCell className={cellClass}>
-                  {prover.proving_system ?? <Null />}
-                </TableCell>
-                <TableCell className={cellClass}>
-                  <span style={{ color: severityColors[getBooleanSeverity(prover.is_zk)] }}>
-                    {formatBooleanText(prover.is_zk)}
-                  </span>
-                </TableCell>
-                <TableCell className={cellClass}>
-                  <span style={{ color: severityColors[getBooleanSeverity(prover.is_pq)] }}>
-                    {formatBooleanText(prover.is_pq)}
-                  </span>
-                </TableCell>
-                <TableCell className={cellClass}>
-                  <span style={{ color: severityColors[getSecurityBitsSeverity(prover.security_bits)] }}>
-                    {hasSecurityBits ? `${prover.security_bits}-bit` : "--"}
-                  </span>
-                </TableCell>
-                <TableCell className={cellClass}>
-                  {prover.is_zkvm ? "yes" : "no"}
-                </TableCell>
-                <TableCell className={cellClass}>
-                  {prover.isa ?? <Null />}
-                </TableCell>
-                <TableCell className={cellClass}>
-                  <span style={{ color: severityColors[getAuditSeverity(prover.is_audited)] }}>
-                    {auditText ?? "--"}
-                  </span>
-                </TableCell>
-                <TableCell className={cellClass}>
-                  <span style={{ color: severityColors[getBooleanSeverity(prover.is_maintained)] }}>
-                    {formatBooleanText(prover.is_maintained)}
-                  </span>
-                </TableCell>
-                <TableCell className={cellClass}>
-                  {prover.field_curve ?? <Null />}
-                </TableCell>
-                <TableCell className={cellClass}>
-                  {prover.arithm ?? <Null />}
-                </TableCell>
-                <TableCell className={cellClass}>
-                  {prover.iop ?? <Null />}
-                </TableCell>
-                <TableCell className={cellClass}>
-                  {prover.pcs ?? <Null />}
-                </TableCell>
+      ) : (
+        <div className="rounded-lg border">
+          <Table>
+            <TableHeader>
+              <TableRow>
+                <TableHead className={headClass}>prover</TableHead>
+                <TableHead className={headClass}>proving system</TableHead>
+                <TableHead className={headClass}>zero-knowledge</TableHead>
+                <TableHead className={headClass}>post-quantum</TableHead>
+                <TableHead className={headClass}>security</TableHead>
+                <TableHead className={headClass}>VM</TableHead>
+                <TableHead className={headClass}>ISA</TableHead>
+                <TableHead className={headClass}>audit</TableHead>
+                <TableHead className={headClass}>maintained</TableHead>
+                <TableHead className={headClass}>field / curve</TableHead>
+                <TableHead className={headClass}>arithmetization</TableHead>
+                <TableHead className={headClass}>IOP</TableHead>
+                <TableHead className={headClass}>PCS</TableHead>
               </TableRow>
-            )
-          })}
-        </TableBody>
-      </Table>
-      </div>}
+            </TableHeader>
+            <TableBody>
+              {provers.map((prover) => {
+                const hasSecurityBits =
+                  typeof prover.security_bits === "number" &&
+                  prover.security_bits > 0
+
+                const auditText = prover.is_audited
+                  ? auditStatusDisplay[prover.is_audited] ?? prover.is_audited
+                  : undefined
+
+                return (
+                  <TableRow key={prover.proverKey}>
+                    <TableCell className={cellClass}>
+                      <span className="font-medium">{prover.proverKey}</span>
+                    </TableCell>
+                    <TableCell className={cellClass}>
+                      {prover.proving_system ?? <Null />}
+                    </TableCell>
+                    <TableCell className={cellClass}>
+                      <span style={{ color: severityColors[getBooleanSeverity(prover.is_zk)] }}>
+                        {formatBooleanText(prover.is_zk)}
+                      </span>
+                    </TableCell>
+                    <TableCell className={cellClass}>
+                      <span style={{ color: severityColors[getBooleanSeverity(prover.is_pq)] }}>
+                        {formatBooleanText(prover.is_pq)}
+                      </span>
+                    </TableCell>
+                    <TableCell className={cellClass}>
+                      <span style={{ color: severityColors[getSecurityBitsSeverity(prover.security_bits)] }}>
+                        {hasSecurityBits ? `${prover.security_bits}-bit` : "--"}
+                      </span>
+                    </TableCell>
+                    <TableCell className={cellClass}>
+                      {prover.is_zkvm ? "yes" : "no"}
+                    </TableCell>
+                    <TableCell className={cellClass}>
+                      {prover.isa ?? <Null />}
+                    </TableCell>
+                    <TableCell className={cellClass}>
+                      <span style={{ color: severityColors[getAuditSeverity(prover.is_audited)] }}>
+                        {auditText ?? "--"}
+                      </span>
+                    </TableCell>
+                    <TableCell className={cellClass}>
+                      <span style={{ color: severityColors[getBooleanSeverity(prover.is_maintained)] }}>
+                        {formatBooleanText(prover.is_maintained)}
+                      </span>
+                    </TableCell>
+                    <TableCell className={cellClass}>
+                      {prover.field_curve ?? <Null />}
+                    </TableCell>
+                    <TableCell className={cellClass}>
+                      {prover.arithm ?? <Null />}
+                    </TableCell>
+                    <TableCell className={cellClass}>
+                      {prover.iop ?? <Null />}
+                    </TableCell>
+                    <TableCell className={cellClass}>
+                      {prover.pcs ?? <Null />}
+                    </TableCell>
+                  </TableRow>
+                )
+              })}
+            </TableBody>
+          </Table>
+        </div>
+      )}
     </div>
   )
 })

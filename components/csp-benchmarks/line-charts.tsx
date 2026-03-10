@@ -259,14 +259,16 @@ export function LineCharts({
   inputSizeCount,
 }: LineChartsProps) {
   const metricsData = useMemo(() => {
+    if (inputSizeCount <= 1) return []
+
     return chartMetrics.map((metricKey) => {
       const grouped = new Map<number, Map<string, number>>()
 
-      benchmarks.forEach((benchmark) => {
+      for (const benchmark of benchmarks) {
         const inputSize = benchmark.input_size
         const metricValue = benchmark[metricKey]
 
-        if (typeof metricValue !== "number" || metricValue <= 0) return
+        if (typeof metricValue !== "number" || metricValue <= 0) continue
 
         const key = getProverKey(benchmark)
 
@@ -275,7 +277,7 @@ export function LineCharts({
         }
 
         grouped.get(inputSize)?.set(key, metricValue)
-      })
+      }
 
       const data: ChartDataPoint[] = Array.from(grouped.entries())
         .sort(([sizeA], [sizeB]) => sizeA - sizeB)
@@ -290,7 +292,7 @@ export function LineCharts({
         data,
       }
     })
-  }, [benchmarks])
+  }, [benchmarks, inputSizeCount])
 
   if (benchmarks.length === 0) {
     return <EmptyState message={`no benchmark data available for ${target}`} />
