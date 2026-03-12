@@ -3,7 +3,7 @@
 import { memo, useMemo } from "react"
 import { map, pipe, sortBy, uniqueBy } from "remeda"
 
-import { Null } from "@/components/Null"
+import { Null } from "@/components/null"
 import {
   Table,
   TableBody,

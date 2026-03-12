@@ -33,8 +33,8 @@ import { formatUsd } from "@/lib/number"
 const PERSONA_LEGEND = [
   { label: "1:1 on-prem", color: "hsl(var(--chart-2))" },
   { label: "1:1 cloud", color: "hsl(var(--chart-9))" },
-  { label: "1:100 on-prem", color: "hsl(var(--chart-13))" },
-  { label: "1:100 cloud", color: "hsl(var(--chart-11))" },
+  { label: "1:100 on-prem", color: "hsl(var(--chart-12))" },
+  { label: "1:100 cloud", color: "hsl(var(--chart-14))" },
 ] as const
 
 function getPersonaColor(persona: string): string {

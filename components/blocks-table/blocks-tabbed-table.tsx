@@ -4,15 +4,15 @@ import { useState } from "react"
 
 import type { Team } from "@/lib/types"
 
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
+import { TabbedSection, TabsContent } from "@/components/ui/tabbed-section"
 
 import { BlocksTable } from "./blocks-table"
 
 import type { MachineType } from "@/lib/api/blocks"
 
-const MACHINE_TABS: { value: MachineType; label: string }[] = [
-  { value: "multi", label: "multi-gpu" },
-  { value: "single", label: "single-gpu" },
+const MACHINE_TABS = [
+  { value: "multi" as MachineType, label: "multi-gpu" },
+  { value: "single" as MachineType, label: "single-gpu" },
 ]
 
 interface BlocksTabbedTableProps {
@@ -20,29 +20,19 @@ interface BlocksTabbedTableProps {
 }
 
 export function BlocksTabbedTable({ teams }: BlocksTabbedTableProps) {
-  const [activeTab, setActiveTab] = useState<MachineType>("multi")
+  const [activeTab, setActiveTab] = useState<string>("multi")
 
   return (
-    <Tabs
-      value={activeTab}
-      onValueChange={(v) => setActiveTab(v as MachineType)}
+    <TabbedSection
+      tabs={MACHINE_TABS}
+      activeTab={activeTab}
+      onTabChange={setActiveTab}
     >
-      <TabsList className="border-none">
-        {MACHINE_TABS.map((tab) => (
-          <TabsTrigger
-            key={tab.value}
-            className="flex-1 cursor-default border-none py-1"
-            value={tab.value}
-          >
-            {tab.label}
-          </TabsTrigger>
-        ))}
-      </TabsList>
       {MACHINE_TABS.map((tab) => (
         <TabsContent key={tab.value} value={tab.value}>
-          <BlocksTable machineType={activeTab} teams={teams} />
+          <BlocksTable machineType={activeTab as MachineType} teams={teams} />
         </TabsContent>
       ))}
-    </Tabs>
+    </TabbedSection>
   )
 }

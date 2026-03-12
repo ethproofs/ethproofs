@@ -40,8 +40,13 @@ export type ClusterRow = ClusterWithRelations & {
 interface ClustersTableProps {
   className?: string
   clusters: ClusterRow[]
+  minHeight?: number
 }
-export function ClustersTable({ className, clusters }: ClustersTableProps) {
+export function ClustersTable({
+  className,
+  clusters,
+  minHeight,
+}: ClustersTableProps) {
   const [pagination, setPagination] =
     useState<PaginationState>(DEFAULT_PAGE_STATE)
 
@@ -55,6 +60,7 @@ export function ClustersTable({ className, clusters }: ClustersTableProps) {
       setPagination={setPagination}
       showToolbar={false}
       showPagination={false}
+      minHeight={minHeight}
     />
   )
 }

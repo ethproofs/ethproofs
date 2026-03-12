@@ -4,7 +4,7 @@ import { Check, Eye, Info, X as RedX } from "lucide-react"
 import type { ColumnDef, VisibilityState } from "@tanstack/react-table"
 
 import { DataTableColumnHeader } from "@/components/data-table/data-table-column-header"
-import { Null } from "@/components/Null"
+import { Null } from "@/components/null"
 import { Button } from "@/components/ui/button"
 import {
   Tooltip,
