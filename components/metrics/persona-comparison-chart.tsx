@@ -50,8 +50,8 @@ type RangeDays = (typeof RANGE_OPTIONS)[number]["days"]
 const PERSONA_COLORS = [
   "hsl(var(--chart-2))",
   "hsl(var(--chart-9))",
-  "hsl(var(--chart-13))",
-  "hsl(var(--chart-11))",
+  "hsl(var(--chart-12))",
+  "hsl(var(--chart-14))",
 ] as const
 
 function getPersonaColor(index: number): string {

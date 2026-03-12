@@ -1,4 +1,4 @@
-import { Null } from "./Null"
+import { Null } from "./null"
 
 type StylePunctuationProps = {
   children: string

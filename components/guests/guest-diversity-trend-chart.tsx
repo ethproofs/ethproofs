@@ -27,13 +27,12 @@ import {
 
 const CHART_COLORS = [
   "hsl(var(--chart-2))",
-  "hsl(var(--chart-15))",
   "hsl(var(--chart-9))",
-  "hsl(var(--chart-13))",
+  "hsl(var(--chart-12))",
+  "hsl(var(--chart-14))",
   "hsl(var(--chart-11))",
   "hsl(var(--chart-15))",
   "hsl(var(--chart-8))",
-  "hsl(var(--chart-12))",
 ] as const
 
 const WARNING_THRESHOLD = 50

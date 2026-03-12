@@ -11,7 +11,7 @@ import { BLOCK_GAS_LIMIT } from "@/lib/constants"
 
 import { BlockNumber } from "../BlockNumber"
 import { DataTableColumnHeader } from "../data-table/data-table-column-header"
-import { Null } from "../Null"
+import { Null } from "../null"
 import ProofStatus from "../ProofStatus"
 import { HidePunctuation } from "../StylePunctuation"
 import { ButtonLink } from "../ui/button"

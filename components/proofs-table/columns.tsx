@@ -6,7 +6,7 @@ import type { BlockBase } from "@/lib/types"
 
 import { BlockNumber } from "@/components/BlockNumber"
 import { DataTableColumnHeader } from "@/components/data-table/data-table-column-header"
-import { Null } from "@/components/Null"
+import { Null } from "@/components/null"
 import DownloadButton from "@/components/proof-buttons/download-button"
 import { VerifyButton } from "@/components/proof-buttons/verify-button"
 import Link from "@/components/ui/link"

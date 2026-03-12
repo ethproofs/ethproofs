@@ -256,15 +256,15 @@ export function RtpCohortConsistency() {
         <div className="flex w-full items-center justify-between">
           <div className="flex items-center gap-4">
             <div className="flex items-center gap-1.5">
-              <div className="size-3 rounded-lg bg-success" />
+              <div className="size-2 rounded-lg bg-success" />
               <span>included in RTP</span>
             </div>
             <div className="flex items-center gap-1.5">
-              <div className="size-3 rounded-lg bg-muted" />
+              <div className="size-2 rounded-lg bg-muted" />
               <span>not included</span>
             </div>
             <div className="flex items-center gap-1.5">
-              <div className="size-3 rounded-lg bg-muted/50" />
+              <div className="size-2 rounded-lg bg-muted/50" />
               <span>no data</span>
             </div>
           </div>

@@ -17,12 +17,11 @@ import {
 const CHART_COLORS = [
   "hsl(var(--chart-2))",
   "hsl(var(--chart-9))",
-  "hsl(var(--chart-13))",
-  "hsl(var(--chart-3))",
+  "hsl(var(--chart-12))",
+  "hsl(var(--chart-14))",
   "hsl(var(--chart-11))",
   "hsl(var(--chart-15))",
   "hsl(var(--chart-8))",
-  "hsl(var(--chart-12))",
 ] as const
 
 const HEALTHY_THRESHOLD = 50
@@ -204,7 +203,6 @@ export function GuestDiversityCurrentChart({
 
       <CardFooter className="flex-col items-start gap-y-4 border-t pt-6 text-xs text-muted-foreground">
         <div className="flex flex-wrap items-center gap-4">
-          <span>concentration thresholds:</span>
           <div className="flex items-center gap-1">
             <div className="size-2 rounded-full bg-green-500" />
             <span>&lt;{HEALTHY_THRESHOLD}% healthy</span>
