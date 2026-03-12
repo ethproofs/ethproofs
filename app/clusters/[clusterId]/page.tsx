@@ -5,7 +5,7 @@ import { notFound } from "next/navigation"
 import { SummaryItem } from "@/lib/types"
 
 import KPIs from "@/components/KPIs"
-import { Null } from "@/components/Null"
+import { Null } from "@/components/null"
 import { ClusterProofsSection } from "@/components/proofs-table/cluster-proofs-section"
 import { DisplayTeam } from "@/components/team-logo-link"
 import { Card } from "@/components/ui/card"

@@ -54,6 +54,7 @@ interface DataTableProps<TData, TValue> {
   className?: string
   showToolbar?: boolean
   showPagination?: boolean
+  minHeight?: number
 }
 export function DataTable<TData, TValue>({
   columns,
@@ -75,6 +76,7 @@ export function DataTable<TData, TValue>({
   className,
   showToolbar = true,
   showPagination = true,
+  minHeight,
 }: DataTableProps<TData, TValue>) {
   const [rowSelection, setRowSelection] = React.useState({})
   const [internalColumnVisibility, setInternalColumnVisibility] =
@@ -153,7 +155,10 @@ export function DataTable<TData, TValue>({
           columnLabels={columnLabels}
         />
       )}
-      <div className="max-h-[calc(100vh-250px)] overflow-auto rounded-md border">
+      <div
+        className="max-h-[calc(100vh-250px)] overflow-auto rounded-md border"
+        style={minHeight ? { minHeight } : undefined}
+      >
         <Table>
           {table.getRowModel().rows?.length > 0 && (
             <TableHeader>

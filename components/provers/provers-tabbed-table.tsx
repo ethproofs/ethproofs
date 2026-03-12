@@ -8,13 +8,7 @@ import type { ProverType } from "@/lib/types"
 import type { ClusterRow } from "@/components/clusters-table/clusters-table"
 import { ClustersTable } from "@/components/clusters-table/clusters-table"
 import { Skeleton } from "@/components/ui/skeleton"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
-import {
-  Tooltip,
-  TooltipContent,
-  TooltipProvider,
-  TooltipTrigger,
-} from "@/components/ui/tooltip"
+import { TabbedSection, TabsContent } from "@/components/ui/tabbed-section"
 
 import { cn } from "@/lib/utils"
 
@@ -56,51 +50,37 @@ export function ProversTabbedTable() {
     [clusters, activeTab]
   )
 
-  const tabValues = [ALL_TAB, ...proverTypes.map((pt) => String(pt.id))]
+  const tabs = useMemo(
+    () => [
+      { value: ALL_TAB, label: "provers, active" },
+      ...proverTypes.map((pt) => {
+        const count = clusterCountByType.get(String(pt.id)) ?? 0
+        return {
+          value: String(pt.id),
+          label: pt.name.toLowerCase(),
+          isDisabled: count === 0,
+          disabledReason: "no active provers",
+        }
+      }),
+    ],
+    [proverTypes, clusterCountByType]
+  )
+
+  const tabValues = useMemo(
+    () => [ALL_TAB, ...proverTypes.map((pt) => String(pt.id))],
+    [proverTypes]
+  )
+
+  const HEADER_HEIGHT_PX = 50
+  const ROW_HEIGHT_PX = 77
+  const minTableHeight = clusters.length * ROW_HEIGHT_PX + HEADER_HEIGHT_PX
 
   if (isLoading) {
     return <Skeleton className="h-[32rem] w-full rounded-lg" />
   }
 
   return (
-    <Tabs value={activeTab} onValueChange={setActiveTab}>
-      <TabsList className="border-none">
-        <TabsTrigger
-          className="flex-1 cursor-default border-none py-1"
-          value={ALL_TAB}
-        >
-          provers, active
-        </TabsTrigger>
-        {proverTypes.map((pt) => {
-          const count = clusterCountByType.get(String(pt.id)) ?? 0
-          const isDisabled = count === 0
-          const trigger = (
-            <TabsTrigger
-              key={pt.id}
-              className="flex-1 cursor-default border-none py-1"
-              value={String(pt.id)}
-              disabled={isDisabled}
-            >
-              {pt.name.toLowerCase()}
-            </TabsTrigger>
-          )
-
-          if (!isDisabled) return trigger
-
-          return (
-            <TooltipProvider key={pt.id} delayDuration={200}>
-              <Tooltip>
-                <TooltipTrigger asChild>
-                  <span className="flex-1">{trigger}</span>
-                </TooltipTrigger>
-                <TooltipContent side="bottom">
-                  <p className="text-xs">no active provers</p>
-                </TooltipContent>
-              </Tooltip>
-            </TooltipProvider>
-          )
-        })}
-      </TabsList>
+    <TabbedSection tabs={tabs} activeTab={activeTab} onTabChange={setActiveTab}>
       {tabValues.map((value) => (
         <TabsContent key={value} value={value}>
           <ClustersTable
@@ -109,9 +89,10 @@ export function ProversTabbedTable() {
               filteredClusters.length > 0 && "[&_tbody_tr:last-child]:border-b"
             )}
             clusters={filteredClusters}
+            minHeight={minTableHeight}
           />
         </TabsContent>
       ))}
-    </Tabs>
+    </TabbedSection>
   )
 }

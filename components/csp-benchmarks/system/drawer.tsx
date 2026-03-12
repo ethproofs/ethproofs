@@ -2,7 +2,7 @@
 
 import { Globe } from "lucide-react"
 
-import { Null } from "@/components/Null"
+import { Null } from "@/components/null"
 import GitHubLogo from "@/components/svgs/github-logo.svg"
 import { Badge } from "@/components/ui/badge"
 import {

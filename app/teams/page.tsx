@@ -1,101 +1,32 @@
 import type { Metadata } from "next"
-import Link from "next/link"
 
-import { metrics } from "@/components/Metrics"
-import { Null } from "@/components/Null"
-import TeamLogo from "@/components/TeamLogo"
-import { Card } from "@/components/ui/card"
+import { PageHeader } from "@/components/layout/page-header"
+import { DistributionMatrixChart } from "@/components/teams/distribution-matrix-chart"
+import { ProofVolumeChart } from "@/components/teams/proof-volume-chart"
+import { TeamsTabbedTable } from "@/components/teams/teams-tabbed-table"
 
-import { cn } from "@/lib/utils"
-
-import { AVERAGE_LABEL } from "@/lib/constants"
-
-import { getTeamsSummary } from "@/lib/api/stats"
 import { getMetadata } from "@/lib/metadata"
-import { formatUsd } from "@/lib/number"
-import { prettyMs } from "@/lib/time"
 
-export const metadata: Metadata = getMetadata({ title: "Proving Teams" })
+export const metadata: Metadata = getMetadata({ title: "teams" })
 
-const TEAMS_TO_EXCLUDE = ["PSE", "Zkonduit", "Ethproofs"]
-
-export default async function TeamsPage() {
-  const teamsSummary = await getTeamsSummary()
-
+export default function TeamsPage() {
   return (
-    <div className="mx-auto mt-6 grid max-w-screen-2xl gap-x-8 gap-y-8 px-6 text-center md:px-8 lg:grid-cols-[repeat(2,_auto)]">
-      {teamsSummary &&
-        teamsSummary
-          .filter((team) => !TEAMS_TO_EXCLUDE.includes(team.name))
-          .map(
-            ({
-              team_id,
-              slug,
-              logo_url,
-              team_name,
-              avg_cost_per_proof,
-              avg_proving_time,
-            }) => {
-              const isNewTeam = !avg_cost_per_proof || !avg_proving_time
-              return (
-                <Link href={`/teams/${slug}`} key={team_id}>
-                  <Card className="flex flex-1 cursor-pointer flex-col gap-4 p-6 transition-colors hover:bg-secondary/60">
-                    <div className="relative mx-auto flex h-12 w-full justify-center">
-                      <TeamLogo
-                        src={logo_url}
-                        alt={team_name || "Prover logo"}
-                        className={cn(
-                          "mx-auto max-w-56 object-center",
-                          !logo_url && "opacity-50"
-                        )}
-                      />
-                      <h3
-                        className={cn(
-                          "absolute max-w-full truncate text-center text-3xl",
-                          logo_url && "sr-only"
-                        )}
-                      >
-                        {team_name}
-                      </h3>
-                    </div>
+    <div className="mx-auto max-w-screen-2xl px-6">
+      <PageHeader
+        title="teams"
+        description="browse the teams that make up the Ethproofs ecosystem"
+      />
 
-                    <div className="mx-auto flex flex-col items-center gap-6">
-                      {isNewTeam ? (
-                        <div className="py-8 text-center text-lg text-body-secondary">
-                          proving soon
-                        </div>
-                      ) : (
-                        <div className="flex w-full flex-nowrap justify-center">
-                          <div className="flex flex-col items-center gap-2 px-4">
-                            <div className="flex items-center gap-1 text-body-secondary">
-                              {AVERAGE_LABEL} <metrics.provingTime.Label />
-                            </div>
-                            <div className="text-lg">
-                              {prettyMs(Number(avg_proving_time) || 0)}
-                            </div>
-                          </div>
-                          <div className="flex flex-col items-center gap-2 px-4">
-                            <div className="flex items-center gap-1 text-body-secondary">
-                              {AVERAGE_LABEL} <metrics.costPerProof.Label />
-                            </div>
-                            <div className="text-lg">
-                              {avg_cost_per_proof !== null &&
-                              avg_cost_per_proof !== 0 &&
-                              isFinite(avg_cost_per_proof) ? (
-                                formatUsd(avg_cost_per_proof)
-                              ) : (
-                                <Null />
-                              )}
-                            </div>
-                          </div>
-                        </div>
-                      )}
-                    </div>
-                  </Card>
-                </Link>
-              )
-            }
-          )}
+      <section className="mb-8">
+        <div className="grid gap-6 lg:grid-cols-2">
+          <DistributionMatrixChart />
+          <ProofVolumeChart />
+        </div>
+      </section>
+
+      <section className="mb-8">
+        <TeamsTabbedTable />
+      </section>
     </div>
   )
 }

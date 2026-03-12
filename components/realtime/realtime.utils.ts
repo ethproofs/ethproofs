@@ -76,8 +76,8 @@ export function getProofStatusClasses(status: string) {
       }
     case "downloading":
       return {
-        text: "text-chart-15",
-        background: "bg-chart-15",
+        text: "text-chart-14",
+        background: "bg-chart-14",
         animate: "animate-progress-pulse",
       }
     case "verifying":
