@@ -47,12 +47,20 @@ export interface PerfectProverTypeGroup {
   clusters: PerfectCluster[]
 }
 
+export interface MultiClusterMiss {
+  block_number: number
+  clusters_missing: number
+}
+
 export interface MissingProofsStatus {
   date: string
   total_missing: number
   missing_by_prover_type: ProverTypeGroup[]
   perfect_by_prover_type: PerfectProverTypeGroup[]
+  multi_cluster_misses: MultiClusterMiss[]
   checked_at: string
+  total_active_clusters: number
+  total_blocks_monitored: number
   missing_block_range: {
     start: number | null
     end: number | null
@@ -251,12 +259,38 @@ export const fetchMissingProofsStatus = async (
         })
       }
 
+      const multiClusterThreshold = 3
+      const blockClusterCounts = new Map<number, Set<string>>()
+      for (const row of missingProofsData) {
+        const blockNum = Number(row.block_number)
+        const existing = blockClusterCounts.get(blockNum)
+        if (existing) {
+          existing.add(row.cluster_id)
+        } else {
+          blockClusterCounts.set(blockNum, new Set([row.cluster_id]))
+        }
+      }
+
+      const multiClusterMisses: MultiClusterMiss[] = []
+      for (const [blockNumber, clusterIds] of blockClusterCounts) {
+        if (clusterIds.size >= multiClusterThreshold) {
+          multiClusterMisses.push({
+            block_number: blockNumber,
+            clusters_missing: clusterIds.size,
+          })
+        }
+      }
+      multiClusterMisses.sort((a, b) => b.clusters_missing - a.clusters_missing)
+
       return {
         date: startTime.toISOString().split("T")[0],
         total_missing: missingProofsData.length,
         missing_by_prover_type: Array.from(proverTypeMap.values()),
         perfect_by_prover_type: Array.from(perfectMap.values()),
+        multi_cluster_misses: multiClusterMisses,
         checked_at: new Date().toISOString(),
+        total_active_clusters: activeClustersData.length,
+        total_blocks_monitored: totalBlockNumbers.length,
         missing_block_range: missingBlockRange,
         total_block_range: totalBlockRange,
         time_range: {
