@@ -38,13 +38,41 @@ export function DistributionMatrixChart() {
 
   return (
     <Card className="flex flex-col">
-      <CardHeader>
-        <CardTitle className="text-base">distribution matrix</CardTitle>
+      <CardHeader className="space-y-1.5">
+        <CardTitle className="text-lg">distribution matrix</CardTitle>
         <CardDescription>
           who does what — vertical integration vs. specialization
         </CardDescription>
       </CardHeader>
       <CardContent className="flex-1">
+        {teams && (
+          <div className="mb-4 grid grid-cols-3 gap-4">
+            <div className="rounded-lg bg-muted/50 px-3 py-2">
+              <div className="text-xs text-muted-foreground">
+                zkVM maintainers
+              </div>
+              <div className="font-mono text-sm font-semibold">
+                {formatNumber(teams.filter((team) => team.hasZkvm).length)}
+              </div>
+            </div>
+            <div className="rounded-lg bg-muted/50 px-3 py-2">
+              <div className="text-xs text-muted-foreground">
+                guest maintainers
+              </div>
+              <div className="font-mono text-sm font-semibold">
+                {formatNumber(teams.filter((team) => team.hasGuest).length)}
+              </div>
+            </div>
+            <div className="rounded-lg bg-muted/50 px-3 py-2">
+              <div className="text-xs text-muted-foreground">
+                prover operators
+              </div>
+              <div className="font-mono text-sm font-semibold">
+                {formatNumber(teams.filter((team) => team.hasProver).length)}
+              </div>
+            </div>
+          </div>
+        )}
         {isLoading ? (
           <div className="flex h-[300px] items-center justify-center text-sm text-muted-foreground">
             loading chart data...
@@ -83,34 +111,6 @@ export function DistributionMatrixChart() {
                 </div>
               </div>
             ))}
-          </div>
-        )}
-        {teams && (
-          <div className="mt-8 grid grid-cols-3 gap-4 text-center">
-            <div>
-              <div className="text-xs text-muted-foreground">
-                zkVM maintainers
-              </div>
-              <div className="text-xl font-semibold">
-                {formatNumber(teams.filter((team) => team.hasZkvm).length)}
-              </div>
-            </div>
-            <div>
-              <div className="text-xs text-muted-foreground">
-                guest maintainers
-              </div>
-              <div className="text-xl font-semibold">
-                {formatNumber(teams.filter((team) => team.hasGuest).length)}
-              </div>
-            </div>
-            <div>
-              <div className="text-xs text-muted-foreground">
-                prover operators
-              </div>
-              <div className="text-xl font-semibold">
-                {formatNumber(teams.filter((team) => team.hasProver).length)}
-              </div>
-            </div>
           </div>
         )}
       </CardContent>
