@@ -5,7 +5,7 @@ import { keepPreviousData, useQuery } from "@tanstack/react-query"
 
 import type { MetricsSummary } from "@/lib/types"
 
-import { MetricCard } from "@/components/metrics/metric-card"
+import { MetricCard } from "@/components/metric-card"
 import { Button } from "@/components/ui/button"
 import { Card, CardContent, CardHeader } from "@/components/ui/card"
 import { Skeleton } from "@/components/ui/skeleton"

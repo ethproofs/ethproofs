@@ -4,7 +4,7 @@ import { useQuery } from "@tanstack/react-query"
 
 import type { ProverSummaryData } from "@/lib/types"
 
-import { MetricCard } from "@/components/metrics/metric-card"
+import { MetricCard } from "@/components/metric-card"
 import { Card, CardContent, CardHeader } from "@/components/ui/card"
 import { Skeleton } from "@/components/ui/skeleton"
 
