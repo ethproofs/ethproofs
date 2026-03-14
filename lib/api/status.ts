@@ -50,6 +50,7 @@ export interface PerfectProverTypeGroup {
 export interface MultiClusterMiss {
   block_number: number
   clusters_missing: number
+  cluster_names: string[]
 }
 
 export interface MissingProofsStatus {
@@ -61,6 +62,7 @@ export interface MissingProofsStatus {
   checked_at: string
   total_active_clusters: number
   total_blocks_monitored: number
+  monitored_block_numbers: number[]
   missing_block_range: {
     start: number | null
     end: number | null
@@ -260,23 +262,27 @@ export const fetchMissingProofsStatus = async (
       }
 
       const multiClusterThreshold = 3
-      const blockClusterCounts = new Map<number, Set<string>>()
+      const blockClusterMap = new Map<number, Map<string, string>>()
       for (const row of missingProofsData) {
         const blockNum = Number(row.block_number)
-        const existing = blockClusterCounts.get(blockNum)
+        const existing = blockClusterMap.get(blockNum)
         if (existing) {
-          existing.add(row.cluster_id)
+          existing.set(row.cluster_id, row.cluster_name)
         } else {
-          blockClusterCounts.set(blockNum, new Set([row.cluster_id]))
+          blockClusterMap.set(
+            blockNum,
+            new Map([[row.cluster_id, row.cluster_name]])
+          )
         }
       }
 
       const multiClusterMisses: MultiClusterMiss[] = []
-      for (const [blockNumber, clusterIds] of blockClusterCounts) {
-        if (clusterIds.size >= multiClusterThreshold) {
+      for (const [blockNumber, clusterEntries] of blockClusterMap) {
+        if (clusterEntries.size >= multiClusterThreshold) {
           multiClusterMisses.push({
             block_number: blockNumber,
-            clusters_missing: clusterIds.size,
+            clusters_missing: clusterEntries.size,
+            cluster_names: Array.from(clusterEntries.values()),
           })
         }
       }
@@ -291,6 +297,7 @@ export const fetchMissingProofsStatus = async (
         checked_at: new Date().toISOString(),
         total_active_clusters: activeClustersData.length,
         total_blocks_monitored: totalBlockNumbers.length,
+        monitored_block_numbers: totalBlockNumbers.sort((a, b) => a - b),
         missing_block_range: missingBlockRange,
         total_block_range: totalBlockRange,
         time_range: {

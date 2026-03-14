@@ -19,7 +19,6 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
-import { Skeleton } from "@/components/ui/skeleton"
 import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
 
 import type { ProofVolumeData } from "@/lib/api/teams-metrics"
@@ -100,33 +99,53 @@ export function ProofVolumeChart() {
 
   return (
     <Card className="flex flex-col">
-      <CardHeader>
-        <div className="flex items-center justify-between">
-          <div>
-            <CardTitle className="text-base">proof volume by team</CardTitle>
-            <CardDescription>
-              who&apos;s generating the most proofs
-            </CardDescription>
-          </div>
-          <Tabs
-            value={String(days)}
-            onValueChange={(v) => setDays(Number(v) as DayOption)}
-          >
-            <TabsList className="border-none">
-              {DAY_OPTIONS.map((d) => (
-                <TabsTrigger
-                  key={d}
-                  value={String(d)}
-                  className="cursor-default border-none px-3 py-1 text-xs"
-                >
-                  {d}d
-                </TabsTrigger>
-              ))}
-            </TabsList>
-          </Tabs>
+      <CardHeader className="flex-row flex-wrap items-start justify-between gap-2 space-y-0">
+        <div className="space-y-1.5">
+          <CardTitle className="text-lg">proof volume by team</CardTitle>
+          <CardDescription>
+            who&apos;s generating the most proofs
+          </CardDescription>
         </div>
+        <Tabs
+          value={String(days)}
+          onValueChange={(v) => setDays(Number(v) as DayOption)}
+        >
+          <TabsList className="border-none">
+            {DAY_OPTIONS.map((d) => (
+              <TabsTrigger
+                key={d}
+                value={String(d)}
+                className="cursor-default border-none px-3 py-1 text-xs"
+              >
+                {d}d
+              </TabsTrigger>
+            ))}
+          </TabsList>
+        </Tabs>
       </CardHeader>
       <CardContent className="flex-1">
+        {data && (
+          <div className="mb-4 grid grid-cols-3 gap-4">
+            <div className="rounded-lg bg-muted/50 px-3 py-2">
+              <div className="text-xs text-muted-foreground">total proofs</div>
+              <div className="font-mono text-sm font-semibold">
+                {formatNumber(data.totalProofs)}
+              </div>
+            </div>
+            <div className="rounded-lg bg-muted/50 px-3 py-2">
+              <div className="text-xs text-muted-foreground">RTP proofs</div>
+              <div className="font-mono text-sm font-semibold">
+                {formatNumber(data.rtpProofs)}
+              </div>
+            </div>
+            <div className="rounded-lg bg-muted/50 px-3 py-2">
+              <div className="text-xs text-muted-foreground">RTP share</div>
+              <div className="font-mono text-sm font-semibold">
+                {data.rtpShare.toFixed(1)}%
+              </div>
+            </div>
+          </div>
+        )}
         {isLoading ? (
           <div className="flex h-[300px] items-center justify-center text-sm text-muted-foreground">
             loading chart data...
@@ -209,28 +228,6 @@ export function ProofVolumeChart() {
               />
             </BarChart>
           </ResponsiveContainer>
-        )}
-        {data && (
-          <div className="mt-8 grid grid-cols-3 gap-4 text-center">
-            <div>
-              <div className="text-xs text-muted-foreground">total proofs</div>
-              <div className="text-xl font-semibold">
-                {formatNumber(data.totalProofs)}
-              </div>
-            </div>
-            <div>
-              <div className="text-xs text-muted-foreground">RTP proofs</div>
-              <div className="text-xl font-semibold">
-                {formatNumber(data.rtpProofs)}
-              </div>
-            </div>
-            <div>
-              <div className="text-xs text-muted-foreground">RTP share</div>
-              <div className="text-xl font-semibold">
-                {data.rtpShare.toFixed(1)}%
-              </div>
-            </div>
-          </div>
         )}
       </CardContent>
       <CardFooter className="flex-col items-start gap-y-4 border-t pt-6 text-xs text-muted-foreground">

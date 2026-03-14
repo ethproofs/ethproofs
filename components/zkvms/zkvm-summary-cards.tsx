@@ -1,6 +1,6 @@
 import type { ZkvmSummaryData } from "@/lib/types"
 
-import { MetricCard } from "@/components/metrics/metric-card"
+import { MetricCard } from "@/components/metric-card"
 import { Card, CardContent, CardFooter } from "@/components/ui/card"
 
 interface MilestoneValueProps {
