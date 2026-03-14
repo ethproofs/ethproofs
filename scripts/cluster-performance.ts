@@ -12,7 +12,8 @@
  * Output: cluster-performance-output.txt
  */
 
-import { writeFileSync } from "fs"
+import { mkdirSync, writeFileSync } from "fs"
+import { join } from "path"
 
 import { config } from "dotenv"
 import postgres from "postgres"
@@ -204,21 +205,21 @@ async function main() {
       ),
     ]
 
-    writeFileSync(
-      "cluster-performance-monthly.csv",
-      monthlyLines.join("\n") + "\n"
-    )
-    writeFileSync(
-      "cluster-performance-summary.csv",
-      summaryLines.join("\n") + "\n"
-    )
+    const outputDir = join(__dirname, "output")
+    mkdirSync(outputDir, { recursive: true })
+
+    const monthlyPath = join(outputDir, "cluster-performance-monthly.csv")
+    const summaryPath = join(outputDir, "cluster-performance-summary.csv")
+
+    writeFileSync(monthlyPath, monthlyLines.join("\n") + "\n")
+    writeFileSync(summaryPath, summaryLines.join("\n") + "\n")
 
     console.log(`Monthly breakdown: ${monthlyRows.length} rows`)
     console.log(`Summary: ${summaryRows.length} clusters\n`)
 
     console.log("Files written:")
-    console.log("  cluster-performance-monthly.csv")
-    console.log("  cluster-performance-summary.csv")
+    console.log(`  ${monthlyPath}`)
+    console.log(`  ${summaryPath}`)
   } catch (error) {
     console.error("Error:", error)
     throw error
