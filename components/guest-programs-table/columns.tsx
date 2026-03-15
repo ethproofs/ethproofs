@@ -52,7 +52,7 @@ export const getColumns = ({
     cell: ({ row }) => {
       const program = row.original
       return (
-        <div className="w-[140px]">
+        <div className="w-[100px]">
           <span>{program.name}</span>
         </div>
       )
@@ -91,7 +91,7 @@ export const getColumns = ({
     ),
     cell: ({ row }) => {
       const language = row.getValue("language") as string
-      return <div className="w-[100px]">{language}</div>
+      return <div className="w-[80px]">{language}</div>
     },
   },
   {
@@ -102,7 +102,7 @@ export const getColumns = ({
     ),
     cell: ({ row }) => {
       const maintainer = row.getValue("maintainer") as string
-      return <div className="w-[120px]">{maintainer}</div>
+      return <div className="w-[100px]">{maintainer}</div>
     },
   },
   {
