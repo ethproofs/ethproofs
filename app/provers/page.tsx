@@ -22,9 +22,11 @@ export default function ProversPage() {
         <ProverSummaryCards />
       </section>
 
-      <section className="mb-8">
-        <div className="mt-8 grid gap-6 lg:grid-cols-2">
+      <section className="mb-8 mt-8 grid gap-6 lg:grid-cols-2">
+        <div className="lg:col-span-2 2xl:col-span-1">
           <RtpCohortConsistency />
+        </div>
+        <div className="lg:col-span-2 2xl:col-span-1">
           <PerformanceCostChart />
         </div>
       </section>

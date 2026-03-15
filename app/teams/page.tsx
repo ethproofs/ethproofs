@@ -17,9 +17,11 @@ export default function TeamsPage() {
         description="browse the teams that make up the Ethproofs ecosystem"
       />
 
-      <section className="mb-8">
-        <div className="grid gap-6 lg:grid-cols-2">
+      <section className="mb-8 grid gap-6 lg:grid-cols-2">
+        <div className="min-w-0 lg:col-span-2 2xl:col-span-1">
           <DistributionMatrixChart />
+        </div>
+        <div className="min-w-0 lg:col-span-2 2xl:col-span-1">
           <ProofVolumeChart />
         </div>
       </section>

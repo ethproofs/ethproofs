@@ -56,7 +56,7 @@ export function TabbedSection({
             <TooltipProvider key={tab.value} delayDuration={200}>
               <Tooltip>
                 <TooltipTrigger asChild>
-                  <span className="flex-1">{trigger}</span>
+                  <span className="flex-1 text-center">{trigger}</span>
                 </TooltipTrigger>
                 <TooltipContent side="bottom">
                   <p className="text-xs">
