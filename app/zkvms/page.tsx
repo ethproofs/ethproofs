@@ -88,9 +88,11 @@ export default async function ZkvmsPage() {
         <ZkvmSummaryCards data={summaryData} />
       </section>
 
-      <section className="mb-8">
-        <div className="mt-8 grid gap-6 lg:grid-cols-2">
+      <section className="mb-8 mt-8 grid gap-6 lg:grid-cols-2">
+        <div className="lg:col-span-2 2xl:col-span-1">
           <ZkvmSecurityMilestonesChart data={milestonesData} />
+        </div>
+        <div className="lg:col-span-2 2xl:col-span-1">
           <ZkvmPerformanceTrajectoryChart data={trajectoryData} />
         </div>
       </section>
