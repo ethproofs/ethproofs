@@ -92,11 +92,11 @@ export function RtpCohortScoresContent() {
 
 export function RtpCohortScores() {
   return (
-    <Card className="h-full">
+    <Card className="flex h-full flex-col">
       <CardHeader>
-        <CardTitle className="text-lg">RTP cohort targets</CardTitle>
+        <CardTitle className="text-lg">RTP cohort scores</CardTitle>
       </CardHeader>
-      <CardContent>
+      <CardContent className="flex flex-1 flex-col [&>div]:flex-1 [&_table]:h-full">
         <RtpCohortScoresContent />
       </CardContent>
     </Card>

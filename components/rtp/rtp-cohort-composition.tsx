@@ -1,8 +1,6 @@
 "use client"
 
-import { useMemo } from "react"
-
-import type { RtpCohortCompositionData } from "@/lib/types"
+import type { RtpCohortCompositionData, RtpWeekEntry } from "@/lib/types"
 
 import {
   Card,
@@ -12,70 +10,143 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip"
+
+import { cn } from "@/lib/utils"
+
+function formatWeekLabel(week: string): string {
+  const date = new Date(week)
+  return date.toLocaleDateString("en-US", {
+    month: "short",
+    day: "numeric",
+    year: "numeric",
+  })
+}
+
+interface WeekSegmentProps {
+  entry: RtpWeekEntry
+}
+
+function WeekSegment({ entry }: WeekSegmentProps) {
+  return (
+    <Tooltip>
+      <TooltipTrigger asChild>
+        <div
+          className={cn(
+            "flex-1 cursor-default",
+            entry.isEligible ? "bg-primary" : "bg-muted"
+          )}
+        />
+      </TooltipTrigger>
+      <TooltipContent
+        side="top"
+        className="min-w-36 rounded-lg border bg-card p-3 shadow-xl"
+      >
+        <div className="mb-2 flex items-center gap-2">
+          <div
+            className={cn(
+              "size-2.5 rounded-sm",
+              entry.isEligible ? "bg-primary" : "bg-muted-foreground"
+            )}
+          />
+          <p className="text-sm font-semibold">{formatWeekLabel(entry.week)}</p>
+        </div>
+        <div className="flex justify-between">
+          <span className="text-xs text-muted-foreground">status</span>
+          <span
+            className={cn(
+              "text-xs font-medium",
+              entry.isEligible ? "text-primary" : "text-muted-foreground"
+            )}
+          >
+            {entry.isEligible ? "\u2713 eligible" : "not eligible"}
+          </span>
+        </div>
+      </TooltipContent>
+    </Tooltip>
+  )
+}
 
 interface RtpCohortCompositionProps {
   data: RtpCohortCompositionData
 }
 
 export function RtpCohortComposition({ data }: RtpCohortCompositionProps) {
-  const currentMembers = useMemo(
-    () => data.members.filter((m) => m.isCurrentlyEligible),
-    [data.members]
-  )
-
   return (
     <Card className="flex h-full min-h-80 flex-col">
       <CardHeader className="space-y-1.5">
-        <CardTitle className="text-lg">cohort composition</CardTitle>
+        <CardTitle className="text-lg">
+          evaluated vs. eligible provers
+        </CardTitle>
         <CardDescription>
-          provers currently in the RTP cohort this week
+          weekly eligibility for all evaluated 1:1 multi-GPU provers
         </CardDescription>
       </CardHeader>
 
-      <CardContent className="flex flex-1 flex-col gap-4">
+      <CardContent className="flex flex-1 flex-col gap-5">
         <div className="grid grid-cols-2 gap-3">
           <div className="flex flex-col gap-1 rounded-lg bg-muted/50 px-3 py-2">
-            <span className="text-xs text-muted-foreground">cohort size</span>
-            <span className="font-mono text-lg font-semibold text-primary">
-              {data.currentCohortSize} provers
+            <span className="text-xs text-muted-foreground">evaluated</span>
+            <span className="font-mono text-lg font-semibold">
+              {data.members.length} provers
             </span>
           </div>
           <div className="flex flex-col gap-1 rounded-lg bg-muted/50 px-3 py-2">
-            <span className="text-xs text-muted-foreground">avg tenure</span>
-            <span className="font-mono text-lg font-semibold">
-              {data.avgTenureWeeks} weeks
+            <span className="text-xs text-muted-foreground">eligible</span>
+            <span
+              className={cn(
+                "font-mono text-lg font-semibold",
+                data.currentEligibleCount > 0
+                  ? "text-primary"
+                  : "text-muted-foreground"
+              )}
+            >
+              {data.currentEligibleCount} provers
             </span>
           </div>
         </div>
 
-        {currentMembers.length === 0 ? (
+        {data.members.length === 0 ? (
           <div className="flex flex-1 items-center justify-center text-sm text-muted-foreground">
-            no provers in the RTP cohort this week
+            no provers evaluated this week
           </div>
         ) : (
-          <div className="flex flex-1 flex-col gap-2">
-            {currentMembers.map((member) => (
-              <div key={member.clusterName} className="flex items-center gap-3">
-                <div className="flex w-28 items-center gap-2 truncate">
-                  <div className="size-2 shrink-0 rounded-full bg-primary" />
-                  <span className="truncate text-xs" title={member.clusterName}>
-                    {member.clusterName}
-                  </span>
-                </div>
-                <div className="flex flex-1 items-center gap-2">
-                  <div className="h-5 flex-1 overflow-hidden rounded-sm bg-muted">
-                    <div
-                      className="h-full rounded-sm bg-primary"
-                      style={{ width: `${member.cohortPercentage}%` }}
-                    />
+          <TooltipProvider delayDuration={100}>
+            <div className="flex flex-1 flex-col gap-2">
+              {data.members.map((member) => {
+                return (
+                  <div
+                    key={member.clusterName}
+                    className="flex items-center gap-3"
+                  >
+                    <div className="flex w-28 items-center gap-2 truncate">
+                      <span
+                        className="truncate text-xs"
+                        title={member.clusterName}
+                      >
+                        {member.clusterName}
+                      </span>
+                    </div>
+                    <div className="flex flex-1 items-center gap-2">
+                      <div className="flex h-5 flex-1 gap-0.5 overflow-hidden rounded-sm bg-card">
+                        {member.weeklyTimeline.map((entry) => (
+                          <WeekSegment key={entry.week} entry={entry} />
+                        ))}
+                      </div>
+                      <span className="w-10 text-right text-xs text-muted-foreground">
+                        {member.eligibilityRate}%
+                      </span>
+                    </div>
                   </div>
-                  <span className="w-10 text-right text-xs text-muted-foreground">
-                    {member.cohortPercentage}%
-                  </span>
-                </div>
-              </div>
-            ))}
-          </div>
+                )
+              })}
+            </div>
+          </TooltipProvider>
         )}
       </CardContent>
 
@@ -83,19 +154,20 @@ export function RtpCohortComposition({ data }: RtpCohortCompositionProps) {
         <div className="flex items-center gap-4">
           <div className="flex items-center gap-1.5">
             <div className="size-2 rounded-full bg-primary" />
-            <span>cohort tenure</span>
+            <span>eligible</span>
           </div>
           <div className="flex items-center gap-1.5">
             <div className="size-2 rounded-full bg-muted" />
-            <span>remaining</span>
+            <span>not eligible</span>
           </div>
         </div>
+        <span>sorted by weeks eligible</span>
         <div className="min-h-14">
           <p className="text-xs text-muted-foreground">
             <span className="font-medium text-placeholder">Key insight:</span>{" "}
-            Bar length shows how long each prover has maintained RTP
-            eligibility. Longer bars indicate sustained excellence across weekly
-            snapshots.
+            Each segment is one weekly snapshot. Green means the prover met
+            eligibility thresholds that week. Gaps reveal weeks where
+            performance or liveness dropped below requirements.
           </p>
         </div>
       </CardFooter>

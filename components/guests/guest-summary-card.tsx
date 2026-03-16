@@ -63,39 +63,56 @@ export function GuestSummaryCard({ data }: GuestSummaryCardsProps) {
 
   return (
     <Card className={cn("border-none", config.cardClassName)}>
-      <CardContent className="flex flex-wrap items-center gap-6 pt-6 lg:flex-nowrap">
-        <div
-          className={`flex flex-col items-center gap-2 border-r pr-6 ${config.contentClassName}`}
-        >
-          <Badge
-            variant="outline"
-            className={`px-3 py-1 text-sm uppercase ${config.contentClassName}`}
+      <CardContent className="flex flex-col gap-6 pt-6 lg:flex-row lg:items-stretch">
+        <div className="flex items-center gap-6 lg:flex-1">
+          <div
+            className={cn(
+              "flex flex-col items-center gap-2",
+              config.contentClassName
+            )}
           >
-            <div
-              className={`mr-1.5 size-2 rounded-full ${config.dotClassName}`}
-            />
-            {config.label}
-          </Badge>
-          <span className="text-xs text-muted-foreground">
-            diversity status
-          </span>
-        </div>
-
-        <div className="flex min-w-[500px] flex-col items-start gap-2">
-          <span className="text-xs text-muted-foreground">
-            dominant guest program
-          </span>
-          <div className="flex items-center gap-2">
-            <span className="text-2xl font-semibold">{data.dominantGuest}</span>
-            <span
-              className={`text-xl font-semibold ${config.contentClassName}`}
+            <Badge
+              variant="outline"
+              className={cn(
+                "px-3 py-1 text-sm uppercase",
+                config.contentClassName
+              )}
             >
-              {data.dominantGuestShare.toFixed(1)}%
+              <div
+                className={cn(
+                  "mr-1.5 size-2 rounded-full",
+                  config.dotClassName
+                )}
+              />
+              {config.label}
+            </Badge>
+            <span className="text-xs text-muted-foreground">
+              diversity status
             </span>
+          </div>
+
+          <div className="hidden w-px self-stretch bg-border lg:block" />
+
+          <div className="flex flex-col items-start gap-2">
+            <span className="text-xs text-muted-foreground">
+              dominant guest program
+            </span>
+            <div className="flex items-center gap-2">
+              <span className="text-2xl font-semibold">
+                {data.dominantGuest}
+              </span>
+              <span
+                className={cn("text-xl font-semibold", config.contentClassName)}
+              >
+                {data.dominantGuestShare.toFixed(1)}%
+              </span>
+            </div>
           </div>
         </div>
 
-        <div className="hidden flex-1 items-center gap-3 border-l border-border pl-6 xl:flex">
+        <div className="hidden w-px self-stretch bg-border lg:block" />
+
+        <div className="flex items-center gap-3 border-t border-border pt-6 lg:w-72 lg:border-t-0 lg:pt-0">
           <div className="flex flex-1 flex-col gap-1">
             {data.distribution.slice(0, 4).map((entry) => (
               <div key={entry.name} className="flex items-center gap-2 text-xs">
@@ -116,7 +133,9 @@ export function GuestSummaryCard({ data }: GuestSummaryCardsProps) {
           </div>
         </div>
 
-        <div className="flex items-center gap-6 border-l border-border pl-6">
+        <div className="hidden w-px self-stretch bg-border lg:block" />
+
+        <div className="hidden items-center gap-6 lg:flex">
           <div className="flex flex-col items-center gap-1">
             <span className="text-xs text-muted-foreground">active guests</span>
             <span className="text-2xl font-semibold">

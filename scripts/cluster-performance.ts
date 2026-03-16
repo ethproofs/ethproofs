@@ -218,8 +218,14 @@ async function main() {
     const outputDir = join(__dirname, "output")
     mkdirSync(outputDir, { recursive: true })
 
-    const monthlyPath = join(outputDir, `cluster-performance-${thresholdSeconds}s-monthly.csv`)
-    const summaryPath = join(outputDir, `cluster-performance-${thresholdSeconds}s-summary.csv`)
+    const monthlyPath = join(
+      outputDir,
+      `cluster-performance-${thresholdSeconds}s-monthly.csv`
+    )
+    const summaryPath = join(
+      outputDir,
+      `cluster-performance-${thresholdSeconds}s-summary.csv`
+    )
 
     writeFileSync(monthlyPath, monthlyLines.join("\n") + "\n")
     writeFileSync(summaryPath, summaryLines.join("\n") + "\n")

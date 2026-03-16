@@ -111,11 +111,9 @@ export function RtpProofTimeDistribution({
   return (
     <Card className="flex h-full min-h-80 flex-col">
       <CardHeader className="space-y-1.5">
-        <CardTitle className="text-lg">
-          cohort proof time distribution
-        </CardTitle>
+        <CardTitle className="text-lg">proof time distribution</CardTitle>
         <CardDescription>
-          timing distribution across blocks for the current RTP cohort this week
+          timing across blocks for all evaluated provers
         </CardDescription>
       </CardHeader>
 
