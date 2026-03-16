@@ -94,7 +94,7 @@ export function RtpCohortScores() {
   return (
     <Card className="h-full">
       <CardHeader>
-        <CardTitle className="text-lg">RTP cohort scores</CardTitle>
+        <CardTitle className="text-lg">RTP cohort targets</CardTitle>
       </CardHeader>
       <CardContent>
         <RtpCohortScoresContent />

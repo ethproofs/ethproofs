@@ -3,17 +3,17 @@ import {
   Table,
   TableBody,
   TableCell,
+  TableFooter,
   TableHead,
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
 
-import {
-  RTP_LIVENESS_SCORE_THRESHOLD,
-  RTP_PERFORMANCE_SCORE_THRESHOLD,
-} from "@/lib/constants"
-
-import Link from "../ui/link"
+// import {
+//   RTP_LIVENESS_SCORE_THRESHOLD,
+//   RTP_PERFORMANCE_SCORE_THRESHOLD,
+// } from "@/lib/constants"
+// import Link from "../ui/link"
 
 interface CohortRule {
   id: string
@@ -26,7 +26,7 @@ const cohortRules: CohortRule[] = [
     description: (
       <>
         prover must be running a zkVM that has completed{" "}
-        <span className="text-primary">security sprint milestone 1 (M1)</span>{" "}
+        <span className="text-primary">security sprint milestone 1</span>{" "}
         &mdash; integrate with{" "}
         <a
           href="https://github.com/ethereum/soundcalc"
@@ -44,8 +44,8 @@ const cohortRules: CohortRule[] = [
     description: (
       <>
         prover must be running a zkVM on a{" "}
-        <span className="text-primary">1:1 multi-GPU prover</span> (submitting a
-        proof for every L1 block)
+        <span className="text-primary">1:1 multi-GPU prover</span> &mdash;
+        submitting a proof for every L1 block
       </>
     ),
   },
@@ -53,11 +53,8 @@ const cohortRules: CohortRule[] = [
     id: "03",
     description: (
       <>
-        prover must maintain a{" "}
-        <span className="text-primary">
-          performance score of &ge;{RTP_PERFORMANCE_SCORE_THRESHOLD}%
-        </span>{" "}
-        or higher during the previous 7-day window
+        prover must be <span className="text-primary">reproducible</span>{" "}
+        &mdash; preferably open-source
       </>
     ),
   },
@@ -65,14 +62,35 @@ const cohortRules: CohortRule[] = [
     id: "04",
     description: (
       <>
-        prover must maintain a{" "}
-        <span className="text-primary">
-          liveness score of &ge;{RTP_LIVENESS_SCORE_THRESHOLD}%
-        </span>{" "}
-        or higher during the previous 7-day window
+        verifier must be <span className="text-primary">open-source</span> and
+        integrated into Ethproofs in-browser verification
       </>
     ),
   },
+  // {
+  //   id: "03",
+  //   description: (
+  //     <>
+  //       prover must maintain a{" "}
+  //       <span className="text-primary">
+  //         performance score of &ge;{RTP_PERFORMANCE_SCORE_THRESHOLD}%
+  //       </span>{" "}
+  //       or higher during the previous 7-day window
+  //     </>
+  //   ),
+  // },
+  // {
+  //   id: "04",
+  //   description: (
+  //     <>
+  //       prover must maintain a{" "}
+  //       <span className="text-primary">
+  //         liveness score of &ge;{RTP_LIVENESS_SCORE_THRESHOLD}%
+  //       </span>{" "}
+  //       or higher during the previous 7-day window
+  //     </>
+  //   ),
+  // },
 ]
 
 export function RtpCohortRulesContent() {
@@ -82,12 +100,7 @@ export function RtpCohortRulesContent() {
         <TableRow>
           <TableHead className="h-8 text-xs" colSpan={2}>
             <span className="flex items-center gap-1.5">
-              real-time proving (RTP) cohort eligibility
-              <Link
-                href="https://blog.ethereum.org/2025/07/10/realtime-proving"
-                target="_blank"
-                rel="noopener noreferrer"
-              ></Link>
+              baseline requirements
             </span>
           </TableHead>
         </TableRow>
@@ -104,6 +117,20 @@ export function RtpCohortRulesContent() {
           </TableRow>
         ))}
       </TableBody>
+      {/* <TableFooter className="border-t-0 bg-transparent">
+        <TableRow>
+          <TableCell className="h-8 text-xs" colSpan={2}>
+            <span className="flex items-center gap-1.5 text-muted-foreground">
+              real-time proving (RTP) definition
+              <Link
+                href="https://blog.ethereum.org/2025/07/10/realtime-proving"
+                target="_blank"
+                rel="noopener noreferrer"
+              ></Link>
+            </span>
+          </TableCell>
+        </TableRow>
+      </TableFooter> */}
     </Table>
   )
 }
@@ -112,7 +139,7 @@ export function RtpCohortRules() {
   return (
     <Card className="h-full">
       <CardHeader>
-        <CardTitle className="text-lg">RTP cohort rules</CardTitle>
+        <CardTitle className="text-lg">RTP cohort eligibility</CardTitle>
       </CardHeader>
       <CardContent>
         <RtpCohortRulesContent />

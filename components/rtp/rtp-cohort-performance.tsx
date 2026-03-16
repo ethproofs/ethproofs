@@ -5,7 +5,6 @@ import { Cell, Pie, PieChart, ResponsiveContainer, Sector } from "recharts"
 
 import type { RtpCohortPerformanceData } from "@/lib/types"
 
-import { Button } from "@/components/ui/button"
 import {
   Card,
   CardContent,
@@ -15,18 +14,7 @@ import {
   CardTitle,
 } from "@/components/ui/card"
 
-import { cn } from "@/lib/utils"
-
 import { RTP_PERFORMANCE_SCORE_THRESHOLD } from "@/lib/constants"
-
-const RANGE_OPTIONS = [
-  { label: "24h", days: 1 },
-  { label: "7d", days: 7 },
-  { label: "30d", days: 30 },
-  { label: "90d", days: 90 },
-] as const
-
-type RangeDays = (typeof RANGE_OPTIONS)[number]["days"]
 
 interface PerformanceBreakdown {
   name: string
@@ -135,108 +123,93 @@ function renderActiveShape(props: unknown) {
 }
 
 interface RtpCohortPerformanceProps {
-  dataByRange: Record<number, RtpCohortPerformanceData>
+  data: RtpCohortPerformanceData
 }
 
-export function RtpCohortPerformance({
-  dataByRange,
-}: RtpCohortPerformanceProps) {
-  const [rangeDays, setRangeDays] = useState<RangeDays>(7)
+export function RtpCohortPerformance({ data }: RtpCohortPerformanceProps) {
   const [activeIndex, setActiveIndex] = useState<number | null>(null)
 
-  const data = dataByRange[rangeDays] ?? dataByRange[7]
   const performance = useMemo(() => buildPerformanceBreakdown(data), [data])
 
   return (
     <Card className="flex h-full min-h-80 flex-col">
-      <CardHeader className="flex-row flex-wrap items-start justify-between gap-2 space-y-0">
-        <div className="space-y-1.5">
-          <CardTitle className="text-lg">RTP cohort performance</CardTitle>
-          <CardDescription>
-            aggregated success rate for the RTP cohort
-          </CardDescription>
-        </div>
-        <div className="flex gap-1 rounded-lg bg-muted p-1">
-          {RANGE_OPTIONS.map((option) => (
-            <Button
-              key={option.days}
-              onClick={() => setRangeDays(option.days)}
-              size="sm"
-              variant="ghost"
-              className={cn(
-                "h-7 px-2 text-xs",
-                rangeDays === option.days &&
-                  "bg-background text-foreground shadow-sm"
-              )}
-            >
-              {option.label}
-            </Button>
-          ))}
-        </div>
+      <CardHeader className="space-y-1.5">
+        <CardTitle className="text-lg">cohort performance</CardTitle>
+        <CardDescription>
+          aggregated success rate for the current RTP cohort this week
+        </CardDescription>
       </CardHeader>
 
       <CardContent className="flex flex-1 flex-col gap-4">
-        <div className="relative">
-          <ResponsiveContainer width="100%" height={220}>
-            <PieChart>
-              <Pie
-                data={performance.breakdown}
-                cx="50%"
-                cy="50%"
-                innerRadius={65}
-                outerRadius={95}
-                paddingAngle={2}
-                dataKey="value"
-                activeIndex={activeIndex ?? undefined}
-                activeShape={renderActiveShape}
-                onMouseEnter={(_, index) => setActiveIndex(index)}
-                onMouseLeave={() => setActiveIndex(null)}
-              >
-                {performance.breakdown.map((entry, index) => (
-                  <Cell
-                    key={`cell-${index}`}
-                    fill={entry.color}
-                    stroke="hsl(var(--card))"
-                    strokeWidth={2}
-                  />
-                ))}
-              </Pie>
-            </PieChart>
-          </ResponsiveContainer>
-
-          <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center">
-            <span className="text-2xl font-bold">
-              {performance.total.toLocaleString()}
-            </span>
-            <span className="text-xs text-muted-foreground">proofs</span>
+        {performance.total === 0 ? (
+          <div className="flex flex-1 items-center justify-center text-sm text-muted-foreground">
+            no proofs from the current cohort this week
           </div>
-        </div>
+        ) : (
+          <>
+            <div className="relative">
+              <ResponsiveContainer width="100%" height={220}>
+                <PieChart>
+                  <Pie
+                    data={performance.breakdown}
+                    cx="50%"
+                    cy="50%"
+                    innerRadius={65}
+                    outerRadius={95}
+                    paddingAngle={2}
+                    dataKey="value"
+                    activeIndex={activeIndex ?? undefined}
+                    activeShape={renderActiveShape}
+                    onMouseEnter={(_, index) => setActiveIndex(index)}
+                    onMouseLeave={() => setActiveIndex(null)}
+                  >
+                    {performance.breakdown.map((entry, index) => (
+                      <Cell
+                        key={`cell-${index}`}
+                        fill={entry.color}
+                        stroke="hsl(var(--card))"
+                        strokeWidth={2}
+                      />
+                    ))}
+                  </Pie>
+                </PieChart>
+              </ResponsiveContainer>
 
-        <div className="grid grid-cols-2 gap-2">
-          {performance.breakdown.map((item) => (
-            <div
-              key={item.name}
-              className="flex items-center justify-between rounded-lg bg-muted/50 px-3 py-2"
-            >
-              <div className="flex items-center gap-2">
-                <div
-                  className="size-2.5 rounded-full"
-                  style={{ backgroundColor: item.color }}
-                />
-                <span className="text-xs">{item.name}</span>
+              <div className="pointer-events-none absolute inset-0 flex flex-col items-center justify-center">
+                <span className="text-2xl font-bold">
+                  {performance.total.toLocaleString()}
+                </span>
+                <span className="text-xs text-muted-foreground">proofs</span>
               </div>
-              <span
-                className="font-mono text-xs font-semibold"
-                style={{ color: item.color }}
-              >
-                {item.value >= 10
-                  ? item.value.toFixed(1)
-                  : item.value.toFixed(2)}
-                %
-              </span>
             </div>
-          ))}
-        </div>
+
+            <div className="grid grid-cols-2 gap-2">
+              {performance.breakdown.map((item) => (
+                <div
+                  key={item.name}
+                  className="flex items-center justify-between rounded-lg bg-muted/50 px-3 py-2"
+                >
+                  <div className="flex items-center gap-2">
+                    <div
+                      className="size-2.5 rounded-full"
+                      style={{ backgroundColor: item.color }}
+                    />
+                    <span className="text-xs">{item.name}</span>
+                  </div>
+                  <span
+                    className="font-mono text-xs font-semibold"
+                    style={{ color: item.color }}
+                  >
+                    {item.value >= 10
+                      ? item.value.toFixed(1)
+                      : item.value.toFixed(2)}
+                    %
+                  </span>
+                </div>
+              ))}
+            </div>
+          </>
+        )}
       </CardContent>
 
       <CardFooter className="flex-wrap justify-between gap-x-4 gap-y-4 border-t pt-6 text-xs text-muted-foreground">
