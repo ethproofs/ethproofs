@@ -3,17 +3,15 @@ import {
   Table,
   TableBody,
   TableCell,
-  TableFooter,
   TableHead,
   TableHeader,
   TableRow,
 } from "@/components/ui/table"
 
-// import {
-//   RTP_LIVENESS_SCORE_THRESHOLD,
-//   RTP_PERFORMANCE_SCORE_THRESHOLD,
-// } from "@/lib/constants"
-// import Link from "../ui/link"
+import {
+  RTP_LIVENESS_SCORE_THRESHOLD,
+  RTP_PERFORMANCE_SCORE_THRESHOLD,
+} from "@/lib/constants"
 
 interface CohortRule {
   id: string
@@ -53,8 +51,11 @@ const cohortRules: CohortRule[] = [
     id: "03",
     description: (
       <>
-        prover must be <span className="text-primary">reproducible</span>{" "}
-        &mdash; preferably open-source
+        prover must maintain a{" "}
+        <span className="text-primary">
+          performance score of &ge;{RTP_PERFORMANCE_SCORE_THRESHOLD}%
+        </span>{" "}
+        or higher during the previous 7-day window
       </>
     ),
   },
@@ -62,35 +63,14 @@ const cohortRules: CohortRule[] = [
     id: "04",
     description: (
       <>
-        verifier must be <span className="text-primary">open-source</span> and
-        integrated into Ethproofs in-browser verification
+        prover must maintain a{" "}
+        <span className="text-primary">
+          liveness score of &ge;{RTP_LIVENESS_SCORE_THRESHOLD}%
+        </span>{" "}
+        or higher during the previous 7-day window
       </>
     ),
   },
-  // {
-  //   id: "03",
-  //   description: (
-  //     <>
-  //       prover must maintain a{" "}
-  //       <span className="text-primary">
-  //         performance score of &ge;{RTP_PERFORMANCE_SCORE_THRESHOLD}%
-  //       </span>{" "}
-  //       or higher during the previous 7-day window
-  //     </>
-  //   ),
-  // },
-  // {
-  //   id: "04",
-  //   description: (
-  //     <>
-  //       prover must maintain a{" "}
-  //       <span className="text-primary">
-  //         liveness score of &ge;{RTP_LIVENESS_SCORE_THRESHOLD}%
-  //       </span>{" "}
-  //       or higher during the previous 7-day window
-  //     </>
-  //   ),
-  // },
 ]
 
 export function RtpCohortRulesContent() {
@@ -100,7 +80,7 @@ export function RtpCohortRulesContent() {
         <TableRow>
           <TableHead className="h-8 text-xs" colSpan={2}>
             <span className="flex items-center gap-1.5">
-              baseline requirements
+              baseline requirements to be eligible
             </span>
           </TableHead>
         </TableRow>
@@ -117,31 +97,17 @@ export function RtpCohortRulesContent() {
           </TableRow>
         ))}
       </TableBody>
-      {/* <TableFooter className="border-t-0 bg-transparent">
-        <TableRow>
-          <TableCell className="h-8 text-xs" colSpan={2}>
-            <span className="flex items-center gap-1.5 text-muted-foreground">
-              real-time proving (RTP) definition
-              <Link
-                href="https://blog.ethereum.org/2025/07/10/realtime-proving"
-                target="_blank"
-                rel="noopener noreferrer"
-              ></Link>
-            </span>
-          </TableCell>
-        </TableRow>
-      </TableFooter> */}
     </Table>
   )
 }
 
 export function RtpCohortRules() {
   return (
-    <Card className="h-full">
+    <Card className="flex h-full flex-col">
       <CardHeader>
-        <CardTitle className="text-lg">RTP cohort eligibility</CardTitle>
+        <CardTitle className="text-lg">RTP cohort rules</CardTitle>
       </CardHeader>
-      <CardContent>
+      <CardContent className="flex flex-1 flex-col [&>div]:flex-1 [&_table]:h-full">
         <RtpCohortRulesContent />
       </CardContent>
     </Card>

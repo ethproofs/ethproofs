@@ -289,15 +289,15 @@ export interface RtpCohortMember {
   clusterName: string
   teamName: string
   teamLogoUrl: string | null
-  weeksInCohort: number
+  weeksEligible: number
   totalWeeks: number
-  cohortPercentage: number
-  isCurrentlyEligible: boolean
+  eligibilityRate: number
+  isCurrentlyEvaluated: boolean
   weeklyTimeline: RtpWeekEntry[]
 }
 
 export interface RtpCohortCompositionData {
-  currentCohortSize: number
+  currentEligibleCount: number
   avgTenureWeeks: number
   trackedPeriodWeeks: number
   members: RtpCohortMember[]

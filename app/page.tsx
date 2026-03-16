@@ -26,7 +26,7 @@ export default async function Index() {
   const [rtpCohortRows, compositionData, performanceData, distributionData] =
     await Promise.all([
       getRtpCohortScores(),
-      getRtpCohortComposition(CURRENT_COHORT_DAYS),
+      getRtpCohortComposition(),
       getRtpCohortPerformance(CURRENT_COHORT_DAYS),
       getRtpProofTimeDistribution(CURRENT_COHORT_DAYS),
     ])

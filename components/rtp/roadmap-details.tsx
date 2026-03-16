@@ -104,11 +104,11 @@ export function RoadmapDetailsContent() {
 
 export function RoadmapDetails() {
   return (
-    <Card className="h-full">
+    <Card className="flex h-full flex-col">
       <CardHeader>
         <CardTitle className="text-lg">roadmap details</CardTitle>
       </CardHeader>
-      <CardContent>
+      <CardContent className="flex flex-1 flex-col [&>div]:flex-1 [&_table]:h-full">
         <RoadmapDetailsContent />
       </CardContent>
     </Card>

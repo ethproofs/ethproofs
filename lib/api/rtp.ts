@@ -121,119 +121,114 @@ function parseWeeklyTimeline(raw: unknown): RtpWeekEntry[] {
 
 function toRtpCohortMember(row: Record<string, unknown>): RtpCohortMember {
   const totalWeeks = Number(row.total_weeks)
-  const weeksInCohort = Number(row.weeks_in_cohort)
+  const weeksEligible = Number(row.weeks_in_cohort)
   return {
     clusterName: String(row.cluster_name),
     teamName: String(row.team_name),
     teamLogoUrl: row.team_logo_url ? String(row.team_logo_url) : null,
-    weeksInCohort,
+    weeksEligible,
     totalWeeks,
-    cohortPercentage:
-      totalWeeks > 0 ? Math.round((weeksInCohort / totalWeeks) * 100) : 0,
-    isCurrentlyEligible: Boolean(row.is_currently_eligible),
+    eligibilityRate:
+      totalWeeks > 0 ? Math.round((weeksEligible / totalWeeks) * 100) : 0,
+    isCurrentlyEvaluated: Boolean(row.is_currently_eligible),
     weeklyTimeline: parseWeeklyTimeline(row.weekly_timeline),
   }
 }
 
-export const getRtpCohortComposition = async (
-  days: number
-): Promise<RtpCohortCompositionData> => {
-  return cache(
-    async (days: number) => {
-      const result = await db.execute(sql`
-        WITH all_weeks AS (
-          SELECT week::timestamptz
-          FROM generate_series(
-            date_trunc('week', NOW() - make_interval(days => ${days})),
-            date_trunc('week', NOW()),
-            '1 week'::interval
-          ) AS week
-        ),
-        snapshot_range AS (
-          SELECT
-            (SELECT COUNT(*)::integer FROM all_weeks) AS total_weeks,
-            (SELECT MAX(snapshot_week) FROM rtp_cohort_snapshots
-              WHERE snapshot_week >= NOW() - make_interval(days => ${days})
-            ) AS latest_week
-        ),
-        cluster_tenure AS (
-          SELECT
-            s.cluster_id,
-            c.name AS cluster_name,
-            t.name AS team_name,
-            t.logo_url AS team_logo_url,
-            COUNT(DISTINCT s.snapshot_week) FILTER (WHERE s.is_eligible)::integer AS weeks_in_cohort,
-            sr.total_weeks,
-            EXISTS (
-              SELECT 1
-              FROM rtp_cohort_snapshots latest
-              WHERE latest.cluster_id = s.cluster_id
-                AND latest.snapshot_week = sr.latest_week
-                AND latest.is_eligible = true
-            ) AS is_currently_eligible
-          FROM rtp_cohort_snapshots s
-          INNER JOIN clusters c ON s.cluster_id = c.id
-          INNER JOIN teams t ON c.team_id = t.id
-          CROSS JOIN snapshot_range sr
-          WHERE s.snapshot_week >= NOW() - make_interval(days => ${days})
-          GROUP BY s.cluster_id, c.name, t.name, t.logo_url, sr.total_weeks, sr.latest_week
-          HAVING COUNT(DISTINCT s.snapshot_week) FILTER (WHERE s.is_eligible) > 0
-        ),
-        cluster_timelines AS (
-          SELECT
-            ct.cluster_id,
-            json_agg(
-              json_build_object('week', aw.week, 'isEligible', COALESCE(s.is_eligible, false))
-              ORDER BY aw.week
-            ) AS weekly_timeline
-          FROM cluster_tenure ct
-          CROSS JOIN all_weeks aw
-          LEFT JOIN rtp_cohort_snapshots s
-            ON s.cluster_id = ct.cluster_id AND s.snapshot_week = aw.week
-          GROUP BY ct.cluster_id
-        )
+const COMPOSITION_MAX_WEEKS = 26
+
+export const getRtpCohortComposition = cache(
+  async (): Promise<RtpCohortCompositionData> => {
+    const result = await db.execute(sql`
+      WITH all_weeks AS (
+        SELECT DISTINCT snapshot_week AS week
+        FROM rtp_cohort_snapshots
+        ORDER BY snapshot_week DESC
+        LIMIT ${COMPOSITION_MAX_WEEKS}
+      ),
+      snapshot_range AS (
         SELECT
-          ct.cluster_name,
-          ct.team_name,
-          ct.team_logo_url,
-          ct.weeks_in_cohort,
-          ct.total_weeks,
-          ct.is_currently_eligible,
-          ctl.weekly_timeline
+          (SELECT COUNT(*)::integer FROM all_weeks) AS total_weeks,
+          (SELECT MAX(week) FROM all_weeks) AS latest_week
+      ),
+      cluster_tenure AS (
+        SELECT
+          s.cluster_id,
+          c.name AS cluster_name,
+          t.name AS team_name,
+          t.logo_url AS team_logo_url,
+          COUNT(DISTINCT s.snapshot_week) FILTER (WHERE s.is_eligible)::integer AS weeks_eligible,
+          sr.total_weeks,
+          EXISTS (
+            SELECT 1
+            FROM rtp_cohort_snapshots latest
+            WHERE latest.cluster_id = s.cluster_id
+              AND latest.snapshot_week = sr.latest_week
+          ) AS is_currently_evaluated
+        FROM rtp_cohort_snapshots s
+        INNER JOIN clusters c ON s.cluster_id = c.id
+        INNER JOIN teams t ON c.team_id = t.id
+        CROSS JOIN snapshot_range sr
+        WHERE s.snapshot_week IN (SELECT week FROM all_weeks)
+        GROUP BY s.cluster_id, c.name, t.name, t.logo_url, sr.total_weeks, sr.latest_week
+      ),
+      cluster_timelines AS (
+        SELECT
+          ct.cluster_id,
+          json_agg(
+            json_build_object('week', aw.week, 'isEligible', COALESCE(s.is_eligible, false))
+            ORDER BY aw.week
+          ) AS weekly_timeline
         FROM cluster_tenure ct
-        INNER JOIN cluster_timelines ctl ON ctl.cluster_id = ct.cluster_id
-        ORDER BY ct.weeks_in_cohort DESC, ct.team_name ASC
-      `)
-
-      const rows = Array.isArray(result) ? result : []
-      const members = rows.map((row: Record<string, unknown>) =>
-        toRtpCohortMember(row)
+        CROSS JOIN all_weeks aw
+        LEFT JOIN rtp_cohort_snapshots s
+          ON s.cluster_id = ct.cluster_id AND s.snapshot_week = aw.week
+        GROUP BY ct.cluster_id
       )
+      SELECT
+        ct.cluster_name,
+        ct.team_name,
+        ct.team_logo_url,
+        ct.weeks_eligible AS weeks_in_cohort,
+        ct.total_weeks,
+        ct.is_currently_evaluated AS is_currently_eligible,
+        ctl.weekly_timeline
+      FROM cluster_tenure ct
+      INNER JOIN cluster_timelines ctl ON ctl.cluster_id = ct.cluster_id
+      ORDER BY ct.weeks_eligible DESC, ct.team_name ASC
+    `)
 
-      const currentMembers = members.filter((m) => m.isCurrentlyEligible)
-      const trackedPeriodWeeks = members.length > 0 ? members[0].totalWeeks : 0
-      const avgTenureWeeks =
-        currentMembers.length > 0
-          ? Math.round(
-              currentMembers.reduce((sum, m) => sum + m.weeksInCohort, 0) /
-                currentMembers.length
-            )
-          : 0
+    const rows = Array.isArray(result) ? result : []
+    const members = rows.map((row: Record<string, unknown>) =>
+      toRtpCohortMember(row)
+    )
 
-      return {
-        currentCohortSize: currentMembers.length,
-        avgTenureWeeks,
-        trackedPeriodWeeks,
-        members,
-      }
-    },
-    ["rtp-cohort-composition", String(days)],
-    {
-      revalidate: 60 * 60,
-      tags: [TAGS.RTP_COHORT],
+    const trackedPeriodWeeks = members.length > 0 ? members[0].totalWeeks : 0
+    const currentlyEligible = members.filter((m) => {
+      const lastWeek = m.weeklyTimeline[m.weeklyTimeline.length - 1]
+      return lastWeek?.isEligible
+    })
+    const avgTenureWeeks =
+      currentlyEligible.length > 0
+        ? Math.round(
+            currentlyEligible.reduce((sum, m) => sum + m.weeksEligible, 0) /
+              currentlyEligible.length
+          )
+        : 0
+
+    return {
+      currentEligibleCount: currentlyEligible.length,
+      avgTenureWeeks,
+      trackedPeriodWeeks,
+      members,
     }
-  )(days)
-}
+  },
+  ["rtp-cohort-composition"],
+  {
+    revalidate: 60 * 60,
+    tags: [TAGS.RTP_COHORT],
+  }
+)
 
 const BUCKET_ORDER = [
   "0 - 5s",
@@ -266,11 +261,10 @@ export const getRtpCohortPerformance = async (
   return cache(
     async (days: number) => {
       const result = await db.execute(sql`
-        WITH eligible_clusters AS (
+        WITH evaluated_clusters AS (
           SELECT s.cluster_id
           FROM rtp_cohort_snapshots s
-          WHERE s.is_eligible = true
-            AND s.snapshot_week = (
+          WHERE s.snapshot_week = (
               SELECT MAX(snapshot_week) FROM rtp_cohort_snapshots
             )
         ),
@@ -300,7 +294,7 @@ export const getRtpCohortPerformance = async (
             END)::integer AS paralyzed_blocks
           FROM proofs p
           INNER JOIN window_blocks wb ON p.block_number = wb.block_number
-          INNER JOIN eligible_clusters ec ON p.cluster_id = ec.cluster_id
+          INNER JOIN evaluated_clusters ec ON p.cluster_id = ec.cluster_id
           GROUP BY p.cluster_id
         )
         SELECT
@@ -346,11 +340,10 @@ export const getRtpProofTimeDistribution = async (
   return cache(
     async (days: number) => {
       const result = await db.execute(sql`
-        WITH eligible_clusters AS (
+        WITH evaluated_clusters AS (
           SELECT s.cluster_id
           FROM rtp_cohort_snapshots s
-          WHERE s.is_eligible = true
-            AND s.snapshot_week = (
+          WHERE s.snapshot_week = (
               SELECT MAX(snapshot_week) FROM rtp_cohort_snapshots
             )
         ),
@@ -363,7 +356,7 @@ export const getRtpProofTimeDistribution = async (
           SELECT p.proving_time
           FROM proofs p
           INNER JOIN window_blocks wb ON p.block_number = wb.block_number
-          INNER JOIN eligible_clusters ec ON p.cluster_id = ec.cluster_id
+          INNER JOIN evaluated_clusters ec ON p.cluster_id = ec.cluster_id
           WHERE p.proof_status = 'proved'
             AND p.proving_time IS NOT NULL
         )

@@ -198,7 +198,7 @@ export function ZkvmSecurityMilestonesChart({
                 dataKey="zkvmName"
                 axisLine={false}
                 tickLine={false}
-                width={90}
+                width={110}
                 tick={{
                   fill: "hsl(var(--foreground))",
                   fontSize: 12,

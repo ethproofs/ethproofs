@@ -134,9 +134,9 @@ export function RtpCohortPerformance({ data }: RtpCohortPerformanceProps) {
   return (
     <Card className="flex h-full min-h-80 flex-col">
       <CardHeader className="space-y-1.5">
-        <CardTitle className="text-lg">cohort performance</CardTitle>
+        <CardTitle className="text-lg">RTP prover performance</CardTitle>
         <CardDescription>
-          aggregated success rate for the current RTP cohort this week
+          aggregated success rate for all evaluated provers
         </CardDescription>
       </CardHeader>
 
@@ -148,7 +148,7 @@ export function RtpCohortPerformance({ data }: RtpCohortPerformanceProps) {
         ) : (
           <>
             <div className="relative">
-              <ResponsiveContainer width="100%" height={220}>
+              <ResponsiveContainer width="100%" height={240}>
                 <PieChart>
                   <Pie
                     data={performance.breakdown}
@@ -230,7 +230,7 @@ export function RtpCohortPerformance({ data }: RtpCohortPerformanceProps) {
           <p className="text-xs text-muted-foreground">
             <span className="font-medium text-placeholder">Key insight:</span>{" "}
             Green shows sub-10s successes (the goal). Yellow (stunners) and red
-            (paralyzers) should be minimized. A healthy RTP cohort is ≥95%
+            (paralyzers) should be minimized. A healthy RTP cohort is ≥70%
             green.
           </p>
         </div>
