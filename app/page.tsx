@@ -1,11 +1,5 @@
 import type { Metadata } from "next"
 
-import type {
-  RtpCohortCompositionData,
-  RtpCohortPerformanceData,
-  RtpProofTimeDistributionData,
-} from "@/lib/types"
-
 import { PageHeader } from "@/components/layout/page-header"
 import { RoadmapBanner } from "@/components/roadmap/roadmap-banner"
 import { RtpCohortComposition } from "@/components/rtp/rtp-cohort-composition"
@@ -26,39 +20,16 @@ export const metadata: Metadata = getMetadata()
 
 export const dynamic = "force-dynamic"
 
-const COMPOSITION_RANGES = [7, 30, 90] as const
-const CHART_DAY_RANGES = [1, 7, 30, 90] as const
+const CURRENT_COHORT_DAYS = 7
 
 export default async function Index() {
-  const [rtpCohortRows, ...rangeResults] = await Promise.all([
-    getRtpCohortScores(),
-    ...COMPOSITION_RANGES.map((d) => getRtpCohortComposition(d)),
-    ...CHART_DAY_RANGES.map((d) => getRtpCohortPerformance(d)),
-    ...CHART_DAY_RANGES.map((d) => getRtpProofTimeDistribution(d)),
-  ])
-
-  const compositionByRange = Object.fromEntries(
-    COMPOSITION_RANGES.map((d, i) => [
-      d,
-      rangeResults[i] as RtpCohortCompositionData,
+  const [rtpCohortRows, compositionData, performanceData, distributionData] =
+    await Promise.all([
+      getRtpCohortScores(),
+      getRtpCohortComposition(CURRENT_COHORT_DAYS),
+      getRtpCohortPerformance(CURRENT_COHORT_DAYS),
+      getRtpProofTimeDistribution(CURRENT_COHORT_DAYS),
     ])
-  ) as Record<number, RtpCohortCompositionData>
-
-  const perfOffset = COMPOSITION_RANGES.length
-  const performanceByRange = Object.fromEntries(
-    CHART_DAY_RANGES.map((d, i) => [
-      d,
-      rangeResults[perfOffset + i] as RtpCohortPerformanceData,
-    ])
-  ) as Record<number, RtpCohortPerformanceData>
-
-  const distOffset = perfOffset + CHART_DAY_RANGES.length
-  const distributionByRange = Object.fromEntries(
-    CHART_DAY_RANGES.map((d, i) => [
-      d,
-      rangeResults[distOffset + i] as RtpProofTimeDistributionData,
-    ])
-  ) as Record<number, RtpProofTimeDistributionData>
 
   return (
     <div className="mx-auto max-w-screen-2xl px-6">
@@ -86,10 +57,10 @@ export default async function Index() {
       </section>
 
       <section className="mb-8 grid gap-6 lg:grid-cols-2 2xl:grid-cols-3">
-        <RtpCohortComposition dataByRange={compositionByRange} />
-        <RtpCohortPerformance dataByRange={performanceByRange} />
+        <RtpCohortComposition data={compositionData} />
+        <RtpCohortPerformance data={performanceData} />
         <div className="lg:col-span-2 2xl:col-span-1">
-          <RtpProofTimeDistribution dataByRange={distributionByRange} />
+          <RtpProofTimeDistribution data={distributionData} />
         </div>
       </section>
     </div>

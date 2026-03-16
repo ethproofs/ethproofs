@@ -1,6 +1,6 @@
 "use client"
 
-import { useMemo, useState } from "react"
+import { useMemo } from "react"
 import {
   Bar,
   BarChart,
@@ -13,7 +13,6 @@ import {
 
 import type { RtpProofTimeDistributionData } from "@/lib/types"
 
-import { Button } from "@/components/ui/button"
 import {
   Card,
   CardContent,
@@ -22,17 +21,6 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
-
-import { cn } from "@/lib/utils"
-
-const RANGE_OPTIONS = [
-  { label: "24h", days: 1 },
-  { label: "7d", days: 7 },
-  { label: "30d", days: 30 },
-  { label: "90d", days: 90 },
-] as const
-
-type RangeDays = (typeof RANGE_OPTIONS)[number]["days"]
 
 const BAR_COLORS = {
   rtp: "hsl(var(--level-best))",
@@ -112,41 +100,23 @@ function CustomTooltip({ active, payload }: CustomTooltipProps) {
 }
 
 interface RtpProofTimeDistributionProps {
-  dataByRange: Record<number, RtpProofTimeDistributionData>
+  data: RtpProofTimeDistributionData
 }
 
 export function RtpProofTimeDistribution({
-  dataByRange,
+  data,
 }: RtpProofTimeDistributionProps) {
-  const [rangeDays, setRangeDays] = useState<RangeDays>(7)
-
-  const data = dataByRange[rangeDays] ?? dataByRange[7]
   const chartData = useMemo(() => buildChartData(data), [data])
 
   return (
     <Card className="flex h-full min-h-80 flex-col">
-      <CardHeader className="flex-row flex-wrap items-start justify-between gap-2 space-y-0">
-        <div className="space-y-1.5">
-          <CardTitle className="text-lg">RTP proof time distribution</CardTitle>
-          <CardDescription>timing distribution across blocks</CardDescription>
-        </div>
-        <div className="flex gap-1 rounded-lg bg-muted p-1">
-          {RANGE_OPTIONS.map((option) => (
-            <Button
-              key={option.days}
-              onClick={() => setRangeDays(option.days)}
-              size="sm"
-              variant="ghost"
-              className={cn(
-                "h-7 px-2 text-xs",
-                rangeDays === option.days &&
-                  "bg-background text-foreground shadow-sm"
-              )}
-            >
-              {option.label}
-            </Button>
-          ))}
-        </div>
+      <CardHeader className="space-y-1.5">
+        <CardTitle className="text-lg">
+          cohort proof time distribution
+        </CardTitle>
+        <CardDescription>
+          timing distribution across blocks for the current RTP cohort this week
+        </CardDescription>
       </CardHeader>
 
       <CardContent className="flex flex-1 flex-col gap-4 lg:flex-row 2xl:flex-col">
@@ -171,84 +141,90 @@ export function RtpProofTimeDistribution({
           </div>
         </div>
 
-        <div className="flex-1 lg:min-w-0">
-          <ResponsiveContainer width="100%" height={280}>
-            <BarChart
-              data={chartData}
-              layout="vertical"
-              margin={{ top: 0, right: 10, left: 0, bottom: 0 }}
-              barCategoryGap="15%"
-            >
-              <XAxis
-                type="number"
-                domain={[0, 100]}
-                axisLine={false}
-                tickLine={false}
-                tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 10 }}
-                tickFormatter={(value: number) => `${value}%`}
-                ticks={[0, 20, 40, 60, 80, 100]}
-              />
-              <YAxis
-                type="category"
-                dataKey="bucket"
-                axisLine={false}
-                tickLine={false}
-                width={56}
-                tick={({
-                  x,
-                  y,
-                  payload,
-                }: {
-                  x: number
-                  y: number
-                  payload: { value: string }
-                }) => {
-                  if (payload.value === "10s") return <g />
-                  const isRtp = chartData.find(
-                    (b) => b.bucket === payload.value
-                  )?.isRtp
-                  return (
-                    <g transform={`translate(${x},${y})`}>
-                      <text
-                        x={-8}
-                        y={0}
-                        dy={4}
-                        textAnchor="end"
-                        fill={
-                          isRtp
-                            ? "hsl(var(--level-best))"
-                            : "hsl(var(--muted-foreground))"
-                        }
-                        fontSize={12}
-                        fontWeight={500}
-                      >
-                        {payload.value}
-                      </text>
-                    </g>
-                  )
-                }}
-              />
-              <Tooltip
-                content={<CustomTooltip />}
-                cursor={{ fill: "hsl(var(--muted))", fillOpacity: 0.2 }}
-              />
-              <Bar dataKey="percentage" radius={[0, 4, 4, 0]} barSize={24}>
-                {chartData.map((entry, index) => (
-                  <Cell
-                    key={`cell-${index}`}
-                    fill={
-                      entry.isThreshold
-                        ? "transparent"
-                        : entry.isRtp
-                          ? BAR_COLORS.rtp
-                          : BAR_COLORS.stunner
-                    }
-                  />
-                ))}
-              </Bar>
-            </BarChart>
-          </ResponsiveContainer>
-        </div>
+        {data.total === 0 ? (
+          <div className="flex flex-1 items-center justify-center text-sm text-muted-foreground">
+            no proofs from the current cohort this week
+          </div>
+        ) : (
+          <div className="flex-1 lg:min-w-0">
+            <ResponsiveContainer width="100%" height={280}>
+              <BarChart
+                data={chartData}
+                layout="vertical"
+                margin={{ top: 0, right: 10, left: 0, bottom: 0 }}
+                barCategoryGap="15%"
+              >
+                <XAxis
+                  type="number"
+                  domain={[0, 100]}
+                  axisLine={false}
+                  tickLine={false}
+                  tick={{ fill: "hsl(var(--muted-foreground))", fontSize: 10 }}
+                  tickFormatter={(value: number) => `${value}%`}
+                  ticks={[0, 20, 40, 60, 80, 100]}
+                />
+                <YAxis
+                  type="category"
+                  dataKey="bucket"
+                  axisLine={false}
+                  tickLine={false}
+                  width={56}
+                  tick={({
+                    x,
+                    y,
+                    payload,
+                  }: {
+                    x: number
+                    y: number
+                    payload: { value: string }
+                  }) => {
+                    if (payload.value === "10s") return <g />
+                    const isRtp = chartData.find(
+                      (b) => b.bucket === payload.value
+                    )?.isRtp
+                    return (
+                      <g transform={`translate(${x},${y})`}>
+                        <text
+                          x={-8}
+                          y={0}
+                          dy={4}
+                          textAnchor="end"
+                          fill={
+                            isRtp
+                              ? "hsl(var(--level-best))"
+                              : "hsl(var(--muted-foreground))"
+                          }
+                          fontSize={12}
+                          fontWeight={500}
+                        >
+                          {payload.value}
+                        </text>
+                      </g>
+                    )
+                  }}
+                />
+                <Tooltip
+                  content={<CustomTooltip />}
+                  cursor={{ fill: "hsl(var(--muted))", fillOpacity: 0.2 }}
+                />
+                <Bar dataKey="percentage" radius={[0, 4, 4, 0]} barSize={24}>
+                  {chartData.map((entry, index) => (
+                    <Cell
+                      key={`cell-${index}`}
+                      fill={
+                        entry.isThreshold
+                          ? "transparent"
+                          : entry.isRtp
+                            ? BAR_COLORS.rtp
+                            : BAR_COLORS.stunner
+                      }
+                    />
+                  ))}
+                </Bar>
+              </BarChart>
+            </ResponsiveContainer>
+          </div>
+        )}
       </CardContent>
 
       <CardFooter className="flex-wrap justify-between gap-x-4 gap-y-4 border-t pt-6 text-xs text-muted-foreground">
