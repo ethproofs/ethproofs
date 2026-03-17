@@ -172,7 +172,9 @@ export function PerformanceCostChart() {
                 strokeWidth={1.5}
               />
               <Legend
-                payload={PERSONA_LEGEND.map((entry) => ({
+                payload={PERSONA_LEGEND.filter(
+                  (entry) => !entry.label.startsWith("1:100")
+                ).map((entry) => ({
                   value: entry.label,
                   type: "line" as const,
                   color: entry.color,

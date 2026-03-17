@@ -318,9 +318,7 @@ export async function fetchReliabilityDailyStats(
   `)
 
   const rows = Array.isArray(result) ? result : []
-  return rows.map((row: Record<string, unknown>) =>
-    toReliabilityDailyStats(row)
-  )
+  return rows.filter(isRecord).map(toReliabilityDailyStats)
 }
 
 function toGpuPriceHistoryEntry(
@@ -366,7 +364,7 @@ export async function fetchGpuPriceHistory(
   `)
 
   const rows = Array.isArray(result) ? result : []
-  return rows.map((row: Record<string, unknown>) => toGpuPriceHistoryEntry(row))
+  return rows.filter(isRecord).map(toGpuPriceHistoryEntry)
 }
 
 function toPersonaComparisonData(
@@ -419,7 +417,5 @@ export async function fetchPersonaComparison(
   `)
 
   const rows = Array.isArray(result) ? result : []
-  return rows.map((row: Record<string, unknown>) =>
-    toPersonaComparisonData(row)
-  )
+  return rows.filter(isRecord).map(toPersonaComparisonData)
 }

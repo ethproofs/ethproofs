@@ -44,7 +44,7 @@ const TAB_DISABLED_REASONS: Record<TeamTab, string> = {
 const TAB_ORDER: TeamTab[] = [TAB_ALL, TAB_ZKVM, TAB_GUEST, TAB_PROVER]
 
 function isTeamTab(value: string): value is TeamTab {
-  return TAB_ORDER.includes(value as TeamTab)
+  return TAB_ORDER.some((tab) => tab === value)
 }
 
 function filterTeamsByTab(teams: TeamTableRow[], tab: TeamTab): TeamTableRow[] {
