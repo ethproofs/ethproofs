@@ -13,6 +13,16 @@ import { RTP_PERFORMANCE_TIME_THRESHOLD_MS, TAGS } from "@/lib/constants"
 
 import { db } from "@/db"
 
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === "object" && value !== null && !Array.isArray(value)
+}
+
+function getFirstRow(result: unknown): Record<string, unknown> {
+  if (!Array.isArray(result) || result.length === 0) return {}
+  const first: unknown = result[0]
+  return isRecord(first) ? first : {}
+}
+
 export async function fetchProverSummary(): Promise<ProverSummaryData> {
   const [summaryResult, rtpResult] = await Promise.all([
     db.execute(sql`
@@ -54,14 +64,8 @@ export async function fetchProverSummary(): Promise<ProverSummaryData> {
     `),
   ])
 
-  const summary =
-    Array.isArray(summaryResult) && summaryResult.length > 0
-      ? (summaryResult[0] as Record<string, unknown>)
-      : {}
-  const rtp =
-    Array.isArray(rtpResult) && rtpResult.length > 0
-      ? (rtpResult[0] as Record<string, unknown>)
-      : {}
+  const summary = getFirstRow(summaryResult)
+  const rtp = getFirstRow(rtpResult)
 
   return {
     totalProvers: Number(summary.total_provers ?? 0),
@@ -101,8 +105,9 @@ export async function fetchProverScatterData(): Promise<ProverScatterPoint[]> {
 
   const rows = Array.isArray(result) ? result : []
   return rows
-    .filter((row: Record<string, unknown>) => row.avg_cost_per_proof != null)
-    .map((row: Record<string, unknown>) => ({
+    .filter(isRecord)
+    .filter((row) => row.avg_cost_per_proof != null)
+    .map((row) => ({
       teamName: String(row.team_name ?? ""),
       clusterName: String(row.cluster_name ?? ""),
       persona: String(row.persona ?? ""),
@@ -117,8 +122,8 @@ export async function fetchProverScatterData(): Promise<ProverScatterPoint[]> {
 function isConsistencyWeekEntry(
   value: unknown
 ): value is RtpConsistencyWeekEntry {
-  if (typeof value !== "object" || value === null) return false
-  const entry = value as Record<string, unknown>
+  if (!isRecord(value)) return false
+  const entry = value
   return (
     typeof entry.week === "string" &&
     typeof entry.isEligible === "boolean" &&
@@ -127,7 +132,14 @@ function isConsistencyWeekEntry(
 }
 
 function parseConsistencyTimeline(raw: unknown): RtpConsistencyWeekEntry[] {
-  const parsed = typeof raw === "string" ? JSON.parse(raw) : raw
+  let parsed: unknown = raw
+  if (typeof raw === "string") {
+    try {
+      parsed = JSON.parse(raw)
+    } catch {
+      return []
+    }
+  }
   if (!Array.isArray(parsed)) return []
   return parsed.filter(isConsistencyWeekEntry)
 }
@@ -153,9 +165,9 @@ function toConsistencyMember(
   }
 }
 
-export const fetchRtpCohortConsistency = async (
+export async function fetchRtpCohortConsistency(
   days: number
-): Promise<RtpCohortConsistencyData> => {
+): Promise<RtpCohortConsistencyData> {
   return cache(
     async (days: number) => {
       const result = await db.execute(sql`
@@ -245,9 +257,7 @@ export const fetchRtpCohortConsistency = async (
       `)
 
       const rows = Array.isArray(result) ? result : []
-      const members = rows.map((row: Record<string, unknown>) =>
-        toConsistencyMember(row)
-      )
+      const members = rows.filter(isRecord).map(toConsistencyMember)
 
       const currentMembers = members.filter((m) => m.isCurrentlyIncluded)
       const trackedPeriodWeeks = members.length > 0 ? members[0].totalWeeks : 0

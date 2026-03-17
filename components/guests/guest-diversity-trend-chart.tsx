@@ -56,7 +56,8 @@ function pivotData(points: GuestDiversityPoint[]): {
       (guestTotals.get(point.guestName) ?? 0) + point.proofCount
     )
     const existing = weekCounts.get(point.week) ?? {}
-    existing[point.guestName] = point.proofCount
+    existing[point.guestName] =
+      (existing[point.guestName] ?? 0) + point.proofCount
     weekCounts.set(point.week, existing)
   }
 
@@ -80,7 +81,11 @@ function pivotData(points: GuestDiversityPoint[]): {
 
 function formatWeekTick(value: string): string {
   const date = new Date(value)
-  return date.toLocaleDateString("en-US", { month: "short", day: "numeric" })
+  return date.toLocaleDateString("en-US", {
+    month: "short",
+    day: "numeric",
+    timeZone: "UTC",
+  })
 }
 
 function getMaxShare(row: PivotedRow, guestNames: string[]): number {

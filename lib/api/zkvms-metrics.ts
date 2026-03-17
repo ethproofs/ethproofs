@@ -11,6 +11,16 @@ import { SECURITY_MILESTONE_THRESHOLDS } from "@/lib/constants"
 
 import { db } from "@/db"
 
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === "object" && value !== null && !Array.isArray(value)
+}
+
+function getFirstRow(result: unknown): Record<string, unknown> {
+  if (!Array.isArray(result) || result.length === 0) return {}
+  const first: unknown = result[0]
+  return isRecord(first) ? first : {}
+}
+
 export async function fetchZkvmSummary(): Promise<ZkvmSummaryData> {
   const [countsResult, rtpResult] = await Promise.all([
     db.execute(sql`
@@ -57,14 +67,8 @@ export async function fetchZkvmSummary(): Promise<ZkvmSummaryData> {
     `),
   ])
 
-  const counts =
-    Array.isArray(countsResult) && countsResult.length > 0
-      ? (countsResult[0] as Record<string, unknown>)
-      : {}
-  const rtp =
-    Array.isArray(rtpResult) && rtpResult.length > 0
-      ? (rtpResult[0] as Record<string, unknown>)
-      : {}
+  const counts = getFirstRow(countsResult)
+  const rtp = getFirstRow(rtpResult)
 
   return {
     totalZkvms: Number(counts.total_zkvms ?? 0),
@@ -92,11 +96,11 @@ export async function fetchZkvmMilestones(): Promise<ZkvmMilestoneEntry[]> {
   const result = await db.execute(sql`
     SELECT
       z.name AS zkvm_name,
-      sm.soundcalc_integration,
-      sm.security_target_bits,
-      pm.size_bytes,
-      CASE WHEN sm.id IS NOT NULL THEN true ELSE false END AS has_security_metrics,
-      CASE WHEN pm.id IS NOT NULL THEN true ELSE false END AS has_performance_metrics
+      BOOL_OR(sm.soundcalc_integration) AS soundcalc_integration,
+      MAX(sm.security_target_bits) AS security_target_bits,
+      MIN(pm.size_bytes) AS size_bytes,
+      BOOL_OR(sm.id IS NOT NULL) AS has_security_metrics,
+      BOOL_OR(pm.id IS NOT NULL) AS has_performance_metrics
     FROM zkvms z
     INNER JOIN cluster_versions cv ON true
     INNER JOIN zkvm_versions zv ON cv.zkvm_version_id = zv.id AND zv.zkvm_id = z.id
@@ -105,14 +109,13 @@ export async function fetchZkvmMilestones(): Promise<ZkvmMilestoneEntry[]> {
     LEFT JOIN zkvm_performance_metrics pm ON pm.zkvm_id = z.id
     WHERE z.approved = true
       AND cv.is_active = true
-    GROUP BY z.id, z.name, sm.id, sm.soundcalc_integration, sm.security_target_bits,
-             pm.id, pm.size_bytes
+    GROUP BY z.id, z.name
     ORDER BY z.name
   `)
 
   const rows = Array.isArray(result) ? result : []
 
-  const entries = rows.map((row: Record<string, unknown>) => {
+  const entries = rows.filter(isRecord).map((row) => {
     const hasSecurity = Boolean(row.has_security_metrics)
     const hasPerformance = Boolean(row.has_performance_metrics)
     const soundcalc = Boolean(row.soundcalc_integration)

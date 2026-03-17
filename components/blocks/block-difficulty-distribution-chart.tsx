@@ -182,6 +182,8 @@ export function BlockDifficultyDistributionChart() {
               {filterOptions.map(({ key, label }) => (
                 <button
                   key={key}
+                  type="button"
+                  aria-pressed={activeFilter === key}
                   onClick={() => setActiveFilter(key)}
                   className={cn(
                     "rounded-full border px-2.5 py-0.5 text-xs font-medium transition-colors",
@@ -289,12 +291,12 @@ export function BlockDifficultyDistributionChart() {
           <div className="mt-4 w-full rounded-lg border border-warning/30 bg-warning/5 px-3 py-2 text-xs">
             <p className="mt-0.5 text-muted-foreground">
               <span className="font-medium text-warning">
-                Pattern detected:
+                pattern detected:
               </span>{" "}
-              High-gas blocks (&gt;
+              high-gas blocks (&gt;
               {(issuePattern.gasThreshold / 1e6).toFixed(0)}M) have a{" "}
               {issuePattern.issueRate}% chance of being stunners or paralyzers.
-              Consider investigating blocks above the difficulty frontier.
+              consider investigating blocks above the difficulty frontier.
             </p>
           </div>
         )}
@@ -325,9 +327,9 @@ export function BlockDifficultyDistributionChart() {
         </div>
         <div className="min-h-14">
           <p className="text-xs text-muted-foreground">
-            <span className="font-medium text-placeholder">Key insight:</span>{" "}
-            The diagonal pattern shows the &quot;difficulty frontier&quot; — as
-            gas increases, latency increases predictably. Points above the
+            <span className="font-medium text-placeholder">key insight:</span>{" "}
+            the diagonal pattern shows the &quot;difficulty frontier&quot; — as
+            gas increases, latency increases predictably. points above the
             frontier are outliers worth investigating (complex txs,
             precompile-heavy, unusual state access patterns).
           </p>
