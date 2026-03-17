@@ -39,14 +39,14 @@ const PERSONA_LEGEND = [
 
 function getPersonaColor(persona: string): string {
   const key = persona.toLowerCase()
-  if (key.includes("1:1") && key.includes("on-prem"))
-    return PERSONA_LEGEND[0].color
-  if (key.includes("1:1") && key.includes("cloud"))
-    return PERSONA_LEGEND[1].color
   if (key.includes("1:100") && key.includes("on-prem"))
     return PERSONA_LEGEND[2].color
   if (key.includes("1:100") && key.includes("cloud"))
     return PERSONA_LEGEND[3].color
+  if (key.includes("1:1") && key.includes("on-prem"))
+    return PERSONA_LEGEND[0].color
+  if (key.includes("1:1") && key.includes("cloud"))
+    return PERSONA_LEGEND[1].color
   return "hsl(var(--chart-8))"
 }
 

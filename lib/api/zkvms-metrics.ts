@@ -190,5 +190,5 @@ export async function fetchZkvmPerformanceTrajectory(): Promise<
   `)
 
   const rows = Array.isArray(result) ? result : []
-  return rows.map(toPerformancePoint)
+  return rows.filter(isRecord).map(toPerformancePoint)
 }

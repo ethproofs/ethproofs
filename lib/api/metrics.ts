@@ -16,6 +16,7 @@ import {
 } from "@/lib/constants"
 
 import { db, type Transaction } from "@/db"
+import { zkvmPerformanceMetrics, zkvms, zkvmSecurityMetrics } from "@/db/schema"
 
 function isRecord(value: unknown): value is Record<string, unknown> {
   return typeof value === "object" && value !== null && !Array.isArray(value)
@@ -26,7 +27,6 @@ function getFirstRecord(result: unknown): Record<string, unknown> | null {
   const first: unknown = result[0]
   return isRecord(first) ? first : null
 }
-import { zkvmPerformanceMetrics, zkvms, zkvmSecurityMetrics } from "@/db/schema"
 
 export async function getZkvmsWithMetrics({ zkvmIds }: { zkvmIds: number[] }) {
   if (!zkvmIds?.length) return []
@@ -409,7 +409,6 @@ export async function fetchPersonaComparison(
     INNER JOIN prover_types pt ON c.prover_type_id = pt.id
     INNER JOIN proofs p ON p.cluster_id = c.id AND p.proof_status = 'proved'
     INNER JOIN blocks b ON p.block_number = b.block_number AND b.timestamp >= NOW() - make_interval(days => ${safeDays})
-    LEFT JOIN cluster_versions cv ON p.cluster_version_id = cv.id
     LEFT JOIN gpu_price_index gpi ON p.gpu_price_index_id = gpi.id
     WHERE c.is_active = true
     GROUP BY pt.id, pt.name, pt.gpu_configuration, pt.deployment_type
