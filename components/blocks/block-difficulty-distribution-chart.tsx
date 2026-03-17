@@ -106,27 +106,25 @@ export function BlockDifficultyDistributionChart() {
     return counts
   }, [data])
 
-  const stunnerPattern = useMemo(() => {
+  const issuePattern = useMemo(() => {
     if (!data || data.blockDifficulty.length < 4) return null
     const sorted = [...data.blockDifficulty].sort(
       (a, b) => a.gasUsed - b.gasUsed
     )
     const medianGas = sorted[Math.floor(sorted.length / 2)].gasUsed
+    const isIssueBlock = (p: BlockDifficultyPoint) =>
+      p.category === "stunner" || p.category === "paralyzer"
     const aboveMedian = sorted.filter((p) => p.gasUsed >= medianGas)
-    const aboveStunners = aboveMedian.filter(
-      (p) => p.category === "stunner" || p.category === "paralyzer"
-    )
+    const aboveIssues = aboveMedian.filter(isIssueBlock)
     const belowMedian = sorted.filter((p) => p.gasUsed < medianGas)
-    const belowStunners = belowMedian.filter(
-      (p) => p.category === "stunner" || p.category === "paralyzer"
-    )
+    const belowIssues = belowMedian.filter(isIssueBlock)
     if (aboveMedian.length === 0 || belowMedian.length === 0) return null
-    const aboveRate = aboveStunners.length / aboveMedian.length
-    const belowRate = belowStunners.length / belowMedian.length
+    const aboveRate = aboveIssues.length / aboveMedian.length
+    const belowRate = belowIssues.length / belowMedian.length
     if (aboveRate <= belowRate || aboveRate < 0.3) return null
     return {
       gasThreshold: medianGas,
-      stunnerRate: Math.round(aboveRate * 100),
+      issueRate: Math.round(aboveRate * 100),
     }
   }, [data])
 
@@ -287,16 +285,16 @@ export function BlockDifficultyDistributionChart() {
             </ResponsiveContainer>
           </>
         )}
-        {stunnerPattern && (
+        {issuePattern && (
           <div className="mt-4 w-full rounded-lg border border-warning/30 bg-warning/5 px-3 py-2 text-xs">
             <p className="mt-0.5 text-muted-foreground">
               <span className="font-medium text-warning">
                 Pattern detected:
               </span>{" "}
               High-gas blocks (&gt;
-              {(stunnerPattern.gasThreshold / 1e6).toFixed(0)}M) have a{" "}
-              {stunnerPattern.stunnerRate}% chance of being stunners. Consider
-              investigating blocks above the difficulty frontier.
+              {(issuePattern.gasThreshold / 1e6).toFixed(0)}M) have a{" "}
+              {issuePattern.issueRate}% chance of being stunners or paralyzers.
+              Consider investigating blocks above the difficulty frontier.
             </p>
           </div>
         )}

@@ -36,7 +36,9 @@ function WeekSegment({ entry }: WeekSegmentProps) {
   return (
     <Tooltip>
       <TooltipTrigger asChild>
-        <div
+        <button
+          type="button"
+          aria-label={`${formatWeekLabel(entry.week)}: ${entry.isEligible ? "eligible" : "not eligible"}`}
           className={cn(
             "flex-1 cursor-default",
             entry.isEligible ? "bg-primary" : "bg-muted"

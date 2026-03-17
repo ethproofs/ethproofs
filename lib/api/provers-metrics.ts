@@ -29,7 +29,7 @@ export async function fetchProverSummary(): Promise<ProverSummaryData> {
         WHERE b.timestamp >= NOW() - interval '7 days'
       )
       SELECT
-        (SELECT COUNT(DISTINCT team_id)::integer FROM active_clusters) AS total_provers,
+        (SELECT COUNT(DISTINCT id)::integer FROM active_clusters) AS total_provers,
         COALESCE(SUM(
           CASE WHEN rp.proof_status = 'proved' THEN 1 ELSE 0 END
         ), 0)::integer AS total_proofs,
@@ -100,16 +100,18 @@ export async function fetchProverScatterData(): Promise<ProverScatterPoint[]> {
   `)
 
   const rows = Array.isArray(result) ? result : []
-  return rows.map((row: Record<string, unknown>) => ({
-    teamName: String(row.team_name ?? ""),
-    clusterName: String(row.cluster_name ?? ""),
-    persona: String(row.persona ?? ""),
-    avgCost: Number(row.avg_cost_per_proof ?? 0),
-    performanceScore: Number(row.performance_score ?? 0),
-    livenessScore: Number(row.liveness_score ?? 0),
-    proofCount: Number(row.proof_count ?? 0),
-    isRtpEligible: Boolean(row.is_eligible),
-  }))
+  return rows
+    .filter((row: Record<string, unknown>) => row.avg_cost_per_proof != null)
+    .map((row: Record<string, unknown>) => ({
+      teamName: String(row.team_name ?? ""),
+      clusterName: String(row.cluster_name ?? ""),
+      persona: String(row.persona ?? ""),
+      avgCost: Number(row.avg_cost_per_proof),
+      performanceScore: Number(row.performance_score ?? 0),
+      livenessScore: Number(row.liveness_score ?? 0),
+      proofCount: Number(row.proof_count ?? 0),
+      isRtpEligible: Boolean(row.is_eligible),
+    }))
 }
 
 function isConsistencyWeekEntry(

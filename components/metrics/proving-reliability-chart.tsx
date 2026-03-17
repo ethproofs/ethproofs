@@ -28,6 +28,11 @@ import {
 
 import { cn } from "@/lib/utils"
 
+import {
+  RTP_LIVENESS_SCORE_THRESHOLD,
+  RTP_PERFORMANCE_SCORE_THRESHOLD,
+} from "@/lib/constants"
+
 const RANGE_OPTIONS = [
   { label: "7d", days: 7 },
   { label: "30d", days: 30 },
@@ -37,7 +42,6 @@ const RANGE_OPTIONS = [
 type RangeDays = (typeof RANGE_OPTIONS)[number]["days"]
 
 const MAX_FETCH_DAYS = 90
-const TARGET_RATE = 75
 
 const CATEGORY_COLORS = {
   sub10s: "hsl(var(--success))",
@@ -96,7 +100,7 @@ export function ProvingReliabilityChart() {
     [filteredData]
   )
 
-  const isAboveTarget = aggregates.sub10sRate >= TARGET_RATE
+  const isAboveTarget = aggregates.sub10sRate >= RTP_PERFORMANCE_SCORE_THRESHOLD
 
   return (
     <Card className="flex h-full min-h-80 flex-col">
@@ -173,7 +177,7 @@ export function ProvingReliabilityChart() {
             <span className="text-xs text-muted-foreground">target</span>
             <p className="font-mono text-sm font-semibold">
               {"\u2265"}
-              {TARGET_RATE}%
+              {RTP_PERFORMANCE_SCORE_THRESHOLD}%
             </p>
           </div>
         </div>
@@ -239,7 +243,7 @@ export function ProvingReliabilityChart() {
                 }}
               />
               <ReferenceLine
-                y={0.95}
+                y={RTP_LIVENESS_SCORE_THRESHOLD / 100}
                 stroke="hsl(var(--foreground))"
                 strokeDasharray="4 4"
                 strokeWidth={1}
@@ -303,9 +307,10 @@ export function ProvingReliabilityChart() {
           <p className="text-xs text-muted-foreground">
             <span className="font-medium text-placeholder">Key insight:</span> A
             healthy ecosystem is mostly green (sub-10s), with thin yellow and
-            red bands. The 95% threshold is the RTP cohort eligibility bar.
-            Growing yellow/red bands indicate emerging issues — investigate gas
-            spikes, difficult blocks, or prover problems.
+            red bands. The {RTP_LIVENESS_SCORE_THRESHOLD}% threshold is the RTP
+            cohort liveness eligibility bar. Growing yellow/red bands indicate
+            emerging issues — investigate gas spikes, difficult blocks, or
+            prover problems.
           </p>
         </div>
       </CardFooter>

@@ -16,6 +16,16 @@ import {
 } from "@/lib/constants"
 
 import { db, type Transaction } from "@/db"
+
+function isRecord(value: unknown): value is Record<string, unknown> {
+  return typeof value === "object" && value !== null && !Array.isArray(value)
+}
+
+function getFirstRecord(result: unknown): Record<string, unknown> | null {
+  if (!Array.isArray(result) || result.length === 0) return null
+  const first: unknown = result[0]
+  return isRecord(first) ? first : null
+}
 import { zkvmPerformanceMetrics, zkvms, zkvmSecurityMetrics } from "@/db/schema"
 
 export async function getZkvmsWithMetrics({ zkvmIds }: { zkvmIds: number[] }) {
@@ -254,26 +264,11 @@ export async function fetchMetricsSummary(
       `),
   ])
 
-  const currentRow =
-    Array.isArray(currentResult) && currentResult.length > 0
-      ? (currentResult[0] as Record<string, unknown>)
-      : {}
-  const prevRow =
-    Array.isArray(prevResult) && prevResult.length > 0
-      ? (prevResult[0] as Record<string, unknown>)
-      : null
-  const zkvmRow =
-    Array.isArray(zkvmResult) && zkvmResult.length > 0
-      ? (zkvmResult[0] as Record<string, unknown>)
-      : {}
-  const guestRow =
-    Array.isArray(guestResult) && guestResult.length > 0
-      ? (guestResult[0] as Record<string, unknown>)
-      : {}
-  const proverRow =
-    Array.isArray(proverCountResult) && proverCountResult.length > 0
-      ? (proverCountResult[0] as Record<string, unknown>)
-      : {}
+  const currentRow = getFirstRecord(currentResult) ?? {}
+  const prevRow = getFirstRecord(prevResult)
+  const zkvmRow = getFirstRecord(zkvmResult) ?? {}
+  const guestRow = getFirstRecord(guestResult) ?? {}
+  const proverRow = getFirstRecord(proverCountResult) ?? {}
 
   return {
     ...toMetricsSummaryDynamic(currentRow, prevRow),

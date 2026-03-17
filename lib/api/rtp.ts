@@ -67,7 +67,7 @@ export const getRtpCohortScores = cache(
         t.logo_url AS team_logo_url,
         z.name AS zkvm_name,
         gp.name AS guest_program_name,
-        true AS soundcalc_integration,
+        COALESCE(zsm.soundcalc_integration, false) AS soundcalc_integration,
         s.total_blocks,
         s.blocks_proven,
         s.sub_10s_proofs,
@@ -93,6 +93,7 @@ export const getRtpCohortScores = cache(
       INNER JOIN zkvm_versions zv ON cv.zkvm_version_id = zv.id
       INNER JOIN zkvms z ON zv.zkvm_id = z.id
       LEFT JOIN guest_programs gp ON c.guest_program_id = gp.id
+      LEFT JOIN zkvm_security_metrics zsm ON zsm.zkvm_id = z.id
       WHERE s.is_eligible = true
       ORDER BY s.performance_score DESC, s.liveness_score DESC
     `)
@@ -276,6 +277,9 @@ export const getRtpCohortPerformance = async (
         total_block_count AS (
           SELECT COUNT(*)::integer AS cnt FROM window_blocks
         ),
+        evaluated_count AS (
+          SELECT COUNT(*)::integer AS cnt FROM evaluated_clusters
+        ),
         cluster_stats AS (
           SELECT
             p.cluster_id,
@@ -298,12 +302,14 @@ export const getRtpCohortPerformance = async (
           GROUP BY p.cluster_id
         )
         SELECT
-          COALESCE(SUM(tbc.cnt), 0)::integer AS total_block_slots,
+          (tbc.cnt * ec.cnt)::integer AS total_block_slots,
           COALESCE(SUM(cs.sub_10s_proofs), 0)::integer AS sub_10s_count,
           COALESCE(SUM(cs.over_10s_proofs), 0)::integer AS stunned_count,
           COALESCE(SUM(cs.paralyzed_blocks), 0)::integer AS paralyzed_count
-        FROM cluster_stats cs
-        CROSS JOIN total_block_count tbc
+        FROM total_block_count tbc
+        CROSS JOIN evaluated_count ec
+        LEFT JOIN cluster_stats cs ON true
+        GROUP BY tbc.cnt, ec.cnt
       `)
 
       const row =

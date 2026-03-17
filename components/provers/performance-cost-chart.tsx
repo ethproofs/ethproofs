@@ -88,6 +88,7 @@ export function PerformanceCostChart() {
     const groups = new Map<string, ProverScatterPoint[]>()
     for (const point of data) {
       const key = point.persona.toLowerCase()
+      if (key.startsWith("1:100")) continue
       const existing = groups.get(key) ?? []
       existing.push(point)
       groups.set(key, existing)

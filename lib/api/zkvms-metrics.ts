@@ -45,7 +45,7 @@ export async function fetchZkvmSummary(): Promise<ZkvmSummaryData> {
         AND cv.is_active = true
     `),
     db.execute(sql`
-      SELECT COUNT(DISTINCT zv.zkvm_id)::integer AS rtp_eligible_count
+      SELECT COUNT(DISTINCT rcs.cluster_id)::integer AS rtp_eligible_count
       FROM rtp_cohort_snapshots rcs
       INNER JOIN clusters c ON rcs.cluster_id = c.id
       INNER JOIN cluster_versions cv ON cv.cluster_id = c.id AND cv.is_active = true

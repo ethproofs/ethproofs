@@ -115,13 +115,23 @@ function computeTrendDirection(
   return "stable"
 }
 
-function getLatestDominantShare(
+function getLatestDominant(
   rows: PivotedRow[],
   guestNames: string[]
-): number {
-  if (rows.length === 0 || guestNames.length === 0) return 0
+): { name: string; share: number } {
+  if (rows.length === 0 || guestNames.length === 0)
+    return { name: "", share: 0 }
   const lastRow = rows[rows.length - 1]
-  return (Number(lastRow[guestNames[0]]) || 0) * 100
+  let maxName = guestNames[0]
+  let maxVal = 0
+  for (const name of guestNames) {
+    const val = Number(lastRow[name]) || 0
+    if (val > maxVal) {
+      maxVal = val
+      maxName = name
+    }
+  }
+  return { name: maxName, share: maxVal * 100 }
 }
 
 interface GuestDiversityTrendChartProps {
@@ -134,9 +144,8 @@ export function GuestDiversityTrendChart({
   const { rows, guestNames } = useMemo(() => pivotData(data), [data])
   const [hiddenAreas, setHiddenAreas] = useState<Set<string>>(new Set())
 
-  const dominantGuest = guestNames[0] ?? ""
-  const latestDominantShare = useMemo(
-    () => getLatestDominantShare(rows, guestNames),
+  const { name: dominantGuest, share: latestDominantShare } = useMemo(
+    () => getLatestDominant(rows, guestNames),
     [rows, guestNames]
   )
   const trend = useMemo(
