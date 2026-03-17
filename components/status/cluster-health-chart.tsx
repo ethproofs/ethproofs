@@ -9,6 +9,8 @@ import {
   CardTitle,
 } from "@/components/ui/card"
 
+import { cn } from "@/lib/utils"
+
 import type { PerfectProverTypeGroup, ProverTypeGroup } from "@/lib/api/status"
 
 interface ClusterEntry {
@@ -119,7 +121,10 @@ export function ClusterHealthChart({
           <div className="rounded-lg bg-muted/50 px-3 py-2">
             <div className="text-xs text-muted-foreground">missing proofs</div>
             <div
-              className={`font-mono text-sm font-semibold ${totalMissing > 0 ? "text-destructive" : ""}`}
+              className={cn(
+                "font-mono text-sm font-semibold",
+                totalMissing > 0 && "text-destructive"
+              )}
             >
               {totalMissing}
             </div>
@@ -127,7 +132,10 @@ export function ClusterHealthChart({
           <div className="rounded-lg bg-muted/50 px-3 py-2">
             <div className="text-xs text-muted-foreground">with issues</div>
             <div
-              className={`font-mono text-sm font-semibold ${issueCount > 0 ? "text-destructive" : ""}`}
+              className={cn(
+                "font-mono text-sm font-semibold",
+                issueCount > 0 && "text-destructive"
+              )}
             >
               {issueCount}
             </div>
@@ -153,7 +161,10 @@ export function ClusterHealthChart({
                     </div>
                     <div className="ml-auto flex justify-center">
                       <span
-                        className={`inline-block size-2.5 rounded-full ${entry.isHealthy ? "bg-primary" : "bg-destructive"}`}
+                        className={cn(
+                          "inline-block size-2.5 rounded-full",
+                          entry.isHealthy ? "bg-primary" : "bg-destructive"
+                        )}
                       />
                     </div>
                   </div>

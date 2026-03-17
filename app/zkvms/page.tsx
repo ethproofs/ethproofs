@@ -3,7 +3,6 @@ import dynamicImport from "next/dynamic"
 
 import { PageHeader } from "@/components/layout/page-header"
 import { ChartCardSkeleton } from "@/components/metrics/chart-card-skeleton"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 import { ZkvmSummaryCards } from "@/components/zkvms/zkvm-summary-cards"
 import { ZkvmsTable } from "@/components/zkvms-table/zkvms-table"
 
