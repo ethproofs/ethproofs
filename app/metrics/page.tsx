@@ -40,7 +40,7 @@ const PersonaComparisonChart = dynamic(
 )
 
 export const metadata: Metadata = getMetadata({
-  title: "Metrics",
+  title: "metrics",
 })
 
 export default function MetricsPage() {
