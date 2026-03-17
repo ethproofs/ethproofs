@@ -147,7 +147,6 @@ export const fetchProofVolumeByTeam = cache(
         SELECT DISTINCT t.id AS team_id
         FROM teams t
         INNER JOIN clusters c ON c.team_id = t.id AND c.is_active = true
-        INNER JOIN cluster_versions cv ON cv.cluster_id = c.id
         INNER JOIN rtp_cohort_snapshots rcs ON rcs.cluster_id = c.id
         WHERE rcs.is_eligible = true
           AND rcs.snapshot_week = (SELECT max(snapshot_week) FROM rtp_cohort_snapshots)
@@ -262,7 +261,7 @@ export const fetchTeamsTableData = cache(
           count(CASE WHEN p.proving_time >= 10000 THEN 1 END)::int AS over_10s_proofs,
           COALESCE(
             sum(c.num_gpus::double precision * gpi.hourly_price * (p.proving_time::numeric / 3600000.0)::double precision)
-            / NULLIF(count(p.proof_id), 0)::double precision,
+            / NULLIF(count(CASE WHEN c.num_gpus IS NOT NULL AND gpi.hourly_price IS NOT NULL AND p.proving_time IS NOT NULL THEN p.proof_id END), 0)::double precision,
             0
           )::float AS avg_cost_per_proof
         FROM proofs p
@@ -275,7 +274,7 @@ export const fetchTeamsTableData = cache(
       rtp_teams AS (
         SELECT DISTINCT c.team_id
         FROM rtp_cohort_snapshots rcs
-        INNER JOIN clusters c ON rcs.cluster_id = c.id
+        INNER JOIN clusters c ON rcs.cluster_id = c.id AND c.is_active = true
         WHERE rcs.is_eligible = true
           AND rcs.snapshot_week = (SELECT max(snapshot_week) FROM rtp_cohort_snapshots)
       )

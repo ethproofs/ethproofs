@@ -136,5 +136,6 @@ BEGIN
 EXCEPTION
   WHEN OTHERS THEN
     RAISE LOG 'Error in snapshot_rtp_cohort: %', SQLERRM;
+    RAISE;
 END;
 $$;

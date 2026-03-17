@@ -43,6 +43,10 @@ const TAB_DISABLED_REASONS: Record<TeamTab, string> = {
 
 const TAB_ORDER: TeamTab[] = [TAB_ALL, TAB_ZKVM, TAB_GUEST, TAB_PROVER]
 
+function isTeamTab(value: string): value is TeamTab {
+  return TAB_ORDER.includes(value as TeamTab)
+}
+
 function filterTeamsByTab(teams: TeamTableRow[], tab: TeamTab): TeamTableRow[] {
   if (tab === TAB_ALL) return teams
   if (tab === TAB_ZKVM) return teams.filter((t) => t.zkvmCount > 0)
@@ -55,7 +59,7 @@ function countForTab(teams: TeamTableRow[], tab: TeamTab): number {
 }
 
 export function TeamsTabbedTable() {
-  const [activeTab, setActiveTab] = useState<string>(TAB_ALL)
+  const [activeTab, setActiveTab] = useState<TeamTab>(TAB_ALL)
   const [pagination, setPagination] =
     useState<PaginationState>(DEFAULT_PAGE_STATE)
 
@@ -85,7 +89,7 @@ export function TeamsTabbedTable() {
   )
 
   const filteredTeams = useMemo(
-    () => filterTeamsByTab(teams, activeTab as TeamTab),
+    () => filterTeamsByTab(teams, activeTab),
     [teams, activeTab]
   )
 
@@ -102,8 +106,10 @@ export function TeamsTabbedTable() {
       tabs={tabs}
       activeTab={activeTab}
       onTabChange={(v) => {
-        setActiveTab(v)
-        setPagination(DEFAULT_PAGE_STATE)
+        if (isTeamTab(v)) {
+          setActiveTab(v)
+          setPagination(DEFAULT_PAGE_STATE)
+        }
       }}
     >
       {TAB_ORDER.map((value) => (
