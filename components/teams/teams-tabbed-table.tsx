@@ -95,7 +95,7 @@ export function TeamsTabbedTable() {
 
   const HEADER_HEIGHT_PX = 50
   const ROW_HEIGHT_PX = 59
-  const minTableHeight = teams.length * ROW_HEIGHT_PX + HEADER_HEIGHT_PX
+  const minTableHeight = filteredTeams.length * ROW_HEIGHT_PX + HEADER_HEIGHT_PX
 
   if (isLoading) {
     return <Skeleton className="h-[32rem] w-full rounded-lg" />
