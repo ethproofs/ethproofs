@@ -37,7 +37,7 @@ export function DistributionMatrixChart() {
   })
 
   return (
-    <Card className="flex flex-col">
+    <Card className="flex h-full flex-col">
       <CardHeader className="space-y-1.5">
         <CardTitle className="text-lg">distribution matrix</CardTitle>
         <CardDescription>
@@ -116,17 +116,26 @@ export function DistributionMatrixChart() {
       </CardContent>
       <CardFooter className="flex-col items-start gap-y-4 border-t pt-6 text-xs text-muted-foreground">
         <div className="flex flex-wrap items-center gap-4 text-xs">
-          <div className="flex items-center gap-1.5">
+          <div className="flex items-center gap-1.5 whitespace-nowrap">
             <span className="size-2 rounded-full bg-chart-2" />
-            <span>zkVM maintainer</span>
+            <span>
+              <span className="sm:hidden">zkVM</span>
+              <span className="hidden sm:inline">zkVM maintainer</span>
+            </span>
           </div>
-          <div className="flex items-center gap-1.5">
+          <div className="flex items-center gap-1.5 whitespace-nowrap">
             <span className="size-2 rounded-full bg-chart-9" />
-            <span>guest maintainer</span>
+            <span>
+              <span className="sm:hidden">guest</span>
+              <span className="hidden sm:inline">guest maintainer</span>
+            </span>
           </div>
-          <div className="flex items-center gap-1.5">
+          <div className="flex items-center gap-1.5 whitespace-nowrap">
             <span className="size-2 rounded-full bg-chart-12" />
-            <span>prover operator</span>
+            <span>
+              <span className="sm:hidden">prover</span>
+              <span className="hidden sm:inline">prover operator</span>
+            </span>
           </div>
         </div>
         <div className="min-h-10">

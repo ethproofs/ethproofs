@@ -44,10 +44,7 @@ function EmptyCohortBanner() {
     <Card className="border-none bg-warning/10">
       <CardContent className="flex items-stretch gap-6 pt-6">
         <div className="flex flex-col items-center justify-center gap-2">
-          <Badge
-            variant="outline"
-            className="px-3 py-1 text-sm uppercase text-warning"
-          >
+          <Badge variant="outline" className="px-3 py-1 text-sm text-warning">
             <div className="mr-1.5 size-2 rounded-full bg-warning" />
             no cohort
           </Badge>

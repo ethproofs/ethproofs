@@ -21,6 +21,10 @@ export const SLOTS_PER_EPOCH = 32 // 2^5
 // Execution constants
 export const BLOCK_GAS_LIMIT = 45_000_000 // TODO:TEAM - fetch from execution block
 
+export const GAS_LIMIT_INCREASES = [
+  { date: "2025-07-21", from: 36_000_000, to: 45_000_000 },
+] as const
+
 // Prover cluster constants
 export const FALLBACK_TEAM_LOGO_SRC =
   "https://ibkqxhjnroghhtfyualc.supabase.co/storage/v1/object/public/public-assets/fallback-team-logo.svg"

@@ -37,7 +37,7 @@ interface Phase {
 const phases: Phase[] = [
   {
     id: "0.1",
-    label: "PHASE 0.1",
+    label: "phase 0.1",
     name: "performance sprint",
     status: "complete",
     description: "achieved real-time proving",
@@ -50,7 +50,7 @@ const phases: Phase[] = [
   },
   {
     id: "0.2",
-    label: "PHASE 0.2",
+    label: "phase 0.2",
     name: "security sprint",
     status: "current",
     description: "security milestones",
@@ -64,7 +64,7 @@ const phases: Phase[] = [
   },
   {
     id: "1",
-    label: "PHASE 1",
+    label: "phase 1",
     name: "delayed proving",
     status: "future",
     description: "proofs accepted with delay",
@@ -77,7 +77,7 @@ const phases: Phase[] = [
   },
   {
     id: "2",
-    label: "PHASE 2",
+    label: "phase 2",
     name: "mandatory proving",
     status: "future",
     description: "proofs required for validity",
@@ -90,7 +90,7 @@ const phases: Phase[] = [
   },
   {
     id: "3",
-    label: "PHASE 3",
+    label: "phase 3",
     name: "enshrined proofs",
     status: "future",
     description: "protocol-native proving",

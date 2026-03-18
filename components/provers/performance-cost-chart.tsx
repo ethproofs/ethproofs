@@ -231,7 +231,7 @@ export function PerformanceCostChart() {
 
       <CardFooter className="flex-col items-start gap-y-4 border-t pt-6 text-xs text-muted-foreground">
         <div className="flex flex-wrap items-center gap-4">
-          <div className="flex items-center gap-1.5">
+          <div className="flex items-center gap-1.5 whitespace-nowrap">
             <svg width="24" height="2">
               <line
                 x1="0"
@@ -245,7 +245,9 @@ export function PerformanceCostChart() {
             </svg>
             <span>{RTP_PERFORMANCE_SCORE_THRESHOLD}% RTP threshold</span>
           </div>
-          <span>bubble size = liveness score</span>
+          <span className="whitespace-nowrap">
+            bubble size = liveness score
+          </span>
         </div>
         <div className="min-h-10">
           <p className="text-xs text-muted-foreground">

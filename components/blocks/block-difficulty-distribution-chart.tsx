@@ -327,9 +327,9 @@ export function BlockDifficultyDistributionChart() {
         </div>
         <div className="min-h-14">
           <p className="text-xs text-muted-foreground">
-            <span className="font-medium text-placeholder">key insight:</span>{" "}
-            the diagonal pattern shows the &quot;difficulty frontier&quot; — as
-            gas increases, latency increases predictably. points above the
+            <span className="font-medium text-placeholder">Key insight:</span>{" "}
+            The diagonal pattern shows the &quot;difficulty frontier&quot; — as
+            gas increases, latency increases predictably. Points above the
             frontier are outliers worth investigating (complex txs,
             precompile-heavy, unusual state access patterns).
           </p>

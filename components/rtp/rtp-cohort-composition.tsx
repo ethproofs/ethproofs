@@ -168,9 +168,9 @@ export function RtpCohortComposition({ data }: RtpCohortCompositionProps) {
         <span>sorted by weeks eligible</span>
         <div className="min-h-14">
           <p className="text-xs text-muted-foreground">
-            <span className="font-medium text-placeholder">key insight:</span>{" "}
-            each segment is one weekly snapshot. a filled segment means the
-            prover met eligibility thresholds that week. gaps reveal weeks where
+            <span className="font-medium text-placeholder">Key insight:</span>{" "}
+            Each segment is one weekly snapshot. a filled segment means the
+            prover met eligibility thresholds that week. Gaps reveal weeks where
             performance or liveness dropped below requirements.
           </p>
         </div>

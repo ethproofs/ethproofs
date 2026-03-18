@@ -1,6 +1,6 @@
 "use client"
 
-import { useMemo, useState } from "react"
+import { useMemo } from "react"
 import {
   Bar,
   BarChart,
@@ -19,13 +19,11 @@ import {
   CardHeader,
   CardTitle,
 } from "@/components/ui/card"
-import { Tabs, TabsList, TabsTrigger } from "@/components/ui/tabs"
 
 import type { ProofVolumeData } from "@/lib/api/teams-metrics"
 import { formatNumber } from "@/lib/number"
 
-const DAY_OPTIONS = [7, 30] as const
-type DayOption = (typeof DAY_OPTIONS)[number]
+const DAYS = 7
 
 interface ChartEntry {
   teamName: string
@@ -75,12 +73,10 @@ function VolumeTooltip({ active, payload }: VolumeTooltipProps) {
 }
 
 export function ProofVolumeChart() {
-  const [days, setDays] = useState<DayOption>(7)
-
   const { data, isLoading } = useQuery<ProofVolumeData>({
-    queryKey: ["teams-volume", days],
+    queryKey: ["teams-volume", DAYS],
     queryFn: async () => {
-      const response = await fetch(`/api/teams/volume?days=${days}`)
+      const response = await fetch(`/api/teams/volume?days=${DAYS}`)
       return response.json()
     },
   })
@@ -98,30 +94,12 @@ export function ProofVolumeChart() {
   }, [data])
 
   return (
-    <Card className="flex flex-col">
-      <CardHeader className="flex-row flex-wrap items-start justify-between gap-2 space-y-0">
-        <div className="space-y-1.5">
-          <CardTitle className="text-lg">proof volume by team</CardTitle>
-          <CardDescription>
-            who&apos;s generating the most proofs
-          </CardDescription>
-        </div>
-        <Tabs
-          value={String(days)}
-          onValueChange={(v) => setDays(Number(v) as DayOption)}
-        >
-          <TabsList className="border-none">
-            {DAY_OPTIONS.map((d) => (
-              <TabsTrigger
-                key={d}
-                value={String(d)}
-                className="cursor-default border-none px-3 py-1 text-xs"
-              >
-                {d}d
-              </TabsTrigger>
-            ))}
-          </TabsList>
-        </Tabs>
+    <Card className="flex h-full flex-col">
+      <CardHeader className="space-y-1.5">
+        <CardTitle className="text-lg">proof volume by team</CardTitle>
+        <CardDescription>
+          who&apos;s generating the most proofs — last {DAYS} days
+        </CardDescription>
       </CardHeader>
       <CardContent className="flex-1">
         {data && (
@@ -231,17 +209,17 @@ export function ProofVolumeChart() {
         )}
       </CardContent>
       <CardFooter className="flex-col items-start gap-y-4 border-t pt-6 text-xs text-muted-foreground">
-        <div className="flex w-full items-center gap-4 text-xs text-muted-foreground">
-          <div className="flex items-center gap-1">
+        <div className="flex w-full flex-wrap items-center gap-4 text-xs text-muted-foreground">
+          <div className="flex items-center gap-1 whitespace-nowrap">
             <span className="inline-block size-2 rounded-full bg-chart-12" />
             total proofs
           </div>
-          <div className="flex items-center gap-1">
+          <div className="flex items-center gap-1 whitespace-nowrap">
             <span className="inline-block size-2 rounded-full bg-chart-5" />
             RTP proofs - has RTP prover
           </div>
-          <div className="ml-auto text-muted-foreground">
-            vs. previous {days}d
+          <div className="whitespace-nowrap text-muted-foreground">
+            vs. previous {DAYS}d
           </div>
         </div>
         <div className="min-h-10">

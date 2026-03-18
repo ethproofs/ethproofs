@@ -5,6 +5,7 @@ import {
   CartesianGrid,
   ComposedChart,
   Line,
+  ReferenceArea,
   ReferenceLine,
   ResponsiveContainer,
   Tooltip,
@@ -27,7 +28,7 @@ import {
 
 import { cn } from "@/lib/utils"
 
-import { CHART_RANGES } from "@/lib/constants"
+import { CHART_RANGES, GAS_LIMIT_INCREASES } from "@/lib/constants"
 
 import { formatUsd } from "@/lib/number"
 import { prettyMs } from "@/lib/time"
@@ -88,6 +89,20 @@ export function ProvingEfficiencyChart() {
 
   const showLatency = metricView === "latency" || metricView === "both"
   const showCost = metricView === "cost" || metricView === "both"
+
+  const visibleGasLimitIncreases = useMemo(() => {
+    if (chartData.length === 0) return []
+    return GAS_LIMIT_INCREASES.flatMap((event) => {
+      const eventTime = new Date(event.date).getTime()
+      const matchingPoint = chartData.find(
+        (point) => new Date(point.date).getTime() >= eventTime
+      )
+      if (!matchingPoint) return []
+      return [{ ...event, dataDate: matchingPoint.date }]
+    })
+  }, [chartData])
+
+  const referenceYAxisId = showLatency ? "latency" : "cost"
 
   return (
     <Card className="flex h-full min-h-80 flex-col">
@@ -204,6 +219,24 @@ export function ProvingEfficiencyChart() {
                   return [String(value), name]
                 }}
               />
+              {visibleGasLimitIncreases.map((event) => (
+                <ReferenceArea
+                  key={event.date}
+                  yAxisId={referenceYAxisId}
+                  x1={event.dataDate}
+                  fill="hsl(var(--chart-11))"
+                  fillOpacity={0.08}
+                  stroke="hsl(var(--chart-11))"
+                  strokeOpacity={0.3}
+                  strokeDasharray="3 3"
+                  label={{
+                    value: `gas limit: ${event.from / 1_000_000}M → ${event.to / 1_000_000}M`,
+                    position: "insideTopLeft",
+                    fontSize: 10,
+                    fill: "hsl(var(--chart-11))",
+                  }}
+                />
+              ))}
               {showLatency && (
                 <ReferenceLine
                   yAxisId="latency"
@@ -249,19 +282,23 @@ export function ProvingEfficiencyChart() {
       </CardContent>
 
       <CardFooter className="flex-wrap justify-between gap-x-4 gap-y-4 border-t pt-6 text-xs text-muted-foreground">
-        <div className="flex items-center gap-4">
+        <div className="flex flex-wrap items-center gap-4">
           {showLatency && (
-            <div className="flex items-center gap-1.5">
+            <div className="flex items-center gap-1.5 whitespace-nowrap">
               <div className="size-2 rounded-full bg-[hsl(var(--chart-3))]" />
               <span>latency</span>
             </div>
           )}
           {showCost && (
-            <div className="flex items-center gap-1.5">
+            <div className="flex items-center gap-1.5 whitespace-nowrap">
               <div className="size-2 rounded-full bg-[hsl(var(--chart-6))]" />
               <span>cost</span>
             </div>
           )}
+          <div className="flex items-center gap-1.5 whitespace-nowrap">
+            <div className="size-2 rounded-full bg-[hsl(var(--chart-11))]" />
+            <span>gas limit increase</span>
+          </div>
         </div>
         <div className="min-h-14">
           <p className="text-xs text-muted-foreground">

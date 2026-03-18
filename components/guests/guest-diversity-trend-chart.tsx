@@ -103,18 +103,19 @@ function computeTrendDirection(
 ): "diversifying" | "concentrating" | "stable" {
   if (rows.length < 4 || guestNames.length === 0) return "stable"
 
+  const lastRow = rows[rows.length - 1]
+  const currentMax = getMaxShare(lastRow, guestNames) * 100
+
   const recent = rows.slice(-4)
   const earlier = rows.slice(0, 4)
   const recentAvg =
     recent.reduce((s, r) => s + getMaxShare(r, guestNames), 0) / recent.length
   const earlierAvg =
     earlier.reduce((s, r) => s + getMaxShare(r, guestNames), 0) / earlier.length
-
-  const currentMax = recentAvg * 100
   const diff = (recentAvg - earlierAvg) * 100
 
   if (currentMax >= CRITICAL_THRESHOLD) return "concentrating"
-  if (currentMax >= WARNING_THRESHOLD && diff >= 0) return "concentrating"
+  if (currentMax >= WARNING_THRESHOLD) return "stable"
   if (diff < -2) return "diversifying"
   if (diff > 2) return "concentrating"
   return "stable"

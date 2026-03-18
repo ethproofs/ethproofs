@@ -7,8 +7,9 @@
 - Use arrow functions for callbacks.
 - Use object method shorthand syntax in objects and interfaces.
 - Prefer constants over magic numbers or strings.
-- Default to lowercase casing for UI text strings.
+- Default to lowercase casing for UI text strings; use semantic casing.
 - Prefer one component per file.
+- Use .utils. files for utility functions.
 
 ## Drizzle migrations
 

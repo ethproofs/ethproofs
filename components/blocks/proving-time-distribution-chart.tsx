@@ -37,9 +37,7 @@ interface ChartDataPoint {
   blockNumber: number
   label: string
   queue: number
-  fetch: number
   prove: number
-  verify: number
   total: number
   isStunner: boolean
 }
@@ -62,7 +60,6 @@ function CustomTooltip({ active, payload }: CustomTooltipProps) {
       <div className="space-y-0.5 text-muted-foreground">
         <p>queue: {prettyMs(point.queue)}</p>
         <p>prove: {prettyMs(point.prove)}</p>
-        <p>verify: {prettyMs(point.verify)}</p>
         <p className="font-medium text-foreground">
           total: {prettyMs(point.total)}
         </p>
@@ -87,9 +84,7 @@ export function ProvingTimeDistributionChart() {
       blockNumber: b.blockNumber,
       label: formatNumber(b.blockNumber),
       queue: b.queueTime,
-      fetch: b.fetchTime,
       prove: b.proveTime,
-      verify: b.verifyTime,
       total: b.totalTime,
       isStunner: b.isStunner,
     }))

@@ -253,22 +253,24 @@ export function RtpCohortConsistency() {
       </CardContent>
 
       <CardFooter className="flex-col items-start gap-y-4 border-t pt-6 text-xs text-muted-foreground">
-        <div className="flex w-full items-center justify-between">
-          <div className="flex items-center gap-4">
-            <div className="flex items-center gap-1.5">
+        <div className="flex w-full flex-wrap items-center justify-between gap-4">
+          <div className="flex flex-wrap items-center gap-4">
+            <div className="flex items-center gap-1.5 whitespace-nowrap">
               <div className="size-2 rounded-lg bg-success" />
               <span>included in RTP</span>
             </div>
-            <div className="flex items-center gap-1.5">
+            <div className="flex items-center gap-1.5 whitespace-nowrap">
               <div className="size-2 rounded-lg bg-muted" />
               <span>not included</span>
             </div>
-            <div className="flex items-center gap-1.5">
+            <div className="flex items-center gap-1.5 whitespace-nowrap">
               <div className="size-2 rounded-lg bg-muted/50" />
               <span>no data</span>
             </div>
           </div>
-          <span>sorted by consistency (most → least)</span>
+          <span className="whitespace-nowrap">
+            sorted by consistency (most → least)
+          </span>
         </div>
         <div className="min-h-10">
           <p className="text-xs text-muted-foreground">

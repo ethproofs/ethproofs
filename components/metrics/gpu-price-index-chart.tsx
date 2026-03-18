@@ -264,7 +264,7 @@ export function GpuPriceIndexChart() {
             </div>
           )}
         </div>
-        {lastUpdated && <span>Last updated: {lastUpdated}</span>}
+        {lastUpdated && <span>last updated: {lastUpdated}</span>}
         <div className="min-h-14">
           <p className="text-xs text-muted-foreground">
             <span className="font-medium text-placeholder">Key insight:</span>{" "}

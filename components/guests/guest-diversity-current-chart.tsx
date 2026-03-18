@@ -111,19 +111,20 @@ export function GuestDiversityCurrentChart({
         <CardDescription>share of proofs by guest program (7d)</CardDescription>
         {dominant && isDominantCritical && (
           <div className="mt-2 rounded-md border border-destructive/30 bg-destructive/10 px-3 py-2 text-sm text-destructive">
-            CRITICAL: {dominant.name} represents {dominant.share.toFixed(0)}% of
-            all proofs
+            critical &mdash; {dominant.name} represents{" "}
+            {dominant.share.toFixed(0)}% of all proofs
           </div>
         )}
         {dominant && isDominantWarning && (
           <div className="mt-2 rounded-md border border-warning/30 bg-warning/10 px-3 py-2 text-sm text-warning">
-            WARNING: {dominant.name} represents {dominant.share.toFixed(0)}% of
-            all proofs
+            warning &mdash; {dominant.name} represents{" "}
+            {dominant.share.toFixed(0)}% of all proofs
           </div>
         )}
         {dominant && isDominantHealthy && (
           <div className="mt-2 rounded-md border border-success/30 bg-success/10 px-3 py-2 text-sm text-success">
-            HEALTHY: no single guest exceeds {HEALTHY_THRESHOLD}% of all proofs
+            healthy &mdash; no single guest exceeds {HEALTHY_THRESHOLD}% of all
+            proofs
           </div>
         )}
       </CardHeader>

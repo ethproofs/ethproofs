@@ -73,10 +73,7 @@ export function GuestSummaryCard({ data }: GuestSummaryCardsProps) {
           >
             <Badge
               variant="outline"
-              className={cn(
-                "px-3 py-1 text-sm uppercase",
-                config.contentClassName
-              )}
+              className={cn("px-3 py-1 text-sm", config.contentClassName)}
             >
               <div
                 className={cn(
