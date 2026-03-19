@@ -36,6 +36,8 @@ const CHART_COLORS = [
   "hsl(var(--chart-4))",
   "hsl(var(--chart-15))",
   "hsl(var(--chart-6))",
+  "hsl(var(--chart-11))",
+  "hsl(var(--chart-8))",
 ] as const
 
 const RTP_THRESHOLD_SECONDS = RTP_PERFORMANCE_TIME_THRESHOLD_MS / 1000
