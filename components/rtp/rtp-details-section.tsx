@@ -6,6 +6,7 @@ import {
   AccordionItem,
   AccordionTrigger,
 } from "@/components/ui/accordion"
+import { Card } from "@/components/ui/card"
 
 import { RoadmapDetails, RoadmapDetailsContent } from "./roadmap-details"
 import { RtpCohortRules, RtpCohortRulesContent } from "./rtp-cohort-rules"
@@ -44,11 +45,22 @@ function MobileRtpDetails() {
 
 function DesktopRtpDetails() {
   return (
-    <div className="hidden gap-4 2xl:grid 2xl:grid-cols-3">
-      <RoadmapDetails />
-      <RtpCohortRules />
-      <RtpCohortScores />
-    </div>
+    <Card className="hidden bg-muted/20 2xl:block">
+      <Accordion type="single" collapsible className="px-6">
+        <AccordionItem value="rtp-details" className="border-b-0">
+          <AccordionTrigger className="text-lg">
+            RTP cohort requirements
+          </AccordionTrigger>
+          <AccordionContent>
+            <div className="grid grid-cols-3 gap-4">
+              <RoadmapDetails />
+              <RtpCohortRules />
+              <RtpCohortScores />
+            </div>
+          </AccordionContent>
+        </AccordionItem>
+      </Accordion>
+    </Card>
   )
 }
 
