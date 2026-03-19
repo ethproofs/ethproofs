@@ -44,7 +44,10 @@ function EmptyCohortBanner() {
     <Card className="border-none bg-warning/10">
       <CardContent className="flex items-stretch gap-6 pt-6">
         <div className="flex flex-col items-center justify-center gap-2">
-          <Badge variant="outline" className="px-3 py-1 text-sm text-warning">
+          <Badge
+            variant="outline"
+            className="whitespace-nowrap px-3 py-1 text-sm text-warning"
+          >
             <div className="mr-1.5 size-2 rounded-full bg-warning" />
             no cohort
           </Badge>
@@ -55,11 +58,17 @@ function EmptyCohortBanner() {
         <div className="w-px self-stretch bg-border" />
         <div className="flex flex-col justify-center gap-1">
           <span className="text-sm font-medium">
-            no provers are eligible for the RTP cohort this week
+            <span className="sm:hidden">no provers eligible</span>
+            <span className="hidden sm:inline">
+              no provers are eligible for the RTP cohort this week
+            </span>
           </span>
           <span className="text-xs text-muted-foreground">
-            provers must meet all requirements and hit score targets to be
-            included in the cohort
+            <span className="sm:hidden">provers must hit score targets</span>
+            <span className="hidden sm:inline">
+              provers must meet all requirements and hit score targets to be
+              included in the cohort
+            </span>
           </span>
         </div>
       </CardContent>
