@@ -13,15 +13,16 @@ export const metadata: Metadata = getMetadata({
 export default async function CspBenchmarksPage() {
   const { benchmarks, failedCount } = await fetchAllCspBenchmarks()
 
-  const sortedBenchmarks = benchmarks
+  const latestBenchmark = benchmarks
     .filter((b) => b.data.length !== 0)
     .sort((a, b) => {
       const dateA = new Date(a.updatedAt || 0).getTime()
       const dateB = new Date(b.updatedAt || 0).getTime()
       return dateB - dateA
-    })
+    })[0]
 
-  const lastUpdated = sortedBenchmarks[0]?.updatedAt ?? null
+  const lastUpdated = latestBenchmark?.updatedAt ?? null
+  const latestBenchmarks = latestBenchmark ? [latestBenchmark] : []
 
   return (
     <div className="mx-auto mt-2 flex max-w-screen-xl flex-1 flex-col items-center gap-8 [&>section]:w-full">
@@ -32,7 +33,7 @@ export default async function CspBenchmarksPage() {
         </p>
       </section>
       <section>
-        <Selector benchmarks={sortedBenchmarks} />
+        <Selector benchmarks={latestBenchmarks} />
       </section>
       <section>
         <BenchmarkContext lastUpdated={lastUpdated} failedCount={failedCount} />
