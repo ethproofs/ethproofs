@@ -440,6 +440,8 @@ export async function updateCluster(_prevState: unknown, formData: FormData) {
       await updateClusterMetadata(id, metadataUpdate)
     }
 
+    let newVersionId: number | null = null
+
     // Create new version if version fields changed
     if (versionChanged) {
       // Validate zkvm_version_id if it changed
@@ -457,10 +459,11 @@ export async function updateCluster(_prevState: unknown, formData: FormData) {
         }
       }
 
-      await createClusterVersion(id, {
+      const newVersion = await createClusterVersion(id, {
         zkvm_version_id: zkvm_version_id ?? originalZkvmVersionId,
         vk_path: vk_path ?? originalVkPath,
       })
+      newVersionId = newVersion?.id ?? null
     }
 
     revalidatePath(`/teams/${teamSlug}/dashboard`)
@@ -471,6 +474,7 @@ export async function updateCluster(_prevState: unknown, formData: FormData) {
     return {
       success: true,
       clusterId: id,
+      versionId: newVersionId,
     }
   } catch (error) {
     console.error("Error updating cluster:", error)

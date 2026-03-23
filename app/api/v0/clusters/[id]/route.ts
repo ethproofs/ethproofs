@@ -12,8 +12,12 @@ import { getZkvmVersion } from "@/lib/api/zkvm-versions"
 import { withAuth } from "@/lib/middleware/with-auth"
 import { updateClusterApiSchema } from "@/lib/zod/schemas/cluster"
 
-export const PATCH = withAuth<{ id: string }>(
-  async ({ request, user }, { id }) => {
+export const PATCH = withAuth(
+  async (
+    { request, user },
+    { params }: { params: Promise<{ id: string }> }
+  ) => {
+    const { id } = await params
     const clusterIndex = parseInt(id, 10)
     if (isNaN(clusterIndex)) {
       return new Response("Invalid cluster ID", { status: 400 })

@@ -305,10 +305,7 @@ export const createClusterVersion = async (
     vk_path?: string
   }
 ) => {
-  let newVersion
-
-  await db.transaction(async (tx) => {
-    // Get the next version index for this cluster
+  const newVersion = await db.transaction(async (tx) => {
     const lastVersion = await tx.query.clusterVersions.findFirst({
       where: (cv, { eq }) => eq(cv.cluster_id, clusterId),
       columns: { index: true },
@@ -316,13 +313,11 @@ export const createClusterVersion = async (
     })
     const nextIndex = (lastVersion?.index ?? 0) + 1
 
-    // Deactivate all existing versions for this cluster
     await tx
       .update(clusterVersions)
       .set({ is_active: false })
       .where(eq(clusterVersions.cluster_id, clusterId))
 
-    // Create new version
     const [createdVersion] = await tx
       .insert(clusterVersions)
       .values({
@@ -334,10 +329,9 @@ export const createClusterVersion = async (
       })
       .returning()
 
-    newVersion = createdVersion
+    return createdVersion
   })
 
-  // Invalidate caches
   revalidateTag(TAGS.CLUSTERS)
   revalidateTag(`cluster-${clusterId}`)
 

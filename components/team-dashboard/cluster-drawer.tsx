@@ -161,12 +161,9 @@ export function ClusterDrawer({
       // If there's a file to upload
       const file = fileInputRef.current?.files?.[0]
       if (file && "clusterId" in result && result.clusterId) {
-        // Determine version ID
         const versionId =
-          mode === "create"
-            ? "versionId" in result
-              ? result.versionId
-              : null
+          "versionId" in result && result.versionId
+            ? result.versionId
             : activeVersion?.id
 
         if (versionId) {
