@@ -936,7 +936,7 @@ export async function updateZkvm(_prevState: unknown, formData: FormData) {
       }
     }
 
-    if (zkvm.approved) {
+    if (zkvm.is_approved) {
       const pendingUpdates: ZkvmPendingUpdates = {}
 
       if (validatedFields.data.name !== zkvm.name) {

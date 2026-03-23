@@ -57,11 +57,11 @@ export async function GET(request: NextRequest) {
 
         if (user) {
           const [team] = await db
-            .select({ approved: teams.approved })
+            .select({ is_approved: teams.is_approved })
             .from(teams)
             .where(eq(teams.id, user.id))
 
-          if (!team?.approved) {
+          if (!team?.is_approved) {
             await supabase.auth.signOut()
             return NextResponse.redirect(new URL("/sign-in", request.url))
           }

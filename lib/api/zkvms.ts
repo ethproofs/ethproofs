@@ -16,7 +16,7 @@ interface GetZkvmsOptions {
 export const getZkvms = cache(
   async ({ limit, includeUnapproved = false }: GetZkvmsOptions = {}) => {
     const zkVmsList = await db.query.zkvms.findMany({
-      where: includeUnapproved ? undefined : eq(zkvms.approved, true),
+      where: includeUnapproved ? undefined : eq(zkvms.is_approved, true),
       with: {
         versions: {
           orderBy: desc(zkvmVersions.id),
@@ -56,7 +56,7 @@ export async function createZkvm(data: CreateZkvmData) {
       is_open_source: data.is_open_source ?? false,
       is_dual_licensed: data.is_dual_licensed ?? false,
       is_proving_mainnet: data.is_proving_mainnet ?? false,
-      approved: false,
+      is_approved: false,
       update_status: "pending",
     })
     .returning()
@@ -137,7 +137,7 @@ export async function approveZkvm(id: number) {
   const [zkvm] = await db
     .update(zkvms)
     .set({
-      approved: true,
+      is_approved: true,
       pending_updates: null,
       update_status: null,
       updated_at: new Date().toISOString(),
@@ -197,7 +197,7 @@ export async function getZkvmsByTeamId(
   const zkVmsList = await db.query.zkvms.findMany({
     where: includeUnapproved
       ? eq(zkvms.team_id, teamId)
-      : and(eq(zkvms.team_id, teamId), eq(zkvms.approved, true)),
+      : and(eq(zkvms.team_id, teamId), eq(zkvms.is_approved, true)),
     with: {
       versions: {
         orderBy: desc(zkvmVersions.id),

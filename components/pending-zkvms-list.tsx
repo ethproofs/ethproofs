@@ -43,7 +43,7 @@ function PendingZkvmItem({ zkvm }: { zkvm: PendingZkvm }) {
     errors: {},
   })
 
-  const isEditRequest = zkvm.approved && zkvm.pending_updates !== null
+  const isEditRequest = zkvm.is_approved && zkvm.pending_updates !== null
   const pendingUpdates = isZkvmPendingUpdates(zkvm.pending_updates)
     ? zkvm.pending_updates
     : null

@@ -1,6 +1,6 @@
 {
-  "id": "856a95af-69e5-44b7-941f-f5eaaf30e5ee",
-  "prevId": "069849e1-5e87-442c-ac79-4b1d4d85f597",
+  "id": "43805457-7f14-47d5-bf69-6809f8187d1e",
+  "prevId": "41bf7007-1173-45c9-a8c0-b9ee0bae1361",
   "version": "7",
   "dialect": "postgresql",
   "tables": {
@@ -418,6 +418,13 @@
           "primaryKey": false,
           "notNull": true,
           "default": "now()"
+        },
+        "is_approved": {
+          "name": "is_approved",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": true
         }
       },
       "indexes": {},
@@ -1345,13 +1352,6 @@
           "notNull": true,
           "default": false
         },
-        "approved": {
-          "name": "approved",
-          "type": "boolean",
-          "primaryKey": false,
-          "notNull": true,
-          "default": false
-        },
         "created_at": {
           "name": "created_at",
           "type": "timestamp with time zone",
@@ -1377,6 +1377,13 @@
           "type": "text",
           "primaryKey": false,
           "notNull": false
+        },
+        "is_approved": {
+          "name": "is_approved",
+          "type": "boolean",
+          "primaryKey": false,
+          "notNull": true,
+          "default": false
         }
       },
       "indexes": {},

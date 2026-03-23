@@ -159,6 +159,7 @@ export type Database = {
           id: string
           index: number | null
           is_active: boolean
+          is_approved: boolean
           is_open_source: boolean
           name: string
           num_gpus: number
@@ -172,6 +173,7 @@ export type Database = {
           id?: string
           index?: number | null
           is_active?: boolean
+          is_approved?: boolean
           is_open_source?: boolean
           name: string
           num_gpus?: number
@@ -185,6 +187,7 @@ export type Database = {
           id?: string
           index?: number | null
           is_active?: boolean
+          is_approved?: boolean
           is_open_source?: boolean
           name?: string
           num_gpus?: number
@@ -448,7 +451,7 @@ export type Database = {
       }
       teams: {
         Row: {
-          approved: boolean
+          is_approved: boolean
           chat_id: string | null
           created_at: string
           github_org: string | null
@@ -461,7 +464,7 @@ export type Database = {
           website_url: string | null
         }
         Insert: {
-          approved?: boolean
+          is_approved?: boolean
           chat_id?: string | null
           created_at?: string
           github_org?: string | null
@@ -474,7 +477,7 @@ export type Database = {
           website_url?: string | null
         }
         Update: {
-          approved?: boolean
+          is_approved?: boolean
           chat_id?: string | null
           created_at?: string
           github_org?: string | null

@@ -28,7 +28,7 @@ export default async function AdminPage() {
   const pendingTeams = await db
     .select()
     .from(teams)
-    .where(eq(teams.approved, false))
+    .where(eq(teams.is_approved, false))
   const pendingZkvms = await db.query.zkvms.findMany({
     where: eq(zkvms.update_status, "pending"),
     with: {

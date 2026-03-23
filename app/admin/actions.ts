@@ -102,7 +102,7 @@ export async function login(_prevState: unknown, formData: FormData) {
       }
     }
 
-    if (!teamData[0].approved) {
+    if (!teamData[0].is_approved) {
       // Sign out the user since they're not approved yet
       await supabase.auth.signOut()
 
@@ -215,7 +215,7 @@ export async function resetPassword(_prevState: unknown, formData: FormData) {
       .where(eq(teams.id, data.user.id))
 
     if (teamData.length > 0 && teamData[0].slug) {
-      if (!teamData[0].approved) {
+      if (!teamData[0].is_approved) {
         await supabase.auth.signOut()
         redirect("/sign-in")
       }
@@ -343,7 +343,7 @@ export async function createUser(_prevState: unknown, formData: FormData) {
         github_org,
         twitter_handle,
         logo_url: logoUrl,
-        approved: true,
+        is_approved: true,
       })
       .where(eq(teams.id, data.user.id))
 
@@ -425,7 +425,10 @@ export async function approveTeam(_prevState: unknown, formData: FormData) {
       }
     }
 
-    await db.update(teams).set({ approved: true }).where(eq(teams.id, teamId))
+    await db
+      .update(teams)
+      .set({ is_approved: true })
+      .where(eq(teams.id, teamId))
 
     const apikey = nanoid(24)
     const hashedKey = await hashToken(apikey)
@@ -650,7 +653,7 @@ export async function approveZkvm(_prevState: unknown, formData: FormData) {
       }
     }
 
-    if (zkvm.approved && zkvm.pending_updates) {
+    if (zkvm.is_approved && zkvm.pending_updates) {
       if (!isZkvmPendingUpdates(zkvm.pending_updates)) {
         return {
           errors: {

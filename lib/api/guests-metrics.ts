@@ -16,7 +16,7 @@ export async function fetchGuestSummary(): Promise<GuestSummaryData> {
       INNER JOIN clusters c ON cv.cluster_id = c.id
       INNER JOIN guest_programs gp ON c.guest_program_id = gp.id
       WHERE p.proof_status = 'proved'
-        AND c.is_active = true
+        AND c.is_active = true AND c.is_approved = true
         AND cv.is_active = true
         AND b.timestamp >= NOW() - interval '7 days'
       GROUP BY gp.id, gp.name
@@ -34,7 +34,7 @@ export async function fetchGuestSummary(): Promise<GuestSummaryData> {
         ) AS previous_count
       FROM guest_programs gp
       INNER JOIN clusters c ON c.guest_program_id = gp.id
-      WHERE c.is_active = true
+      WHERE c.is_active = true AND c.is_approved = true
     `),
   ])
 

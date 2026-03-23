@@ -30,7 +30,7 @@ export async function fetchProverSummary(): Promise<ProverSummaryData> {
         SELECT c.id, c.team_id, cv.id AS cv_id
         FROM clusters c
         INNER JOIN cluster_versions cv ON cv.cluster_id = c.id AND cv.is_active = true
-        WHERE c.is_active = true
+        WHERE c.is_active = true AND c.is_approved = true
       ),
       recent_proofs AS (
         SELECT p.cluster_version_id, p.proof_status, p.proving_time
@@ -96,7 +96,7 @@ export async function fetchProverScatterData(): Promise<ProverScatterPoint[]> {
       INNER JOIN clusters c ON s.cluster_id = c.id
       INNER JOIN teams t ON c.team_id = t.id
       INNER JOIN prover_types pt ON c.prover_type_id = pt.id
-      WHERE c.is_active = true
+      WHERE c.is_active = true AND c.is_approved = true
     )
     SELECT * FROM cluster_data
     WHERE proof_count > 0
@@ -200,7 +200,7 @@ export async function fetchRtpCohortConsistency(
           FROM clusters c
           INNER JOIN teams t ON c.team_id = t.id
           INNER JOIN prover_types pt ON c.prover_type_id = pt.id
-          WHERE c.is_active = true
+          WHERE c.is_active = true AND c.is_approved = true
             AND pt.gpu_configuration = 'multi-gpu'
         ),
         cluster_tenure AS (

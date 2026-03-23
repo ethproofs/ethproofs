@@ -151,6 +151,7 @@ export const clusters = pgTable(
     is_open_source: boolean().notNull().default(false),
     num_gpus: integer("num_gpus").notNull().default(1),
     is_active: boolean().notNull().default(false),
+    is_approved: boolean("is_approved").notNull().default(true),
     software_link: text(),
     created_at: timestamp("created_at", {
       withTimezone: true,
@@ -229,7 +230,7 @@ export const teams = pgTable(
     twitter_handle: text("twitter_handle"),
     website_url: text("website_url"),
     storage_quota_bytes: bigint("storage_quota_bytes", { mode: "number" }),
-    approved: boolean("approved").notNull().default(false),
+    is_approved: boolean("is_approved").notNull().default(false),
     created_at: timestamp("created_at", {
       withTimezone: true,
       mode: "string",
@@ -262,7 +263,7 @@ export const zkvms = pgTable("zkvms", {
   is_dual_licensed: boolean().notNull().default(false),
   is_open_source: boolean().notNull().default(false),
   is_proving_mainnet: boolean().notNull().default(false),
-  approved: boolean().notNull().default(false),
+  is_approved: boolean("is_approved").notNull().default(false),
   pending_updates: jsonb("pending_updates"),
   update_status: text("update_status"),
   created_at: timestamp("created_at", {

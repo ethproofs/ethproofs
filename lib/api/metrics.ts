@@ -247,12 +247,12 @@ export async function fetchMetricsSummary(
         FROM cluster_versions cv
         INNER JOIN clusters c ON cv.cluster_id = c.id
         INNER JOIN zkvm_versions zv ON cv.zkvm_version_id = zv.id
-        WHERE c.is_active = true AND cv.is_active = true
+        WHERE c.is_active = true AND c.is_approved = true AND cv.is_active = true
       `),
     db.execute(sql`
         SELECT COUNT(DISTINCT c.guest_program_id)::integer AS cnt
         FROM clusters c
-        WHERE c.is_active = true AND c.guest_program_id IS NOT NULL
+        WHERE c.is_active = true AND c.is_approved = true AND c.guest_program_id IS NOT NULL
       `),
     db.execute(sql`
         SELECT
@@ -260,7 +260,7 @@ export async function fetchMetricsSummary(
           COUNT(*) FILTER (WHERE pt.gpu_configuration = 'single-gpu')::integer AS single_gpu_count
         FROM clusters c
         INNER JOIN prover_types pt ON c.prover_type_id = pt.id
-        WHERE c.is_active = true
+        WHERE c.is_active = true AND c.is_approved = true
       `),
   ])
 
@@ -410,7 +410,7 @@ export async function fetchPersonaComparison(
     INNER JOIN proofs p ON p.cluster_id = c.id AND p.proof_status = 'proved'
     INNER JOIN blocks b ON p.block_number = b.block_number AND b.timestamp >= NOW() - make_interval(days => ${safeDays})
     LEFT JOIN gpu_price_index gpi ON p.gpu_price_index_id = gpi.id
-    WHERE c.is_active = true
+    WHERE c.is_active = true AND c.is_approved = true
     GROUP BY pt.id, pt.name, pt.gpu_configuration, pt.deployment_type
     ORDER BY pt.name
   `)

@@ -46,7 +46,7 @@ export const getGuestProgramsWithUsage = cache(
         repo_url: guestPrograms.repo_url,
         created_at: guestPrograms.created_at,
         totalClusters: sql<number>`count(${clusters.id})::int`,
-        activeClusters: sql<number>`count(case when ${clusters.is_active} then 1 end)::int`,
+        activeClusters: sql<number>`count(case when ${clusters.is_active} and ${clusters.is_approved} then 1 end)::int`,
       })
       .from(guestPrograms)
       .leftJoin(clusters, eq(clusters.guest_program_id, guestPrograms.id))

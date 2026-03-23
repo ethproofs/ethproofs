@@ -102,6 +102,7 @@ export const getActiveClusters = async (filters?: {
       const existsConditions = [
         eq(clusterVersions.cluster_id, clusters.id),
         eq(clusters.is_active, true),
+        eq(clusters.is_approved, true),
       ]
 
       if (zkvmId) {
@@ -167,7 +168,7 @@ export const getActiveClusterCountByZkvmId = cache(
         eq(zkvmVersions.id, clusterVersions.zkvm_version_id)
       )
       .innerJoin(clusters, eq(clusterVersions.cluster_id, clusters.id))
-      .where(eq(clusters.is_active, true))
+      .where(and(eq(clusters.is_active, true), eq(clusters.is_approved, true)))
       .groupBy(zkvms.id)
 
     return result
@@ -187,7 +188,7 @@ export const getClustersBenchmarks = cache(async () => {
     where: (clusters, { and, exists, notIlike }) =>
       and(
         eq(clusters.is_active, true),
-        // hide test teams from the provers list
+        eq(clusters.is_approved, true),
         exists(
           db
             .select()

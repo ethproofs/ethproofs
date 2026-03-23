@@ -38,7 +38,7 @@ export const fetchTeamContributions = cache(
         (
           SELECT string_agg(DISTINCT z.name, ', ')
           FROM zkvms z
-          WHERE z.team_id = t.id AND z.approved = true
+          WHERE z.team_id = t.id AND z.is_approved = true
         ) AS zkvm_names,
         (
           SELECT string_agg(DISTINCT gp.name, ', ')
@@ -48,7 +48,7 @@ export const fetchTeamContributions = cache(
         (
           SELECT count(DISTINCT c.id)::int
           FROM clusters c
-          WHERE c.team_id = t.id AND c.is_active = true
+          WHERE c.team_id = t.id AND c.is_active = true AND c.is_approved = true
         ) AS prover_count
       FROM teams t
       WHERE t.name NOT ILIKE '%test%'
@@ -146,7 +146,7 @@ export const fetchProofVolumeByTeam = cache(
       rtp_provers AS (
         SELECT DISTINCT t.id AS team_id
         FROM teams t
-        INNER JOIN clusters c ON c.team_id = t.id AND c.is_active = true
+        INNER JOIN clusters c ON c.team_id = t.id AND c.is_active = true AND c.is_approved = true
         INNER JOIN rtp_cohort_snapshots rcs ON rcs.cluster_id = c.id
         WHERE rcs.is_eligible = true
           AND rcs.snapshot_week = (SELECT max(snapshot_week) FROM rtp_cohort_snapshots)
@@ -237,7 +237,7 @@ export const fetchTeamsTableData = cache(
       WITH team_zkvms AS (
         SELECT team_id, count(*)::int AS zkvm_count
         FROM zkvms
-        WHERE approved = true
+        WHERE is_approved = true
         GROUP BY team_id
       ),
       team_guests AS (
@@ -274,7 +274,7 @@ export const fetchTeamsTableData = cache(
       rtp_teams AS (
         SELECT DISTINCT c.team_id
         FROM rtp_cohort_snapshots rcs
-        INNER JOIN clusters c ON rcs.cluster_id = c.id AND c.is_active = true
+        INNER JOIN clusters c ON rcs.cluster_id = c.id AND c.is_active = true AND c.is_approved = true
         WHERE rcs.is_eligible = true
           AND rcs.snapshot_week = (SELECT max(snapshot_week) FROM rtp_cohort_snapshots)
       )

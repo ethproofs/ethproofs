@@ -163,15 +163,15 @@ export const zkvmColumns: ColumnDef<DashboardZkvm>[] = [
   },
   {
     id: "status",
-    accessorKey: "approved",
+    accessorKey: "is_approved",
     header: "status",
     cell: ({ row }) => {
-      const { approved, update_status, pending_updates } = row.original
+      const { is_approved, update_status, pending_updates } = row.original
       const isRejected = update_status === "rejected"
       const isPending = update_status === "pending"
-      const isNewZkvm = !approved
+      const isNewZkvm = !is_approved
       const hasPendingEdits =
-        isPending && approved && isZkvmPendingUpdates(pending_updates)
+        isPending && is_approved && isZkvmPendingUpdates(pending_updates)
 
       if (isRejected) {
         return (

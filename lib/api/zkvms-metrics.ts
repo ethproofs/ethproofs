@@ -48,10 +48,10 @@ export async function fetchZkvmSummary(): Promise<ZkvmSummaryData> {
       FROM zkvms z
       INNER JOIN cluster_versions cv ON true
       INNER JOIN zkvm_versions zv ON cv.zkvm_version_id = zv.id AND zv.zkvm_id = z.id
-      INNER JOIN clusters c ON cv.cluster_id = c.id AND c.is_active = true
+      INNER JOIN clusters c ON cv.cluster_id = c.id AND c.is_active = true AND c.is_approved = true
       LEFT JOIN zkvm_security_metrics sm ON sm.zkvm_id = z.id
       LEFT JOIN zkvm_performance_metrics pm ON pm.zkvm_id = z.id
-      WHERE z.approved = true
+      WHERE z.is_approved = true
         AND cv.is_active = true
     `),
     db.execute(sql`
@@ -104,10 +104,10 @@ export async function fetchZkvmMilestones(): Promise<ZkvmMilestoneEntry[]> {
     FROM zkvms z
     INNER JOIN cluster_versions cv ON true
     INNER JOIN zkvm_versions zv ON cv.zkvm_version_id = zv.id AND zv.zkvm_id = z.id
-    INNER JOIN clusters c ON cv.cluster_id = c.id AND c.is_active = true
+    INNER JOIN clusters c ON cv.cluster_id = c.id AND c.is_active = true AND c.is_approved = true
     LEFT JOIN zkvm_security_metrics sm ON sm.zkvm_id = z.id
     LEFT JOIN zkvm_performance_metrics pm ON pm.zkvm_id = z.id
-    WHERE z.approved = true
+    WHERE z.is_approved = true
       AND cv.is_active = true
     GROUP BY z.id, z.name
     ORDER BY z.name
@@ -177,7 +177,7 @@ export async function fetchZkvmPerformanceTrajectory(): Promise<
     FROM proofs p
     INNER JOIN blocks b ON p.block_number = b.block_number
     INNER JOIN cluster_versions cv ON p.cluster_version_id = cv.id
-    INNER JOIN clusters c ON cv.cluster_id = c.id AND c.is_active = true
+    INNER JOIN clusters c ON cv.cluster_id = c.id AND c.is_active = true AND c.is_approved = true
     INNER JOIN zkvm_versions zv ON cv.zkvm_version_id = zv.id
     INNER JOIN zkvms z ON zv.zkvm_id = z.id
     WHERE p.proof_status = 'proved'

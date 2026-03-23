@@ -400,6 +400,13 @@
       "when": 1772870400000,
       "tag": "0056_update-rtp-score-thresholds",
       "breakpoints": true
+    },
+    {
+      "idx": 57,
+      "version": "7",
+      "when": 1774285269994,
+      "tag": "0057_rename-and-add-approved",
+      "breakpoints": true
     }
   ]
 }

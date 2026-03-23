@@ -24,7 +24,7 @@ type Team = {
   twitter_handle: string | null
   website_url: string | null
   storage_quota_bytes: number | null
-  approved: boolean
+  is_approved: boolean
   created_at: string
 }
 

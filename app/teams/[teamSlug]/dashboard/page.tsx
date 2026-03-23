@@ -48,7 +48,7 @@ export default async function DashboardPage({ params }: DashboardPageProps) {
     notFound()
   }
 
-  if (!isAdmin && !team.approved) {
+  if (!isAdmin && !team.is_approved) {
     notFound()
   }
 

@@ -103,7 +103,10 @@ export const fetchMissingProofsStatus = async (
           prover_type_name: proverTypes.name,
         })
         .from(blocks)
-        .innerJoin(clusters, and(eq(clusters.is_active, true)))
+        .innerJoin(
+          clusters,
+          and(eq(clusters.is_active, true), eq(clusters.is_approved, true))
+        )
         .innerJoin(teams, eq(teams.id, clusters.team_id))
         .innerJoin(proverTypes, eq(proverTypes.id, clusters.prover_type_id))
         .where(
@@ -144,7 +147,9 @@ export const fetchMissingProofsStatus = async (
         .from(clusters)
         .innerJoin(teams, eq(teams.id, clusters.team_id))
         .innerJoin(proverTypes, eq(proverTypes.id, clusters.prover_type_id))
-        .where(eq(clusters.is_active, true))
+        .where(
+          and(eq(clusters.is_active, true), eq(clusters.is_approved, true))
+        )
 
       const totalBlocksData = await db
         .select({
