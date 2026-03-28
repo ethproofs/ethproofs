@@ -36,7 +36,7 @@ export const provedProofSchema = baseProofSchema.extend({
 
 export const proofSchema = baseProofSchema.extend({
   proof_id: z.number().int(),
-  proof_status: z.enum(["queued", "proving", "proved"]),
+  proof_status: z.enum(["queued", "proving", "proved", "error"]),
   proving_cycles: z.number().int().optional(),
   team_id: z.string().uuid(),
   created_at: z.string(),
@@ -46,6 +46,7 @@ export const proofSchema = baseProofSchema.extend({
   proving_time: z.number().int().optional(),
   program_id: z.number().int().optional(),
   size_bytes: z.number().int().optional(),
+  error_status: z.enum(["queued", "proving", "proved"]).nullable().optional(),
   team: teamSchema.optional(),
   block: blockSchema.optional(),
   cluster_version: clusterVersionWithRelationsSchema.optional(),

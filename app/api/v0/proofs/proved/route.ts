@@ -1,4 +1,4 @@
-import { eq, ne } from "drizzle-orm"
+import { and, eq, ne } from "drizzle-orm"
 import { revalidateTag } from "next/cache"
 import { ZodError } from "zod"
 
@@ -106,10 +106,12 @@ export const POST = withAuthAndRateLimit(
       size_bytes: binaryBuffer.byteLength,
       team_id: teamId,
       gpu_price_index_id: gpuPriceIndex?.id ?? null,
+      error_status: null,
     }
 
+    let newProof
     try {
-      const newProof = await db.transaction(async (tx) => {
+      newProof = await db.transaction(async (tx) => {
         const [newProof] = await tx
           .insert(proofs)
           .values(dataToInsert)
@@ -122,7 +124,6 @@ export const POST = withAuthAndRateLimit(
           })
           .returning({ proof_id: proofs.proof_id })
 
-        // Handle active cluster status and updates
         if (!clusterVersion.cluster.is_active) {
           await tx
             .update(clusters)
@@ -130,66 +131,89 @@ export const POST = withAuthAndRateLimit(
               is_active: true,
             })
             .where(eq(clusters.id, cluster.id))
-
-          // Invalidate active clusters stats
-          revalidateTag(TAGS.CLUSTERS)
-          revalidateTag(TAGS.CLUSTER_SUMMARY)
         }
 
         return newProof
       })
 
-      revalidateTag(TAGS.PROOFS)
-      revalidateTag(TAGS.BLOCKS)
-      revalidateTag(`cluster-${cluster.id}`)
-      revalidateTag(`block-${block_number}`)
-
-      // TODO:TEAM - revisit the need for storage quota
-      // const storageQuotaExceeded = await isStorageQuotaExceeded(
-      //   teamId,
-      //   binaryBuffer.byteLength
-      // )
-      const storageQuotaExceeded = false
-      // if (storageQuotaExceeded) {
-      //   console.log(`[Storage Quota Exceeded] team ${teamId} has reached quota`)
-      // }
-
-      // Update block and upload proof binary asynchronously after returning response
-      void (async () => {
-        try {
-          await updateBlock(block_number)
-          console.log(`[Proved] Block ${block_number} updated by team:`, teamId)
-        } catch (error) {
-          console.error(
-            `[Proved] Block ${block_number} not updated by team:`,
-            teamId,
-            error
-          )
-        }
-      })()
-
-      if (!storageQuotaExceeded) {
-        void (async () => {
-          try {
-            const team = await getTeam(teamId)
-            const teamSlug = team?.slug ? team.slug : cluster.id.split("-")[0]
-            const filename = `${teamSlug}_${cluster.id}_${newProof.proof_id}.bin`
-            await uploadProofBinary(filename, binaryBuffer)
-          } catch (error) {
-            console.error(
-              `[Proved] Error uploading proof binary for proof_id ${newProof.proof_id}:`,
-              error
-            )
-          }
-        })()
+      if (!newProof) {
+        return new Response("Proof already proved", { status: 409 })
       }
-
-      return Response.json(newProof)
     } catch (error) {
       console.error("[Proved] Error adding proof:", error)
+
+      await db
+        .update(proofs)
+        .set({
+          proof_status: "error",
+          error_status: "proved",
+          updated_at: timestamp,
+        })
+        .where(
+          and(
+            eq(proofs.block_number, block_number),
+            eq(proofs.cluster_version_id, clusterVersion.id),
+            ne(proofs.proof_status, "proved")
+          )
+        )
+        .catch((updateError) =>
+          console.error("[Proved] Error setting error status:", updateError)
+        )
+
       return new Response("Internal server error", {
         status: 500,
       })
     }
+
+    if (!clusterVersion.cluster.is_active) {
+      revalidateTag(TAGS.CLUSTERS)
+      revalidateTag(TAGS.CLUSTER_SUMMARY)
+    }
+
+    revalidateTag(TAGS.PROOFS)
+    revalidateTag(TAGS.BLOCKS)
+    revalidateTag(`cluster-${cluster.id}`)
+    revalidateTag(`block-${block_number}`)
+
+    // TODO:TEAM - revisit the need for storage quota
+    // const storageQuotaExceeded = await isStorageQuotaExceeded(
+    //   teamId,
+    //   binaryBuffer.byteLength
+    // )
+    const storageQuotaExceeded = false
+    // if (storageQuotaExceeded) {
+    //   console.log(`[Storage Quota Exceeded] team ${teamId} has reached quota`)
+    // }
+
+    void (async () => {
+      try {
+        await updateBlock(block_number)
+        console.log(`[Proved] Block ${block_number} updated by team:`, teamId)
+      } catch (error) {
+        console.error(
+          `[Proved] Block ${block_number} not updated by team:`,
+          teamId,
+          error
+        )
+      }
+    })()
+
+    if (!storageQuotaExceeded) {
+      void (async () => {
+        try {
+          const team = await getTeam(teamId)
+          const teamSlug = team?.slug ? team.slug : cluster.id.split("-")[0]
+          const filename = `${teamSlug}_${cluster.id}_${newProof.proof_id}.bin`
+          await uploadProofBinary(filename, binaryBuffer)
+        } catch (error) {
+          console.error(
+            `[Proved] Error uploading proof binary for proof_id ${newProof.proof_id}:`,
+            error
+          )
+        }
+      })()
+    }
+
+    return Response.json(newProof)
   }
 )

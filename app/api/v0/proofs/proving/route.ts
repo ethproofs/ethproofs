@@ -1,4 +1,4 @@
-import { ne } from "drizzle-orm"
+import { and, eq, ne } from "drizzle-orm"
 import { revalidateTag } from "next/cache"
 import { ZodError } from "zod"
 
@@ -109,8 +109,9 @@ export const POST = withAuthAndRateLimit(
       team_id: teamId,
     }
 
+    let proof
     try {
-      const [proof] = await db
+      ;[proof] = await db
         .insert(proofs)
         .values(dataToInsert)
         .onConflictDoUpdate({
@@ -118,22 +119,42 @@ export const POST = withAuthAndRateLimit(
           set: {
             proof_status: "proving",
             proving_timestamp: timestamp,
+            error_status: null,
           },
           where: ne(proofs.proof_status, "proved"),
         })
         .returning({ proof_id: proofs.proof_id })
-
-      revalidateTag(TAGS.PROOFS)
-      revalidateTag(TAGS.BLOCKS)
-      revalidateTag(`cluster-${cluster.id}`)
-      revalidateTag(`block-${block_number}`)
-
-      return Response.json(proof)
     } catch (error) {
       console.error("[Proving] Error adding proof:", error)
+
+      await db
+        .update(proofs)
+        .set({
+          proof_status: "error",
+          error_status: "proving",
+          updated_at: timestamp,
+        })
+        .where(
+          and(
+            eq(proofs.block_number, block_number),
+            eq(proofs.cluster_version_id, clusterVersion.id),
+            ne(proofs.proof_status, "proved")
+          )
+        )
+        .catch((updateError) =>
+          console.error("[Proving] Error setting error status:", updateError)
+        )
+
       return new Response("Internal server error", {
         status: 500,
       })
     }
+
+    revalidateTag(TAGS.PROOFS)
+    revalidateTag(TAGS.BLOCKS)
+    revalidateTag(`cluster-${cluster.id}`)
+    revalidateTag(`block-${block_number}`)
+
+    return Response.json(proof)
   }
 )

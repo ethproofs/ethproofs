@@ -12,12 +12,13 @@ import {
 } from "./ui/tooltip"
 import StatusIcon from "./StatusIcon"
 
-const ORDERED_STATUSES = ["proved", "proving", "queued"] as const
+const ORDERED_STATUSES = ["proved", "proving", "queued", "error"] as const
 
 const DESCRIPTIONS = {
   proved: "proved",
   proving: "proving",
   queued: "queued",
+  error: "error",
 } as Record<(typeof ORDERED_STATUSES)[number], string>
 
 export const ProofStatusInfo = ({ title }: { title?: string }) => (

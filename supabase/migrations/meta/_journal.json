@@ -407,6 +407,27 @@
       "when": 1774285269994,
       "tag": "0057_rename-and-add-approved",
       "breakpoints": true
+    },
+    {
+      "idx": 58,
+      "version": "7",
+      "when": 1774695734872,
+      "tag": "0058_add-error-proof-status",
+      "breakpoints": true
+    },
+    {
+      "idx": 59,
+      "version": "7",
+      "when": 1774696430480,
+      "tag": "0059_exclude-error-from-missing-proofs",
+      "breakpoints": true
+    },
+    {
+      "idx": 60,
+      "version": "7",
+      "when": 1774704138659,
+      "tag": "0060_add-error-status-column",
+      "breakpoints": true
     }
   ]
 }

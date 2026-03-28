@@ -361,6 +361,7 @@ export const proofs = pgTable(
       onDelete: "set null",
       onUpdate: "cascade",
     }),
+    error_status: text("error_status"),
   },
   (table) => [
     unique("unique_block_cluster_version").on(
@@ -390,7 +391,11 @@ export const proofs = pgTable(
     }),
     check(
       "proofs_proof_status_check",
-      sql`proof_status = ANY (ARRAY['queued'::text, 'proving'::text, 'proved'::text])`
+      sql`proof_status = ANY (ARRAY['queued'::text, 'proving'::text, 'proved'::text, 'error'::text])`
+    ),
+    check(
+      "proofs_error_status_check",
+      sql`(proof_status = 'error' AND error_status = ANY (ARRAY['queued'::text, 'proving'::text, 'proved'::text])) OR (proof_status != 'error' AND error_status IS NULL)`
     ),
   ]
 ).enableRLS()

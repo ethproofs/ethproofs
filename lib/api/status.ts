@@ -1,4 +1,4 @@
-import { and, eq, gte, lt, notExists, sql } from "drizzle-orm"
+import { and, eq, gte, inArray, lt, notExists, sql } from "drizzle-orm"
 import { unstable_cache as cache } from "next/cache"
 
 import { TAGS } from "../constants"
@@ -126,7 +126,7 @@ export const fetchMissingProofsStatus = async (
                   and(
                     eq(proofs.block_number, blocks.block_number),
                     eq(clusterVersions.cluster_id, clusters.id),
-                    eq(proofs.proof_status, "proved")
+                    inArray(proofs.proof_status, ["proved", "error"])
                   )
                 )
             )

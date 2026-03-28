@@ -1,6 +1,6 @@
 import * as React from "react"
 import { cva, VariantProps } from "class-variance-authority"
-import { Box, Layers } from "lucide-react"
+import { Box, CircleAlert, Layers } from "lucide-react"
 
 import { cn } from "@/lib/utils"
 
@@ -10,6 +10,7 @@ const statusVariants = cva("self-center text-2xl", {
       queued: "text-body-secondary",
       proving: "text-body-secondary",
       proved: "text-primary",
+      error: "text-destructive",
     },
   },
 })
@@ -18,7 +19,8 @@ const StatusIcon = React.forwardRef<
   SVGSVGElement,
   React.HTMLAttributes<SVGSVGElement> & VariantProps<typeof statusVariants>
 >(({ className, status, ...props }, ref) => {
-  const Icon = status === "queued" ? Layers : Box
+  const Icon =
+    status === "error" ? CircleAlert : status === "queued" ? Layers : Box
   return (
     <Icon
       ref={ref}
