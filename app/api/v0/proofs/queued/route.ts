@@ -152,6 +152,10 @@ export const POST = withAuthAndRateLimit(
       })
     }
 
+    if (!proof) {
+      return new Response("Proof already proved", { status: 409 })
+    }
+
     revalidateTag(TAGS.BLOCKS)
     revalidateTag(`cluster-${cluster.id}`)
     revalidateTag(`block-${block_number}`)
