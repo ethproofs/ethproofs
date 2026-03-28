@@ -142,23 +142,24 @@ export const POST = withAuthAndRateLimit(
     } catch (error) {
       console.error("[Proved] Error adding proof:", error)
 
-      await db
-        .update(proofs)
-        .set({
-          proof_status: "error",
-          error_status: "proved",
-          updated_at: timestamp,
-        })
-        .where(
-          and(
-            eq(proofs.block_number, block_number),
-            eq(proofs.cluster_version_id, clusterVersion.id),
-            ne(proofs.proof_status, "proved")
+      if (existingProof) {
+        await db
+          .update(proofs)
+          .set({
+            proof_status: "error",
+            error_status: "proved",
+            updated_at: timestamp,
+          })
+          .where(
+            and(
+              eq(proofs.proof_id, existingProof.proof_id),
+              eq(proofs.proof_status, existingProof.proof_status)
+            )
           )
-        )
-        .catch((updateError) =>
-          console.error("[Proved] Error setting error status:", updateError)
-        )
+          .catch((updateError) =>
+            console.error("[Proved] Error setting error status:", updateError)
+          )
+      }
 
       return new Response("Internal server error", {
         status: 500,
