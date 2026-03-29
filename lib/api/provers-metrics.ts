@@ -37,6 +37,7 @@ export async function fetchProverSummary(): Promise<ProverSummaryData> {
         FROM proofs p
         INNER JOIN blocks b ON p.block_number = b.block_number
         WHERE b.timestamp >= NOW() - interval '7 days'
+          AND NOT is_downtime_block(b.block_number)
       )
       SELECT
         (SELECT COUNT(DISTINCT id)::integer FROM active_clusters) AS total_provers,

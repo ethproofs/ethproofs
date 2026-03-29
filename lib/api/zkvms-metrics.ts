@@ -184,6 +184,7 @@ export async function fetchZkvmPerformanceTrajectory(): Promise<
       AND p.proving_time IS NOT NULL
       AND cv.is_active = true
       AND b.timestamp >= NOW() - interval '6 months'
+      AND NOT is_downtime_block(b.block_number)
     GROUP BY z.name, date_trunc('week', b.timestamp::timestamptz)
     HAVING COUNT(*) >= 10
     ORDER BY z.name, week

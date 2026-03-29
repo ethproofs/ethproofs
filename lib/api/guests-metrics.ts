@@ -19,6 +19,7 @@ export async function fetchGuestSummary(): Promise<GuestSummaryData> {
         AND c.is_active = true AND c.is_approved = true
         AND cv.is_active = true
         AND b.timestamp >= NOW() - interval '7 days'
+        AND NOT is_downtime_block(b.block_number)
       GROUP BY gp.id, gp.name
       ORDER BY proof_count DESC
     `),
@@ -89,6 +90,7 @@ export async function fetchGuestDiversityTrend(): Promise<
     INNER JOIN guest_programs gp ON c.guest_program_id = gp.id
     WHERE p.proof_status = 'proved'
       AND b.timestamp >= NOW() - interval '6 months'
+      AND NOT is_downtime_block(b.block_number)
     GROUP BY gp.name, date_trunc('week', b.timestamp::timestamptz)
     ORDER BY gp.name, week
   `)

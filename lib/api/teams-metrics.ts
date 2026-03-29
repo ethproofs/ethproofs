@@ -128,6 +128,7 @@ export const fetchProofVolumeByTeam = cache(
         LEFT JOIN proofs p ON t.id = p.team_id
           AND p.proof_status = 'proved'
           AND p.proved_timestamp >= now() - make_interval(days := ${safeDays})
+          AND NOT is_downtime_block(p.block_number)
         WHERE t.name NOT ILIKE '%test%'
         GROUP BY t.id, t.name, t.slug, t.logo_url
       ),
@@ -140,6 +141,7 @@ export const fetchProofVolumeByTeam = cache(
           AND p.proof_status = 'proved'
           AND p.proved_timestamp >= now() - make_interval(days := ${safeDays * 2})
           AND p.proved_timestamp < now() - make_interval(days := ${safeDays})
+          AND NOT is_downtime_block(p.block_number)
         WHERE t.name NOT ILIKE '%test%'
         GROUP BY t.id
       ),
@@ -269,6 +271,7 @@ export const fetchTeamsTableData = cache(
         LEFT JOIN clusters c ON cv.cluster_id = c.id
         LEFT JOIN gpu_price_index gpi ON p.gpu_price_index_id = gpi.id
         WHERE p.proof_status = 'proved'
+          AND NOT is_downtime_block(p.block_number)
         GROUP BY p.team_id
       ),
       rtp_teams AS (

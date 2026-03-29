@@ -500,7 +500,8 @@ export const recentSummary = pgView("recent_summary", {
     INNER JOIN cluster_versions cv ON p.cluster_version_id = cv.id
     INNER JOIN clusters c ON cv.cluster_id = c.id
     LEFT JOIN gpu_price_index gpi ON p.gpu_price_index_id = gpi.id
-    WHERE b."timestamp" >= (now() - '30 days'::interval)`
+    WHERE b."timestamp" >= (now() - '30 days'::interval)
+      AND NOT is_downtime_block(b.block_number)`
   )
 
 export const teamsSummary = pgView("teams_summary", {
@@ -536,7 +537,7 @@ export const teamsSummary = pgView("teams_summary", {
       COALESCE(avg(CASE WHEN pt.gpu_configuration = 'single-gpu' THEN p.proving_time ELSE NULL END), 0::numeric) AS avg_proving_time_single,
       sum(CASE WHEN pt.gpu_configuration = 'single-gpu' THEN 1 ELSE 0 END) AS total_proofs_single
     FROM teams t
-    LEFT JOIN proofs p ON t.id = p.team_id AND p.proof_status = 'proved'::text
+    LEFT JOIN proofs p ON t.id = p.team_id AND p.proof_status = 'proved'::text AND NOT is_downtime_block(p.block_number)
     LEFT JOIN cluster_versions cv ON p.cluster_version_id = cv.id
     LEFT JOIN clusters c ON cv.cluster_id = c.id
     LEFT JOIN prover_types pt ON c.prover_type_id = pt.id
@@ -561,7 +562,7 @@ export const clusterSummary = pgView("cluster_summary", {
       avg(p.proving_time) AS avg_proving_time
     FROM clusters c
     LEFT JOIN cluster_versions cv ON c.id = cv.cluster_id
-    LEFT JOIN proofs p ON cv.id = p.cluster_version_id AND p.proof_status = 'proved'::text
+    LEFT JOIN proofs p ON cv.id = p.cluster_version_id AND p.proof_status = 'proved'::text AND NOT is_downtime_block(p.block_number)
     LEFT JOIN gpu_price_index gpi ON p.gpu_price_index_id = gpi.id
     GROUP BY c.id`
   )
@@ -605,6 +606,31 @@ export const rtpCohortSnapshots = pgTable(
     ),
     index("rtp_cohort_snapshots_cluster_id_idx").on(table.cluster_id),
     index("rtp_cohort_snapshots_snapshot_week_idx").on(table.snapshot_week),
+    pgPolicy("Enable read access for all users", {
+      as: "permissive",
+      for: "select",
+      to: ["public"],
+      using: sql`true`,
+    }),
+  ]
+).enableRLS()
+
+export const downtimeIncidents = pgTable(
+  "downtime_incidents",
+  {
+    id: bigint({ mode: "number" }).primaryKey().generatedByDefaultAsIdentity(),
+    description: text("description").notNull(),
+    start_block: bigint("start_block", { mode: "number" }).notNull(),
+    end_block: bigint("end_block", { mode: "number" }).notNull(),
+    created_at: timestamp("created_at", { withTimezone: true, mode: "string" })
+      .defaultNow()
+      .notNull(),
+  },
+  (table) => [
+    check(
+      "downtime_incidents_block_range_check",
+      sql`${table.start_block} <= ${table.end_block}`
+    ),
     pgPolicy("Enable read access for all users", {
       as: "permissive",
       for: "select",

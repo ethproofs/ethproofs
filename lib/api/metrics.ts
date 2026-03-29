@@ -223,6 +223,7 @@ export async function fetchMetricsSummary(
         LEFT JOIN gpu_price_index gpi ON p.gpu_price_index_id = gpi.id
         WHERE p.proof_status = 'proved'
           AND b.timestamp >= NOW() - make_interval(days => ${safeDays})
+          AND NOT is_downtime_block(b.block_number)
       `),
     db.execute(sql`
         SELECT
@@ -241,6 +242,7 @@ export async function fetchMetricsSummary(
         WHERE p.proof_status = 'proved'
           AND b.timestamp >= NOW() - make_interval(days => ${safeDays * 2})
           AND b.timestamp < NOW() - make_interval(days => ${safeDays})
+          AND NOT is_downtime_block(b.block_number)
       `),
     db.execute(sql`
         SELECT COUNT(DISTINCT zv.zkvm_id)::integer AS cnt
@@ -313,6 +315,7 @@ export async function fetchReliabilityDailyStats(
     WHERE p.proof_status = 'proved'
       AND p.proving_time IS NOT NULL
       AND b.timestamp >= NOW() - make_interval(days => ${safeDays})
+      AND NOT is_downtime_block(b.block_number)
     GROUP BY DATE(b.timestamp)
     ORDER BY date
   `)
@@ -404,11 +407,11 @@ export async function fetchPersonaComparison(
       COALESCE(AVG(c.num_gpus::double precision * gpi.hourly_price::double precision * p.proving_time::double precision / (1000.0 * 60 * 60)), 0) AS avg_cost,
       COUNT(*) FILTER (WHERE p.proving_time < ${RTP_PERFORMANCE_TIME_THRESHOLD_MS})::integer AS sub_10s_count,
       COUNT(DISTINCT CASE WHEN p.proof_status = 'proved' THEN p.block_number END)::integer AS blocks_proven,
-      (SELECT COUNT(DISTINCT block_number)::integer FROM blocks WHERE timestamp >= NOW() - make_interval(days => ${safeDays})) AS total_blocks
+      (SELECT COUNT(DISTINCT block_number)::integer FROM blocks WHERE timestamp >= NOW() - make_interval(days => ${safeDays}) AND NOT is_downtime_block(block_number)) AS total_blocks
     FROM clusters c
     INNER JOIN prover_types pt ON c.prover_type_id = pt.id
     INNER JOIN proofs p ON p.cluster_id = c.id AND p.proof_status = 'proved'
-    INNER JOIN blocks b ON p.block_number = b.block_number AND b.timestamp >= NOW() - make_interval(days => ${safeDays})
+    INNER JOIN blocks b ON p.block_number = b.block_number AND b.timestamp >= NOW() - make_interval(days => ${safeDays}) AND NOT is_downtime_block(b.block_number)
     LEFT JOIN gpu_price_index gpi ON p.gpu_price_index_id = gpi.id
     WHERE c.is_active = true AND c.is_approved = true
     GROUP BY pt.id, pt.name, pt.gpu_configuration, pt.deployment_type

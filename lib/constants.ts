@@ -107,4 +107,5 @@ export const TAGS = {
   ZKVMS: "zkvms",
   CSP_BENCHMARKS: "csp-benchmarks",
   RTP_COHORT: "rtp-cohort",
+  DOWNTIME: "downtime",
 } as const
