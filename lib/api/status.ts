@@ -8,6 +8,7 @@ import {
   blocks,
   clusters,
   clusterVersions,
+  downtimeIncidents,
   proofs,
   proverTypes,
   teams,
@@ -129,6 +130,14 @@ export const fetchMissingProofsStatus = async (
                     eq(proofs.proof_status, "proved")
                   )
                 )
+            ),
+            notExists(
+              db
+                .select({ id: downtimeIncidents.id })
+                .from(downtimeIncidents)
+                .where(
+                  sql`${blocks.block_number} BETWEEN ${downtimeIncidents.start_block} AND ${downtimeIncidents.end_block}`
+                )
             )
           )
         )
@@ -160,7 +169,15 @@ export const fetchMissingProofsStatus = async (
           and(
             gte(blocks.timestamp, startTime.toISOString()),
             lt(blocks.timestamp, endTime.toISOString()),
-            sql`${blocks.block_number} % 100 = 0`
+            sql`${blocks.block_number} % 100 = 0`,
+            notExists(
+              db
+                .select({ id: downtimeIncidents.id })
+                .from(downtimeIncidents)
+                .where(
+                  sql`${blocks.block_number} BETWEEN ${downtimeIncidents.start_block} AND ${downtimeIncidents.end_block}`
+                )
+            )
           )
         )
         .orderBy(blocks.block_number)

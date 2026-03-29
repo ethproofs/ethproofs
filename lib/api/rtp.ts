@@ -273,6 +273,7 @@ export const getRtpCohortPerformance = async (
           SELECT block_number, "timestamp"
           FROM blocks
           WHERE "timestamp" >= NOW() - make_interval(days => ${days})
+            AND NOT is_downtime_block(block_number)
         ),
         total_block_count AS (
           SELECT COUNT(*)::integer AS cnt FROM window_blocks
@@ -357,6 +358,7 @@ export const getRtpProofTimeDistribution = async (
           SELECT block_number
           FROM blocks
           WHERE "timestamp" >= NOW() - make_interval(days => ${days})
+            AND NOT is_downtime_block(block_number)
         ),
         cohort_proofs AS (
           SELECT p.proving_time
