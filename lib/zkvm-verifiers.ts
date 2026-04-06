@@ -9,6 +9,7 @@ export type VerifiableZkvmSlug =
   | "sp1-hypercube"
   | "openvm"
   | "airbender"
+  | "venus"
 
 /**
  * Check if a zkvm slug has a corresponding verifier implementation
@@ -21,6 +22,7 @@ export function isVerifiableZkvm(slug: string): slug is VerifiableZkvmSlug {
     "sp1-hypercube",
     "openvm",
     "airbender",
+    "venus",
   ].includes(slug)
 }
 
