@@ -87,6 +87,14 @@ export const RTP_PERFORMANCE_SCORE_THRESHOLD = 70
 export const RTP_LIVENESS_SCORE_THRESHOLD = 95
 export const RTP_PERFORMANCE_TIME_THRESHOLD_MS = 10_000
 
+export const ONE_TEN_PROVER_TYPE_ID = 5
+
+export const OPP_WINDOW_DAYS = 7
+export const OPP_PARALYZER_CUTOFF_MINUTES = 20
+export const OPP_PERFORMANCE_SCORE_THRESHOLD = 80
+export const OPP_LIVENESS_SCORE_THRESHOLD = 98
+export const OPP_PERFORMANCE_TIME_THRESHOLD_MS = 120_000
+
 export const SECURITY_MILESTONE_THRESHOLDS = {
   M1_SOUNDCALC: true,
   M2A_SECURITY_BITS: 100,
@@ -107,5 +115,6 @@ export const TAGS = {
   ZKVMS: "zkvms",
   CSP_BENCHMARKS: "csp-benchmarks",
   RTP_COHORT: "rtp-cohort",
+  OPP_COHORT: "opp-cohort",
   DOWNTIME: "downtime",
 } as const

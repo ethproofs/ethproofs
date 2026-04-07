@@ -1,12 +1,11 @@
 import type { Metadata } from "next"
 
-import { PageHeader } from "@/components/layout/page-header"
-import { RoadmapBanner } from "@/components/roadmap/roadmap-banner"
+import { EmptyCohortBanner } from "@/components/cohorts/empty-cohort-banner"
 import { RtpCohortComposition } from "@/components/rtp/rtp-cohort-composition"
 import { RtpCohortPerformance } from "@/components/rtp/rtp-cohort-performance"
 import { RtpDetailsSection } from "@/components/rtp/rtp-details-section"
 import { RtpProofTimeDistribution } from "@/components/rtp/rtp-proof-time-distribution"
-import { RtpCohortTabbedTable } from "@/components/rtp-cohort-table/rtp-cohort-tabbed-table"
+import { RtpCohortTable } from "@/components/rtp-cohort-table/rtp-cohort-table"
 
 import {
   getRtpCohortComposition,
@@ -22,7 +21,7 @@ export const dynamic = "force-dynamic"
 
 const CURRENT_COHORT_DAYS = 7
 
-export default async function Index() {
+export default async function RtpCohortPage() {
   const [rtpCohortRows, compositionData, performanceData, distributionData] =
     await Promise.all([
       getRtpCohortScores(),
@@ -32,28 +31,17 @@ export default async function Index() {
     ])
 
   return (
-    <div className="mx-auto max-w-screen-2xl px-6">
-      <PageHeader
-        title={
-          <>
-            race to{" "}
-            <span className="font-heading text-primary">mainnet-grade</span> L1
-            zkEVMs
-          </>
-        }
-        description="learn about the rules to the race and watch it unfold in real-time"
-      />
-
-      <section className="mb-8">
-        <RoadmapBanner />
-      </section>
-
+    <>
       <section className="mb-8">
         <RtpDetailsSection />
       </section>
 
       <section className="mb-8">
-        <RtpCohortTabbedTable rows={rtpCohortRows} />
+        {rtpCohortRows.length === 0 ? (
+          <EmptyCohortBanner />
+        ) : (
+          <RtpCohortTable rows={rtpCohortRows} />
+        )}
       </section>
 
       <section className="mb-8 grid gap-6 lg:grid-cols-2 2xl:grid-cols-3">
@@ -63,6 +51,6 @@ export default async function Index() {
           <RtpProofTimeDistribution data={distributionData} />
         </div>
       </section>
-    </div>
+    </>
   )
 }

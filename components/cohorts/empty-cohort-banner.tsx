@@ -1,32 +1,5 @@
-"use client"
-
-import { useState } from "react"
-
-import type { RtpCohortRow } from "@/lib/types"
-
 import { Badge } from "@/components/ui/badge"
 import { Card, CardContent } from "@/components/ui/card"
-import {
-  TabbedSection,
-  type TabbedSectionTab,
-  TabsContent,
-} from "@/components/ui/tabbed-section"
-
-import { RtpCohortTable } from "./rtp-cohort-table"
-
-const COHORT_TABS: TabbedSectionTab[] = [
-  { value: "rtp", label: "RTP cohort" },
-  {
-    value: "1-10",
-    label: "1:10 cohort (soon™)",
-    isDisabled: true,
-    disabledReason: "coming soon",
-  },
-]
-
-interface RtpCohortTabbedTableProps {
-  rows: RtpCohortRow[]
-}
 
 const DATE_FORMAT: Intl.DateTimeFormatOptions = {
   month: "short",
@@ -36,10 +9,10 @@ const DATE_FORMAT: Intl.DateTimeFormatOptions = {
 function formatCohortRange(): string {
   const now = new Date()
   const weekAgo = new Date(now.getTime() - 7 * 24 * 60 * 60 * 1000)
-  return `${weekAgo.toLocaleDateString("en-US", DATE_FORMAT)} – ${now.toLocaleDateString("en-US", DATE_FORMAT)}`
+  return `${weekAgo.toLocaleDateString("en-US", DATE_FORMAT)} \u2013 ${now.toLocaleDateString("en-US", DATE_FORMAT)}`
 }
 
-function EmptyCohortBanner() {
+export function EmptyCohortBanner() {
   return (
     <Card className="border-none bg-warning/10">
       <CardContent className="flex items-stretch gap-6 pt-6">
@@ -60,7 +33,7 @@ function EmptyCohortBanner() {
           <span className="text-sm font-medium">
             <span className="sm:hidden">no provers eligible</span>
             <span className="hidden sm:inline">
-              no provers are eligible for the RTP cohort this week
+              no provers are eligible for this cohort this week
             </span>
           </span>
           <span className="text-xs text-muted-foreground">
@@ -73,23 +46,5 @@ function EmptyCohortBanner() {
         </div>
       </CardContent>
     </Card>
-  )
-}
-
-export function RtpCohortTabbedTable({ rows }: RtpCohortTabbedTableProps) {
-  const [activeTab, setActiveTab] = useState("rtp")
-
-  if (rows.length === 0) return <EmptyCohortBanner />
-
-  return (
-    <TabbedSection
-      tabs={COHORT_TABS}
-      activeTab={activeTab}
-      onTabChange={setActiveTab}
-    >
-      <TabsContent value="rtp">
-        <RtpCohortTable rows={rows} />
-      </TabsContent>
-    </TabbedSection>
   )
 }

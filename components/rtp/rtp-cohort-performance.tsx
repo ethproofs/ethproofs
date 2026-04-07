@@ -124,9 +124,19 @@ function renderActiveShape(props: unknown) {
 
 interface RtpCohortPerformanceProps {
   data: RtpCohortPerformanceData
+  title?: string
+  description?: string
+  performanceThreshold?: number
+  thresholdLabel?: string
 }
 
-export function RtpCohortPerformance({ data }: RtpCohortPerformanceProps) {
+export function RtpCohortPerformance({
+  data,
+  title = "RTP prover performance",
+  description = "aggregated success rate for all evaluated provers",
+  performanceThreshold = RTP_PERFORMANCE_SCORE_THRESHOLD,
+  thresholdLabel = "sub-10s",
+}: RtpCohortPerformanceProps) {
   const [activeIndex, setActiveIndex] = useState<number | null>(null)
 
   const performance = useMemo(() => buildPerformanceBreakdown(data), [data])
@@ -134,10 +144,8 @@ export function RtpCohortPerformance({ data }: RtpCohortPerformanceProps) {
   return (
     <Card className="flex h-full min-h-80 flex-col">
       <CardHeader className="space-y-1.5">
-        <CardTitle className="text-lg">RTP prover performance</CardTitle>
-        <CardDescription>
-          aggregated success rate for all evaluated provers
-        </CardDescription>
+        <CardTitle className="text-lg">{title}</CardTitle>
+        <CardDescription>{description}</CardDescription>
       </CardHeader>
 
       <CardContent className="flex flex-1 flex-col gap-4">
@@ -216,22 +224,23 @@ export function RtpCohortPerformance({ data }: RtpCohortPerformanceProps) {
         <div className="flex items-center gap-2">
           <span>current:</span>
           <span className="font-mono font-semibold text-foreground">
-            {performance.sub10sRate.toFixed(1)}% sub-10s
+            {performance.sub10sRate.toFixed(1)}% {thresholdLabel}
           </span>
         </div>
         <div className="flex items-center gap-2">
           <span>target:</span>
           <span className="font-mono text-foreground">
             {"\u2265"}
-            {RTP_PERFORMANCE_SCORE_THRESHOLD}%
+            {performanceThreshold}%
           </span>
         </div>
         <div className="min-h-14">
           <p className="text-xs text-muted-foreground">
             <span className="font-medium text-placeholder">Key insight:</span>{" "}
-            Green shows sub-10s successes (the goal). Yellow (stunners) and red
-            (paralyzers) should be minimized. A healthy RTP cohort is ≥70%
-            green.
+            Green shows {thresholdLabel} successes (the goal). Yellow (stunners)
+            and red (paralyzers) should be minimized. A healthy cohort is{" "}
+            {"\u2265"}
+            {performanceThreshold}% green.
           </p>
         </div>
       </CardFooter>

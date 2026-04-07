@@ -8,6 +8,7 @@ import {
   clusterVersions,
   gpuPriceIndex,
   guestPrograms,
+  oppCohortSnapshots,
   proofs,
   proverTypes,
   rtpCohortSnapshots,
@@ -133,6 +134,16 @@ export const rtpCohortSnapshotsRelations = relations(
   ({ one }) => ({
     cluster: one(clusters, {
       fields: [rtpCohortSnapshots.cluster_id],
+      references: [clusters.id],
+    }),
+  })
+)
+
+export const oppCohortSnapshotsRelations = relations(
+  oppCohortSnapshots,
+  ({ one }) => ({
+    cluster: one(clusters, {
+      fields: [oppCohortSnapshots.cluster_id],
       references: [clusters.id],
     }),
   })

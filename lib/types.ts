@@ -8,6 +8,7 @@ import {
   clusterVersions,
   gpuPriceIndex,
   guestPrograms,
+  oppCohortSnapshots,
   proofs,
   proofsDailyStats,
   proverDailyStats,
@@ -277,6 +278,8 @@ export interface ClusterSummary {
 }
 
 export type RtpCohortSnapshot = typeof rtpCohortSnapshots.$inferSelect
+
+export type OppCohortSnapshot = typeof oppCohortSnapshots.$inferSelect
 
 export interface RtpWeekEntry {
   week: string

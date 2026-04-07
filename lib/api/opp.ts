@@ -1,4 +1,4 @@
-import { sql } from "drizzle-orm"
+import { and, eq, sql } from "drizzle-orm"
 import { unstable_cache as cache } from "next/cache"
 
 import type {
@@ -9,8 +9,9 @@ import type {
 } from "@/lib/types"
 
 import {
-  RTP_PARALYZER_CUTOFF_MINUTES,
-  RTP_PERFORMANCE_TIME_THRESHOLD_MS,
+  ONE_TEN_PROVER_TYPE_ID,
+  OPP_PARALYZER_CUTOFF_MINUTES,
+  OPP_PERFORMANCE_TIME_THRESHOLD_MS,
   TAGS,
 } from "@/lib/constants"
 
@@ -21,22 +22,45 @@ import {
 } from "./cohort.utils"
 
 import { db } from "@/db"
+import { clusters } from "@/db/schema"
 
-const RTP_BUCKET_ORDER = [
-  "0 - 5s",
-  "5 - 8s",
-  "8 - 10s",
-  "10 - 12s",
-  "12 - 14s",
-  "+14s",
+const OPP_BUCKET_ORDER = [
+  "0 - 30s",
+  "30s - 1m",
+  "1m - 2m",
+  "2m - 3m",
+  "3m - 5m",
+  "+5m",
 ] as const
 
-export const getRtpCohortScores = cache(
+export const getHasOppCohort = cache(
+  async (): Promise<boolean> => {
+    const result = await db
+      .select({ id: clusters.id })
+      .from(clusters)
+      .where(
+        and(
+          eq(clusters.prover_type_id, ONE_TEN_PROVER_TYPE_ID),
+          eq(clusters.is_active, true)
+        )
+      )
+      .limit(1)
+
+    return result.length > 0
+  },
+  ["has-opp-cohort"],
+  {
+    revalidate: 60 * 60,
+    tags: [TAGS.CLUSTERS],
+  }
+)
+
+export const getOppCohortScores = cache(
   async (): Promise<RtpCohortRow[]> => {
     const result = await db.execute(sql`
       WITH latest_snapshot AS (
         SELECT MAX(snapshot_week) AS week
-        FROM rtp_cohort_snapshots
+        FROM opp_cohort_snapshots
       )
       SELECT
         s.cluster_id,
@@ -51,8 +75,8 @@ export const getRtpCohortScores = cache(
         COALESCE(zsm.soundcalc_integration, false) AS soundcalc_integration,
         s.total_blocks,
         s.blocks_proven,
-        s.sub_10s_proofs,
-        s.over_10s_proofs,
+        s.sub_threshold_proofs AS sub_10s_proofs,
+        s.over_threshold_proofs AS over_10s_proofs,
         s.paralyzed_blocks,
         s.performance_score,
         s.liveness_score,
@@ -60,7 +84,7 @@ export const getRtpCohortScores = cache(
         s.paralyzer_rate,
         s.is_eligible,
         s.avg_cost_per_proof
-      FROM rtp_cohort_snapshots s
+      FROM opp_cohort_snapshots s
       INNER JOIN latest_snapshot ls ON s.snapshot_week = ls.week
       INNER JOIN clusters c ON s.cluster_id = c.id
       INNER JOIN teams t ON c.team_id = t.id
@@ -82,21 +106,21 @@ export const getRtpCohortScores = cache(
     const rows = Array.isArray(result) ? result : []
     return rows.map((row: Record<string, unknown>) => toCohortRow(row))
   },
-  ["rtp-cohort-scores"],
+  ["opp-cohort-scores"],
   {
     revalidate: 60 * 60,
-    tags: [TAGS.RTP_COHORT],
+    tags: [TAGS.OPP_COHORT],
   }
 )
 
 const COMPOSITION_MAX_WEEKS = 26
 
-export const getRtpCohortComposition = cache(
+export const getOppCohortComposition = cache(
   async (): Promise<RtpCohortCompositionData> => {
     const result = await db.execute(sql`
       WITH all_weeks AS (
         SELECT DISTINCT snapshot_week AS week
-        FROM rtp_cohort_snapshots
+        FROM opp_cohort_snapshots
         ORDER BY snapshot_week DESC
         LIMIT ${COMPOSITION_MAX_WEEKS}
       ),
@@ -115,11 +139,11 @@ export const getRtpCohortComposition = cache(
           sr.total_weeks,
           EXISTS (
             SELECT 1
-            FROM rtp_cohort_snapshots latest
+            FROM opp_cohort_snapshots latest
             WHERE latest.cluster_id = s.cluster_id
               AND latest.snapshot_week = sr.latest_week
           ) AS is_currently_evaluated
-        FROM rtp_cohort_snapshots s
+        FROM opp_cohort_snapshots s
         INNER JOIN clusters c ON s.cluster_id = c.id
         INNER JOIN teams t ON c.team_id = t.id
         CROSS JOIN snapshot_range sr
@@ -135,7 +159,7 @@ export const getRtpCohortComposition = cache(
           ) AS weekly_timeline
         FROM cluster_tenure ct
         CROSS JOIN all_weeks aw
-        LEFT JOIN rtp_cohort_snapshots s
+        LEFT JOIN opp_cohort_snapshots s
           ON s.cluster_id = ct.cluster_id AND s.snapshot_week = aw.week
         GROUP BY ct.cluster_id
       )
@@ -155,14 +179,14 @@ export const getRtpCohortComposition = cache(
     const rows = Array.isArray(result) ? result : []
     return buildCompositionData(rows as Record<string, unknown>[])
   },
-  ["rtp-cohort-composition"],
+  ["opp-cohort-composition"],
   {
     revalidate: 60 * 60,
-    tags: [TAGS.RTP_COHORT],
+    tags: [TAGS.OPP_COHORT],
   }
 )
 
-export const getRtpCohortPerformance = async (
+export const getOppCohortPerformance = async (
   days: number
 ): Promise<RtpCohortPerformanceData> => {
   return cache(
@@ -170,9 +194,9 @@ export const getRtpCohortPerformance = async (
       const result = await db.execute(sql`
         WITH evaluated_clusters AS (
           SELECT s.cluster_id
-          FROM rtp_cohort_snapshots s
+          FROM opp_cohort_snapshots s
           WHERE s.snapshot_week = (
-              SELECT MAX(snapshot_week) FROM rtp_cohort_snapshots
+              SELECT MAX(snapshot_week) FROM opp_cohort_snapshots
             )
         ),
         window_blocks AS (
@@ -191,16 +215,16 @@ export const getRtpCohortPerformance = async (
           SELECT
             p.cluster_id,
             COUNT(DISTINCT CASE
-              WHEN p.proof_status = 'proved' AND p.proving_time < ${RTP_PERFORMANCE_TIME_THRESHOLD_MS}
+              WHEN p.proof_status = 'proved' AND p.proving_time < ${OPP_PERFORMANCE_TIME_THRESHOLD_MS}
               THEN p.block_number
-            END)::integer AS sub_10s_proofs,
+            END)::integer AS sub_threshold_proofs,
             COUNT(DISTINCT CASE
-              WHEN p.proof_status = 'proved' AND p.proving_time >= ${RTP_PERFORMANCE_TIME_THRESHOLD_MS}
+              WHEN p.proof_status = 'proved' AND p.proving_time >= ${OPP_PERFORMANCE_TIME_THRESHOLD_MS}
               THEN p.block_number
-            END)::integer AS over_10s_proofs,
+            END)::integer AS over_threshold_proofs,
             COUNT(DISTINCT CASE
               WHEN p.proof_status IN ('queued', 'proving')
-                AND wb."timestamp" < NOW() - make_interval(mins => ${RTP_PARALYZER_CUTOFF_MINUTES})
+                AND wb."timestamp" < NOW() - make_interval(mins => ${OPP_PARALYZER_CUTOFF_MINUTES})
               THEN p.block_number
             END)::integer AS paralyzed_blocks
           FROM proofs p
@@ -210,8 +234,8 @@ export const getRtpCohortPerformance = async (
         )
         SELECT
           (tbc.cnt * ec.cnt)::integer AS total_block_slots,
-          COALESCE(SUM(cs.sub_10s_proofs), 0)::integer AS sub_10s_count,
-          COALESCE(SUM(cs.over_10s_proofs), 0)::integer AS stunned_count,
+          COALESCE(SUM(cs.sub_threshold_proofs), 0)::integer AS sub_10s_count,
+          COALESCE(SUM(cs.over_threshold_proofs), 0)::integer AS stunned_count,
           COALESCE(SUM(cs.paralyzed_blocks), 0)::integer AS paralyzed_count
         FROM total_block_count tbc
         CROSS JOIN evaluated_count ec
@@ -239,15 +263,15 @@ export const getRtpCohortPerformance = async (
         ),
       }
     },
-    ["rtp-cohort-performance", String(days)],
+    ["opp-cohort-performance", String(days)],
     {
       revalidate: 60 * 60,
-      tags: [TAGS.RTP_COHORT],
+      tags: [TAGS.OPP_COHORT],
     }
   )(days)
 }
 
-export const getRtpProofTimeDistribution = async (
+export const getOppProofTimeDistribution = async (
   days: number
 ): Promise<RtpProofTimeDistributionData> => {
   return cache(
@@ -255,9 +279,9 @@ export const getRtpProofTimeDistribution = async (
       const result = await db.execute(sql`
         WITH evaluated_clusters AS (
           SELECT s.cluster_id
-          FROM rtp_cohort_snapshots s
+          FROM opp_cohort_snapshots s
           WHERE s.snapshot_week = (
-              SELECT MAX(snapshot_week) FROM rtp_cohort_snapshots
+              SELECT MAX(snapshot_week) FROM opp_cohort_snapshots
             )
         ),
         window_blocks AS (
@@ -276,12 +300,12 @@ export const getRtpProofTimeDistribution = async (
         )
         SELECT
           CASE
-            WHEN proving_time < 5000 THEN '0 - 5s'
-            WHEN proving_time < 8000 THEN '5 - 8s'
-            WHEN proving_time < ${RTP_PERFORMANCE_TIME_THRESHOLD_MS} THEN '8 - 10s'
-            WHEN proving_time < 12000 THEN '10 - 12s'
-            WHEN proving_time < 14000 THEN '12 - 14s'
-            ELSE '+14s'
+            WHEN proving_time < 30000 THEN '0 - 30s'
+            WHEN proving_time < 60000 THEN '30s - 1m'
+            WHEN proving_time < ${OPP_PERFORMANCE_TIME_THRESHOLD_MS} THEN '1m - 2m'
+            WHEN proving_time < 180000 THEN '2m - 3m'
+            WHEN proving_time < 300000 THEN '3m - 5m'
+            ELSE '+5m'
           END AS bucket,
           COUNT(*)::integer AS count
         FROM cohort_proofs
@@ -296,17 +320,17 @@ export const getRtpProofTimeDistribution = async (
       const bucketMap = new Map(
         rows.map((r: Record<string, unknown>) => [
           String(r.bucket),
-          toProofTimeBucket(r, total, RTP_BUCKET_ORDER),
+          toProofTimeBucket(r, total, OPP_BUCKET_ORDER),
         ])
       )
 
-      const buckets = RTP_BUCKET_ORDER.map(
+      const buckets = OPP_BUCKET_ORDER.map(
         (name) =>
           bucketMap.get(name) ?? {
             bucket: name,
             count: 0,
             percentage: 0,
-            isRtp: RTP_BUCKET_ORDER.indexOf(name) < 3,
+            isRtp: OPP_BUCKET_ORDER.indexOf(name) < 3,
           }
       )
 
@@ -321,10 +345,10 @@ export const getRtpProofTimeDistribution = async (
         buckets,
       }
     },
-    ["rtp-proof-time-distribution", String(days)],
+    ["opp-proof-time-distribution", String(days)],
     {
       revalidate: 60 * 60,
-      tags: [TAGS.RTP_COHORT],
+      tags: [TAGS.OPP_COHORT],
     }
   )(days)
 }

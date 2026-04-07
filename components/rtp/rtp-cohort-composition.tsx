@@ -78,18 +78,20 @@ function WeekSegment({ entry }: WeekSegmentProps) {
 
 interface RtpCohortCompositionProps {
   data: RtpCohortCompositionData
+  title?: string
+  description?: string
 }
 
-export function RtpCohortComposition({ data }: RtpCohortCompositionProps) {
+export function RtpCohortComposition({
+  data,
+  title = "evaluated vs. eligible provers",
+  description = "weekly eligibility for all evaluated 1:1 multi-GPU provers",
+}: RtpCohortCompositionProps) {
   return (
     <Card className="flex h-full min-h-80 flex-col">
       <CardHeader className="space-y-1.5">
-        <CardTitle className="text-lg">
-          evaluated vs. eligible provers
-        </CardTitle>
-        <CardDescription>
-          weekly eligibility for all evaluated 1:1 multi-GPU provers
-        </CardDescription>
+        <CardTitle className="text-lg">{title}</CardTitle>
+        <CardDescription>{description}</CardDescription>
       </CardHeader>
 
       <CardContent className="flex flex-1 flex-col gap-5">

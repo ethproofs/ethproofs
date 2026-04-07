@@ -101,20 +101,26 @@ function CustomTooltip({ active, payload }: CustomTooltipProps) {
 
 interface RtpProofTimeDistributionProps {
   data: RtpProofTimeDistributionData
+  title?: string
+  description?: string
+  eligibleLabel?: string
+  stunnerLabel?: string
 }
 
 export function RtpProofTimeDistribution({
   data,
+  title = "proof time distribution",
+  description = "timing across blocks for all evaluated provers",
+  eligibleLabel = "\u226410s (RTP eligible)",
+  stunnerLabel = ">10s (stunners)",
 }: RtpProofTimeDistributionProps) {
   const chartData = useMemo(() => buildChartData(data), [data])
 
   return (
     <Card className="flex h-full min-h-80 flex-col">
       <CardHeader className="space-y-1.5">
-        <CardTitle className="text-lg">proof time distribution</CardTitle>
-        <CardDescription>
-          timing across blocks for all evaluated provers
-        </CardDescription>
+        <CardTitle className="text-lg">{title}</CardTitle>
+        <CardDescription>{description}</CardDescription>
       </CardHeader>
 
       <CardContent className="flex flex-1 flex-col gap-4 lg:flex-row 2xl:flex-col">
@@ -126,13 +132,13 @@ export function RtpProofTimeDistribution({
             </span>
           </div>
           <div className="flex flex-col gap-1 rounded-lg bg-muted/50 px-3 py-2">
-            <span className="text-xs text-muted-foreground">sub-10s (RTP)</span>
+            <span className="text-xs text-muted-foreground">eligible</span>
             <span className="font-mono text-lg font-semibold text-primary">
               {data.rtpTotal.toLocaleString()}
             </span>
           </div>
           <div className="flex flex-col gap-1 rounded-lg bg-muted/50 px-3 py-2">
-            <span className="text-xs text-muted-foreground">RTP rate</span>
+            <span className="text-xs text-muted-foreground">eligible rate</span>
             <span className="font-mono text-lg font-semibold text-primary">
               {data.rtpRate}%
             </span>
@@ -229,11 +235,11 @@ export function RtpProofTimeDistribution({
         <div className="flex items-center gap-4">
           <div className="flex items-center gap-1.5">
             <div className="size-2 rounded-full bg-primary" />
-            <span>{"\u2264"}10s (RTP eligible)</span>
+            <span>{eligibleLabel}</span>
           </div>
           <div className="flex items-center gap-1.5">
             <div className="size-2 rounded-full bg-muted-foreground" />
-            <span>&gt;10s (stunners)</span>
+            <span>{stunnerLabel}</span>
           </div>
         </div>
         <div className="min-h-14">

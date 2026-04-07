@@ -449,6 +449,27 @@
       "when": 1775779200000,
       "tag": "0063_drop-unique-active-prover-type",
       "breakpoints": true
+    },
+    {
+      "idx": 64,
+      "version": "7",
+      "when": 1775865600000,
+      "tag": "0064_add-1-10-prover-type",
+      "breakpoints": true
+    },
+    {
+      "idx": 65,
+      "version": "7",
+      "when": 1775952000000,
+      "tag": "0065_add-opp-cohort-snapshots",
+      "breakpoints": true
+    },
+    {
+      "idx": 66,
+      "version": "7",
+      "when": 1776038400000,
+      "tag": "0066_add-opp-cohort-snapshot-cron",
+      "breakpoints": true
     }
   ]
 }
