@@ -1,6 +1,6 @@
 "use server"
 
-import { and, eq } from "drizzle-orm"
+import { eq } from "drizzle-orm"
 import { revalidatePath, revalidateTag } from "next/cache"
 import { z } from "zod"
 
@@ -196,25 +196,6 @@ export async function createCluster(_prevState: unknown, formData: FormData) {
       }
     }
 
-    // Check if team already has an active cluster of this prover type (only if creating as active)
-    if (is_active) {
-      const existingActiveCluster = await db.query.clusters.findFirst({
-        where: and(
-          eq(clusters.team_id, team.id),
-          eq(clusters.prover_type_id, prover_type_id),
-          eq(clusters.is_active, true)
-        ),
-      })
-
-      if (existingActiveCluster) {
-        return {
-          errors: {
-            is_active: ["active cluster of this type already exists"],
-          },
-        }
-      }
-    }
-
     // Create cluster and version in database
     let clusterId: string | null = null
     let versionId: number | null = null
@@ -357,39 +338,10 @@ export async function updateCluster(_prevState: unknown, formData: FormData) {
       }
     }
 
-    // Check if prover_type_id or is_active changed
     const proverTypeChanged =
       prover_type_id !== undefined && prover_type_id !== originalProverTypeId
     const isActiveChanged =
       is_active !== undefined && is_active !== originalIsActive
-
-    // If trying to activate or change to a type that already has an active cluster
-    if (proverTypeChanged || isActiveChanged) {
-      const targetProverTypeId = proverTypeChanged
-        ? prover_type_id
-        : originalProverTypeId
-      const targetIsActive = isActiveChanged ? is_active : originalIsActive
-
-      // Only check if the target state is active
-      if (targetIsActive && targetProverTypeId) {
-        const existingActiveCluster = await db.query.clusters.findFirst({
-          where: and(
-            eq(clusters.team_id, cluster.team_id),
-            eq(clusters.prover_type_id, targetProverTypeId),
-            eq(clusters.is_active, true)
-          ),
-        })
-
-        // If there's an existing active cluster and it's not the current cluster
-        if (existingActiveCluster && existingActiveCluster.id !== id) {
-          return {
-            errors: {
-              is_active: ["active cluster of this type already exists"],
-            },
-          }
-        }
-      }
-    }
 
     const guestProgramChanged =
       guest_program_id !== undefined &&

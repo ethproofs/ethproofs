@@ -73,28 +73,6 @@ export const PATCH = withAuth(
       return new Response("No fields to update", { status: 400 })
     }
 
-    if (is_active !== undefined && is_active !== cluster.is_active) {
-      const targetProverTypeId = cluster.prover_type_id
-      if (is_active && targetProverTypeId) {
-        const existingActiveCluster = await db.query.clusters.findFirst({
-          where: and(
-            eq(clusters.team_id, cluster.team_id),
-            eq(clusters.prover_type_id, targetProverTypeId),
-            eq(clusters.is_active, true)
-          ),
-        })
-
-        if (existingActiveCluster && existingActiveCluster.id !== cluster.id) {
-          return new Response(
-            "Active cluster of this prover type already exists",
-            {
-              status: 409,
-            }
-          )
-        }
-      }
-    }
-
     if (num_gpus !== undefined && num_gpus !== cluster.num_gpus) {
       const proverTypes = await getProverTypes()
       const currentProverType = proverTypes.find(

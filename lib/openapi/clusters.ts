@@ -51,10 +51,6 @@ export const clustersPaths: ZodOpenApiPathsObject = {
         "404": {
           description: "Cluster not found",
         },
-        "409": {
-          description:
-            "Conflict - active cluster of this prover type already exists",
-        },
         "500": {
           description: "Internal server error",
         },

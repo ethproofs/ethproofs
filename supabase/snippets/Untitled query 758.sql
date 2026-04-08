@@ -1,0 +1,3 @@
+SELECT indexname, indexdef                                                                                                                                                                                                    
+  FROM pg_indexes                                                                                                                                                                                                               
+  WHERE tablename = 'clusters' AND indexname = 'unique_active_prover_per_type_per_team';

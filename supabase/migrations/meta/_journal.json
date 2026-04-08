@@ -442,6 +442,13 @@
       "when": 1774784266101,
       "tag": "0062_add-downtime-detection-cron",
       "breakpoints": true
+    },
+    {
+      "idx": 63,
+      "version": "7",
+      "when": 1775779200000,
+      "tag": "0063_drop-unique-active-prover-type",
+      "breakpoints": true
     }
   ]
 }
