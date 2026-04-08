@@ -8,7 +8,7 @@ export const getActiveZkvms = async () => {
 }
 
 export const getZkvmsWithUsage = async () => {
-  const zkvms = await getZkvms({ limit: 10 })
+  const zkvms = await getZkvms()
 
   const clusterCount = await getActiveClusterCountByZkvmId()
   const totalActiveClusters = clusterCount.reduce(
