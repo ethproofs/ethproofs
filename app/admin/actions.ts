@@ -318,24 +318,21 @@ export async function createUser(_prevState: unknown, formData: FormData) {
     if (logo) {
       const logoFile = logo as File
       const logoBuffer = Buffer.from(await logoFile.arrayBuffer())
-      const { data, error } = await supabase.storage
+      const { data: uploadData, error: uploadError } = await supabase.storage
         .from(PUBLIC_ASSETS_BUCKET)
         .upload(`${name.toLowerCase().replace(/\s+/g, "-")}.svg`, logoBuffer, {
           contentType: "image/svg+xml",
         })
 
-      if (error) {
-        console.error("error uploading logo", error)
-        return {
-          errors: { logo: ["error uploading logo"] },
-        }
+      if (uploadError) {
+        console.error("error uploading logo", uploadError)
+      } else {
+        const { data: publicUrlData } = supabase.storage
+          .from(PUBLIC_ASSETS_BUCKET)
+          .getPublicUrl(uploadData.path)
+
+        logoUrl = publicUrlData.publicUrl
       }
-
-      const { data: publicUrlData } = supabase.storage
-        .from(PUBLIC_ASSETS_BUCKET)
-        .getPublicUrl(data.path)
-
-      logoUrl = publicUrlData.publicUrl
     }
 
     await db
