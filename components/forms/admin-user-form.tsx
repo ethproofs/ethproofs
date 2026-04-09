@@ -1,6 +1,6 @@
 "use client"
 
-import { useActionState } from "react"
+import { useActionState, useState } from "react"
 
 import { Input } from "../ui/input"
 import { Label } from "../ui/label"
@@ -17,6 +17,7 @@ const initialState = {
 
 export function AdminUserForm() {
   const [state, formAction] = useActionState(createUser, initialState)
+  const [selectedFileName, setSelectedFileName] = useState<string | null>(null)
 
   return (
     <form className="flex flex-col gap-4" action={formAction}>
@@ -41,12 +42,12 @@ export function AdminUserForm() {
         placeholder="twitter handle"
       />
       <Input id="website" name="website" type="text" placeholder="website" />
-      <div className="position-relative display-inline-block flex flex-col gap-2">
+      <div className="relative flex flex-col gap-2">
         <Label
           htmlFor="logo"
           className="h-10 w-full cursor-pointer rounded-md border border-input bg-background px-3 py-2 text-sm font-normal text-muted-foreground ring-offset-background hover:bg-accent"
         >
-          choose file (.svg)
+          {selectedFileName ?? "choose file (.svg)"}
         </Label>
         <Input
           accept="image/svg+xml"
@@ -54,6 +55,10 @@ export function AdminUserForm() {
           id="logo"
           name="logo"
           type="file"
+          onChange={(e) => {
+            const file = e.target.files?.[0]
+            setSelectedFileName(file ? file.name : null)
+          }}
         />
       </div>
 

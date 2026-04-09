@@ -316,9 +316,13 @@ export async function createUser(_prevState: unknown, formData: FormData) {
     let logoUrl = null
 
     if (logo) {
+      const logoFile = logo as File
+      const logoBuffer = Buffer.from(await logoFile.arrayBuffer())
       const { data, error } = await supabase.storage
         .from(PUBLIC_ASSETS_BUCKET)
-        .upload(`${name.toLowerCase().replace(" ", "-")}.svg`, logo)
+        .upload(`${name.toLowerCase().replace(/\s+/g, "-")}.svg`, logoBuffer, {
+          contentType: "image/svg+xml",
+        })
 
       if (error) {
         console.error("error uploading logo", error)
@@ -457,6 +461,9 @@ export async function approveTeam(_prevState: unknown, formData: FormData) {
         })
       }
     })
+
+    revalidatePath("/admin", "page")
+    revalidateTag(TAGS.TEAMS)
 
     return {
       data: { success: true, apikey },
