@@ -26,6 +26,9 @@ importers:
       '@ethproofs/openvm-wasm-stark-verifier':
         specifier: ^0.1.0
         version: 0.1.0
+      '@ethproofs/openvm2-wasm-stark-verifier':
+        specifier: ^0.1.0
+        version: 0.1.0
       '@ethproofs/pico-wasm-stark-verifier':
         specifier: ^0.1.7
         version: 0.1.7
@@ -1638,6 +1641,10 @@ packages:
 
   '@ethproofs/openvm-wasm-stark-verifier@0.1.0':
     resolution: {integrity: sha512-wPe18L31LgaXClF36sd3ajseEXWxOyTT+gtvMcaAQ78Kb5nyW9aR8WC0LrohaHquuVDk2i53twBNZTEaleVluw==}
+    engines: {node: '>=16.0.0'}
+
+  '@ethproofs/openvm2-wasm-stark-verifier@0.1.0':
+    resolution: {integrity: sha512-6BjMIluN7tPeWgtBGtTY1JzwvZD4NomcSpyQwe2zaXvMeWUzc8t91IttVmxRiqByuvyfomraJS4SWjYWsu+Bww==}
     engines: {node: '>=16.0.0'}
 
   '@ethproofs/pico-wasm-stark-verifier@0.1.7':
@@ -9495,6 +9502,8 @@ snapshots:
 
   '@ethproofs/openvm-wasm-stark-verifier@0.1.0': {}
 
+  '@ethproofs/openvm2-wasm-stark-verifier@0.1.0': {}
+
   '@ethproofs/pico-wasm-stark-verifier@0.1.7': {}
 
   '@ethproofs/sp1-hypercube-wasm-verifier@0.1.1': {}
@@ -10499,11 +10508,11 @@ snapshots:
       pluralize: 8.0.0
       react: 19.2.4
       react-dom: 19.2.4(react@19.2.4)
-      redoc: 2.5.1(core-js@3.49.0)(encoding@0.1.13)(mobx@6.15.0)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(styled-components@6.3.9(react-dom@19.1.2(react@19.1.2))(react@19.1.2))
+      redoc: 2.5.1(core-js@3.49.0)(encoding@0.1.13)(mobx@6.15.0)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(styled-components@6.3.9(react-dom@19.2.4(react@19.2.4))(react@19.2.4))
       semver: 7.7.3
       set-cookie-parser: 2.7.2
       simple-websocket: 9.1.0
-      styled-components: 6.3.9(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
+      styled-components: 6.3.9(react-dom@19.1.2(react@19.1.2))(react@19.1.2)
       ulid: 3.0.2
       undici: 6.24.0
       yargs: 17.0.1
@@ -15226,7 +15235,7 @@ snapshots:
       indent-string: 4.0.0
       strip-indent: 3.0.0
 
-  redoc@2.5.1(core-js@3.49.0)(encoding@0.1.13)(mobx@6.15.0)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(styled-components@6.3.9(react-dom@19.1.2(react@19.1.2))(react@19.1.2)):
+  redoc@2.5.1(core-js@3.49.0)(encoding@0.1.13)(mobx@6.15.0)(react-dom@19.2.4(react@19.2.4))(react@19.2.4)(styled-components@6.3.9(react-dom@19.2.4(react@19.2.4))(react@19.2.4)):
     dependencies:
       '@redocly/openapi-core': 1.34.11
       classnames: 2.5.1
@@ -15251,7 +15260,7 @@ snapshots:
       react-tabs: 6.1.1(react@19.2.4)
       slugify: 1.4.7
       stickyfill: 1.1.1
-      styled-components: 6.3.9(react-dom@19.2.4(react@19.2.4))(react@19.2.4)
+      styled-components: 6.3.9(react-dom@19.1.2(react@19.1.2))(react@19.1.2)
       swagger2openapi: 7.0.8(encoding@0.1.13)
       url-template: 2.0.8
     transitivePeerDependencies:
@@ -15802,7 +15811,7 @@ snapshots:
     dependencies:
       inline-style-parser: 0.2.4
 
-  styled-components@6.3.9(react-dom@19.2.4(react@19.2.4))(react@19.2.4):
+  styled-components@6.3.9(react-dom@19.1.2(react@19.1.2))(react@19.1.2):
     dependencies:
       '@emotion/is-prop-valid': 1.4.0
       '@emotion/unitless': 0.10.0
@@ -15810,12 +15819,12 @@ snapshots:
       css-to-react-native: 3.2.0
       csstype: 3.2.3
       postcss: 8.4.49
-      react: 19.2.4
+      react: 19.1.2
       shallowequal: 1.1.0
       stylis: 4.3.6
       tslib: 2.8.1
     optionalDependencies:
-      react-dom: 19.2.4(react@19.2.4)
+      react-dom: 19.1.2(react@19.1.2)
 
   styled-jsx@5.1.6(@babel/core@7.28.3)(react@19.1.2):
     dependencies:

@@ -24,6 +24,7 @@ const MODULE_LOADERS: Record<VerifiableZkvmSlug, () => Promise<unknown>> = {
   ziren: () => import("@ethproofs/ziren-wasm-stark-verifier"),
   "sp1-hypercube": () => import("@ethproofs/sp1-hypercube-wasm-verifier"),
   openvm: () => import("@ethproofs/openvm-wasm-stark-verifier"),
+  openvm2: () => import("@ethproofs/openvm2-wasm-stark-verifier"),
   airbender: () => import("@ethproofs/airbender-wasm-stark-verifier"),
   venus: () => import("@ethproofs/venus-wasm-stark-verifier"),
 }
