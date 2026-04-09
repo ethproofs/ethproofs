@@ -114,7 +114,7 @@ export async function login(_prevState: unknown, formData: FormData) {
     }
 
     revalidatePath("/teams", "layout")
-    redirect(`/teams/${teamData[0].slug}`)
+    redirect(`/teams/${teamData[0].slug}/dashboard`)
   }
 
   // Fallback redirect (shouldn't reach here)
