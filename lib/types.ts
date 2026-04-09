@@ -1,7 +1,5 @@
 import { type ReactNode } from "react"
 
-import { LevelMeterProps } from "@/components/LevelMeter"
-
 import { CHART_RANGES, ZKVM_THRESHOLDS } from "./constants"
 
 import {
