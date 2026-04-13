@@ -69,7 +69,10 @@ export const blocks = pgTable(
       .defaultNow()
       .notNull(),
   },
-  () => [
+  (table) => [
+    index("blocks_timestamp_idx")
+      .on(table.timestamp)
+      .where(sql`"timestamp" IS NOT NULL`),
     pgPolicy("Enable read access for all users", {
       as: "permissive",
       for: "select",
@@ -160,7 +163,12 @@ export const clusters = pgTable(
       .defaultNow()
       .notNull(),
   },
-  () => [
+  (table) => [
+    index("clusters_active_approved_idx")
+      .on(table.id, table.team_id, table.prover_type_id, table.guest_program_id)
+      .where(sql`is_active = true AND is_approved = true`),
+    index("clusters_team_id_idx").on(table.team_id),
+    index("clusters_prover_type_id_idx").on(table.prover_type_id),
     pgPolicy("Enable read access for all users", {
       as: "permissive",
       for: "select",
@@ -367,6 +375,17 @@ export const proofs = pgTable(
       table.block_number,
       table.cluster_version_id
     ),
+    index("proofs_block_number_idx").on(table.block_number),
+    index("proofs_proved_status_idx")
+      .on(table.block_number, table.cluster_version_id, table.proving_time)
+      .where(sql`proof_status = 'proved'`),
+    index("proofs_team_id_idx").on(table.team_id),
+    index("proofs_proving_time_idx")
+      .on(table.proving_time)
+      .where(sql`proving_time IS NOT NULL`),
+    index("proofs_gpu_price_index_id_idx")
+      .on(table.gpu_price_index_id)
+      .where(sql`gpu_price_index_id IS NOT NULL`),
     index("proofs_cluster_version_id_idx").on(table.cluster_version_id),
     index("proofs_cluster_id_idx").on(table.cluster_id),
     index("proofs_proved_timestamp_idx").on(table.proved_timestamp),
@@ -606,6 +625,9 @@ export const rtpCohortSnapshots = pgTable(
     ),
     index("rtp_cohort_snapshots_cluster_id_idx").on(table.cluster_id),
     index("rtp_cohort_snapshots_snapshot_week_idx").on(table.snapshot_week),
+    index("rtp_cohort_snapshots_week_eligible_idx")
+      .on(table.snapshot_week, table.is_eligible)
+      .where(sql`is_eligible = true`),
     pgPolicy("Enable read access for all users", {
       as: "permissive",
       for: "select",
@@ -675,6 +697,10 @@ export const downtimeIncidents = pgTable(
       .notNull(),
   },
   (table) => [
+    index("downtime_incidents_block_range_idx").on(
+      table.start_block,
+      table.end_block
+    ),
     check(
       "downtime_incidents_block_range_check",
       sql`${table.start_block} <= ${table.end_block}`

@@ -470,6 +470,13 @@
       "when": 1776038400000,
       "tag": "0066_add-opp-cohort-snapshot-cron",
       "breakpoints": true
+    },
+    {
+      "idx": 67,
+      "version": "7",
+      "when": 1776124800000,
+      "tag": "0067_add-performance-indexes",
+      "breakpoints": true
     }
   ]
 }
