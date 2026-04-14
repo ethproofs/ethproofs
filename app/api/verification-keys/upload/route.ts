@@ -23,10 +23,14 @@ export const POST = async (request: NextRequest) => {
     }
 
     const formData = await request.formData()
-    const file = formData.get("file") as File
+    const files = formData.getAll("file") as File[]
 
-    if (!file) {
+    if (files.length === 0) {
       return new Response("No file provided", { status: 400 })
+    }
+
+    if (files.length > 2) {
+      return new Response("Maximum 2 vk files allowed", { status: 400 })
     }
 
     const clusterId = formData.get("cluster_id") as string
@@ -71,31 +75,46 @@ export const POST = async (request: NextRequest) => {
     }
 
     const teamSlug = team.slug ? team.slug : team.name.toLowerCase()
-    const generatedFilename = `${teamSlug}_${clusterId}_${version.index}.bin`
+    const baseStem = `${teamSlug}_${clusterId}_${version.index}`
+    const isMultiPart = files.length > 1
 
-    // Convert File to Buffer for upload
-    const arrayBuffer = await file.arrayBuffer()
-    const buffer = Buffer.from(arrayBuffer)
+    const uploadedPaths: string[] = []
 
-    const result = await uploadVerificationKey(generatedFilename, buffer)
+    for (let i = 0; i < files.length; i++) {
+      const file = files[i]
+      const filename = isMultiPart
+        ? `${baseStem}_${i}.bin`
+        : `${baseStem}.bin`
 
-    if (!result) {
-      return new Response("Failed to upload file", { status: 500 })
+      const arrayBuffer = await file.arrayBuffer()
+      const buffer = Buffer.from(arrayBuffer)
+
+      const result = await uploadVerificationKey(filename, buffer)
+
+      if (!result) {
+        return new Response(`Failed to upload file ${i}`, { status: 500 })
+      }
+
+      uploadedPaths.push(result.path)
     }
 
     await db
       .update(clusterVersions)
-      .set({ vk_path: result.path })
+      .set({ vk_path: uploadedPaths[0] })
       .where(eq(clusterVersions.id, Number(versionId)))
 
     revalidateTag(TAGS.CLUSTERS)
     revalidateTag(`team-clusters-${cluster.team_id}`)
     revalidateTag(`cluster-${clusterId}`)
 
+    const generatedFilename = isMultiPart
+      ? `${baseStem}_0.bin, ${baseStem}_1.bin`
+      : `${baseStem}.bin`
+
     return new Response(
       JSON.stringify({
         message: "Verification key uploaded",
-        path: result.path,
+        paths: uploadedPaths,
         version_id: versionId,
         filename: generatedFilename,
       }),

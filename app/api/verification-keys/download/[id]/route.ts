@@ -2,7 +2,10 @@ import { NextRequest } from "next/server"
 
 import { db } from "@/db"
 import { getTeam } from "@/lib/api/teams"
-import { downloadVerificationKey } from "@/lib/api/verification-keys"
+import {
+  downloadMultiPartVerificationKey,
+  downloadVerificationKey,
+} from "@/lib/api/verification-keys"
 
 export async function GET(
   _request: NextRequest,
@@ -45,7 +48,10 @@ export async function GET(
     filename = newFilename
   }
 
-  // Fall back to legacy filename without index
+  if (!blob && filename) {
+    blob = await downloadMultiPartVerificationKey(filename)
+  }
+
   if (!blob) {
     const legacyFilename = `${teamSlug}_${proofRow.cluster_id}.bin`
     blob = await downloadVerificationKey(legacyFilename)
