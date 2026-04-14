@@ -43,8 +43,8 @@ importers:
         specifier: ^0.1.0
         version: 0.1.0
       '@ethproofs/ziren-wasm-stark-verifier':
-        specifier: ^0.1.8
-        version: 0.1.8
+        specifier: ^0.1.9
+        version: 0.1.9
       '@ethproofs/zisk-wasm-stark-verifier':
         specifier: ^0.1.4
         version: 0.1.4
@@ -1663,8 +1663,8 @@ packages:
     resolution: {integrity: sha512-AkDOOZ0hsfOpulNQdc9e01LtGbOyy72qHTFpP4CxnKn0BsLnihevRweOmzJ2r4pjoRC0CfVVuMXWjSKmLzyz/Q==}
     engines: {node: '>=16.0.0'}
 
-  '@ethproofs/ziren-wasm-stark-verifier@0.1.8':
-    resolution: {integrity: sha512-CEb5KmCuEnOOovqElM+mtIiK3zKj1PtQk4HTS7vbTak00/6US1mE94DYaKQQDXU6BHp5Oi4JL6vrGrCHiYSEiQ==}
+  '@ethproofs/ziren-wasm-stark-verifier@0.1.9':
+    resolution: {integrity: sha512-r8nu8ECm8iq+KENrT7VLA9FQ6oWnNLZEnsTnrzl4lUcHl+580DLgWKOSe+m/xkbLG8sLQy9ztIoF1DBHGDcr1Q==}
     engines: {node: '>=16.0.0'}
 
   '@ethproofs/zisk-wasm-stark-verifier@0.1.1':
@@ -9502,7 +9502,7 @@ snapshots:
 
   '@ethproofs/venus-wasm-stark-verifier@0.1.0': {}
 
-  '@ethproofs/ziren-wasm-stark-verifier@0.1.8': {}
+  '@ethproofs/ziren-wasm-stark-verifier@0.1.9': {}
 
   '@ethproofs/zisk-wasm-stark-verifier@0.1.1': {}
 
