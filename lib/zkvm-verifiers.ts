@@ -29,15 +29,6 @@ export function isVerifiableZkvm(slug: string): slug is VerifiableZkvmSlug {
 }
 
 /**
- * Verifier handles vk internally
- */
-export function isVerifiableZkvmWithoutVk(
-  slug: string
-): slug is VerifiableZkvmSlug {
-  return ["airbender"].includes(slug)
-}
-
-/**
  * Get the verifier type for a given zkvm slug
  * Returns undefined if the zkvm doesn't have a verifier implementation
  */

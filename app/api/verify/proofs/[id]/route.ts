@@ -1,10 +1,7 @@
 import { downloadBinaryForProofId, getProofData } from "@/lib/api/proofs"
 import { verifyProofServer } from "@/lib/server/verify-service"
 import { getCachedVk } from "@/lib/server/vk-cache"
-import {
-  isVerifiableZkvm,
-  isVerifiableZkvmWithoutVk,
-} from "@/lib/zkvm-verifiers"
+import { isVerifiableZkvm } from "@/lib/zkvm-verifiers"
 
 function sendSseEvent(
   encoder: TextEncoder,
@@ -69,26 +66,15 @@ function createVerificationStream(proofId: number, proofIdStr: string) {
             return
           }
 
-          if (
-            !isVerifiableZkvmWithoutVk(zkvmSlug) &&
-            !proofData.cluster_version.vk_path
-          ) {
-            sendSseEvent(encoder, controller, "complete", {
-              isValid: null,
-              error: `Verification key not available for this proof`,
-            })
-            controller.close()
-            return
-          }
+          const hasVk = Boolean(proofData.cluster_version.vk_path)
 
-          // Download proof and vk
           const { arrayBuffer } = await downloadBinaryForProofId(
             proofId,
             proofData
           )
           const proofBytes = new Uint8Array(arrayBuffer)
           let vkBytes: Uint8Array | null = null
-          if (!isVerifiableZkvmWithoutVk(zkvmSlug)) {
+          if (hasVk) {
             try {
               const versionIndex = proofData.cluster_version.index ?? 0
               vkBytes = await getCachedVk(

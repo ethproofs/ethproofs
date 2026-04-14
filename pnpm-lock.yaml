@@ -25,8 +25,8 @@ importers:
         specifier: ^3.2.2
         version: 3.2.2(react@19.1.2)
       '@ethproofs/airbender-wasm-stark-verifier':
-        specifier: ^0.5.0
-        version: 0.5.0
+        specifier: ^0.10.0
+        version: 0.10.0
       '@ethproofs/openvm-wasm-stark-verifier':
         specifier: ^0.1.0
         version: 0.1.0
@@ -1639,8 +1639,8 @@ packages:
     resolution: {integrity: sha512-d9zaMRSTIKDLhctzH12MtXvJKSSUhaHcjV+2Z+GK+EEY7XKpP5yR4x+N3TAcHTcu963nIr+TMcCb4DBCYX1z6Q==}
     engines: {node: ^12.22.0 || ^14.17.0 || >=16.0.0}
 
-  '@ethproofs/airbender-wasm-stark-verifier@0.5.0':
-    resolution: {integrity: sha512-Kj/l9VYykNOiDhsmF+NMEUdK5y7F2h4wXvX40oUoqHRdgxKXfNobv3cXNtlQp7L6PzZZaineXYiJy93YawOzdw==}
+  '@ethproofs/airbender-wasm-stark-verifier@0.10.0':
+    resolution: {integrity: sha512-OVNuRp2Q+sq4Ij9DqX95EWB+jlQOyEvad+kUApi0wh+aVJZNVKU9Vcq12+R5bdITae4lU2A3aVRpfLoaYlvBvg==}
     engines: {node: '>=16.0.0'}
 
   '@ethproofs/openvm-wasm-stark-verifier@0.1.0':
@@ -9490,7 +9490,7 @@ snapshots:
 
   '@eslint/js@8.57.1': {}
 
-  '@ethproofs/airbender-wasm-stark-verifier@0.5.0': {}
+  '@ethproofs/airbender-wasm-stark-verifier@0.10.0': {}
 
   '@ethproofs/openvm-wasm-stark-verifier@0.1.0': {}
 

@@ -1,7 +1,4 @@
-import {
-  isVerifiableZkvmWithoutVk,
-  type VerifiableZkvmSlug,
-} from "@/lib/zkvm-verifiers"
+import type { VerifiableZkvmSlug } from "@/lib/zkvm-verifiers"
 
 export interface VerificationResult {
   isValid: boolean
@@ -11,12 +8,7 @@ export interface VerificationResult {
 
 interface WasmModule {
   main?(): void
-  verify_stark(
-    ...args:
-      | [Uint8Array]
-      | [Uint8Array, Uint8Array]
-      | [string, Uint8Array, Uint8Array]
-  ): boolean
+  verify_stark(...args: unknown[]): boolean
 }
 
 // Server-side WASM module caches
@@ -116,11 +108,8 @@ function verifyWithModule(
       // "Pico" type not supported, fall through to "PicoPrism"
     }
     return verifier.verify_stark("PicoPrism", proofBytes, vkBytes)
-  } else if (isVerifiableZkvmWithoutVk(zkvmSlug)) {
-    return verifier.verify_stark(proofBytes)
-  } else {
-    return verifier.verify_stark(proofBytes, vkBytes)
   }
+  return verifier.verify_stark(proofBytes, vkBytes)
 }
 
 export async function verifyProofServer(

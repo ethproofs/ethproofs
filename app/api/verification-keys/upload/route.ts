@@ -82,9 +82,7 @@ export const POST = async (request: NextRequest) => {
 
     for (let i = 0; i < files.length; i++) {
       const file = files[i]
-      const filename = isMultiPart
-        ? `${baseStem}_${i}.bin`
-        : `${baseStem}.bin`
+      const filename = isMultiPart ? `${baseStem}_${i}.bin` : `${baseStem}.bin`
 
       const arrayBuffer = await file.arrayBuffer()
       const buffer = Buffer.from(arrayBuffer)

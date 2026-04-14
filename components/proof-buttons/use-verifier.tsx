@@ -3,19 +3,11 @@
 import { useCallback, useEffect, useState } from "react"
 
 import { wasmCache } from "@/lib/wasm-cache"
-import {
-  isVerifiableZkvmWithoutVk,
-  type VerifiableZkvmSlug,
-} from "@/lib/zkvm-verifiers"
+import type { VerifiableZkvmSlug } from "@/lib/zkvm-verifiers"
 
 interface WasmModule {
   main(): void
-  verify_stark(
-    ...args:
-      | [Uint8Array]
-      | [Uint8Array, Uint8Array]
-      | [string, Uint8Array, Uint8Array]
-  ): boolean
+  verify_stark(...args: unknown[]): boolean
 }
 
 const MODULE_LOADERS: Record<VerifiableZkvmSlug, () => Promise<unknown>> = {
@@ -157,8 +149,6 @@ export function useVerifier(
           // "Pico" type not supported, fall through to "PicoPrism"
         }
         return module.verify_stark("PicoPrism", proofBytes, vkBytes)
-      } else if (isVerifiableZkvmWithoutVk(zkvmSlug!)) {
-        return module.verify_stark(proofBytes)
       } else {
         return module.verify_stark(proofBytes, vkBytes)
       }
