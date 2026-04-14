@@ -477,6 +477,13 @@
       "when": 1776124800000,
       "tag": "0067_add-performance-indexes",
       "breakpoints": true
+    },
+    {
+      "idx": 68,
+      "version": "7",
+      "when": 1776211200000,
+      "tag": "0068_add-blocks-hash-index",
+      "breakpoints": true
     }
   ]
 }

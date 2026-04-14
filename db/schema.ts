@@ -73,6 +73,9 @@ export const blocks = pgTable(
     index("blocks_timestamp_idx")
       .on(table.timestamp)
       .where(sql`"timestamp" IS NOT NULL`),
+    index("blocks_hash_idx")
+      .on(table.hash)
+      .where(sql`hash IS NOT NULL`),
     pgPolicy("Enable read access for all users", {
       as: "permissive",
       for: "select",

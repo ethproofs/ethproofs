@@ -94,6 +94,7 @@ export async function fetchRecentBlocksSummary(): Promise<RecentBlocksSummary> {
         INNER JOIN clusters c ON c.id = cv.cluster_id
         INNER JOIN prover_types pt ON pt.id = c.prover_type_id
         WHERE pt.gpu_configuration = 'multi-gpu'
+          AND b.timestamp >= NOW() - interval '7 days'
           AND NOT is_downtime_block(b.block_number)
         ORDER BY b.block_number DESC
         LIMIT ${RECENT_BLOCKS_LIMIT}
@@ -225,6 +226,7 @@ export const fetchBlocksChartData = cache(
         WHERE p.proof_status = 'proved'
           AND p.proving_time IS NOT NULL
           AND pt.gpu_configuration = 'multi-gpu'
+          AND b.timestamp >= NOW() - interval '7 days'
           AND NOT is_downtime_block(b.block_number)
       ),
       best AS (
@@ -239,6 +241,7 @@ export const fetchBlocksChartData = cache(
         INNER JOIN clusters c ON c.id = cv.cluster_id
         INNER JOIN prover_types pt ON pt.id = c.prover_type_id
         WHERE pt.gpu_configuration = 'multi-gpu'
+          AND p.block_number IN (SELECT block_number FROM best)
         GROUP BY p.block_number
       )
       SELECT
