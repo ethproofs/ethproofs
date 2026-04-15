@@ -1,9 +1,6 @@
 import { db } from "@/db"
 import { getTeam } from "@/lib/api/teams"
-import {
-  downloadMultiPartVerificationKey,
-  downloadVerificationKey,
-} from "@/lib/api/verification-keys"
+import { downloadVerificationKey } from "@/lib/api/verification-keys"
 
 // Server-side vk cache - keyed by clusterId and versionIndex to reuse across proofs
 const vkCache: Map<string, Uint8Array> = new Map()
@@ -75,11 +72,7 @@ async function downloadVkForCluster(
       : (team?.name?.toLowerCase() ?? "unknown")
     const filename = `${teamSlug}_${clusterId}_${versionIndex}.bin`
 
-    let blob = await downloadVerificationKey(filename)
-
-    if (!blob) {
-      blob = await downloadMultiPartVerificationKey(filename)
-    }
+    const blob = await downloadVerificationKey(filename)
 
     if (!blob) {
       throw new Error(`vk file not found in storage: ${filename}`)

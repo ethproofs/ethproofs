@@ -56,4 +56,5 @@ public/api.html
 storybook-static
 
 # scripts
+scripts/input
 scripts/output

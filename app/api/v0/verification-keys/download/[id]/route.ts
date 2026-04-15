@@ -1,9 +1,6 @@
 import { db } from "@/db"
 import { getTeam } from "@/lib/api/teams"
-import {
-  downloadMultiPartVerificationKey,
-  downloadVerificationKey,
-} from "@/lib/api/verification-keys"
+import { downloadVerificationKey } from "@/lib/api/verification-keys"
 import { withAuthAndRateLimit } from "@/lib/middleware/with-rate-limit"
 
 export const GET = withAuthAndRateLimit(
@@ -52,10 +49,6 @@ export const GET = withAuthAndRateLimit(
       const newFilename = `${teamSlug}_${proofRow.cluster_id}_${proofRow.cluster_version.index}.bin`
       blob = await downloadVerificationKey(newFilename)
       filename = newFilename
-    }
-
-    if (!blob && filename) {
-      blob = await downloadMultiPartVerificationKey(filename)
     }
 
     if (!blob) {

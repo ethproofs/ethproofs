@@ -2,10 +2,7 @@ import { NextRequest } from "next/server"
 
 import { db } from "@/db"
 import { getTeam } from "@/lib/api/teams"
-import {
-  downloadMultiPartVerificationKey,
-  downloadVerificationKey,
-} from "@/lib/api/verification-keys"
+import { downloadVerificationKey } from "@/lib/api/verification-keys"
 
 export async function GET(
   _request: NextRequest,
@@ -46,10 +43,6 @@ export async function GET(
     const newFilename = `${teamSlug}_${proofRow.cluster_id}_${proofRow.cluster_version.index}.bin`
     blob = await downloadVerificationKey(newFilename)
     filename = newFilename
-  }
-
-  if (!blob && filename) {
-    blob = await downloadMultiPartVerificationKey(filename)
   }
 
   if (!blob) {

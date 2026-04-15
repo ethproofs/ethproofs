@@ -132,13 +132,8 @@ export function ClusterDrawer({
   }, [state.success, onOpenChange, router])
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = e.target.files
-    if (!files || files.length === 0) {
-      setSelectedFileName("")
-      return
-    }
-    const names = Array.from(files).map((f) => f.name)
-    setSelectedFileName(names.join(", "))
+    const file = e.target.files?.[0]
+    setSelectedFileName(file?.name ?? "")
   }
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -163,22 +158,8 @@ export function ClusterDrawer({
         return
       }
 
-      const files = fileInputRef.current?.files
-      if (
-        files &&
-        files.length > 0 &&
-        "clusterId" in result &&
-        result.clusterId
-      ) {
-        if (files.length > 2) {
-          setState({
-            loading: false,
-            errors: { _form: ["maximum 2 vk files allowed"] },
-            success: false,
-          })
-          return
-        }
-
+      const file = fileInputRef.current?.files?.[0]
+      if (file && "clusterId" in result && result.clusterId) {
         const versionId =
           "versionId" in result && result.versionId
             ? result.versionId
@@ -186,9 +167,7 @@ export function ClusterDrawer({
 
         if (versionId) {
           const uploadFormData = new FormData()
-          for (const file of Array.from(files)) {
-            uploadFormData.append("file", file)
-          }
+          uploadFormData.append("file", file)
           uploadFormData.append("cluster_id", result.clusterId)
           uploadFormData.append("version_id", String(versionId))
 
@@ -465,7 +444,6 @@ export function ClusterDrawer({
                   onChange={handleFileChange}
                   className="hidden"
                   accept=".bin,.key"
-                  multiple
                 />
                 <div className="flex items-center gap-2">
                   <Button
@@ -474,13 +452,12 @@ export function ClusterDrawer({
                     onClick={() => fileInputRef.current?.click()}
                     className="w-full"
                   >
-                    {selectedFileName || "choose file(s)"}
+                    {selectedFileName || "choose file"}
                   </Button>
                 </div>
                 {mode === "edit" && (
                   <p className="text-xs text-muted-foreground">
-                    uploading a file will create a new cluster version - only
-                    upload multiple if required
+                    uploading a new file will create a new cluster version
                   </p>
                 )}
               </div>

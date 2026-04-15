@@ -49,13 +49,8 @@ export function AdminVerificationKeyForm({
   const fileInputRef = useRef<HTMLInputElement>(null)
 
   const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const files = e.target.files
-    if (!files || files.length === 0) {
-      setSelectedFileName("")
-      return
-    }
-    const names = Array.from(files).map((f) => f.name)
-    setSelectedFileName(names.join(", "))
+    const file = e.target.files?.[0]
+    setSelectedFileName(file?.name ?? "")
   }
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
@@ -81,8 +76,8 @@ export function AdminVerificationKeyForm({
         return
       }
 
-      const files = fileInputRef.current?.files
-      if (!files || files.length === 0) {
+      const file = fileInputRef.current?.files?.[0]
+      if (!file) {
         setState({
           loading: false,
           errors: { file: ["select a file"] },
@@ -91,19 +86,8 @@ export function AdminVerificationKeyForm({
         return
       }
 
-      if (files.length > 2) {
-        setState({
-          loading: false,
-          errors: { file: ["maximum 2 vk files allowed"] },
-          success: false,
-        })
-        return
-      }
-
       const formData = new FormData()
-      for (const file of Array.from(files)) {
-        formData.append("file", file)
-      }
+      formData.append("file", file)
       formData.append("cluster_id", selectedClusterId)
       formData.append("version_id", selectedVersionId)
 
@@ -240,7 +224,7 @@ export function AdminVerificationKeyForm({
           htmlFor="file"
           className="h-10 w-full cursor-pointer rounded-md border border-input bg-background px-3 py-2 text-sm font-normal text-muted-foreground ring-offset-background hover:bg-accent"
         >
-          choose file(s) (.bin)
+          choose file (.bin)
         </Label>
         <Input
           ref={fileInputRef}
@@ -248,7 +232,6 @@ export function AdminVerificationKeyForm({
           className="absolute left-[-9999px]"
           id="file"
           type="file"
-          multiple
           onChange={handleFileChange}
         />
         {selectedFileName && (

@@ -47,27 +47,3 @@ export const downloadVerificationKey = async (filename: string) => {
 
   return data
 }
-
-export async function downloadMultiPartVerificationKey(
-  baseFilename: string
-): Promise<Blob | null> {
-  const stem = baseFilename.replace(/\.bin$/, "")
-  const part0 = await downloadVerificationKey(`${stem}_0.bin`)
-  const part1 = await downloadVerificationKey(`${stem}_1.bin`)
-
-  if (!part0 || !part1) return null
-
-  const buf0 = await part0.arrayBuffer()
-  const buf1 = await part1.arrayBuffer()
-
-  const LENGTH_PREFIX_BYTES = 4
-  const combined = new Uint8Array(
-    LENGTH_PREFIX_BYTES + buf0.byteLength + buf1.byteLength
-  )
-  const view = new DataView(combined.buffer)
-  view.setUint32(0, buf0.byteLength)
-  combined.set(new Uint8Array(buf0), LENGTH_PREFIX_BYTES)
-  combined.set(new Uint8Array(buf1), LENGTH_PREFIX_BYTES + buf0.byteLength)
-
-  return new Blob([combined], { type: "application/octet-stream" })
-}
