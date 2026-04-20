@@ -23,6 +23,10 @@ export const uploadProofBinary = async (
   }
 }
 
+export function getProofBinaryUrl(filename: string) {
+  return `${process.env.NEXT_PUBLIC_SUPABASE_URL}/storage/v1/object/public/${PROOF_BINARY_BUCKET}/${filename}`
+}
+
 export const getProofBinary = async (filename: string) => {
   const supabase = await createClient()
 

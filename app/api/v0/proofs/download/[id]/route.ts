@@ -1,22 +1,19 @@
 import { db } from "@/db"
-import { downloadBinaryForProofId } from "@/lib/api/proofs"
+import { getProofBinaryUrl } from "@/lib/api/proof-binaries"
+import { getTeam } from "@/lib/api/teams"
 import { withAuthAndRateLimit } from "@/lib/middleware/with-rate-limit"
 
 export const GET = withAuthAndRateLimit(
   async (_request, { params }: { params: Promise<{ id: string }> }) => {
     const { id } = await params
+    const proofId = Number(id)
 
     try {
-      // Verify proof exists and is proved
       const proofRow = await db.query.proofs.findFirst({
         where: (proofs, { and, eq }) =>
-          and(
-            eq(proofs.proof_id, Number(id)),
-            eq(proofs.proof_status, "proved")
-          ),
+          and(eq(proofs.proof_id, proofId), eq(proofs.proof_status, "proved")),
         columns: {
           cluster_id: true,
-          block_number: true,
           team_id: true,
         },
       })
@@ -25,25 +22,15 @@ export const GET = withAuthAndRateLimit(
         return new Response("No proof found", { status: 404 })
       }
 
-      // TODO:TEAM - run a script to migrate all proofs to the new filename format
-      const { arrayBuffer, filename } = await downloadBinaryForProofId(
-        Number(id),
-        {
-          proof_id: Number(id),
-          cluster_id: proofRow.cluster_id,
-          proof_status: "proved",
-          block_number: proofRow.block_number,
-          team_id: proofRow.team_id,
-        }
-      )
+      const team = await getTeam(proofRow.team_id)
+      const teamSlug = team?.slug
+        ? team.slug
+        : proofRow.cluster_id.split("-")[0]
 
-      return new Response(arrayBuffer, {
-        status: 200,
-        headers: {
-          "Content-Type": "application/octet-stream",
-          "Content-Disposition": `attachment; filename="${filename}"`,
-        },
-      })
+      const filename = `${teamSlug}_${proofRow.cluster_id}_${proofId}.bin`
+      const publicUrl = getProofBinaryUrl(filename)
+
+      return Response.redirect(publicUrl, 302)
     } catch (error) {
       const message =
         error instanceof Error ? error.message : "No proof binary found"

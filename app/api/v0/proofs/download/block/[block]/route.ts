@@ -23,7 +23,6 @@ export const GET = withRateLimit(
 
     const proofRows = await db.query.proofs.findMany({
       columns: {
-        block_number: true,
         proof_id: true,
         team_id: true,
       },
@@ -49,49 +48,27 @@ export const GET = withRateLimit(
       return new Response("No proofs found", { status: 404 })
     }
 
-    const binaryBuffers: { binaryBuffer: Buffer; filename: string }[] = []
+    const downloadResults = await Promise.all(
+      proofRows.map(async (proofRow) => {
+        const team = await getTeam(proofRow.team_id)
+        const { id: clusterId } = proofRow.cluster_version.cluster
+        const teamSlug = team?.slug ? team.slug : clusterId.split("-")[0]
+        const filename = `${teamSlug}_${clusterId}_${proofRow.proof_id}.bin`
 
-    for (const proofRow of proofRows) {
-      const team = await getTeam(proofRow.team_id)
+        const blob = await downloadProofBinary(filename, { silent: true })
+        if (!blob) return null
 
-      const { id: cluster_id } = proofRow.cluster_version.cluster
-      const teamSlug = team?.slug ? team.slug : cluster_id.split("-")[0]
-
-      // TODO:TEAM - run a script to migrate all proofs to the new filename format
-      // Try filenames in order of preference (new format first)
-      const filenamesToTry = [
-        // NEW format: teamSlug_clusterId_proofId
-        `${teamSlug}_${cluster_id}_${proofRow.proof_id}.bin`,
-        // OLD format: teamSlug_blockNumber_proofId
-        `${teamSlug}_${proofRow.block_number}_${proofRow.proof_id}.bin`,
-        // LEGACY format: blockNumber_teamName_proofId
-        ...(team?.name
-          ? [`${proofRow.block_number}_${team.name}_${proofRow.proof_id}.bin`]
-          : []),
-      ]
-
-      let blob: Blob | null = null
-
-      for (const filenameToTry of filenamesToTry) {
-        blob = await downloadProofBinary(filenameToTry, { silent: true })
-        if (blob) {
-          break
-        }
-      }
-
-      if (blob) {
         const arrayBuffer = await blob.arrayBuffer()
-        const binaryBuffer = Buffer.from(arrayBuffer)
-
-        const filename = `${teamSlug}_${cluster_id}_${proofRow.proof_id}.bin`
-        binaryBuffers.push({ binaryBuffer, filename })
-      }
-    }
+        return { binaryBuffer: Buffer.from(arrayBuffer), filename }
+      })
+    )
 
     const zip = new AdmZip()
-    binaryBuffers.forEach(({ binaryBuffer, filename }) => {
-      zip.addFile(filename, binaryBuffer)
-    })
+    for (const result of downloadResults) {
+      if (result) {
+        zip.addFile(result.filename, result.binaryBuffer)
+      }
+    }
 
     const zipBuffer = zip.toBuffer()
     const arrayBuffer = new Uint8Array(zipBuffer).buffer

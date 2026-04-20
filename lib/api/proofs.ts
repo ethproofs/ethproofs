@@ -352,35 +352,15 @@ export async function getProofData(proofId: string): Promise<ProofData> {
   return proof
 }
 
-/**
- * Download proof binary with fallback filename options, returns both binary and filename used
- */
 export async function downloadBinaryForProofId(
   proofId: number,
   proofData: ProofData
 ): Promise<{ arrayBuffer: ArrayBuffer; filename: string }> {
   const team = await getTeam(proofData.team_id)
   const teamSlug = team?.slug ? team.slug : proofData.cluster_id.split("-")[0]
+  const filename = `${teamSlug}_${proofData.cluster_id}_${proofId}.bin`
 
-  // Try filenames in order of preference (new format first)
-  const filenamesToTry = [
-    `${teamSlug}_${proofData.cluster_id}_${proofId}.bin`,
-    `${teamSlug}_${proofData.block_number}_${proofId}.bin`,
-    ...(team?.name
-      ? [`${proofData.block_number}_${team.name}_${proofId}.bin`]
-      : []),
-  ]
-
-  let blob: Blob | null = null
-  let filename = filenamesToTry[0] // Default to new format
-
-  for (const filenameToTry of filenamesToTry) {
-    blob = await downloadProofBinary(filenameToTry, { silent: true })
-    if (blob) {
-      filename = filenameToTry
-      break
-    }
-  }
+  const blob = await downloadProofBinary(filename)
 
   if (!blob) {
     throw new Error(
