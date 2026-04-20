@@ -73,19 +73,20 @@ function classifyBlock(
   return "paralyzer"
 }
 
-export async function fetchRecentBlocksSummary(): Promise<RecentBlocksSummary> {
-  const rows = await db.execute<{
-    block_number: number
-    gas_used: number | null
-    timestamp: string | null
-    best_proving_time: number | null
-    proof_count: number
-    proved_count: number
-    has_proving: boolean
-    has_queued: boolean
-    team_name: string | null
-    cluster_name: string | null
-  }>(sql`
+export const fetchRecentBlocksSummary = cache(
+  async (): Promise<RecentBlocksSummary> => {
+    const rows = await db.execute<{
+      block_number: number
+      gas_used: number | null
+      timestamp: string | null
+      best_proving_time: number | null
+      proof_count: number
+      proved_count: number
+      has_proving: boolean
+      has_queued: boolean
+      team_name: string | null
+      cluster_name: string | null
+    }>(sql`
       WITH recent_blocks AS (
         SELECT DISTINCT b.block_number, b.gas_used, b.timestamp
         FROM blocks b
@@ -99,41 +100,43 @@ export async function fetchRecentBlocksSummary(): Promise<RecentBlocksSummary> {
         ORDER BY b.block_number DESC
         LIMIT ${RECENT_BLOCKS_LIMIT}
       ),
+      multi_gpu_proofs AS (
+        SELECT p.proof_id, p.block_number, p.proving_time, p.team_id,
+               p.cluster_version_id, p.proof_status
+        FROM proofs p
+        INNER JOIN cluster_versions cv ON cv.id = p.cluster_version_id
+        INNER JOIN clusters c ON c.id = cv.cluster_id
+        INNER JOIN prover_types pt ON pt.id = c.prover_type_id
+        WHERE pt.gpu_configuration = 'multi-gpu'
+          AND p.block_number IN (SELECT block_number FROM recent_blocks)
+      ),
       best_per_block AS (
         SELECT
           rb.block_number,
           rb.gas_used,
           rb.timestamp,
-          p.proving_time,
-          p.team_id,
-          p.cluster_version_id,
-          p.proof_status,
+          mgp.proving_time,
+          mgp.team_id,
+          mgp.cluster_version_id,
+          mgp.proof_status,
           ROW_NUMBER() OVER (
             PARTITION BY rb.block_number
             ORDER BY
-              CASE WHEN p.proof_status = 'proved' AND p.proving_time IS NOT NULL THEN 0 ELSE 1 END,
-              p.proving_time ASC NULLS LAST
+              CASE WHEN mgp.proof_status = 'proved' AND mgp.proving_time IS NOT NULL THEN 0 ELSE 1 END,
+              mgp.proving_time ASC NULLS LAST
           ) AS rn
         FROM recent_blocks rb
-        INNER JOIN proofs p ON p.block_number = rb.block_number
-        INNER JOIN cluster_versions cv ON cv.id = p.cluster_version_id
-        INNER JOIN clusters c ON c.id = cv.cluster_id
-        INNER JOIN prover_types pt ON pt.id = c.prover_type_id
-        WHERE pt.gpu_configuration = 'multi-gpu'
+        INNER JOIN multi_gpu_proofs mgp ON mgp.block_number = rb.block_number
       ),
       block_agg AS (
         SELECT
           rb.block_number,
-          COUNT(p.proof_id)::int AS proof_count,
-          COUNT(CASE WHEN p.proof_status = 'proved' THEN 1 END)::int AS proved_count,
-          bool_or(p.proof_status = 'proving') AS has_proving,
-          bool_or(p.proof_status = 'queued') AS has_queued
+          COUNT(mgp.proof_id)::int AS proof_count,
+          COUNT(CASE WHEN mgp.proof_status = 'proved' THEN 1 END)::int AS proved_count,
+          bool_or(mgp.proof_status = 'proving') AS has_proving,
+          bool_or(mgp.proof_status = 'queued') AS has_queued
         FROM recent_blocks rb
-        INNER JOIN proofs p ON p.block_number = rb.block_number
-        INNER JOIN cluster_versions cv ON cv.id = p.cluster_version_id
-        INNER JOIN clusters c ON c.id = cv.cluster_id
-        INNER JOIN prover_types pt ON pt.id = c.prover_type_id
-        WHERE pt.gpu_configuration = 'multi-gpu'
+        INNER JOIN multi_gpu_proofs mgp ON mgp.block_number = rb.block_number
         GROUP BY rb.block_number
       )
       SELECT
@@ -156,45 +159,51 @@ export async function fetchRecentBlocksSummary(): Promise<RecentBlocksSummary> {
       ORDER BY bp.block_number DESC
     `)
 
-  const blocks: RecentBlockMetrics[] = rows.map((row) => ({
-    blockNumber: Number(row.block_number),
-    gasUsed: row.gas_used !== null ? Number(row.gas_used) : null,
-    timestamp: row.timestamp,
-    bestProvingTime:
-      row.best_proving_time !== null ? Number(row.best_proving_time) : null,
-    proofCount: Number(row.proof_count),
-    provedCount: Number(row.proved_count),
-    status: classifyBlock(
-      row.best_proving_time !== null ? Number(row.best_proving_time) : null,
-      row.has_proving,
-      row.has_queued
-    ),
-    teamName: row.team_name,
-    clusterName: row.cluster_name,
-  }))
+    const blocks: RecentBlockMetrics[] = rows.map((row) => ({
+      blockNumber: Number(row.block_number),
+      gasUsed: row.gas_used !== null ? Number(row.gas_used) : null,
+      timestamp: row.timestamp,
+      bestProvingTime:
+        row.best_proving_time !== null ? Number(row.best_proving_time) : null,
+      proofCount: Number(row.proof_count),
+      provedCount: Number(row.proved_count),
+      status: classifyBlock(
+        row.best_proving_time !== null ? Number(row.best_proving_time) : null,
+        row.has_proving,
+        row.has_queued
+      ),
+      teamName: row.team_name,
+      clusterName: row.cluster_name,
+    }))
 
-  const provedBlocks = blocks.filter((b) => b.bestProvingTime !== null)
-  const successBlocks = provedBlocks.filter((b) => b.status === "success")
-  const successRate =
-    provedBlocks.length > 0
-      ? (successBlocks.length / provedBlocks.length) * 100
-      : 0
+    const provedBlocks = blocks.filter((b) => b.bestProvingTime !== null)
+    const successBlocks = provedBlocks.filter((b) => b.status === "success")
+    const successRate =
+      provedBlocks.length > 0
+        ? (successBlocks.length / provedBlocks.length) * 100
+        : 0
 
-  const provingTimes = provedBlocks
-    .map((b) => b.bestProvingTime)
-    .filter((t): t is number => t !== null)
-  const avgProvingTime =
-    provingTimes.length > 0
-      ? provingTimes.reduce((a, b) => a + b, 0) / provingTimes.length
-      : null
+    const provingTimes = provedBlocks
+      .map((b) => b.bestProvingTime)
+      .filter((t): t is number => t !== null)
+    const avgProvingTime =
+      provingTimes.length > 0
+        ? provingTimes.reduce((a, b) => a + b, 0) / provingTimes.length
+        : null
 
-  return {
-    blocks,
-    successRate,
-    avgProvingTime,
-    totalBlocks: blocks.length,
+    return {
+      blocks,
+      successRate,
+      avgProvingTime,
+      totalBlocks: blocks.length,
+    }
+  },
+  ["recent-blocks-summary"],
+  {
+    revalidate: 60,
+    tags: [TAGS.RECENT_SUMMARY],
   }
-}
+)
 
 export const fetchBlocksChartData = cache(
   async (): Promise<BlocksMetricsData> => {
