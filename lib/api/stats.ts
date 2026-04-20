@@ -16,19 +16,28 @@ import {
  * Fetches daily proof statistics for a specified date range
  * @param days - Number of days to include (e.g., 7, 30, 90, 365)
  */
-export const fetchProofsDailyStats = async (days: number) => {
-  const safeDays = Number.isFinite(days) ? Math.max(0, Math.floor(days)) : 0
-  const endDate = new Date()
-  const startDate = startOfDay(addDays(endDate, -safeDays))
+export async function fetchProofsDailyStats(days: number) {
+  return cache(
+    async (days: number) => {
+      const safeDays = Number.isFinite(days) ? Math.max(0, Math.floor(days)) : 0
+      const endDate = new Date()
+      const startDate = startOfDay(addDays(endDate, -safeDays))
 
-  return db.query.proofsDailyStats.findMany({
-    where: (stats, { and, gte, lte }) =>
-      and(
-        gte(stats.date, startDate.toISOString()),
-        lte(stats.date, endDate.toISOString())
-      ),
-    orderBy: (stats) => [asc(stats.date)],
-  })
+      return db.query.proofsDailyStats.findMany({
+        where: (stats, { and, gte, lte }) =>
+          and(
+            gte(stats.date, startDate.toISOString()),
+            lte(stats.date, endDate.toISOString())
+          ),
+        orderBy: (stats) => [asc(stats.date)],
+      })
+    },
+    ["proofs-daily-stats", String(days)],
+    {
+      revalidate: 3600,
+      tags: [TAGS.PROOFS],
+    }
+  )(days)
 }
 
 /**
@@ -125,18 +134,26 @@ export const getTeamsSummary = cache(
   }
 )
 
-export const getTeamSummary = async (teamId: string) => {
-  const [teamSummary] = await db
-    .select()
-    .from(teamsSummaryView)
-    .where(
-      and(
-        eq(teamsSummaryView.team_id, teamId),
-        // hide test teams from the provers list
-        notIlike(teamsSummaryView.team_name, "%test%")
-      )
-    )
-    .limit(1)
+export async function getTeamSummary(teamId: string) {
+  return cache(
+    async (teamId: string) => {
+      const [teamSummary] = await db
+        .select()
+        .from(teamsSummaryView)
+        .where(
+          and(
+            eq(teamsSummaryView.team_id, teamId),
+            notIlike(teamsSummaryView.team_name, "%test%")
+          )
+        )
+        .limit(1)
 
-  return teamSummary
+      return teamSummary
+    },
+    ["team-summary", teamId],
+    {
+      revalidate: 300,
+      tags: [TAGS.TEAM_SUMMARY],
+    }
+  )(teamId)
 }

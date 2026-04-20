@@ -23,102 +23,116 @@ function getFirstRow(result: unknown): Record<string, unknown> {
   return isRecord(first) ? first : {}
 }
 
-export async function fetchProverSummary(): Promise<ProverSummaryData> {
-  const [summaryResult, rtpResult] = await Promise.all([
-    db.execute(sql`
-      WITH active_clusters AS (
-        SELECT c.id, c.team_id, cv.id AS cv_id
-        FROM clusters c
-        INNER JOIN cluster_versions cv ON cv.cluster_id = c.id AND cv.is_active = true
-        WHERE c.is_active = true AND c.is_approved = true
-      ),
-      recent_proofs AS (
-        SELECT p.cluster_version_id, p.proof_status, p.proving_time
-        FROM proofs p
-        INNER JOIN blocks b ON p.block_number = b.block_number
-        WHERE b.timestamp >= NOW() - interval '7 days'
-          AND NOT is_downtime_block(b.block_number)
-      )
-      SELECT
-        (SELECT COUNT(DISTINCT id)::integer FROM active_clusters) AS total_provers,
-        COALESCE(SUM(
-          CASE WHEN rp.proof_status = 'proved' THEN 1 ELSE 0 END
-        ), 0)::integer AS total_proofs,
-        CASE
-          WHEN COUNT(CASE WHEN rp.proof_status = 'proved' THEN 1 END) > 0
-          THEN (
-            COUNT(CASE WHEN rp.proof_status = 'proved' AND rp.proving_time < ${RTP_PERFORMANCE_TIME_THRESHOLD_MS} THEN 1 END)::double precision /
-            COUNT(CASE WHEN rp.proof_status = 'proved' THEN 1 END)::double precision
-          ) * 100
-          ELSE 0
-        END AS avg_performance
-      FROM active_clusters ac
-      LEFT JOIN recent_proofs rp ON rp.cluster_version_id = ac.cv_id
-    `),
-    db.execute(sql`
-      SELECT COUNT(DISTINCT s.cluster_id)::integer AS rtp_eligible_count
-      FROM rtp_cohort_snapshots s
-      WHERE s.is_eligible = true
-        AND s.snapshot_week = (
-          SELECT MAX(snapshot_week) FROM rtp_cohort_snapshots
+export const fetchProverSummary = cache(
+  async (): Promise<ProverSummaryData> => {
+    const [summaryResult, rtpResult] = await Promise.all([
+      db.execute(sql`
+        WITH active_clusters AS (
+          SELECT c.id, c.team_id, cv.id AS cv_id
+          FROM clusters c
+          INNER JOIN cluster_versions cv ON cv.cluster_id = c.id AND cv.is_active = true
+          WHERE c.is_active = true AND c.is_approved = true
+        ),
+        recent_proofs AS (
+          SELECT p.cluster_version_id, p.proof_status, p.proving_time
+          FROM proofs p
+          INNER JOIN blocks b ON p.block_number = b.block_number
+          WHERE b.timestamp >= NOW() - interval '7 days'
+            AND NOT is_downtime_block(b.block_number)
         )
-    `),
-  ])
+        SELECT
+          (SELECT COUNT(DISTINCT id)::integer FROM active_clusters) AS total_provers,
+          COALESCE(SUM(
+            CASE WHEN rp.proof_status = 'proved' THEN 1 ELSE 0 END
+          ), 0)::integer AS total_proofs,
+          CASE
+            WHEN COUNT(CASE WHEN rp.proof_status = 'proved' THEN 1 END) > 0
+            THEN (
+              COUNT(CASE WHEN rp.proof_status = 'proved' AND rp.proving_time < ${RTP_PERFORMANCE_TIME_THRESHOLD_MS} THEN 1 END)::double precision /
+              COUNT(CASE WHEN rp.proof_status = 'proved' THEN 1 END)::double precision
+            ) * 100
+            ELSE 0
+          END AS avg_performance
+        FROM active_clusters ac
+        LEFT JOIN recent_proofs rp ON rp.cluster_version_id = ac.cv_id
+      `),
+      db.execute(sql`
+        SELECT COUNT(DISTINCT s.cluster_id)::integer AS rtp_eligible_count
+        FROM rtp_cohort_snapshots s
+        WHERE s.is_eligible = true
+          AND s.snapshot_week = (
+            SELECT MAX(snapshot_week) FROM rtp_cohort_snapshots
+          )
+      `),
+    ])
 
-  const summary = getFirstRow(summaryResult)
-  const rtp = getFirstRow(rtpResult)
+    const summary = getFirstRow(summaryResult)
+    const rtp = getFirstRow(rtpResult)
 
-  return {
-    totalProvers: Number(summary.total_provers ?? 0),
-    rtpEligibleCount: Number(rtp.rtp_eligible_count ?? 0),
-    totalProofs: Number(summary.total_proofs ?? 0),
-    avgPerformance: Number(summary.avg_performance ?? 0),
+    return {
+      totalProvers: Number(summary.total_provers ?? 0),
+      rtpEligibleCount: Number(rtp.rtp_eligible_count ?? 0),
+      totalProofs: Number(summary.total_proofs ?? 0),
+      avgPerformance: Number(summary.avg_performance ?? 0),
+    }
+  },
+  ["prover-summary"],
+  {
+    revalidate: 300,
+    tags: [TAGS.CLUSTERS],
   }
-}
+)
 
-export async function fetchProverScatterData(): Promise<ProverScatterPoint[]> {
-  const result = await db.execute(sql`
-    WITH latest_snapshot AS (
-      SELECT MAX(snapshot_week) AS week
-      FROM rtp_cohort_snapshots
-    ),
-    cluster_data AS (
-      SELECT
-        t.name AS team_name,
-        c.name AS cluster_name,
-        pt.name AS persona,
-        s.performance_score,
-        s.liveness_score,
-        s.avg_cost_per_proof,
-        s.is_eligible,
-        (s.sub_10s_proofs + s.over_10s_proofs)::integer AS proof_count
-      FROM rtp_cohort_snapshots s
-      INNER JOIN latest_snapshot ls ON s.snapshot_week = ls.week
-      INNER JOIN clusters c ON s.cluster_id = c.id
-      INNER JOIN teams t ON c.team_id = t.id
-      INNER JOIN prover_types pt ON c.prover_type_id = pt.id
-      WHERE c.is_active = true AND c.is_approved = true
-    )
-    SELECT * FROM cluster_data
-    WHERE proof_count > 0
-    ORDER BY performance_score DESC
-  `)
+export const fetchProverScatterData = cache(
+  async (): Promise<ProverScatterPoint[]> => {
+    const result = await db.execute(sql`
+      WITH latest_snapshot AS (
+        SELECT MAX(snapshot_week) AS week
+        FROM rtp_cohort_snapshots
+      ),
+      cluster_data AS (
+        SELECT
+          t.name AS team_name,
+          c.name AS cluster_name,
+          pt.name AS persona,
+          s.performance_score,
+          s.liveness_score,
+          s.avg_cost_per_proof,
+          s.is_eligible,
+          (s.sub_10s_proofs + s.over_10s_proofs)::integer AS proof_count
+        FROM rtp_cohort_snapshots s
+        INNER JOIN latest_snapshot ls ON s.snapshot_week = ls.week
+        INNER JOIN clusters c ON s.cluster_id = c.id
+        INNER JOIN teams t ON c.team_id = t.id
+        INNER JOIN prover_types pt ON c.prover_type_id = pt.id
+        WHERE c.is_active = true AND c.is_approved = true
+      )
+      SELECT * FROM cluster_data
+      WHERE proof_count > 0
+      ORDER BY performance_score DESC
+    `)
 
-  const rows = Array.isArray(result) ? result : []
-  return rows
-    .filter(isRecord)
-    .filter((row) => row.avg_cost_per_proof != null)
-    .map((row) => ({
-      teamName: String(row.team_name ?? ""),
-      clusterName: String(row.cluster_name ?? ""),
-      persona: String(row.persona ?? ""),
-      avgCost: Number(row.avg_cost_per_proof),
-      performanceScore: Number(row.performance_score ?? 0),
-      livenessScore: Number(row.liveness_score ?? 0),
-      proofCount: Number(row.proof_count ?? 0),
-      isRtpEligible: Boolean(row.is_eligible),
-    }))
-}
+    const rows = Array.isArray(result) ? result : []
+    return rows
+      .filter(isRecord)
+      .filter((row) => row.avg_cost_per_proof != null)
+      .map((row) => ({
+        teamName: String(row.team_name ?? ""),
+        clusterName: String(row.cluster_name ?? ""),
+        persona: String(row.persona ?? ""),
+        avgCost: Number(row.avg_cost_per_proof),
+        performanceScore: Number(row.performance_score ?? 0),
+        livenessScore: Number(row.liveness_score ?? 0),
+        proofCount: Number(row.proof_count ?? 0),
+        isRtpEligible: Boolean(row.is_eligible),
+      }))
+  },
+  ["prover-scatter-data"],
+  {
+    revalidate: 300,
+    tags: [TAGS.RTP_COHORT],
+  }
+)
 
 function isConsistencyWeekEntry(
   value: unknown

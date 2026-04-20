@@ -1,12 +1,16 @@
 import { sql } from "drizzle-orm"
+import { unstable_cache as cache } from "next/cache"
 
 import type { GuestDiversityPoint, GuestSummaryData } from "@/lib/types"
 
+import { TAGS } from "@/lib/constants"
+
 import { db } from "@/db"
 
-export async function fetchGuestSummary(): Promise<GuestSummaryData> {
-  const [distributionResult, activeCountResult] = await Promise.all([
-    db.execute(sql`
+export const fetchGuestSummary = cache(
+  async (): Promise<GuestSummaryData> => {
+    const [distributionResult, activeCountResult] = await Promise.all([
+      db.execute(sql`
       SELECT
         gp.name,
         COUNT(p.proof_id)::integer AS proof_count
@@ -23,7 +27,7 @@ export async function fetchGuestSummary(): Promise<GuestSummaryData> {
       GROUP BY gp.id, gp.name
       ORDER BY proof_count DESC
     `),
-    db.execute(sql`
+      db.execute(sql`
       SELECT
         COUNT(DISTINCT gp.id)::integer AS current_count,
         (
@@ -37,48 +41,55 @@ export async function fetchGuestSummary(): Promise<GuestSummaryData> {
       INNER JOIN clusters c ON c.guest_program_id = gp.id
       WHERE c.is_active = true AND c.is_approved = true
     `),
-  ])
+    ])
 
-  const distRows = Array.isArray(distributionResult) ? distributionResult : []
-  const totalProofs = distRows.reduce(
-    (sum: number, row: Record<string, unknown>) =>
-      sum + Number(row.proof_count ?? 0),
-    0
-  )
+    const distRows = Array.isArray(distributionResult) ? distributionResult : []
+    const totalProofs = distRows.reduce(
+      (sum: number, row: Record<string, unknown>) =>
+        sum + Number(row.proof_count ?? 0),
+      0
+    )
 
-  const distribution = distRows.map((row: Record<string, unknown>) => ({
-    name: String(row.name ?? ""),
-    share:
-      totalProofs > 0 ? (Number(row.proof_count ?? 0) / totalProofs) * 100 : 0,
-  }))
+    const distribution = distRows.map((row: Record<string, unknown>) => ({
+      name: String(row.name ?? ""),
+      share:
+        totalProofs > 0
+          ? (Number(row.proof_count ?? 0) / totalProofs) * 100
+          : 0,
+    }))
 
-  const dominant = distribution[0] ?? { name: "none", share: 0 }
+    const dominant = distribution[0] ?? { name: "none", share: 0 }
 
-  const activeRow =
-    Array.isArray(activeCountResult) && activeCountResult.length > 0
-      ? (activeCountResult[0] as Record<string, unknown>)
-      : {}
-  const currentCount = Number(activeRow.current_count ?? 0)
-  const previousCount = Number(activeRow.previous_count ?? 0)
-  const activeGuestsChange =
-    previousCount > 0
-      ? ((currentCount - previousCount) / previousCount) * 100
-      : 0
+    const activeRow =
+      Array.isArray(activeCountResult) && activeCountResult.length > 0
+        ? (activeCountResult[0] as Record<string, unknown>)
+        : {}
+    const currentCount = Number(activeRow.current_count ?? 0)
+    const previousCount = Number(activeRow.previous_count ?? 0)
+    const activeGuestsChange =
+      previousCount > 0
+        ? ((currentCount - previousCount) / previousCount) * 100
+        : 0
 
-  return {
-    dominantGuest: dominant.name,
-    dominantGuestShare: dominant.share,
-    distribution,
-    activeGuestsCount: currentCount,
-    activeGuestsChange,
-    totalProofs,
+    return {
+      dominantGuest: dominant.name,
+      dominantGuestShare: dominant.share,
+      distribution,
+      activeGuestsCount: currentCount,
+      activeGuestsChange,
+      totalProofs,
+    }
+  },
+  ["guest-summary"],
+  {
+    revalidate: 300,
+    tags: [TAGS.CLUSTERS],
   }
-}
+)
 
-export async function fetchGuestDiversityTrend(): Promise<
-  GuestDiversityPoint[]
-> {
-  const result = await db.execute(sql`
+export const fetchGuestDiversityTrend = cache(
+  async (): Promise<GuestDiversityPoint[]> => {
+    const result = await db.execute(sql`
     SELECT
       gp.name AS guest_name,
       date_trunc('week', b.timestamp::timestamptz) AS week,
@@ -95,25 +106,31 @@ export async function fetchGuestDiversityTrend(): Promise<
     ORDER BY gp.name, week
   `)
 
-  const rows = Array.isArray(result) ? result : []
+    const rows = Array.isArray(result) ? result : []
 
-  const weekTotals = new Map<string, number>()
-  for (const row of rows) {
-    const r = row as Record<string, unknown>
-    const week = String(r.week ?? "")
-    const count = Number(r.proof_count ?? 0)
-    weekTotals.set(week, (weekTotals.get(week) ?? 0) + count)
-  }
-
-  return rows.map((row: Record<string, unknown>) => {
-    const week = String(row.week ?? "")
-    const count = Number(row.proof_count ?? 0)
-    const total = weekTotals.get(week) ?? 1
-    return {
-      week,
-      guestName: String(row.guest_name ?? ""),
-      proofCount: count,
-      share: (count / total) * 100,
+    const weekTotals = new Map<string, number>()
+    for (const row of rows) {
+      const r = row as Record<string, unknown>
+      const week = String(r.week ?? "")
+      const count = Number(r.proof_count ?? 0)
+      weekTotals.set(week, (weekTotals.get(week) ?? 0) + count)
     }
-  })
-}
+
+    return rows.map((row: Record<string, unknown>) => {
+      const week = String(row.week ?? "")
+      const count = Number(row.proof_count ?? 0)
+      const total = weekTotals.get(week) ?? 1
+      return {
+        week,
+        guestName: String(row.guest_name ?? ""),
+        proofCount: count,
+        share: (count / total) * 100,
+      }
+    })
+  },
+  ["guest-diversity-trend"],
+  {
+    revalidate: 3600,
+    tags: [TAGS.PROOFS],
+  }
+)

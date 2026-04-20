@@ -1,4 +1,5 @@
 import { sql } from "drizzle-orm"
+import { unstable_cache as cache } from "next/cache"
 
 import type {
   MilestoneStatus,
@@ -7,7 +8,7 @@ import type {
   ZkvmSummaryData,
 } from "@/lib/types"
 
-import { SECURITY_MILESTONE_THRESHOLDS } from "@/lib/constants"
+import { SECURITY_MILESTONE_THRESHOLDS, TAGS } from "@/lib/constants"
 
 import { db } from "@/db"
 
@@ -21,9 +22,10 @@ function getFirstRow(result: unknown): Record<string, unknown> {
   return isRecord(first) ? first : {}
 }
 
-export async function fetchZkvmSummary(): Promise<ZkvmSummaryData> {
-  const [countsResult, rtpResult] = await Promise.all([
-    db.execute(sql`
+export const fetchZkvmSummary = cache(
+  async (): Promise<ZkvmSummaryData> => {
+    const [countsResult, rtpResult] = await Promise.all([
+      db.execute(sql`
       SELECT
         COUNT(DISTINCT z.id)::integer AS total_zkvms,
         COUNT(DISTINCT z.id) FILTER (
@@ -54,7 +56,7 @@ export async function fetchZkvmSummary(): Promise<ZkvmSummaryData> {
       WHERE z.is_approved = true
         AND cv.is_active = true
     `),
-    db.execute(sql`
+      db.execute(sql`
       SELECT COUNT(DISTINCT rcs.cluster_id)::integer AS rtp_eligible_count
       FROM rtp_cohort_snapshots rcs
       INNER JOIN clusters c ON rcs.cluster_id = c.id
@@ -65,23 +67,29 @@ export async function fetchZkvmSummary(): Promise<ZkvmSummaryData> {
           SELECT MAX(snapshot_week) FROM rtp_cohort_snapshots
         )
     `),
-  ])
+    ])
 
-  const counts = getFirstRow(countsResult)
-  const rtp = getFirstRow(rtpResult)
+    const counts = getFirstRow(countsResult)
+    const rtp = getFirstRow(rtpResult)
 
-  return {
-    totalZkvms: Number(counts.total_zkvms ?? 0),
-    pqCryptographyCount: Number(counts.pq_cryptography_count ?? 0),
-    rtpEligibleProverCount: Number(rtp.rtp_eligible_count ?? 0),
-    isaCount: Number(counts.isa_count ?? 0),
-    soundcalcCount: Number(counts.soundcalc_count ?? 0),
-    security100BitCount: Number(counts.security_100_bit_count ?? 0),
-    proofSize600KibCount: Number(counts.proof_size_600_kib_count ?? 0),
-    security128BitCount: Number(counts.security_128_bit_count ?? 0),
-    proofSize300KibCount: Number(counts.proof_size_300_kib_count ?? 0),
+    return {
+      totalZkvms: Number(counts.total_zkvms ?? 0),
+      pqCryptographyCount: Number(counts.pq_cryptography_count ?? 0),
+      rtpEligibleProverCount: Number(rtp.rtp_eligible_count ?? 0),
+      isaCount: Number(counts.isa_count ?? 0),
+      soundcalcCount: Number(counts.soundcalc_count ?? 0),
+      security100BitCount: Number(counts.security_100_bit_count ?? 0),
+      proofSize600KibCount: Number(counts.proof_size_600_kib_count ?? 0),
+      security128BitCount: Number(counts.security_128_bit_count ?? 0),
+      proofSize300KibCount: Number(counts.proof_size_300_kib_count ?? 0),
+    }
+  },
+  ["zkvm-summary"],
+  {
+    revalidate: 300,
+    tags: [TAGS.CLUSTERS],
   }
-}
+)
 
 function deriveMilestoneStatus(
   hasData: boolean,
@@ -92,8 +100,9 @@ function deriveMilestoneStatus(
   return "not_yet"
 }
 
-export async function fetchZkvmMilestones(): Promise<ZkvmMilestoneEntry[]> {
-  const result = await db.execute(sql`
+export const fetchZkvmMilestones = cache(
+  async (): Promise<ZkvmMilestoneEntry[]> => {
+    const result = await db.execute(sql`
     SELECT
       z.name AS zkvm_name,
       BOOL_OR(sm.soundcalc_integration) AS soundcalc_integration,
@@ -113,48 +122,55 @@ export async function fetchZkvmMilestones(): Promise<ZkvmMilestoneEntry[]> {
     ORDER BY z.name
   `)
 
-  const rows = Array.isArray(result) ? result : []
+    const rows = Array.isArray(result) ? result : []
 
-  const entries = rows.filter(isRecord).map((row) => {
-    const hasSecurity = Boolean(row.has_security_metrics)
-    const hasPerformance = Boolean(row.has_performance_metrics)
-    const soundcalc = Boolean(row.soundcalc_integration)
-    const securityBits = Number(row.security_target_bits ?? 0)
-    const sizeBytes = Number(row.size_bytes ?? 0)
-    const hasProofSize = hasPerformance && sizeBytes > 0
+    const entries = rows.filter(isRecord).map((row) => {
+      const hasSecurity = Boolean(row.has_security_metrics)
+      const hasPerformance = Boolean(row.has_performance_metrics)
+      const soundcalc = Boolean(row.soundcalc_integration)
+      const securityBits = Number(row.security_target_bits ?? 0)
+      const sizeBytes = Number(row.size_bytes ?? 0)
+      const hasProofSize = hasPerformance && sizeBytes > 0
 
-    const entry: ZkvmMilestoneEntry = {
-      zkvmName: String(row.zkvm_name ?? ""),
-      m1: deriveMilestoneStatus(hasSecurity, soundcalc),
-      m2a: deriveMilestoneStatus(
-        hasSecurity,
-        securityBits >= SECURITY_MILESTONE_THRESHOLDS.M2A_SECURITY_BITS
-      ),
-      m2b: deriveMilestoneStatus(
-        hasPerformance,
-        hasProofSize &&
-          sizeBytes <= SECURITY_MILESTONE_THRESHOLDS.M2B_PROOF_SIZE_BYTES
-      ),
-      m3a: deriveMilestoneStatus(
-        hasSecurity,
-        securityBits >= SECURITY_MILESTONE_THRESHOLDS.M3A_SECURITY_BITS
-      ),
-      m3b: deriveMilestoneStatus(
-        hasPerformance,
-        hasProofSize &&
-          sizeBytes <= SECURITY_MILESTONE_THRESHOLDS.M3B_PROOF_SIZE_BYTES
-      ),
-    }
+      const entry: ZkvmMilestoneEntry = {
+        zkvmName: String(row.zkvm_name ?? ""),
+        m1: deriveMilestoneStatus(hasSecurity, soundcalc),
+        m2a: deriveMilestoneStatus(
+          hasSecurity,
+          securityBits >= SECURITY_MILESTONE_THRESHOLDS.M2A_SECURITY_BITS
+        ),
+        m2b: deriveMilestoneStatus(
+          hasPerformance,
+          hasProofSize &&
+            sizeBytes <= SECURITY_MILESTONE_THRESHOLDS.M2B_PROOF_SIZE_BYTES
+        ),
+        m3a: deriveMilestoneStatus(
+          hasSecurity,
+          securityBits >= SECURITY_MILESTONE_THRESHOLDS.M3A_SECURITY_BITS
+        ),
+        m3b: deriveMilestoneStatus(
+          hasPerformance,
+          hasProofSize &&
+            sizeBytes <= SECURITY_MILESTONE_THRESHOLDS.M3B_PROOF_SIZE_BYTES
+        ),
+      }
 
-    return entry
-  })
+      return entry
+    })
 
-  return entries.sort((a, b) => {
-    const countAchieved = (e: ZkvmMilestoneEntry) =>
-      [e.m1, e.m2a, e.m2b, e.m3a, e.m3b].filter((s) => s === "achieved").length
-    return countAchieved(b) - countAchieved(a)
-  })
-}
+    return entries.sort((a, b) => {
+      const countAchieved = (e: ZkvmMilestoneEntry) =>
+        [e.m1, e.m2a, e.m2b, e.m3a, e.m3b].filter((s) => s === "achieved")
+          .length
+      return countAchieved(b) - countAchieved(a)
+    })
+  },
+  ["zkvm-milestones"],
+  {
+    revalidate: 300,
+    tags: [TAGS.CLUSTERS],
+  }
+)
 
 function toPerformancePoint(
   row: Record<string, unknown>
@@ -166,10 +182,9 @@ function toPerformancePoint(
   }
 }
 
-export async function fetchZkvmPerformanceTrajectory(): Promise<
-  ZkvmPerformancePoint[]
-> {
-  const result = await db.execute(sql`
+export const fetchZkvmPerformanceTrajectory = cache(
+  async (): Promise<ZkvmPerformancePoint[]> => {
+    const result = await db.execute(sql`
     SELECT
       z.name AS zkvm_name,
       date_trunc('week', b.timestamp::timestamptz) AS week,
@@ -190,6 +205,12 @@ export async function fetchZkvmPerformanceTrajectory(): Promise<
     ORDER BY z.name, week
   `)
 
-  const rows = Array.isArray(result) ? result : []
-  return rows.filter(isRecord).map(toPerformancePoint)
-}
+    const rows = Array.isArray(result) ? result : []
+    return rows.filter(isRecord).map(toPerformancePoint)
+  },
+  ["zkvm-performance-trajectory"],
+  {
+    revalidate: 3600,
+    tags: [TAGS.PROOFS],
+  }
+)

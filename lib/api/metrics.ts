@@ -1,4 +1,5 @@
 import { eq, inArray, sql } from "drizzle-orm"
+import { unstable_cache as cache } from "next/cache"
 
 import type {
   GpuPriceHistoryEntry,
@@ -13,6 +14,7 @@ import type {
 import {
   RTP_PARALYZER_CUTOFF_MINUTES,
   RTP_PERFORMANCE_TIME_THRESHOLD_MS,
+  TAGS,
 } from "@/lib/constants"
 
 import { db, type Transaction } from "@/db"
@@ -198,84 +200,95 @@ function toMetricsSummaryStatic(
 export async function fetchMetricsSummary(
   days: number
 ): Promise<MetricsSummary> {
-  const safeDays = Number.isFinite(days) ? Math.max(1, Math.floor(days)) : 30
+  return cache(
+    async (days: number) => {
+      const safeDays = Number.isFinite(days)
+        ? Math.max(1, Math.floor(days))
+        : 30
 
-  const [
-    currentResult,
-    prevResult,
-    zkvmResult,
-    guestResult,
-    proverCountResult,
-  ] = await Promise.all([
-    db.execute(sql`
-        SELECT
-          COUNT(DISTINCT p.block_number)::integer AS total_proven_blocks,
-          COUNT(p.proof_id)::integer AS total_proofs,
-          COALESCE(AVG(p.proving_time) FILTER (WHERE pt.gpu_configuration = 'multi-gpu'), 0) AS multi_gpu_avg_latency,
-          COALESCE(AVG(c.num_gpus::double precision * gpi.hourly_price::double precision * p.proving_time::double precision / (1000.0 * 60 * 60)) FILTER (WHERE pt.gpu_configuration = 'multi-gpu'), 0) AS multi_gpu_avg_cost,
-          COALESCE(AVG(p.proving_time) FILTER (WHERE pt.gpu_configuration = 'single-gpu'), 0) AS single_gpu_avg_latency,
-          COALESCE(AVG(c.num_gpus::double precision * gpi.hourly_price::double precision * p.proving_time::double precision / (1000.0 * 60 * 60)) FILTER (WHERE pt.gpu_configuration = 'single-gpu'), 0) AS single_gpu_avg_cost
-        FROM proofs p
-        INNER JOIN blocks b ON p.block_number = b.block_number
-        INNER JOIN cluster_versions cv ON p.cluster_version_id = cv.id
-        INNER JOIN clusters c ON cv.cluster_id = c.id
-        LEFT JOIN prover_types pt ON c.prover_type_id = pt.id
-        LEFT JOIN gpu_price_index gpi ON p.gpu_price_index_id = gpi.id
-        WHERE p.proof_status = 'proved'
-          AND b.timestamp >= NOW() - make_interval(days => ${safeDays})
-          AND NOT is_downtime_block(b.block_number)
-      `),
-    db.execute(sql`
-        SELECT
-          COUNT(DISTINCT p.block_number)::integer AS total_proven_blocks,
-          COUNT(p.proof_id)::integer AS total_proofs,
-          COALESCE(AVG(p.proving_time) FILTER (WHERE pt.gpu_configuration = 'multi-gpu'), 0) AS multi_gpu_avg_latency,
-          COALESCE(AVG(c.num_gpus::double precision * gpi.hourly_price::double precision * p.proving_time::double precision / (1000.0 * 60 * 60)) FILTER (WHERE pt.gpu_configuration = 'multi-gpu'), 0) AS multi_gpu_avg_cost,
-          COALESCE(AVG(p.proving_time) FILTER (WHERE pt.gpu_configuration = 'single-gpu'), 0) AS single_gpu_avg_latency,
-          COALESCE(AVG(c.num_gpus::double precision * gpi.hourly_price::double precision * p.proving_time::double precision / (1000.0 * 60 * 60)) FILTER (WHERE pt.gpu_configuration = 'single-gpu'), 0) AS single_gpu_avg_cost
-        FROM proofs p
-        INNER JOIN blocks b ON p.block_number = b.block_number
-        INNER JOIN cluster_versions cv ON p.cluster_version_id = cv.id
-        INNER JOIN clusters c ON cv.cluster_id = c.id
-        LEFT JOIN prover_types pt ON c.prover_type_id = pt.id
-        LEFT JOIN gpu_price_index gpi ON p.gpu_price_index_id = gpi.id
-        WHERE p.proof_status = 'proved'
-          AND b.timestamp >= NOW() - make_interval(days => ${safeDays * 2})
-          AND b.timestamp < NOW() - make_interval(days => ${safeDays})
-          AND NOT is_downtime_block(b.block_number)
-      `),
-    db.execute(sql`
-        SELECT COUNT(DISTINCT zv.zkvm_id)::integer AS cnt
-        FROM cluster_versions cv
-        INNER JOIN clusters c ON cv.cluster_id = c.id
-        INNER JOIN zkvm_versions zv ON cv.zkvm_version_id = zv.id
-        WHERE c.is_active = true AND c.is_approved = true AND cv.is_active = true
-      `),
-    db.execute(sql`
-        SELECT COUNT(DISTINCT c.guest_program_id)::integer AS cnt
-        FROM clusters c
-        WHERE c.is_active = true AND c.is_approved = true AND c.guest_program_id IS NOT NULL
-      `),
-    db.execute(sql`
-        SELECT
-          COUNT(*) FILTER (WHERE pt.gpu_configuration = 'multi-gpu')::integer AS multi_gpu_count,
-          COUNT(*) FILTER (WHERE pt.gpu_configuration = 'single-gpu')::integer AS single_gpu_count
-        FROM clusters c
-        INNER JOIN prover_types pt ON c.prover_type_id = pt.id
-        WHERE c.is_active = true AND c.is_approved = true
-      `),
-  ])
+      const [
+        currentResult,
+        prevResult,
+        zkvmResult,
+        guestResult,
+        proverCountResult,
+      ] = await Promise.all([
+        db.execute(sql`
+            SELECT
+              COUNT(DISTINCT p.block_number)::integer AS total_proven_blocks,
+              COUNT(p.proof_id)::integer AS total_proofs,
+              COALESCE(AVG(p.proving_time) FILTER (WHERE pt.gpu_configuration = 'multi-gpu'), 0) AS multi_gpu_avg_latency,
+              COALESCE(AVG(c.num_gpus::double precision * gpi.hourly_price::double precision * p.proving_time::double precision / (1000.0 * 60 * 60)) FILTER (WHERE pt.gpu_configuration = 'multi-gpu'), 0) AS multi_gpu_avg_cost,
+              COALESCE(AVG(p.proving_time) FILTER (WHERE pt.gpu_configuration = 'single-gpu'), 0) AS single_gpu_avg_latency,
+              COALESCE(AVG(c.num_gpus::double precision * gpi.hourly_price::double precision * p.proving_time::double precision / (1000.0 * 60 * 60)) FILTER (WHERE pt.gpu_configuration = 'single-gpu'), 0) AS single_gpu_avg_cost
+            FROM proofs p
+            INNER JOIN blocks b ON p.block_number = b.block_number
+            INNER JOIN cluster_versions cv ON p.cluster_version_id = cv.id
+            INNER JOIN clusters c ON cv.cluster_id = c.id
+            LEFT JOIN prover_types pt ON c.prover_type_id = pt.id
+            LEFT JOIN gpu_price_index gpi ON p.gpu_price_index_id = gpi.id
+            WHERE p.proof_status = 'proved'
+              AND b.timestamp >= NOW() - make_interval(days => ${safeDays})
+              AND NOT is_downtime_block(b.block_number)
+          `),
+        db.execute(sql`
+            SELECT
+              COUNT(DISTINCT p.block_number)::integer AS total_proven_blocks,
+              COUNT(p.proof_id)::integer AS total_proofs,
+              COALESCE(AVG(p.proving_time) FILTER (WHERE pt.gpu_configuration = 'multi-gpu'), 0) AS multi_gpu_avg_latency,
+              COALESCE(AVG(c.num_gpus::double precision * gpi.hourly_price::double precision * p.proving_time::double precision / (1000.0 * 60 * 60)) FILTER (WHERE pt.gpu_configuration = 'multi-gpu'), 0) AS multi_gpu_avg_cost,
+              COALESCE(AVG(p.proving_time) FILTER (WHERE pt.gpu_configuration = 'single-gpu'), 0) AS single_gpu_avg_latency,
+              COALESCE(AVG(c.num_gpus::double precision * gpi.hourly_price::double precision * p.proving_time::double precision / (1000.0 * 60 * 60)) FILTER (WHERE pt.gpu_configuration = 'single-gpu'), 0) AS single_gpu_avg_cost
+            FROM proofs p
+            INNER JOIN blocks b ON p.block_number = b.block_number
+            INNER JOIN cluster_versions cv ON p.cluster_version_id = cv.id
+            INNER JOIN clusters c ON cv.cluster_id = c.id
+            LEFT JOIN prover_types pt ON c.prover_type_id = pt.id
+            LEFT JOIN gpu_price_index gpi ON p.gpu_price_index_id = gpi.id
+            WHERE p.proof_status = 'proved'
+              AND b.timestamp >= NOW() - make_interval(days => ${safeDays * 2})
+              AND b.timestamp < NOW() - make_interval(days => ${safeDays})
+              AND NOT is_downtime_block(b.block_number)
+          `),
+        db.execute(sql`
+            SELECT COUNT(DISTINCT zv.zkvm_id)::integer AS cnt
+            FROM cluster_versions cv
+            INNER JOIN clusters c ON cv.cluster_id = c.id
+            INNER JOIN zkvm_versions zv ON cv.zkvm_version_id = zv.id
+            WHERE c.is_active = true AND c.is_approved = true AND cv.is_active = true
+          `),
+        db.execute(sql`
+            SELECT COUNT(DISTINCT c.guest_program_id)::integer AS cnt
+            FROM clusters c
+            WHERE c.is_active = true AND c.is_approved = true AND c.guest_program_id IS NOT NULL
+          `),
+        db.execute(sql`
+            SELECT
+              COUNT(*) FILTER (WHERE pt.gpu_configuration = 'multi-gpu')::integer AS multi_gpu_count,
+              COUNT(*) FILTER (WHERE pt.gpu_configuration = 'single-gpu')::integer AS single_gpu_count
+            FROM clusters c
+            INNER JOIN prover_types pt ON c.prover_type_id = pt.id
+            WHERE c.is_active = true AND c.is_approved = true
+          `),
+      ])
 
-  const currentRow = getFirstRecord(currentResult) ?? {}
-  const prevRow = getFirstRecord(prevResult)
-  const zkvmRow = getFirstRecord(zkvmResult) ?? {}
-  const guestRow = getFirstRecord(guestResult) ?? {}
-  const proverRow = getFirstRecord(proverCountResult) ?? {}
+      const currentRow = getFirstRecord(currentResult) ?? {}
+      const prevRow = getFirstRecord(prevResult)
+      const zkvmRow = getFirstRecord(zkvmResult) ?? {}
+      const guestRow = getFirstRecord(guestResult) ?? {}
+      const proverRow = getFirstRecord(proverCountResult) ?? {}
 
-  return {
-    ...toMetricsSummaryDynamic(currentRow, prevRow),
-    ...toMetricsSummaryStatic(zkvmRow, guestRow, proverRow),
-  }
+      return {
+        ...toMetricsSummaryDynamic(currentRow, prevRow),
+        ...toMetricsSummaryStatic(zkvmRow, guestRow, proverRow),
+      }
+    },
+    ["metrics-summary", String(days)],
+    {
+      revalidate: 300,
+      tags: [TAGS.PROOFS],
+    }
+  )(days)
 }
 
 function toReliabilityDailyStats(
@@ -300,28 +313,39 @@ function toReliabilityDailyStats(
 export async function fetchReliabilityDailyStats(
   days: number
 ): Promise<ReliabilityDailyStats[]> {
-  const safeDays = Number.isFinite(days) ? Math.max(1, Math.floor(days)) : 30
-  const paralyzerCutoffMs = RTP_PARALYZER_CUTOFF_MINUTES * 60 * 1000
+  return cache(
+    async (days: number) => {
+      const safeDays = Number.isFinite(days)
+        ? Math.max(1, Math.floor(days))
+        : 30
+      const paralyzerCutoffMs = RTP_PARALYZER_CUTOFF_MINUTES * 60 * 1000
 
-  const result = await db.execute(sql`
-    SELECT
-      DATE(b.timestamp) AS date,
-      COUNT(*) FILTER (WHERE p.proving_time < ${RTP_PERFORMANCE_TIME_THRESHOLD_MS})::integer AS sub_10s_count,
-      COUNT(*) FILTER (WHERE p.proving_time >= ${RTP_PERFORMANCE_TIME_THRESHOLD_MS} AND p.proving_time < ${paralyzerCutoffMs})::integer AS stunner_count,
-      COUNT(*) FILTER (WHERE p.proving_time >= ${paralyzerCutoffMs})::integer AS paralyzer_count,
-      COUNT(*)::integer AS total_count
-    FROM proofs p
-    INNER JOIN blocks b ON p.block_number = b.block_number
-    WHERE p.proof_status = 'proved'
-      AND p.proving_time IS NOT NULL
-      AND b.timestamp >= NOW() - make_interval(days => ${safeDays})
-      AND NOT is_downtime_block(b.block_number)
-    GROUP BY DATE(b.timestamp)
-    ORDER BY date
-  `)
+      const result = await db.execute(sql`
+        SELECT
+          DATE(b.timestamp) AS date,
+          COUNT(*) FILTER (WHERE p.proving_time < ${RTP_PERFORMANCE_TIME_THRESHOLD_MS})::integer AS sub_10s_count,
+          COUNT(*) FILTER (WHERE p.proving_time >= ${RTP_PERFORMANCE_TIME_THRESHOLD_MS} AND p.proving_time < ${paralyzerCutoffMs})::integer AS stunner_count,
+          COUNT(*) FILTER (WHERE p.proving_time >= ${paralyzerCutoffMs})::integer AS paralyzer_count,
+          COUNT(*)::integer AS total_count
+        FROM proofs p
+        INNER JOIN blocks b ON p.block_number = b.block_number
+        WHERE p.proof_status = 'proved'
+          AND p.proving_time IS NOT NULL
+          AND b.timestamp >= NOW() - make_interval(days => ${safeDays})
+          AND NOT is_downtime_block(b.block_number)
+        GROUP BY DATE(b.timestamp)
+        ORDER BY date
+      `)
 
-  const rows = Array.isArray(result) ? result : []
-  return rows.filter(isRecord).map(toReliabilityDailyStats)
+      const rows = Array.isArray(result) ? result : []
+      return rows.filter(isRecord).map(toReliabilityDailyStats)
+    },
+    ["reliability-daily-stats", String(days)],
+    {
+      revalidate: 3600,
+      tags: [TAGS.PROOFS],
+    }
+  )(days)
 }
 
 function toGpuPriceHistoryEntry(
@@ -338,36 +362,47 @@ function toGpuPriceHistoryEntry(
 export async function fetchGpuPriceHistory(
   weeks: number
 ): Promise<GpuPriceHistoryEntry[]> {
-  const safeWeeks = Number.isFinite(weeks) ? Math.max(1, Math.floor(weeks)) : 32
+  return cache(
+    async (weeks: number) => {
+      const safeWeeks = Number.isFinite(weeks)
+        ? Math.max(1, Math.floor(weeks))
+        : 32
 
-  const result = await db.execute(sql`
-    WITH weekly_gpu AS (
-      SELECT
-        date_trunc('week', gpi.created_at::timestamptz) AS week,
-        AVG(gpi.hourly_price::double precision) AS avg_gpu_price
-      FROM gpu_price_index gpi
-      WHERE gpi.created_at >= NOW() - make_interval(weeks => ${safeWeeks})
-      GROUP BY date_trunc('week', gpi.created_at::timestamptz)
-    ),
-    weekly_cost AS (
-      SELECT
-        date_trunc('week', pds.date::timestamptz) AS week,
-        AVG(pds.avg_cost) AS avg_proof_cost
-      FROM proofs_daily_stats pds
-      WHERE pds.date >= NOW() - make_interval(weeks => ${safeWeeks})
-      GROUP BY date_trunc('week', pds.date::timestamptz)
-    )
-    SELECT
-      wg.week,
-      wg.avg_gpu_price,
-      wc.avg_proof_cost
-    FROM weekly_gpu wg
-    LEFT JOIN weekly_cost wc ON wg.week = wc.week
-    ORDER BY wg.week
-  `)
+      const result = await db.execute(sql`
+        WITH weekly_gpu AS (
+          SELECT
+            date_trunc('week', gpi.created_at::timestamptz) AS week,
+            AVG(gpi.hourly_price::double precision) AS avg_gpu_price
+          FROM gpu_price_index gpi
+          WHERE gpi.created_at >= NOW() - make_interval(weeks => ${safeWeeks})
+          GROUP BY date_trunc('week', gpi.created_at::timestamptz)
+        ),
+        weekly_cost AS (
+          SELECT
+            date_trunc('week', pds.date::timestamptz) AS week,
+            AVG(pds.avg_cost) AS avg_proof_cost
+          FROM proofs_daily_stats pds
+          WHERE pds.date >= NOW() - make_interval(weeks => ${safeWeeks})
+          GROUP BY date_trunc('week', pds.date::timestamptz)
+        )
+        SELECT
+          wg.week,
+          wg.avg_gpu_price,
+          wc.avg_proof_cost
+        FROM weekly_gpu wg
+        LEFT JOIN weekly_cost wc ON wg.week = wc.week
+        ORDER BY wg.week
+      `)
 
-  const rows = Array.isArray(result) ? result : []
-  return rows.filter(isRecord).map(toGpuPriceHistoryEntry)
+      const rows = Array.isArray(result) ? result : []
+      return rows.filter(isRecord).map(toGpuPriceHistoryEntry)
+    },
+    ["gpu-price-history", String(weeks)],
+    {
+      revalidate: 3600,
+      tags: [TAGS.PROOFS],
+    }
+  )(weeks)
 }
 
 function toPersonaComparisonData(
@@ -394,30 +429,39 @@ function toPersonaComparisonData(
 export async function fetchPersonaComparison(
   days: number
 ): Promise<PersonaComparisonData[]> {
-  const safeDays = Number.isFinite(days) ? Math.max(1, Math.floor(days)) : 7
+  return cache(
+    async (days: number) => {
+      const safeDays = Number.isFinite(days) ? Math.max(1, Math.floor(days)) : 7
 
-  const result = await db.execute(sql`
-    SELECT
-      pt.name AS persona,
-      pt.gpu_configuration,
-      pt.deployment_type,
-      COUNT(DISTINCT c.id)::integer AS prover_count,
-      COUNT(p.proof_id)::integer AS proof_count,
-      COALESCE(AVG(p.proving_time), 0) AS avg_latency,
-      COALESCE(AVG(c.num_gpus::double precision * gpi.hourly_price::double precision * p.proving_time::double precision / (1000.0 * 60 * 60)), 0) AS avg_cost,
-      COUNT(*) FILTER (WHERE p.proving_time < ${RTP_PERFORMANCE_TIME_THRESHOLD_MS})::integer AS sub_10s_count,
-      COUNT(DISTINCT CASE WHEN p.proof_status = 'proved' THEN p.block_number END)::integer AS blocks_proven,
-      (SELECT COUNT(DISTINCT block_number)::integer FROM blocks WHERE timestamp >= NOW() - make_interval(days => ${safeDays}) AND NOT is_downtime_block(block_number)) AS total_blocks
-    FROM clusters c
-    INNER JOIN prover_types pt ON c.prover_type_id = pt.id
-    INNER JOIN proofs p ON p.cluster_id = c.id AND p.proof_status = 'proved'
-    INNER JOIN blocks b ON p.block_number = b.block_number AND b.timestamp >= NOW() - make_interval(days => ${safeDays}) AND NOT is_downtime_block(b.block_number)
-    LEFT JOIN gpu_price_index gpi ON p.gpu_price_index_id = gpi.id
-    WHERE c.is_active = true AND c.is_approved = true
-    GROUP BY pt.id, pt.name, pt.gpu_configuration, pt.deployment_type
-    ORDER BY pt.name
-  `)
+      const result = await db.execute(sql`
+        SELECT
+          pt.name AS persona,
+          pt.gpu_configuration,
+          pt.deployment_type,
+          COUNT(DISTINCT c.id)::integer AS prover_count,
+          COUNT(p.proof_id)::integer AS proof_count,
+          COALESCE(AVG(p.proving_time), 0) AS avg_latency,
+          COALESCE(AVG(c.num_gpus::double precision * gpi.hourly_price::double precision * p.proving_time::double precision / (1000.0 * 60 * 60)), 0) AS avg_cost,
+          COUNT(*) FILTER (WHERE p.proving_time < ${RTP_PERFORMANCE_TIME_THRESHOLD_MS})::integer AS sub_10s_count,
+          COUNT(DISTINCT CASE WHEN p.proof_status = 'proved' THEN p.block_number END)::integer AS blocks_proven,
+          (SELECT COUNT(DISTINCT block_number)::integer FROM blocks WHERE timestamp >= NOW() - make_interval(days => ${safeDays}) AND NOT is_downtime_block(block_number)) AS total_blocks
+        FROM clusters c
+        INNER JOIN prover_types pt ON c.prover_type_id = pt.id
+        INNER JOIN proofs p ON p.cluster_id = c.id AND p.proof_status = 'proved'
+        INNER JOIN blocks b ON p.block_number = b.block_number AND b.timestamp >= NOW() - make_interval(days => ${safeDays}) AND NOT is_downtime_block(b.block_number)
+        LEFT JOIN gpu_price_index gpi ON p.gpu_price_index_id = gpi.id
+        WHERE c.is_active = true AND c.is_approved = true
+        GROUP BY pt.id, pt.name, pt.gpu_configuration, pt.deployment_type
+        ORDER BY pt.name
+      `)
 
-  const rows = Array.isArray(result) ? result : []
-  return rows.filter(isRecord).map(toPersonaComparisonData)
+      const rows = Array.isArray(result) ? result : []
+      return rows.filter(isRecord).map(toPersonaComparisonData)
+    },
+    ["persona-comparison", String(days)],
+    {
+      revalidate: 300,
+      tags: [TAGS.PROOFS],
+    }
+  )(days)
 }
