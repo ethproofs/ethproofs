@@ -1,8 +1,9 @@
-import { count, eq } from "drizzle-orm"
+import { countDistinct, eq } from "drizzle-orm"
 import { unstable_cache as cache } from "next/cache"
 import { PaginationState } from "@tanstack/react-table"
 
 import { fetchBlockData } from "../blocks"
+import { TAGS } from "../constants"
 import { isUndefined } from "../utils"
 
 import { db } from "@/db"
@@ -165,30 +166,46 @@ export async function fetchBlocksPaginated(
     offset: pagination.pageIndex * pagination.pageSize,
   })
 
-  const [rowCount] = await db
-    .select({ count: count() })
-    .from(blocks)
-    .innerJoin(proofs, eq(blocks.block_number, proofs.block_number))
-    .innerJoin(
-      clusterVersions,
-      eq(proofs.cluster_version_id, clusterVersions.id)
-    )
-    .innerJoin(clusters, eq(clusterVersions.cluster_id, clusters.id))
-    .innerJoin(proverTypes, eq(clusters.prover_type_id, proverTypes.id))
-    .where(
-      machineType === "all"
-        ? undefined
-        : eq(
-            proverTypes.gpu_configuration,
-            machineType === "multi" ? "multi-gpu" : "single-gpu"
-          )
-    )
+  const rowCount = await fetchBlocksCount(machineType)
 
   return {
     rows: blocksRows,
-    rowCount: rowCount.count,
+    rowCount,
   }
 }
+
+const fetchBlocksCount = cache(
+  async (machineType: MachineType) => {
+    if (machineType === "all") {
+      const [result] = await db
+        .select({ count: countDistinct(proofs.block_number) })
+        .from(proofs)
+      return result.count
+    }
+
+    const [result] = await db
+      .select({ count: countDistinct(proofs.block_number) })
+      .from(proofs)
+      .innerJoin(
+        clusterVersions,
+        eq(proofs.cluster_version_id, clusterVersions.id)
+      )
+      .innerJoin(clusters, eq(clusterVersions.cluster_id, clusters.id))
+      .innerJoin(proverTypes, eq(clusters.prover_type_id, proverTypes.id))
+      .where(
+        eq(
+          proverTypes.gpu_configuration,
+          machineType === "multi" ? "multi-gpu" : "single-gpu"
+        )
+      )
+    return result.count
+  },
+  ["blocks-count"],
+  {
+    revalidate: 60,
+    tags: [TAGS.BLOCKS],
+  }
+)
 
 export const fetchBlock = async ({
   blockNumber,
