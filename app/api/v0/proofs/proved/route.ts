@@ -1,5 +1,6 @@
 import { eq, ne } from "drizzle-orm"
 import { revalidateTag } from "next/cache"
+import { after } from "next/server"
 import { ZodError } from "zod"
 
 import { TAGS } from "@/lib/constants"
@@ -93,6 +94,10 @@ export const POST = withAuthAndRateLimit(
 
     const binaryBuffer = Buffer.from(proof, "base64")
 
+    console.log(
+      `[Proved] Proof size for block ${block_number}: ${proof.length} base64 chars, ${binaryBuffer.byteLength} bytes`
+    )
+
     // Get the current GPU price index to snapshot the price at time of proving
     const gpuPriceIndex = await getLatestGpuPriceIndex()
 
@@ -154,8 +159,7 @@ export const POST = withAuthAndRateLimit(
       //   console.log(`[Storage Quota Exceeded] team ${teamId} has reached quota`)
       // }
 
-      // Update block and upload proof binary asynchronously after returning response
-      void (async () => {
+      after(async () => {
         try {
           await updateBlock(block_number)
           console.log(`[Proved] Block ${block_number} updated by team:`, teamId)
@@ -166,10 +170,8 @@ export const POST = withAuthAndRateLimit(
             error
           )
         }
-      })()
 
-      if (!storageQuotaExceeded) {
-        void (async () => {
+        if (!storageQuotaExceeded) {
           try {
             const team = await getTeam(teamId)
             const teamSlug = team?.slug ? team.slug : cluster.id.split("-")[0]
@@ -181,8 +183,8 @@ export const POST = withAuthAndRateLimit(
               error
             )
           }
-        })()
-      }
+        }
+      })
 
       return Response.json(newProof)
     } catch (error) {
