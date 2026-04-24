@@ -233,7 +233,7 @@ export const getZkvmVersions = cache(
 export const getProverTypes = cache(
   async () => {
     return db.query.proverTypes.findMany({
-      orderBy: (proverTypes) => proverTypes.id,
+      orderBy: (proverTypes) => proverTypes.name,
     })
   },
   ["prover-types"],

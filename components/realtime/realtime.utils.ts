@@ -25,7 +25,7 @@ export function getProofStatusText(proofStatus: ProofStatus) {
     case "failed":
       return "proved (verification failed)"
     case "error":
-      return "proved (error during verification)"
+      return "proved (network error)"
     default:
       return "unknown"
   }

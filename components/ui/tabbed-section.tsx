@@ -42,7 +42,7 @@ export function TabbedSection({
           const trigger = (
             <TabsTrigger
               key={tab.value}
-              className="flex-1 cursor-default border-none py-1"
+              className="cursor-default border-none py-1 2xl:flex-1"
               value={tab.value}
               disabled={isDisabled}
             >
@@ -56,7 +56,7 @@ export function TabbedSection({
             <TooltipProvider key={tab.value} delayDuration={200}>
               <Tooltip>
                 <TooltipTrigger asChild>
-                  <span className="flex-1 text-center">{trigger}</span>
+                  <span className="text-center 2xl:flex-1">{trigger}</span>
                 </TooltipTrigger>
                 <TooltipContent side="bottom">
                   <p className="text-xs">
