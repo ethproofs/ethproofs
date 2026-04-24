@@ -1,7 +1,32 @@
+import type { ProofData } from "@/lib/api/proofs"
 import { downloadBinaryForProofId, getProofData } from "@/lib/api/proofs"
 import { verifyProofServer } from "@/lib/server/verify-service"
 import { getCachedVk } from "@/lib/server/vk-cache"
 import { isVerifiableZkvm } from "@/lib/zkvm-verifiers"
+
+const DOWNLOAD_MAX_RETRIES = 5
+const DOWNLOAD_RETRY_DELAY_MS = 2000
+
+async function downloadWithRetry(
+  proofId: number,
+  proofData: ProofData
+): Promise<{ arrayBuffer: ArrayBuffer; filename: string }> {
+  for (let attempt = 0; attempt < DOWNLOAD_MAX_RETRIES; attempt++) {
+    try {
+      return await downloadBinaryForProofId(proofId, proofData)
+    } catch {
+      if (attempt === DOWNLOAD_MAX_RETRIES - 1) {
+        throw new Error(
+          `Failed to download proof binary after ${DOWNLOAD_MAX_RETRIES} attempts`
+        )
+      }
+      await new Promise((resolve) =>
+        setTimeout(resolve, DOWNLOAD_RETRY_DELAY_MS)
+      )
+    }
+  }
+  throw new Error("Unreachable")
+}
 
 function sendSseEvent(
   encoder: TextEncoder,
@@ -68,10 +93,7 @@ function createVerificationStream(proofId: number, proofIdStr: string) {
 
           const hasVk = Boolean(proofData.cluster_version.vk_path)
 
-          const { arrayBuffer } = await downloadBinaryForProofId(
-            proofId,
-            proofData
-          )
+          const { arrayBuffer } = await downloadWithRetry(proofId, proofData)
           const proofBytes = new Uint8Array(arrayBuffer)
           let vkBytes: Uint8Array | null = null
           if (hasVk) {

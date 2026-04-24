@@ -292,7 +292,7 @@ export const fetchAllProofsForRealtime = async () => {
   return proofsRows
 }
 
-interface ProofData {
+export interface ProofData {
   proof_id: number
   cluster_id: string
   proof_status: string
