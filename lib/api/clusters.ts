@@ -232,8 +232,12 @@ export const getZkvmVersions = cache(
 
 export const getProverTypes = cache(
   async () => {
-    return db.query.proverTypes.findMany({
-      orderBy: (proverTypes) => proverTypes.name,
+    const types = await db.query.proverTypes.findMany()
+    return types.sort((a, b) => {
+      const ratioA = Number(a.processing_ratio.split(":")[1])
+      const ratioB = Number(b.processing_ratio.split(":")[1])
+      if (ratioA !== ratioB) return ratioA - ratioB
+      return a.name.localeCompare(b.name)
     })
   },
   ["prover-types"],
