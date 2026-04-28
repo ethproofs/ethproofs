@@ -11,6 +11,7 @@ export type VerifiableZkvmSlug =
   | "openvm2"
   | "airbender"
   | "venus"
+  | "zkdtvm"
 
 /**
  * Check if a zkvm slug has a corresponding verifier implementation
@@ -25,6 +26,7 @@ export function isVerifiableZkvm(slug: string): slug is VerifiableZkvmSlug {
     "openvm2",
     "airbender",
     "venus",
+    "zkdtvm",
   ].includes(slug)
 }
 

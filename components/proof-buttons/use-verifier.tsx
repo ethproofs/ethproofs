@@ -19,6 +19,7 @@ const MODULE_LOADERS: Record<VerifiableZkvmSlug, () => Promise<unknown>> = {
   openvm2: () => import("@ethproofs/openvm2-wasm-stark-verifier"),
   airbender: () => import("@ethproofs/airbender-wasm-stark-verifier"),
   venus: () => import("@ethproofs/venus-wasm-stark-verifier"),
+  zkdtvm: () => import("@ethproofs/zkdtvm-wasm-stark-verifier"),
 }
 
 // Fallback module loaders for backwards compatibility

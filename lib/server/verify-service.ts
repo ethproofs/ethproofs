@@ -47,6 +47,9 @@ async function loadWasmModule(name: string): Promise<WasmModule> {
       case "venus":
         loadedModule = await import("@ethproofs/venus-wasm-stark-verifier")
         break
+      case "zkdtvm":
+        loadedModule = await import("@ethproofs/zkdtvm-wasm-stark-verifier")
+        break
       default:
         throw new Error(`Unknown prover type: ${name}`)
     }
