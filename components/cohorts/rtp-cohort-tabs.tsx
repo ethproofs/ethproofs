@@ -11,11 +11,6 @@ import { TabbedSection, TabsContent } from "@/components/ui/tabbed-section"
 const TAB_ELIGIBLE = "eligible"
 const TAB_INELIGIBLE = "ineligible"
 
-const TABS = [
-  { value: TAB_ELIGIBLE, label: "RTP cohort" },
-  { value: TAB_INELIGIBLE, label: "evaluated, not eligible" },
-]
-
 interface RtpCohortTabsProps {
   eligibleRows: CohortRow[]
   ineligibleRows: CohortRow[]
@@ -27,9 +22,22 @@ export function RtpCohortTabs({
 }: RtpCohortTabsProps) {
   const [activeTab, setActiveTab] = useState<string>(TAB_ELIGIBLE)
 
+  const tabs = [
+    { value: TAB_ELIGIBLE, label: "RTP cohort" },
+    {
+      value: TAB_INELIGIBLE,
+      label: "evaluated, not eligible",
+      isDisabled: ineligibleRows.length === 0,
+      disabledReason:
+        eligibleRows.length === 0
+          ? "no provers evaluated this week"
+          : "all evaluated provers were eligible",
+    },
+  ]
+
   return (
     <TabbedSection
-      tabs={TABS}
+      tabs={tabs}
       activeTab={activeTab}
       onTabChange={setActiveTab}
       tabsListClassName="grid-cols-2"
@@ -42,13 +50,7 @@ export function RtpCohortTabs({
         )}
       </TabsContent>
       <TabsContent value={TAB_INELIGIBLE}>
-        {ineligibleRows.length === 0 ? (
-          <p className="px-1 py-4 text-sm text-muted-foreground">
-            no evaluated provers fell short of eligibility this week
-          </p>
-        ) : (
-          <CohortTable rows={ineligibleRows} />
-        )}
+        <CohortTable rows={ineligibleRows} />
       </TabsContent>
     </TabbedSection>
   )
