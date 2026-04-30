@@ -6,6 +6,12 @@ import { ColumnDef } from "@tanstack/react-table"
 import type { CohortRow } from "@/lib/types"
 
 import { DataTableColumnHeader } from "@/components/data-table/data-table-column-header"
+import {
+  Tooltip,
+  TooltipContent,
+  TooltipProvider,
+  TooltipTrigger,
+} from "@/components/ui/tooltip"
 
 import { formatUsd } from "@/lib/number"
 
@@ -52,11 +58,21 @@ export const columns: ColumnDef<CohortRow>[] = [
   {
     id: "cluster_config",
     header: "cluster",
-    cell: ({ row }) => (
-      <div className="w-[120px] text-sm text-muted-foreground">
-        {clusterConfigLabel(row.original)}
-      </div>
-    ),
+    cell: ({ row }) => {
+      const label = clusterConfigLabel(row.original)
+      return (
+        <TooltipProvider delayDuration={100}>
+          <Tooltip>
+            <TooltipTrigger asChild>
+              <div className="w-[120px] truncate text-sm text-muted-foreground">
+                {label}
+              </div>
+            </TooltipTrigger>
+            <TooltipContent>{label}</TooltipContent>
+          </Tooltip>
+        </TooltipProvider>
+      )
+    },
   },
   {
     id: "performance_score",
