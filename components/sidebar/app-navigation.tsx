@@ -47,7 +47,7 @@ export function AppNavigation() {
   return (
     <SidebarGroup>
       <Separator className="my-2" />
-      <SidebarGroupLabel>new cohorts</SidebarGroupLabel>
+      <SidebarGroupLabel>coming soon</SidebarGroupLabel>
       <SidebarMenu>
         {cohortsNavItems.map((item) =>
           item.isDisabled ? (
@@ -63,11 +63,11 @@ export function AppNavigation() {
                       <span>{item.label}</span>
                     </SidebarMenuButton>
                   </TooltipTrigger>
-                  <TooltipContent side="bottom">
+                  {/* <TooltipContent side="bottom">
                     <p className="text-xs">
                       {item.disabledReason ?? "coming soon"}
                     </p>
-                  </TooltipContent>
+                  </TooltipContent> */}
                 </Tooltip>
               </TooltipProvider>
             </SidebarMenuItem>

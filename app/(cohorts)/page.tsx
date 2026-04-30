@@ -2,13 +2,11 @@ import type { Metadata } from "next"
 
 import { CohortComposition } from "@/components/cohorts/cohort-composition"
 import { CohortPerformance } from "@/components/cohorts/cohort-performance"
-import { CohortTable } from "@/components/cohorts/cohort-table/cohort-table"
-import { EmptyCohortBanner } from "@/components/cohorts/empty-cohort-banner"
 import { ProofTimeDistribution } from "@/components/cohorts/proof-time-distribution"
+import { RtpCohortTabs } from "@/components/cohorts/rtp-cohort-tabs"
 import { PageHeader } from "@/components/layout/page-header"
 import { RoadmapBanner } from "@/components/roadmap/roadmap-banner"
 import { RtpDetailsSection } from "@/components/rtp/rtp-details-section"
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs"
 
 import {
   getRtpCohortComposition,
@@ -62,30 +60,10 @@ export default async function RtpCohortPage() {
       </section>
 
       <section className="mb-8">
-        <Tabs defaultValue="eligible">
-          <TabsList className="w-fit grid-cols-2">
-            <TabsTrigger value="eligible">RTP cohort</TabsTrigger>
-            <TabsTrigger value="ineligible">
-              evaluated, not eligible
-            </TabsTrigger>
-          </TabsList>
-          <TabsContent value="eligible">
-            {rtpCohortRows.length === 0 ? (
-              <EmptyCohortBanner />
-            ) : (
-              <CohortTable rows={rtpCohortRows} />
-            )}
-          </TabsContent>
-          <TabsContent value="ineligible">
-            {ineligibleRows.length === 0 ? (
-              <p className="px-1 py-4 text-sm text-muted-foreground">
-                no evaluated provers fell short of eligibility this week
-              </p>
-            ) : (
-              <CohortTable rows={ineligibleRows} />
-            )}
-          </TabsContent>
-        </Tabs>
+        <RtpCohortTabs
+          eligibleRows={rtpCohortRows}
+          ineligibleRows={ineligibleRows}
+        />
       </section>
 
       <section className="mb-8 grid gap-6 lg:grid-cols-2 2xl:grid-cols-3">

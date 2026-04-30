@@ -10,6 +10,8 @@ import {
   TooltipTrigger,
 } from "@/components/ui/tooltip"
 
+import { cn } from "@/lib/utils"
+
 export interface TabbedSectionTab {
   value: string
   label: string
@@ -22,6 +24,7 @@ interface TabbedSectionProps {
   tabs: TabbedSectionTab[]
   activeTab: string
   onTabChange(value: string): void
+  tabsListClassName?: string
   children: ReactNode
 }
 
@@ -29,11 +32,12 @@ export function TabbedSection({
   tabs,
   activeTab,
   onTabChange,
+  tabsListClassName,
   children,
 }: TabbedSectionProps) {
   return (
     <Tabs value={activeTab} onValueChange={onTabChange}>
-      <TabsList className="border-none">
+      <TabsList className={cn("border-none", tabsListClassName)}>
         {tabs.map((tab) => {
           const label =
             tab.count !== undefined ? `${tab.label} (${tab.count})` : tab.label

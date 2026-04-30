@@ -37,6 +37,7 @@ export function BlocksTabbedTable({ teams }: BlocksTabbedTableProps) {
       tabs={MACHINE_TABS}
       activeTab={activeTab}
       onTabChange={handleTabChange}
+      tabsListClassName="grid-cols-2"
     >
       {MACHINE_TABS.map((tab) => (
         <TabsContent key={tab.value} value={tab.value}>
