@@ -32,7 +32,7 @@
     "@ethproofs/airbender-wasm-stark-verifier": "^0.10.0",
     "@ethproofs/openvm-wasm-stark-verifier": "^0.1.0",
     "@ethproofs/openvm2-wasm-stark-verifier": "^0.1.0",
-    "@ethproofs/pico-wasm-stark-verifier": "^0.1.7",
+    "@ethproofs/pico-wasm-stark-verifier": "^0.1.8",
     "@ethproofs/sp1-hypercube-wasm-verifier": "^0.1.1",
     "@ethproofs/venus-wasm-stark-verifier": "^0.1.0",
     "@ethproofs/ziren-wasm-stark-verifier": "^0.1.9",
