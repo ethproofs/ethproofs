@@ -4,6 +4,8 @@ import {
   BookOpen,
   Box,
   Cpu,
+  Gauge,
+  HardDrive,
   HeartPulse,
   Library,
   SquareCode,
@@ -11,6 +13,21 @@ import {
   Users,
   Zap,
 } from "lucide-react"
+
+export const cohortsNavItems = [
+  // {
+  //   label: "RTP cohort",
+  //   href: "/",
+  //   icon: <Gauge />,
+  // },
+  {
+    label: "1:10 cohort",
+    href: "/on-prem-proving-initiative",
+    icon: <HardDrive />,
+    isDisabled: true,
+    disabledReason: "coming soon",
+  },
+]
 
 export const exploreNavItems = [
   {

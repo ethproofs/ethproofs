@@ -1,16 +1,14 @@
 import type { Metadata } from "next"
 
-import { CohortComposition } from "@/components/cohorts/cohort-composition"
 import { CohortPerformance } from "@/components/cohorts/cohort-performance"
 import { CohortTable } from "@/components/cohorts/cohort-table/cohort-table"
 import { EmptyCohortBanner } from "@/components/cohorts/empty-cohort-banner"
 import { ProofTimeDistribution } from "@/components/cohorts/proof-time-distribution"
-import { OppDetailsSection } from "@/components/opp/opp-details-section"
+import { PageHeader } from "@/components/layout/page-header"
 
 import { OPP_PERFORMANCE_SCORE_THRESHOLD } from "@/lib/constants"
 
 import {
-  getOppCohortComposition,
   getOppCohortPerformance,
   getOppCohortScores,
   getOppProofTimeDistribution,
@@ -26,19 +24,18 @@ export const dynamic = "force-dynamic"
 const CURRENT_COHORT_DAYS = 7
 
 export default async function OppCohortPage() {
-  const [oppCohortRows, compositionData, performanceData, distributionData] =
-    await Promise.all([
-      getOppCohortScores(),
-      getOppCohortComposition(),
-      getOppCohortPerformance(CURRENT_COHORT_DAYS),
-      getOppProofTimeDistribution(CURRENT_COHORT_DAYS),
-    ])
+  const [oppCohortRows, performanceData, distributionData] = await Promise.all([
+    getOppCohortScores(),
+    getOppCohortPerformance(CURRENT_COHORT_DAYS),
+    getOppProofTimeDistribution(CURRENT_COHORT_DAYS),
+  ])
 
   return (
-    <>
-      <section className="mb-8">
-        <OppDetailsSection />
-      </section>
+    <div className="mx-auto max-w-screen-2xl px-6">
+      <PageHeader
+        title="on-prem proving initiative"
+        description="performance and liveness metrics for all 1:10 multi-GPU on-prem provers"
+      />
 
       <section className="mb-8">
         {oppCohortRows.length === 0 ? (
@@ -48,25 +45,19 @@ export default async function OppCohortPage() {
         )}
       </section>
 
-      <section className="mb-8 grid gap-6 lg:grid-cols-2 2xl:grid-cols-3">
-        <CohortComposition
-          data={compositionData}
-          description="weekly eligibility for all evaluated 1:10 on-prem provers"
-        />
+      <section className="mb-8 grid gap-6 lg:grid-cols-2">
         <CohortPerformance
           data={performanceData}
           title="1:10 prover performance"
           performanceThreshold={OPP_PERFORMANCE_SCORE_THRESHOLD}
           thresholdLabel="sub-2m"
         />
-        <div className="lg:col-span-2 2xl:col-span-1">
-          <ProofTimeDistribution
-            data={distributionData}
-            eligibleLabel={"\u22642m (1:10 eligible)"}
-            stunnerLabel=">2m (stunners)"
-          />
-        </div>
+        <ProofTimeDistribution
+          data={distributionData}
+          eligibleLabel={"≤2m (1:10 eligible)"}
+          stunnerLabel=">2m (stunners)"
+        />
       </section>
-    </>
+    </div>
   )
 }

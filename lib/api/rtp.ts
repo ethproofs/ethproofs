@@ -31,58 +31,74 @@ const RTP_BUCKET_ORDER = [
   "+14s",
 ] as const
 
+function buildRtpCohortScoresQuery(isEligible: boolean) {
+  return sql`
+    WITH latest_snapshot AS (
+      SELECT MAX(snapshot_week) AS week
+      FROM rtp_cohort_snapshots
+    )
+    SELECT
+      s.cluster_id,
+      c.name AS cluster_name,
+      c.num_gpus,
+      c.hardware_description,
+      t.name AS team_name,
+      t.slug AS team_slug,
+      t.logo_url AS team_logo_url,
+      z.name AS zkvm_name,
+      gp.name AS guest_program_name,
+      COALESCE(zsm.soundcalc_integration, false) AS soundcalc_integration,
+      s.total_blocks,
+      s.blocks_proven,
+      s.sub_10s_proofs,
+      s.over_10s_proofs,
+      s.paralyzed_blocks,
+      s.performance_score,
+      s.liveness_score,
+      s.stunner_rate,
+      s.paralyzer_rate,
+      s.is_eligible,
+      s.avg_cost_per_proof
+    FROM rtp_cohort_snapshots s
+    INNER JOIN latest_snapshot ls ON s.snapshot_week = ls.week
+    INNER JOIN clusters c ON s.cluster_id = c.id
+    INNER JOIN teams t ON c.team_id = t.id
+    INNER JOIN LATERAL (
+      SELECT cv_inner.zkvm_version_id
+      FROM cluster_versions cv_inner
+      WHERE cv_inner.cluster_id = c.id
+      ORDER BY cv_inner.created_at DESC
+      LIMIT 1
+    ) cv ON true
+    INNER JOIN zkvm_versions zv ON cv.zkvm_version_id = zv.id
+    INNER JOIN zkvms z ON zv.zkvm_id = z.id
+    LEFT JOIN guest_programs gp ON c.guest_program_id = gp.id
+    LEFT JOIN zkvm_security_metrics zsm ON zsm.zkvm_id = z.id
+    WHERE s.is_eligible = ${isEligible}
+    ORDER BY s.performance_score DESC, s.liveness_score DESC
+  `
+}
+
 export const getRtpCohortScores = cache(
   async (): Promise<CohortRow[]> => {
-    const result = await db.execute(sql`
-      WITH latest_snapshot AS (
-        SELECT MAX(snapshot_week) AS week
-        FROM rtp_cohort_snapshots
-      )
-      SELECT
-        s.cluster_id,
-        c.name AS cluster_name,
-        c.num_gpus,
-        c.hardware_description,
-        t.name AS team_name,
-        t.slug AS team_slug,
-        t.logo_url AS team_logo_url,
-        z.name AS zkvm_name,
-        gp.name AS guest_program_name,
-        COALESCE(zsm.soundcalc_integration, false) AS soundcalc_integration,
-        s.total_blocks,
-        s.blocks_proven,
-        s.sub_10s_proofs,
-        s.over_10s_proofs,
-        s.paralyzed_blocks,
-        s.performance_score,
-        s.liveness_score,
-        s.stunner_rate,
-        s.paralyzer_rate,
-        s.is_eligible,
-        s.avg_cost_per_proof
-      FROM rtp_cohort_snapshots s
-      INNER JOIN latest_snapshot ls ON s.snapshot_week = ls.week
-      INNER JOIN clusters c ON s.cluster_id = c.id
-      INNER JOIN teams t ON c.team_id = t.id
-      INNER JOIN LATERAL (
-        SELECT cv_inner.zkvm_version_id
-        FROM cluster_versions cv_inner
-        WHERE cv_inner.cluster_id = c.id
-        ORDER BY cv_inner.created_at DESC
-        LIMIT 1
-      ) cv ON true
-      INNER JOIN zkvm_versions zv ON cv.zkvm_version_id = zv.id
-      INNER JOIN zkvms z ON zv.zkvm_id = z.id
-      LEFT JOIN guest_programs gp ON c.guest_program_id = gp.id
-      LEFT JOIN zkvm_security_metrics zsm ON zsm.zkvm_id = z.id
-      WHERE s.is_eligible = true
-      ORDER BY s.performance_score DESC, s.liveness_score DESC
-    `)
-
+    const result = await db.execute(buildRtpCohortScoresQuery(true))
     const rows = Array.isArray(result) ? result : []
     return rows.map((row: Record<string, unknown>) => toCohortRow(row))
   },
   ["rtp-cohort-scores"],
+  {
+    revalidate: 60 * 60,
+    tags: [TAGS.RTP_COHORT],
+  }
+)
+
+export const getRtpCohortIneligibleScores = cache(
+  async (): Promise<CohortRow[]> => {
+    const result = await db.execute(buildRtpCohortScoresQuery(false))
+    const rows = Array.isArray(result) ? result : []
+    return rows.map((row: Record<string, unknown>) => toCohortRow(row))
+  },
+  ["rtp-cohort-ineligible-scores"],
   {
     revalidate: 60 * 60,
     tags: [TAGS.RTP_COHORT],

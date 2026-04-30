@@ -1,28 +1,21 @@
-import { and, eq, sql } from "drizzle-orm"
+import { sql } from "drizzle-orm"
 import { unstable_cache as cache } from "next/cache"
 
 import type {
-  CohortCompositionData,
   CohortPerformanceData,
   CohortRow,
   ProofTimeDistributionData,
 } from "@/lib/types"
 
 import {
-  ONE_TEN_PROVER_TYPE_ID,
   OPP_PARALYZER_CUTOFF_MINUTES,
   OPP_PERFORMANCE_TIME_THRESHOLD_MS,
   TAGS,
 } from "@/lib/constants"
 
-import {
-  buildCompositionData,
-  toCohortRow,
-  toProofTimeBucket,
-} from "./cohort.utils"
+import { toCohortRow, toProofTimeBucket } from "./cohort.utils"
 
 import { db } from "@/db"
-import { clusters } from "@/db/schema"
 
 const OPP_BUCKET_ORDER = [
   "0 - 30s",
@@ -32,28 +25,6 @@ const OPP_BUCKET_ORDER = [
   "3m - 5m",
   "+5m",
 ] as const
-
-export const getHasOppCohort = cache(
-  async (): Promise<boolean> => {
-    const result = await db
-      .select({ id: clusters.id })
-      .from(clusters)
-      .where(
-        and(
-          eq(clusters.prover_type_id, ONE_TEN_PROVER_TYPE_ID),
-          eq(clusters.is_active, true)
-        )
-      )
-      .limit(1)
-
-    return result.length > 0
-  },
-  ["has-opp-cohort"],
-  {
-    revalidate: 60 * 60,
-    tags: [TAGS.CLUSTERS],
-  }
-)
 
 export const getOppCohortScores = cache(
   async (): Promise<CohortRow[]> => {
@@ -99,7 +70,6 @@ export const getOppCohortScores = cache(
       INNER JOIN zkvms z ON zv.zkvm_id = z.id
       LEFT JOIN guest_programs gp ON c.guest_program_id = gp.id
       LEFT JOIN zkvm_security_metrics zsm ON zsm.zkvm_id = z.id
-      WHERE s.is_eligible = true
       ORDER BY s.performance_score DESC, s.liveness_score DESC
     `)
 
@@ -107,79 +77,6 @@ export const getOppCohortScores = cache(
     return rows.map((row: Record<string, unknown>) => toCohortRow(row))
   },
   ["opp-cohort-scores"],
-  {
-    revalidate: 60 * 60,
-    tags: [TAGS.OPP_COHORT],
-  }
-)
-
-const COMPOSITION_MAX_WEEKS = 26
-
-export const getOppCohortComposition = cache(
-  async (): Promise<CohortCompositionData> => {
-    const result = await db.execute(sql`
-      WITH all_weeks AS (
-        SELECT DISTINCT snapshot_week AS week
-        FROM opp_cohort_snapshots
-        ORDER BY snapshot_week DESC
-        LIMIT ${COMPOSITION_MAX_WEEKS}
-      ),
-      snapshot_range AS (
-        SELECT
-          (SELECT COUNT(*)::integer FROM all_weeks) AS total_weeks,
-          (SELECT MAX(week) FROM all_weeks) AS latest_week
-      ),
-      cluster_tenure AS (
-        SELECT
-          s.cluster_id,
-          c.name AS cluster_name,
-          t.name AS team_name,
-          t.logo_url AS team_logo_url,
-          COUNT(DISTINCT s.snapshot_week) FILTER (WHERE s.is_eligible)::integer AS weeks_eligible,
-          sr.total_weeks,
-          EXISTS (
-            SELECT 1
-            FROM opp_cohort_snapshots latest
-            WHERE latest.cluster_id = s.cluster_id
-              AND latest.snapshot_week = sr.latest_week
-          ) AS is_currently_evaluated
-        FROM opp_cohort_snapshots s
-        INNER JOIN clusters c ON s.cluster_id = c.id
-        INNER JOIN teams t ON c.team_id = t.id
-        CROSS JOIN snapshot_range sr
-        WHERE s.snapshot_week IN (SELECT week FROM all_weeks)
-        GROUP BY s.cluster_id, c.name, t.name, t.logo_url, sr.total_weeks, sr.latest_week
-      ),
-      cluster_timelines AS (
-        SELECT
-          ct.cluster_id,
-          json_agg(
-            json_build_object('week', aw.week, 'isEligible', COALESCE(s.is_eligible, false))
-            ORDER BY aw.week
-          ) AS weekly_timeline
-        FROM cluster_tenure ct
-        CROSS JOIN all_weeks aw
-        LEFT JOIN opp_cohort_snapshots s
-          ON s.cluster_id = ct.cluster_id AND s.snapshot_week = aw.week
-        GROUP BY ct.cluster_id
-      )
-      SELECT
-        ct.cluster_name,
-        ct.team_name,
-        ct.team_logo_url,
-        ct.weeks_eligible AS weeks_in_cohort,
-        ct.total_weeks,
-        ct.is_currently_evaluated AS is_currently_eligible,
-        ctl.weekly_timeline
-      FROM cluster_tenure ct
-      INNER JOIN cluster_timelines ctl ON ctl.cluster_id = ct.cluster_id
-      ORDER BY ct.weeks_eligible DESC, ct.team_name ASC
-    `)
-
-    const rows = Array.isArray(result) ? result : []
-    return buildCompositionData(rows as Record<string, unknown>[])
-  },
-  ["opp-cohort-composition"],
   {
     revalidate: 60 * 60,
     tags: [TAGS.OPP_COHORT],
