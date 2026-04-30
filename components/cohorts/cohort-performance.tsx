@@ -3,7 +3,7 @@
 import { useMemo, useState } from "react"
 import { Cell, Pie, PieChart, ResponsiveContainer, Sector } from "recharts"
 
-import type { RtpCohortPerformanceData } from "@/lib/types"
+import type { CohortPerformanceData } from "@/lib/types"
 
 import {
   Card,
@@ -37,7 +37,7 @@ const CATEGORY_COLORS = {
 } as const
 
 function buildPerformanceBreakdown(
-  data: RtpCohortPerformanceData
+  data: CohortPerformanceData
 ): AggregatedPerformance {
   const {
     totalBlockSlots,
@@ -122,21 +122,21 @@ function renderActiveShape(props: unknown) {
   )
 }
 
-interface RtpCohortPerformanceProps {
-  data: RtpCohortPerformanceData
+interface CohortPerformanceProps {
+  data: CohortPerformanceData
   title?: string
   description?: string
   performanceThreshold?: number
   thresholdLabel?: string
 }
 
-export function RtpCohortPerformance({
+export function CohortPerformance({
   data,
   title = "RTP prover performance",
   description = "aggregated success rate for all evaluated provers",
   performanceThreshold = RTP_PERFORMANCE_SCORE_THRESHOLD,
   thresholdLabel = "sub-10s",
-}: RtpCohortPerformanceProps) {
+}: CohortPerformanceProps) {
   const [activeIndex, setActiveIndex] = useState<number | null>(null)
 
   const performance = useMemo(() => buildPerformanceBreakdown(data), [data])

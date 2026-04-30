@@ -3,18 +3,18 @@
 import { Check } from "lucide-react"
 import { ColumnDef } from "@tanstack/react-table"
 
-import type { RtpCohortRow } from "@/lib/types"
+import type { CohortRow } from "@/lib/types"
 
 import { DataTableColumnHeader } from "@/components/data-table/data-table-column-header"
 
 import { formatUsd } from "@/lib/number"
 
-function clusterConfigLabel(row: RtpCohortRow): string {
+function clusterConfigLabel(row: CohortRow): string {
   if (!row.hardware_description) return `${row.num_gpus} GPU`
   return `${row.num_gpus} x ${row.hardware_description}`
 }
 
-export const columns: ColumnDef<RtpCohortRow>[] = [
+export const columns: ColumnDef<CohortRow>[] = [
   {
     id: "team",
     accessorKey: "team_name",

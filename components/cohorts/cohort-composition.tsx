@@ -1,6 +1,6 @@
 "use client"
 
-import type { RtpCohortCompositionData, RtpWeekEntry } from "@/lib/types"
+import type { CohortCompositionData, CohortWeekEntry } from "@/lib/types"
 
 import {
   Card,
@@ -31,7 +31,7 @@ function formatWeekLabel(week: string): string {
 }
 
 interface WeekSegmentProps {
-  entry: RtpWeekEntry
+  entry: CohortWeekEntry
 }
 
 function WeekSegment({ entry }: WeekSegmentProps) {
@@ -76,17 +76,17 @@ function WeekSegment({ entry }: WeekSegmentProps) {
   )
 }
 
-interface RtpCohortCompositionProps {
-  data: RtpCohortCompositionData
+interface CohortCompositionProps {
+  data: CohortCompositionData
   title?: string
   description?: string
 }
 
-export function RtpCohortComposition({
+export function CohortComposition({
   data,
   title = "evaluated vs. eligible provers",
   description = "weekly eligibility for all evaluated 1:1 multi-GPU provers",
-}: RtpCohortCompositionProps) {
+}: CohortCompositionProps) {
   return (
     <Card className="flex h-full min-h-80 flex-col">
       <CardHeader className="space-y-1.5">

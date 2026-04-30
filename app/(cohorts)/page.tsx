@@ -1,11 +1,11 @@
 import type { Metadata } from "next"
 
+import { CohortComposition } from "@/components/cohorts/cohort-composition"
+import { CohortPerformance } from "@/components/cohorts/cohort-performance"
+import { CohortTable } from "@/components/cohorts/cohort-table/cohort-table"
 import { EmptyCohortBanner } from "@/components/cohorts/empty-cohort-banner"
-import { RtpCohortComposition } from "@/components/rtp/rtp-cohort-composition"
-import { RtpCohortPerformance } from "@/components/rtp/rtp-cohort-performance"
+import { ProofTimeDistribution } from "@/components/cohorts/proof-time-distribution"
 import { RtpDetailsSection } from "@/components/rtp/rtp-details-section"
-import { RtpProofTimeDistribution } from "@/components/rtp/rtp-proof-time-distribution"
-import { RtpCohortTable } from "@/components/rtp-cohort-table/rtp-cohort-table"
 
 import {
   getRtpCohortComposition,
@@ -40,15 +40,15 @@ export default async function RtpCohortPage() {
         {rtpCohortRows.length === 0 ? (
           <EmptyCohortBanner />
         ) : (
-          <RtpCohortTable rows={rtpCohortRows} />
+          <CohortTable rows={rtpCohortRows} />
         )}
       </section>
 
       <section className="mb-8 grid gap-6 lg:grid-cols-2 2xl:grid-cols-3">
-        <RtpCohortComposition data={compositionData} />
-        <RtpCohortPerformance data={performanceData} />
+        <CohortComposition data={compositionData} />
+        <CohortPerformance data={performanceData} />
         <div className="lg:col-span-2 2xl:col-span-1">
-          <RtpProofTimeDistribution data={distributionData} />
+          <ProofTimeDistribution data={distributionData} />
         </div>
       </section>
     </>

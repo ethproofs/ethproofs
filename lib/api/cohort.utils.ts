@@ -1,11 +1,11 @@
 import type {
-  RtpCohortMember,
-  RtpCohortRow,
-  RtpProofTimeBucket,
-  RtpWeekEntry,
+  CohortMember,
+  CohortRow,
+  CohortWeekEntry,
+  ProofTimeBucket,
 } from "@/lib/types"
 
-export function toCohortRow(row: Record<string, unknown>): RtpCohortRow {
+export function toCohortRow(row: Record<string, unknown>): CohortRow {
   return {
     cluster_id: String(row.cluster_id),
     cluster_name: String(row.cluster_name),
@@ -36,19 +36,19 @@ export function toCohortRow(row: Record<string, unknown>): RtpCohortRow {
   }
 }
 
-function isWeekEntry(value: unknown): value is RtpWeekEntry {
+function isWeekEntry(value: unknown): value is CohortWeekEntry {
   if (typeof value !== "object" || value === null) return false
   const entry = value as Record<string, unknown>
   return typeof entry.week === "string" && typeof entry.isEligible === "boolean"
 }
 
-export function parseWeeklyTimeline(raw: unknown): RtpWeekEntry[] {
+export function parseWeeklyTimeline(raw: unknown): CohortWeekEntry[] {
   const parsed = typeof raw === "string" ? JSON.parse(raw) : raw
   if (!Array.isArray(parsed)) return []
   return parsed.filter(isWeekEntry)
 }
 
-export function toCohortMember(row: Record<string, unknown>): RtpCohortMember {
+export function toCohortMember(row: Record<string, unknown>): CohortMember {
   const totalWeeks = Number(row.total_weeks)
   const weeksEligible = Number(row.weeks_in_cohort)
   return {
@@ -68,14 +68,14 @@ export function toProofTimeBucket(
   row: Record<string, unknown>,
   total: number,
   bucketOrder: readonly string[]
-): RtpProofTimeBucket {
+): ProofTimeBucket {
   const bucket = String(row.bucket)
   const count = Number(row.count)
   return {
     bucket,
     count,
     percentage: total > 0 ? Math.round((count / total) * 10000) / 100 : 0,
-    isRtp: bucketOrder.indexOf(bucket) < 3,
+    isEligible: bucketOrder.indexOf(bucket) < 3,
   }
 }
 
@@ -83,7 +83,7 @@ export function buildCompositionData(rows: Record<string, unknown>[]): {
   currentEligibleCount: number
   avgTenureWeeks: number
   trackedPeriodWeeks: number
-  members: RtpCohortMember[]
+  members: CohortMember[]
 } {
   const members = rows.map((row) => toCohortMember(row))
 

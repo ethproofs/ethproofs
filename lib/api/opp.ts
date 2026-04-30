@@ -2,10 +2,10 @@ import { and, eq, sql } from "drizzle-orm"
 import { unstable_cache as cache } from "next/cache"
 
 import type {
-  RtpCohortCompositionData,
-  RtpCohortPerformanceData,
-  RtpCohortRow,
-  RtpProofTimeDistributionData,
+  CohortCompositionData,
+  CohortPerformanceData,
+  CohortRow,
+  ProofTimeDistributionData,
 } from "@/lib/types"
 
 import {
@@ -56,7 +56,7 @@ export const getHasOppCohort = cache(
 )
 
 export const getOppCohortScores = cache(
-  async (): Promise<RtpCohortRow[]> => {
+  async (): Promise<CohortRow[]> => {
     const result = await db.execute(sql`
       WITH latest_snapshot AS (
         SELECT MAX(snapshot_week) AS week
@@ -116,7 +116,7 @@ export const getOppCohortScores = cache(
 const COMPOSITION_MAX_WEEKS = 26
 
 export const getOppCohortComposition = cache(
-  async (): Promise<RtpCohortCompositionData> => {
+  async (): Promise<CohortCompositionData> => {
     const result = await db.execute(sql`
       WITH all_weeks AS (
         SELECT DISTINCT snapshot_week AS week
@@ -188,7 +188,7 @@ export const getOppCohortComposition = cache(
 
 export const getOppCohortPerformance = async (
   days: number
-): Promise<RtpCohortPerformanceData> => {
+): Promise<CohortPerformanceData> => {
   return cache(
     async (days: number) => {
       const result = await db.execute(sql`
@@ -273,7 +273,7 @@ export const getOppCohortPerformance = async (
 
 export const getOppProofTimeDistribution = async (
   days: number
-): Promise<RtpProofTimeDistributionData> => {
+): Promise<ProofTimeDistributionData> => {
   return cache(
     async (days: number) => {
       const result = await db.execute(sql`
@@ -330,18 +330,19 @@ export const getOppProofTimeDistribution = async (
             bucket: name,
             count: 0,
             percentage: 0,
-            isRtp: OPP_BUCKET_ORDER.indexOf(name) < 3,
+            isEligible: OPP_BUCKET_ORDER.indexOf(name) < 3,
           }
       )
 
-      const rtpTotal = buckets
-        .filter((b) => b.isRtp)
+      const eligibleTotal = buckets
+        .filter((b) => b.isEligible)
         .reduce((sum, b) => sum + b.count, 0)
 
       return {
         total,
-        rtpTotal,
-        rtpRate: total > 0 ? Math.round((rtpTotal / total) * 1000) / 10 : 0,
+        eligibleTotal,
+        eligibleRate:
+          total > 0 ? Math.round((eligibleTotal / total) * 1000) / 10 : 0,
         buckets,
       }
     },

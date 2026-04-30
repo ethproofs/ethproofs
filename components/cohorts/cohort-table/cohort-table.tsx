@@ -3,7 +3,7 @@
 import { useState } from "react"
 import { PaginationState } from "@tanstack/react-table"
 
-import type { RtpCohortRow } from "@/lib/types"
+import type { CohortRow } from "@/lib/types"
 
 import { DataTable } from "@/components/data-table/data-table"
 
@@ -11,11 +11,11 @@ import { DEFAULT_PAGE_STATE } from "@/lib/constants"
 
 import { columns } from "./columns"
 
-interface RtpCohortTableProps {
-  rows: RtpCohortRow[]
+interface CohortTableProps {
+  rows: CohortRow[]
 }
 
-export function RtpCohortTable({ rows }: RtpCohortTableProps) {
+export function CohortTable({ rows }: CohortTableProps) {
   const [pagination, setPagination] =
     useState<PaginationState>(DEFAULT_PAGE_STATE)
 

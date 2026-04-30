@@ -281,12 +281,12 @@ export type RtpCohortSnapshot = typeof rtpCohortSnapshots.$inferSelect
 
 export type OppCohortSnapshot = typeof oppCohortSnapshots.$inferSelect
 
-export interface RtpWeekEntry {
+export interface CohortWeekEntry {
   week: string
   isEligible: boolean
 }
 
-export interface RtpCohortMember {
+export interface CohortMember {
   clusterName: string
   teamName: string
   teamLogoUrl: string | null
@@ -294,14 +294,14 @@ export interface RtpCohortMember {
   totalWeeks: number
   eligibilityRate: number
   isCurrentlyEvaluated: boolean
-  weeklyTimeline: RtpWeekEntry[]
+  weeklyTimeline: CohortWeekEntry[]
 }
 
-export interface RtpCohortCompositionData {
+export interface CohortCompositionData {
   currentEligibleCount: number
   avgTenureWeeks: number
   trackedPeriodWeeks: number
-  members: RtpCohortMember[]
+  members: CohortMember[]
 }
 
 export interface RtpConsistencyWeekEntry {
@@ -329,7 +329,7 @@ export interface RtpCohortConsistencyData {
   members: RtpCohortConsistencyMember[]
 }
 
-export interface RtpCohortPerformanceData {
+export interface CohortPerformanceData {
   totalBlockSlots: number
   sub10sCount: number
   stunnedCount: number
@@ -337,18 +337,18 @@ export interface RtpCohortPerformanceData {
   offlineCount: number
 }
 
-export interface RtpProofTimeBucket {
+export interface ProofTimeBucket {
   bucket: string
   count: number
   percentage: number
-  isRtp: boolean
+  isEligible: boolean
 }
 
-export interface RtpProofTimeDistributionData {
+export interface ProofTimeDistributionData {
   total: number
-  rtpTotal: number
-  rtpRate: number
-  buckets: RtpProofTimeBucket[]
+  eligibleTotal: number
+  eligibleRate: number
+  buckets: ProofTimeBucket[]
 }
 
 export interface ProverTypeMetrics {
@@ -400,7 +400,7 @@ export interface PersonaComparisonData {
   livenessScore: number
 }
 
-export interface RtpCohortRow {
+export interface CohortRow {
   cluster_id: string
   cluster_name: string
   num_gpus: number

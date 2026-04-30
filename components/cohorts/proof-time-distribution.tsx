@@ -11,7 +11,7 @@ import {
   YAxis,
 } from "recharts"
 
-import type { RtpProofTimeDistributionData } from "@/lib/types"
+import type { ProofTimeDistributionData } from "@/lib/types"
 
 import {
   Card,
@@ -23,7 +23,7 @@ import {
 } from "@/components/ui/card"
 
 const BAR_COLORS = {
-  rtp: "hsl(var(--level-best))",
+  eligible: "hsl(var(--level-best))",
   stunner: "hsl(var(--muted-foreground))",
 } as const
 
@@ -31,7 +31,7 @@ const THRESHOLD_BUCKET = {
   bucket: "10s",
   percentage: 0,
   count: 0,
-  isRtp: false,
+  isEligible: false,
   isThreshold: true,
 }
 
@@ -39,14 +39,14 @@ interface ChartBucket {
   bucket: string
   percentage: number
   count: number
-  isRtp: boolean
+  isEligible: boolean
   isThreshold?: boolean
 }
 
-function buildChartData(data: RtpProofTimeDistributionData): ChartBucket[] {
-  const rtpBuckets = data.buckets.filter((b) => b.isRtp)
-  const stunnerBuckets = data.buckets.filter((b) => !b.isRtp)
-  return [...rtpBuckets, THRESHOLD_BUCKET, ...stunnerBuckets]
+function buildChartData(data: ProofTimeDistributionData): ChartBucket[] {
+  const eligibleBuckets = data.buckets.filter((b) => b.isEligible)
+  const stunnerBuckets = data.buckets.filter((b) => !b.isEligible)
+  return [...eligibleBuckets, THRESHOLD_BUCKET, ...stunnerBuckets]
 }
 
 interface CustomTooltipProps {
@@ -65,7 +65,9 @@ function CustomTooltip({ active, payload }: CustomTooltipProps) {
         <div
           className="size-2.5 rounded-sm"
           style={{
-            backgroundColor: item.isRtp ? BAR_COLORS.rtp : BAR_COLORS.stunner,
+            backgroundColor: item.isEligible
+              ? BAR_COLORS.eligible
+              : BAR_COLORS.stunner,
           }}
         />
         <p className="text-sm font-semibold">{item.bucket}</p>
@@ -88,10 +90,10 @@ function CustomTooltip({ active, payload }: CustomTooltipProps) {
           <span
             className="text-xs font-medium"
             style={{
-              color: item.isRtp ? BAR_COLORS.rtp : BAR_COLORS.stunner,
+              color: item.isEligible ? BAR_COLORS.eligible : BAR_COLORS.stunner,
             }}
           >
-            {item.isRtp ? "\u2713 RTP eligible" : "stunner"}
+            {item.isEligible ? "\u2713 eligible" : "stunner"}
           </span>
         </div>
       </div>
@@ -99,21 +101,21 @@ function CustomTooltip({ active, payload }: CustomTooltipProps) {
   )
 }
 
-interface RtpProofTimeDistributionProps {
-  data: RtpProofTimeDistributionData
+interface ProofTimeDistributionProps {
+  data: ProofTimeDistributionData
   title?: string
   description?: string
   eligibleLabel?: string
   stunnerLabel?: string
 }
 
-export function RtpProofTimeDistribution({
+export function ProofTimeDistribution({
   data,
   title = "proof time distribution",
   description = "timing across blocks for all evaluated provers",
   eligibleLabel = "\u226410s (RTP eligible)",
   stunnerLabel = ">10s (stunners)",
-}: RtpProofTimeDistributionProps) {
+}: ProofTimeDistributionProps) {
   const chartData = useMemo(() => buildChartData(data), [data])
 
   return (
@@ -134,13 +136,13 @@ export function RtpProofTimeDistribution({
           <div className="flex flex-col gap-1 rounded-lg bg-muted/50 px-3 py-2">
             <span className="text-xs text-muted-foreground">eligible</span>
             <span className="font-mono text-lg font-semibold text-primary">
-              {data.rtpTotal.toLocaleString()}
+              {data.eligibleTotal.toLocaleString()}
             </span>
           </div>
           <div className="flex flex-col gap-1 rounded-lg bg-muted/50 px-3 py-2">
             <span className="text-xs text-muted-foreground">eligible rate</span>
             <span className="font-mono text-lg font-semibold text-primary">
-              {data.rtpRate}%
+              {data.eligibleRate}%
             </span>
           </div>
         </div>
@@ -183,9 +185,9 @@ export function RtpProofTimeDistribution({
                     payload: { value: string }
                   }) => {
                     if (payload.value === "10s") return <g />
-                    const isRtp = chartData.find(
+                    const isEligible = chartData.find(
                       (b) => b.bucket === payload.value
-                    )?.isRtp
+                    )?.isEligible
                     return (
                       <g transform={`translate(${x},${y})`}>
                         <text
@@ -194,7 +196,7 @@ export function RtpProofTimeDistribution({
                           dy={4}
                           textAnchor="end"
                           fill={
-                            isRtp
+                            isEligible
                               ? "hsl(var(--level-best))"
                               : "hsl(var(--muted-foreground))"
                           }
@@ -218,8 +220,8 @@ export function RtpProofTimeDistribution({
                       fill={
                         entry.isThreshold
                           ? "transparent"
-                          : entry.isRtp
-                            ? BAR_COLORS.rtp
+                          : entry.isEligible
+                            ? BAR_COLORS.eligible
                             : BAR_COLORS.stunner
                       }
                     />

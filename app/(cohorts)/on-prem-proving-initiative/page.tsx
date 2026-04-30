@@ -1,11 +1,11 @@
 import type { Metadata } from "next"
 
+import { CohortComposition } from "@/components/cohorts/cohort-composition"
+import { CohortPerformance } from "@/components/cohorts/cohort-performance"
+import { CohortTable } from "@/components/cohorts/cohort-table/cohort-table"
 import { EmptyCohortBanner } from "@/components/cohorts/empty-cohort-banner"
+import { ProofTimeDistribution } from "@/components/cohorts/proof-time-distribution"
 import { OppDetailsSection } from "@/components/opp/opp-details-section"
-import { RtpCohortComposition } from "@/components/rtp/rtp-cohort-composition"
-import { RtpCohortPerformance } from "@/components/rtp/rtp-cohort-performance"
-import { RtpProofTimeDistribution } from "@/components/rtp/rtp-proof-time-distribution"
-import { RtpCohortTable } from "@/components/rtp-cohort-table/rtp-cohort-table"
 
 import { OPP_PERFORMANCE_SCORE_THRESHOLD } from "@/lib/constants"
 
@@ -44,23 +44,23 @@ export default async function OppCohortPage() {
         {oppCohortRows.length === 0 ? (
           <EmptyCohortBanner />
         ) : (
-          <RtpCohortTable rows={oppCohortRows} />
+          <CohortTable rows={oppCohortRows} />
         )}
       </section>
 
       <section className="mb-8 grid gap-6 lg:grid-cols-2 2xl:grid-cols-3">
-        <RtpCohortComposition
+        <CohortComposition
           data={compositionData}
           description="weekly eligibility for all evaluated 1:10 on-prem provers"
         />
-        <RtpCohortPerformance
+        <CohortPerformance
           data={performanceData}
           title="1:10 prover performance"
           performanceThreshold={OPP_PERFORMANCE_SCORE_THRESHOLD}
           thresholdLabel="sub-2m"
         />
         <div className="lg:col-span-2 2xl:col-span-1">
-          <RtpProofTimeDistribution
+          <ProofTimeDistribution
             data={distributionData}
             eligibleLabel={"\u22642m (1:10 eligible)"}
             stunnerLabel=">2m (stunners)"
