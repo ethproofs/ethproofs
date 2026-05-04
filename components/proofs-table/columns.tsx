@@ -134,7 +134,7 @@ export const getColumns = (): ColumnDef<ProofRow>[] => {
         return (
           <div className="w-[180px]">
             <Link
-              href={`/clusters/${proof.cluster_version?.cluster?.id}`}
+              href={`/provers?cluster=${proof.cluster_version?.cluster?.id}`}
               className="hover:underline"
             >
               {proof.cluster_version?.cluster?.name}

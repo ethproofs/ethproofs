@@ -4,9 +4,8 @@ import { Check, ChevronRight, X as RedX } from "lucide-react"
 import { ColumnDef } from "@tanstack/react-table"
 
 import { DataTableColumnHeader } from "@/components/data-table/data-table-column-header"
-import Link from "@/components/ui/link"
 
-import { ButtonLink } from "../ui/button"
+import { Button } from "../ui/button"
 
 import { ClusterRow } from "./clusters-table"
 
@@ -45,7 +44,13 @@ export const labels = [
   },
 ]
 
-export const columns: ColumnDef<ClusterRow>[] = [
+interface ColumnsOptions {
+  onOpenDrawer?: (cluster: ClusterRow) => void
+}
+
+export const getColumns = (
+  options?: ColumnsOptions
+): ColumnDef<ClusterRow>[] => [
   {
     id: "cluster",
     accessorKey: "nickname",
@@ -60,9 +65,13 @@ export const columns: ColumnDef<ClusterRow>[] = [
 
       return (
         <div className="w-[200px]">
-          <Link href={`/clusters/${cluster.id}`} className="hover:underline">
+          <button
+            type="button"
+            onClick={() => options?.onOpenDrawer?.(cluster)}
+            className="text-left hover:underline"
+          >
             {cluster.name}
-          </Link>
+          </button>
           <div className="text-xs text-muted-foreground">
             {lastVersion.zkvm_version.zkvm.name} by {cluster.team.name}
           </div>
@@ -171,13 +180,13 @@ export const columns: ColumnDef<ClusterRow>[] = [
     header: () => null,
     cell: ({ row }) => (
       <div className="flex flex-row justify-end">
-        <ButtonLink
+        <Button
           variant="outline"
           size="icon"
-          href={`/clusters/${row.original.id}`}
+          onClick={() => options?.onOpenDrawer?.(row.original)}
         >
           <ChevronRight />
-        </ButtonLink>
+        </Button>
       </div>
     ),
   },

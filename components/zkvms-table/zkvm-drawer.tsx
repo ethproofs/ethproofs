@@ -1,6 +1,6 @@
 "use client"
 
-import { Globe } from "lucide-react"
+import { ChevronRight, Globe } from "lucide-react"
 
 import type { ClusterSummary, ZkvmMetrics } from "@/lib/types"
 
@@ -160,14 +160,21 @@ export function ZkvmDrawer({
           ) : (
             <ItemGroup className="gap-2">
               {clusters.map((cluster) => (
-                <Item key={cluster.id} asChild variant="outline" size="sm">
-                  <Link href={`/clusters/${cluster.id}`} hideArrow>
+                <Item
+                  key={cluster.id}
+                  asChild
+                  variant="outline"
+                  size="sm"
+                  className="transition-colors hover:bg-accent"
+                >
+                  <Link href={`/provers?cluster=${cluster.id}`} hideArrow>
                     <ItemContent>
                       <ItemTitle>{cluster.name}</ItemTitle>
                     </ItemContent>
                     <ItemContent className="text-xs text-body-secondary">
                       {cluster.team.name}
                     </ItemContent>
+                    <ChevronRight className="size-4 shrink-0 text-body-secondary" />
                   </Link>
                 </Item>
               ))}

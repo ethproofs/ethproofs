@@ -32,7 +32,7 @@ export function MissingProofsSection({
               team.clusters.map((cluster) => (
                 <Link
                   key={cluster.cluster_id}
-                  href={`/clusters/${cluster.cluster_id}`}
+                  href={`/provers?cluster=${cluster.cluster_id}`}
                   className="flex items-center gap-4 bg-destructive/10 px-4 py-3 transition-colors hover:bg-destructive/20"
                 >
                   <div className="flex size-8 shrink-0 items-center justify-center rounded-lg bg-destructive/20">
