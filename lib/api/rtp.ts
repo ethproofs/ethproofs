@@ -165,6 +165,7 @@ export const getRtpCohortComposition = cache(
         ctl.weekly_timeline
       FROM cluster_tenure ct
       INNER JOIN cluster_timelines ctl ON ctl.cluster_id = ct.cluster_id
+      WHERE ct.is_currently_evaluated = true
       ORDER BY ct.weeks_eligible DESC, ct.team_name ASC
     `)
 
