@@ -1,5 +1,6 @@
 "use client"
 
+import { useMemo } from "react"
 import { useDebounceValue } from "usehooks-ts"
 import { usePrefetchQuery } from "@tanstack/react-query"
 
@@ -12,7 +13,7 @@ import { cn } from "@/lib/utils"
 import { DataTable } from "../data-table/data-table"
 import { Skeleton } from "../ui/skeleton"
 
-import { columns, labels } from "./columns"
+import { getColumns, labels } from "./columns"
 
 import type { MachineType } from "@/lib/api/blocks"
 import { mergeBlocksWithTeams } from "@/lib/blocks"
@@ -28,12 +29,14 @@ interface BlocksTableProps {
   className?: string
   machineType: MachineType
   teams: Team[]
+  onOpenDrawer?: (block: Block) => void
 }
 
 export function BlocksTable({
   className,
   teams,
   machineType,
+  onOpenDrawer,
 }: BlocksTableProps) {
   useRealtimeBlockProofs()
   const tableState = useDataTableUrlState()
@@ -63,6 +66,8 @@ export function BlocksTable({
   })
 
   const blocks = mergeBlocksWithTeams(blocksQuery.data?.rows ?? [], teams)
+
+  const columns = useMemo(() => getColumns({ onOpenDrawer }), [onOpenDrawer])
 
   const handleExport = (rows: Block[], isFiltered: boolean) => {
     const filename = `blocks-${new Date().toISOString().split("T")[0]}${

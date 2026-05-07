@@ -275,7 +275,7 @@ function RecentProofs({ isLoading, proofs }: RecentProofsProps) {
         const provingTime = proof.proving_time
 
         const blockHref =
-          blockNumber !== undefined ? `/blocks/${blockNumber}` : null
+          blockNumber !== undefined ? `/blocks?block=${blockNumber}` : null
 
         const content = (
           <>

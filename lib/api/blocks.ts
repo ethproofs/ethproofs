@@ -92,7 +92,11 @@ export async function fetchBlocksPaginated(
         with: {
           cluster_version: {
             with: {
-              cluster: true,
+              cluster: {
+                with: {
+                  prover_type: true,
+                },
+              },
               zkvm_version: {
                 with: {
                   zkvm: true,
@@ -257,97 +261,3 @@ export const fetchBlock = async ({
     }
   )({ blockNumber, hash })
 }
-
-export const fetchBlocks = cache(
-  async (machineType: MachineType = "all", limit: number = 10) => {
-    const blocksRows = await db.query.blocks.findMany({
-      with: {
-        proofs: {
-          with: {
-            cluster_version: {
-              with: {
-                cluster: true,
-                zkvm_version: {
-                  with: {
-                    zkvm: true,
-                  },
-                },
-              },
-            },
-            gpu_price_index: true,
-          },
-          // Filter proofs by cluster type
-          where:
-            machineType === "all"
-              ? undefined
-              : (proofs, { exists, eq, and }) =>
-                  exists(
-                    db
-                      .select()
-                      .from(clusterVersions)
-                      .innerJoin(
-                        clusters,
-                        eq(clusterVersions.cluster_id, clusters.id)
-                      )
-                      .innerJoin(
-                        proverTypes,
-                        eq(clusters.prover_type_id, proverTypes.id)
-                      )
-                      .where(
-                        and(
-                          eq(clusterVersions.id, proofs.cluster_version_id),
-                          eq(
-                            proverTypes.gpu_configuration,
-                            machineType === "multi" ? "multi-gpu" : "single-gpu"
-                          )
-                        )
-                      )
-                  ),
-        },
-      },
-      where: (blocks, { exists, eq, and }) =>
-        machineType === "all"
-          ? exists(
-              db
-                .select()
-                .from(proofs)
-                .where(eq(proofs.block_number, blocks.block_number))
-            )
-          : exists(
-              db
-                .select()
-                .from(proofs)
-                .innerJoin(
-                  clusterVersions,
-                  eq(proofs.cluster_version_id, clusterVersions.id)
-                )
-                .innerJoin(
-                  clusters,
-                  eq(clusterVersions.cluster_id, clusters.id)
-                )
-                .innerJoin(
-                  proverTypes,
-                  eq(clusters.prover_type_id, proverTypes.id)
-                )
-                .where(
-                  and(
-                    eq(proofs.block_number, blocks.block_number),
-                    eq(
-                      proverTypes.gpu_configuration,
-                      machineType === "multi" ? "multi-gpu" : "single-gpu"
-                    )
-                  )
-                )
-            ),
-      orderBy: (blocks, { desc }) => [desc(blocks.block_number)],
-      limit,
-    })
-
-    return blocksRows
-  },
-  ["blocks-top-list"],
-  {
-    revalidate: 60, // every minute
-    tags: ["blocks"],
-  }
-)

@@ -10,7 +10,7 @@ interface BlockNumberProps {
 export function BlockNumber({ blockNumber }: BlockNumberProps) {
   return (
     <Link
-      href={`/blocks/${blockNumber}`}
+      href={`/blocks?block=${blockNumber}`}
       className="text-primary hover:text-primary-light hover:underline"
     >
       <HidePunctuation>{formatNumber(blockNumber)}</HidePunctuation>

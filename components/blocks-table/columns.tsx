@@ -9,12 +9,11 @@ import { Checkbox } from "@/components/ui/checkbox"
 
 import { BLOCK_GAS_LIMIT } from "@/lib/constants"
 
-import { BlockNumber } from "../BlockNumber"
 import { DataTableColumnHeader } from "../data-table/data-table-column-header"
 import { Null } from "../null"
 import ProofStatus from "../ProofStatus"
 import { HidePunctuation } from "../StylePunctuation"
-import { ButtonLink } from "../ui/button"
+import { Button } from "../ui/button"
 import { Progress } from "../ui/progress"
 
 import BlockMetric from "./block-metric"
@@ -56,7 +55,11 @@ export const labels = [
   },
 ]
 
-export const columns: ColumnDef<Block>[] = [
+interface ColumnsOptions {
+  onOpenDrawer?: (block: Block) => void
+}
+
+export const getColumns = (options?: ColumnsOptions): ColumnDef<Block>[] => [
   {
     id: "select",
     header: ({ table }) => (
@@ -97,7 +100,13 @@ export const columns: ColumnDef<Block>[] = [
 
       return (
         <div className="w-[100px]">
-          <BlockNumber blockNumber={blockNumber} />
+          <button
+            type="button"
+            onClick={() => options?.onOpenDrawer?.(row.original)}
+            className="text-left text-primary hover:text-primary-light hover:underline"
+          >
+            <HidePunctuation>{formatNumber(blockNumber)}</HidePunctuation>
+          </button>
           <div className="text-xs text-muted-foreground">
             {formattedTimestamp}
           </div>
@@ -218,13 +227,13 @@ export const columns: ColumnDef<Block>[] = [
     id: "actions",
     cell: ({ row }) => (
       <div className="flex flex-row justify-end">
-        <ButtonLink
+        <Button
           variant="outline"
           size="icon"
-          href={`/blocks/${row.original.block_number}`}
+          onClick={() => options?.onOpenDrawer?.(row.original)}
         >
           <ChevronRight />
-        </ButtonLink>
+        </Button>
       </div>
     ),
     enableSorting: false,

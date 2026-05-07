@@ -158,7 +158,9 @@ export type ZkvmMetrics = ZkvmSecurityMetric & ZkvmPerformanceMetric
 export type ZkvmMetric = keyof ZkvmMetrics
 
 export type ClusterVersionExtensions = {
-  cluster: ClusterBase
+  cluster: ClusterBase & {
+    prover_type?: ProverType | null
+  }
   zkvm_version: ZkvmVersion & {
     zkvm: Zkvm
   }

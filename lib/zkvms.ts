@@ -67,4 +67,3 @@ export const getZkvmsStats = async () => {
     isas: Array.from(isas),
   }
 }
-
