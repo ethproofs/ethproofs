@@ -6,6 +6,7 @@ import type { Block, ProofWithCluster, Team } from "@/lib/types"
 
 import CopyButton from "@/components/copy-button"
 import { Null } from "@/components/null"
+import DownloadAllButton from "@/components/proof-buttons/download-all-button"
 import DownloadButton from "@/components/proof-buttons/download-button"
 import { VerifyButton } from "@/components/proof-buttons/verify-button"
 import { Card } from "@/components/ui/card"
@@ -174,7 +175,10 @@ function BlockDrawerBody({ block }: BlockDrawerBodyProps) {
       </div>
 
       <div className="flex flex-col p-4">
-        <h3 className="mb-3 text-base font-medium">recent proofs</h3>
+        {hash && totalCount > 0 && (
+          <DownloadAllButton blockHash={hash} className="mb-4 w-full" />
+        )}
+        <h3 className="mb-3 text-base font-medium">block proofs</h3>
         <RecentProofs proofs={recentProofs} />
       </div>
     </>
@@ -264,7 +268,12 @@ function RecentProofs({ proofs }: RecentProofsProps) {
           : null
 
         return (
-          <Item key={proof.proof_id} variant="outline" size="sm">
+          <Item
+            key={proof.proof_id}
+            variant="outline"
+            size="sm"
+            className="[&_a]:hover:bg-transparent"
+          >
             <ItemContent>
               <ItemTitle className="truncate">
                 {cluster && clusterHref ? (

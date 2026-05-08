@@ -6,8 +6,10 @@ import { useQuery } from "@tanstack/react-query"
 import type { ProofWithCluster, Team } from "@/lib/types"
 
 import { BlockNumber } from "@/components/BlockNumber"
+import CopyButton from "@/components/copy-button"
 import { Null } from "@/components/null"
 import DownloadButton from "@/components/proof-buttons/download-button"
+import DownloadRecentClusterProofsButton from "@/components/proof-buttons/download-recent-cluster-proofs-button"
 import { VerifyButton } from "@/components/proof-buttons/verify-button"
 import GitHubLogo from "@/components/svgs/github-logo.svg"
 import XLogo from "@/components/svgs/x-logo.svg"
@@ -21,6 +23,8 @@ import {
 } from "@/components/ui/drawer"
 import { Item, ItemContent, ItemGroup, ItemMedia } from "@/components/ui/item"
 import Link from "@/components/ui/link"
+
+import { truncateHash } from "@/lib/utils"
 
 import {
   RTP_PARALYZER_CUTOFF_MINUTES,
@@ -98,6 +102,16 @@ export function ClusterDrawer({
               {cluster.name}
             </DrawerTitle>
             <TeamLogoLink team={team} height={18} className="shrink-0" />
+          </div>
+          <div className="flex items-center gap-1 text-xs text-body-secondary">
+            <span className="truncate font-mono" title={cluster.id}>
+              {truncateHash(cluster.id, 8, 8)}
+            </span>
+            <CopyButton
+              message={cluster.id}
+              className="size-6"
+              iconClassName="size-3"
+            />
           </div>
           <div className="text-left font-sans text-xs text-body-secondary">
             {isMultiGpuCluster(cluster)
@@ -228,6 +242,13 @@ export function ClusterDrawer({
         )}
 
         <div className="flex flex-col p-4">
+          {(recentProofs?.length ?? 0) > 0 && (
+            <DownloadRecentClusterProofsButton
+              clusterId={cluster.id}
+              limit={RECENT_PROOFS_LIMIT}
+              className="mb-4 w-full"
+            />
+          )}
           <h3 className="mb-3 text-base font-medium">recent proofs</h3>
           <RecentProofs
             isLoading={isLoadingProofs}
@@ -268,7 +289,12 @@ function RecentProofs({ isLoading, proofs }: RecentProofsProps) {
         const provingTime = proof.proving_time
 
         return (
-          <Item key={proof.proof_id} variant="outline" size="sm">
+          <Item
+            key={proof.proof_id}
+            variant="outline"
+            size="sm"
+            className="[&_a]:hover:bg-transparent"
+          >
             <ItemContent>
               {blockNumber !== undefined ? (
                 <BlockNumber blockNumber={blockNumber} />
