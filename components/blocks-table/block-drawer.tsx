@@ -1,11 +1,13 @@
 "use client"
 
-import { ChevronRight, Clock, Cpu, Hourglass, Layers } from "lucide-react"
+import { Clock, Cpu, Hourglass, Layers } from "lucide-react"
 
-import type { Block, ProofWithCluster } from "@/lib/types"
+import type { Block, ProofWithCluster, Team } from "@/lib/types"
 
 import CopyButton from "@/components/copy-button"
 import { Null } from "@/components/null"
+import DownloadButton from "@/components/proof-buttons/download-button"
+import { VerifyButton } from "@/components/proof-buttons/verify-button"
 import { Card } from "@/components/ui/card"
 import {
   Drawer,
@@ -30,7 +32,6 @@ import { formatNumber } from "@/lib/number"
 import { getProvingTimeStats } from "@/lib/proofs"
 import { prettyMs } from "@/lib/time"
 
-const RECENT_PROOFS_LIMIT = 5
 const PARALYZER_CUTOFF_MS = RTP_PARALYZER_CUTOFF_MINUTES * 60 * 1000
 
 function getProvingTimeColor(provingTime: number): string {
@@ -76,13 +77,11 @@ function BlockDrawerBody({ block }: BlockDrawerBodyProps) {
   const provedCount = proofs.filter((p) => p.proof_status === "proved").length
   const totalCount = proofs.length
 
-  const recentProofs = [...proofs]
-    .sort((a, b) => {
-      const aTime = a.proving_time ?? Number.POSITIVE_INFINITY
-      const bTime = b.proving_time ?? Number.POSITIVE_INFINITY
-      return aTime - bTime
-    })
-    .slice(0, RECENT_PROOFS_LIMIT)
+  const recentProofs = [...proofs].sort((a, b) => {
+    const aTime = a.proving_time ?? Number.POSITIVE_INFINITY
+    const bTime = b.proving_time ?? Number.POSITIVE_INFINITY
+    return aTime - bTime
+  })
 
   const slot = timestamp ? timestampToSlot(timestamp) : null
   const epoch = timestamp ? timestampToEpoch(timestamp) : null
@@ -264,11 +263,21 @@ function RecentProofs({ proofs }: RecentProofsProps) {
             : "single-GPU"
           : null
 
-        const content = (
-          <>
+        return (
+          <Item key={proof.proof_id} variant="outline" size="sm">
             <ItemContent>
               <ItemTitle className="truncate">
-                {cluster?.name ?? <Null />}
+                {cluster && clusterHref ? (
+                  <Link
+                    href={clusterHref}
+                    hideArrow
+                    className="hover:underline"
+                  >
+                    {cluster.name}
+                  </Link>
+                ) : (
+                  (cluster?.name ?? <Null />)
+                )}
               </ItemTitle>
               <div className="flex items-center gap-2 truncate text-xs text-body-secondary">
                 {gpuLabel && (
@@ -289,31 +298,33 @@ function RecentProofs({ proofs }: RecentProofsProps) {
               >
                 {provingTime ? prettyMs(provingTime) : <Null />}
               </div>
+              <div className="text-xs text-body-secondary">proving time</div>
             </ItemContent>
-            {clusterHref && (
-              <ChevronRight className="size-4 shrink-0 text-body-secondary" />
-            )}
-          </>
-        )
-
-        return clusterHref ? (
-          <Item
-            key={proof.proof_id}
-            asChild
-            variant="outline"
-            size="sm"
-            className="transition-colors hover:bg-accent"
-          >
-            <Link href={clusterHref} hideArrow>
-              {content}
-            </Link>
-          </Item>
-        ) : (
-          <Item key={proof.proof_id} variant="outline" size="sm">
-            {content}
+            <ProofActions proof={proof} />
           </Item>
         )
       })}
     </ItemGroup>
+  )
+}
+
+interface ProofActionsProps {
+  proof: ProofWithCluster
+}
+
+function hasTeam(
+  proof: ProofWithCluster
+): proof is ProofWithCluster & { team: Team } {
+  return proof.team !== undefined
+}
+
+function ProofActions({ proof }: ProofActionsProps) {
+  if (!hasTeam(proof)) return null
+
+  return (
+    <div className="grid w-full grid-cols-2 gap-2 pt-2">
+      <DownloadButton proof={proof} className="w-full" />
+      <VerifyButton proof={proof} className="w-full" />
+    </div>
   )
 }

@@ -1,9 +1,14 @@
 "use client"
 
-import { ChevronRight, Globe } from "lucide-react"
+import { Globe } from "lucide-react"
 import { useQuery } from "@tanstack/react-query"
 
+import type { ProofWithCluster, Team } from "@/lib/types"
+
+import { BlockNumber } from "@/components/BlockNumber"
 import { Null } from "@/components/null"
+import DownloadButton from "@/components/proof-buttons/download-button"
+import { VerifyButton } from "@/components/proof-buttons/verify-button"
 import GitHubLogo from "@/components/svgs/github-logo.svg"
 import XLogo from "@/components/svgs/x-logo.svg"
 import { TeamLogoLink } from "@/components/team-logo-link"
@@ -14,13 +19,7 @@ import {
   DrawerHeader,
   DrawerTitle,
 } from "@/components/ui/drawer"
-import {
-  Item,
-  ItemContent,
-  ItemGroup,
-  ItemMedia,
-  ItemTitle,
-} from "@/components/ui/item"
+import { Item, ItemContent, ItemGroup, ItemMedia } from "@/components/ui/item"
 import Link from "@/components/ui/link"
 
 import {
@@ -32,24 +31,18 @@ import type { ClusterRow } from "./clusters-table"
 
 import { isMultiGpuCluster } from "@/lib/cluster"
 import { formatTimeAgoDetailed } from "@/lib/date"
-import { formatNumber, formatUsd } from "@/lib/number"
+import { formatUsd } from "@/lib/number"
 import { prettyMs } from "@/lib/time"
 import { getHost, getTwitterHandle } from "@/lib/url"
 import { isUnverifiableZkvm } from "@/lib/zkvms.utils"
 
-const RECENT_PROOFS_LIMIT = 5
+const RECENT_PROOFS_LIMIT = 25
 const PARALYZER_CUTOFF_MS = RTP_PARALYZER_CUTOFF_MINUTES * 60 * 1000
 
 function getProvingTimeColor(provingTime: number): string {
   if (provingTime < RTP_PERFORMANCE_TIME_THRESHOLD_MS) return "text-level-best"
   if (provingTime < PARALYZER_CUTOFF_MS) return "text-level-middle"
   return "text-level-worst"
-}
-
-interface RecentProofRow {
-  id: string
-  proving_time?: number | null
-  block?: { block_number?: number; timestamp?: string | null }
 }
 
 interface ClusterDrawerProps {
@@ -66,7 +59,7 @@ export function ClusterDrawer({
   const clusterId = cluster?.id ?? null
 
   const { data: recentProofs, isLoading: isLoadingProofs } = useQuery<
-    RecentProofRow[]
+    ProofWithCluster[]
   >({
     queryKey: ["cluster-recent-proofs", clusterId],
     queryFn: async () => {
@@ -248,7 +241,7 @@ export function ClusterDrawer({
 
 interface RecentProofsProps {
   isLoading: boolean
-  proofs: RecentProofRow[]
+  proofs: ProofWithCluster[]
 }
 
 function RecentProofs({ isLoading, proofs }: RecentProofsProps) {
@@ -274,19 +267,14 @@ function RecentProofs({ isLoading, proofs }: RecentProofsProps) {
           : null
         const provingTime = proof.proving_time
 
-        const blockHref =
-          blockNumber !== undefined ? `/blocks?block=${blockNumber}` : null
-
-        const content = (
-          <>
+        return (
+          <Item key={proof.proof_id} variant="outline" size="sm">
             <ItemContent>
-              <ItemTitle>
-                {blockNumber !== undefined ? (
-                  formatNumber(blockNumber)
-                ) : (
-                  <Null />
-                )}
-              </ItemTitle>
+              {blockNumber !== undefined ? (
+                <BlockNumber blockNumber={blockNumber} />
+              ) : (
+                <Null />
+              )}
               {formattedTimestamp && (
                 <div className="text-xs text-body-secondary">
                   {formattedTimestamp}
@@ -303,31 +291,33 @@ function RecentProofs({ isLoading, proofs }: RecentProofsProps) {
               >
                 {provingTime ? prettyMs(provingTime) : <Null />}
               </div>
+              <div className="text-xs text-body-secondary">proving time</div>
             </ItemContent>
-            {blockHref && (
-              <ChevronRight className="size-4 shrink-0 text-body-secondary" />
-            )}
-          </>
-        )
-
-        return blockHref ? (
-          <Item
-            key={proof.id}
-            asChild
-            variant="outline"
-            size="sm"
-            className="transition-colors hover:bg-accent"
-          >
-            <Link href={blockHref} hideArrow>
-              {content}
-            </Link>
-          </Item>
-        ) : (
-          <Item key={proof.id} variant="outline" size="sm">
-            {content}
+            <ProofActions proof={proof} />
           </Item>
         )
       })}
     </ItemGroup>
+  )
+}
+
+interface ProofActionsProps {
+  proof: ProofWithCluster
+}
+
+function hasTeam(
+  proof: ProofWithCluster
+): proof is ProofWithCluster & { team: Team } {
+  return proof.team !== undefined
+}
+
+function ProofActions({ proof }: ProofActionsProps) {
+  if (!hasTeam(proof)) return null
+
+  return (
+    <div className="grid w-full grid-cols-2 gap-2 pt-2">
+      <DownloadButton proof={proof} className="w-full" />
+      <VerifyButton proof={proof} className="w-full" />
+    </div>
   )
 }
