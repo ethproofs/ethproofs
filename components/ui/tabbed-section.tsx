@@ -46,7 +46,7 @@ export function TabbedSection({
           const trigger = (
             <TabsTrigger
               key={tab.value}
-              className="cursor-default border-none py-1 2xl:flex-1"
+              className="h-full cursor-default whitespace-normal border-none py-1 text-center leading-tight 2xl:flex-1"
               value={tab.value}
               disabled={isDisabled}
             >
