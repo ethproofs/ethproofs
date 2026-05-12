@@ -56,8 +56,8 @@ const phases: Phase[] = [
     description: "security milestones",
     timeline: "2025 - 2026",
     milestones: [
-      { id: "M1", name: "soundcalc integration", status: "current" },
-      { id: "M2", name: "100-bit provable / 600 KiB", status: "future" },
+      { id: "M1", name: "soundcalc integration", status: "complete" },
+      { id: "M2", name: "100-bit provable / 600 KiB", status: "current" },
       { id: "M3", name: "128-bit provable / 300 KiB", status: "future" },
     ],
     currentMilestone: "M2",

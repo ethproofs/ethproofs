@@ -73,13 +73,13 @@ export function ZkvmSummaryCards({ data }: ZkvmSummaryCardsProps) {
 
       <div className="grid gap-4 md:grid-cols-3">
         <MilestoneCard
-          isCurrent
           values={[
             { label: "integrated into soundcalc", value: data.soundcalcCount },
           ]}
           milestone="security sprint: milestone 1 (M1)"
         />
         <MilestoneCard
+          isCurrent
           values={[
             {
               label: "\u2265100-bit security",
