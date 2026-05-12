@@ -30,7 +30,12 @@ import {
 import { timestampToEpoch, timestampToSlot } from "@/lib/beaconchain"
 import { isMultiGpuCluster } from "@/lib/cluster"
 import { formatNumber } from "@/lib/number"
-import { getProvingTimeStats } from "@/lib/proofs"
+import {
+  getProvingTimeStats,
+  getTotalTTPStats,
+  hasProvedTimestamp,
+  isCompleted,
+} from "@/lib/proofs"
 import { prettyMs } from "@/lib/time"
 
 const PARALYZER_CUTOFF_MS = RTP_PARALYZER_CUTOFF_MINUTES * 60 * 1000
@@ -75,6 +80,7 @@ function BlockDrawerBody({ block }: BlockDrawerBodyProps) {
   const { block_number, hash, timestamp, gas_used, proofs } = block
 
   const provingTimeStats = getProvingTimeStats(proofs)
+  const totalTTPStats = getTotalTTPStats(proofs, timestamp)
   const provedCount = proofs.filter((p) => p.proof_status === "proved").length
   const totalCount = proofs.length
 
@@ -150,9 +156,9 @@ function BlockDrawerBody({ block }: BlockDrawerBodyProps) {
       </div>
 
       <div className="p-4">
-        <Card className="grid grid-cols-2 divide-x divide-border bg-background-accent p-0">
-          <div className="px-4 py-3 text-center text-sm">
-            <div className="text-body-secondary">best proving time</div>
+        <Card className="grid grid-cols-3 divide-x divide-border bg-background-accent p-0">
+          <div className="px-2 py-3 text-center">
+            <div className="text-xs text-body-secondary">best proving time</div>
             <div
               className={
                 provingTimeStats
@@ -165,8 +171,14 @@ function BlockDrawerBody({ block }: BlockDrawerBodyProps) {
               {provingTimeStats ? provingTimeStats.bestFormatted : <Null />}
             </div>
           </div>
-          <div className="px-4 py-3 text-center text-sm">
-            <div className="text-body-secondary">proofs</div>
+          <div className="px-2 py-3 text-center">
+            <div className="text-xs text-body-secondary">best time to proof</div>
+            <div className="text-lg font-medium">
+              {totalTTPStats ? totalTTPStats.bestFormatted : <Null />}
+            </div>
+          </div>
+          <div className="px-2 py-3 text-center">
+            <div className="text-xs text-body-secondary">proofs</div>
             <div className="text-lg font-medium">
               {totalCount > 0 ? `${provedCount} / ${totalCount}` : <Null />}
             </div>
@@ -179,7 +191,7 @@ function BlockDrawerBody({ block }: BlockDrawerBodyProps) {
           <DownloadAllButton blockHash={hash} className="mb-4 w-full" />
         )}
         <h3 className="mb-3 text-base font-medium">block proofs</h3>
-        <RecentProofs proofs={recentProofs} />
+        <RecentProofs proofs={recentProofs} blockTimestamp={timestamp ?? null} />
       </div>
     </>
   )
@@ -247,9 +259,24 @@ function BlockStat({ icon, label, value }: BlockStatProps) {
 
 interface RecentProofsProps {
   proofs: ProofWithCluster[]
+  blockTimestamp: string | null
 }
 
-function RecentProofs({ proofs }: RecentProofsProps) {
+function getTimeToProof(
+  proof: ProofWithCluster,
+  blockTimestamp: string | null
+): number | null {
+  if (!blockTimestamp) return null
+  if (!isCompleted(proof) || !hasProvedTimestamp(proof)) return null
+  if (!proof.proved_timestamp) return null
+  return Math.max(
+    new Date(proof.proved_timestamp).getTime() -
+      new Date(blockTimestamp).getTime(),
+    0
+  )
+}
+
+function RecentProofs({ proofs, blockTimestamp }: RecentProofsProps) {
   if (proofs.length === 0) {
     return <div className="text-sm text-body-secondary">no proofs yet</div>
   }
@@ -260,6 +287,7 @@ function RecentProofs({ proofs }: RecentProofsProps) {
         const cluster = proof.cluster_version?.cluster
         const team = proof.team
         const provingTime = proof.proving_time
+        const timeToProof = getTimeToProof(proof, blockTimestamp)
         const clusterHref = cluster ? `/provers?cluster=${cluster.id}` : null
         const gpuLabel = cluster
           ? isMultiGpuCluster(cluster)
@@ -272,9 +300,9 @@ function RecentProofs({ proofs }: RecentProofsProps) {
             key={proof.proof_id}
             variant="outline"
             size="sm"
-            className="[&_a]:hover:bg-transparent"
+            className="items-start [&_a]:hover:bg-transparent"
           >
-            <ItemContent>
+            <ItemContent className="min-w-0">
               <ItemTitle className="truncate">
                 {cluster && clusterHref ? (
                   <Link
@@ -288,16 +316,18 @@ function RecentProofs({ proofs }: RecentProofsProps) {
                   (cluster?.name ?? <Null />)
                 )}
               </ItemTitle>
-              <div className="flex items-center gap-2 truncate text-xs text-body-secondary">
-                {gpuLabel && (
-                  <span className="rounded bg-accent px-1.5 py-0.5 text-[10px] font-medium uppercase">
-                    {gpuLabel}
-                  </span>
-                )}
-                {team?.name && <span className="truncate">{team.name}</span>}
-              </div>
+              {team?.name && (
+                <div className="truncate text-xs text-body-secondary">
+                  {team.name}
+                </div>
+              )}
+              {gpuLabel && (
+                <span className="mt-1 w-fit shrink-0 rounded bg-accent px-1.5 py-0.5 text-[10px] font-medium uppercase text-body-secondary">
+                  {gpuLabel}
+                </span>
+              )}
             </ItemContent>
-            <ItemContent className="items-end text-right">
+            <ItemContent className="shrink-0 items-end text-right">
               <div
                 className={
                   provingTime
@@ -308,6 +338,10 @@ function RecentProofs({ proofs }: RecentProofsProps) {
                 {provingTime ? prettyMs(provingTime) : <Null />}
               </div>
               <div className="text-xs text-body-secondary">proving time</div>
+              <div className="mt-1 text-sm">
+                {timeToProof ? prettyMs(timeToProof) : <Null />}
+              </div>
+              <div className="text-xs text-body-secondary">time to proof</div>
             </ItemContent>
             <ProofActions proof={proof} />
           </Item>

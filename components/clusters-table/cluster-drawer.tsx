@@ -36,6 +36,7 @@ import type { ClusterRow } from "./clusters-table"
 import { isMultiGpuCluster } from "@/lib/cluster"
 import { formatTimeAgoDetailed } from "@/lib/date"
 import { formatUsd } from "@/lib/number"
+import { hasProvedTimestamp, isCompleted } from "@/lib/proofs"
 import { prettyMs } from "@/lib/time"
 import { getHost, getTwitterHandle } from "@/lib/url"
 import { isUnverifiableZkvm } from "@/lib/zkvms.utils"
@@ -287,27 +288,38 @@ function RecentProofs({ isLoading, proofs }: RecentProofsProps) {
           ? formatTimeAgoDetailed(new Date(timestamp))
           : null
         const provingTime = proof.proving_time
+        const timeToProof =
+          timestamp &&
+          isCompleted(proof) &&
+          hasProvedTimestamp(proof) &&
+          proof.proved_timestamp
+            ? Math.max(
+                new Date(proof.proved_timestamp).getTime() -
+                  new Date(timestamp).getTime(),
+                0
+              )
+            : null
 
         return (
           <Item
             key={proof.proof_id}
             variant="outline"
             size="sm"
-            className="[&_a]:hover:bg-transparent"
+            className="items-start [&_a]:hover:bg-transparent"
           >
-            <ItemContent>
+            <ItemContent className="min-w-0">
               {blockNumber !== undefined ? (
                 <BlockNumber blockNumber={blockNumber} />
               ) : (
                 <Null />
               )}
               {formattedTimestamp && (
-                <div className="text-xs text-body-secondary">
+                <div className="truncate text-xs text-body-secondary">
                   {formattedTimestamp}
                 </div>
               )}
             </ItemContent>
-            <ItemContent className="items-end text-right">
+            <ItemContent className="shrink-0 items-end text-right">
               <div
                 className={
                   provingTime
@@ -318,6 +330,10 @@ function RecentProofs({ isLoading, proofs }: RecentProofsProps) {
                 {provingTime ? prettyMs(provingTime) : <Null />}
               </div>
               <div className="text-xs text-body-secondary">proving time</div>
+              <div className="mt-1 text-sm">
+                {timeToProof ? prettyMs(timeToProof) : <Null />}
+              </div>
+              <div className="text-xs text-body-secondary">time to proof</div>
             </ItemContent>
             <ProofActions proof={proof} />
           </Item>
