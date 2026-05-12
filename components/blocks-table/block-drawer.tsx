@@ -172,7 +172,9 @@ function BlockDrawerBody({ block }: BlockDrawerBodyProps) {
             </div>
           </div>
           <div className="px-2 py-3 text-center">
-            <div className="text-xs text-body-secondary">best time to proof</div>
+            <div className="text-xs text-body-secondary">
+              best time to proof
+            </div>
             <div className="text-lg font-medium">
               {totalTTPStats ? totalTTPStats.bestFormatted : <Null />}
             </div>
@@ -191,7 +193,10 @@ function BlockDrawerBody({ block }: BlockDrawerBodyProps) {
           <DownloadAllButton blockHash={hash} className="mb-4 w-full" />
         )}
         <h3 className="mb-3 text-base font-medium">block proofs</h3>
-        <RecentProofs proofs={recentProofs} blockTimestamp={timestamp ?? null} />
+        <RecentProofs
+          proofs={recentProofs}
+          blockTimestamp={timestamp ?? null}
+        />
       </div>
     </>
   )

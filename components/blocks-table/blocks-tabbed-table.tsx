@@ -35,29 +35,41 @@ export function BlocksTabbedTable({ teams }: BlocksTabbedTableProps) {
   const searchParams = useSearchParams()
 
   const [activeTab, setActiveTab] = useState<MachineType>("multi")
+  const [drawerOpen, setDrawerOpen] = useState(false)
+  const [selectedBlock, setSelectedBlock] = useState<Block | null>(null)
 
   const blockParam = searchParams.get(BLOCK_PARAM)
-  const drawerOpen = Boolean(blockParam)
+  const fetchKey =
+    selectedBlock?.block_number !== undefined
+      ? String(selectedBlock.block_number)
+      : blockParam
 
-  const { data: fetchedBlock, isLoading } = useQuery<Block | null>({
-    queryKey: ["block-detail", blockParam],
-    queryFn: async () => {
-      const response = await fetch(`/api/blocks/${blockParam}`)
-      if (!response.ok) return null
-      return response.json()
-    },
-    enabled: Boolean(blockParam),
-    staleTime: 60 * 1000,
-  })
+  const { data: fetchedBlock, isLoading: isFetchLoading } =
+    useQuery<Block | null>({
+      queryKey: ["block-detail", fetchKey],
+      queryFn: async () => {
+        const response = await fetch(`/api/blocks/${fetchKey}`)
+        if (!response.ok) return null
+        return response.json()
+      },
+      enabled: Boolean(fetchKey),
+      staleTime: 60 * 1000,
+    })
 
-  const selectedBlock = useMemo<Block | null>(() => {
+  const fullBlock = useMemo<Block | null>(() => {
     if (!fetchedBlock) return null
     const [merged] = mergeBlocksWithTeams([fetchedBlock], teams)
     return merged
   }, [fetchedBlock, teams])
 
+  const drawerBlock = fullBlock ?? selectedBlock
+  const open = drawerOpen || Boolean(blockParam)
+  const isLoading = !drawerBlock && isFetchLoading
+
   const handleOpenDrawer = useCallback(
     (block: Block) => {
+      setSelectedBlock(block)
+      setDrawerOpen(true)
       const next = new URLSearchParams(searchParams.toString())
       next.set(BLOCK_PARAM, String(block.block_number))
       router.replace(`${pathname}?${next.toString()}`, { scroll: false })
@@ -67,15 +79,20 @@ export function BlocksTabbedTable({ teams }: BlocksTabbedTableProps) {
 
   const handleOpenChange = useCallback(
     (open: boolean) => {
-      if (open || !blockParam) return
-      const next = new URLSearchParams(searchParams.toString())
-      next.delete(BLOCK_PARAM)
-      const query = next.toString()
-      router.replace(query ? `${pathname}?${query}` : pathname, {
-        scroll: false,
-      })
+      setDrawerOpen(open)
+      if (!open) {
+        setSelectedBlock(null)
+        if (searchParams.get(BLOCK_PARAM)) {
+          const next = new URLSearchParams(searchParams.toString())
+          next.delete(BLOCK_PARAM)
+          const query = next.toString()
+          router.replace(query ? `${pathname}?${query}` : pathname, {
+            scroll: false,
+          })
+        }
+      }
     },
-    [blockParam, pathname, router, searchParams]
+    [pathname, router, searchParams]
   )
 
   function handleTabChange(value: string) {
@@ -103,9 +120,9 @@ export function BlocksTabbedTable({ teams }: BlocksTabbedTableProps) {
         ))}
       </TabbedSection>
       <BlockDrawer
-        open={drawerOpen}
+        open={open}
         onOpenChange={handleOpenChange}
-        block={selectedBlock}
+        block={drawerBlock}
         isLoading={isLoading}
       />
     </>
