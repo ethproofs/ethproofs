@@ -61,7 +61,7 @@ export function BlockDrawer({
 }: BlockDrawerProps) {
   return (
     <Drawer open={open} onOpenChange={onOpenChange}>
-      <DrawerContent className="h-full w-[420px] overflow-y-auto border-l">
+      <DrawerContent className="h-full w-[420px] overflow-y-auto border-l outline-none focus-visible:outline-none">
         {block ? (
           <BlockDrawerBody block={block} />
         ) : (

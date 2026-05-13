@@ -93,7 +93,7 @@ export function ClusterDrawer({
 
   return (
     <Drawer open={open} onOpenChange={onOpenChange}>
-      <DrawerContent className="h-full w-[420px] overflow-y-auto border-l">
+      <DrawerContent className="h-full w-[420px] overflow-y-auto border-l outline-none focus-visible:outline-none">
         <DrawerHeader className="border-b pb-4">
           <div className="flex items-center justify-between gap-4">
             <DrawerTitle
