@@ -2,9 +2,6 @@ import { createClient as createAdminClient } from "@supabase/supabase-js"
 
 import { VERIFICATION_KEYS_BUCKET } from "../constants"
 
-import { createClient } from "@/utils/supabase/server"
-
-// Create an admin client for storage operations
 const getAdminClient = () => {
   return createAdminClient(
     process.env.NEXT_PUBLIC_SUPABASE_URL!,
@@ -34,7 +31,7 @@ export const uploadVerificationKey = async (
 }
 
 export const downloadVerificationKey = async (filename: string) => {
-  const supabase = await createClient()
+  const supabase = getAdminClient()
 
   const { data, error } = await supabase.storage
     .from(VERIFICATION_KEYS_BUCKET)
