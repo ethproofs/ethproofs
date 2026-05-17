@@ -127,6 +127,17 @@ export const POST = withAuthAndRateLimit(
           })
           .returning({ proof_id: proofs.proof_id })
 
+        // newProof is undefined when a concurrent request already set status to
+        // "proved" between our existingProof check above and this insert — the
+        // onConflictDoUpdate WHERE clause (ne proof_status "proved") prevents the
+        // update, so RETURNING returns an empty array.
+        if (!newProof) {
+          console.log(
+            `[Proved] Concurrent request already proved block ${block_number} for cluster ${cluster.id}`
+          )
+          return undefined
+        }
+
         // Handle active cluster status and updates
         if (!clusterVersion.cluster.is_active) {
           await tx
@@ -143,6 +154,10 @@ export const POST = withAuthAndRateLimit(
 
         return newProof
       })
+
+      if (!newProof) {
+        return new Response("Proof already proved", { status: 409 })
+      }
 
       revalidateTag(TAGS.PROOFS)
       revalidateTag(TAGS.BLOCKS)
