@@ -18,6 +18,8 @@ const MODULE_LOADERS: Record<VerifiableZkvmSlug, () => Promise<unknown>> = {
   openvm: () => import("@ethproofs/openvm-wasm-stark-verifier"),
   openvm2: () => import("@ethproofs/openvm2-wasm-stark-verifier"),
   airbender: () => import("@ethproofs/airbender-wasm-stark-verifier"),
+  "airbender-80": () =>
+    import("@ethproofs/airbender-wasm-stark-verifier-v0.10.0"),
   venus: () => import("@ethproofs/venus-wasm-stark-verifier"),
   zkdtvm: () => import("@ethproofs/zkdtvm-wasm-stark-verifier"),
 }

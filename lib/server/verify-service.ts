@@ -44,6 +44,11 @@ async function loadWasmModule(name: string): Promise<WasmModule> {
       case "airbender":
         loadedModule = await import("@ethproofs/airbender-wasm-stark-verifier")
         break
+      case "airbender-80":
+        loadedModule = await import(
+          "@ethproofs/airbender-wasm-stark-verifier-v0.10.0"
+        )
+        break
       case "venus":
         loadedModule = await import("@ethproofs/venus-wasm-stark-verifier")
         break
