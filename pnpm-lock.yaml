@@ -49,8 +49,8 @@ importers:
         specifier: ^0.1.9
         version: 0.1.9
       '@ethproofs/zisk-wasm-stark-verifier':
-        specifier: ^0.1.5
-        version: 0.1.5
+        specifier: ^0.1.6
+        version: 0.1.6
       '@ethproofs/zisk-wasm-stark-verifier-v0.12.0':
         specifier: npm:@ethproofs/zisk-wasm-stark-verifier@0.1.1
         version: '@ethproofs/zisk-wasm-stark-verifier@0.1.1'
@@ -1681,8 +1681,8 @@ packages:
     resolution: {integrity: sha512-RcNoTzqEf7nPA8wLAhrkbe06nkZWsOZvb6A5aQG5Q4LKgxLrkueG4GRhabGtM3vxLFbex+jHl8d6Nzzvbu0Xsg==}
     engines: {node: '>=16.0.0'}
 
-  '@ethproofs/zisk-wasm-stark-verifier@0.1.5':
-    resolution: {integrity: sha512-cIP9dacdHVDu7W/+rKGnTbzjSmdnFldjlV4xGhzRPUB2IZwxp5hX+cTQBG0KuqeAo2bOQOsb0ogtxZmDlYNjDg==}
+  '@ethproofs/zisk-wasm-stark-verifier@0.1.6':
+    resolution: {integrity: sha512-mMCPHYqMX2IFjWfNefgu+FDBz5wfcoLKEhUlPHUw+vcek1Vr8drYm7u+QQxU7SssdxNV5iaI3nXNXXcl6UbIvg==}
     engines: {node: '>=16.0.0'}
 
   '@ethproofs/zkdtvm-wasm-stark-verifier@0.1.1':
@@ -9507,7 +9507,7 @@ snapshots:
 
   '@ethproofs/zisk-wasm-stark-verifier@0.1.1': {}
 
-  '@ethproofs/zisk-wasm-stark-verifier@0.1.5': {}
+  '@ethproofs/zisk-wasm-stark-verifier@0.1.6': {}
 
   '@ethproofs/zkdtvm-wasm-stark-verifier@0.1.1': {}
 
