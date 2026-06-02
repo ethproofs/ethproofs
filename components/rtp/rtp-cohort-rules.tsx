@@ -30,7 +30,7 @@ const cohortRules: CohortRule[] = [
     ),
   },
   {
-    id: "03",
+    id: "02",
     description: (
       <>
         prover must be running a zkVM on a{" "}
@@ -40,7 +40,7 @@ const cohortRules: CohortRule[] = [
     ),
   },
   {
-    id: "04",
+    id: "03",
     description: (
       <>
         prover must maintain a{" "}
@@ -52,7 +52,7 @@ const cohortRules: CohortRule[] = [
     ),
   },
   {
-    id: "05",
+    id: "04",
     description: (
       <>
         prover must maintain a{" "}
