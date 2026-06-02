@@ -24,21 +24,13 @@ const cohortRules: CohortRule[] = [
     description: (
       <>
         prover must be running a zkVM that has completed{" "}
-        <span className="text-primary">security sprint milestone 1</span>{" "}
-        &mdash; integrate with{" "}
-        <a
-          href="https://github.com/ethereum/soundcalc"
-          target="_blank"
-          rel="noopener noreferrer"
-          className="text-xs text-primary hover:text-primary-light"
-        >
-          soundcalc
-        </a>
+        <span className="text-primary">security sprint milestone 2</span>{" "}
+        &mdash; 100-bit provable and 600 KiB proofs
       </>
     ),
   },
   {
-    id: "02",
+    id: "03",
     description: (
       <>
         prover must be running a zkVM on a{" "}
@@ -48,7 +40,7 @@ const cohortRules: CohortRule[] = [
     ),
   },
   {
-    id: "03",
+    id: "04",
     description: (
       <>
         prover must maintain a{" "}
@@ -60,7 +52,7 @@ const cohortRules: CohortRule[] = [
     ),
   },
   {
-    id: "04",
+    id: "05",
     description: (
       <>
         prover must maintain a{" "}

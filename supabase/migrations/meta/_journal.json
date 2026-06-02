@@ -484,6 +484,13 @@
       "when": 1776211200000,
       "tag": "0068_add-blocks-hash-index",
       "breakpoints": true
+    },
+    {
+      "idx": 69,
+      "version": "7",
+      "when": 1780409826120,
+      "tag": "0069_update-rtp-cohort-m2-eligibility",
+      "breakpoints": true
     }
   ]
 }

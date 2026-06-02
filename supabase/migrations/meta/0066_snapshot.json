@@ -733,7 +733,8 @@
             "startWith": "1",
             "cache": "1",
             "cycle": false,
-            "type": "byDefault"
+            "type": "byDefault",
+            "schema": "public"
           }
         },
         "description": {

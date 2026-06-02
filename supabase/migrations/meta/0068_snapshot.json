@@ -48,9 +48,13 @@
         "api_auth_tokens_team_id_teams_id_fk": {
           "name": "api_auth_tokens_team_id_teams_id_fk",
           "tableFrom": "api_auth_tokens",
-          "columnsFrom": ["team_id"],
+          "columnsFrom": [
+            "team_id"
+          ],
           "tableTo": "teams",
-          "columnsTo": ["id"],
+          "columnsTo": [
+            "id"
+          ],
           "onUpdate": "cascade",
           "onDelete": "cascade"
         }
@@ -59,7 +63,9 @@
       "uniqueConstraints": {
         "api_auth_tokens_token_unique": {
           "name": "api_auth_tokens_token_unique",
-          "columns": ["token"],
+          "columns": [
+            "token"
+          ],
           "nullsNotDistinct": false
         }
       },
@@ -68,7 +74,9 @@
           "name": "Allow users to see API token entries they own",
           "as": "PERMISSIVE",
           "for": "SELECT",
-          "to": ["anon"],
+          "to": [
+            "anon"
+          ],
           "using": "is_allowed_apikey(((current_setting('request.headers'::text, true))::json ->> 'ethkey'::text), '{admin,read,write}'::key_mode[])"
         }
       },
@@ -126,14 +134,18 @@
           "name": "Enable read access for all users",
           "as": "PERMISSIVE",
           "for": "SELECT",
-          "to": ["public"],
+          "to": [
+            "public"
+          ],
           "using": "true"
         },
         "Enable insert for users with an api key": {
           "name": "Enable insert for users with an api key",
           "as": "PERMISSIVE",
           "for": "INSERT",
-          "to": ["public"]
+          "to": [
+            "public"
+          ]
         }
       },
       "checkConstraints": {},
@@ -213,18 +225,26 @@
         "cluster_versions_cluster_id_clusters_id_fk": {
           "name": "cluster_versions_cluster_id_clusters_id_fk",
           "tableFrom": "cluster_versions",
-          "columnsFrom": ["cluster_id"],
+          "columnsFrom": [
+            "cluster_id"
+          ],
           "tableTo": "clusters",
-          "columnsTo": ["id"],
+          "columnsTo": [
+            "id"
+          ],
           "onUpdate": "cascade",
           "onDelete": "cascade"
         },
         "cluster_versions_zkvm_version_id_zkvm_versions_id_fk": {
           "name": "cluster_versions_zkvm_version_id_zkvm_versions_id_fk",
           "tableFrom": "cluster_versions",
-          "columnsFrom": ["zkvm_version_id"],
+          "columnsFrom": [
+            "zkvm_version_id"
+          ],
           "tableTo": "zkvm_versions",
-          "columnsTo": ["id"],
+          "columnsTo": [
+            "id"
+          ],
           "onUpdate": "cascade",
           "onDelete": "cascade"
         }
@@ -309,7 +329,9 @@
           "name": "Enable read access for all users",
           "as": "PERMISSIVE",
           "for": "SELECT",
-          "to": ["public"],
+          "to": [
+            "public"
+          ],
           "using": "true"
         }
       },
@@ -410,27 +432,39 @@
         "clusters_team_id_teams_id_fk": {
           "name": "clusters_team_id_teams_id_fk",
           "tableFrom": "clusters",
-          "columnsFrom": ["team_id"],
+          "columnsFrom": [
+            "team_id"
+          ],
           "tableTo": "teams",
-          "columnsTo": ["id"],
+          "columnsTo": [
+            "id"
+          ],
           "onUpdate": "cascade",
           "onDelete": "cascade"
         },
         "clusters_prover_type_id_prover_types_id_fk": {
           "name": "clusters_prover_type_id_prover_types_id_fk",
           "tableFrom": "clusters",
-          "columnsFrom": ["prover_type_id"],
+          "columnsFrom": [
+            "prover_type_id"
+          ],
           "tableTo": "prover_types",
-          "columnsTo": ["id"],
+          "columnsTo": [
+            "id"
+          ],
           "onUpdate": "no action",
           "onDelete": "no action"
         },
         "clusters_guest_program_id_guest_programs_id_fk": {
           "name": "clusters_guest_program_id_guest_programs_id_fk",
           "tableFrom": "clusters",
-          "columnsFrom": ["guest_program_id"],
+          "columnsFrom": [
+            "guest_program_id"
+          ],
           "tableTo": "guest_programs",
-          "columnsTo": ["id"],
+          "columnsTo": [
+            "id"
+          ],
           "onUpdate": "cascade",
           "onDelete": "set null"
         }
@@ -442,14 +476,18 @@
           "name": "Enable read access for all users",
           "as": "PERMISSIVE",
           "for": "SELECT",
-          "to": ["public"],
+          "to": [
+            "public"
+          ],
           "using": "true"
         },
         "Enable insert for users with an api key": {
           "name": "Enable insert for users with an api key",
           "as": "PERMISSIVE",
           "for": "INSERT",
-          "to": ["public"]
+          "to": [
+            "public"
+          ]
         }
       },
       "checkConstraints": {},
@@ -595,27 +633,39 @@
         "proofs_block_number_blocks_block_number_fk": {
           "name": "proofs_block_number_blocks_block_number_fk",
           "tableFrom": "proofs",
-          "columnsFrom": ["block_number"],
+          "columnsFrom": [
+            "block_number"
+          ],
           "tableTo": "blocks",
-          "columnsTo": ["block_number"],
+          "columnsTo": [
+            "block_number"
+          ],
           "onUpdate": "no action",
           "onDelete": "no action"
         },
         "proofs_team_id_teams_id_fk": {
           "name": "proofs_team_id_teams_id_fk",
           "tableFrom": "proofs",
-          "columnsFrom": ["team_id"],
+          "columnsFrom": [
+            "team_id"
+          ],
           "tableTo": "teams",
-          "columnsTo": ["id"],
+          "columnsTo": [
+            "id"
+          ],
           "onUpdate": "cascade",
           "onDelete": "cascade"
         },
         "proofs_cluster_version_id_cluster_versions_id_fk": {
           "name": "proofs_cluster_version_id_cluster_versions_id_fk",
           "tableFrom": "proofs",
-          "columnsFrom": ["cluster_version_id"],
+          "columnsFrom": [
+            "cluster_version_id"
+          ],
           "tableTo": "cluster_versions",
-          "columnsTo": ["id"],
+          "columnsTo": [
+            "id"
+          ],
           "onUpdate": "cascade",
           "onDelete": "cascade"
         }
@@ -624,7 +674,10 @@
       "uniqueConstraints": {
         "unique_block_cluster_version": {
           "name": "unique_block_cluster_version",
-          "columns": ["block_number", "cluster_version_id"],
+          "columns": [
+            "block_number",
+            "cluster_version_id"
+          ],
           "nullsNotDistinct": false
         }
       },
@@ -633,20 +686,26 @@
           "name": "Enable updates for users with an api key",
           "as": "PERMISSIVE",
           "for": "UPDATE",
-          "to": ["public"],
+          "to": [
+            "public"
+          ],
           "using": "is_allowed_apikey(((current_setting('request.headers'::text, true))::json ->> 'ethkey'::text), '{admin,write}'::key_mode[])"
         },
         "Enable read access for all users": {
           "name": "Enable read access for all users",
           "as": "PERMISSIVE",
           "for": "SELECT",
-          "to": ["public"]
+          "to": [
+            "public"
+          ]
         },
         "Enable insert for users with an api key": {
           "name": "Enable insert for users with an api key",
           "as": "PERMISSIVE",
           "for": "INSERT",
-          "to": ["public"]
+          "to": [
+            "public"
+          ]
         }
       },
       "checkConstraints": {
@@ -674,7 +733,8 @@
             "startWith": "1",
             "cache": "1",
             "cycle": false,
-            "type": "byDefault"
+            "type": "byDefault",
+            "schema": "public"
           }
         },
         "description": {
@@ -712,7 +772,9 @@
           "name": "Enable read access for all users",
           "as": "PERMISSIVE",
           "for": "SELECT",
-          "to": ["public"],
+          "to": [
+            "public"
+          ],
           "using": "true"
         }
       },
@@ -788,7 +850,9 @@
       "uniqueConstraints": {
         "proofs_daily_stats_date_key": {
           "name": "proofs_daily_stats_date_key",
-          "columns": ["date"],
+          "columns": [
+            "date"
+          ],
           "nullsNotDistinct": false
         }
       },
@@ -865,9 +929,13 @@
         "prover_daily_stats_team_id_teams_id_fk": {
           "name": "prover_daily_stats_team_id_teams_id_fk",
           "tableFrom": "prover_daily_stats",
-          "columnsFrom": ["team_id"],
+          "columnsFrom": [
+            "team_id"
+          ],
           "tableTo": "teams",
-          "columnsTo": ["id"],
+          "columnsTo": [
+            "id"
+          ],
           "onUpdate": "cascade",
           "onDelete": "cascade"
         }
@@ -876,7 +944,10 @@
       "uniqueConstraints": {
         "prover_daily_stats_date_team_key": {
           "name": "prover_daily_stats_date_team_key",
-          "columns": ["date", "team_id"],
+          "columns": [
+            "date",
+            "team_id"
+          ],
           "nullsNotDistinct": false
         }
       },
@@ -949,10 +1020,14 @@
         "teams_id_users_id_fk": {
           "name": "teams_id_users_id_fk",
           "tableFrom": "teams",
-          "columnsFrom": ["id"],
+          "columnsFrom": [
+            "id"
+          ],
           "tableTo": "users",
           "schemaTo": "auth",
-          "columnsTo": ["id"],
+          "columnsTo": [
+            "id"
+          ],
           "onUpdate": "cascade",
           "onDelete": "cascade"
         }
@@ -961,7 +1036,9 @@
       "uniqueConstraints": {
         "teams_slug_unique": {
           "name": "teams_slug_unique",
-          "columns": ["slug"],
+          "columns": [
+            "slug"
+          ],
           "nullsNotDistinct": false
         }
       },
@@ -970,7 +1047,9 @@
           "name": "Enable read access for all users",
           "as": "PERMISSIVE",
           "for": "SELECT",
-          "to": ["public"],
+          "to": [
+            "public"
+          ],
           "using": "true"
         }
       },
@@ -1036,9 +1115,13 @@
         "zkvm_performance_metrics_zkvm_id_zkvms_id_fk": {
           "name": "zkvm_performance_metrics_zkvm_id_zkvms_id_fk",
           "tableFrom": "zkvm_performance_metrics",
-          "columnsFrom": ["zkvm_id"],
+          "columnsFrom": [
+            "zkvm_id"
+          ],
           "tableTo": "zkvms",
-          "columnsTo": ["id"],
+          "columnsTo": [
+            "id"
+          ],
           "onUpdate": "cascade",
           "onDelete": "cascade"
         }
@@ -1047,7 +1130,9 @@
       "uniqueConstraints": {
         "zkvm_performance_metrics_zkvm_id_unique": {
           "name": "zkvm_performance_metrics_zkvm_id_unique",
-          "columns": ["zkvm_id"],
+          "columns": [
+            "zkvm_id"
+          ],
           "nullsNotDistinct": false
         }
       },
@@ -1056,7 +1141,9 @@
           "name": "Enable read access for all users",
           "as": "PERMISSIVE",
           "for": "SELECT",
-          "to": ["public"],
+          "to": [
+            "public"
+          ],
           "using": "true"
         }
       },
@@ -1150,9 +1237,13 @@
         "zkvm_security_metrics_zkvm_id_zkvms_id_fk": {
           "name": "zkvm_security_metrics_zkvm_id_zkvms_id_fk",
           "tableFrom": "zkvm_security_metrics",
-          "columnsFrom": ["zkvm_id"],
+          "columnsFrom": [
+            "zkvm_id"
+          ],
           "tableTo": "zkvms",
-          "columnsTo": ["id"],
+          "columnsTo": [
+            "id"
+          ],
           "onUpdate": "cascade",
           "onDelete": "cascade"
         }
@@ -1161,7 +1252,9 @@
       "uniqueConstraints": {
         "zkvm_security_metrics_zkvm_id_unique": {
           "name": "zkvm_security_metrics_zkvm_id_unique",
-          "columns": ["zkvm_id"],
+          "columns": [
+            "zkvm_id"
+          ],
           "nullsNotDistinct": false
         }
       },
@@ -1170,7 +1263,9 @@
           "name": "Enable read access for all users",
           "as": "PERMISSIVE",
           "for": "SELECT",
-          "to": ["public"],
+          "to": [
+            "public"
+          ],
           "using": "true"
         }
       },
@@ -1229,9 +1324,13 @@
         "zkvm_versions_zkvm_id_zkvms_id_fk": {
           "name": "zkvm_versions_zkvm_id_zkvms_id_fk",
           "tableFrom": "zkvm_versions",
-          "columnsFrom": ["zkvm_id"],
+          "columnsFrom": [
+            "zkvm_id"
+          ],
           "tableTo": "zkvms",
-          "columnsTo": ["id"],
+          "columnsTo": [
+            "id"
+          ],
           "onUpdate": "cascade",
           "onDelete": "cascade"
         }
@@ -1240,7 +1339,10 @@
       "uniqueConstraints": {
         "zkvm_versions_zkvm_id_version_uk": {
           "name": "zkvm_versions_zkvm_id_version_uk",
-          "columns": ["zkvm_id", "version"],
+          "columns": [
+            "zkvm_id",
+            "version"
+          ],
           "nullsNotDistinct": false
         }
       },
@@ -1359,9 +1461,13 @@
         "zkvms_team_id_teams_id_fk": {
           "name": "zkvms_team_id_teams_id_fk",
           "tableFrom": "zkvms",
-          "columnsFrom": ["team_id"],
+          "columnsFrom": [
+            "team_id"
+          ],
           "tableTo": "teams",
-          "columnsTo": ["id"],
+          "columnsTo": [
+            "id"
+          ],
           "onUpdate": "cascade",
           "onDelete": "cascade"
         }
@@ -1370,7 +1476,9 @@
       "uniqueConstraints": {
         "zkvms_slug_unique": {
           "name": "zkvms_slug_unique",
-          "columns": ["slug"],
+          "columns": [
+            "slug"
+          ],
           "nullsNotDistinct": false
         }
       },
@@ -1426,7 +1534,9 @@
       "uniqueConstraints": {
         "prover_types_name_unique": {
           "name": "prover_types_name_unique",
-          "columns": ["name"],
+          "columns": [
+            "name"
+          ],
           "nullsNotDistinct": false
         }
       },
@@ -1481,7 +1591,10 @@
       "uniqueConstraints": {
         "gpu_price_index_gpu_name_created_at_unique": {
           "name": "gpu_price_index_gpu_name_created_at_unique",
-          "columns": ["gpu_name", "created_at"],
+          "columns": [
+            "gpu_name",
+            "created_at"
+          ],
           "nullsNotDistinct": false
         }
       },
@@ -1494,12 +1607,20 @@
     "public.key_mode": {
       "name": "key_mode",
       "schema": "public",
-      "values": ["admin", "read", "write"]
+      "values": [
+        "admin",
+        "read",
+        "write"
+      ]
     },
     "public.severity_level": {
       "name": "severity_level",
       "schema": "public",
-      "values": ["red", "yellow", "green"]
+      "values": [
+        "red",
+        "yellow",
+        "green"
+      ]
     }
   },
   "schemas": {},
