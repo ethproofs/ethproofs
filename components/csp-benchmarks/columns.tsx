@@ -261,11 +261,17 @@ export function getColumns(options?: CspColumnsOptions): ColumnDef<Metrics>[] {
       header: ({ column }) => (
         <DataTableColumnHeader column={column} title="name" />
       ),
-      cell: ({ row }) => (
-        <div style={{ width: 100 }}>
-          <span className="font-medium">{row.original.name}</span>
-        </div>
-      ),
+      cell: ({ row }) => {
+        const name = row.original.uses_precompile
+          ? `${row.original.name}*`
+          : row.original.name
+
+        return (
+          <div style={{ width: 100 }}>
+            <span className="font-medium">{name}</span>
+          </div>
+        )
+      },
     },
     {
       id: "actions",

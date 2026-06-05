@@ -62,6 +62,7 @@ const measurementSchema = z.object({
   num_constraints: z.number().int(),
   peak_memory: z.number().int(),
   feat: z.string().optional(),
+  uses_precompile: z.boolean().optional(),
 })
 
 const metadataSchema = z.object({
@@ -98,6 +99,7 @@ function flattenCollectedBenchmarks(collected: CollectedBenchmarks): Metrics[] {
         preprocessing_size: m.preprocessing_size,
         num_constraints: m.num_constraints,
         peak_memory: m.peak_memory,
+        uses_precompile: m.uses_precompile,
         proving_system: sys.proving_system,
         field_curve: sys.field_curve,
         iop: sys.iop,

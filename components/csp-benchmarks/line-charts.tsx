@@ -20,6 +20,12 @@ import {
   nanosecondsPerMillisecond,
 } from "./metrics"
 import {
+  getPrecompileLabel,
+  getPrecompileProvers,
+  hasPrecompileMeasurements,
+  precompileFootnoteText,
+} from "./precompiles.utils"
+import {
   ChartCard,
   ChartLegend,
   ChartTooltipBody,
@@ -132,6 +138,8 @@ interface LineMetricChartProps {
   isBytes: boolean
   label?: string
   ariaLabel?: string
+  precompileLabels: Map<string, string>
+  shouldShowPrecompileFootnote: boolean
 }
 
 function LineMetricChart({
@@ -147,6 +155,8 @@ function LineMetricChart({
   isBytes,
   label,
   ariaLabel,
+  precompileLabels,
+  shouldShowPrecompileFootnote,
 }: LineMetricChartProps) {
   const ticks = useMemo(() => {
     const allValues = data.flatMap((point) =>
@@ -198,23 +208,41 @@ function LineMetricChart({
       payload?: ReadonlyArray<ChartTooltipBodyEntry>
     }) => {
       if (!active || !payload || payload.length === 0) return null
+      const labeledPayload = payload.map((entry) => ({
+        ...entry,
+        name:
+          typeof entry.name === "string"
+            ? (precompileLabels.get(entry.name) ?? entry.name)
+            : entry.name,
+      }))
       return (
-        <ChartTooltipBody entries={payload} formatValue={tooltipFormatter} />
+        <ChartTooltipBody
+          entries={labeledPayload}
+          formatValue={tooltipFormatter}
+        />
       )
     },
-    [tooltipFormatter]
+    [precompileLabels, tooltipFormatter]
   )
 
   if (ticks === null) return null
 
   const legendFooter = (
-    <ChartLegend
-      keys={seriesKeys}
-      chartConfig={chartConfig}
-      hiddenKeys={hiddenSeries}
-      onToggle={onToggleSeries}
-      className="mt-3"
-    />
+    <>
+      <ChartLegend
+        keys={seriesKeys}
+        chartConfig={chartConfig}
+        hiddenKeys={hiddenSeries}
+        onToggle={onToggleSeries}
+        labels={precompileLabels}
+        className="mt-3"
+      />
+      {shouldShowPrecompileFootnote && (
+        <p className="mt-3 text-xs text-muted-foreground">
+          {precompileFootnoteText}
+        </p>
+      )}
+    </>
   )
 
   return (
@@ -277,6 +305,24 @@ export function LineCharts({
   chartConfig,
   inputSizeCount,
 }: LineChartsProps) {
+  const precompileProvers = useMemo(
+    () => getPrecompileProvers(benchmarks),
+    [benchmarks]
+  )
+  const precompileLabels = useMemo(() => {
+    const labels = new Map<string, string>()
+
+    for (const key of seriesKeys) {
+      labels.set(key, getPrecompileLabel(key, precompileProvers))
+    }
+
+    return labels
+  }, [precompileProvers, seriesKeys])
+  const shouldShowPrecompileFootnote = useMemo(
+    () => hasPrecompileMeasurements(benchmarks),
+    [benchmarks]
+  )
+
   const metricsData = useMemo(() => {
     if (inputSizeCount <= 1) return []
 
@@ -342,6 +388,8 @@ export function LineCharts({
           isBytes={config.unit === "bytes"}
           label={dataKeyToTarget[target]}
           ariaLabel={`${config.label} trend`}
+          precompileLabels={precompileLabels}
+          shouldShowPrecompileFootnote={shouldShowPrecompileFootnote}
         />
       ))}
     </div>
