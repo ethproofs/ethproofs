@@ -154,6 +154,36 @@ export const getActiveClusters = async (filters?: {
   )(filters)
 }
 
+export const getActiveClustersLatestVersion = cache(
+  async () => {
+    return db.query.clusters.findMany({
+      where: (clusters, { and, eq }) =>
+        and(eq(clusters.is_active, true), eq(clusters.is_approved, true)),
+      with: {
+        team: true,
+        prover_type: true,
+        guest_program: true,
+        versions: {
+          orderBy: desc(clusterVersions.created_at),
+          limit: 1,
+          with: {
+            zkvm_version: {
+              with: {
+                zkvm: true,
+              },
+            },
+          },
+        },
+      },
+    })
+  },
+  ["active-clusters-latest-version"],
+  {
+    revalidate: 60 * 60 * 24, // daily
+    tags: [TAGS.CLUSTERS],
+  }
+)
+
 export const getActiveClusterCountByZkvmId = cache(
   async () => {
     const result = await db

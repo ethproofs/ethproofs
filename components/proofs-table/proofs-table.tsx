@@ -4,8 +4,6 @@ import { useMemo } from "react"
 
 import { DataTable } from "@/components/data-table/data-table"
 
-import { Spinner } from "../ui/spinner"
-
 import { getColumns, labels, ProofRow } from "./columns"
 
 import { exportWithLabels } from "@/lib/csv-export"
@@ -33,15 +31,6 @@ export function ProofsTable({
 }: ProofsTableProps) {
   const columns = useMemo(() => getColumns(), [])
 
-  if (isLoading) {
-    return (
-      <div className="mt-4 flex items-center gap-2">
-        <Spinner className="text-muted-foreground" />
-        <p className="text-muted-foreground">loading proofs...</p>
-      </div>
-    )
-  }
-
   const handleExport = (rows: ProofRow[], isFiltered: boolean) => {
     const filename = `proofs-${new Date().toISOString().split("T")[0]}${
       isFiltered ? "-filtered" : "-all"
@@ -59,6 +48,7 @@ export function ProofsTable({
       onExport={handleExport}
       toolbarFilterColumnId={toolbarFilterColumnId}
       toolbarFilterPlaceholder={toolbarFilterPlaceholder}
+      isLoading={isLoading}
       {...tableState}
     />
   )

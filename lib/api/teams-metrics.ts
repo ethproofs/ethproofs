@@ -254,26 +254,6 @@ export const fetchTeamsTableData = cache(
         WHERE is_active = true
         GROUP BY team_id
       ),
-      team_proof_stats AS (
-        SELECT
-          p.team_id,
-          count(p.proof_id)::int AS total_proofs,
-          COALESCE(avg(p.proving_time), 0)::float AS avg_proving_time,
-          count(CASE WHEN p.proving_time < 10000 THEN 1 END)::int AS sub_10s_proofs,
-          count(CASE WHEN p.proving_time >= 10000 THEN 1 END)::int AS over_10s_proofs,
-          COALESCE(
-            sum(c.num_gpus::double precision * gpi.hourly_price * (p.proving_time::numeric / 3600000.0)::double precision)
-            / NULLIF(count(CASE WHEN c.num_gpus IS NOT NULL AND gpi.hourly_price IS NOT NULL AND p.proving_time IS NOT NULL THEN p.proof_id END), 0)::double precision,
-            0
-          )::float AS avg_cost_per_proof
-        FROM proofs p
-        LEFT JOIN cluster_versions cv ON p.cluster_version_id = cv.id
-        LEFT JOIN clusters c ON cv.cluster_id = c.id
-        LEFT JOIN gpu_price_index gpi ON p.gpu_price_index_id = gpi.id
-        WHERE p.proof_status = 'proved'
-          AND NOT is_downtime_block(p.block_number)
-        GROUP BY p.team_id
-      ),
       rtp_teams AS (
         SELECT DISTINCT c.team_id
         FROM rtp_cohort_snapshots rcs

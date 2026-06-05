@@ -17,6 +17,7 @@ import {
   VisibilityState,
 } from "@tanstack/react-table"
 
+import { Skeleton } from "@/components/ui/skeleton"
 import {
   Table,
   TableBody,
@@ -55,6 +56,8 @@ interface DataTableProps<TData, TValue> {
   showToolbar?: boolean
   showPagination?: boolean
   minHeight?: number
+  isLoading?: boolean
+  skeletonRows?: number
 }
 export function DataTable<TData, TValue>({
   columns,
@@ -77,6 +80,8 @@ export function DataTable<TData, TValue>({
   showToolbar = true,
   showPagination = true,
   minHeight,
+  isLoading = false,
+  skeletonRows,
 }: DataTableProps<TData, TValue>) {
   const [rowSelection, setRowSelection] = React.useState({})
   const [internalColumnVisibility, setInternalColumnVisibility] =
@@ -144,6 +149,15 @@ export function DataTable<TData, TValue>({
     getFacetedUniqueValues: getFacetedUniqueValues(),
   })
 
+  const rows = table.getRowModel().rows
+  const hasRows = rows?.length > 0
+  const showHeader = hasRows || isLoading
+  const showSkeletonRows = isLoading && !hasRows
+  const skeletonRowCount =
+    skeletonRows ?? currentPagination.pageSize ?? DEFAULT_PAGE_SIZE
+  const visibleColumnCount =
+    table.getVisibleLeafColumns().length || columns.length
+
   return (
     <div className={cn("flex flex-col gap-4", className)}>
       {showToolbar && (
@@ -160,7 +174,7 @@ export function DataTable<TData, TValue>({
         style={minHeight ? { minHeight } : undefined}
       >
         <Table>
-          {table.getRowModel().rows?.length > 0 && (
+          {showHeader && (
             <TableHeader>
               {table.getHeaderGroups().map((headerGroup) => (
                 <TableRow key={headerGroup.id} className="hover:bg-transparent">
@@ -180,9 +194,29 @@ export function DataTable<TData, TValue>({
               ))}
             </TableHeader>
           )}
-          <TableBody className="[&_tr:last-child]:border-0">
-            {table.getRowModel().rows?.length ? (
-              table.getRowModel().rows.map((row) => (
+          <TableBody
+            className={cn(
+              "[&_tr:last-child]:border-0",
+              isLoading && hasRows && "opacity-60 transition-opacity"
+            )}
+          >
+            {showSkeletonRows ? (
+              Array.from({ length: skeletonRowCount }).map((_, rowIndex) => (
+                <TableRow
+                  key={`skeleton-${rowIndex}`}
+                  className="hover:bg-transparent"
+                >
+                  {Array.from({ length: visibleColumnCount }).map(
+                    (_, cellIndex) => (
+                      <TableCell key={cellIndex}>
+                        <Skeleton className="h-4 w-full max-w-[120px]" />
+                      </TableCell>
+                    )
+                  )}
+                </TableRow>
+              ))
+            ) : hasRows ? (
+              rows.map((row) => (
                 <TableRow
                   key={row.id}
                   className="hover:bg-muted/20"

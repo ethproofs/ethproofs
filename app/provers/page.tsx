@@ -1,12 +1,17 @@
+import { Suspense } from "react"
 import type { Metadata } from "next"
 
+import { DataTableSkeleton } from "@/components/data-table/data-table-skeleton"
 import { PageHeader } from "@/components/layout/page-header"
 import { PerformanceCostChart } from "@/components/provers/performance-cost-chart"
 import { ProverSummaryCards } from "@/components/provers/prover-summary-cards"
 import { ProversTabbedTable } from "@/components/provers/provers-tabbed-table"
 import { RtpCohortConsistency } from "@/components/provers/rtp-cohort-consistency"
 
+import { fetchProversTableData } from "@/lib/api/provers-table"
 import { getMetadata } from "@/lib/metadata"
+
+const PROVERS_TABLE_COLUMN_COUNT = 8
 
 export const metadata: Metadata = getMetadata({ title: "provers" })
 
@@ -32,8 +37,19 @@ export default function ProversPage() {
       </section>
 
       <section className="mb-8">
-        <ProversTabbedTable />
+        <Suspense
+          fallback={
+            <DataTableSkeleton columns={PROVERS_TABLE_COLUMN_COUNT} rows={10} />
+          }
+        >
+          <ProversTableSection />
+        </Suspense>
       </section>
     </div>
   )
+}
+
+async function ProversTableSection() {
+  const data = await fetchProversTableData()
+  return <ProversTabbedTable data={data} />
 }

@@ -33,6 +33,7 @@ interface UseBlocksQueryOptions {
   pageSize?: number
   machineType?: MachineType
   keepPreviousData?: boolean
+  initialData?: BlocksQueryResult
 }
 
 export function useBlocksQuery({
@@ -40,12 +41,14 @@ export function useBlocksQuery({
   pageSize = 10,
   machineType = "all",
   keepPreviousData: keepPrevious = false,
+  initialData,
 }: UseBlocksQueryOptions = {}) {
   return useQuery<BlocksQueryResult>({
     queryKey: getBlocksQueryKey(pageIndex, pageSize, machineType),
     queryFn: getBlocksQueryFn(pageIndex, pageSize, machineType),
     placeholderData: keepPrevious ? keepPreviousData : undefined,
     staleTime: Infinity, // Data is kept fresh by realtime subscriptions
+    initialData,
   })
 }
 

@@ -1,11 +1,21 @@
-import { NextResponse } from "next/server"
+import type { ProverType } from "@/lib/types"
 
-import { getActiveClusters, getProverTypes } from "@/lib/api/clusters"
+import type { ClusterRow } from "@/components/clusters-table/clusters-table"
+
+import {
+  getActiveClustersLatestVersion,
+  getProverTypes,
+} from "@/lib/api/clusters"
 import { getClusterSummary } from "@/lib/api/stats"
 
-export async function GET() {
+export interface ProversTableData {
+  clusters: ClusterRow[]
+  proverTypes: ProverType[]
+}
+
+export async function fetchProversTableData(): Promise<ProversTableData> {
   const [activeClusters, clusterSummary, proverTypes] = await Promise.all([
-    getActiveClusters(),
+    getActiveClustersLatestVersion(),
     getClusterSummary(),
     getProverTypes(),
   ])
@@ -28,5 +38,5 @@ export async function GET() {
       return a.avg_time - b.avg_time
     })
 
-  return NextResponse.json({ clusters, proverTypes })
+  return { clusters, proverTypes }
 }

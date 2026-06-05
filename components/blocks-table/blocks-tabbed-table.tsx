@@ -13,6 +13,7 @@ import { BlocksTable } from "./blocks-table"
 
 import type { MachineType } from "@/lib/api/blocks"
 import { mergeBlocksWithTeams } from "@/lib/blocks"
+import type { BlocksQueryResult } from "@/lib/hooks/queries/use-blocks-query"
 
 const BLOCK_PARAM = "block"
 
@@ -25,11 +26,20 @@ function isMachineType(value: string): value is MachineType {
   return MACHINE_TABS.some((tab) => tab.value === value)
 }
 
-interface BlocksTabbedTableProps {
-  teams: Team[]
+function getOtherMachineType(active: MachineType): MachineType | undefined {
+  const other = MACHINE_TABS.find((tab) => tab.value !== active)
+  return other?.value
 }
 
-export function BlocksTabbedTable({ teams }: BlocksTabbedTableProps) {
+interface BlocksTabbedTableProps {
+  teams: Team[]
+  initialBlocksByMachine: Partial<Record<MachineType, BlocksQueryResult>>
+}
+
+export function BlocksTabbedTable({
+  teams,
+  initialBlocksByMachine,
+}: BlocksTabbedTableProps) {
   const router = useRouter()
   const pathname = usePathname()
   const searchParams = useSearchParams()
@@ -115,6 +125,8 @@ export function BlocksTabbedTable({ teams }: BlocksTabbedTableProps) {
               machineType={activeTab}
               teams={teams}
               onOpenDrawer={handleOpenDrawer}
+              initialData={initialBlocksByMachine[activeTab]}
+              otherTabMachineType={getOtherMachineType(activeTab)}
             />
           </TabsContent>
         ))}

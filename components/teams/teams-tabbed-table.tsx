@@ -1,11 +1,9 @@
 "use client"
 
 import { useMemo, useState } from "react"
-import { useQuery } from "@tanstack/react-query"
 import { PaginationState } from "@tanstack/react-table"
 
 import { DataTable } from "@/components/data-table/data-table"
-import { Skeleton } from "@/components/ui/skeleton"
 import { TabbedSection, TabsContent } from "@/components/ui/tabbed-section"
 
 import { cn } from "@/lib/utils"
@@ -58,20 +56,16 @@ function countForTab(teams: TeamTableRow[], tab: TeamTab): number {
   return filterTeamsByTab(teams, tab).length
 }
 
-export function TeamsTabbedTable() {
+interface TeamsTabbedTableProps {
+  data: TeamsTableData
+}
+
+export function TeamsTabbedTable({ data }: TeamsTabbedTableProps) {
   const [activeTab, setActiveTab] = useState<TeamTab>(TAB_ALL)
   const [pagination, setPagination] =
     useState<PaginationState>(DEFAULT_PAGE_STATE)
 
-  const { data, isLoading } = useQuery<TeamsTableData>({
-    queryKey: ["teams-table"],
-    queryFn: async () => {
-      const response = await fetch("/api/teams/table")
-      return response.json()
-    },
-  })
-
-  const teams = useMemo(() => data?.teams ?? [], [data])
+  const teams = data.teams
 
   const tabs = useMemo(
     () =>
@@ -96,10 +90,6 @@ export function TeamsTabbedTable() {
   const HEADER_HEIGHT_PX = 50
   const ROW_HEIGHT_PX = 59
   const minTableHeight = filteredTeams.length * ROW_HEIGHT_PX + HEADER_HEIGHT_PX
-
-  if (isLoading) {
-    return <Skeleton className="h-[32rem] w-full rounded-lg" />
-  }
 
   return (
     <TabbedSection

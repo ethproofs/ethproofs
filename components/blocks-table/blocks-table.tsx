@@ -10,8 +10,9 @@ import { useDataTableUrlState } from "@/components/data-table/useDataTableUrlSta
 
 import { cn } from "@/lib/utils"
 
+import { DEFAULT_PAGE_INDEX, DEFAULT_PAGE_SIZE } from "@/lib/constants"
+
 import { DataTable } from "../data-table/data-table"
-import { Skeleton } from "../ui/skeleton"
 
 import { getColumns, labels } from "./columns"
 
@@ -19,6 +20,7 @@ import type { MachineType } from "@/lib/api/blocks"
 import { mergeBlocksWithTeams } from "@/lib/blocks"
 import { exportWithLabels } from "@/lib/csv-export"
 import {
+  type BlocksQueryResult,
   getBlocksQueryFn,
   getBlocksQueryKey,
   useBlocksQuery,
@@ -30,6 +32,8 @@ interface BlocksTableProps {
   machineType: MachineType
   teams: Team[]
   onOpenDrawer?: (block: Block) => void
+  initialData?: BlocksQueryResult
+  otherTabMachineType?: MachineType
 }
 
 export function BlocksTable({
@@ -37,17 +41,23 @@ export function BlocksTable({
   teams,
   machineType,
   onOpenDrawer,
+  initialData,
+  otherTabMachineType,
 }: BlocksTableProps) {
   useRealtimeBlockProofs()
   const tableState = useDataTableUrlState()
   const [deferredPagination] = useDebounceValue(tableState.pagination, 200)
   const { pageIndex, pageSize } = deferredPagination
 
+  const isInitialPage =
+    pageIndex === DEFAULT_PAGE_INDEX && pageSize === DEFAULT_PAGE_SIZE
+
   const blocksQuery = useBlocksQuery({
     pageIndex,
     pageSize,
     machineType,
     keepPreviousData: true,
+    initialData: isInitialPage ? initialData : undefined,
   })
 
   // Prefetch next page
@@ -65,6 +75,24 @@ export function BlocksTable({
         : async () => Promise.resolve(null),
   })
 
+  // Prefetch the other machineType's first page so tab switches feel instant
+  usePrefetchQuery({
+    queryKey: otherTabMachineType
+      ? getBlocksQueryKey(
+          DEFAULT_PAGE_INDEX,
+          DEFAULT_PAGE_SIZE,
+          otherTabMachineType
+        )
+      : ["blocks", "noop"],
+    queryFn: otherTabMachineType
+      ? getBlocksQueryFn(
+          DEFAULT_PAGE_INDEX,
+          DEFAULT_PAGE_SIZE,
+          otherTabMachineType
+        )
+      : async () => Promise.resolve(null),
+  })
+
   const blocks = mergeBlocksWithTeams(blocksQuery.data?.rows ?? [], teams)
 
   const columns = useMemo(() => getColumns({ onOpenDrawer }), [onOpenDrawer])
@@ -74,10 +102,6 @@ export function BlocksTable({
       isFiltered ? "-filtered" : "-all"
     }`
     exportWithLabels(rows, labels, filename)
-  }
-
-  if (blocksQuery.isLoading) {
-    return <Skeleton className="h-[32rem] w-full rounded-lg" />
   }
 
   return (
@@ -90,6 +114,7 @@ export function BlocksTable({
       onExport={handleExport}
       toolbarFilterColumnId="block_number"
       toolbarFilterPlaceholder="filter by block number..."
+      isLoading={blocksQuery.isPending || blocksQuery.isPlaceholderData}
       {...tableState}
     />
   )
