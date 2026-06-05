@@ -182,6 +182,7 @@ interface ChartLegendProps {
   hiddenKeys: Set<string>
   onToggle(key: string): void
   onHover?(key: string | null): void
+  labels?: Map<string, string>
   className?: string
 }
 
@@ -191,6 +192,7 @@ export function ChartLegend({
   hiddenKeys,
   onToggle,
   onHover,
+  labels,
   className,
 }: ChartLegendProps) {
   return (
@@ -202,6 +204,7 @@ export function ChartLegend({
     >
       {keys.map((key) => {
         const isHidden = hiddenKeys.has(key)
+        const label = labels?.get(key) ?? key
         return (
           <Toggle
             key={key}
@@ -209,7 +212,7 @@ export function ChartLegend({
             size="sm"
             pressed={!isHidden}
             onPressedChange={() => onToggle(key)}
-            aria-label={isHidden ? `show ${key}` : `hide ${key}`}
+            aria-label={isHidden ? `show ${label}` : `hide ${label}`}
             className={cn(
               "h-auto min-w-0 justify-start gap-1.5 rounded-sm px-2.5 py-1.5 text-xs focus-visible:ring-2 focus-visible:ring-ring md:gap-2 md:px-3 md:py-1.5 md:text-sm",
               isHidden && "line-through opacity-40"
@@ -223,7 +226,7 @@ export function ChartLegend({
               className="h-2.5 w-2.5 shrink-0 rounded-sm md:h-3 md:w-3"
               style={{ backgroundColor: chartConfig[key]?.color }}
             />
-            <span className="truncate">{key}</span>
+            <span className="truncate">{label}</span>
           </Toggle>
         )
       })}

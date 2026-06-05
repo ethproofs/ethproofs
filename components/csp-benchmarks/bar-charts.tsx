@@ -18,6 +18,12 @@ import {
   getProverKey,
   metricConfigs,
 } from "./metrics"
+import {
+  getPrecompileLabel,
+  getPrecompileProvers,
+  hasPrecompileMeasurements,
+  precompileFootnoteText,
+} from "./precompiles.utils"
 import { ChartCard, EmptyState } from "./shared"
 
 import type { Metrics } from "@/lib/api/csp-benchmarks"
@@ -104,6 +110,8 @@ interface BarMetricChartProps {
   label?: string
   ariaLabel?: string
   totalProvers: number
+  precompileLabels: Map<string, string>
+  shouldShowPrecompileFootnote: boolean
 }
 
 function BarMetricChart({
@@ -116,6 +124,8 @@ function BarMetricChart({
   label,
   ariaLabel,
   totalProvers,
+  precompileLabels,
+  shouldShowPrecompileFootnote,
 }: BarMetricChartProps) {
   const chartHeight = computeBarChartHeight(totalProvers)
 
@@ -127,6 +137,20 @@ function BarMetricChart({
     [formatValue]
   )
 
+  const yAxisTickFormatter = useCallback(
+    (value: unknown) =>
+      typeof value === "string"
+        ? (precompileLabels.get(value) ?? value)
+        : String(value),
+    [precompileLabels]
+  )
+
+  const footer = shouldShowPrecompileFootnote ? (
+    <p className="mt-3 text-xs text-muted-foreground">
+      {precompileFootnoteText}
+    </p>
+  ) : null
+
   return (
     <ChartCard
       title={title}
@@ -134,6 +158,7 @@ function BarMetricChart({
       height={chartHeight}
       label={label}
       ariaLabel={ariaLabel}
+      footer={footer}
     >
       <ChartContainer
         config={chartConfig}
@@ -159,6 +184,7 @@ function BarMetricChart({
             tickMargin={4}
             axisLine={false}
             tick={barYAxisTickStyle}
+            tickFormatter={yAxisTickFormatter}
             width={90}
           />
           <Bar
@@ -185,6 +211,23 @@ export function BarCharts({
   const filteredData = useMemo(
     () => benchmarks.filter((b) => b.input_size === selectedInputSize),
     [benchmarks, selectedInputSize]
+  )
+  const precompileProvers = useMemo(
+    () => getPrecompileProvers(filteredData),
+    [filteredData]
+  )
+  const precompileLabels = useMemo(() => {
+    const labels = new Map<string, string>()
+
+    for (const prover of allProvers) {
+      labels.set(prover, getPrecompileLabel(prover, precompileProvers))
+    }
+
+    return labels
+  }, [allProvers, precompileProvers])
+  const shouldShowPrecompileFootnote = useMemo(
+    () => hasPrecompileMeasurements(filteredData),
+    [filteredData]
   )
 
   const allMetricsData = useMemo(() => {
@@ -248,6 +291,8 @@ export function BarCharts({
             label={chartLabel}
             ariaLabel={`${config.label} comparison`}
             totalProvers={allProvers.length}
+            precompileLabels={precompileLabels}
+            shouldShowPrecompileFootnote={shouldShowPrecompileFootnote}
           />
         </div>
       ))}

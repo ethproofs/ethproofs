@@ -7,6 +7,10 @@ import { DataTable } from "@/components/data-table/data-table"
 
 import type { SystemProperties } from "./system/properties"
 import { defaultColumnVisibility, getColumns, labels } from "./columns"
+import {
+  hasPrecompileMeasurements,
+  precompileFootnoteText,
+} from "./precompiles.utils"
 import { TableFilters, useTableFilters } from "./table-filters"
 
 import type { Metrics } from "@/lib/api/csp-benchmarks"
@@ -38,6 +42,10 @@ export const Table = memo(function Table({
   const filtered = useMemo(
     () => applyFilters(benchmarks),
     [applyFilters, benchmarks]
+  )
+  const shouldShowPrecompileFootnote = useMemo(
+    () => hasPrecompileMeasurements(filtered),
+    [filtered]
   )
 
   const columns = useMemo(() => getColumns({ onOpenDrawer }), [onOpenDrawer])
@@ -79,6 +87,11 @@ export const Table = memo(function Table({
         columnLabels={labels}
         showPagination={false}
       />
+      {shouldShowPrecompileFootnote && (
+        <p className="text-xs text-muted-foreground">
+          {precompileFootnoteText}
+        </p>
+      )}
     </div>
   )
 })
