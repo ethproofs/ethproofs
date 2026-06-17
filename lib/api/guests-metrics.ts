@@ -91,19 +91,12 @@ export const fetchGuestDiversityTrend = cache(
   async (): Promise<GuestDiversityPoint[]> => {
     const result = await db.execute(sql`
     SELECT
-      gp.name AS guest_name,
-      date_trunc('week', b.timestamp::timestamptz) AS week,
-      COUNT(p.proof_id)::integer AS proof_count
-    FROM proofs p
-    INNER JOIN blocks b ON p.block_number = b.block_number
-    INNER JOIN cluster_versions cv ON p.cluster_version_id = cv.id
-    INNER JOIN clusters c ON cv.cluster_id = c.id
-    INNER JOIN guest_programs gp ON c.guest_program_id = gp.id
-    WHERE p.proof_status = 'proved'
-      AND b.timestamp >= NOW() - interval '6 months'
-      AND NOT is_downtime_block(b.block_number)
-    GROUP BY gp.name, date_trunc('week', b.timestamp::timestamptz)
-    ORDER BY gp.name, week
+      guest_name,
+      week,
+      proof_count
+    FROM guest_diversity_weekly
+    WHERE week >= date_trunc('week', NOW() - interval '6 months')
+    ORDER BY guest_name, week
   `)
 
     const rows = Array.isArray(result) ? result : []

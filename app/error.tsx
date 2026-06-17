@@ -1,6 +1,6 @@
-"use client" // Error boundaries must be Client Components
+"use client"
 
-import { useState } from "react"
+import { useEffect, useState } from "react"
 
 import EthproofsIcon from "@/components/svgs/ethproofs-icon.svg"
 import RefreshCW from "@/components/svgs/refresh-cw.svg"
@@ -9,8 +9,18 @@ import { Divider } from "@/components/ui/divider"
 
 import { cn } from "@/lib/utils"
 
-export default function Error() {
+interface ErrorProps {
+  error: Error & { digest?: string }
+  reset: () => void
+}
+
+export default function Error({ error }: ErrorProps) {
   const [refreshing, setRefreshing] = useState(false)
+
+  useEffect(() => {
+    console.error(error)
+  }, [error])
+
   const handleRefresh = () => {
     setRefreshing(true)
     window.location.reload()
@@ -20,6 +30,9 @@ export default function Error() {
       <EthproofsIcon className="size-40" />
       <h1 className="mb-4 font-normal text-primary">500</h1>
       <p className="text-lg">internal server error</p>
+      {error.digest && (
+        <p className="text-xs text-muted-foreground">ref: {error.digest}</p>
+      )}
       <Divider className="my-6" />
       <div className="flex flex-col gap-6">
         <Button onClick={handleRefresh} size="lg">

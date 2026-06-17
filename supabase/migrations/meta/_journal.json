@@ -498,6 +498,13 @@
       "when": 1780671762298,
       "tag": "0070_team_proof_stats_mv",
       "breakpoints": true
+    },
+    {
+      "idx": 71,
+      "version": "7",
+      "when": 1781682743229,
+      "tag": "0071_guest_diversity_weekly_mv",
+      "breakpoints": true
     }
   ]
 }
