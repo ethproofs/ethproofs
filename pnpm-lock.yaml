@@ -34,8 +34,8 @@ importers:
         specifier: ^0.1.0
         version: 0.1.0
       '@ethproofs/openvm2-wasm-stark-verifier':
-        specifier: ^0.1.3
-        version: 0.1.3
+        specifier: ^0.1.4
+        version: 0.1.4
       '@ethproofs/pico-wasm-stark-verifier':
         specifier: ^0.1.8
         version: 0.1.8
@@ -1657,8 +1657,8 @@ packages:
     resolution: {integrity: sha512-wPe18L31LgaXClF36sd3ajseEXWxOyTT+gtvMcaAQ78Kb5nyW9aR8WC0LrohaHquuVDk2i53twBNZTEaleVluw==}
     engines: {node: '>=16.0.0'}
 
-  '@ethproofs/openvm2-wasm-stark-verifier@0.1.3':
-    resolution: {integrity: sha512-hptntfn/mp/QL91A58gi3LwFYruPz1K1V1gmVGSb0yfrAT12wKYqcFZYfjgEo1FsqKGr28et9249+KnPcJp/2g==}
+  '@ethproofs/openvm2-wasm-stark-verifier@0.1.4':
+    resolution: {integrity: sha512-G5L0en038QLmHWGbtMFeRiFNPD5adXQesQY/U10Dxhpoysg2/21j6v52OmgBYxP5Ec/xbqyBgSxM2p82vMNa0w==}
     engines: {node: '>=16.0.0'}
 
   '@ethproofs/pico-wasm-stark-verifier@0.1.8':
@@ -9495,7 +9495,7 @@ snapshots:
 
   '@ethproofs/openvm-wasm-stark-verifier@0.1.0': {}
 
-  '@ethproofs/openvm2-wasm-stark-verifier@0.1.3': {}
+  '@ethproofs/openvm2-wasm-stark-verifier@0.1.4': {}
 
   '@ethproofs/pico-wasm-stark-verifier@0.1.8': {}
 
