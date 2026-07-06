@@ -37,7 +37,8 @@ const CATEGORY_COLORS = {
 } as const
 
 function buildPerformanceBreakdown(
-  data: CohortPerformanceData
+  data: CohortPerformanceData,
+  eligibleLabel: string
 ): AggregatedPerformance {
   const {
     totalBlockSlots,
@@ -58,7 +59,7 @@ function buildPerformanceBreakdown(
     sub10sRate: toPercent(sub10sCount),
     breakdown: [
       {
-        name: "\u226410 secs",
+        name: eligibleLabel,
         value: toPercent(sub10sCount),
         count: sub10sCount,
         color: CATEGORY_COLORS.sub10s,
@@ -128,6 +129,7 @@ interface CohortPerformanceProps {
   description?: string
   performanceThreshold?: number
   thresholdLabel?: string
+  eligibleLabel?: string
 }
 
 export function CohortPerformance({
@@ -136,10 +138,14 @@ export function CohortPerformance({
   description = "aggregated success rate for all evaluated provers",
   performanceThreshold = RTP_PERFORMANCE_SCORE_THRESHOLD,
   thresholdLabel = "sub-10s",
+  eligibleLabel = "≤10 secs",
 }: CohortPerformanceProps) {
   const [activeIndex, setActiveIndex] = useState<number | null>(null)
 
-  const performance = useMemo(() => buildPerformanceBreakdown(data), [data])
+  const performance = useMemo(
+    () => buildPerformanceBreakdown(data, eligibleLabel),
+    [data, eligibleLabel]
+  )
 
   return (
     <Card className="flex h-full min-h-80 flex-col">
@@ -187,7 +193,9 @@ export function CohortPerformance({
                 <span className="text-2xl font-bold">
                   {performance.total.toLocaleString()}
                 </span>
-                <span className="text-xs text-muted-foreground">proofs</span>
+                <span className="text-xs text-muted-foreground">
+                  block slots
+                </span>
               </div>
             </div>
 

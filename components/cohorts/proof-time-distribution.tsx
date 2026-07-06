@@ -101,12 +101,16 @@ function CustomTooltip({ active, payload }: CustomTooltipProps) {
   )
 }
 
+const RTP_KEY_INSIGHT =
+  "Green bars above the threshold are RTP-eligible. Most proofs should cluster in the 8-10s bucket. If 0-5s grows, proving is getting faster. If gray bars grow, investigate the cause."
+
 interface ProofTimeDistributionProps {
   data: ProofTimeDistributionData
   title?: string
   description?: string
   eligibleLabel?: string
   stunnerLabel?: string
+  keyInsight?: string
 }
 
 export function ProofTimeDistribution({
@@ -115,6 +119,7 @@ export function ProofTimeDistribution({
   description = "timing across blocks for all evaluated provers",
   eligibleLabel = "\u226410s (RTP eligible)",
   stunnerLabel = ">10s (stunners)",
+  keyInsight = RTP_KEY_INSIGHT,
 }: ProofTimeDistributionProps) {
   const chartData = useMemo(() => buildChartData(data), [data])
 
@@ -174,7 +179,7 @@ export function ProofTimeDistribution({
                   dataKey="bucket"
                   axisLine={false}
                   tickLine={false}
-                  width={56}
+                  width={65}
                   tick={({
                     x,
                     y,
@@ -247,9 +252,7 @@ export function ProofTimeDistribution({
         <div className="min-h-14">
           <p className="text-xs text-muted-foreground">
             <span className="font-medium text-placeholder">Key insight:</span>{" "}
-            Green bars above the threshold are RTP-eligible. Most proofs should
-            cluster in the 8-10s bucket. If 0-5s grows, proving is getting
-            faster. If gray bars grow, investigate the cause.
+            {keyInsight}
           </p>
         </div>
       </CardFooter>

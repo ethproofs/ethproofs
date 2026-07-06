@@ -12,7 +12,19 @@ function formatCohortRange(): string {
   return `${weekAgo.toLocaleDateString("en-US", DATE_FORMAT)} \u2013 ${now.toLocaleDateString("en-US", DATE_FORMAT)}`
 }
 
-export function EmptyCohortBanner() {
+interface EmptyCohortBannerProps {
+  title?: string
+  titleShort?: string
+  description?: string
+  descriptionShort?: string
+}
+
+export function EmptyCohortBanner({
+  title = "no provers are eligible for the cohort this week",
+  titleShort = "no provers eligible",
+  description = "provers must meet all requirements and hit score targets to be included in the cohort",
+  descriptionShort = "provers must hit score targets",
+}: EmptyCohortBannerProps) {
   return (
     <Card className="border-none bg-warning/10">
       <CardContent className="flex items-stretch gap-6 pt-6">
@@ -31,17 +43,12 @@ export function EmptyCohortBanner() {
         <div className="w-px self-stretch bg-border" />
         <div className="flex flex-col justify-center gap-1">
           <span className="text-sm font-medium">
-            <span className="sm:hidden">no provers eligible</span>
-            <span className="hidden sm:inline">
-              no provers are eligible for this cohort this week
-            </span>
+            <span className="sm:hidden">{titleShort}</span>
+            <span className="hidden sm:inline">{title}</span>
           </span>
           <span className="text-xs text-muted-foreground">
-            <span className="sm:hidden">provers must hit score targets</span>
-            <span className="hidden sm:inline">
-              provers must meet all requirements and hit score targets to be
-              included in the cohort
-            </span>
+            <span className="sm:hidden">{descriptionShort}</span>
+            <span className="hidden sm:inline">{description}</span>
           </span>
         </div>
       </CardContent>

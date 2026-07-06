@@ -39,7 +39,12 @@ export default async function OppCohortPage() {
 
       <section className="mb-8">
         {oppCohortRows.length === 0 ? (
-          <EmptyCohortBanner />
+          <EmptyCohortBanner
+            title="no 1:10 provers in the cohort this week"
+            titleShort="no provers yet"
+            description="no active 1:10 on-prem provers have submitted proofs this week"
+            descriptionShort="no active provers this week"
+          />
         ) : (
           <CohortTable rows={oppCohortRows} />
         )}
@@ -51,11 +56,13 @@ export default async function OppCohortPage() {
           title="1:10 prover performance"
           performanceThreshold={OPP_PERFORMANCE_SCORE_THRESHOLD}
           thresholdLabel="sub-2m"
+          eligibleLabel="≤2m"
         />
         <ProofTimeDistribution
           data={distributionData}
-          eligibleLabel={"≤2m (1:10 eligible)"}
+          eligibleLabel={"≤2m (1:10 goal)"}
           stunnerLabel=">2m (stunners)"
+          keyInsight="Green bars (≤2m) is the goal. Most proofs should cluster in the sub-2m buckets. If gray bars (>2m stunners) grow, investigate the cause."
         />
       </section>
     </div>
