@@ -505,6 +505,13 @@
       "when": 1781682743229,
       "tag": "0071_guest_diversity_weekly_mv",
       "breakpoints": true
+    },
+    {
+      "idx": 72,
+      "version": "7",
+      "when": 1783024759100,
+      "tag": "0072_opp-cohort-eligibility-by-prover-type",
+      "breakpoints": true
     }
   ]
 }

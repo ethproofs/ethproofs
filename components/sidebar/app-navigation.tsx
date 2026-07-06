@@ -47,7 +47,7 @@ export function AppNavigation() {
   return (
     <SidebarGroup>
       <Separator className="my-2" />
-      <SidebarGroupLabel>coming soon</SidebarGroupLabel>
+      <SidebarGroupLabel>cohorts</SidebarGroupLabel>
       <SidebarMenu>
         {cohortsNavItems.map((item) =>
           item.isDisabled ? (

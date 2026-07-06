@@ -4,7 +4,6 @@ import {
   BookOpen,
   Box,
   Cpu,
-  Gauge,
   HardDrive,
   HeartPulse,
   Library,
@@ -13,19 +12,21 @@ import {
   Users,
   Zap,
 } from "lucide-react"
+import type { ReactNode } from "react"
 
-export const cohortsNavItems = [
-  // {
-  //   label: "RTP cohort",
-  //   href: "/",
-  //   icon: <Gauge />,
-  // },
+interface NavItem {
+  label: string
+  href: string
+  icon: ReactNode
+  isDisabled?: boolean
+  disabledReason?: string
+}
+
+export const cohortsNavItems: NavItem[] = [
   {
     label: "1:10 cohort",
     href: "/on-prem-proving-initiative",
     icon: <HardDrive />,
-    isDisabled: true,
-    disabledReason: "coming soon",
   },
 ]
 

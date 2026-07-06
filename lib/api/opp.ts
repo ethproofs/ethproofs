@@ -8,6 +8,7 @@ import type {
 } from "@/lib/types"
 
 import {
+  OPP_BLOCK_SAMPLING_INTERVAL,
   OPP_PARALYZER_CUTOFF_MINUTES,
   OPP_PERFORMANCE_TIME_THRESHOLD_MS,
   TAGS,
@@ -101,6 +102,7 @@ export const getOppCohortPerformance = async (
           FROM blocks
           WHERE "timestamp" >= NOW() - make_interval(days => ${days})
             AND NOT is_downtime_block(block_number)
+            AND block_number % ${OPP_BLOCK_SAMPLING_INTERVAL} = 0
         ),
         total_block_count AS (
           SELECT COUNT(*)::integer AS cnt FROM window_blocks
@@ -186,6 +188,7 @@ export const getOppProofTimeDistribution = async (
           FROM blocks
           WHERE "timestamp" >= NOW() - make_interval(days => ${days})
             AND NOT is_downtime_block(block_number)
+            AND block_number % ${OPP_BLOCK_SAMPLING_INTERVAL} = 0
         ),
         cohort_proofs AS (
           SELECT p.proving_time
