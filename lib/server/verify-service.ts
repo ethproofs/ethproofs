@@ -42,6 +42,7 @@ async function loadWasmModule(name: string): Promise<WasmModule> {
         loadedModule = await import("@ethproofs/openvm2-wasm-stark-verifier")
         break
       case "airbender":
+      case "zilkworm-airbender":
         loadedModule = await import("@ethproofs/airbender-wasm-stark-verifier")
         break
       case "airbender-80":
