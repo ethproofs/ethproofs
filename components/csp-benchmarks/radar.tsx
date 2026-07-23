@@ -14,7 +14,6 @@ import { ChartContainer } from "@/components/ui/chart"
 
 import {
   buildChartConfig,
-  getProverKey,
   type MetricKey,
   radarMetrics,
 } from "./metrics"
@@ -29,6 +28,49 @@ const radarDomain: [number, number] = [0, 100]
 interface PercentileEntry {
   key: string
   value: number
+}
+
+function getSystemKey(benchmark: Metrics): string {
+  return benchmark.name
+}
+
+function collectMetricValuesBySystem(
+  benchmarks: Metrics[],
+  metric: MetricKey
+): Map<string, number[]> {
+  const valuesBySystem = new Map<string, number[]>()
+
+  benchmarks.forEach((benchmark) => {
+    const value = benchmark[metric]
+    if (typeof value !== "number" || value <= 0) return
+
+    const systemKey = getSystemKey(benchmark)
+    const existing = valuesBySystem.get(systemKey)
+    if (existing) {
+      existing.push(value)
+    } else {
+      valuesBySystem.set(systemKey, [value])
+    }
+  })
+
+  return valuesBySystem
+}
+
+function averageValues(values: number[]): number | undefined {
+  if (values.length === 0) return undefined
+  return values.reduce((sum, value) => sum + value, 0) / values.length
+}
+
+function buildPercentileEntriesForMetric(
+  benchmarks: Metrics[],
+  metric: MetricKey
+): PercentileEntry[] {
+  return Array.from(collectMetricValuesBySystem(benchmarks, metric).entries())
+    .flatMap(([systemKey, values]) => {
+      const averageValue = averageValues(values)
+      if (typeof averageValue !== "number") return []
+      return [{ key: systemKey, value: averageValue }]
+    })
 }
 
 function computePercentileRanks(
@@ -88,13 +130,7 @@ function aggregateRadarScores(
     if (!target) return
 
     radarMetrics.forEach(({ key: metric }) => {
-      const entries: PercentileEntry[] = []
-      cellBenchmarks.forEach((b) => {
-        const value = b[metric]
-        if (typeof value === "number" && value > 0) {
-          entries.push({ key: getProverKey(b), value })
-        }
-      })
+      const entries = buildPercentileEntriesForMetric(cellBenchmarks, metric)
       if (entries.length === 0) return
 
       const percentiles = computePercentileRanks(entries)
