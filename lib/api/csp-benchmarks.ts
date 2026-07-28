@@ -50,7 +50,25 @@ const systemPropertiesSchema = benchPropertiesSchema.extend({
   is_zkvm: z.boolean(),
 })
 
-const measurementSchema = z.object({
+export const accelerationSchema = z.enum(["precompile", "inline"])
+export type Acceleration = z.infer<typeof accelerationSchema>
+
+function normalizeAcceleration<
+  T extends {
+    acceleration?: Acceleration
+    uses_precompile?: boolean
+  },
+>(value: T) {
+  const { uses_precompile, ...measurement } = value
+  return {
+    ...measurement,
+    acceleration:
+      measurement.acceleration ??
+      (uses_precompile ? ("precompile" as const) : undefined),
+  }
+}
+
+const measurementObjectSchema = z.object({
   system: z.string(),
   target: z.string(),
   input_size: z.number().int(),
@@ -62,8 +80,13 @@ const measurementSchema = z.object({
   num_constraints: z.number().int(),
   peak_memory: z.number().int(),
   feat: z.string().optional(),
+  acceleration: accelerationSchema.optional(),
   uses_precompile: z.boolean().optional(),
 })
+
+const measurementSchema = measurementObjectSchema.transform(
+  normalizeAcceleration
+)
 
 const metadataSchema = z.object({
   timestamp: z.string().optional(),
@@ -99,7 +122,7 @@ function flattenCollectedBenchmarks(collected: CollectedBenchmarks): Metrics[] {
         preprocessing_size: m.preprocessing_size,
         num_constraints: m.num_constraints,
         peak_memory: m.peak_memory,
-        uses_precompile: m.uses_precompile,
+        acceleration: m.acceleration,
         proving_system: sys.proving_system,
         field_curve: sys.field_curve,
         iop: sys.iop,
@@ -116,13 +139,17 @@ function flattenCollectedBenchmarks(collected: CollectedBenchmarks): Metrics[] {
   })
 }
 
-export const metricsSchema = measurementSchema
+const metricsObjectSchema = measurementObjectSchema
   .omit({ system: true })
   .extend({
     name: z.string(),
     is_zkvm: z.boolean(),
   })
   .merge(benchPropertiesSchema)
+
+export const metricsSchema = metricsObjectSchema.transform(
+  normalizeAcceleration
+)
 
 export type Metrics = z.infer<typeof metricsSchema>
 

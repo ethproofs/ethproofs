@@ -58,9 +58,9 @@ export const metricConfigs: Record<MetricKey, MetricConfig> = {
     format: formatBytesCompact,
   },
   preprocessing_size: {
-    label: "preprocessing size",
+    label: "prover artifacts size",
     description:
-      "preprocessed artifacts size, such as SRS or proving key (lower is better)",
+      "prover artifacts size, such as SRS or proving key (lower is better)",
     unit: "bytes",
     format: formatBytesCompact,
     shouldUseLogScale: true,
@@ -69,10 +69,10 @@ export const metricConfigs: Record<MetricKey, MetricConfig> = {
 
 export const chartMetrics: readonly MetricKey[] = [
   "proof_duration",
-  "verify_duration",
-  "proof_size",
-  "preprocessing_size",
   "peak_memory",
+  "preprocessing_size",
+  "proof_size",
+  "verify_duration",
 ]
 
 export const chartColors = [
@@ -99,11 +99,11 @@ export const chartColors = [
 ] as const
 
 const radarMetricOrder: readonly MetricKey[] = [
+  "proof_duration",
+  "peak_memory",
   "preprocessing_size",
   "proof_size",
-  "proof_duration",
   "verify_duration",
-  "peak_memory",
 ]
 
 export const radarMetrics: ReadonlyArray<{ key: MetricKey; label: string }> =

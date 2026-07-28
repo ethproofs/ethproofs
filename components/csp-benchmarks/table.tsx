@@ -6,11 +6,11 @@ import type { SortingState, VisibilityState } from "@tanstack/react-table"
 import { DataTable } from "@/components/data-table/data-table"
 
 import type { SystemProperties } from "./system/properties"
-import { defaultColumnVisibility, getColumns, labels } from "./columns"
 import {
-  hasPrecompileMeasurements,
-  precompileFootnoteText,
-} from "./precompiles.utils"
+  AccelerationFootnote,
+  hasAcceleratedMeasurements,
+} from "./acceleration"
+import { defaultColumnVisibility, getColumns, labels } from "./columns"
 import { TableFilters, useTableFilters } from "./table-filters"
 
 import type { Metrics } from "@/lib/api/csp-benchmarks"
@@ -43,8 +43,8 @@ export const Table = memo(function Table({
     () => applyFilters(benchmarks),
     [applyFilters, benchmarks]
   )
-  const shouldShowPrecompileFootnote = useMemo(
-    () => hasPrecompileMeasurements(filtered),
+  const shouldShowAccelerationFootnote = useMemo(
+    () => hasAcceleratedMeasurements(filtered),
     [filtered]
   )
 
@@ -87,11 +87,7 @@ export const Table = memo(function Table({
         columnLabels={labels}
         showPagination={false}
       />
-      {shouldShowPrecompileFootnote && (
-        <p className="text-xs text-muted-foreground">
-          {precompileFootnoteText}
-        </p>
-      )}
+      {shouldShowAccelerationFootnote && <AccelerationFootnote />}
     </div>
   )
 })
