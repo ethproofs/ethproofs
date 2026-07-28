@@ -16,6 +16,7 @@ import {
   buildSystemPropertiesFromRow,
   type SystemProperties,
 } from "./system/properties"
+import { getAccelerationMarker } from "./acceleration"
 import { nanosecondsPerMillisecond } from "./metrics"
 
 import type { Metrics } from "@/lib/api/csp-benchmarks"
@@ -37,7 +38,7 @@ export const labels = [
   { value: "proof_duration", label: "proving time" },
   { value: "verify_duration", label: "verification" },
   { value: "proof_size", label: "proof size" },
-  { value: "preprocessing_size", label: "preprocessing" },
+  { value: "preprocessing_size", label: "prover artifacts size" },
   { value: "peak_memory", label: "memory" },
   { value: "num_constraints", label: "constraints" },
   { value: "is_maintained", label: "maintained" },
@@ -262,9 +263,9 @@ export function getColumns(options?: CspColumnsOptions): ColumnDef<Metrics>[] {
         <DataTableColumnHeader column={column} title="name" />
       ),
       cell: ({ row }) => {
-        const name = row.original.uses_precompile
-          ? `${row.original.name}*`
-          : row.original.name
+        const name = `${row.original.name}${getAccelerationMarker(
+          row.original.acceleration
+        )}`
 
         return (
           <div style={{ width: 100 }}>
@@ -299,7 +300,7 @@ export function getColumns(options?: CspColumnsOptions): ColumnDef<Metrics>[] {
     createDurationColumn("verify_duration", "verification", 80),
     createBytesColumn("peak_memory", "memory", 72),
     createBytesColumn("proof_size", "proof size", 72),
-    createBytesColumn("preprocessing_size", "preprocessing", 80),
+    createBytesColumn("preprocessing_size", "prover artifacts size", 120),
     createNumberColumn("num_constraints", "constraints", 72, {
       tooltip: "constraint count for proving systems (not applicable to zkVMs)",
       isCompact: true,

@@ -7,6 +7,11 @@ import type { ChartConfig } from "@/components/ui/chart"
 import { ChartContainer } from "@/components/ui/chart"
 
 import {
+  AccelerationFootnote,
+  getAccelerationLabels,
+  hasAcceleratedMeasurements,
+} from "./acceleration"
+import {
   dataKeyToTarget,
   type DataTarget,
   formatInputSizeWithUnit,
@@ -18,12 +23,6 @@ import {
   getProverKey,
   metricConfigs,
 } from "./metrics"
-import {
-  getPrecompileLabel,
-  getPrecompileProvers,
-  hasPrecompileMeasurements,
-  precompileFootnoteText,
-} from "./precompiles.utils"
 import { ChartCard, EmptyState } from "./shared"
 
 import type { Metrics } from "@/lib/api/csp-benchmarks"
@@ -110,8 +109,8 @@ interface BarMetricChartProps {
   label?: string
   ariaLabel?: string
   totalProvers: number
-  precompileLabels: Map<string, string>
-  shouldShowPrecompileFootnote: boolean
+  accelerationLabels: Map<string, string>
+  shouldShowAccelerationFootnote: boolean
 }
 
 function BarMetricChart({
@@ -124,8 +123,8 @@ function BarMetricChart({
   label,
   ariaLabel,
   totalProvers,
-  precompileLabels,
-  shouldShowPrecompileFootnote,
+  accelerationLabels,
+  shouldShowAccelerationFootnote,
 }: BarMetricChartProps) {
   const chartHeight = computeBarChartHeight(totalProvers)
 
@@ -140,15 +139,15 @@ function BarMetricChart({
   const yAxisTickFormatter = useCallback(
     (value: unknown) =>
       typeof value === "string"
-        ? (precompileLabels.get(value) ?? value)
+        ? (accelerationLabels.get(value) ?? value)
         : String(value),
-    [precompileLabels]
+    [accelerationLabels]
   )
 
-  const footer = shouldShowPrecompileFootnote ? (
-    <p className="mt-3 text-xs text-muted-foreground">
-      {precompileFootnoteText}
-    </p>
+  const footer = shouldShowAccelerationFootnote ? (
+    <div className="mt-3">
+      <AccelerationFootnote />
+    </div>
   ) : null
 
   return (
@@ -212,21 +211,12 @@ export function BarCharts({
     () => benchmarks.filter((b) => b.input_size === selectedInputSize),
     [benchmarks, selectedInputSize]
   )
-  const precompileProvers = useMemo(
-    () => getPrecompileProvers(filteredData),
+  const accelerationLabels = useMemo(
+    () => getAccelerationLabels(filteredData),
     [filteredData]
   )
-  const precompileLabels = useMemo(() => {
-    const labels = new Map<string, string>()
-
-    for (const prover of allProvers) {
-      labels.set(prover, getPrecompileLabel(prover, precompileProvers))
-    }
-
-    return labels
-  }, [allProvers, precompileProvers])
-  const shouldShowPrecompileFootnote = useMemo(
-    () => hasPrecompileMeasurements(filteredData),
+  const shouldShowAccelerationFootnote = useMemo(
+    () => hasAcceleratedMeasurements(filteredData),
     [filteredData]
   )
 
@@ -291,8 +281,8 @@ export function BarCharts({
             label={chartLabel}
             ariaLabel={`${config.label} comparison`}
             totalProvers={allProvers.length}
-            precompileLabels={precompileLabels}
-            shouldShowPrecompileFootnote={shouldShowPrecompileFootnote}
+            accelerationLabels={accelerationLabels}
+            shouldShowAccelerationFootnote={shouldShowAccelerationFootnote}
           />
         </div>
       ))}

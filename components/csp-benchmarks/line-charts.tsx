@@ -8,6 +8,11 @@ import type { ChartConfig } from "@/components/ui/chart"
 import { ChartContainer, ChartTooltip } from "@/components/ui/chart"
 
 import {
+  AccelerationFootnote,
+  getAccelerationLabels,
+  hasAcceleratedMeasurements,
+} from "./acceleration"
+import {
   dataKeyToTarget,
   type DataTarget,
   formatInputSizeWithUnit,
@@ -19,12 +24,6 @@ import {
   metricConfigs,
   nanosecondsPerMillisecond,
 } from "./metrics"
-import {
-  getPrecompileLabel,
-  getPrecompileProvers,
-  hasPrecompileMeasurements,
-  precompileFootnoteText,
-} from "./precompiles.utils"
 import {
   ChartCard,
   ChartLegend,
@@ -138,8 +137,8 @@ interface LineMetricChartProps {
   isBytes: boolean
   label?: string
   ariaLabel?: string
-  precompileLabels: Map<string, string>
-  shouldShowPrecompileFootnote: boolean
+  accelerationLabels: Map<string, string>
+  shouldShowAccelerationFootnote: boolean
 }
 
 function LineMetricChart({
@@ -155,8 +154,8 @@ function LineMetricChart({
   isBytes,
   label,
   ariaLabel,
-  precompileLabels,
-  shouldShowPrecompileFootnote,
+  accelerationLabels,
+  shouldShowAccelerationFootnote,
 }: LineMetricChartProps) {
   const ticks = useMemo(() => {
     const allValues = data.flatMap((point) =>
@@ -212,7 +211,7 @@ function LineMetricChart({
         ...entry,
         name:
           typeof entry.name === "string"
-            ? (precompileLabels.get(entry.name) ?? entry.name)
+            ? (accelerationLabels.get(entry.name) ?? entry.name)
             : entry.name,
       }))
       return (
@@ -222,7 +221,7 @@ function LineMetricChart({
         />
       )
     },
-    [precompileLabels, tooltipFormatter]
+    [accelerationLabels, tooltipFormatter]
   )
 
   if (ticks === null) return null
@@ -234,13 +233,13 @@ function LineMetricChart({
         chartConfig={chartConfig}
         hiddenKeys={hiddenSeries}
         onToggle={onToggleSeries}
-        labels={precompileLabels}
+        labels={accelerationLabels}
         className="mt-3"
       />
-      {shouldShowPrecompileFootnote && (
-        <p className="mt-3 text-xs text-muted-foreground">
-          {precompileFootnoteText}
-        </p>
+      {shouldShowAccelerationFootnote && (
+        <div className="mt-3">
+          <AccelerationFootnote />
+        </div>
       )}
     </>
   )
@@ -305,21 +304,12 @@ export function LineCharts({
   chartConfig,
   inputSizeCount,
 }: LineChartsProps) {
-  const precompileProvers = useMemo(
-    () => getPrecompileProvers(benchmarks),
+  const accelerationLabels = useMemo(
+    () => getAccelerationLabels(benchmarks),
     [benchmarks]
   )
-  const precompileLabels = useMemo(() => {
-    const labels = new Map<string, string>()
-
-    for (const key of seriesKeys) {
-      labels.set(key, getPrecompileLabel(key, precompileProvers))
-    }
-
-    return labels
-  }, [precompileProvers, seriesKeys])
-  const shouldShowPrecompileFootnote = useMemo(
-    () => hasPrecompileMeasurements(benchmarks),
+  const shouldShowAccelerationFootnote = useMemo(
+    () => hasAcceleratedMeasurements(benchmarks),
     [benchmarks]
   )
 
@@ -388,8 +378,8 @@ export function LineCharts({
           isBytes={config.unit === "bytes"}
           label={dataKeyToTarget[target]}
           ariaLabel={`${config.label} trend`}
-          precompileLabels={precompileLabels}
-          shouldShowPrecompileFootnote={shouldShowPrecompileFootnote}
+          accelerationLabels={accelerationLabels}
+          shouldShowAccelerationFootnote={shouldShowAccelerationFootnote}
         />
       ))}
     </div>
