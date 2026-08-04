@@ -26,7 +26,7 @@ async function loadWasmModule(name: string): Promise<WasmModule> {
       case "pico":
         loadedModule = await import("@ethproofs/pico-wasm-stark-verifier")
         break
-      case "sp1-hypercube":
+      case "sp1":
         loadedModule = await import("@ethproofs/sp1-hypercube-wasm-verifier")
         break
       case "ziren":
@@ -35,6 +35,7 @@ async function loadWasmModule(name: string): Promise<WasmModule> {
       case "zisk":
         loadedModule = await import("@ethproofs/zisk-wasm-stark-verifier")
         break
+
       case "openvm":
         loadedModule = await import("@ethproofs/openvm-wasm-stark-verifier")
         break

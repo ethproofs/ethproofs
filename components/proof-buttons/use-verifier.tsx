@@ -14,7 +14,7 @@ const MODULE_LOADERS: Record<VerifiableZkvmSlug, () => Promise<unknown>> = {
   zisk: () => import("@ethproofs/zisk-wasm-stark-verifier"),
   pico: () => import("@ethproofs/pico-wasm-stark-verifier"),
   ziren: () => import("@ethproofs/ziren-wasm-stark-verifier"),
-  "sp1-hypercube": () => import("@ethproofs/sp1-hypercube-wasm-verifier"),
+  sp1: () => import("@ethproofs/sp1-hypercube-wasm-verifier"),
   openvm: () => import("@ethproofs/openvm-wasm-stark-verifier"),
   openvm2: () => import("@ethproofs/openvm2-wasm-stark-verifier"),
   airbender: () => import("@ethproofs/airbender-wasm-stark-verifier"),

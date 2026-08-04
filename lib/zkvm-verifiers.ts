@@ -6,7 +6,7 @@ export type VerifiableZkvmSlug =
   | "zisk"
   | "pico"
   | "ziren"
-  | "sp1-hypercube"
+  | "sp1"
   | "openvm"
   | "openvm2"
   | "airbender"
@@ -23,7 +23,7 @@ export function isVerifiableZkvm(slug: string): slug is VerifiableZkvmSlug {
     "zisk",
     "pico",
     "ziren",
-    "sp1-hypercube",
+    "sp1",
     "openvm",
     "openvm2",
     "airbender",
