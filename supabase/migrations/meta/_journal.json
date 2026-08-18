@@ -512,6 +512,13 @@
       "when": 1783024759100,
       "tag": "0072_opp-cohort-eligibility-by-prover-type",
       "breakpoints": true
+    },
+    {
+      "idx": 73,
+      "version": "7",
+      "when": 1787061610798,
+      "tag": "0073_deprecate-proof-alerts",
+      "breakpoints": true
     }
   ]
 }
