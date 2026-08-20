@@ -84,7 +84,7 @@ async function loadFallbackModule(name: string): Promise<WasmModule | null> {
     switch (name) {
       case "zisk":
         loadedModule = await import(
-          "@ethproofs/zisk-wasm-stark-verifier-v0.12.0"
+          "@ethproofs/zisk-wasm-stark-verifier-v0.18.0"
         )
         break
       default:

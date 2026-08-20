@@ -53,10 +53,18 @@ slug→package mapping. Two non-obvious cases:
   `@ethproofs/airbender-wasm-stark-verifier-v0.10.0` → the 0.10.0 release. The current
   `airbender` slug points at 0.11.x. So both an 80-bit and a current airbender verifier
   ship side by side.
-- **`zisk` has a fallback.** The primary `zisk` package plus an aliased
-  `@ethproofs/zisk-wasm-stark-verifier-v0.12.0` (note: the alias name is misleading —
-  it resolves to an older published version, not literally 0.12.0). The fallback exists
-  to survive version transitions.
+- **`zisk` has a fallback.** The primary `zisk` package (0.2.x) plus an aliased
+  `@ethproofs/zisk-wasm-stark-verifier-v0.18.0`, which resolves to the 0.1.6 release —
+  the last one before 0.2.0. The alias name is the ZisK zkVM version the fallback
+  targets, not the npm version. The fallback exists to survive version transitions.
+
+  **The fallback does not check the VK.** Every release before 0.2.0 ignores the
+  `vkBytes` argument (the 0.1.6 signature literally names it `_vk_bytes`) and verifies
+  against the key embedded in the proof, which shows only that the proof is internally
+  consistent — not that it came from the expected program. Because the fallback also
+  runs when the primary returns `false`, a proof that 0.2.0 correctly rejects can still
+  come back valid via the fallback. Keep that in mind before widening the fallback to
+  other zkVMs or leaving it in place long-term.
 
 > **Naming gotcha:** the `-vX.Y.Z` aliases in package.json are just npm alias *names*;
 > the real resolved version is whatever the alias points at in the registry, which does

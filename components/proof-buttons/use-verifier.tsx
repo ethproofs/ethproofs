@@ -30,7 +30,7 @@ const MODULE_LOADERS: Record<VerifiableZkvmSlug, () => Promise<unknown>> = {
 const FALLBACK_MODULE_LOADERS: Partial<
   Record<VerifiableZkvmSlug, () => Promise<unknown>>
 > = {
-  zisk: () => import("@ethproofs/zisk-wasm-stark-verifier-v0.12.0"),
+  zisk: () => import("@ethproofs/zisk-wasm-stark-verifier-v0.18.0"),
 }
 
 interface VerifyResult {
