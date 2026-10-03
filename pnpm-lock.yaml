@@ -57,6 +57,9 @@ importers:
       '@ethproofs/zkdtvm-wasm-stark-verifier':
         specifier: ^0.4.0
         version: 0.4.0
+      '@matterlabs/ethproofs-airbender-verifier':
+        specifier: 1.1.0
+        version: 1.1.0
       '@radix-ui/react-accordion':
         specifier: 1.2.10
         version: 1.2.10(@types/react-dom@19.1.7(@types/react@19.1.10))(@types/react@19.1.10)(react-dom@19.1.2(react@19.1.2))(react@19.1.2)
@@ -1996,6 +1999,9 @@ packages:
 
   '@jridgewell/trace-mapping@0.3.30':
     resolution: {integrity: sha512-GQ7Nw5G2lTu/BtHTKfXhKHok2WGetd4XYcVKGx00SjAk8GMwgJM3zr6zORiPGuOE+/vkc90KtTosSSvaCjKb2Q==}
+
+  '@matterlabs/ethproofs-airbender-verifier@1.1.0':
+    resolution: {integrity: sha512-fC8Var12RjxrMAyI/rYOaeLIzz5PdmBQwzAOn3J6EUiVz9nXOuWqCysG7urtpl2Ok0E2VpR5fi1hj1qRYyqQ4g==}
 
   '@napi-rs/wasm-runtime@0.2.12':
     resolution: {integrity: sha512-ZVWUcfwY4E/yPitQJl481FjFo3K22D6qF0DuFH6Y/nbnE11GY5uguDxZMGXPQ8WQ0128MXQD7TnfHyK4oWoIJQ==}
@@ -9754,6 +9760,8 @@ snapshots:
     dependencies:
       '@jridgewell/resolve-uri': 3.1.2
       '@jridgewell/sourcemap-codec': 1.5.5
+
+  '@matterlabs/ethproofs-airbender-verifier@1.1.0': {}
 
   '@napi-rs/wasm-runtime@0.2.12':
     dependencies:

@@ -37,7 +37,7 @@ A proof's zkVM is found via `proof → cluster_version → zkvm_version → zkvm
 
 1. `isVerifiableZkvm(slug)` (`lib/zkvm-verifiers.ts`) gates whether verification is even
    offered. The verifiable set is currently: `zisk`, `pico`, `ziren`, `sp1-hypercube`,
-   `openvm`, `openvm2`, `airbender`, `airbender-80`, `venus`, `zkdtvm`.
+   `openvm`, `openvm2`, `airbender`, `airbender-80`, `zksync-airbender-v3`, `venus`, `zkdtvm`.
 2. The slug maps to a WASM package via a `switch` in **two** places that must stay in
    sync:
    - server: `loadWasmModule()` in `lib/server/verify-service.ts`,
@@ -47,7 +47,7 @@ A proof's zkVM is found via `proof → cluster_version → zkvm_version → zkvm
 ### The WASM packages (package.json)
 
 Each zkVM has a `@ethproofs/<name>-wasm-stark-verifier` dependency. Most are a plain
-slug→package mapping. Two non-obvious cases:
+slug→package mapping. Non-obvious cases:
 
 - **`airbender-80`** is a *separate, older* verifier, pinned via an npm alias:
   `@ethproofs/airbender-wasm-stark-verifier-v0.10.0` → the 0.10.0 release. The current
@@ -65,6 +65,9 @@ slug→package mapping. Two non-obvious cases:
   runs when the primary returns `false`, a proof that 0.2.0 correctly rejects can still
   come back valid via the fallback. Keep that in mind before widening the fallback to
   other zkVMs or leaving it in place long-term.
+- **`zksync-airbender-v3`** uses `@matterlabs/ethproofs-airbender-verifier`, published by
+  Matter Labs rather than as an `@ethproofs/*` package. It verifies gzip `EPROOF01` v2
+  proofs against a single 194-byte `EVKEY001` v2 key.
 
 > **Naming gotcha:** the `-vX.Y.Z` aliases in package.json are just npm alias *names*;
 > the real resolved version is whatever the alias points at in the registry, which does
@@ -96,7 +99,8 @@ bucket (`VERIFICATION_KEYS_BUCKET` in `lib/constants.ts`).
   for the same VK are de-duplicated so a cache miss doesn't trigger parallel downloads
   ("thundering herd" guard).
 - **airbender VKs** are assembled from two files (`setup.bin` + `layout.bin`) with a
-  length prefix using `scripts/concat-vk.ts` before upload.
+  length prefix using `scripts/concat-vk.ts` before upload. `zksync-airbender-v3` keys are
+  uploaded as-is (one 194-byte file); do not run `concat-vk.ts` on them.
 
 ## End-to-end flows
 
