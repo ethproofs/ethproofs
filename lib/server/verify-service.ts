@@ -51,6 +51,9 @@ async function loadWasmModule(name: string): Promise<WasmModule> {
           "@ethproofs/airbender-wasm-stark-verifier-v0.10.0"
         )
         break
+      case "zksync-airbender-v3":
+        loadedModule = await import("@matterlabs/ethproofs-airbender-verifier")
+        break
       case "venus":
         loadedModule = await import("@ethproofs/venus-wasm-stark-verifier")
         break

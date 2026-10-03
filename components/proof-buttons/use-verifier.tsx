@@ -22,6 +22,8 @@ const MODULE_LOADERS: Record<VerifiableZkvmSlug, () => Promise<unknown>> = {
     import("@ethproofs/airbender-wasm-stark-verifier"),
   "airbender-80": () =>
     import("@ethproofs/airbender-wasm-stark-verifier-v0.10.0"),
+  "zksync-airbender-v3": () =>
+    import("@matterlabs/ethproofs-airbender-verifier"),
   venus: () => import("@ethproofs/venus-wasm-stark-verifier"),
   zkdtvm: () => import("@ethproofs/zkdtvm-wasm-stark-verifier"),
 }
