@@ -34,7 +34,7 @@ authenticated, the shape of the public API, and the external services the app ta
 **Public pages:** `/` (the cohorts/landing page, in the `(cohorts)` route group),
 `/blocks` + `/block/[…]`, `/clusters` + `/cluster/[…]`, `/teams` + `/team/[…]`,
 `/provers` + `/prover/[…]`, `/zkvms`, `/guests`, `/metrics`, `/csp-benchmarks`,
-`/status`, `/learn`, `/blog` (Ghost), `/docs`.
+`/status`, `/learn`, `/blog` (MDX in `content/blog`), `/docs`.
 
 **Auth pages:** `/sign-in`, `/forgot-password`, `/reset-password`, `/auth/*`.
 
@@ -148,7 +148,6 @@ The public API is described with Zod schemas turned into an OpenAPI 3.1 document
 | -------------- | --------------------------------- | ------------------------------------------------ |
 | Supabase       | Postgres, Auth, Storage, Realtime | `utils/supabase/`, `db/`, `supabase/`            |
 | Upstash Redis  | API rate limiting                 | `lib/middleware/with-rate-limit.ts`              |
-| Ghost          | Blog content                      | `lib/ghost.ts`, `/blog` routes                   |
 | Nodemailer/SES | Transactional email               | `lib/server/email-service.ts`, `email-templates.ts` |
 | Telegram       | Error/timeout alerts              | `lib/middleware/with-telemetry.ts`               |
 | WASM verifiers | Proof verification                | `@ethproofs/*-wasm-stark-verifier` (see verify-service doc) |

@@ -1,0 +1,294 @@
+---
+title: "The Ethproofs Prover Personas & GPU Price Indices"
+publishedAt: 2025-12-16T15:12:00.000+00:00
+excerpt: "As Ethproofs enters its second year, we are making a deliberate first-step simplification to how hardware cost is represented across the platform."
+featureImage: /blog/the-ethproofs-prover-personas-gpu-price-indices/Frame-2-1.jpg
+tags:
+  - "product"
+authors:
+  - name: "Fara Woolf"
+    image: /blog/authors/me-bw.jpeg
+---
+
+### A Measurement Baseline for Comparable Metrics and Longitudinal Analysis
+
+---
+
+_Thanks to Justin Drake, Thomas Coratger, Alex Hicks, Kev Wedderburn, George Kadianakis, Jordi Baylina of ZisK, Yi Sun of Axiom, Robik of Airbender, Tamir Hemo of Succinct, Michael Dong and Alan Li of Brevis for feedback and review._
+
+---
+
+<Callout color="blue">
+
+**TL;DR**
+
+As Ethproofs enters its second year, we are making a deliberate first-step simplification to how hardware cost is represented across the platform. By standardizing around two Prover Personas—**Single-GPU (1:100)** and **Multi-GPU (1:1)**—and retiring the noisy, cloud-equivalent USD cost model, Ethproofs can make metrics cleaner, comparisons fairer, and long-term performance trends easier to interpret.
+
+In its place, we are introducing the **RTX 5090 Price Index** as a shared baseline, alongside an optional **RTX 6000 Price Index** for higher-end deployments. These indices are measurement baselines, not accounting models, and are designed to support Ethproofs’ role as a public coordination and observability layer.
+
+</Callout>
+
+---
+
+## Scope, Authorship, and Review Process
+
+Ethproofs’ role is to act as a **public measurement layer** for real-time proving. That requires regularly revisiting and simplifying metrics as the ecosystem evolves.
+
+Before finalizing this approach, it was **socialized for review and comment** with multiple zkVM teams participating in Ethproofs—specifically including members of the **Real-Time Proving Panel at Ethproofs day**.
+
+The feedback from those discussions directly informed the final design described here.
+
+This post should be read as a **supporting design note** for the Ethproofs 2026 Roadmap, not as a standalone cost framework.
+
+---
+
+## Why Metrics Simplification Is Necessary
+
+The 2025 real-time proving sprint delivered dramatic improvements in latency and cost efficiency. As performance converged toward real-time targets, the primary bottleneck for Ethproofs shifted:
+
+> From collecting more data → to **making data comparable, interpretable, and trustworthy over time**.
+
+In particular:
+
+- hardware diversity increased
+- on-prem and home proving expanded
+- cloud abstractions drifted away from reality
+
+Without simplification, cost metrics began to **obscure progress rather than reveal it**. This update addresses that directly.
+
+---
+
+## Prover Personas (Standardized Context)
+
+Ethproofs uses **Prover Personas** to ensure metrics are interpreted within the correct operational context.
+
+Personas are **descriptive, not prescriptive**. They reflect how teams actually operate today. Ethproofs does not reward one Persona over the other; it rewards **measurable improvement within each context**.
+
+### Persona 1 — Single-GPU (1:100)
+
+- One consumer-grade GPU
+- Proofs submitted for **1 out of every 100 L1 blocks**
+- Primary role: benchmarking, experimentation, decentralization
+
+This Persona provides a stable baseline for:
+
+- tracking single-device performance improvements
+- observing software-level optimizations
+- lowering the barrier to entry for new provers
+
+---
+
+### Persona 2 — Multi-GPU (1:1)
+
+- Multi-GPU clusters
+- Proofs submitted for **every L1 block**
+- Primary role: real-time proving, uptime, and liveness
+
+This Persona anchors:
+
+- real-world latency measurements
+- reliability and availability scoring
+- live-chain stress testing
+
+Together, these two Personas capture the **dominant proving modes** without fragmenting the dataset.
+
+---
+
+## Why Personas Matter for Cost Metrics
+
+Cost is only meaningful when compared **within the same operational mode**.
+
+By standardizing Personas, Ethproofs can:
+
+- avoid accidental apples-to-oranges comparisons
+- track improvement trends within each strategy
+- present clearer dashboards and leaderboards
+
+The cost model therefore needs to be **simple, stable, and shared** across Personas.
+
+---
+
+## Retiring the Broad Cloud-Equivalent Cost Model
+
+Throughout 2025, Ethproofs estimated cost using **cloud-equivalent USD pricing**, based on mapped instance types and fixed regional snapshots.
+
+Over time, this approach degraded:
+
+- cloud mappings were unverifiable
+- regional pricing distortions accumulated
+- consumer-GPU deployments dominated
+- longitudinal charts became unstable
+
+Most importantly, it became harder to answer Ethproofs’ core question:
+
+> **Are provers getting better over time?**
+
+---
+
+## What Provers Actually Run (Ecosystem Data)
+
+The decision to converge on the RTX 5090 was **data-informed**, not speculative.
+
+Ethproofs’ hardware metadata and public datasets show clear trends:
+
+- **~70%** of cloud-equivalent selections: 4090/5090-class
+- **\>80%** of real GPU capacity: 4090/5090-class
+- Datacenter GPUs (A100 / H100 / MI300) are nearly absent
+- Consumer GPUs dominate physical prover machines
+- 5090 adoption surged sharply in Q3–Q4 as availability improved
+
+**The ecosystem had already converged on consumer GPUs.**\
+The cost model simply needed to reflect reality.
+
+**Underlying datasets:**
+
+- `cloud_instances.json`\
+    [https://gist.github.com/fbwoolf/92ea17f123ff0c9c5e0be187880d207a](https://gist.github.com/fbwoolf/92ea17f123ff0c9c5e0be187880d207a)
+- `active_clusters.json`\
+    [https://gist.github.com/fbwoolf/0bb892811fb2135665eb986f458fdb12](https://gist.github.com/fbwoolf/0bb892811fb2135665eb986f458fdb12)
+
+**Data relationships (simplified):**
+
+```text
+// clusters
+//     └── has many → cluster_versions
+//          └── has many → cluster_machines
+//               ├── refs → machines (the hardware spec)
+//               └── refs → cloud_instances (where it runs)
+//                      └── refs → cloud_providers (AWS, Vast.ai, etc.)
+```
+
+---
+
+## The RTX 5090 as the Baseline Cost Unit
+
+The RTX 5090 is not chosen because it is perfect, but because it is **shared**.
+
+It offers:
+
+- strong performance-per-watt
+- global accessibility
+- decentralization-aligned deployment
+- demonstrated real-time proving capability
+
+For Ethproofs, the 5090 functions as a **common unit of proving capacity**, analogous to how gas functions as a unit of computation: **imperfect, but shared and legible**.
+
+---
+
+## The Ethproofs 5090 Price Index
+
+Ethproofs now publishes a **quarterly global median price** for one RTX 5090 GPU-hour.
+
+### Index Methodology
+
+1. Query Vast.ai
+2. Filter to RTX 5090
+3. Filter to host reliability ≥ 99.9%
+4. Include all regions
+5. Collect hourly prices
+6. Use the **median**
+
+Observed range to date: **~$0.37–$0.47 per GPU-hour**
+
+This becomes the **default cost baseline** across Ethproofs.
+
+---
+
+## Community Feedback: Introducing the RTX 6000 Index
+
+During review with zkVM teams—particularly those operating large, datacenter-style deployments—clear feedback emerged:
+
+> Some provers intentionally run **RTX 6000-class hardware**, and the model should reflect that choice explicitly.
+
+Key characteristics of the RTX 6000:
+
+- ~**30% higher performance** than a 5090
+- ~**3× higher cost**
+- datacenter-oriented, not retail-oriented
+- viable for teams prioritizing latency over decentralization
+
+To accommodate this, Ethproofs will also publish a **6000 Price Index**, defined as:
+
+> **6000 Index = 3 × 5090 Price Index**
+
+Provers using RTX 6000 hardware may see **lower latency**, but this will be reflected transparently as a **significantly higher cost**.
+
+---
+
+## Updated Cost Calculation
+
+```
+cost_per_proof =
+  ( num_gpus × selected_gpu_index )
+  × ( proving_time_ms / 3,600,000 )
+```
+
+Where `selected_gpu_index` is either:
+
+- **5090 Index**, or
+- **6000 Index**
+
+---
+
+## How Prover Configuration Works on Ethproofs
+
+When creating or updating a prover on Ethproofs:
+
+- Teams **still input their actual hardware**
+- Teams **still select a cloud-equivalent**
+- The difference is **fewer, cleaner options**
+
+Going forward, provers will select:
+
+1. **Prover Persona**
+    - Single-GPU (1:100)
+    - Multi-GPU (1:1)
+2. **GPU Class**
+    - RTX 5090
+    - RTX 6000
+3. **If Multi-GPU**, the **number of GPUs**
+
+This preserves flexibility while dramatically improving comparability.
+
+---
+
+## What This Enables (and What It Doesn’t)
+
+These indices do **not** attempt to model:
+
+- capex amortization
+- cooling and other facilities / opex costs
+- geographic electricity pricing
+- operator-specific margins
+
+They **do** enable:
+
+- clearer Persona-level trends
+- cleaner dashboards
+- lower onboarding friction
+- more trustworthy longitudinal comparisons
+
+This distinction—between **measurement clarity** and **economic prescription**—is essential as Ethproofs evolves from a leaderboard into a coordination layer.
+
+---
+
+## Looking Ahead
+
+The GPU Price Indices are a **first-step simplification**.
+
+In 2026, Ethproofs will continue evolving metrics toward:
+
+- **energy per proof (kWh)** as a primary efficiency signal
+- liveness and uptime scoring
+- real-world hard-block analysis via RTP cohorts
+
+The guiding principle remains:
+
+> **Optimize for clarity of progress, not false precision.**
+
+Clean metrics make coordination possible.\
+Coordination accelerates real-time proving.
+
+We are currently exploring the best way to roll out these changes and will provide updates via our [X account](https://x.com/eth_proofs). We plan to utilize a countdown clock on Ethproofs once we have an exact timeline in place.
+
+These foundations are discussed in more detail in the **Ethproofs 2026 Roadmap: From Leaderboard to Coordination Layer**. [https://ethproofs.org/blog/ethproofs-2025-review-2026-roadmap](https://ethproofs.org/blog/ethproofs-2025-review-2026-roadmap)

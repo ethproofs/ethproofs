@@ -1,3 +1,5 @@
+const createMDX = require("@next/mdx")
+
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
@@ -31,6 +33,10 @@ const nextConfig = {
 
     return config
   },
+  outputFileTracingExcludes: {
+    "/blog": ["./public/**"],
+    "/blog/*": ["./public/**"],
+  },
   images: {
     remotePatterns: [
       {
@@ -39,16 +45,21 @@ const nextConfig = {
         port: "",
         pathname: "/storage/v1/object/public/public-assets/**",
       },
-      {
-        protocol: "https",
-        hostname: "**.ghost.io",
-      },
-      {
-        protocol: "https",
-        hostname: "**.ghost.org",
-      },
     ],
   },
 }
 
-module.exports = nextConfig
+const withMDX = createMDX({
+  options: {
+    remarkPlugins: [
+      "remark-frontmatter",
+      "remark-mdx-frontmatter",
+      "remark-gfm",
+      "remark-reading-time",
+      "remark-reading-time/mdx",
+    ],
+    remarkRehypeOptions: { footnoteBackContent: "↩︎" },
+  },
+})
+
+module.exports = withMDX(nextConfig)

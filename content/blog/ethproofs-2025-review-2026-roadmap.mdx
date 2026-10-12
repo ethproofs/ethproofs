@@ -1,0 +1,234 @@
+---
+title: "Ethproofs 2025 Review & 2026 Roadmap"
+publishedAt: 2025-12-16T00:34:55.000+00:00
+excerpt: "Turning the page on the first year of Ethproofs with a look back at 2025 highlights and a look ahead to 2026 priorities."
+featureImage: /blog/ethproofs-2025-review-2026-roadmap/Frame-1-2.jpg
+tags:
+  - "coordination"
+  - "product"
+authors:
+  - name: "Fara Woolf"
+    image: /blog/authors/me-bw.jpeg
+  - name: "Will Corcoran"
+    image: /blog/authors/headshot.jpg
+---
+
+### From Real-Time Performance to Security-Focused Coordination
+
+---
+
+_Thanks to Justin Drake, Thomas Coratger, Alex Hicks, Kev Wedderburn, and George Kadianakis for feedback and review._
+
+---
+
+<Callout color="blue">
+
+**About the Ethproofs blog:**
+
+Ethproofs is a public measurement and coordination platform for teams working toward a shared goal **secure, decentralized, continuous, real-time proving of Ethereum L1 execution blocks.**
+
+This blog is written for zkVM teams, prover operators, Ethereum researchers, independent researchers, and protocol-adjacent builders working at the boundary between research and production.
+
+Ethproofs exists to make progress legible, comparable, and actionable—so that performance, security, and trade-offs can be discussed in public.
+
+If you’re building or researching in this space, we’d love to feature your work. You can DM us at **@fbwoolf** or **@corcoranwill** on Telegram.
+
+</Callout>
+
+---
+
+## Why Ethproofs Exists
+
+_by Will Corcoran_
+
+Ethereum’s path toward **mandatory, real-time proving of L1 execution blocks** is not just a technical race. It is a coordination problem.
+
+Before joining the Ethereum Foundation, I was an architect. One of the last projects I worked on was a Chicago development that combined a public library with affordable housing. It only worked because public and private actors moved in lockstep—each doing what the other could not.
+
+That experience strongly shapes how I see Ethereum’s zk roadmap. I see it as a [public-private partnership](https://youtu.be/sxiZLlLZhGA?si=AcQdEPAzxnB1YEQW).
+
+On the _private_ side, zkVM teams and prover operators move quickly: iterating on software, pushing hardware limits, and discovering new performance frontiers. On the _public_ side, the Ethereum Foundation convenes, de-risks, and enforces non-negotiables: **security, decentralization, reproducibility, and long-term protocol coherence**.
+
+Neither side succeeds alone.
+
+Ethproofs exists to sit at that interface.
+
+Concretely, Ethproofs serves two roles:
+
+1. **A public measurement surface** — where zkVMs and provers submit proofs against shared, evolving metrics.
+2. **A coordination layer** — where results are discussed, pressure-tested, and translated into ecosystem-wide signals.
+
+In 2025, Ethproofs focused on making _real-time performance_ visible. That work mattered. It showed—using real data—that continuous proving is no longer theoretical. It is happening, on mainnet blocks, by multiple independent teams.
+
+But performance alone is not the end state.
+
+As Ethereum moves closer to mandatory proving, the questions shift from _“Is this fast enough?”_ to _“Is this secure enough, diverse enough, and robust enough to rely on?”_
+
+Ethproofs must evolve accordingly—not by dictating answers, but by making trade-offs visible and comparable in public.
+
+That is the through line from 2025 into 2026.
+
+---
+
+## 2025 in Review: Measuring Real-Time Proving in the Wild
+
+Ethproofs launched on **January 28, 2025**, initially as an L1 proof tracker. Over the course of the year, it evolved into a **coordination and observability layer** for the zkVM ecosystem.
+
+To date, Ethproofs has:
+
+- onboarded **7 zkVMs** and **15 prover teams**
+- verified approximately **200,000 Ethereum blocks**
+- seen a reduced average proving latency by **~5×**
+- seen a reduced average proving cost by **~15×**
+
+**Site-wide metrics (**[**Jan 28**](https://web.archive.org/web/20250128162122/https://ethproofs.org/) **→ Dec 17, 2025):**
+
+- Average latency: **16m 44s → ~60s**
+- Average cost: **$1.69 → $0.0376**
+
+These improvements were not achieved in isolation. They reflect sustained, coordinated pressure across software, hardware, and operations—applied in public.
+
+As several teams now approach (and in some cases surpass) the [zkEVM team’s north-star targets](https://blog.ethereum.org/2025/07/10/realtime-proving)—≤10s P99 latency, ≤10kW power, ≤$100k CAPEX, ≤300KiB proofs, and fully open stacks—one conclusion is clear:
+
+**Ethproofs must evolve alongside the ecosystem it measures.**
+
+With [L1 gas limits expected to rise ~3× in 2026](https://eips.ethereum.org/EIPS/eip-7938), raw speed alone is no longer the dominant bottleneck. The center of gravity is shifting toward [**security**](https://www.youtube.com/watch?v=sKXGt5X6Vm8)**, size, diversity, resilience, and** [**security**](https://youtu.be/31CGOEkQkTs?si=qdrcwmXGXYJVHhRX).
+
+(did I mention security?)
+
+---
+
+## 2025 Highlights: What Changed
+
+Ethproofs’ first year answered a simple question in public:\
+**Can Ethereum L1 blocks be proven continuously, in real-time, by multiple independent teams?**
+
+By the end of 2025, the answer was yes.
+
+Performance & Cost
+
+1. **Real-time proving became routine**\
+    Multiple teams sustained sub-10s P99 latency on real L1 blocks under EF hardware targets.
+2. **Single-GPU proving crossed the one-minute mark**\
+    Down from ~16 minutes at launch, demonstrating that real-time proving is no longer reserved for large clusters.
+3. **Proof costs collapsed**\
+    Average cost per block fell from **$1.69 to well under one cent**, reshaping the feasibility envelope for mandatory proving.
+
+Infrastructure & Reliability
+
+4. **Always-on prover meshes emerged**\
+    Multiple independent provers [routinely covered every L1 block](https://ethproofs.org/), reducing reliance on any single operator.
+5. **Reproducibility became the baseline**\
+    All Ethproofs submissions link to [open repositories or verifiable binaries](https://x.com/eth_proofs/status/1996032086504079678?s=20).
+
+Openness & Verification
+
+6. **Verifier openness converged**\
+    All deployed verifiers are dual-licensed (MIT + Apache-2.0). Ethproofs has developed [NPM packages to provide in-browser verification](https://www.npmjs.com/search?q=%40ethproofs) for every proof system on Ethproofs.
+7. **Client-Side Proving benchmarks stabilized**\
+    [CSP benchmarks](https://ethproofs.org/csp-benchmarks) moved from ad-hoc experiments to regularly published reference measurements across circuits and zkVM stacks.
+
+Integration & Governance
+
+8. **Ethereum clients consumed Ethproofs proofs**\
+    A [modified Lighthouse client](https://github.com/kevaundray/lighthouse/pull/17), zkLighthouse [validated Ethereum blocks using proofs fetched directly from Ethproofs](https://youtu.be/BUuNcXiaH3U?si=-xFEllXgce_f35VZ).
+9. **The community scaled meaningfully**\
+    600+ Telegram members, [six public calls](https://youtube.com/playlist?list=PLJqWcTqh_zKGthi2bQDVOcNWXCSvH1sgB&si=CwhFFrBdCZ4MqF1o) averaging 250+ attendees, and 600+ participants at [Ethproofs day](https://youtube.com/playlist?list=PLJqWcTqh_zKF-gamT-xOEQD7BbrrIGlcH&si=ugzq_CP5oK0uZrSk).
+10. **Ethproofs became a formal EF team**\
+     Establishing a long-term coordination layer between industry participants, independent devs + researchers, and other EF zk-focused (zkEF) teams, including: [zkEVM team](https://zkevm.ethereum.foundation/), [Cryptography Research](https://crypto.ethereum.org/), and Protocol Snarkification ([stewards of the zkEVM Formal Verification Project](https://verified-zkevm.org/)).
+
+---
+
+## 2026 Roadmap: From Leaderboard to Coordination Layer
+
+_by Fara Woolf_
+
+In 2025, Ethproofs emphasized **real-time performance, latency, and cost** as the dominant axes of progress. That focus is not going away. Performance remains a prerequisite for mandatory proving to be viable at all.
+
+What changes in 2026 is the **center of gravity**.
+
+As real-time proving becomes more routine, **security becomes the primary axis along which progress is evaluated**—with performance increasingly treated as a constraint rather than the only story.
+
+Ethproofs’ role in this shift is not to invent new security standards, but to **surface and amplify** the ones emerging from core Ethereum research.
+
+In 2026, Ethproofs will work more closely with the EF **Cryptography**, **zkEVM**, and **Protocol Snarkification** teams to iteratively improve how security is represented on the platform—making it more visible, legible, and comparable across projects.
+
+You should expect Ethproofs to increasingly reflect upstream EF security milestones, such as:
+
+- higher cryptographic security thresholds,
+- improvements in proof size and verifier efficiency,
+- integration with shared verification and analysis tooling.
+
+This post does **not** pre-commit to specific thresholds or timelines. Concrete criteria will be led by the EF cryptography and zkEVM teams. Ethproofs’ responsibility is to **adopt and broadcast** those standards in a way that preserves nuance while enabling comparison.
+
+As those standards emerge, Ethproofs’ dashboards and visual language will evolve as well. Tables, cohort views, and comparative visualizations will increasingly highlight teams that invest in **stronger security properties**, not just faster proving.
+
+Directionally, if you are a prover or zkVM team, you should expect Ethproofs in 2026 to **reward serious security work more explicitly**—both in the UI and in how leaderboards and recognition are framed.
+
+The goal is not to slow progress, but to ensure that as Ethereum moves toward mandatory proving, the ecosystem optimizes for what ultimately matters most:
+
+**trustworthy, decentralized, and durable correctness at scale**
+
+---
+
+## 2026 Product Roadmap Themes
+
+To support this shift from raw performance toward security, reliability, and coordination, Ethproofs’ 2026 roadmap focuses on three tightly coupled upgrades.
+
+### 1\. A Unified Metrics & Visualization Layer
+
+The highest-leverage change in 2026 is a full refresh of Ethproofs’ measurement and visualization stack. Every chart, leaderboard, and cohort view will become **meaningfully comparable**, more interpretable, and more directly aligned with how real prover teams operate.
+
+At the core of this shift is a deliberately simplified prover input model. Ethproofs now anchors its two **Prover Personas** to a shared, decentralization-aligned cost baseline expressed directly in **GPU-hours** (RTX-5090 or RTX-6000). This replaces brittle cloud-equivalent mappings and makes uptime, reliability, and long-term performance trends legible rather than noisy:
+
+- **Persona 1 — Single-GPU, 1:100**
+- **Persona 2 — Multi-GPU, 1:1**
+
+The full design rationale—why these personas, why GPU-hour indices, and why this abstraction is necessary for fair comparison and coordination—is laid out in **The Ethproofs Prover Personas & GPU Price Indices**:\
+[https://ethproofs.org/blog/the-ethproofs-prover-personas-gpu-price-indices](https://ethproofs.org/blog/the-ethproofs-prover-personas-gpu-price-indices)
+
+On top of this foundation, Ethproofs will standardize several core metrics across all zkVMs:
+
+- **Liveness & uptime** via continuous reliability scoring
+- **Energy efficiency**, measured as **kWh per proof**
+- **Proof sizes and verification times**, tracked consistently across systems
+
+This unified measurement layer underpins the rest of the roadmap and enables meaningful comparison without collapsing important nuance.
+
+---
+
+### 2\. Real-World Hard-Block Monitoring (RTP Cohort)
+
+One immediate application of the new metrics stack is deeper visibility into **real-world block difficulty**.
+
+Ethproofs’ **RTP Cohort**—provers sustaining **P99 &lt;10s latency** with **≥90% uptime**—serves as a real-time reference set. For every L1 block proven by this cohort, Ethproofs will surface two production-grounded signals:
+
+- **Prover Stunners:** blocks eventually proven by multiple cohort provers but exceeding the 10s P99 target
+- **Prover Paralyzers:** blocks that multiple provers queued but never completed
+
+These signals complement synthetic stress tests currently under way by the zkEVM team.
+
+---
+
+### 3\. Contributor Admin Dashboard
+
+With costs and metrics simplified, Ethproofs can finally expose contributor controls without distorting incentives or measurements.
+
+The new admin dashboard will allow teams to:
+
+- manage team details
+- manage prover clusters
+- manage prover personas
+- rotate verification keys
+
+This improves metadata quality, onboarding, and coordination across the ecosystem—making it easier for contributors to participate correctly and for observers to interpret results accurately.
+
+---
+
+## Looking Ahead
+
+Together, these efforts evolve Ethproofs from a simple leaderboard into **the coordination and observability layer for a decentralized proving ecosystem**.
+
+Mandatory proving is not a single milestone. It is a long transition.
+
+Ethproofs exists to make that transition **measurable, public, and collectively navigable**.

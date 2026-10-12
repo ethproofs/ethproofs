@@ -64,7 +64,7 @@ scoreboard for that race.
 | Rate limiting      | Upstash Redis                                                 |
 | Storage            | Supabase Storage (proof binaries, verification keys, benchmarks) |
 | Verification       | `@ethproofs/*-wasm-stark-verifier` WASM packages              |
-| Blog/CMS           | Ghost Content API                                             |
+| Blog               | MDX files in `content/blog` (`@next/mdx`)                     |
 | Email              | Nodemailer over SMTP (AWS SES)                                |
 | Alerting           | Telegram bot                                                  |
 | Hosting            | Netlify                                                       |
