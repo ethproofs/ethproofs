@@ -1,4 +1,3 @@
-import { format } from "date-fns"
 import type { Metadata } from "next"
 import Image from "next/image"
 import Link from "next/link"
@@ -12,8 +11,11 @@ import {
   CardTitle,
 } from "@/components/ui/card"
 
-import { getAllPosts } from "@/lib/ghost"
+import { getAllPosts } from "@/lib/blog"
+import { BLOG_CARD_IMAGE_SIZES, formatPostDate } from "@/lib/blog.utils"
 import { getMetadata } from "@/lib/metadata"
+
+export const dynamic = "force-static"
 
 export const metadata: Metadata = getMetadata({ title: "Blog" })
 
@@ -29,17 +31,18 @@ export default async function BlogPage() {
       <div className="grid gap-6 md:grid-cols-2 lg:grid-cols-3">
         {posts.map((post) => (
           <Link
-            key={post.id}
+            key={post.slug}
             href={`/blog/${post.slug}`}
             className="hover:opacity-80"
           >
             <Card className="h-full">
-              {post.feature_image && (
+              {post.featureImage && (
                 <div className="relative aspect-video w-full overflow-hidden rounded-t-lg">
                   <Image
-                    src={post.feature_image}
-                    alt={post.title ?? "Blog post image"}
+                    src={post.featureImage}
+                    alt={post.title}
                     fill
+                    sizes={BLOG_CARD_IMAGE_SIZES}
                     className="object-cover"
                   />
                 </div>
@@ -47,8 +50,7 @@ export default async function BlogPage() {
               <CardHeader>
                 <CardTitle className="line-clamp-2">{post.title}</CardTitle>
                 <CardDescription>
-                  {post.published_at &&
-                    format(new Date(post.published_at), "MMMM d, yyyy")}
+                  {formatPostDate(post.publishedAt)}
                 </CardDescription>
               </CardHeader>
               <CardContent>
@@ -56,15 +58,15 @@ export default async function BlogPage() {
                   {post.excerpt}
                 </p>
               </CardContent>
-              {post.tags && post.tags.length > 0 && (
+              {post.tags.length > 0 && (
                 <CardFooter>
                   <div className="flex flex-wrap gap-2">
                     {post.tags.slice(0, 3).map((tag) => (
                       <span
-                        key={tag.id}
+                        key={tag}
                         className="rounded-full bg-muted px-3 py-1 text-xs"
                       >
-                        {tag.name}
+                        {tag}
                       </span>
                     ))}
                   </div>

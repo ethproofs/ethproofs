@@ -1,0 +1,189 @@
+---
+title: "The Ethproofs On-Prem Proving Initiative & Updated Real-Time Proving Grants"
+publishedAt: 2026-03-18T17:11:38.000+00:00
+excerpt: "Announcing the Ethproofs On-Prem Multi-GPU Prover Initiative: $65,000 in hardware grants for five teams to prove Ethereum L1 blocks on owned hardware — plus updated criteria for Real-Time Proving grant eligibility."
+featureImage: /blog/the-ethproofs-on-prem-proving-initiative-updated-real-time-proving-grants/post-4.jpg
+tags:
+  - "community"
+  - "coordination"
+authors:
+  - name: "Fara Woolf"
+    image: /blog/authors/me-bw.jpeg
+  - name: "Will Corcoran"
+    image: /blog/authors/headshot.jpg
+---
+
+---
+
+_Thanks to Justin Drake, Kev Wedderburn, Ladislaus, Alex Hicks, Monet du Pleissis, and Binji for feedback and review._
+
+---
+
+<Callout emoji="👉" color="grey">
+
+**Ethproofs v3.2 update**\
+_Today we’re pushing live a major overhaul of_ [_Ethproofs_](https://ethproofs.org/)_. 🚀_\
+_Internally, we call it_ _**Ethproofs v3.2**_ _— a security-focused refactor of the entire metrics and visualization stack, designed to foreground security properties alongside latency and cost. Learn more_ [_here_](https://x.com/eth_proofs/status/2034337406414151690?s=20)_._
+
+</Callout>
+
+## Announcing the On-Prem Proving Initiative
+
+Today we’re announcing the Ethproofs On-Prem Multi-GPU Prover Initiative: $65,000 in hardware grants awarded to five proving teams to build and operate on-premises proving rigs starting in May 2026.
+
+Each team receives a $13,000 grant to self-procure a comparable 2-GPU on-prem proving rig. Teams will prove 1-in-every-10 Ethereum L1 blocks, submitting proofs to Ethproofs through the activation of optional proving at Hegotá — currently anticipated in late 2026.
+
+On-prem deployment is a hard requirement. There are no exceptions.
+
+## The Five Teams
+
+These are not new entrants. All five teams participated in the [zkEVM attesting demo](https://youtu.be/BUuNcXiaH3U?si=RxaSY2_aD_ftNq_e) and [Real-Time Proving panel](https://youtu.be/8b3BMrlyA80?si=uMDdP6tNgIjFE-Jt) at Ethproofs Day on November 22, 2025, and all have continued submitting proofs on Ethproofs while completing Security Sprint Milestone 1 with the EF Cryptography team.
+
+This cohort is organized around **proving operations**, not zkVM development. Some of these teams build both the zkVM and the prover, but their role in this initiative is as **prover operators**: running hardware, managing deployment, and sustaining proof submissions.
+
+| # | Team | zkVM | Guest | On Ethproofs | Security M1 |
+| --- | --- | --- | --- | --- | --- |
+| 01 | ZisK | ZisK | revm | ✅ | ✅ |
+| 02 | Succinct | SP1 Hypercube | revm | ✅ | ✅ |
+| 03 | Brevis | Pico | revm | ✅ | ✅ |
+| 04 | MatterLabs | Airbender | zkSyncOS | ✅ | ✅ |
+| 05 | Axiom\* | OpenVM | revm | ✅ | ✅ |
+
+_\***Update:** Axiom has decided to not participate in the on–prem proving initiative and will not be accepting their grant funding for this program._
+
+**Selection for this initial cohort was based on four criteria:**
+
+| # | Eligibility Criterion |
+| --- | --- |
+| 1 | Completion of the zkVM Security Sprint Milestone 1 with the EF Cryptography team |
+| 2 | An active track record of proof submissions on Ethproofs |
+| 3 | Participation in the Ethproofs Day demo and Real-Time Proving panel (November 2025) |
+| 4 | Willingness to commit to on-prem deployment and cohort reporting through Hegotá |
+
+This initial on-prem cohort is a pilot. Many other strong teams are already submitting proofs to Ethproofs, and our goal is to expand beyond this first group over time. Ethproofs v3.2 now includes the admin tooling needed to support easier onboarding, and we are ready to scale the cohort as additional teams meet the operational requirements.
+
+This is separate from the zkEVM team’s zkVM evaluation process for L1 integration, which remains its own process with its own criteria and timeline.
+
+---
+
+## Why On-Prem Matters
+
+Ethereum’s proving layer must pass the walkaway test (as defined in the [_EF Mandate_](https://blog.ethereum.org/2026/03/13/ef-mandate)). If zkEVM-generated proofs are [becoming core L1 infrastructure](https://strawmap.org/), they cannot depend on a small number of cloud-hosted clusters.
+
+Cloud proving can demonstrate performance, but it is still a controlled environment. On-prem proving answers the harder question: **can this actually run in the wild**, on hardware people own, in locations they control, under real-world constraints?
+
+That distinction matters because decentralized proving is not just about speed. It is about whether proving can remain available, resilient, and censorship-resistant without depending on a handful of cloud providers. The 1-of-n security model only works if the proving set is broad and geographically distributed.
+
+**This initiative is designed to pressure-test that reality**. It asks teams to move from impressive demonstrations to sustained operation: proving continuously, on owned hardware, with real power, thermal, networking, and DevOps constraints.
+
+That is why the [zkEVM team's RTP guidelines](https://blog.ethereum.org/2025/07/10/realtime-proving) are bounded by roughly $100K CAPEX and 10kW power, and built around readily available hardware. The goal is not only to see what performs best. It is to learn what it actually takes to make proving viable beyond a few large, cloud-funded operators before optional proving begins at Hegotá.
+
+---
+
+## What the Cohort Produces
+
+This initiative creates a bridge between the existing 1:100 single-GPU benchmarking cohort and 1:1 full multi-GPU cloud clusters. The goal is not simply to identify the fastest prover. It is to generate clean, comparable, long-running data on what real-world on-prem proving actually requires.
+
+| Signal | Why It Matters |
+| --- | --- |
+| Proof latency at 1:10 cadence | Calibrates scaling trajectory toward 1:1 real-time proving |
+| On-prem vs. cloud performance delta | Quantifies infrastructure overhead and latency penalty of cloud |
+| Multi-GPU orchestration patterns | Documents real engineering complexity of coordinating 2+ GPUs on owned hardware |
+| Power draw & electricity cost | Grounds long-term economics of decentralized proving |
+| DevOps burden per team | Informs operational support needs at mainnet scale |
+
+## Cohort Structure
+
+- **Grant amount:** $13,000 per team × 5 teams = $65,000 total
+- **Window:** May 2026 through Hegotá activation
+- **Cadence:** 1-in-every-10 Ethereum L1 blocks submitted to Ethproofs
+- **Hardware:** Reference configuration of 2× NVIDIA RTX 5090 (32GB), AMD EPYC 9354P, and 256GB DDR5 ECC RAM; comparable deviations must be disclosed
+- **Requirement:** on-prem only; cloud deployment triggers clawback
+- **Reporting:** deployment report, quarterly operational reports, and end-of-cohort summary
+- **Thresholds:** liveness and performance targets will be set after Month 1, once baseline data exists
+
+Reporting is part of the point. We plan to synthesize the cohort’s operational data and team interviews into an open-source **On-Prem Proving Field Guide** for the broader ecosystem.
+
+---
+
+<Figure src="/blog/the-ethproofs-on-prem-proving-initiative-updated-real-time-proving-grants/buffer2.jpg" alt="" />
+
+## Update: The $300K Real-Time Proving Grants
+
+In May 2025, Ethproofs announced three $100,000 Real-Time Proving grants—$300,000 total—first shared during [_Ethproofs Call 2_](https://www.youtube.com/watch?v=f5AvMBUV4WY&t=1595s) on May 23, 2025, and again via the [@eth\_proofs X account](https://x.com/eth_proofs/status/1930244636582334473) on June 4, 2025.
+
+These grants are **separate from the five-team on-prem cohort**. They are open to **any team** that meets the updated criteria, on a first-come, first-served basis.
+
+The original eligibility requirements were:
+
+- 99% of blocks proven in under 12 seconds
+- Open source prover
+- ≥100 bits of security
+- First come, first served
+- Payout: $50K after 1 month at threshold, $50K after an additional 5 months
+
+**As of March 14, 2026, all three prizes remain unclaimed.** No formal claims were submitted under the original terms.
+
+The table below shows the top-performing clusters on Ethproofs. While several teams are approaching the threshold—ZisK Cluster leads at 98.31% overall—no cluster has sustained ≥99% performance at the P99 level for a full calendar month.
+
+| Cluster | Sec. Bits | Total Proofs | % &lt;12s | Months |
+| --- | --- | --- | --- | --- |
+| ZisK Cluster | 128 | 114,991 | 98.31% | 2 |
+| ZkCloud Eth Prover v4 | 128 | 168,508 | 94.26% | 2 |
+| ZisK Sevilla Cloud | 128 | 713,011 | 92.61% | 5 |
+| ZkCloud Eth Prover v3 | 128 | 291,016 | 92.03% | 4 |
+| ZisK Girona On-Prem | 128 | 211,705 | 89.04% | 3 |
+| OpenVM-Multi-GPU | 100 | 328,445 | 88.36% | 3 |
+
+_Data as reported to Ethproofs through March 14, 2026. See ethproofs.org/clusters for live data._
+
+## Why We're Updating the Criteria
+
+The original RTP grant criteria were set in May 2025, before later [zkEVM](https://blog.ethereum.org/2025/07/10/realtime-proving) and [Cryptography](https://blog.ethereum.org/2025/12/18/zkevm-security-foundations) publications clarified the shared target for real-time proving. They also left the measurement framework underspecified, especially around what counted as qualifying performance and how it would be evaluated over time.
+
+The updated criteria address both issues: they align the grants to published upstream standards and make the measurement methodology explicit, **distinguishing one-time benchmark results from sustained live proving on Ethproofs**.
+
+## Original vs. Updated RTP Grant Criteria
+
+| Criterion | Original (May 2025) | Updated (March 2026) |
+| --- | --- | --- |
+| Measurement | Not specified | **Sustained live proving on Ethproofs** |
+| Evaluation window | 1 month, 5 add'l months | **1 calendar month continuous + 5 add'l months** |
+| Latency | 99% of blocks &lt;12s | **P99 ≤10s** |
+| Security | ≥100 bits | **≥128-bit provable (soundcalc)** |
+| On-prem CAPEX | No cap | **≤$100K USD** |
+| Power | No cap | **≤10kW** |
+| Proof size | Not specified | **≤300KiB, no trusted setups** |
+| Open source | Yes | Fully open source (unchanged) |
+| Allocation | First come, first served | First come, first served (unchanged) |
+| Payout | $50K after 1 month, $50K after 5 more | $50K after 1 month, $50K after 5 more (unchanged) |
+
+_**A note on gas limits:** RTP grant eligibility is evaluated against the **mainnet blocks a team actually proves during its evaluation window**. It is not measured against a fixed historical benchmark or a future gas-limit target. If a team sustains P99 ≤10s on current mainnet blocks for the required window, that performance qualifies._
+
+With Ethproofs v3.2, we are building toward week-by-week tracking of these criteria in the RTP cohort view, with full tracking in place by the time the on-prem cohort launches in May 2026. Teams and observers will be able to monitor progress toward the updated thresholds directly on [Ethproofs.org](http://ethproofs.org/).
+
+The updated criteria take effect on the date of this publication, March 18, 2026. No claims were received under the original terms prior to this update, and all three $100K prizes remain available.
+
+## How the On-Prem Cohort Connects to the $300K Grants
+
+The on-prem cohort and the $300K RTP grants serve different purposes.
+
+The **on-prem cohort** asks whether a prover can operate reliably on owned hardware, under real-world constraints, over time. The **RTP grants** reward teams that can sustain real-time proving performance at the required threshold.
+
+In that sense, **the bar is moving from impressive demonstrations to production-grade operation**. The cohort is meant to generate the operational evidence that makes that distinction legible in public: uptime, latency, power, cost, and DevOps burden across a standardized on-prem setup.
+
+This cohort is not part of the zkEVM team’s process for selecting zkVM implementations for possible Ethereum L1 integration. That remains a separate process with its own framework, criteria, and timeline.
+
+---
+
+<Figure src="/blog/the-ethproofs-on-prem-proving-initiative-updated-real-time-proving-grants/buffer-1.jpg" alt="" />
+
+# Looking Ahead
+
+The cohort is expected to begin on May 1, 2026, subject to hardware procurement lead times. Teams will deploy in April, with first operational data expected in June, and the cohort running through Hegotá. Progress toward the updated RTP thresholds will be visible on Ethproofs, so teams and observers can track, in public, whether on-prem proving can sustain production-grade performance over time.
+
+This pilot is meant to establish both the operational baseline and the onboarding path for a broader on-prem proving cohort over time, **including teams already actively proving on Ethproofs today**.
+
+We will continue to publish updates through the Ethproofs blog, our community calls, and @eth\_proofs on X. If you’re a zkVM team or independent prover interested in participating in future cohorts—or if you have feedback on the updated RTP criteria—reach out to us at @fbwoolf or @corcoranwill on Telegram.
+
+_made with ❤ by the Ethereum Foundation_
