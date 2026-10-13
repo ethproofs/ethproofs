@@ -1,4 +1,4 @@
-SET LOCAL lock_timeout = '5s';
+SET lock_timeout = '5s';
 
 CREATE OR REPLACE VIEW proofs_excluding_downtime
 WITH (security_invoker = true) AS

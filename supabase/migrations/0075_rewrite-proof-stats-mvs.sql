@@ -1,4 +1,4 @@
-SET LOCAL lock_timeout = '5s';
+SET lock_timeout = '5s';
 
 CREATE MATERIALIZED VIEW team_proof_stats_new AS
 SELECT
