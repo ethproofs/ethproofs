@@ -160,7 +160,6 @@ export const POST = withAuthAndRateLimit(
       }
 
       revalidateTag(TAGS.PROOFS)
-      revalidateTag(TAGS.BLOCKS)
       revalidateTag(`cluster-${cluster.id}`)
       revalidateTag(`block-${block_number}`)
 

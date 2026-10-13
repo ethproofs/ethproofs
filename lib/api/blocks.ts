@@ -3,6 +3,7 @@ import { unstable_cache as cache } from "next/cache"
 import { PaginationState } from "@tanstack/react-table"
 
 import { fetchBlockData } from "../blocks"
+import { TAGS } from "../constants"
 import { isUndefined } from "../utils"
 
 import { db } from "@/db"
@@ -206,6 +207,7 @@ const fetchBlocksCount = cache(
   ["blocks-count"],
   {
     revalidate: 60,
+    tags: [TAGS.BLOCKS],
   }
 )
 
