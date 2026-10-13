@@ -82,7 +82,7 @@ export const getClusterSummary = cache(
   },
   ["cluster-summary"],
   {
-    revalidate: 60 * 60 * 1, // hourly
+    revalidate: 60 * 5,
     tags: [TAGS.CLUSTER_SUMMARY],
   }
 )
