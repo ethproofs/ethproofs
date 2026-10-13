@@ -2,7 +2,8 @@ import Image from "next/image"
 
 import { cn } from "@/lib/utils"
 
-import { BLOG_IMAGE_SIZES, getPublicImageSize } from "@/lib/blog.utils"
+import { getPublicImageSize } from "@/lib/blog"
+import { BLOG_IMAGE_SIZES } from "@/lib/blog.utils"
 
 interface BlogImageProps {
   src: string

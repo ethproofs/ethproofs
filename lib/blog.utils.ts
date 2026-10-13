@@ -1,7 +1,4 @@
-import path from "path"
-
 import { isValidElement, type ReactNode } from "react"
-import sharp from "sharp"
 
 export const BLOG_IMAGE_SIZES = "(min-width: 896px) 896px, 100vw"
 export const BLOG_CARD_IMAGE_SIZES =
@@ -43,14 +40,4 @@ export function getSiteRelativeHref(href: string) {
   if (!SITE_HOSTNAMES.includes(url.host)) return null
 
   return `${url.pathname}${url.search}${url.hash}`
-}
-
-export async function getPublicImageSize(src: string) {
-  if (!src.startsWith("/")) return null
-
-  const { width, height } = await sharp(
-    path.join(process.cwd(), "public", src)
-  ).metadata()
-
-  return width && height ? { width, height } : null
 }

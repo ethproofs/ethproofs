@@ -1,7 +1,11 @@
 # Blog posts
 
 Each post is `content/blog/<slug>.mdx`; the file name is the URL (`/blog/<slug>`).
-Images go in `public/blog/<slug>/` and are referenced as `/blog/<slug>/<file>`.
+Images go in `public/blog/<slug>/` (kebab-case file names) and are referenced as `/blog/<slug>/<file>`.
+
+## Publishing
+
+Posts are no longer edited in Ghost. To publish or change a post, open a PR with the `.mdx` file and its images, check it on the deploy preview, and merge: the post goes live with the next deploy.
 
 ```mdx
 ---

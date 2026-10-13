@@ -2,6 +2,7 @@ import fs from "fs"
 import path from "path"
 
 import type { MDXContent } from "mdx/types"
+import sharp from "sharp"
 import { z } from "zod"
 
 const BLOG_CONTENT_DIR = path.join(process.cwd(), "content/blog")
@@ -58,4 +59,14 @@ export async function getPostBySlug(slug: string) {
   if (!getBlogPostSlugs().includes(slug)) return null
 
   return loadBlogPost(slug)
+}
+
+export async function getPublicImageSize(src: string) {
+  if (!src.startsWith("/")) return null
+
+  const { width, height } = await sharp(
+    path.join(process.cwd(), "public", src)
+  ).metadata()
+
+  return width && height ? { width, height } : null
 }
