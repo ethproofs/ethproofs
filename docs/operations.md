@@ -29,9 +29,8 @@ From `.env.example`:
 | `TELEGRAM_BOT_TOKEN`, `TELEGRAM_CHAT_ID`             | Error/alert reporting                    |
 | `EMAIL_FROM`, `SMTP_HOST`, `SMTP_PORT`, `SMTP_USER`, `SMTP_PASS` | Transactional email (AWS SES) |
 | `UPSTASH_REDIS_REST_URL`, `UPSTASH_REDIS_REST_TOKEN` | Rate limiting (referenced in middleware) |
-| `GHOST_URL`, `GHOST_CONTENT_KEY`                     | Blog content (referenced in `lib/ghost.ts`) |
 
-> Some vars (Upstash, Ghost) aren't in `.env.example` but are read by the code — grab
+> Some vars (Upstash) aren't in `.env.example` but are read by the code — grab
 > their values from the deployment environment when you set up production-like local
 > runs. Rate limiting fails open if Redis is missing, so the app still runs locally
 > without Upstash.

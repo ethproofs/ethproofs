@@ -519,6 +519,20 @@
       "when": 1787061610798,
       "tag": "0073_deprecate-proof-alerts",
       "breakpoints": true
+    },
+    {
+      "idx": 74,
+      "version": "7",
+      "when": 1791923622498,
+      "tag": "0074_cluster-summary-mv",
+      "breakpoints": true
+    },
+    {
+      "idx": 75,
+      "version": "7",
+      "when": 1791925822155,
+      "tag": "0075_rewrite-proof-stats-mvs",
+      "breakpoints": true
     }
   ]
 }
