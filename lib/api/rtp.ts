@@ -9,6 +9,7 @@ import type {
 } from "@/lib/types"
 
 import {
+  ON_PREM_DEPLOYMENT_TYPE,
   RTP_PARALYZER_CUTOFF_MINUTES,
   RTP_PERFORMANCE_TIME_THRESHOLD_MS,
   TAGS,
@@ -31,7 +32,13 @@ const RTP_BUCKET_ORDER = [
   "+14s",
 ] as const
 
-function buildRtpCohortScoresQuery(isEligible: boolean) {
+function onPremOnlyFilter(isOnPremOnly: boolean) {
+  return isOnPremOnly
+    ? sql`AND pt.deployment_type = ${ON_PREM_DEPLOYMENT_TYPE}`
+    : sql``
+}
+
+function buildRtpCohortScoresQuery(isEligible: boolean, isOnPremOnly: boolean) {
   return sql`
     WITH latest_snapshot AS (
       SELECT MAX(snapshot_week) AS week
@@ -62,6 +69,7 @@ function buildRtpCohortScoresQuery(isEligible: boolean) {
     FROM rtp_cohort_snapshots s
     INNER JOIN latest_snapshot ls ON s.snapshot_week = ls.week
     INNER JOIN clusters c ON s.cluster_id = c.id
+    INNER JOIN prover_types pt ON c.prover_type_id = pt.id
     INNER JOIN teams t ON c.team_id = t.id
     INNER JOIN LATERAL (
       SELECT cv_inner.zkvm_version_id
@@ -75,13 +83,16 @@ function buildRtpCohortScoresQuery(isEligible: boolean) {
     LEFT JOIN guest_programs gp ON c.guest_program_id = gp.id
     LEFT JOIN zkvm_security_metrics zsm ON zsm.zkvm_id = z.id
     WHERE s.is_eligible = ${isEligible}
+    ${onPremOnlyFilter(isOnPremOnly)}
     ORDER BY s.performance_score DESC, s.liveness_score DESC
   `
 }
 
 export const getRtpCohortScores = cache(
-  async (): Promise<CohortRow[]> => {
-    const result = await db.execute(buildRtpCohortScoresQuery(true))
+  async (isOnPremOnly = false): Promise<CohortRow[]> => {
+    const result = await db.execute(
+      buildRtpCohortScoresQuery(true, isOnPremOnly)
+    )
     const rows = Array.isArray(result) ? result : []
     return rows.map((row: Record<string, unknown>) => toCohortRow(row))
   },
@@ -93,8 +104,10 @@ export const getRtpCohortScores = cache(
 )
 
 export const getRtpCohortIneligibleScores = cache(
-  async (): Promise<CohortRow[]> => {
-    const result = await db.execute(buildRtpCohortScoresQuery(false))
+  async (isOnPremOnly = false): Promise<CohortRow[]> => {
+    const result = await db.execute(
+      buildRtpCohortScoresQuery(false, isOnPremOnly)
+    )
     const rows = Array.isArray(result) ? result : []
     return rows.map((row: Record<string, unknown>) => toCohortRow(row))
   },
@@ -180,17 +193,21 @@ export const getRtpCohortComposition = cache(
 )
 
 export const getRtpCohortPerformance = async (
-  days: number
+  days: number,
+  isOnPremOnly = false
 ): Promise<CohortPerformanceData> => {
   return cache(
-    async (days: number) => {
+    async (days: number, isOnPremOnly: boolean) => {
       const result = await db.execute(sql`
         WITH evaluated_clusters AS (
           SELECT s.cluster_id
           FROM rtp_cohort_snapshots s
+          INNER JOIN clusters c ON s.cluster_id = c.id
+          INNER JOIN prover_types pt ON c.prover_type_id = pt.id
           WHERE s.snapshot_week = (
               SELECT MAX(snapshot_week) FROM rtp_cohort_snapshots
             )
+            ${onPremOnlyFilter(isOnPremOnly)}
         ),
         window_blocks AS (
           SELECT block_number, "timestamp"
@@ -256,26 +273,30 @@ export const getRtpCohortPerformance = async (
         ),
       }
     },
-    ["rtp-cohort-performance", String(days)],
+    ["rtp-cohort-performance", String(days), String(isOnPremOnly)],
     {
       revalidate: 60 * 60,
       tags: [TAGS.RTP_COHORT],
     }
-  )(days)
+  )(days, isOnPremOnly)
 }
 
 export const getRtpProofTimeDistribution = async (
-  days: number
+  days: number,
+  isOnPremOnly = false
 ): Promise<ProofTimeDistributionData> => {
   return cache(
-    async (days: number) => {
+    async (days: number, isOnPremOnly: boolean) => {
       const result = await db.execute(sql`
         WITH evaluated_clusters AS (
           SELECT s.cluster_id
           FROM rtp_cohort_snapshots s
+          INNER JOIN clusters c ON s.cluster_id = c.id
+          INNER JOIN prover_types pt ON c.prover_type_id = pt.id
           WHERE s.snapshot_week = (
               SELECT MAX(snapshot_week) FROM rtp_cohort_snapshots
             )
+            ${onPremOnlyFilter(isOnPremOnly)}
         ),
         window_blocks AS (
           SELECT block_number
@@ -339,10 +360,10 @@ export const getRtpProofTimeDistribution = async (
         buckets,
       }
     },
-    ["rtp-proof-time-distribution", String(days)],
+    ["rtp-proof-time-distribution", String(days), String(isOnPremOnly)],
     {
       revalidate: 60 * 60,
       tags: [TAGS.RTP_COHORT],
     }
-  )(days)
+  )(days, isOnPremOnly)
 }

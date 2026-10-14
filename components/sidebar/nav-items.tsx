@@ -7,6 +7,7 @@ import {
   HardDrive,
   HeartPulse,
   Library,
+  Server,
   SquareCode,
   Target,
   Users,
@@ -27,6 +28,11 @@ export const cohortsNavItems: NavItem[] = [
     label: "1:10 cohort",
     href: "/on-prem-proving-initiative",
     icon: <HardDrive />,
+  },
+  {
+    label: "1:1 on-prem cohort",
+    href: "/on-prem-real-time-proving",
+    icon: <Server />,
   },
 ]
 
