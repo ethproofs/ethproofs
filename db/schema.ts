@@ -11,6 +11,7 @@ import {
   jsonb,
   numeric,
   pgEnum,
+  pgMaterializedView,
   pgPolicy,
   pgTable,
   pgView,
@@ -559,7 +560,7 @@ export const teamsSummary = pgView("teams_summary", {
       COALESCE(avg(CASE WHEN pt.gpu_configuration = 'single-gpu' THEN p.proving_time ELSE NULL END), 0::numeric) AS avg_proving_time_single,
       sum(CASE WHEN pt.gpu_configuration = 'single-gpu' THEN 1 ELSE 0 END) AS total_proofs_single
     FROM teams t
-    LEFT JOIN proofs p ON t.id = p.team_id AND p.proof_status = 'proved'::text AND NOT is_downtime_block(p.block_number)
+    LEFT JOIN proofs_excluding_downtime p ON t.id = p.team_id AND p.proof_status = 'proved'::text
     LEFT JOIN cluster_versions cv ON p.cluster_version_id = cv.id
     LEFT JOIN clusters c ON cv.cluster_id = c.id
     LEFT JOIN prover_types pt ON c.prover_type_id = pt.id
@@ -567,27 +568,13 @@ export const teamsSummary = pgView("teams_summary", {
     GROUP BY t.id`
   )
 
-export const clusterSummary = pgView("cluster_summary", {
+export const clusterSummary = pgMaterializedView("cluster_summary", {
   cluster_id: uuid("cluster_id"),
   cluster_name: text("cluster_name"),
   team_id: uuid("team_id"),
   avg_cost_per_proof: doublePrecision("avg_cost_per_proof"),
   avg_proving_time: numeric("avg_proving_time"),
-})
-  .with({ securityInvoker: true })
-  .as(
-    sql`
-    SELECT c.id as cluster_id,
-      c.name as cluster_name,
-      c.team_id,
-      COALESCE(sum(c.num_gpus::double precision * gpi.hourly_price * (p.proving_time::numeric / (1000.0 * 60::numeric * 60::numeric))::double precision) / NULLIF(count(p.proof_id), 0)::double precision, 0::double precision) AS avg_cost_per_proof,
-      avg(p.proving_time) AS avg_proving_time
-    FROM clusters c
-    LEFT JOIN cluster_versions cv ON c.id = cv.cluster_id
-    LEFT JOIN proofs p ON cv.id = p.cluster_version_id AND p.proof_status = 'proved'::text AND NOT is_downtime_block(p.block_number)
-    LEFT JOIN gpu_price_index gpi ON p.gpu_price_index_id = gpi.id
-    GROUP BY c.id`
-  )
+}).existing()
 
 export const rtpCohortSnapshots = pgTable(
   "rtp_cohort_snapshots",
