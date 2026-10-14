@@ -34,15 +34,15 @@ export default async function OppCohortPage() {
     <div className="mx-auto max-w-screen-2xl px-6">
       <PageHeader
         title="on-prem proving initiative"
-        description="performance and liveness metrics for all 1:10 multi-GPU on-prem provers"
+        description="performance and liveness metrics for all multi-GPU on-prem provers (1:10 and 1:1), scored on every 10th block"
       />
 
       <section className="mb-8">
         {oppCohortRows.length === 0 ? (
           <EmptyCohortBanner
-            title="no 1:10 provers in the cohort this week"
+            title="no on-prem provers in the cohort this week"
             titleShort="no provers yet"
-            description="no active 1:10 on-prem provers have submitted proofs this week"
+            description="no active multi-GPU on-prem provers have submitted proofs this week"
             descriptionShort="no active provers this week"
           />
         ) : (
