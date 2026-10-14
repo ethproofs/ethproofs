@@ -82,29 +82,10 @@ export const getClusterSummary = cache(
   },
   ["cluster-summary"],
   {
-    revalidate: 60 * 60 * 1, // hourly
+    revalidate: 60 * 5,
     tags: [TAGS.CLUSTER_SUMMARY],
   }
 )
-
-export const getClusterSummaryById = async (id: string) => {
-  return cache(
-    async (id: string) => {
-      const [clusterSummary] = await db
-        .select()
-        .from(clusterSummaryView)
-        .where(eq(clusterSummaryView.cluster_id, id))
-        .limit(1)
-
-      return clusterSummary
-    },
-    ["cluster-summary", id],
-    {
-      revalidate: 60 * 60 * 1, // hourly
-      tags: [TAGS.CLUSTER_SUMMARY],
-    }
-  )(id)
-}
 
 export const getTeamsSummary = cache(
   async () => {

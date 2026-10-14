@@ -4,8 +4,6 @@ import { ZodError } from "zod"
 
 import { isUndefined } from "@/lib/utils"
 
-import { TAGS } from "@/lib/constants"
-
 import { db } from "@/db"
 import { proofs } from "@/db/schema"
 import { findOrCreateBlock } from "@/lib/api/blocks"
@@ -125,7 +123,6 @@ export const POST = withAuthAndRateLimit(
         })
         .returning({ proof_id: proofs.proof_id })
 
-      revalidateTag(TAGS.BLOCKS)
       revalidateTag(`cluster-${cluster.id}`)
       revalidateTag(`block-${block_number}`)
 
