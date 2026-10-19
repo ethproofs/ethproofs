@@ -37,8 +37,8 @@ importers:
         specifier: ^0.1.7
         version: 0.1.7
       '@ethproofs/pico-wasm-stark-verifier':
-        specifier: ^0.1.8
-        version: 0.1.8
+        specifier: ^0.1.9
+        version: 0.1.9
       '@ethproofs/sp1-hypercube-wasm-verifier':
         specifier: ^0.2.0
         version: 0.2.0
@@ -1679,8 +1679,8 @@ packages:
     resolution: {integrity: sha512-JMgnS33G06JLbej0NppMnwGlMId9dz8ThTm8BVtP0/PAiN0jRFyafr0Ib5AjNA00jirj7sM7xf0R+olp5WKyNQ==}
     engines: {node: '>=16.0.0'}
 
-  '@ethproofs/pico-wasm-stark-verifier@0.1.8':
-    resolution: {integrity: sha512-KvrqHWZOTCnG/Jc3+POFrDNFozENqI6jy95Sj3gwn7NumkQrDQh3IKqWsQAOWbJ1F+nOiUrMw9XeTgJQUCeauQ==}
+  '@ethproofs/pico-wasm-stark-verifier@0.1.9':
+    resolution: {integrity: sha512-gO6bcHiu5eH7nXuC5L4NkxbJsBUUKqJ3ZxXIPOiwibDcsQpQLVNMe7w3nPwYPQF1BKvjy8R3WFbGhN8mApum9g==}
     engines: {node: '>=16.0.0'}
 
   '@ethproofs/sp1-hypercube-wasm-verifier@0.2.0':
@@ -9685,7 +9685,7 @@ snapshots:
 
   '@ethproofs/openvm2-wasm-stark-verifier@0.1.7': {}
 
-  '@ethproofs/pico-wasm-stark-verifier@0.1.8': {}
+  '@ethproofs/pico-wasm-stark-verifier@0.1.9': {}
 
   '@ethproofs/sp1-hypercube-wasm-verifier@0.2.0': {}
 
